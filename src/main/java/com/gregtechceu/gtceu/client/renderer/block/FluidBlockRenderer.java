@@ -59,8 +59,7 @@ public class FluidBlockRenderer {
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
         int r = FastColor.ARGB32.red(color), g = FastColor.ARGB32.green(color),
-                b = FastColor.ARGB32.blue(color), a = (int) (FastColor.ARGB32.alpha(color) *
-                        (properties.isScaleAlpha() ? properties.getAlphaScale() : 1));
+                b = FastColor.ARGB32.blue(color), a = FastColor.ARGB32.alpha(color);
         var normal = RenderUtil.getNormal(face);
         var vertices = transformVertices(RenderUtil.getVertices(face), face);
 
@@ -81,8 +80,7 @@ public class FluidBlockRenderer {
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
         int r = FastColor.ARGB32.red(color), g = FastColor.ARGB32.green(color),
-                b = FastColor.ARGB32.blue(color), a = (int) (FastColor.ARGB32.alpha(color) *
-                        (properties.isScaleAlpha() ? properties.getAlphaScale() : 1));
+                b = FastColor.ARGB32.blue(color), a = FastColor.ARGB32.alpha(color);
         var normal = RenderUtil.getNormal(face);
         var vertices = transformVertices(RenderUtil.getVertices(face), face);
 
@@ -147,8 +145,6 @@ public class FluidBlockRenderer {
         private float offsetFace = 0;
         private boolean overwriteLight = false;
         private int light = 0;
-        private boolean scaleAlpha = false;
-        private float alphaScale = 0;
 
         private Direction[] drawFaces = Direction.values();
 
@@ -186,12 +182,6 @@ public class FluidBlockRenderer {
         public Builder setForcedLight(int light) {
             properties.setLight(light);
             properties.setOverwriteLight(true);
-            return this;
-        }
-
-        public Builder setAlphaScaling(float scaling) {
-            properties.setScaleAlpha(true);
-            properties.setAlphaScale(scaling);
             return this;
         }
 
