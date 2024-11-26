@@ -46,25 +46,23 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf) {
-                if (pbf.isActive()) {
-                    Direction opposite = pbf.getFrontFacing().getOpposite();
-                    RenderType lavaRenderType = ItemBlockRenderTypes.getRenderLayer(Fluids.LAVA.defaultFluidState());
+            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf && pbf.isActive()) {
+                Direction opposite = pbf.getFrontFacing().getOpposite();
+                RenderType lavaRenderType = ItemBlockRenderTypes.getRenderLayer(Fluids.LAVA.defaultFluidState());
 
-                    stack.pushPose();
-                    var pose = stack.last().pose();
-                    pose.translate(opposite.getStepX(), opposite.getStepY(), opposite.getStepZ());
+                stack.pushPose();
+                var pose = stack.last().pose();
+                pose.translate(opposite.getStepX(), opposite.getStepY(), opposite.getStepZ());
 
-                    var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(lavaRenderType, true));
-                    var up = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
-                            pbf.isFlipped());
-                    if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
+                var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(lavaRenderType, true));
+                var up = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
+                        pbf.isFlipped());
+                if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
 
-                    fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
-                            RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
+                fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
+                        RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
 
-                    stack.popPose();
-                }
+                stack.popPose();
             }
         }
     }

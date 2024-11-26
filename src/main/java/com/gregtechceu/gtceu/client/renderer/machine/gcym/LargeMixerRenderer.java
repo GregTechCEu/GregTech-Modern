@@ -62,7 +62,7 @@ public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof LargeMixerMachine lm) {
+            if (mm.metaMachine instanceof LargeMixerMachine lm && lm.isActive()) {
                 GTRecipe last = lm.recipeLogic.getLastRecipe();
                 if (last == null) return;
 
