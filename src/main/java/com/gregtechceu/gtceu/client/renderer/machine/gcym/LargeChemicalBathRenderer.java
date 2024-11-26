@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.LargeChemic
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
 
         fluidBlockRenderer = FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
+                .setForcedLight(LightTexture.FULL_BRIGHT)
                 .getRenderer();
     }
 
@@ -60,7 +62,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof LargeChemicalBathMachine lcb) {
+            if (mm.metaMachine instanceof LargeChemicalBathMachine lcb && lcb.isActive()) {
                 GTRecipe last = lcb.recipeLogic.getLastRecipe();
                 if (last == null) return;
 
