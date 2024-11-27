@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FOIL;
 
-public class WireProperties implements IMaterialProperty<WireProperties> {
+public class WireProperties implements IMaterialProperty {
 
     private long voltage;
     private int amperage;
