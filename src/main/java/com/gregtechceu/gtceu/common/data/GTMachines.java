@@ -631,17 +631,16 @@ public class GTMachines {
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
+            long storedAmount = stack.getOrCreateTag().getInt("storedAmount");
             list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
                     FormattingUtil.formatNumbers(storedAmount)));
         }
     };
 
     public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
-            (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
+            (holder, tier) -> new QuantumChestMachine(holder, tier, 4_000_000 * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Super Chest " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Super Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
@@ -649,26 +648,23 @@ public class GTMachines {
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_chest")
                     .register(),
             LOW_TIERS);
 
     public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
+                    tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Quantum Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
+                            Component.translatable("gtceu.universal.tooltip.item_storage_total", FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_chest")
                     .register(),
             HIGH_TIERS);
@@ -692,38 +688,43 @@ public class GTMachines {
         };
     }
 
+    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
+        if (stack.hasTag()) {
+            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            if(storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getDisplayName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
+        }
+    };
+
     public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000 * FluidType.BUCKET_VOLUME * (int) Math.pow(2, tier - 1)),
+            (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Super Tank " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Super Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored", null))
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_tank")
                     .register(),
             LOW_TIERS);
 
     public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            4000 * FluidType.BUCKET_VOLUME * (int) Math.pow(2, tier - 1)),
+            (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Quantum Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored", null))
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_tank")
                     .register(),
             HIGH_TIERS);

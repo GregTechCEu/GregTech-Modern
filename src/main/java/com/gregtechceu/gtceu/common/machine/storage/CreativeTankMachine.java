@@ -64,7 +64,6 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     private InteractionResult updateStored(FluidStack fluid) {
         cache.setFluidInTank(0, new FluidStack(fluid, 1000));
-        stored = cache.getFluidInTank(0);
         return InteractionResult.SUCCESS;
     }
 
@@ -89,8 +88,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
             }
 
             // Need to make a fake source to fully fill held-item since our cache only allows mbPerTick extraction
-            CustomFluidTank source = new CustomFluidTank(
-                    new FluidStack(stored.getFluid(), Integer.MAX_VALUE, stored.getTag()));
+            CustomFluidTank source = new CustomFluidTank(new FluidStack(stored, Integer.MAX_VALUE));
             ItemStack result = FluidUtil.tryFillContainer(heldItem, source, Integer.MAX_VALUE, player, true)
                     .getResult();
             if (!result.isEmpty() && heldItem.getCount() > 1) {
@@ -114,7 +112,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public WidgetGroup createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomFluidWidget(this.cache.getStorages()[0], 0, 36, 6, 18, 18,
+        group.addWidget(new PhantomFluidWidget(cache, 0, 36, 6, 18, 18,
                 this::getStored, this::updateStored)
                 .setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
@@ -158,7 +156,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if (!stored.isEmpty()) return resource.getAmount();
+            if (!stored.isEmpty() && stored.isFluidEqual(resource)) return resource.getAmount();
             return 0;
         }
 
@@ -172,6 +170,11 @@ public class CreativeTankMachine extends QuantumTankMachine {
         public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
             if (!stored.isEmpty() && stored.isFluidEqual(resource)) return new FluidStack(resource, mBPerCycle);
             return FluidStack.EMPTY;
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return 1000;
         }
     }
 }

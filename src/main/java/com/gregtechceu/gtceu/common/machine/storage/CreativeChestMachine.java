@@ -150,7 +150,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (!stored.isEmpty()) return ItemStack.EMPTY;
+            if (!stored.isEmpty() && ItemStack.isSameItemSameTags(stored, stack)) return ItemStack.EMPTY;
             return stack;
         }
 

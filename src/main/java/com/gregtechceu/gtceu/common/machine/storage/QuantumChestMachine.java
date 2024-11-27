@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
@@ -89,12 +90,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted
     protected boolean allowInputFromOutputSideItems;
     @Getter
-    private final int maxStoredItems;
+    private final long maxStoredItems;
     @Getter
     @Persisted
     @DescSynced
     @DropSaved
-    protected int storedAmount = 0;
+    protected long storedAmount = 0;
     @Getter
     @Persisted
     @DescSynced
@@ -118,7 +119,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Getter
     private final CustomItemStackHandler lockedItem;
 
-    public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
+    public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxStoredItems, Object... args) {
         super(holder, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxStoredItems = maxStoredItems;
@@ -335,36 +336,21 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 109, 63);
-        var importItems = new CustomItemStackHandler();
-        importItems.setFilter(itemStack -> cache.insertItem(0, itemStack, true).getCount() != itemStack.getCount());
-        importItems.setOnContentsChanged(() -> {
-            var item = importItems.getStackInSlot(0).copy();
-            if (!item.isEmpty()) {
-                importItems.setStackInSlot(0, ItemStack.EMPTY);
-                importItems.onContentsChanged(0);
-                cache.insertItem(0, item.copy(), false);
-            }
-        });
-        var current = cache.getStackInSlot(0).copy();
-        if (!current.isEmpty()) {
-            current.setCount(Math.min(current.getCount(), current.getItem().getMaxStackSize()));
-        }
+        var importItems = createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
                 .addWidget(new LabelWidget(8, 18, () -> storedAmount + "").setTextColor(-1).setDropShadow(true))
                 .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
                 .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
-                        .setItemHook(itemStack -> itemStack
-                                .copyWithCount(Math.min(storedAmount, itemStack.getItem().getMaxStackSize(itemStack))))
+                        .setItemHook(stack -> stack.copyWithCount((int) Math.min(storedAmount, stack.getMaxStackSize())))
                         .setBackgroundTexture(GuiTextures.SLOT))
                 .addWidget(new ButtonWidget(87, 42, 18, 18,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
                             if (!cd.isRemote) {
-                                var stored = cache.getStackInSlot(0);
                                 if (!stored.isEmpty()) {
                                     var extracted = cache.extractItem(0,
-                                            Math.min(storedAmount, stored.getItem().getMaxStackSize(stored)), false);
+                                            (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
                                     if (!group.getGui().entityPlayer.addItem(extracted)) {
                                         Block.popResource(group.getGui().entityPlayer.level(),
                                                 group.getGui().entityPlayer.getOnPos(), extracted);
@@ -389,6 +375,20 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
+    }
+
+    private @NotNull CustomItemStackHandler createImportItems() {
+        var importItems = new CustomItemStackHandler();
+        importItems.setFilter(itemStack -> cache.insertItem(0, itemStack, true).getCount() != itemStack.getCount());
+        importItems.setOnContentsChanged(() -> {
+            var item = importItems.getStackInSlot(0).copy();
+            if (!item.isEmpty()) {
+                importItems.setStackInSlot(0, ItemStack.EMPTY);
+                importItems.onContentsChanged(0);
+                cache.insertItem(0, item.copy(), false);
+            }
+        });
+        return importItems;
     }
 
     //////////////////////////////////////
@@ -425,13 +425,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
         @Override
         public @NotNull ItemStack getStackInSlot(int slot) {
-            return inner().copyWithCount(storedAmount);
+            return inner().copyWithCount(GTMath.saturatedCast(storedAmount));
         }
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            int free = isVoiding ? Integer.MAX_VALUE : maxStoredItems - storedAmount;
-            int canStore = 0;
+            long free = isVoiding ? Long.MAX_VALUE : maxStoredItems - storedAmount;
+            long canStore = 0;
             if ((inner().isEmpty() || ItemHandlerHelper.canItemStacksStack(inner(), stack)) &&
                     storage.getFilter().test(stack)) {
                 canStore = Math.min(stack.getCount(), free);
@@ -439,24 +439,24 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             if (!simulate && canStore > 0) {
                 if (inner().isEmpty()) setStackInSlot(0, stack.copyWithCount(1));
                 storedAmount = Math.min(maxStoredItems, storedAmount + canStore);
-                storage.onContentsChanged(0);
+                onContentsChanged();
             }
             if (canStore == stack.getCount()) return ItemStack.EMPTY;
-            return stack.copyWithCount(stack.getCount() - canStore);
+            return stack.copyWithCount((int) (stack.getCount() - canStore));
         }
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
             var stored = inner().copy();
             if (stored.isEmpty()) return ItemStack.EMPTY;
-            int toExtract = Math.min(storedAmount, amount);
+            long toExtract = Math.min(storedAmount, amount);
             if (!simulate && toExtract > 0) {
                 storedAmount -= toExtract;
                 if (storedAmount == 0) setStackInSlot(0, ItemStack.EMPTY);
-                storage.onContentsChanged(0);
+                onContentsChanged();
             }
             if (toExtract == 0) return ItemStack.EMPTY;
-            return stored.copyWithCount(toExtract);
+            return stored.copyWithCount((int) toExtract);
         }
     }
 }

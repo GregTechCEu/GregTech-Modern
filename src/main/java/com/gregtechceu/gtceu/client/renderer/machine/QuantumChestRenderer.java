@@ -66,7 +66,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
             // Don't need to handle locked items here since they don't get saved to the item
             renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY,
@@ -93,7 +93,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
     @OnlyIn(Dist.CLIENT)
     public void renderChest(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, ItemStack stored,
-                            int storedAmount,
+                            long storedAmount,
                             float tick, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
