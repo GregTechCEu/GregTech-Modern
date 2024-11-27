@@ -189,7 +189,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return toolTypes.contains(GTToolType.CROWBAR) ||
-                (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover);
+                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover);
     }
 
     @Override
@@ -198,7 +198,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GuiTextures.TOOL_REMOVE_COVER;
         }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover) {
+        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;

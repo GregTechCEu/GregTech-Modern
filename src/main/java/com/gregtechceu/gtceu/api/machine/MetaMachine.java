@@ -323,6 +323,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
+        if (toolType.isEmpty() && playerIn.isShiftKeyDown()) {
+            if (coverBehavior != null) {
+                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            }
+        }
         if (toolType.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));

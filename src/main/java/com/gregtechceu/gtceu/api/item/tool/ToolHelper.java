@@ -240,7 +240,7 @@ public class ToolHelper {
     }
 
     public static void playToolSound(GTToolType toolType, ServerPlayer player) {
-        if (toolType.soundEntry != null) {
+        if (toolType != null && toolType.soundEntry != null) {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
     }

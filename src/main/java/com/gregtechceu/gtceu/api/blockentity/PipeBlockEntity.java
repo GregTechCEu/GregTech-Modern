@@ -379,6 +379,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
+        if (toolTypes.isEmpty() && playerIn.isShiftKeyDown()) {
+            if (coverBehavior != null) {
+                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            }
+        }
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));

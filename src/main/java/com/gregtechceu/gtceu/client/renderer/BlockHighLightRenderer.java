@@ -65,7 +65,7 @@ public class BlockHighLightRenderer {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight
-            if (!toolType.isEmpty()) {
+            if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
                 IToolGridHighLight gridHighLight = null;
                 if (blockEntity instanceof IToolGridHighLight highLight) {
                     gridHighLight = highLight;
