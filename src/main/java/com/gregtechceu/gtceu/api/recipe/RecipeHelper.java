@@ -62,7 +62,7 @@ public class RecipeHelper {
         long EUt = getInputEUt(recipe);
         if (EUt == 0) EUt = getOutputEUt(recipe);
         if (recipe.parallels > 1) EUt /= recipe.parallels;
-        EUt >>= (recipe.ocTier * 2);
+        EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
     }
 

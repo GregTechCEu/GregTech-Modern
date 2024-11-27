@@ -100,7 +100,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent())
-                .addOutputLines(recipeLogic.getLastRecipe(), this.getChanceTier());
+                .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
     }

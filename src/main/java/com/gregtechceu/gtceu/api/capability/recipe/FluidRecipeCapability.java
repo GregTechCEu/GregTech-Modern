@@ -332,7 +332,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @NotNull GTRecipeType recipeType,
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage, int tier, int minTier) {
+                                @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
             if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
                 tank.setFluidTank(fluidHandler, index);
@@ -343,8 +343,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickFilled(!isXEI);
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (content != null) {
-                float chance = (float) recipeType.getChanceFunction().getBoostedChance(content, minTier, tier) /
-                        content.maxChance;
+                float chance = (float) recipeType.getChanceFunction()
+                        .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
                 tank.setXEIChance(chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
@@ -357,12 +357,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     }
 
                     GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
-                            minTier, recipeType.getChanceFunction());
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
+                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
+                if (io == IO.IN && (content.chance == 0)) {
+                    tank.setIngredientIO(IngredientIO.CATALYST);
+                }
             }
         }
     }

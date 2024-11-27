@@ -499,7 +499,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 @NotNull GTRecipeType recipeType,
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage, int tier, int minTier) {
+                                @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof SlotWidget slot) {
             if (storage instanceof IItemHandlerModifiable items) {
                 if (index >= 0 && index < items.getSlots()) {
@@ -533,13 +533,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             }
             if (content != null) {
-                float chance = (float) recipeType.getChanceFunction().getBoostedChance(content, minTier, tier) /
-                        content.maxChance;
+                float chance = (float) recipeType.getChanceFunction()
+                        .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
                 slot.setXEIChance(chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
-                            minTier, recipeType.getChanceFunction());
+                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
+                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     //@formatter:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
