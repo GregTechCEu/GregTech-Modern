@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.compat;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -20,7 +21,7 @@ public class FeCompat {
      * @return fe
      */
     public static int toFe(long eu, int ratio) {
-        return (int) toFeLong(eu, ratio);
+        return GTMath.saturatedCast(toFeLong(eu, ratio));
     }
 
     /**

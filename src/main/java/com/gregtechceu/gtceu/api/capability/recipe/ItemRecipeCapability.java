@@ -533,15 +533,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             }
             if (content != null) {
-                float chanceFloat = (float) content.chance / content.maxChance;
-                float chanceAtTierFloat = Math
-                        .min(chanceFloat + (((float) content.tierChanceBoost / (float) content.maxChance)) *
-                                Math.max(0, tier - minTier), 1.0f);
-                slot.setXEIChance(chanceAtTierFloat);
+                float chance = (float) recipeType.getChanceFunction().getBoostedChance(content, minTier, tier) /
+                        content.maxChance;
+                slot.setXEIChance(chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)), tooltips, tier,
-                            minTier);
+                            minTier, recipeType.getChanceFunction());
                     //@formatter:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();

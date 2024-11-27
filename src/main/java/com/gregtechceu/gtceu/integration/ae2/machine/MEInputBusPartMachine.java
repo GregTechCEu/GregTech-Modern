@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -90,10 +91,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine
                 long inserted = networkInv.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE,
                         this.actionSource);
                 if (inserted > 0) {
-                    aeSlot.extractItem(0, (int) inserted, false);
+                    aeSlot.extractItem(0, GTMath.saturatedCast(inserted), false);
                     continue;
                 } else {
-                    aeSlot.extractItem(0, (int) total, false);
+                    aeSlot.extractItem(0, GTMath.saturatedCast(total), false);
                 }
             }
             // Fill it

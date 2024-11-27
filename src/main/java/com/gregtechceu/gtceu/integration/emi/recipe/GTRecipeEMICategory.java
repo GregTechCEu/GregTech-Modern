@@ -19,6 +19,7 @@ import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -48,7 +49,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             var type = category.getRecipeType();
             if (type == GTRecipeTypes.FURNACE_RECIPES) continue;
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getCategoryMap().get(category).stream();
+            var recipes = type.getCategoryMap().getOrDefault(category, Set.of()).stream();
             Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(recipe -> new GTEmiRecipe(CATEGORIES.apply(category), recipe))
                     .forEach(registry::addRecipe);

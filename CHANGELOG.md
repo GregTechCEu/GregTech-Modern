@@ -1,5 +1,53 @@
 # ChangeLog
 
+## Version [v1.5.4](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.3-1.20.1...v1.5.4-1.20.1)
+### Added
+
+- Make large miners mine upside down by @Echoloquate in [#2350](https://github.com/GregTechCEu/GregTech-Modern/pull/2350)
+- Adds 2 more tiers of fishers with a toggle button to remove the junk items for double the string cost. by @Echoloquate in [#2359](https://github.com/GregTechCEu/GregTech-Modern/pull/2359)
+- Add ghost circuit slot scroll input by @omergunr100 in [#2373](https://github.com/GregTechCEu/GregTech-Modern/pull/2373)
+- Readd Frame Box Climbing by @YoungOnionMC in [#2385](https://github.com/GregTechCEu/GregTech-Modern/pull/2385)
+- Adds the ability to get prospection data when you break a surface rock. by @YoungOnionMC in [#2388](https://github.com/GregTechCEu/GregTech-Modern/pull/2388)
+- Add Steam Boiler Heat Status Jade Tooltip by @omergunr100 in [#2394](https://github.com/GregTechCEu/GregTech-Modern/pull/2394)
+- Filter Cover Directionality by @YoungOnionMC in [#2343](https://github.com/GregTechCEu/GregTech-Modern/pull/2343)
+- Add Machine Pausing to specialized RecipeLogic classes by @YoungOnionMC in [#2390](https://github.com/GregTechCEu/GregTech-Modern/pull/2390)
+- add time to deletion to electric tool tooltips by @Spicierspace153 in [#2397](https://github.com/GregTechCEu/GregTech-Modern/pull/2397)
+- Add more information to energy hatch tooltips by @YoungOnionMC in [#2434](https://github.com/GregTechCEu/GregTech-Modern/pull/2434)
+- Add Maceration Recipe for Chiseled Bookshelf by @Spicierspace153 in [#2401](https://github.com/GregTechCEu/GregTech-Modern/pull/2401)
+
+### Fixed
+
+- Fix battery timer by @Spicierspace153 in [#2378](https://github.com/GregTechCEu/GregTech-Modern/pull/2378)
+- Fixed ULV -> LV Showing a boosted chance for byproducts by @Echoloquate in [#2380](https://github.com/GregTechCEu/GregTech-Modern/pull/2380)
+- adds a mallet tooltip to properly describe the shift-right click mallet pausing behavior by @Spicierspace153 in [#2381](https://github.com/GregTechCEu/GregTech-Modern/pull/2381)
+- Fixes Missing Drum fill sound by @Spicierspace153 in [#2383](https://github.com/GregTechCEu/GregTech-Modern/pull/2383)
+- Refactored config for machines exploding in weather  by @Echoloquate in [#2384](https://github.com/GregTechCEu/GregTech-Modern/pull/2384)
+- Remove Distinct functionality from Output Parts by @YoungOnionMC in [#2386](https://github.com/GregTechCEu/GregTech-Modern/pull/2386)
+- Limit Battery Slot Capacity by @Spicierspace153 in [#2392](https://github.com/GregTechCEu/GregTech-Modern/pull/2392)
+- tungstensteel boiler int overflow error fix by @Spicierspace153 in [#2400](https://github.com/GregTechCEu/GregTech-Modern/pull/2400)
+- Fix Machine Disabled Top Tooltip by @omergunr100 in [#2408](https://github.com/GregTechCEu/GregTech-Modern/pull/2408)
+- Added config lang entry for jade steam boiler info provider by @omergunr100 in [#2417](https://github.com/GregTechCEu/GregTech-Modern/pull/2417)
+- Fix NVGs giving infinite effect by @YoungOnionMC in [#2391](https://github.com/GregTechCEu/GregTech-Modern/pull/2391)
+- Fix Item Tag Filter Null Pointer Exception by @Spicierspace153 in [#2402](https://github.com/GregTechCEu/GregTech-Modern/pull/2402)
+- Fix recipe category NPE by @cyb0124 in [#2403](https://github.com/GregTechCEu/GregTech-Modern/pull/2403)
+- Fixed large numbers to not be localized by java. by @iouter in [#2406](https://github.com/GregTechCEu/GregTech-Modern/pull/2406)
+- Fixes circuit duplication glitch caused by #2373 by @omergunr100 in [#2407](https://github.com/GregTechCEu/GregTech-Modern/pull/2407)
+- Fix Tank widgets by @krossgg in [#2409](https://github.com/GregTechCEu/GregTech-Modern/pull/2409)
+- Fix recipe fluid stack output crashing top users by @omergunr100 in [#2421](https://github.com/GregTechCEu/GregTech-Modern/pull/2421)
+- Fix environmental hazard tooltips showing when they're disabled by @omergunr100 in [#2427](https://github.com/GregTechCEu/GregTech-Modern/pull/2427)
+- Fix chance logic not adjusting the roll chance in small parallel situations by @krossgg in [#2429](https://github.com/GregTechCEu/GregTech-Modern/pull/2429)
+- Change potential bad casts to be saturated and remove redundant casts by @krossgg in [#2433](https://github.com/GregTechCEu/GregTech-Modern/pull/2433)
+
+### Changed
+
+- Remove ability to machine magnetized materials into magnetic parts by @YoungOnionMC in [#2355](https://github.com/GregTechCEu/GregTech-Modern/pull/2355)
+- rename converter configs back to euToFE from euToPlatformNative by @screret in [#2387](https://github.com/GregTechCEu/GregTech-Modern/pull/2387)
+- Change ore block to raw ore in xei viewers and adds ore processing to the uses of raw ore by @Spicierspace153 in [#2396](https://github.com/GregTechCEu/GregTech-Modern/pull/2396)
+- Rework OverlayedFluidHandler to fix Fluid Parallel Limiting by @krossgg in [#2423](https://github.com/GregTechCEu/GregTech-Modern/pull/2423)
+- Allow absolute-zero fluids by @a-a-GiTHuB-a-a in [#2430](https://github.com/GregTechCEu/GregTech-Modern/pull/2430)
+- Rework Fluid slot behaviour by @Natanaelel in [#2422](https://github.com/GregTechCEu/GregTech-Modern/pull/2422)
+
+ 
 ## Version [v1.5.3](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.2-1.20.1...v1.5.3-1.20.1)
 ### Fixed
 
