@@ -604,14 +604,18 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
+    public static final MachineDefinition CREATIVE_FLUID = REGISTRATE
+            .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltips(CREATIVE_TOOLTIPS)
             .tooltipBuilder((stack, list) -> {
                 if (stack.hasTag()) {
-                    ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+                    FluidStack f = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+                    int perCycle = stack.getOrCreateTag().getInt("mBPerCycle");
+                    list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", f.getDisplayName(),
+                            FormattingUtil.formatNumbers(perCycle)));
                 }
             })
+            .tooltips(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -619,6 +623,14 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
+            .tooltipBuilder((stack, list) -> {
+                if (stack.hasTag()) {
+                    ItemStack i = ItemStack.of(stack.getOrCreateTagElement("stored"));
+                    int perCycle = stack.getOrCreateTag().getInt("itemsPerCycle");
+                    list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", i.getHoverName(),
+                            FormattingUtil.formatNumbers(perCycle)));
+                }
+            })
             .tooltips(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
             .hasTESR(true)
@@ -666,25 +678,6 @@ public class GTMachines {
                     .compassNode("super_chest")
                     .register(),
             HIGH_TIERS);
-
-    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName,
-                                                                            @Nullable Material material) {
-        return (stack, list) -> {
-            if (stack.hasTag()) {
-                FluidStack tank = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(nbtName));
-                list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                        FormattingUtil.formatNumbers(tank.getAmount())));
-            }
-
-            var item = stack.getItem();
-            if (item instanceof DrumMachineItem drumItem && material != null) {
-                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                    pipeprops.appendTooltips(list, true, true);
-                }
-            }
-        };
-    }
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
@@ -2746,7 +2739,13 @@ public class GTMachines {
                 .rotationState(RotationState.NONE)
                 .renderer(
                         () -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
-                .tooltipBuilder(createTankTooltips("Fluid", material))
+                .tooltipBuilder((stack, list) -> {
+                    TANK_TOOLTIPS.accept(stack, list);
+                    if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                        FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
+                        pipeprops.appendTooltips(list, true, true);
+                    }
+                })
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
