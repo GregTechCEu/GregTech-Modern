@@ -64,7 +64,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             if (machine instanceof MultiblockControllerMachine) return InteractionResult.PASS;
             if (context.isSecondaryUseActive())
                 return handleCopy(stack, machine);
-            return handlePaste(stack, machine);
+            else if (stack.getOrCreateTag().contains(CONFIG_DATA))
+                return handlePaste(stack, machine);
         }
         if (context.isSecondaryUseActive() && context.getLevel().getBlockState(context.getClickedPos()).isAir()) {
             stack.getOrCreateTag().remove(CONFIG_DATA);
