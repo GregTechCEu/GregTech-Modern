@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
+import com.gregtechceu.gtceu.common.item.tool.behavior.MetaMachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -2501,6 +2502,12 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.ITEMS))
             .onRegister(attach(new TerminalBehavior()))
+            .register();
+    public static ItemEntry<ComponentItem> TOOL_COPY_PASTE = REGISTRATE.item("tool_copy_paste", ComponentItem::create)
+            .lang("Copy Paste Tool")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.ITEMS))
+            .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
             .register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
