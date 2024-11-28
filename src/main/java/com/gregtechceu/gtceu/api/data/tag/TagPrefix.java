@@ -1087,8 +1087,8 @@ public class TagPrefix {
     }
 
     public <T extends IMaterialProperty> void executeHandler(Consumer<FinishedRecipe> provider,
-                                                                PropertyKey<T> propertyKey,
-                                                                MaterialRecipeHandler<T> handler) {
+                                                             PropertyKey<T> propertyKey,
+                                                             MaterialRecipeHandler<T> handler) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) &&
                     !ChemicalHelper.get(this, material).isEmpty()) {
