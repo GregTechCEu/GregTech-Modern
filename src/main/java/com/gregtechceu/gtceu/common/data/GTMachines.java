@@ -585,36 +585,33 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
-    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
-            .add(Component.translatable("gtceu.creative_tooltip.1")
-                    .append(Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
-                    .append(Component.translatable("gtceu.creative_tooltip.3")));
-
-    public static BiConsumer<ItemStack, List<Component>> createCreativeTooltips(boolean share) {
-        return (stack, list) -> {
-            CREATIVE_TOOLTIPS.accept(stack, list);
-            list.add(Component.translatable("gtceu.universal.%s".formatted(share ? "enabled" : "disabled")));
-        };
-    }
+    public static final Component CREATIVE_TOOLTIPS = Component.translatable("gtceu.creative_tooltip.1")
+            .append(Component.translatable("gtceu.creative_tooltip.2")
+                    .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+            .append(Component.translatable("gtceu.creative_tooltip.3"));
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
             .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(CREATIVE_TOOLTIPS)
+            .tooltipBuilder((stack, list) -> {
+                if (stack.hasTag()) {
+                    ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+                }
+            })
             .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -622,7 +619,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -631,7 +628,7 @@ public class GTMachines {
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            long storedAmount = stack.getOrCreateTag().getInt("storedAmount");
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
                     FormattingUtil.formatNumbers(storedAmount)));
         }
@@ -664,7 +661,8 @@ public class GTMachines {
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_total", FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+                            Component.translatable("gtceu.universal.tooltip.item_storage_total",
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_chest")
                     .register(),
             HIGH_TIERS);
@@ -692,14 +690,15 @@ public class GTMachines {
         if (stack.hasTag()) {
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            if(storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getDisplayName(),
                     FormattingUtil.formatNumbers(storedAmount)));
         }
     };
 
     public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
+            (holder, tier) -> new QuantumTankMachine(holder, tier,
+                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
                     .langValue("Super Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -715,7 +714,8 @@ public class GTMachines {
             LOW_TIERS);
 
     public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
+            (holder, tier) -> new QuantumTankMachine(holder, tier,
+                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
                     .langValue("Quantum Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
@@ -724,7 +724,8 @@ public class GTMachines {
                     .hasTESR(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
                     .compassNode("super_tank")
                     .register(),
             HIGH_TIERS);

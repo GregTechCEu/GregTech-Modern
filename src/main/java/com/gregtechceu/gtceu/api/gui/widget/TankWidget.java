@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.transfer.fluid.CycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -382,7 +381,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                         Component.translatable("ldlib.fluid.amount", stack.getAmount(), lastTankCapacity)
                                 .append(" mB"));
             }
-            if(ChemicalHelper.getMaterial(stack.getFluid()) != null) {
+            if (ChemicalHelper.getMaterial(stack.getFluid()) != null) {
                 TooltipsHandler.appendFluidTooltips(stack.getFluid(), stack.getAmount(), tooltips::add, null);
             } else {
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",

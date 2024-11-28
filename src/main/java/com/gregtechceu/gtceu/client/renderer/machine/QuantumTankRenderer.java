@@ -69,9 +69,10 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            if(storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, FluidStack.EMPTY, stack.is(CREATIVE_FLUID_ITEM));
+            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, FluidStack.EMPTY,
+                    stack.is(CREATIVE_FLUID_ITEM));
 
             poseStack.popPose();
         }

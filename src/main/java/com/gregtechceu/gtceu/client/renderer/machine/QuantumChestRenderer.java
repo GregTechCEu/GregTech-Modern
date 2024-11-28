@@ -87,7 +87,7 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             var frontFacing = machine.getFrontFacing();
             float tick = level.getGameTime() + partialTicks;
             renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
-                    machine.getLockedItem().getStackInSlot(0), machine instanceof CreativeChestMachine);
+                    machine.getLockedItem(), machine instanceof CreativeChestMachine);
         }
     }
 
