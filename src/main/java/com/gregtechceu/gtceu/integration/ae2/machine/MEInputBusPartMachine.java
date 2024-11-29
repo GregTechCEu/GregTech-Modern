@@ -188,7 +188,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         }
         tag.putByte("GhostCircuit",
                 (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
-        tag.putBoolean("DistinctBusses", isDistinct());
+        tag.putBoolean("DistinctBuses", isDistinct());
         return tag;
     }
 
@@ -208,8 +208,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         if (tag.contains("GhostCircuit")) {
             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
         }
-        if (tag.contains("DistinctBusses")) {
-            setDistinct(tag.getBoolean("DistinctBusses"));
+        if (tag.contains("DistinctBuses")) {
+            setDistinct(tag.getBoolean("DistinctBuses"));
         }
     }
 }
