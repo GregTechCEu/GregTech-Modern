@@ -108,7 +108,6 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     @Nullable
     protected TickableSubscription autoOutputSubs;
-    private final Predicate<ItemStack> storeFilter = s -> true;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
         super(holder, tier);
