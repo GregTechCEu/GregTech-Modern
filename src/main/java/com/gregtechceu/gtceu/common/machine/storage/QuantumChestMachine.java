@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -107,6 +108,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     @Nullable
     protected TickableSubscription autoOutputSubs;
+    private final Predicate<ItemStack> storeFilter = s -> true;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
         super(holder, tier);
@@ -149,11 +151,16 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
+    public boolean saveBreak() {
+        return !stored.isEmpty();
+    }
+
+    @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
         if (!forDrop) tag.put("lockedItem", lockedItem.serializeNBT());
-        if (!stored.isEmpty()) tag.put("stored", stored.serializeNBT());
-        if (storedAmount > 0) tag.putLong("storedAmount", storedAmount);
+        tag.put("stored", stored.serializeNBT());
+        tag.putLong("storedAmount", storedAmount);
     }
 
     @Override
@@ -333,12 +340,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         var importItems = createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
-                .addWidget(new LabelWidget(8, 18, () -> storedAmount + "").setTextColor(-1).setDropShadow(true))
+                .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
+                        .setTextColor(-1)
+                        .setDropShadow(true))
                 .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
                 .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
-                        .setItemHook(
-                                stack -> stack.copyWithCount((int) Math.min(storedAmount, stack.getMaxStackSize())))
+                        .setItemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
                         .setBackgroundTexture(GuiTextures.SLOT))
                 .addWidget(new ButtonWidget(87, 42, 18, 18,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {

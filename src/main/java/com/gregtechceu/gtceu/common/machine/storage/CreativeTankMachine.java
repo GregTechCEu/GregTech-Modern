@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class CreativeTankMachine extends QuantumTankMachine {
@@ -34,15 +35,17 @@ public class CreativeTankMachine extends QuantumTankMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
             QuantumTankMachine.MANAGED_FIELD_HOLDER);
 
+    @Getter
     @Persisted
     @DropSaved
     private int mBPerCycle = 1000;
+    @Getter
     @Persisted
     @DropSaved
     private int ticksPerCycle = 1;
 
     public CreativeTankMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX, -1);
+        super(holder, GTValues.MAX, 1);
     }
 
     protected FluidCache createCacheFluidHandler(Object... args) {

@@ -136,22 +136,14 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            double amount = ingredient.getAmount();
-            String s;
-            if (amount >= 1_000_000_000) {
-                amount /= 1_000_000_000;
-                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "MB";
-            } else if (amount >= 1_000_000) {
-                amount /= 1_000_000;
-                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "KB";
-            } else if (amount >= 1000) {
-                amount /= 1000;
-                s = FormattingUtil.DECIMAL_FORMAT_1F.format((float) amount) + "B";
-            } else {
-                s = (int) amount + "mB";
-            }
+            int amount = ingredient.getAmount();
             Font fontRenderer = Minecraft.getInstance().font;
-            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
+            String s = FormattingUtil.formatBuckets(amount);
+            if (fontRenderer.width(s) > 32)
+                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
+            if (fontRenderer.width(s) > 32)
+                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
+            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
                     (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
             graphics.pose().popPose();
         }

@@ -7,6 +7,7 @@ import net.minecraft.network.chat.MutableComponent;
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -25,11 +26,9 @@ import static net.minecraft.ChatFormatting.YELLOW;
 public class FormattingUtil {
 
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
-    private static final NumberFormat COMPACT_NUMBER_FORMAT = NumberFormat.getCompactNumberInstance(Locale.ROOT,
-            NumberFormat.Style.SHORT);
-    public static final DecimalFormat DECIMAL_FORMAT_0F = new DecimalFormat("#");
-    public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#.#");
-    public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#.##");
+    public static final DecimalFormat DECIMAL_FORMAT_0F = new DecimalFormat(",###");
+    public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#,##0.#");
+    public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
     public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E00");
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
@@ -176,8 +175,56 @@ public class FormattingUtil {
         return NUMBER_FORMAT.format(number);
     }
 
-    public static String formatCompactNumbers(long number) {
-        return COMPACT_NUMBER_FORMAT.format(number);
+    public static String formatNumberReadable(long number) {
+        return formatNumberReadable(number, false);
+    }
+
+    public static String formatNumberReadable(long number, boolean milli) {
+        return formatNumberReadable(number, milli, DECIMAL_FORMAT_1F, null);
+    }
+
+    public static String formatNumberReadable2F(double number, boolean milli) {
+        return formatNumberReadable(number, milli, DECIMAL_FORMAT_2F, null);
+    }
+
+    /**
+     * Format number in engineering notation with SI prefixes [m, k, M, G, T, P, E, Z]
+     *
+     * @param number Number to format
+     * @param milli  Whether the passed number is already in millis (e.g., mB)
+     * @param fmt    Formatter to use for compacted number
+     * @param unit   Optional unit to append
+     * @return Compacted number with SI prefix
+     */
+    public static String formatNumberReadable(double number, boolean milli, NumberFormat fmt, @Nullable String unit) {
+        StringBuilder sb = new StringBuilder();
+        if (number < 0) {
+            number = -number;
+            sb.append('-');
+        }
+
+        if (milli && number >= 1e3) {
+            milli = false;
+            number /= 1e3;
+        }
+
+        int exp = 0;
+        if (number >= 1e3) {
+            exp = (int) Math.log10(number) / 3;
+            if (exp > 7) exp = 7;
+            if (exp > 0) number /= Math.pow(1e3, exp);
+        }
+
+        sb.append(fmt.format(number));
+        if (exp > 0) sb.append("kMGTPEZ".charAt(exp - 1));
+        else if (milli && number != 0) sb.append('m');
+
+        if (unit != null) sb.append(unit);
+        return sb.toString();
+    }
+
+    public static String formatBuckets(long mB) {
+        return formatNumberReadable(mB, true, DECIMAL_FORMAT_2F, "B");
     }
 
     @NotNull

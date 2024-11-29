@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -84,6 +85,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Persisted
     private boolean isVoiding;
 
+    @Getter
     private final long maxAmount;
     protected final FluidCache cache;
     @DescSynced
@@ -140,11 +142,16 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
+    public boolean saveBreak() {
+        return !stored.isEmpty();
+    }
+
+    @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
         if (!forDrop) tag.put("lockedFluid", lockedFluid.writeToNBT(new CompoundTag()));
-        if (!stored.isEmpty()) tag.put("stored", stored.writeToNBT(new CompoundTag()));
-        if (storedAmount > 0) tag.putLong("storedAmount", storedAmount);
+        tag.put("stored", stored.writeToNBT(new CompoundTag()));
+        tag.putLong("storedAmount", storedAmount);
     }
 
     @Override
@@ -159,6 +166,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
         if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
         else this.storedAmount = tag.getLong("storedAmount");
+        if (storedAmount == 0 && !stored.isEmpty()) this.storedAmount = stored.getAmount();
     }
 
     //////////////////////////////////////
@@ -304,7 +312,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         var group = new WidgetGroup(0, 0, 90, 63);
         group.addWidget(new ImageWidget(4, 4, 82, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
-                .addWidget(new LabelWidget(8, 18, () -> String.valueOf(storedAmount))
+                .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatBuckets(storedAmount))
                         .setTextColor(-1)
                         .setDropShadow(false))
                 .addWidget(new TankWidget(cache, 0, 68, 23, true, true)

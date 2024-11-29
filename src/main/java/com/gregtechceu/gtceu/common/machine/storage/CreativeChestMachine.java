@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class CreativeChestMachine extends QuantumChestMachine {
@@ -31,9 +32,11 @@ public class CreativeChestMachine extends QuantumChestMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class,
             QuantumChestMachine.MANAGED_FIELD_HOLDER);
 
+    @Getter
     @Persisted
     @DropSaved
     private int itemsPerCycle = 1;
+    @Getter
     @Persisted
     @DropSaved
     private int ticksPerCycle = 1;
