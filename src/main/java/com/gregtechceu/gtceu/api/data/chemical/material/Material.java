@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -1177,13 +1178,13 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder cableProperties(long voltage, int amperage, int loss) {
-            cableProperties((int) voltage, amperage, loss, false);
+            cableProperties(voltage, amperage, loss, false);
             return this;
         }
 
         public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
             properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE, new WireProperties((int) voltage, amperage, loss, isSuperCon));
+            properties.setProperty(PropertyKey.WIRE, new WireProperties(voltage, amperage, loss, isSuperCon));
             return this;
         }
 
@@ -1191,7 +1192,7 @@ public class Material implements Comparable<Material> {
                                        int criticalTemperature) {
             properties.ensureSet(PropertyKey.DUST);
             properties.setProperty(PropertyKey.WIRE,
-                    new WireProperties((int) voltage, amperage, loss, isSuperCon, criticalTemperature));
+                    new WireProperties(voltage, amperage, loss, isSuperCon, criticalTemperature));
             return this;
         }
 
@@ -1336,12 +1337,12 @@ public class Material implements Comparable<Material> {
                     colors.set(0, 0xFFFFFF);
                 else {
                     long colorTemp = 0;
-                    int divisor = 0;
+                    long divisor = 0;
                     for (MaterialStack stack : componentList) {
                         colorTemp += stack.material().getMaterialARGB() * stack.amount();
                         divisor += stack.amount();
                     }
-                    colors.set(0, (int) (colorTemp / divisor));
+                    colors.set(0, GTMath.saturatedCast(colorTemp / divisor));
                 }
             }
         }

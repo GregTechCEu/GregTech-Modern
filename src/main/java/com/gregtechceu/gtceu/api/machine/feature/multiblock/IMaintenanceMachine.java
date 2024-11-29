@@ -125,7 +125,7 @@ public interface IMaintenanceMachine extends IMultiPart {
 
     default void causeRandomMaintenanceProblems() {
         setMaintenanceProblems(
-                (byte) (getMaintenanceProblems() & (byte) ~(1 << ((int) (GTValues.RNG.nextFloat() * 5)))));
+                (byte) (getMaintenanceProblems() & (byte) ~(1 << GTValues.RNG.nextInt(6))));
     }
 
     @Override

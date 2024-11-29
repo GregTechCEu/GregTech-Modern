@@ -10,7 +10,8 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
-import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
+import com.gregtechceu.gtceu.common.cover.data.FilterMode;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +50,11 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     @Persisted
     @DescSynced
     @Getter
-    protected ItemFilterMode filterMode = ItemFilterMode.FILTER_INSERT;
+    protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredItemHandlerWrapper itemFilterWrapper;
+    @Setter
+    @Getter
+    protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
 
     public ItemFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -66,7 +71,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         return itemFilter;
     }
 
-    public void setFilterMode(ItemFilterMode filterMode) {
+    public void setFilterMode(FilterMode filterMode) {
         this.filterMode = filterMode;
         coverHolder.markDirty();
     }
@@ -94,11 +99,12 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 120, 85);
-        group.addWidget(new LabelWidget(5, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(7, 61, 18, 18,
-                ItemFilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(getItemFilter().openConfigurator(30, 25));
+        final var group = new WidgetGroup(0, 0, 178, 85);
+        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
+        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
+                FilterMode.VALUES, filterMode, this::setFilterMode));
+        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
+        group.addWidget(getItemFilter().openConfigurator(62, 25));
         return group;
     }
 
@@ -115,18 +121,25 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (filterMode != ItemFilterMode.FILTER_EXTRACT && !getItemFilter().test(stack))
-                return stack;
-            return super.insertItem(slot, stack, simulate);
+            if ((filterMode == FilterMode.FILTER_EXTRACT) && allowFlow == ManualIOMode.UNFILTERED)
+                return super.insertItem(slot, stack, simulate);
+            if (filterMode != FilterMode.FILTER_EXTRACT && getItemFilter().test(stack)) {
+                return super.insertItem(slot, stack, simulate);
+            }
+            return stack;
         }
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
             ItemStack result = super.extractItem(slot, amount, true);
-            if (result.isEmpty() || (filterMode != ItemFilterMode.FILTER_INSERT && !getItemFilter().test(result))) {
-                return ItemStack.EMPTY;
+            if (result.isEmpty() && (filterMode == FilterMode.FILTER_INSERT) && allowFlow == ManualIOMode.UNFILTERED) {
+                return super.extractItem(slot, amount, false);
             }
-            return simulate ? result : super.extractItem(slot, amount, false);
+
+            if (filterMode != FilterMode.FILTER_INSERT && getItemFilter().test(result)) {
+                return super.extractItem(slot, amount, false);
+            }
+            return ItemStack.EMPTY;
         }
     }
 }

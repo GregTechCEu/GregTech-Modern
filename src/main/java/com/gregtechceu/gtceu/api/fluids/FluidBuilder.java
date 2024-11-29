@@ -77,7 +77,7 @@ public class FluidBuilder {
      * @return this;
      */
     public @NotNull FluidBuilder temperature(int temperature) {
-        Preconditions.checkArgument(temperature > 0, "temperature must be > 0");
+        Preconditions.checkArgument(temperature >= 0, "temperature must be >= 0");
         this.temperature = temperature;
         return this;
     }

@@ -259,6 +259,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> conditionalTooltip(Component component, Supplier<Boolean> condition) {
+        return conditionalTooltip(component, condition.get());
+    }
+
+    public MachineBuilder<DEFINITION> conditionalTooltip(Component component, boolean condition) {
+        if (condition)
+            tooltips.add(component);
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
         compassSections(GTCompassSections.PARTS);

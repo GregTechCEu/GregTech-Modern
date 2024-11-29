@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -27,7 +28,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import com.google.common.primitives.Ints;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -85,8 +85,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IData
             // Try to clear the wrong fluid
             GenericStack exceedFluid = aeTank.exceedStack();
             if (exceedFluid != null) {
-                int total = Ints.saturatedCast(exceedFluid.amount());
-                int inserted = Ints
+                int total = GTMath.saturatedCast(exceedFluid.amount());
+                int inserted = GTMath
                         .saturatedCast(networkInv.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
                                 this.actionSource));
                 if (inserted > 0) {
