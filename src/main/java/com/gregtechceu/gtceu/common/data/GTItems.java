@@ -2503,8 +2503,9 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.ITEMS))
             .onRegister(attach(new TerminalBehavior()))
             .register();
-    public static ItemEntry<ComponentItem> TOOL_COPY_PASTE = REGISTRATE.item("tool_copy_paste", ComponentItem::create)
-            .lang("Copy Paste Tool")
+    public static ItemEntry<ComponentItem> MACHINE_MEMORY_CARD = REGISTRATE
+            .item("machine_memory_card", ComponentItem::create)
+            .lang("Machine Memory Card")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.ITEMS))
             .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
