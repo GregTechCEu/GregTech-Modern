@@ -64,6 +64,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         var stack = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown()) {
             stack.setTag(null);
+            return InteractionResultHolder.success(stack);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
