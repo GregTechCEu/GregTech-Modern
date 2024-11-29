@@ -45,6 +45,24 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         return ordinal <= 0 || ordinal > Direction.values().length ? null : Direction.values()[ordinal - 1];
     }
 
+    public static String relativeDirectionString(Direction origFront, Direction origDirection) {
+        if (origFront == origDirection) return "Front";
+        if (Direction.UP == origDirection) return "Top";
+        if (Direction.DOWN == origDirection) return "Down";
+        var face = origFront;
+        int i;
+        for (i = 0; i < 3; i++) {
+            face = face.getClockWise();
+            if (face == origDirection) break;
+        }
+        return switch (i) {
+            case 0 -> "Right";
+            case 1 -> "Back";
+            case 2 -> "Left";
+            default -> "";
+        };
+    }
+
     public static Direction getRelativeDirection(Direction originalFront, Direction currentFacing, Direction face) {
         if ((currentFacing == null || originalFront == null) || (currentFacing == originalFront) ||
                 (face == Direction.UP || face == Direction.DOWN))
@@ -150,26 +168,27 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             if (tag.contains(CONFIG_DATA)) {
                 var data = tag.getCompound(CONFIG_DATA);
                 if (data.contains(ORIGINAL_FRONT)) {
+                    var origFront = intToDirection(data.getInt(ORIGINAL_FRONT));
                     if (data.contains(ITEM_CONFIG)) {
                         var itemData = data.getCompound(ITEM_CONFIG);
                         tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
-                                "§6Item§r", "§e" + intToDirection(itemData.getInt(DIRECTION))));
+                                "§6Item§r",
+                                "§e" + relativeDirectionString(origFront, intToDirection(itemData.getInt(DIRECTION)))));
                         tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
                                 "§6Item§r", (itemData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip",
-                                "§6Item§r",
+                                "behaviour.setting.allow.input.from.output.tooltip", "§6Item§r",
                                 (itemData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
                     }
                     if (data.contains(FLUID_CONFIG)) {
                         var fluidData = data.getCompound(FLUID_CONFIG);
                         tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
-                                "§9Fluid§r", "§e" + intToDirection(fluidData.getInt(DIRECTION))));
+                                "§9Fluid§r", "§e" + relativeDirectionString(origFront,
+                                        intToDirection(fluidData.getInt(DIRECTION)))));
                         tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
                                 "§9Fluid§r", (fluidData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip",
-                                "§9Fluid§r",
+                                "behaviour.setting.allow.input.from.output.tooltip", "§9Fluid§r",
                                 (fluidData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
                     }
                 }
