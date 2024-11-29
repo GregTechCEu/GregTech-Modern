@@ -56,6 +56,15 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     }
 
     @Override
+    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+        var stack = player.getItemInHand(usedHand);
+        if (player.isShiftKeyDown()) {
+            stack.setTag(null);
+        }
+        return IInteractionItem.super.use(item, level, player, usedHand);
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
             if (blockEntity.getOwner() != null && !blockEntity.getOwner().isPlayerInTeam(context.getPlayer()))
