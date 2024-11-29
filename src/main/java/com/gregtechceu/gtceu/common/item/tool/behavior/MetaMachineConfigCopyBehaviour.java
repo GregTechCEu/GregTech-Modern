@@ -127,5 +127,43 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                                 TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("behaviour.meta.machine.config.copy.tooltip"));
         tooltipComponents.add(Component.translatable("behaviour.meta.machine.config.paste.tooltip"));
+        if (!stack.hasTag()) return;
+        if (Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.literal(""));
+            var tag = stack.getOrCreateTag();
+            if (tag.contains(CONFIG_DATA)) {
+                var data = tag.getCompound(CONFIG_DATA);
+                if (data.contains(ORIGINAL_FRONT)) {
+                    if (data.contains(ITEM_CONFIG)) {
+                        var itemData = data.getCompound(ITEM_CONFIG);
+                        tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
+                                "§6Item§r", "§e" + intToDirection(itemData.getInt(DIRECTION))));
+                        tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
+                                "§6Item§r", (itemData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
+                        tooltipComponents.add(Component.translatable(
+                                "behaviour.setting.allow.input.from.output.tooltip",
+                                "§6Item§r",
+                                (itemData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
+                    }
+                    if (data.contains(FLUID_CONFIG)) {
+                        var fluidData = data.getCompound(FLUID_CONFIG);
+                        tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
+                                "§9Fluid§r", "§e" + intToDirection(fluidData.getInt(DIRECTION))));
+                        tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
+                                "§9Fluid§r", (fluidData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
+                        tooltipComponents.add(Component.translatable(
+                                "behaviour.setting.allow.input.from.output.tooltip",
+                                "§9Fluid§r",
+                                (fluidData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
+                    }
+                }
+                if (data.contains(MUFFLED)) {
+                    tooltipComponents.add(Component.translatable("behaviour.setting.muffled.tooltip",
+                            (data.getBoolean(MUFFLED) ? "§aenabled§r" : "§4disabled§r")));
+                }
+            }
+        } else {
+            tooltipComponents.add(Component.translatable("item.toggle.advanced.info.tooltip"));
+        }
     }
 }
