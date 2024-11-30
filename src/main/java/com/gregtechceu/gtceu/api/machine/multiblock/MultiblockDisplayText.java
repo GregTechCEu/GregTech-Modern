@@ -566,5 +566,14 @@ public class MultiblockDisplayText {
             customConsumer.accept(textList);
             return this;
         }
+
+        /*
+         * Add a line specifying the current EU/t
+         */
+        public Builder addCurrentEnergyProductionLine(long euOutput) {
+            textList.add(Component.translatable("gtceu.multiblock.turbine.energy_per_tick_maxed",
+                    FormattingUtil.formatNumbers(euOutput)).withStyle(ChatFormatting.GRAY));
+            return this;
+        }
     }
 }
