@@ -585,22 +585,23 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
-    public static final Component CREATIVE_TOOLTIPS = Component.translatable("gtceu.creative_tooltip.1")
-            .append(Component.translatable("gtceu.creative_tooltip.2")
-                    .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
-            .append(Component.translatable("gtceu.creative_tooltip.3"));
+    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(1,
+            Component.translatable("gtceu.creative_tooltip.1")
+                    .append(Component.translatable("gtceu.creative_tooltip.2")
+                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+                    .append(Component.translatable("gtceu.creative_tooltip.3")));
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltips(CREATIVE_TOOLTIPS)
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
 
     public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
             .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
             .rotationState(RotationState.NONE)
-            .tooltips(CREATIVE_TOOLTIPS)
+            .tooltipBuilder(CREATIVE_TOOLTIPS)
             .compassNodeSelf()
             .register();
 
@@ -608,6 +609,7 @@ public class GTMachines {
             .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
             .tooltipBuilder((stack, list) -> {
+                CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
                     FluidStack f = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
                     int perCycle = stack.getOrCreateTag().getInt("mBPerCycle");
@@ -615,7 +617,6 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .tooltips(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -624,6 +625,7 @@ public class GTMachines {
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
             .tooltipBuilder((stack, list) -> {
+                CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
                     ItemStack i = ItemStack.of(stack.getOrCreateTagElement("stored"));
                     int perCycle = stack.getOrCreateTag().getInt("itemsPerCycle");
@@ -631,7 +633,6 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .tooltips(CREATIVE_TOOLTIPS)
             .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
             .hasTESR(true)
             .compassNodeSelf()
@@ -681,7 +682,8 @@ public class GTMachines {
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
-            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+            String key = stack.getTag().contains("stored") ? "stored" : "Fluid";
+            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getDisplayName(),
@@ -2743,7 +2745,7 @@ public class GTMachines {
                     TANK_TOOLTIPS.accept(stack, list);
                     if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
                         FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                        pipeprops.appendTooltips(list, true, true);
+                        pipeprops.appendTooltips(list, false, true);
                     }
                 })
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
