@@ -403,8 +403,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
                     builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
                 }
-                if(gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
-                    builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
+                if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
+                    builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
+                            .get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
                 }
                 builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 
@@ -445,16 +446,16 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
 
-                if(gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS) != null) {
+                if (gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS) != null) {
                     builder.inputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS));
                 }
-                if(gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS) != null) {
+                if (gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS) != null) {
                     builder.outputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS));
                 }
-                if(gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS) != null) {
+                if (gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS) != null) {
                     builder.tickInputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS));
                 }
-                if(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
+                if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
                     builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
                 }
 

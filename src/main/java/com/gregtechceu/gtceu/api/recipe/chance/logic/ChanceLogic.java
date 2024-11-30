@@ -94,7 +94,7 @@ public abstract class ChanceLogic {
                     if (passesChance(chance, entry.maxChance)) newChance -= entry.maxChance;
                     else failed = true;
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
-                    if(failed) break;
+                    if (failed) break;
                 }
                 if (!failed) builder.addAll(chancedEntries);
             }
