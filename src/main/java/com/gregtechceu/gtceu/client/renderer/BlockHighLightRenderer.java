@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
@@ -66,15 +66,15 @@ public class BlockHighLightRenderer {
 
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
-                IToolGridHighLight gridHighLight = null;
-                if (blockEntity instanceof IToolGridHighLight highLight) {
+                IToolGridHighlight gridHighLight = null;
+                if (blockEntity instanceof IToolGridHighlight highLight) {
                     gridHighLight = highLight;
-                } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighLight highLight) {
+                } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighlight highLight) {
                     gridHighLight = highLight;
                 } else if (toolType.contains(GTToolType.WRENCH)) {
                     var behavior = CustomBlockRotations.getCustomRotation(level.getBlockState(blockPos).getBlock());
                     if (behavior != null && behavior.showGrid()) {
-                        gridHighLight = new IToolGridHighLight() {
+                        gridHighLight = new IToolGridHighlight() {
 
                             @Override
                             public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
@@ -95,7 +95,7 @@ public class BlockHighLightRenderer {
                 if (gridHighLight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     var buffer = multiBufferSource.getBuffer(RenderType.lines());
                     RenderSystem.lineWidth(3);
-                    final IToolGridHighLight finalGridHighLight = gridHighLight;
+                    final IToolGridHighlight finalGridHighLight = gridHighLight;
                     drawGridOverlays(poseStack, buffer, target,
                             side -> finalGridHighLight.sideTips(player, blockPos, state, toolType, side));
                 } else {
