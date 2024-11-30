@@ -884,6 +884,7 @@ public class GTBlocks {
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createCoilModel("%s_coil_block".formatted(coilType.getName()), coilType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                .tag(CustomTags.GTM_COILS)
                 .item(BlockItem::new)
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
