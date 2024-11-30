@@ -91,9 +91,10 @@ public abstract class ChanceLogic {
                     int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
                     int chance = newChance + cached;
-                    if (!passesChance(chance, entry.maxChance)) failed = true;
+                    if (passesChance(chance, entry.maxChance)) newChance -= entry.maxChance;
+                    else failed = true;
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
-                    if (failed) break;
+                    if(failed) break;
                 }
                 if (!failed) builder.addAll(chancedEntries);
             }
@@ -128,7 +129,10 @@ public abstract class ChanceLogic {
                     int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
                     int chance = newChance + cached;
-                    if (passesChance(chance, entry.maxChance)) selected = entry;
+                    if (passesChance(chance, entry.maxChance)) {
+                        selected = entry;
+                        newChance -= entry.maxChance;
+                    }
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
                     if (selected != null) break;
                 }
