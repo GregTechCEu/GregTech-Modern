@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -45,10 +46,16 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
         return ordinal <= 0 || ordinal > Direction.values().length ? null : Direction.values()[ordinal - 1];
     }
 
-    public static String relativeDirectionString(Direction origFront, Direction origDirection) {
-        if (origFront == origDirection) return "Front";
-        if (Direction.UP == origDirection) return "Top";
-        if (Direction.DOWN == origDirection) return "Down";
+    public static Component relativeDirectionComponent(Direction origFront, Direction origDirection) {
+        if (origFront == origDirection) {
+            return Component.translatable("gtceu.direction.tooltip.front").withStyle(ChatFormatting.YELLOW);
+        }
+        if (Direction.UP == origDirection) {
+            return Component.translatable("gtceu.direction.tooltip.up").withStyle(ChatFormatting.YELLOW);
+        }
+        if (Direction.DOWN == origDirection) {
+            return Component.translatable("gtceu.direction.tooltip.down").withStyle(ChatFormatting.YELLOW);
+        }
         var face = origFront;
         int i;
         for (i = 0; i < 3; i++) {
@@ -56,10 +63,10 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             if (face == origDirection) break;
         }
         return switch (i) {
-            case 0 -> "Right";
-            case 1 -> "Back";
-            case 2 -> "Left";
-            default -> "";
+            case 0 -> Component.translatable("gtceu.direction.tooltip.right").withStyle(ChatFormatting.YELLOW);
+            case 1 -> Component.translatable("gtceu.direction.tooltip.back").withStyle(ChatFormatting.YELLOW);
+            case 2 -> Component.translatable("gtceu.direction.tooltip.left").withStyle(ChatFormatting.YELLOW);
+            default -> Component.literal("");
         };
     }
 
@@ -167,34 +174,44 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
             var tag = stack.getOrCreateTag();
             if (tag.contains(CONFIG_DATA)) {
                 var data = tag.getCompound(CONFIG_DATA);
+                var enabledComponent = Component.translatable("cover.voiding.label.enabled")
+                        .withStyle(ChatFormatting.GREEN);
+                var disabledComponent = Component.translatable("cover.voiding.label.disabled")
+                        .withStyle(ChatFormatting.RED);
                 if (data.contains(ORIGINAL_FRONT)) {
                     var origFront = intToDirection(data.getInt(ORIGINAL_FRONT));
                     if (data.contains(ITEM_CONFIG)) {
                         var itemData = data.getCompound(ITEM_CONFIG);
+                        var itemComponent = Component.translatable("recipe.capability.item.name")
+                                .withStyle(ChatFormatting.GOLD);
                         tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
-                                "§6Item§r",
-                                "§e" + relativeDirectionString(origFront, intToDirection(itemData.getInt(DIRECTION)))));
-                        tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
-                                "§6Item§r", (itemData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
+                                itemComponent,
+                                relativeDirectionComponent(origFront, intToDirection(itemData.getInt(DIRECTION)))));
+                        tooltipComponents
+                                .add(Component.translatable("behaviour.setting.item_auto_output.tooltip", itemComponent,
+                                        (itemData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip", "§6Item§r",
-                                (itemData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
+                                "behaviour.setting.allow.input.from.output.tooltip", itemComponent,
+                                (itemData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? enabledComponent : disabledComponent)));
                     }
                     if (data.contains(FLUID_CONFIG)) {
                         var fluidData = data.getCompound(FLUID_CONFIG);
+                        var fluidComponent = Component.translatable("recipe.capability.fluid.name")
+                                .withStyle(ChatFormatting.BLUE);
                         tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
-                                "§9Fluid§r", "§e" + relativeDirectionString(origFront,
-                                        intToDirection(fluidData.getInt(DIRECTION)))));
-                        tooltipComponents.add(Component.translatable("behaviour.setting.item_auto_output.tooltip",
-                                "§9Fluid§r", (fluidData.getBoolean(AUTO) ? "§aenabled§r" : "§4disabled§r")));
+                                fluidComponent,
+                                relativeDirectionComponent(origFront, intToDirection(fluidData.getInt(DIRECTION)))));
+                        tooltipComponents.add(
+                                Component.translatable("behaviour.setting.item_auto_output.tooltip", fluidComponent,
+                                        (fluidData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip", "§9Fluid§r",
-                                (fluidData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? "§aenabled§r" : "§4disabled§r")));
+                                "behaviour.setting.allow.input.from.output.tooltip", fluidComponent,
+                                (fluidData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? enabledComponent : disabledComponent)));
                     }
                 }
                 if (data.contains(MUFFLED)) {
                     tooltipComponents.add(Component.translatable("behaviour.setting.muffled.tooltip",
-                            (data.getBoolean(MUFFLED) ? "§aenabled§r" : "§4disabled§r")));
+                            data.getBoolean(MUFFLED) ? enabledComponent : disabledComponent));
                 }
             }
         } else {
