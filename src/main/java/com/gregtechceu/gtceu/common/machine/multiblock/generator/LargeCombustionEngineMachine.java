@@ -193,15 +193,20 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
         }
 
-        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration())
-                .addCustom(tl -> {
-                    if (isFormed() && isOxygenBoosted) {
-                        String key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                                "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
-                        tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA));
-                    }
-                })
-                .addWorkingStatusLine();
+        if (isActive() && isWorkingEnabled()) {
+            builder.addCurrentEnergyProductionLine(
+                    recipeLogic.getLastRecipe() != null ? RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0);
+        }
+
+        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
+
+        if (isFormed && isOxygenBoosted) {
+            final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+                    "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
+            builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
+        }
+
+        builder.addWorkingStatusLine();
     }
 
     @Nullable

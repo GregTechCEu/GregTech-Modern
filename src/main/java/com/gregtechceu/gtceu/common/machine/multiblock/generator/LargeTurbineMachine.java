@@ -156,7 +156,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                         rotorHolder.getTotalEfficiency()));
 
                 long maxProduction = getOverclockVoltage();
-                long currentProduction = isActive() ? boostProduction(maxProduction) : 0;
+                long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
+                        RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0;
                 String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
 
                 if (isActive()) {
