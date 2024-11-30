@@ -1384,7 +1384,7 @@ public class GTMachines {
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.or(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
-                        .where('C', blocks(COIL_CUPRONICKEL.get()).setExactLimit(1)
+                        .where('C', Predicates.heatingCoils().setExactLimit(1)
                                 .or(abilities)
                                 .or(casing))
                         .build();
