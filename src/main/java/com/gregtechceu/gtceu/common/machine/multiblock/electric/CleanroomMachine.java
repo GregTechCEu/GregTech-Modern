@@ -284,9 +284,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                 @NotNull Direction direction) {
         var state = world.getBlockState(pos.move(direction));
-        return state == GTBlocks.PLASTCRETE.getDefaultState() ||
-                state == GTBlocks.CLEANROOM_GLASS.getDefaultState() ||
-                state.is(CustomTags.CLEANROOM_FLOORS);
+        return state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
