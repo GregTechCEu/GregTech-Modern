@@ -37,7 +37,7 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe instanceof GTEmiRecipe;
+        return recipe instanceof GTEmiRecipe | recipe instanceof MultiblockInfoEmiRecipe;
     }
 
     @Override
