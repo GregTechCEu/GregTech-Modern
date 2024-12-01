@@ -140,6 +140,11 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     }
 
     @Override
+    public boolean saveBreak() {
+        return isTaped;
+    }
+
+    @Override
     public void onMachineRemoved() {
         if (!isTaped) clearInventory(inventory.storage);
     }

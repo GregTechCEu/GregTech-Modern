@@ -728,6 +728,13 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
+        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
+        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
+        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
+        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
+        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
+        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
+        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
@@ -1360,6 +1367,13 @@ public class LangHandler {
 
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
         provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
+
+        provider.add("gtceu.direction.tooltip.up", "Up");
+        provider.add("gtceu.direction.tooltip.down", "Down");
+        provider.add("gtceu.direction.tooltip.left", "Left");
+        provider.add("gtceu.direction.tooltip.right", "Right");
+        provider.add("gtceu.direction.tooltip.back", "Back");
+        provider.add("gtceu.direction.tooltip.front", "Front");
     }
 
     /**

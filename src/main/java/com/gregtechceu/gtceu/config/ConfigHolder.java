@@ -738,6 +738,8 @@ public class ConfigHolder {
         public int animationTime = 300;
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
+        @Configurable
+        public RendererConfigs renderer = new RendererConfigs();
 
         public static class ArmorHud {
 
@@ -776,5 +778,12 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
+    }
+
+    public static class RendererConfigs {
+
+        @Configurable
+        @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
+        public boolean renderFluids = true;
     }
 }

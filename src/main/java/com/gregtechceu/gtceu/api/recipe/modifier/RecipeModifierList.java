@@ -56,7 +56,7 @@ public class RecipeModifierList implements RecipeModifier {
                 modifiedRecipe = ParallelLogic.applyParallel(machine, modifiedRecipe, result.getParallel(), false)
                         .getFirst();
             }
-            modifiedRecipe.ocTier = result.getOcLevel();
+            modifiedRecipe.ocLevel = result.getOcLevel();
         }
         result.reset();
 

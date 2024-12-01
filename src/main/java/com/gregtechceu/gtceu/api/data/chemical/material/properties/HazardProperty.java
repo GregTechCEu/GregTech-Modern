@@ -33,7 +33,7 @@ import java.util.*;
  * @date 2024/2/12
  * @implNote HazardProperty
  */
-public class HazardProperty implements IMaterialProperty<HazardProperty> {
+public class HazardProperty implements IMaterialProperty {
 
     public final MedicalCondition condition;
     public final HazardTrigger hazardTrigger;

@@ -672,7 +672,7 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                    FormattingUtil.formatCompactNumbers(data.getLong("eu_to_start")),
+                    FormattingUtil.formatNumberReadable2F(data.getLong("eu_to_start"), false),
                     FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)

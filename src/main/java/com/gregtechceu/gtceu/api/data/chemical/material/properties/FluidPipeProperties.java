@@ -15,7 +15,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.Collection;
 import java.util.Objects;
 
-public class FluidPipeProperties implements IMaterialProperty<FluidPipeProperties>, IPropertyFluidFilter {
+public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFilter {
 
     /**
      * The maximum number of channels any fluid pipe can have

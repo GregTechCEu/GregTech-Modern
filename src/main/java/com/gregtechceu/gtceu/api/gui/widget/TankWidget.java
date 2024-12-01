@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.transfer.fluid.CycleFluidHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -376,14 +376,14 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         var stack = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
         if (stack != null && !stack.isEmpty()) {
             tooltips.add(stack.getDisplayName());
-            if (!isPhantom) {
+            if (!isPhantom && showAmount) {
                 tooltips.add(
                         Component.translatable("ldlib.fluid.amount", stack.getAmount(), lastTankCapacity)
                                 .append(" mB"));
             }
-            if (stack.getFluid() instanceof GTFluid gtFluid)
-                TooltipsHandler.appendFluidTooltips(gtFluid, stack.getAmount(), tooltips::add, null);
-            else {
+            if (ChemicalHelper.getMaterial(stack.getFluid()) != null) {
+                TooltipsHandler.appendFluidTooltips(stack.getFluid(), stack.getAmount(), tooltips::add, null);
+            } else {
                 tooltips.add(Component.translatable("ldlib.fluid.temperature",
                         stack.getFluid().getFluidType().getTemperature(stack)));
                 tooltips.add(Component.translatable(stack.getFluid().getFluidType().isLighterThanAir() ?
@@ -391,7 +391,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             }
         } else {
             tooltips.add(Component.translatable("ldlib.fluid.empty"));
-            if (!isPhantom) {
+            if (!isPhantom && showAmount) {
                 tooltips.add(Component.translatable("ldlib.fluid.amount", 0, lastTankCapacity).append(" mB"));
             }
         }

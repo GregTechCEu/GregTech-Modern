@@ -46,7 +46,12 @@ public class CustomFluidTank extends FluidTank
 
     @Override
     public void setFluidInTank(int tank, FluidStack stack) {
-        this.setFluid(stack);
+        setFluid(stack);
+    }
+
+    @Override
+    public void setFluid(FluidStack stack) {
+        super.setFluid(stack);
         this.onContentsChanged();
     }
 

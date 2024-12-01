@@ -1176,7 +1176,7 @@ public class GTRecipeBuilder {
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory.getRecipeType() != this.recipeType) {
+            } else if (recipeCategory != GTRecipeCategory.EMPTY && recipeCategory.getRecipeType() != recipeType) {
                 GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
                         new IllegalArgumentException());
             }

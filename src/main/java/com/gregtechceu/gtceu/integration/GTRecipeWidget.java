@@ -38,7 +38,6 @@ import net.minecraft.util.Mth;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -64,11 +63,8 @@ public class GTRecipeWidget extends WidgetGroup {
     private final int xOffset;
     private final GTRecipe recipe;
     private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
-    @Getter
     private final int minTier;
-    @Getter
     private int tier;
-    @Getter
     private int yOffset;
     private LabelWidget voltageTextWidget;
 
@@ -180,7 +176,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
                     cd -> setRecipeOC(cd.button, cd.isShiftClick))
                     .setHoverTooltips(
-                            Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[getMinTier()]),
+                            Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[minTier]),
                             Component.translatable("gtceu.oc.tooltip.1"),
                             Component.translatable("gtceu.oc.tooltip.2"),
                             Component.translatable("gtceu.oc.tooltip.3"),
@@ -265,7 +261,7 @@ public class GTRecipeWidget extends WidgetGroup {
         long inputEUt = RecipeHelper.getInputEUt(recipe);
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
-        if (tier > getMinTier() && inputEUt != 0) {
+        if (tier > minTier && inputEUt != 0) {
             OCParams p = new OCParams();
             OCResult r = new OCResult();
             RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier], p, r);
@@ -283,10 +279,10 @@ public class GTRecipeWidget extends WidgetGroup {
         updateScreen();
     }
 
-    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int tier,
-                                         int minTier, ChanceBoostFunction function) {
+    public static void setConsumedChance(Content content, ChanceLogic logic, List<Component> tooltips, int recipeTier,
+                                         int chanceTier, ChanceBoostFunction function) {
         if (content.chance < ChanceLogic.getMaxChancedValue()) {
-            int boostedChance = function.getBoostedChance(content, minTier, tier);
+            int boostedChance = function.getBoostedChance(content, recipeTier, chanceTier);
             if (boostedChance == 0) {
                 tooltips.add(Component.translatable("gtceu.gui.content.chance_nc"));
             } else {
@@ -320,11 +316,11 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     private void setTier(int tier) {
-        this.tier = Mth.clamp(tier, getMinTier(), GTValues.MAX);
+        this.tier = Mth.clamp(tier, minTier, GTValues.MAX);
     }
 
     private void setTierToMin() {
-        setTier(getMinTier());
+        setTier(minTier);
     }
 
     public void collectStorage(Table<IO, RecipeCapability<?>, Object> extraTable,
@@ -392,10 +388,9 @@ public class GTRecipeWidget extends WidgetGroup {
                             if (index >= 0 && index < contents.size()) {
                                 var content = contents.get(index);
                                 cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null, tier, getMinTier());
-                                widget.setOverlay(
-                                        content.createOverlay(index >= nonTickCount, getMinTier(), tier,
-                                                recipe.getType().getChanceFunction()));
+                                        null, minTier, tier);
+                                widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                        recipe.getType().getChanceFunction()));
                             }
                         });
             }

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -24,6 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -65,8 +67,17 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
-            float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
+            var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
+            var sign = up == Direction.UP || up == Direction.EAST || up == Direction.SOUTH ? 1 : -1;
+            var shouldX = up == Direction.EAST || up == Direction.WEST;
+            var shouldY = up == Direction.UP || up == Direction.DOWN;
+            var shouldZ = up == Direction.NORTH || up == Direction.SOUTH;
+            var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
+                    0.1F * GTValues.RNG.nextFloat()) * sign;
+            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
+                    shouldX ? speed : 0,
+                    shouldY ? speed : 0,
+                    shouldZ ? speed : 0);
         }
     }
 
@@ -126,5 +137,14 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
             getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
+    }
+
+    @Override
+    public boolean onWorking() {
+        BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
+        getLevel().getEntities(null,
+                new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
+
+        return super.onWorking();
     }
 }

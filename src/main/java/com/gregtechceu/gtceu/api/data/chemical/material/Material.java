@@ -491,15 +491,15 @@ public class Material implements Comparable<Material> {
         return new MaterialStack(this, amount);
     }
 
-    public <T extends IMaterialProperty<T>> boolean hasProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return getProperty(key) != null;
     }
 
-    public <T extends IMaterialProperty<T>> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
         return properties.getProperty(key);
     }
 
-    public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
         if (!GTCEuAPI.materialManager.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
