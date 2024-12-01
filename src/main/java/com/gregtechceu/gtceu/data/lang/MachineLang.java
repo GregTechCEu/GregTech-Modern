@@ -60,8 +60,8 @@ public class MachineLang {
         // Ones done with more unique tooltips are first /
         ///////////////////////////////////////////////////
 
-        provider.add("gtceu.machine.lv_macerator.tooltip", "§7Shredding your Ores");
-        provider.add("gtceu.machine.mv_macerator.tooltip", "§7Shredding your Ores");
+        provider.add("gtceu.machine.lv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
+        provider.add("gtceu.machine.mv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
         provider.add("gtceu.machine.hv_macerator.tooltip", "§7Shredding your Ores with Byproducts");
         provider.add("gtceu.machine.ev_macerator.tooltip", "§7Shredding your Ores with Byproducts");
         provider.add("gtceu.machine.iv_macerator.tooltip", "§7Blend-O-Matic 9001");
