@@ -76,11 +76,11 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
                     var shouldY = relUp == Direction.UP || relUp == Direction.DOWN;
                     var shouldZ = relUp == Direction.NORTH || relUp == Direction.SOUTH;
                     var speed = ((shouldY ? opposite.getStepY() : shouldX ? opposite.getStepX() : opposite.getStepZ()) *
-                            0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat()) * sign;
+                            0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat()) * sign * 2;
                     pbf.getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
-                            shouldX ? speed * 2 : 0,
-                            shouldY ? speed * 1.5 : 0,
-                            shouldZ ? speed * 2 : 0);
+                            shouldX ? speed : 0,
+                            shouldY ? speed : 0,
+                            shouldZ ? speed : 0);
                 }
 
                 stack.popPose();
