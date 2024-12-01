@@ -2348,7 +2348,8 @@ public class GTMachines {
                                         index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor)
                                                 .intValue() : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
-                        .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, langName))
+                        .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
@@ -2452,7 +2453,8 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
-                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, batterySlotSize, "x Battery Buffer"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                batterySlotSize, "x Battery Buffer"))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                         batterySlotSize),
@@ -2473,7 +2475,8 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new ChargerRenderer(tier))
-                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, itemSlotSize, "x Turbo Charger"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                itemSlotSize, "x Turbo Charger"))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
@@ -2499,9 +2502,9 @@ public class GTMachines {
                                 Component.translatable("gtceu.universal.tooltip.amperage_in", amperage),
                                 Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                         FormattingUtil
-                                                .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
-                                Component.translatable("gtceu.universal.disabled")
-                                )
+                                                .formatNumbers(
+                                                        EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
+                                Component.translatable("gtceu.universal.disabled"))
                         .abilities(ability)
                         .overlayTieredHullRenderer("laser_hatch." + name)
                         .register(),
@@ -2778,7 +2781,8 @@ public class GTMachines {
                 (holder, tier) -> new ConverterMachine(holder, tier, amperage),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET, amperage))
+                        .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
+                                amperage))
                         .renderer(() -> new ConverterRenderer(tier, amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
