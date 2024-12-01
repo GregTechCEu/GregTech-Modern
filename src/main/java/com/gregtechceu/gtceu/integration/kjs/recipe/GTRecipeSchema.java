@@ -136,7 +136,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS recipeCategory(GTRecipeCategory category) {
+        public GTRecipeJS category(GTRecipeCategory category) {
             setValue(CATEGORY, category.registryKey);
             save();
             return this;

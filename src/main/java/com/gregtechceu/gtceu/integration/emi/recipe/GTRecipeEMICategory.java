@@ -65,8 +65,6 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     public static EmiRenderable getDrawable(GTRecipeCategory category) {
         if (category.getIcon() != null) {
             return IGui2Renderable.toDrawable(category.getIcon(), 16, 16);
-//            return new EmiTexture(tex.imageLocation, 0, 0, 16, 16,
-//                    (int) tex.imageWidth, (int) tex.imageHeight, (int) tex.imageWidth, (int) tex.imageHeight);
         } else if (category.getRecipeType().getIconSupplier() != null)
             return EmiStack.of(category.getRecipeType().getIconSupplier().get());
         else

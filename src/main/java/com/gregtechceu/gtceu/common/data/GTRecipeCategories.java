@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraftforge.fml.ModLoader;
 
 public class GTRecipeCategories {
@@ -33,7 +35,14 @@ public class GTRecipeCategories {
 
     public static void init() {
         GTRegistries.RECIPE_CATEGORIES.remove(GTRecipeTypes.FURNACE_RECIPES.getCategory().registryKey);
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
+        }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
         GTRegistries.RECIPE_CATEGORIES.freeze();
+    }
+
+    public static GTRecipeCategory get(String name) {
+        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.appendId(name));
     }
 }

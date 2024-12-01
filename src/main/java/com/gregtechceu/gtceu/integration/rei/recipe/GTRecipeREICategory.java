@@ -44,8 +44,8 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
         var recipeType = category.getRecipeType();
         var size = recipeType.getRecipeUI().getJEISize();
         this.size = new Size(size.width + 8, size.height + 8);
-        if (category.getIcon() instanceof ResourceTexture tex) {
-            icon = IGui2Renderer.toDrawable(tex.getSubTexture(0, 0, 1f/16, 1f/16));
+        if (category.getIcon() != null) {
+            icon = IGui2Renderer.toDrawable(category.getIcon());
         } else if (recipeType.getIconSupplier() != null) {
             icon = IGui2Renderer.toDrawable(new ItemStackTexture(recipeType.getIconSupplier().get()));
         } else {

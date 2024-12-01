@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import mezz.jei.api.constants.RecipeTypes;
@@ -47,11 +48,11 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         var size = recipeType.getRecipeUI().getJEISize();
         this.background = guiHelper.createBlankDrawable(size.width, size.height);
 
-        Object icon1 = category.getIcon();
-        if (icon1 instanceof ResourceTexture tex) {
-            this.icon = helpers.getGuiHelper()
-                    .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
-                    .setTextureSize(16, 16).build();
+        if (category.getIcon() != null) {
+            this.icon = IGui2IDrawable.toDrawable(category.getIcon(), 16, 16);
+//            this.icon = helpers.getGuiHelper()
+//                    .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
+//                    .setTextureSize(16, 16).build();
         } else if (recipeType.getIconSupplier() != null) {
             this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
         } else {

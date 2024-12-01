@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
@@ -112,6 +113,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
 
         GTRegistryInfo.MACHINE.addType("simple", SimpleMachineBuilder.class,
                 (id, args) -> SimpleMachineBuilder.create(id.getPath(), args), true);
@@ -261,6 +263,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
             if (o instanceof GTRecipeType recipeType) return recipeType;
             if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
+            return null;
+        });
+        typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
+            if (o instanceof Wrapper w) {
+                o = w.unwrap();
+            }
+            if(o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
+            if(o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
             return null;
         });
 
