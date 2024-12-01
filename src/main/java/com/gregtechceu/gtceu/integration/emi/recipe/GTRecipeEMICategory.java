@@ -36,21 +36,6 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             .memoize(GTRecipeEMICategory::of);
     private final GTRecipeCategory category;
 
-    private final static MethodHandle setPagesMH;
-
-    static {
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-        MethodHandle mh;
-        try {
-            Method setPages1 = EmiApi.class.getDeclaredMethod("setPages", Map.class, EmiIngredient.class);
-            setPages1.setAccessible(true);
-            mh = lookup.unreflect(setPages1);
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            mh = null;
-        }
-        setPagesMH = mh;
-    }
-
     private GTRecipeEMICategory(GTRecipeCategory category) {
         super(category.registryKey, getDrawable(category), getDrawable(category));
         this.category = category;
@@ -70,29 +55,12 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             return EmiStack.of(Items.BARRIER);
     }
 
-    public static void displayCategories(GTRecipeType type) {
-        if (setPagesMH != null) {
-            try {
-                var man = EmiApi.getRecipeManager();
-                var m = type.categoryStream()
-                        .map(CATEGORIES)
-                        .collect(Collectors.toMap(c -> c, man::getRecipes));
-                setPagesMH.invokeExact(m, (EmiIngredient) EmiStack.EMPTY);
-            } catch (Throwable e) {
-                GTCEu.LOGGER.info("Recipe display issue {}", e.getMessage());
-                EmiApi.displayRecipeCategory(CATEGORIES.apply(type.getCategory()));
-            }
-        } else {
-            EmiApi.displayRecipeCategory(CATEGORIES.apply(type.getCategory()));
-        }
-    }
-
     public static void registerDisplays(EmiRegistry registry) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             var type = category.getRecipeType();
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
-            var recipes = type.getRecipesForCategory(category).stream();
+            var recipes = type.getRecipesInCategory(category).stream();
             Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
@@ -104,7 +72,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.categorySet()) {
+                for (GTRecipeCategory category : type.getCategories()) {
                     registry.addWorkstation(CATEGORIES.apply(category), EmiStack.of(machine.asStack()));
                 }
             }
@@ -114,5 +82,37 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     @Override
     public Component getName() {
         return Component.translatable(category.getLanguageKey());
+    }
+
+    // Hacky way to show multiple recipe categories at once when you click the progress bar in machine UI
+    private final static MethodHandle SET_PAGES_MH;
+    static {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh;
+        try {
+            Method setPages1 = EmiApi.class.getDeclaredMethod("setPages", Map.class, EmiIngredient.class);
+            setPages1.setAccessible(true);
+            mh = lookup.unreflect(setPages1);
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            mh = null;
+        }
+        SET_PAGES_MH = mh;
+    }
+
+    public static void displayCategories(GTRecipeType type) {
+        if (SET_PAGES_MH != null) {
+            try {
+                var man = EmiApi.getRecipeManager();
+                var m = type.getCategories().stream()
+                        .map(CATEGORIES)
+                        .collect(Collectors.toMap(c -> c, man::getRecipes));
+                SET_PAGES_MH.invokeExact(m, (EmiIngredient) EmiStack.EMPTY);
+            } catch (Throwable e) {
+                GTCEu.LOGGER.info("Recipe display issue {}", e.getMessage());
+                EmiApi.displayRecipeCategory(CATEGORIES.apply(type.getCategory()));
+            }
+        } else {
+            EmiApi.displayRecipeCategory(CATEGORIES.apply(type.getCategory()));
+        }
     }
 }

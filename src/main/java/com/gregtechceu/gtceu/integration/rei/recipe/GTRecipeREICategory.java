@@ -84,7 +84,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             var type = category.getRecipeType();
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getRecipesForCategory(category).stream();
+            var recipes = type.getRecipesInCategory(category).stream();
             var identifier = CATEGORIES.apply(category);
             Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(r -> new GTRecipeDisplay(r, identifier))
@@ -97,7 +97,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.categorySet()) {
+                for (GTRecipeCategory category : type.getCategories()) {
                     registry.addWorkstations(CATEGORIES.apply(category), EntryStacks.of(machine.asStack()));
                 }
             }

@@ -44,7 +44,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -352,15 +351,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return Collections.unmodifiableMap(categoryMap);
     }
 
-    public Set<GTRecipeCategory> categorySet() {
+    public Set<GTRecipeCategory> getCategories() {
         return Collections.unmodifiableSet(categoryMap.keySet());
     }
 
-    public Stream<GTRecipeCategory> categoryStream() {
-        return categoryMap.keySet().stream();
-    }
-
-    public Set<GTRecipe> getRecipesForCategory(GTRecipeCategory category) {
+    public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
         return categoryMap().getOrDefault(category, Set.of());
     }
 

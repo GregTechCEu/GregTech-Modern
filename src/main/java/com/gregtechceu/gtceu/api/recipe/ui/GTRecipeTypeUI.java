@@ -248,22 +248,18 @@ public class GTRecipeTypeUI {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
-                                                recipeType.categorySet().stream()
+                                                recipeType.getCategories().stream()
                                                         .map(GTRecipeREICategory.CATEGORIES)
                                                         .collect(Collectors.toList()))
                                                 .open();
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
-                                                recipeType.categoryStream()
+                                                recipeType.getCategories().stream()
                                                         .map(GTRecipeJEICategory.CATEGORIES)
                                                         .collect(Collectors.toList()));
                                     } else if (LDLib.isEmiLoaded()) {
                                         GTRecipeEMICategory.displayCategories(recipeType);
                                         // EmiApi.displayRecipeCategory(GTRecipeEMICategory.CATEGORIES.apply(recipeType.mainCategory));
-                                        // TODO: Figure out how to show multiple categories at once
-                                        // recipeType.categoryStream()
-                                        // .map(GTRecipeEMICategory.CATEGORIES)
-                                        // .forEach(EmiApi::displayRecipeCategory);
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

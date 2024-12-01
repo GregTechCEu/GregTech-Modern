@@ -49,9 +49,6 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
         if (category.getIcon() != null) {
             this.icon = IGui2IDrawable.toDrawable(category.getIcon(), 16, 16);
-            // this.icon = helpers.getGuiHelper()
-            // .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
-            // .setTextureSize(16, 16).build();
         } else if (recipeType.getIconSupplier() != null) {
             this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
         } else {
@@ -81,7 +78,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             var type = category.getRecipeType();
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getRecipesForCategory(category).stream();
+            var recipes = type.getRecipesInCategory(category).stream();
             var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(GTRecipeWrapper::new)
                     .toList();
@@ -95,7 +92,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.categorySet()) {
+                for (GTRecipeCategory category : type.getCategories()) {
                     registration.addRecipeCatalyst(machine.asStack(), CATEGORIES.apply(category));
                 }
             }

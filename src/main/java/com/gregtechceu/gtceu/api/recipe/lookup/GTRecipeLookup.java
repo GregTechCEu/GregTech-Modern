@@ -464,10 +464,7 @@ public class GTRecipeLookup {
         if (recipe == null) {
             return false;
         }
-        // if (recipe.recipeCategory == null) {
-        // recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
-        // recipe.recipeType, recipe.recipeType.registryName.toLanguageKey());
-        // }
+
         // Add combustion fuels to the Powerless Jetpack
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);

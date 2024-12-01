@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -1185,11 +1186,12 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
+    // Hide raw recipes
     public GTRecipe buildRawRecipe() {
         var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel, recipeCategory);
+                conditions, List.of(), data, duration, isFuel, GTRecipeCategories.HIDDEN);
         return recipe;
     }
 

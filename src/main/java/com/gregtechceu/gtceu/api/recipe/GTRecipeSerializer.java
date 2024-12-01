@@ -143,7 +143,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
-        if (category == null) category = type.getCategory();
 
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
