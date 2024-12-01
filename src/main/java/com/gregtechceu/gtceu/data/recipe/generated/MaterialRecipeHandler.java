@@ -603,6 +603,16 @@ public class MaterialRecipeHandler {
                         .duration(5).EUt(4L * voltageMultiplier)
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
+
+                if (!material.hasProperty(PropertyKey.BLAST)) {
+                    ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
+                            .inputItems(dust, material, (int) (materialAmount / M))
+                            .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
+                            .outputItems(blockStack)
+                            .duration(20).EUt(4L * voltageMultiplier)
+                            .category(GTRecipeCategories.INGOT_MOLDING)
+                            .save(provider);
+                }
             } else if (material.hasProperty(PropertyKey.GEM)) {
                 COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_gem_to_block")
                         .inputItems(gem, material, (int) (block.getMaterialAmount(material) / M))
