@@ -441,6 +441,11 @@ public class ConfigHolder {
                 "This does nothing if enableCleanroom is false.", "Default: false" })
         public boolean cleanMultiblocks = false;
         @Configurable
+        @Configurable.Comment({ "List of BlockStates that are valid as part of the cleanroom",
+                "Entries must be in a fully qualified format. For example: ",
+                "Default: none" })
+        public String[] cleanroomFloorBlocks = new String[0];
+        @Configurable
         @Configurable.Comment({ "Block to replace mined ores with in the miner and multiblock miner.",
                 "Default: minecraft:cobblestone" })
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
