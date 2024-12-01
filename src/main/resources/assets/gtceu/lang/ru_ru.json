@@ -8,7 +8,6 @@
     "block.gtceu.hv_steam_turbine": "§6Улучшенная паровая турбина II§r",
     "block.gtceu.luv_input_hatch": "§dЖидкостный входной люк (LuV)§r",
     "block.gtceu.luv_item_passthrough_hatch": "Предметный сквозной люк (§dLuV§r)",
-    "compass.section.gtceu.steam": "Эра пара",
     "cover.conveyor.mode.export": "Режим: Экспорт",
     "cover.conveyor.mode.import": "Режим: Импорт",
     "death.attack.spade": "%s был раскопан %s",

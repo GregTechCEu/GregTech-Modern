@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTBiomeModifiers;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
@@ -36,8 +34,6 @@ public class DataGenerators {
         var registries = event.getLookupProvider();
         if (event.includeClient()) {
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(packOutput, GTCEu.MOD_ID));
-            generator.addProvider(true, new CompassSection.CompassSectionProvider(packOutput, existingFileHelper));
-            generator.addProvider(true, new CompassNode.CompassNodeProvider(packOutput, existingFileHelper));
         }
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
