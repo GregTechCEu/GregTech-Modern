@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.gui;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-import net.minecraft.resources.ResourceLocation;
-
 import lombok.val;
 
 /**

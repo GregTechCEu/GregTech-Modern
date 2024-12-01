@@ -113,7 +113,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
+                true);
 
         GTRegistryInfo.MACHINE.addType("simple", SimpleMachineBuilder.class,
                 (id, args) -> SimpleMachineBuilder.create(id.getPath(), args), true);
@@ -269,8 +270,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof Wrapper w) {
                 o = w.unwrap();
             }
-            if(o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
-            if(o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
+            if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
+            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
             return null;
         });
 

@@ -7,17 +7,16 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
-import mezz.jei.api.constants.RecipeTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 import lombok.Getter;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -50,9 +49,9 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
         if (category.getIcon() != null) {
             this.icon = IGui2IDrawable.toDrawable(category.getIcon(), 16, 16);
-//            this.icon = helpers.getGuiHelper()
-//                    .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
-//                    .setTextureSize(16, 16).build();
+            // this.icon = helpers.getGuiHelper()
+            // .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
+            // .setTextureSize(16, 16).build();
         } else if (recipeType.getIconSupplier() != null) {
             this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
         } else {
@@ -61,7 +60,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
     }
 
     public static RecipeType<?> of(GTRecipeCategory category) {
-        if(category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
+        if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
         return new RecipeType<>(category.registryKey, GTRecipeWrapper.class);
     }
 
@@ -86,7 +85,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(GTRecipeWrapper::new)
                     .toList();
-            //noinspection unchecked - RecipeType<?>; ? guaranteed to be GTRecipeWrapper for registered categories
+            // noinspection unchecked - RecipeType<?>; ? guaranteed to be GTRecipeWrapper for registered categories
             registration.addRecipes((RecipeType<GTRecipeWrapper>) CATEGORIES.apply(category), wrapped);
         }
     }

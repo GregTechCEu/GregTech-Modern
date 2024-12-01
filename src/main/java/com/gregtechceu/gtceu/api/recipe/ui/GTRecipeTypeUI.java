@@ -42,7 +42,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import com.google.common.collect.Table;
-import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import lombok.Getter;
@@ -250,22 +249,21 @@ public class GTRecipeTypeUI {
                                     if (LDLib.isReiLoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
                                                 recipeType.categorySet().stream()
-                                                .map(GTRecipeREICategory.CATEGORIES)
-                                                .collect(Collectors.toList())
-                                        ).open();
+                                                        .map(GTRecipeREICategory.CATEGORIES)
+                                                        .collect(Collectors.toList()))
+                                                .open();
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
                                                 recipeType.categoryStream()
                                                         .map(GTRecipeJEICategory.CATEGORIES)
-                                                        .collect(Collectors.toList())
-                                        );
+                                                        .collect(Collectors.toList()));
                                     } else if (LDLib.isEmiLoaded()) {
                                         GTRecipeEMICategory.displayCategories(recipeType);
-//                                        EmiApi.displayRecipeCategory(GTRecipeEMICategory.CATEGORIES.apply(recipeType.mainCategory));
+                                        // EmiApi.displayRecipeCategory(GTRecipeEMICategory.CATEGORIES.apply(recipeType.mainCategory));
                                         // TODO: Figure out how to show multiple categories at once
-//                                        recipeType.categoryStream()
-//                                                .map(GTRecipeEMICategory.CATEGORIES)
-//                                                .forEach(EmiApi::displayRecipeCategory);
+                                        // recipeType.categoryStream()
+                                        // .map(GTRecipeEMICategory.CATEGORIES)
+                                        // .forEach(EmiApi::displayRecipeCategory);
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

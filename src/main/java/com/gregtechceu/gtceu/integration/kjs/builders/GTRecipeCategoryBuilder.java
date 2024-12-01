@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.resources.ResourceLocation;
 
 public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
@@ -31,14 +33,14 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         return this;
     }
 
-    public GTRecipeCategoryBuilder setIcon(ResourceLocation location) {
+    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
         this.icon = new ResourceTexture(location.withPrefix("textures/").withSuffix(".png"));
         return this;
     }
 
     @Override
     public GTRecipeCategory register() {
-        var category = GTRecipeCategory.register(name, recipeType);
+        var category = GTRecipeCategories.register(name, recipeType);
         category.setIcon(icon);
         return value = category;
     }

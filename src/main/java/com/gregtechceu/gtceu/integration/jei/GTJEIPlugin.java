@@ -71,15 +71,15 @@ public class GTJEIPlugin implements IModPlugin {
         GTBedrockFluidInfoCategory.registerRecipeCatalysts(registration);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreInfoCategory.registerRecipeCatalysts(registration);
-//        for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
-//            if (definition != null) {
-//                registration.addRecipeCatalyst(definition.asStack(), RecipeTypes.SMELTING);
-//            }
-//        }
-//        registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.left().asStack(), RecipeTypes.SMELTING);
-//        registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.right().asStack(), RecipeTypes.SMELTING);
-//        registration.addRecipeCatalyst(GTMachines.STEAM_OVEN.asStack(), RecipeTypes.SMELTING);
-//        registration.addRecipeCatalyst(GTMachines.MULTI_SMELTER.asStack(), RecipeTypes.SMELTING);
+        // for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
+        // if (definition != null) {
+        // registration.addRecipeCatalyst(definition.asStack(), RecipeTypes.SMELTING);
+        // }
+        // }
+        // registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.left().asStack(), RecipeTypes.SMELTING);
+        // registration.addRecipeCatalyst(GTMachines.STEAM_FURNACE.right().asStack(), RecipeTypes.SMELTING);
+        // registration.addRecipeCatalyst(GTMachines.STEAM_OVEN.asStack(), RecipeTypes.SMELTING);
+        // registration.addRecipeCatalyst(GTMachines.MULTI_SMELTER.asStack(), RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(GTMachines.LARGE_CHEMICAL_REACTOR.asStack(),
                 GTRecipeJEICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()));
     }

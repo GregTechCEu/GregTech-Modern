@@ -213,7 +213,7 @@ public final class ResearchManager {
                             .notConsumable(copiedStick)
                             .outputItems(resultStick)
                             .duration(DURATION).EUt(EUT)
-                            .category(GTRecipeCategories.DUMMY)
+                            .category(GTRecipeCategories.HIDDEN)
                             .buildRawRecipe());
         }
     }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -15,11 +16,11 @@ import javax.annotation.Nullable;
 
 public class GTRecipeCategory {
 
-    public static final GTRecipeCategory EMPTY = new GTRecipeCategory("empty_category", GTRecipeTypes.DUMMY_RECIPES);
+    // Placeholder category used if category isn't defined for a recipe for registration
+    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory("default", GTRecipeTypes.DUMMY_RECIPES);
 
     public final ResourceLocation registryKey;
-    @Getter
-    private final String name;
+    public final String name;
     @Getter
     private final GTRecipeType recipeType;
     @Getter
@@ -42,14 +43,8 @@ public class GTRecipeCategory {
         this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
     }
 
-    public static GTRecipeCategory register(@NotNull GTRecipeType recipeType) {
+    public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
-        return category;
-    }
-
-    public static GTRecipeCategory register(String categoryName, @NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(categoryName, recipeType);
         GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
         return category;
     }

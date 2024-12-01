@@ -8,12 +8,10 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
-import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -24,6 +22,7 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -31,7 +30,8 @@ import java.util.stream.Stream;
 
 public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
 
-    public static final Function<GTRecipeCategory, CategoryIdentifier<?>> CATEGORIES = Util.memoize(GTRecipeREICategory::of);
+    public static final Function<GTRecipeCategory, CategoryIdentifier<?>> CATEGORIES = Util
+            .memoize(GTRecipeREICategory::of);
 
     private final GTRecipeCategory category;
     @Getter
@@ -54,7 +54,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
     }
 
     public static CategoryIdentifier<?> of(GTRecipeCategory category) {
-        if(category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return BuiltinPlugin.SMELTING;
+        if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return BuiltinPlugin.SMELTING;
         else return CategoryIdentifier.of(category.registryKey);
     }
 

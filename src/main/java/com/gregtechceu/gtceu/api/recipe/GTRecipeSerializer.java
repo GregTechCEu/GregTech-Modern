@@ -214,7 +214,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
                             Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel),
-                            GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.EMPTY).forGetter(val -> val.recipeCategory))
+                            GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory))
                     .apply(instance, (type,
                                       inputs, outputs, tickInputs, tickOutputs,
                                       inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
@@ -242,7 +242,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
                             Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel),
-                            GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.EMPTY).forGetter(val -> val.recipeCategory))
+                            GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory))
                     .apply(instance, GTRecipe::new));
         }
         // @formatter:on

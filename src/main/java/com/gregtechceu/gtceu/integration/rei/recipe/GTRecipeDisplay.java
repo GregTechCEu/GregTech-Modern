@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import net.minecraft.resources.ResourceLocation;
+
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 
 import java.util.Optional;
 

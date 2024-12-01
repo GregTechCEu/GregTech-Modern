@@ -121,7 +121,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
-        this.recipeCategory = (recipeCategory != GTRecipeCategory.EMPTY) ? recipeCategory : recipeType.getCategory();
+        this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
         if (id != null) this.recipeType.addToCategoryMap(this.recipeCategory, this);
     }
 

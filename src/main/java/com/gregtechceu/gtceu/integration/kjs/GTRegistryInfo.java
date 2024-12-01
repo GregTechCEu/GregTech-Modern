@@ -52,7 +52,8 @@ public class GTRegistryInfo<K, V> {
             MaterialRegistryManager.getInstance().getRegistry(GTCEu.MOD_ID), Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES,
             GTRecipeType.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES,
+    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(
+            GTRegistries.RECIPE_CATEGORIES,
             GTRecipeCategory.class);
     public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES,
             MachineDefinition.class);

@@ -9,19 +9,17 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-import dev.emi.emi.api.EmiApi;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
-import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
+import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.render.EmiRenderable;
-import dev.emi.emi.api.render.EmiTexture;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.lang.invoke.MethodHandle;
@@ -34,7 +32,8 @@ import java.util.stream.Stream;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
-    public static final Function<GTRecipeCategory, EmiRecipeCategory> CATEGORIES = Util.memoize(GTRecipeEMICategory::of);
+    public static final Function<GTRecipeCategory, EmiRecipeCategory> CATEGORIES = Util
+            .memoize(GTRecipeEMICategory::of);
     private final GTRecipeCategory category;
 
     private final static MethodHandle setPagesMH;
@@ -53,12 +52,12 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     }
 
     private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.getRecipeType().registryName, getDrawable(category), getDrawable(category));
+        super(category.registryKey, getDrawable(category), getDrawable(category));
         this.category = category;
     }
 
     private static EmiRecipeCategory of(GTRecipeCategory category) {
-        if(category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return VanillaEmiRecipeCategories.SMELTING;
+        if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return VanillaEmiRecipeCategories.SMELTING;
         return new GTRecipeEMICategory(category);
     }
 
