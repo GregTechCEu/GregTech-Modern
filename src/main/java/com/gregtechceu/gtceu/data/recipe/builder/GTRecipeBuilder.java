@@ -109,7 +109,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
-        this.recipeCategory = GTRecipeCategory.of(recipeType);
+        this.recipeCategory = recipeType.getCategory();
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
@@ -166,7 +166,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        return builder.copy(builder.id).onSave(null).recipeType(recipeType);
+        return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
@@ -1091,7 +1091,7 @@ public class GTRecipeBuilder {
         json.add("tickInputChanceLogics", chanceLogicsToJson(tickInputChanceLogic));
         json.add("tickOutputChanceLogics", chanceLogicsToJson(tickOutputChanceLogic));
 
-        json.addProperty("category", recipeCategory.getResourceLocation().toString());
+        json.addProperty("category", recipeCategory.registryKey.toString());
 
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();

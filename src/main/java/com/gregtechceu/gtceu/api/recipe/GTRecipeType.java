@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -44,6 +45,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -93,6 +95,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
     @Getter
+    private final GTRecipeCategory category;
+    @Getter
     private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
     private CompoundTag customUICache;
     @Getter
@@ -110,9 +114,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
         this.group = group;
+        this.category = GTRecipeCategory.register(this);
         recipeBuilder = new GTRecipeBuilder(registryName, this);
-        recipeBuilder.category(
-                GTRecipeCategory.of(GTCEu.MOD_ID, registryName.getPath(), this, registryName.toLanguageKey()));
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (RecipeType<?> proxyRecipe : proxyRecipes) {
@@ -341,9 +344,25 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipes;
     }
 
+    public void addToCategoryMap(GTRecipeCategory category, GTRecipe recipe) {
+        categoryMap.computeIfAbsent(category, k -> new ObjectLinkedOpenHashSet<>()).add(recipe);
+    }
+
     @NotNull
-    public Map<GTRecipeCategory, Set<GTRecipe>> getRecipesByCategory() {
+    public Map<GTRecipeCategory, Set<GTRecipe>> categoryMap() {
         return Collections.unmodifiableMap(categoryMap);
+    }
+
+    public Set<GTRecipeCategory> categorySet() {
+        return Collections.unmodifiableSet(categoryMap.keySet());
+    }
+
+    public Stream<GTRecipeCategory> categoryStream() {
+        return categoryMap.keySet().stream();
+    }
+
+    public Set<GTRecipe> getRecipesForCategory(GTRecipeCategory category) {
+        return categoryMap().getOrDefault(category, Set.of());
     }
 
     public interface ICustomRecipeLogic {

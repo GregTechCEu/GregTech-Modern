@@ -143,7 +143,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
-        if (category == null || category == GTRecipeCategory.EMPTY) category = GTRecipeCategory.of(type);
+        if (category == null) category = type.getCategory();
 
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
@@ -190,7 +190,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
         buf.writeNbt(recipe.data);
         buf.writeBoolean(recipe.isFuel);
-        buf.writeResourceLocation(recipe.recipeCategory.getResourceLocation());
+        buf.writeResourceLocation(recipe.recipeCategory.registryKey);
     }
 
     private static Codec<GTRecipe> makeCodec(boolean isKubeLoaded) {

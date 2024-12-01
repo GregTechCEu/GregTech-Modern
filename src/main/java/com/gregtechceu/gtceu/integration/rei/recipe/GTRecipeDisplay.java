@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
@@ -15,13 +16,8 @@ public class GTRecipeDisplay extends ModularDisplay<WidgetGroup> {
 
     private final GTRecipe recipe;
 
-    public GTRecipeDisplay(GTRecipe recipe) {
-        super(() -> new GTRecipeWidget(recipe), GTRecipeREICategory.CATEGORIES.apply(recipe.recipeCategory));
-        this.recipe = recipe;
-    }
-
-    public GTRecipeDisplay(GTRecipe recipe, GTRecipeCategory category) {
-        super(() -> new GTRecipeWidget(recipe), GTRecipeREICategory.CATEGORIES.apply(category));
+    public GTRecipeDisplay(GTRecipe recipe, CategoryIdentifier<?> category) {
+        super(() -> new GTRecipeWidget(recipe), category);
         this.recipe = recipe;
     }
 

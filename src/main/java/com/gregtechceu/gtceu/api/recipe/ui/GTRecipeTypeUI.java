@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 public class GTRecipeTypeUI {
@@ -247,18 +248,24 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        recipeType.getRecipesByCategory().keySet()
-                                                .forEach(e -> ViewSearchBuilder.builder()
-                                                        .addCategory(GTRecipeREICategory.CATEGORIES.apply(e)).open());
+                                        ViewSearchBuilder.builder().addCategories(
+                                                recipeType.categorySet().stream()
+                                                .map(GTRecipeREICategory.CATEGORIES)
+                                                .collect(Collectors.toList())
+                                        ).open();
                                     } else if (LDLib.isJeiLoaded()) {
-                                        JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(new ArrayList<>(recipeType.getRecipesByCategory().keySet()
-                                                        .stream().map(GTRecipeJEICategory.TYPES).toList()));
+                                        JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
+                                                recipeType.categoryStream()
+                                                        .map(GTRecipeJEICategory.CATEGORIES)
+                                                        .collect(Collectors.toList())
+                                        );
                                     } else if (LDLib.isEmiLoaded()) {
-                                        recipeType.getRecipesByCategory().keySet()
-                                                .forEach(e -> EmiApi
-                                                        .displayRecipeCategory(
-                                                                GTRecipeEMICategory.CATEGORIES.apply(e)));
+                                        GTRecipeEMICategory.displayCategories(recipeType);
+//                                        EmiApi.displayRecipeCategory(GTRecipeEMICategory.CATEGORIES.apply(recipeType.mainCategory));
+                                        // TODO: Figure out how to show multiple categories at once
+//                                        recipeType.categoryStream()
+//                                                .map(GTRecipeEMICategory.CATEGORIES)
+//                                                .forEach(EmiApi::displayRecipeCategory);
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

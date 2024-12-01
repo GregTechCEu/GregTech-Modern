@@ -466,10 +466,10 @@ public class GTRecipeLookup {
         if (recipe == null) {
             return false;
         }
-        if (recipe.recipeCategory == null) {
-            recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
-                    recipe.recipeType, recipe.recipeType.registryName.toLanguageKey());
-        }
+//        if (recipe.recipeCategory == null) {
+//            recipe.recipeCategory = GTRecipeCategory.of(GTCEu.MOD_ID, recipe.recipeType.registryName.getPath(),
+//                    recipe.recipeType, recipe.recipeType.registryName.toLanguageKey());
+//        }
         // Add combustion fuels to the Powerless Jetpack
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
@@ -478,8 +478,7 @@ public class GTRecipeLookup {
         }
         List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
         if (recurseIngredientTreeAdd(recipe, items, lookup, 0, 0)) {
-            recipeType.getCategoryMap().computeIfAbsent(recipe.recipeCategory, k -> new ObjectLinkedOpenHashSet<>())
-                    .add(recipe);
+            recipeType.addToCategoryMap(recipe.recipeCategory, recipe);
             return true;
         }
         return false;

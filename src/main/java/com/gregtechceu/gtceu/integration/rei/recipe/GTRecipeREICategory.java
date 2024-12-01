@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -14,6 +13,7 @@ import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
 
+import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -27,11 +27,11 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDisplay> {
 
-    public static final Function<GTRecipeCategory, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util
-            .memoize(category -> CategoryIdentifier.of(category.getResourceLocation()));
+    public static final Function<GTRecipeCategory, CategoryIdentifier<?>> CATEGORIES = Util.memoize(GTRecipeREICategory::of);
 
     private final GTRecipeCategory category;
     @Getter
@@ -45,7 +45,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
         var size = recipeType.getRecipeUI().getJEISize();
         this.size = new Size(size.width + 8, size.height + 8);
         if (category.getIcon() instanceof ResourceTexture tex) {
-            icon = IGui2Renderer.toDrawable(tex);
+            icon = IGui2Renderer.toDrawable(tex.getSubTexture(0, 0, 1f/16, 1f/16));
         } else if (recipeType.getIconSupplier() != null) {
             icon = IGui2Renderer.toDrawable(new ItemStackTexture(recipeType.getIconSupplier().get()));
         } else {
@@ -53,9 +53,15 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
         }
     }
 
+    public static CategoryIdentifier<?> of(GTRecipeCategory category) {
+        if(category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return BuiltinPlugin.SMELTING;
+        else return CategoryIdentifier.of(category.registryKey);
+    }
+
+    @SuppressWarnings("unchecked") // Guaranteed to be <? extends GTRecipeDisplay>
     @Override
     public CategoryIdentifier<? extends GTRecipeDisplay> getCategoryIdentifier() {
-        return CATEGORIES.apply(category);
+        return (CategoryIdentifier<? extends GTRecipeDisplay>) CATEGORIES.apply(category);
     }
 
     @Override
@@ -71,17 +77,17 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(category.getTranslation());
+        return Component.translatable(category.getLanguageKey());
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             var type = category.getRecipeType();
-            if (type == GTRecipeTypes.FURNACE_RECIPES) continue;
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            registry.registerRecipeFiller(GTRecipe.class, type, GTRecipeDisplay::new);
-            type.getRepresentativeRecipes().stream()
-                    .map(r -> new GTRecipeDisplay(r, category))
+            var recipes = type.getRecipesForCategory(category).stream();
+            var identifier = CATEGORIES.apply(category);
+            Stream.concat(recipes, type.getRepresentativeRecipes().stream())
+                    .map(r -> new GTRecipeDisplay(r, identifier))
                     .forEach(registry::add);
         }
     }
@@ -91,7 +97,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.getRecipesByCategory().keySet()) {
+                for (GTRecipeCategory category : type.categorySet()) {
                     registry.addWorkstations(CATEGORIES.apply(category), EntryStacks.of(machine.asStack()));
                 }
             }

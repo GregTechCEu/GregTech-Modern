@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
+import mezz.jei.api.constants.RecipeTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,14 +26,12 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
 
-    public static final Function<GTRecipeCategory, RecipeType<GTRecipeWrapper>> TYPES = Util
-            .memoize(category -> new RecipeType<>(category.getResourceLocation(), GTRecipeWrapper.class));
+    public static final Function<GTRecipeCategory, RecipeType<?>> CATEGORIES = Util.memoize(GTRecipeJEICategory::of);
 
     private final GTRecipeCategory category;
     @Getter
@@ -60,28 +59,34 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         }
     }
 
+    public static RecipeType<?> of(GTRecipeCategory category) {
+        if(category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
+        return new RecipeType<>(category.registryKey, GTRecipeWrapper.class);
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     @NotNull
     public RecipeType<GTRecipeWrapper> getRecipeType() {
-        return TYPES.apply(category);
+        return (RecipeType<GTRecipeWrapper>) CATEGORIES.apply(category);
     }
 
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(category.getTranslation());
+        return Component.translatable(category.getLanguageKey());
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             var type = category.getRecipeType();
-            if (type == GTRecipeTypes.FURNACE_RECIPES) continue;
             if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getCategoryMap().getOrDefault(category, Set.of()).stream();
+            var recipes = type.getRecipesForCategory(category).stream();
             var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(GTRecipeWrapper::new)
                     .toList();
-            registration.addRecipes(TYPES.apply(category), wrapped);
+            //noinspection unchecked - RecipeType<?>; ? guaranteed to be GTRecipeWrapper for registered categories
+            registration.addRecipes((RecipeType<GTRecipeWrapper>) CATEGORIES.apply(category), wrapped);
         }
     }
 
@@ -90,8 +95,8 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.getRecipesByCategory().keySet()) {
-                    registration.addRecipeCatalyst(machine.asStack(), TYPES.apply(category));
+                for (GTRecipeCategory category : type.categorySet()) {
+                    registration.addRecipeCatalyst(machine.asStack(), CATEGORIES.apply(category));
                 }
             }
         }

@@ -31,10 +31,10 @@ import java.util.List;
 
 public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
-    final GTRecipeEMICategory category;
+    final EmiRecipeCategory category;
     final GTRecipe recipe;
 
-    public GTEmiRecipe(GTRecipeEMICategory category, GTRecipe recipe) {
+    public GTEmiRecipe(GTRecipe recipe, EmiRecipeCategory category) {
         super(() -> new GTRecipeWidget(recipe));
         this.category = category;
         this.recipe = recipe;
