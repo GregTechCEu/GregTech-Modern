@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
@@ -46,7 +48,7 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf && pbf.isActive()) {
+            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf && pbf.isFormed()) {
                 Direction opposite = pbf.getFrontFacing().getOpposite();
                 RenderType lavaRenderType = ItemBlockRenderTypes.getRenderLayer(Fluids.LAVA.defaultFluidState());
 
@@ -61,6 +63,25 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
 
                 fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
                         RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
+
+                if (pbf.getOffsetTimer() % 20 == 0) {
+                    var xPos = opposite.getStepX() * 0.76F + pbf.getPos().getX() + 0.5F;
+                    var yPos = opposite.getStepY() * 0.76F + pbf.getPos().getY() + 0.25F;
+                    var zPos = opposite.getStepZ() * 0.76F + pbf.getPos().getZ() + 0.5F;
+
+                    var relUp = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
+                            pbf.isFlipped());
+                    var sign = relUp == Direction.UP || relUp == Direction.EAST || relUp == Direction.SOUTH ? 1 : -1;
+                    var shouldX = relUp == Direction.EAST || relUp == Direction.WEST;
+                    var shouldY = relUp == Direction.UP || relUp == Direction.DOWN;
+                    var shouldZ = relUp == Direction.NORTH || relUp == Direction.SOUTH;
+                    var speed = ((shouldY ? opposite.getStepY() : shouldX ? opposite.getStepX() : opposite.getStepZ()) *
+                            0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat()) * sign;
+                    pbf.getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
+                            shouldX ? speed * 2 : 0,
+                            shouldY ? speed * 1.5 : 0,
+                            shouldZ ? speed * 2 : 0);
+                }
 
                 stack.popPose();
             }
