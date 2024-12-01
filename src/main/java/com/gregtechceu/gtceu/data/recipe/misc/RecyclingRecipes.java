@@ -251,7 +251,8 @@ public class RecyclingRecipes {
         } else if (prefix == TagPrefix.block) {
             if (ms != null && !ms.material().hasProperty(PropertyKey.GEM)) {
                 ItemStack output = ChemicalHelper.get(TagPrefix.ingot,
-                        ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(), 9);
+                        ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(),
+                        (int) (TagPrefix.block.getMaterialAmount(ms.material()) / GTValues.M));
                 ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
                 GTRecipeBuilder builder = GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + itemPath.getPath())
                         .outputItems(output)
