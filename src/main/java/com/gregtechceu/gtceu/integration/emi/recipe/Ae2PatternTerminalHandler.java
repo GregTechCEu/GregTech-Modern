@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
+import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiRecipe;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
@@ -37,7 +39,7 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe instanceof GTEmiRecipe;
+        return recipe instanceof GTEmiRecipe || recipe instanceof MultiblockInfoEmiRecipe;
     }
 
     @Override
