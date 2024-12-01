@@ -408,11 +408,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     private TraceabilityPredicate getValidFloorBlocks() {
-        return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().is(CustomTags.CLEANROOM_FLOORS),
-                () -> BuiltInRegistries.BLOCK.getTag(CustomTags.CLEANROOM_FLOORS)
-                        .get().stream()
-                        .map(h -> new BlockInfo(h.get()))
-                        .toArray(BlockInfo[]::new));
+        return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
