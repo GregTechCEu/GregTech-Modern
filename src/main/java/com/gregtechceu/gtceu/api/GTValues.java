@@ -162,6 +162,23 @@ public class GTValues {
             BLUE.toString() + BOLD + "OpV",
             RED.toString() + BOLD + "MAX" };
 
+    public static final String[] VCF = new String[] {
+            DARK_GRAY.toString(),
+            GRAY.toString(),
+            AQUA.toString(),
+            GOLD.toString(),
+            DARK_PURPLE.toString(),
+            BLUE.toString(),
+            LIGHT_PURPLE.toString(),
+            RED.toString(),
+            DARK_AQUA.toString(),
+            DARK_RED.toString(),
+            GREEN.toString(),
+            DARK_GREEN.toString(),
+            YELLOW.toString(),
+            BLUE.toString() + BOLD.toString(),
+            RED.toString() + BOLD.toString() };
+
     public static final String[] VLVH = new String[] {
             "Primitive", // not doing the gray color for these first two because it looks weird
             "Basic",

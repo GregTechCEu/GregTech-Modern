@@ -99,6 +99,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
@@ -238,7 +239,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .overlayTieredHullRenderer("hull")
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .langValue("%s Machine Hull".formatted(VN[tier]))
+                    .langValue("%s §fMachine Hull".formatted(VNF[tier]))
                     .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
                     .compassNode("machine_hull")
                     .register(),
@@ -777,7 +778,7 @@ public class GTMachines {
     // ********** Part **********//
     //////////////////////////////////////
     public static final MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("input_bus",
-            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
+            (holder, tier) -> new ItemBusPartMachine(holder, tier, IN),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
@@ -793,7 +794,7 @@ public class GTMachines {
             ALL_TIERS);
 
     public static final MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("output_bus",
-            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
+            (holder, tier) -> new ItemBusPartMachine(holder, tier, OUT),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
@@ -810,42 +811,42 @@ public class GTMachines {
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
             "input_hatch", "Input Hatch", "fluid_hatch.import", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
             "input_hatch_4x", "Quadruple Input Hatch", "fluid_hatch.import_4x", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
             "input_hatch_9x", "Nonuple Input Hatch", "fluid_hatch.import_9x", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_9X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
             "output_hatch", "Output Hatch", "fluid_hatch.export", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
             "output_hatch_4x", "Quadruple Output Hatch", "fluid_hatch.export_4x", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
             "output_hatch_9x", "Nonuple Output Hatch", "fluid_hatch.export_9x", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_9X);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
@@ -863,7 +864,7 @@ public class GTMachines {
             ALL_TIERS);
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_output_hatch",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Dynamo Hatch")
                     .rotationState(RotationState.ALL)
@@ -881,7 +882,7 @@ public class GTMachines {
             ALL_TIERS);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_input_hatch_4a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Energy Hatch")
                     .rotationState(RotationState.ALL)
@@ -899,7 +900,7 @@ public class GTMachines {
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
@@ -917,7 +918,7 @@ public class GTMachines {
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Energy Hatch")
                     .rotationState(RotationState.ALL)
@@ -935,7 +936,7 @@ public class GTMachines {
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
@@ -954,7 +955,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_INPUT_HATCH = registerTieredMachines(
             "substation_input_hatch_64a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 64),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Energy Hatch")
                     .rotationState(RotationState.ALL)
@@ -973,7 +974,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_OUTPUT_HATCH = registerTieredMachines(
             "substation_output_hatch_64a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 64),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Dynamo Hatch")
                     .rotationState(RotationState.ALL)
@@ -1007,7 +1008,7 @@ public class GTMachines {
             ELECTRIC_TIERS);
 
     public static final MachineDefinition STEAM_IMPORT_BUS = REGISTRATE
-            .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+            .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
@@ -1017,7 +1018,7 @@ public class GTMachines {
             .register();
 
     public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE
-            .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+            .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
@@ -1146,7 +1147,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] DUAL_IMPORT_HATCH = registerTieredMachines(
             "dual_input_hatch",
-            (holder, tier) -> new DualHatchPartMachine(holder, tier, IO.IN),
+            (holder, tier) -> new DualHatchPartMachine(holder, tier, IN),
             (tier, builder) -> builder
                     .langValue("%s Dual Input Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
@@ -1169,7 +1170,7 @@ public class GTMachines {
 
     public static final MachineDefinition[] DUAL_EXPORT_HATCH = registerTieredMachines(
             "dual_output_hatch",
-            (holder, tier) -> new DualHatchPartMachine(holder, tier, IO.OUT),
+            (holder, tier) -> new DualHatchPartMachine(holder, tier, OUT),
             (tier, builder) -> builder
                     .langValue("%s Dual Output Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
@@ -1222,17 +1223,17 @@ public class GTMachines {
                     .register(),
             HV, EV, IV, LuV, ZPM, UV);
 
-    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256,
+    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IN, 256,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(OUT, 256,
             PartAbility.OUTPUT_LASER);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024,
+    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IN, 1024,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(OUT, 1024,
             PartAbility.OUTPUT_LASER);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096,
+    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IN, 4096,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(OUT, 4096,
             PartAbility.OUTPUT_LASER);
 
     //////////////////////////////////////
@@ -2346,7 +2347,7 @@ public class GTMachines {
                                         index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor)
                                                 .intValue() : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
-                        .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
+                        .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
@@ -2450,7 +2451,7 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
-                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], batterySlotSize, "x Battery Buffer"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, batterySlotSize, "x Battery Buffer"))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                         batterySlotSize),
@@ -2471,7 +2472,7 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new ChargerRenderer(tier))
-                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Turbo Charger"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET, itemSlotSize, "x Turbo Charger"))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
@@ -2484,15 +2485,22 @@ public class GTMachines {
     }
 
     public static MachineDefinition[] registerLaserHatch(IO io, int amperage, PartAbility ability) {
-        String name = io == IO.IN ? "target" : "source";
+        String name = io == IN ? "target" : "source";
         return registerTieredMachines(amperage + "a_laser_" + name + "_hatch",
                 (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
-                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " +
+                        .langValue(VNF[tier] + "§r " + FormattingUtil.formatNumbers(amperage) + "§eA§r Laser " +
                                 FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
                         .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),
-                                Component.translatable("gtceu.universal.disabled"))
+                                Component.translatable("gtceu.universal.tooltip.voltage_" + (io == IN ? "in" : "out"),
+                                        FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.amperage_in", amperage),
+                                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                        FormattingUtil
+                                                .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
+                                Component.translatable("gtceu.universal.disabled")
+                                )
                         .abilities(ability)
                         .overlayTieredHullRenderer("laser_hatch." + name)
                         .register(),
@@ -2769,7 +2777,7 @@ public class GTMachines {
                 (holder, tier) -> new ConverterMachine(holder, tier, amperage),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
+                        .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET, amperage))
                         .renderer(() -> new ConverterRenderer(tier, amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),

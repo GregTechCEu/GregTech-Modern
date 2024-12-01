@@ -150,6 +150,7 @@ public class LangHandler {
         provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
         provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
         provider.add("gtceu.hazard_trigger.any", "Any contact");
+
         provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
         provider.add("gtceu.hazard_trigger.none", "Nothing");
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
@@ -233,6 +234,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
         provider.add("item.gtceu.tool.tooltip.crafting_uses", "%s §aCrafting Uses");
+        provider.add("item.gtceu.tool.tooltip.max_uses", "%s §eTotal Durability");
         provider.add("item.gtceu.tool.tooltip.general_uses", "%s §bDurability");
         provider.add("item.gtceu.tool.tooltip.attack_damage", "%s §cAttack Damage");
         provider.add("item.gtceu.tool.tooltip.attack_speed", "%s §9Attack Speed");
