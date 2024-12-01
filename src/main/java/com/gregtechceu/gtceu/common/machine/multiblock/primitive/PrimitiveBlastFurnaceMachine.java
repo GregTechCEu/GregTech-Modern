@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -40,8 +41,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
+    private TickableSubscription onServerTick;
+
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+        this.onServerTick = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
@@ -54,6 +58,24 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
                 IO.NONE);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        this.onServerTick.unsubscribe();
+    }
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
     }
 
     @Override
@@ -139,12 +161,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    @Override
-    public boolean onWorking() {
+    private void hurtEntities() {
+        if (!isFormed) return;
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null,
                 new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
-
-        return super.onWorking();
     }
 }
