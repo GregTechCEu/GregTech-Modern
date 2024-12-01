@@ -388,7 +388,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .where(' ', innerPredicate())
                 .where('E', wallPredicate.or(basePredicate) // inner floor
                         .or(getValidFloorBlocks().setMaxGlobalLimited(4)))
-                .where('K', states(getCasingState()) // very center floor, needed for height check
+                .where('K', wallPredicate // very center floor, needed for height check
                         .or(getValidFloorBlocks()))
                 .where('W', wallPredicate.or(basePredicate)// walls
                         .or(doorPredicate().setMaxGlobalLimited(4)))
