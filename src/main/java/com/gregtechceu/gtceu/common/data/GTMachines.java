@@ -1220,7 +1220,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.disabled"))
                     .compassNode("rotor_holder")
                     .register(),
-            HV, EV, IV, LuV, ZPM, UV);
+            GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 
     public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256,
             PartAbility.INPUT_LASER);
