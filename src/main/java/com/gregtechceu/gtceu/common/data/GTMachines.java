@@ -585,7 +585,7 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
-    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(1,
+    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(
             Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
@@ -621,6 +621,7 @@ public class GTMachines {
             .hasTESR(true)
             .compassNodeSelf()
             .register();
+
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)

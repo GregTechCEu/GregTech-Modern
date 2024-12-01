@@ -46,7 +46,7 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf && pbf.isActive()) {
+            if (mm.metaMachine instanceof PrimitiveBlastFurnaceMachine pbf && pbf.isFormed()) {
                 Direction opposite = pbf.getFrontFacing().getOpposite();
                 RenderType lavaRenderType = ItemBlockRenderTypes.getRenderLayer(Fluids.LAVA.defaultFluidState());
 

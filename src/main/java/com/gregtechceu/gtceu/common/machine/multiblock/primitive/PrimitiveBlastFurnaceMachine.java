@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -40,8 +41,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
+    private TickableSubscription onServerTick;
+
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+        this.onServerTick = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
@@ -57,10 +61,28 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        this.onServerTick.unsubscribe();
+    }
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        if (recipeLogic.isWorking()) {
+        if (isFormed) {
             var pos = this.getPos();
             var facing = this.getFrontFacing().getOpposite();
             float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.5F;
@@ -74,10 +96,18 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             var shouldZ = up == Direction.NORTH || up == Direction.SOUTH;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
-                    shouldX ? speed : 0,
-                    shouldY ? speed : 0,
-                    shouldZ ? speed : 0);
+            if (getOffsetTimer() % 20 == 0) {
+                getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
+                        shouldX ? speed * 2 : 0,
+                        shouldY ? speed * 2 : 0,
+                        shouldZ ? speed * 2 : 0);
+            }
+            if (isActive()) {
+                getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
+                        shouldX ? speed : 0,
+                        shouldY ? speed : 0,
+                        shouldZ ? speed : 0);
+            }
         }
     }
 
@@ -139,12 +169,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    @Override
-    public boolean onWorking() {
+    private void hurtEntities() {
+        if (!isFormed) return;
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null,
                 new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
-
-        return super.onWorking();
     }
 }

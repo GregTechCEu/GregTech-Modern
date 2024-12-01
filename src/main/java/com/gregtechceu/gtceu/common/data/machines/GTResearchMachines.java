@@ -353,10 +353,10 @@ public class GTResearchMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
             .tooltipBuilder((s, list) -> {
+                list.add(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
                 CREATIVE_TOOLTIPS.accept(s, list);
-                list.add(1, Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
+                list.add(Component.translatable("gtceu.universal.enabled"));
             })
-            .tooltips(Component.translatable("gtceu.universal.enabled"))
             .overlayTieredHullRenderer("data_access_hatch_creative")
             .register();
 
