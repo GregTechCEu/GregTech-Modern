@@ -64,25 +64,6 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
                 fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
                         RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
 
-                if (pbf.getOffsetTimer() % 20 == 0) {
-                    var xPos = opposite.getStepX() * 0.76F + pbf.getPos().getX() + 0.5F;
-                    var yPos = opposite.getStepY() * 0.76F + pbf.getPos().getY() + 0.25F;
-                    var zPos = opposite.getStepZ() * 0.76F + pbf.getPos().getZ() + 0.5F;
-
-                    var relUp = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
-                            pbf.isFlipped());
-                    var sign = relUp == Direction.UP || relUp == Direction.EAST || relUp == Direction.SOUTH ? 1 : -1;
-                    var shouldX = relUp == Direction.EAST || relUp == Direction.WEST;
-                    var shouldY = relUp == Direction.UP || relUp == Direction.DOWN;
-                    var shouldZ = relUp == Direction.NORTH || relUp == Direction.SOUTH;
-                    var speed = ((shouldY ? opposite.getStepY() : shouldX ? opposite.getStepX() : opposite.getStepZ()) *
-                            0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat()) * sign * 2;
-                    pbf.getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
-                            shouldX ? speed : 0,
-                            shouldY ? speed : 0,
-                            shouldZ ? speed : 0);
-                }
-
                 stack.popPose();
             }
         }

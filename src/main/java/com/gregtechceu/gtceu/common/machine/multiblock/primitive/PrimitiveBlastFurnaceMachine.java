@@ -82,7 +82,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        if (recipeLogic.isWorking()) {
+        if (isFormed) {
             var pos = this.getPos();
             var facing = this.getFrontFacing().getOpposite();
             float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.5F;
@@ -96,10 +96,18 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             var shouldZ = up == Direction.NORTH || up == Direction.SOUTH;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
-                    shouldX ? speed : 0,
-                    shouldY ? speed : 0,
-                    shouldZ ? speed : 0);
+            if (getOffsetTimer() % 20 == 0) {
+                getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
+                        shouldX ? speed * 2 : 0,
+                        shouldY ? speed * 2 : 0,
+                        shouldZ ? speed * 2 : 0);
+            }
+            if (isActive()) {
+                getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
+                        shouldX ? speed : 0,
+                        shouldY ? speed : 0,
+                        shouldZ ? speed : 0);
+            }
         }
     }
 
