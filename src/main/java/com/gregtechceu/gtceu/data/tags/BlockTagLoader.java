@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.tags;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -43,6 +44,8 @@ public class BlockTagLoader {
         provider.addTag(BlockTags.MINEABLE_WITH_AXE)
                 .add(TagEntry.element(GTMachines.WOODEN_DRUM.getId()))
                 .add(TagEntry.element(GTMachines.WOODEN_CRATE.getId()));
+
+        create(provider, CustomTags.CLEANROOM_FLOORS, GTBlocks.PLASTCRETE.get(), GTBlocks.CLEANROOM_GLASS.get());
     }
 
     private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,

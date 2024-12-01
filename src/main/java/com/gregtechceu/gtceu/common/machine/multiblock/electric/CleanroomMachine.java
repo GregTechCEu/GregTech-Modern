@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -37,6 +36,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -45,10 +45,9 @@ import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
@@ -62,9 +61,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -89,8 +86,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static final int MIN_RADIUS = 2;
     public static final int MIN_DEPTH = 4;
-
-    private static Set<BlockState> validFloorStates = new ObjectOpenHashSet<>();
 
     @Persisted
     private int lDist = 0, rDist = 0, bDist = 0, fDist = 0, hDist = 0;
@@ -291,7 +286,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         var state = world.getBlockState(pos.move(direction));
         return state == GTBlocks.PLASTCRETE.getDefaultState() ||
                 state == GTBlocks.CLEANROOM_GLASS.getDefaultState() ||
-                validFloorStates.contains(state);
+                state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
@@ -415,44 +410,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     private TraceabilityPredicate getValidFloorBlocks() {
-        return Predicates.custom(blockWorldState -> {
-            boolean match = false;
-            for (var s : getValidFloorStates()) {
-                if (blockWorldState.getBlockState().getBlock() == s.getBlock()) {
-                    match = true;
-                    break;
-                }
-            }
-            if (getLevel() != null &&
-                    !blockWorldState.getBlockState().isCollisionShapeFullBlock(getLevel(), blockWorldState.getPos())) {
-                return false;
-            }
-            return match;
-        }, () -> {
-            Set<BlockInfo> blocks = new ObjectOpenHashSet<>();
-            for (var s : getValidFloorStates()) {
-                blocks.add(new BlockInfo(s));
-            }
-            return blocks.toArray(BlockInfo[]::new);
-        });
-    }
-
-    private Set<BlockState> getValidFloorStates() {
-        if (validFloorStates.isEmpty()) {
-            for (String s : ConfigHolder.INSTANCE.machines.cleanroomFloorBlocks) {
-                BlockState state;
-                try {
-                    state = BlockStateParser.parseForBlock(getLevel().holderLookup(Registries.BLOCK), s, true)
-                            .blockState();
-                } catch (CommandSyntaxException e) {
-                    GTCEu.LOGGER.error("failed to parse cleanroomFloorBlocks, invalid BlockState: {}",
-                            s);
-                    state = GTBlocks.PLASTCRETE.getDefaultState();
-                }
-                validFloorStates.add(state);
-            }
-        }
-        return validFloorStates;
+        return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().is(CustomTags.CLEANROOM_FLOORS),
+                () -> BuiltInRegistries.BLOCK.getTag(CustomTags.CLEANROOM_FLOORS)
+                        .get().stream()
+                        .map(h -> new BlockInfo(h.get()))
+                        .toArray(BlockInfo[]::new));
     }
 
     @NotNull

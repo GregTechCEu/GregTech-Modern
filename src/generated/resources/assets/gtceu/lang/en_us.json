@@ -2237,7 +2237,6 @@
   "config.gtceu.option.buttonAnchor": "buttonAnchor",
   "config.gtceu.option.casingsPerCraft": "casingsPerCraft",
   "config.gtceu.option.cleanMultiblocks": "cleanMultiblocks",
-  "config.gtceu.option.cleanroomFloorBlocks": "cleanroomFloorBlocks",
   "config.gtceu.option.client": "client",
   "config.gtceu.option.compat": "compat",
   "config.gtceu.option.debug": "debug",
