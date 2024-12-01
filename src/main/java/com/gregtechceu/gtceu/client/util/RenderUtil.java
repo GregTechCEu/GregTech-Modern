@@ -124,7 +124,7 @@ public class RenderUtil {
         return vec3f(vertex.x + addX, vertex.y + addY, vertex.z + addZ);
     }
 
-    public static Fluid fromRecipe(GTRecipe recipe) {
+    public static Fluid getRecipeFluidToRender(GTRecipe recipe) {
         if (recipe == null) {
             return null;
         }

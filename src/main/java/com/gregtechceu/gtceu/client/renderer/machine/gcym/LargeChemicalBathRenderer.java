@@ -61,7 +61,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
                 if (lastRecipe != null && (lcb.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe)) {
                     cachedRecipe = lastRecipe.id;
                     if (lcb.isActive()) {
-                        cachedFluid = RenderUtil.fromRecipe(lastRecipe);
+                        cachedFluid = RenderUtil.getRecipeFluidToRender(lastRecipe);
                     } else {
                         cachedFluid = null;
                     }

@@ -61,7 +61,7 @@ public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
                 if (lastRecipe != null && (lm.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe)) {
                     cachedRecipe = lastRecipe.id;
                     if (lm.isActive()) {
-                        cachedFluid = RenderUtil.fromRecipe(lastRecipe);
+                        cachedFluid = RenderUtil.getRecipeFluidToRender(lastRecipe);
                     } else {
                         cachedFluid = null;
                     }
