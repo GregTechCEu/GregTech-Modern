@@ -35,7 +35,11 @@ public class MiscRecipeLoader {
                 "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
                 'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
-
+        // Machine Memory Card Recipe
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
+                "PWP", "SLS", "PPP", 'P', new UnificationEntry(plate, Steel), 'W',
+                new UnificationEntry(wireGtSingle, Copper), 'S', new UnificationEntry(screw, RedAlloy), 'L',
+                ELECTRONIC_CIRCUIT_LV);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
                 new UnificationEntry(dust, Copper),

@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:solvent_spray_can"
+    "res": "gtceu:machine_memory_card"
   },
   "items": [
-    "gtceu:solvent_spray_can"
+    "gtceu:machine_memory_card"
   ],
-  "page": "gtceu:items/solvent_spray_can",
+  "page": "gtceu:items/machine_memory_card",
   "position": [
     -150,
-    0
+    100
   ],
   "section": "gtceu:items"
 }

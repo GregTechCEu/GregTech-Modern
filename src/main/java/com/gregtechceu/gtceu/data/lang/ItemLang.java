@@ -356,6 +356,8 @@ public class ItemLang {
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
         provider.add("item.gtceu.basic_tape.tooltip",
                 "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
+        provider.add("item.gtceu.terminal.tooltip",
+                "Shift + R-Click on a controller to automatically build the multi-block");
 
         provider.add("item.gtceu.sus_record.desc", "§7sussy!");
     }
