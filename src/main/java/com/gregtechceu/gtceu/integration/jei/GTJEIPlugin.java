@@ -72,7 +72,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreInfoCategory.registerRecipeCatalysts(registration);
         registration.addRecipeCatalyst(GTMachines.LARGE_CHEMICAL_REACTOR.asStack(),
-                GTRecipeJEICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()));
+                GTRecipeJEICategory.TYPES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()));
     }
 
     @Override

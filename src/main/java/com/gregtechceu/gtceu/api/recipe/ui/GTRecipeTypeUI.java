@@ -42,6 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import com.google.common.collect.Table;
+import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import lombok.Getter;
@@ -83,10 +84,6 @@ public class GTRecipeTypeUI {
     @Setter
     @Getter
     protected int maxTooltips = 3;
-
-    @Getter
-    @Setter
-    private boolean XEIVisible = true;
 
     private CompoundTag customUICache;
     private Size xeiSize;
@@ -255,11 +252,11 @@ public class GTRecipeTypeUI {
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
                                                 recipeType.getCategories().stream()
-                                                        .map(GTRecipeJEICategory.CATEGORIES)
+                                                        .map(GTRecipeJEICategory.TYPES)
                                                         .collect(Collectors.toList()));
                                     } else if (LDLib.isEmiLoaded()) {
-                                        GTRecipeEMICategory.displayCategories(recipeType);
-                                        // EmiApi.displayRecipeCategory(GTRecipeEMICategory.CATEGORIES.apply(recipeType.mainCategory));
+                                        EmiApi.displayRecipeCategory(
+                                                GTRecipeEMICategory.CATEGORIES.apply(recipeType.getCategory()));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

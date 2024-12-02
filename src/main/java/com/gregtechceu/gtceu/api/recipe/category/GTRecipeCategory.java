@@ -6,14 +6,18 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
+@Accessors(chain = true)
 public class GTRecipeCategory {
 
     // Placeholder category used if category isn't defined for a recipe for registration
@@ -26,8 +30,11 @@ public class GTRecipeCategory {
     @Getter
     private final String languageKey;
     @Nullable
-    @Getter
+    @Setter
     private IGuiTexture icon = null;
+    @Getter
+    @Setter
+    private boolean isXEIVisible = true;
 
     public GTRecipeCategory(@NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
@@ -49,21 +56,19 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public GTRecipeCategory setIcon(@Nullable IGuiTexture icon) {
-        this.icon = icon;
-        return this;
-    }
-
-    public boolean isXEIVisible() {
-        return recipeType.getRecipeUI().isXEIVisible();
+    public IGuiTexture getIcon() {
+        if (icon == null) {
+            if (recipeType.getIconSupplier() != null) icon = new ItemStackTexture(recipeType.getIconSupplier().get());
+            else icon = new ItemStackTexture(Items.BARRIER);
+        }
+        return icon;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        GTRecipeCategory that = (GTRecipeCategory) obj;
-        return registryKey.equals(that.registryKey);
+        if (!(obj instanceof GTRecipeCategory that)) return false;
+        return this.registryKey.equals(that.registryKey);
     }
 
     @Override

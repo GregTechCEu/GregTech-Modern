@@ -181,7 +181,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
-        this.recipeUI.setXEIVisible(XEIVisible);
+        this.category.setXEIVisible(XEIVisible);
         return this;
     }
 
@@ -346,17 +346,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         categoryMap.computeIfAbsent(category, k -> new ObjectLinkedOpenHashSet<>()).add(recipe);
     }
 
-    @NotNull
-    public Map<GTRecipeCategory, Set<GTRecipe>> categoryMap() {
-        return Collections.unmodifiableMap(categoryMap);
-    }
-
     public Set<GTRecipeCategory> getCategories() {
         return Collections.unmodifiableSet(categoryMap.keySet());
     }
 
     public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
-        return categoryMap().getOrDefault(category, Set.of());
+        return Collections.unmodifiableSet(categoryMap.getOrDefault(category, Set.of()));
     }
 
     public interface ICustomRecipeLogic {
