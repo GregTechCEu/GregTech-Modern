@@ -246,17 +246,17 @@ public class GTRecipeTypeUI {
                                     if (LDLib.isReiLoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
                                                 recipeType.getCategories().stream()
-                                                        .map(GTRecipeREICategory.CATEGORIES)
+                                                        .map(GTRecipeREICategory::machineCategory)
                                                         .collect(Collectors.toList()))
                                                 .open();
                                     } else if (LDLib.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
                                                 recipeType.getCategories().stream()
-                                                        .map(GTRecipeJEICategory.TYPES)
+                                                        .map(GTRecipeJEICategory::machineType)
                                                         .collect(Collectors.toList()));
                                     } else if (LDLib.isEmiLoaded()) {
                                         EmiApi.displayRecipeCategory(
-                                                GTRecipeEMICategory.CATEGORIES.apply(recipeType.getCategory()));
+                                                GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

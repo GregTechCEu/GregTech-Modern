@@ -68,13 +68,13 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
-                    registration.addRecipeCatalyst(machine.asStack(), catalystType(category));
+                    registration.addRecipeCatalyst(machine.asStack(), machineType(category));
                 }
             }
         }
     }
 
-    private static RecipeType<?> catalystType(GTRecipeCategory category) {
+    public static RecipeType<?> machineType(GTRecipeCategory category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
         return TYPES.apply(category);
     }

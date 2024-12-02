@@ -50,13 +50,13 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
-                    registry.addWorkstation(workstationCategory(category), EmiStack.of(machine.asStack()));
+                    registry.addWorkstation(machineCategory(category), EmiStack.of(machine.asStack()));
                 }
             }
         }
     }
 
-    private static EmiRecipeCategory workstationCategory(GTRecipeCategory category) {
+    public static EmiRecipeCategory machineCategory(GTRecipeCategory category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return VanillaEmiRecipeCategories.SMELTING;
         else return CATEGORIES.apply(category);
     }

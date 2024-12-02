@@ -64,13 +64,13 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
-                    registry.addWorkstations(workstationCategory(category), EntryStacks.of(machine.asStack()));
+                    registry.addWorkstations(machineCategory(category), EntryStacks.of(machine.asStack()));
                 }
             }
         }
     }
 
-    private static CategoryIdentifier<?> workstationCategory(GTRecipeCategory category) {
+    public static CategoryIdentifier<?> machineCategory(GTRecipeCategory category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return BuiltinPlugin.SMELTING;
         else return CATEGORIES.apply(category);
     }
