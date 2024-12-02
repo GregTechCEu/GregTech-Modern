@@ -270,7 +270,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     private boolean checkForPumpCover(@Nullable CoverBehavior cover) {
         if (cover instanceof PumpCover coverPump) {
             int pipeThroughput = getNodeData().getThroughput() * 20;
-            if (coverPump.getCurrentMilliBucketsPerTick() > pipeThroughput) {
+            if (coverPump.getTransferRate() > pipeThroughput) {
                 coverPump.setTransferRate(pipeThroughput);
             }
             return coverPump.getManualIOMode() == ManualIOMode.DISABLED;

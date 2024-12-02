@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -26,7 +27,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FluidRegulatorCover extends PumpCover {
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidRegulatorCover.class,
+            PumpCover.MANAGED_FIELD_HOLDER);
 
     private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
 
@@ -42,14 +50,24 @@ public class FluidRegulatorCover extends PumpCover {
     @Persisted
     @DescSynced
     @Getter
-    protected int globalTransferSizeMillibuckets;
+    protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
 
     private NumberInputWidget<Integer> transferSizeInput;
     private EnumSelectorWidget<BucketMode> transferBucketModeInput;
 
+    public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
+                               int maxTransferRate) {
+        super(definition, coverHolder, attachedSide, tier, maxTransferRate);
+    }
+
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
-        super(definition, coverHolder, attachedSide, tier);
+        this(definition, coverHolder, attachedSide, tier, PUMP_SCALING.applyAsInt(tier));
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -187,10 +205,10 @@ public class FluidRegulatorCover extends PumpCover {
 
     private int getFilteredFluidAmount(FluidStack fluidStack) {
         if (!filterHandler.isFilterPresent())
-            return globalTransferSizeMillibuckets;
+            return globalTransferLimit;
 
         FluidFilter filter = filterHandler.getFilter();
-        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets);
+        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferLimit);
     }
 
     ///////////////////////////
@@ -219,11 +237,11 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private int getCurrentBucketModeTransferSize() {
-        return this.globalTransferSizeMillibuckets / this.transferBucketMode.multiplier;
+        return this.globalTransferLimit / this.transferBucketMode.multiplier;
     }
 
     private void setCurrentBucketModeTransferSize(int transferSize) {
-        this.globalTransferSizeMillibuckets = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
+        this.globalTransferLimit = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
                 MAX_STACK_SIZE);
     }
 
@@ -243,17 +261,5 @@ public class FluidRegulatorCover extends PumpCover {
             return true;
 
         return !this.filterHandler.getFilter().supportsAmounts();
-    }
-
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidRegulatorCover.class,
-            PumpCover.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

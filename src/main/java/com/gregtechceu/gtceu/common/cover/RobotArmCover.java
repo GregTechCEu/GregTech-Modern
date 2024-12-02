@@ -28,8 +28,8 @@ import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class,
@@ -47,10 +47,14 @@ public class RobotArmCover extends ConveyorCover {
 
     private IntInputWidget stackSizeInput;
 
-    public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
-        super(definition, coverHolder, attachedSide, tier);
-
+    public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
+                         int maxTransferRate) {
+        super(definition, coverHolder, attachedSide, tier, maxTransferRate);
         setTransferMode(TransferMode.TRANSFER_ANY);
+    }
+
+    public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
+        this(definition, coverHolder, attachedSide, tier, CONVEYOR_SCALING.applyAsInt(tier));
     }
 
     @Override
