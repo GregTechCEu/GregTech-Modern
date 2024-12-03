@@ -5,14 +5,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -46,7 +43,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.INTEGRATED_CIRCUIT.asStack();
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -73,7 +70,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     public static boolean isIntegratedCircuit(ItemStack itemStack) {
-        boolean isCircuit = GTItems.INTEGRATED_CIRCUIT.isIn(itemStack);
+        boolean isCircuit = GTItems.PROGRAMMED_CIRCUIT.isIn(itemStack);
         if (isCircuit && !itemStack.hasTag()) {
             var compound = new CompoundTag();
             compound.putInt("Configuration", 0);
@@ -149,15 +146,9 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         var stack = context.getItemInHand();
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (entity instanceof MetaMachineBlockEntity machineEntity && context.getPlayer().isCrouching()) {
-            if (machineEntity.metaMachine instanceof SimpleTieredMachine tieredMachine) {
-                setCircuitConfig(tieredMachine.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof FluidHatchPartMachine fluidHatch) {
-                setCircuitConfig(fluidHatch.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof ItemBusPartMachine itemBus) {
-                setCircuitConfig(itemBus.getCircuitInventory(), circuitSetting);
-            } else if (machineEntity.metaMachine instanceof MEPatternBufferPartMachine patternBuffer) {
-                setCircuitConfig(patternBuffer.getCircuitInventorySimulated(), circuitSetting);
+        if (entity instanceof MetaMachineBlockEntity machineEntity && context.isSecondaryUseActive()) {
+            if (machineEntity.metaMachine instanceof IHasCircuitSlot hasCircuitSlot) {
+                setCircuitConfig(hasCircuitSlot.getCircuitInventory(), circuitSetting);
             }
 
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit)

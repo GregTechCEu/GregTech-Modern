@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.emi;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -26,7 +25,6 @@ import de.mari_023.ae2wtlib.wet.WETMenu;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
 /**
@@ -77,19 +75,7 @@ public class GTEMIPlugin implements EmiPlugin {
         GTBedrockFluidEmiCategory.registerWorkStations(registry);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerWorkStations(registry);
-        for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
-            if (definition != null) {
-                registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));
-            }
-        }
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING,
-                EmiStack.of(GTMachines.STEAM_FURNACE.left().asStack()));
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING,
-                EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_OVEN.asStack()));
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.MULTI_SMELTER.asStack()));
-        registry.addWorkstation(
-                GTRecipeEMICategory.CATEGORIES.apply(GTRecipeCategory.of(GTRecipeTypes.CHEMICAL_RECIPES)),
+        registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
                 EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 }

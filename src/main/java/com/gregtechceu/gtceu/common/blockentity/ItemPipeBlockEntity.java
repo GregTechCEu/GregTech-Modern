@@ -182,6 +182,8 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
 
     public IItemHandlerModifiable getHandler(@Nullable Direction side, boolean useCoverCapability) {
         ensureHandlersInitialized();
+        checkNetwork();
+        if (this.currentItemPipeNet.get() == null) return null;
 
         ItemNetHandler handler = getHandlers().getOrDefault(side, getDefaultHandler());
         if (!useCoverCapability || side == null) return handler;

@@ -173,16 +173,39 @@ public class VanillaStandardRecipes {
                 new UnificationEntry(dust, QuartzSand),
                 new UnificationEntry(dustTiny, Flint));
 
+        VanillaRecipeHelper.addShapelessRecipe(provider, "glass_full_dust_flint", ChemicalHelper.get(dust, Glass, 8),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, QuartzSand),
+                new UnificationEntry(dust, Flint));
+
         MIXER_RECIPES.recipeBuilder("glass_from_quartzite").duration(160).EUt(VA[ULV])
                 .inputItems(dustSmall, Flint)
                 .inputItems(dust, Quartzite, 4)
                 .outputItems(dust, Glass, 5)
                 .save(provider);
 
+        MIXER_RECIPES.recipeBuilder("full_dust_glass_from_quartzite").duration(640).EUt(VA[ULV])
+                .inputItems(dust, Flint)
+                .inputItems(dust, Quartzite, 16)
+                .outputItems(dust, Glass, 20)
+                .save(provider);
+
         MIXER_RECIPES.recipeBuilder("glass_from_quartz_sand").duration(200).EUt(VA[ULV])
                 .inputItems(dustSmall, Flint)
                 .inputItems(dust, QuartzSand, 4)
                 .outputItems(dust, Glass, 4)
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("full_dust_glass_from_sand").duration(800).EUt(VA[ULV])
+                .inputItems(dust, Flint)
+                .inputItems(dust, QuartzSand, 16)
+                .outputItems(dust, Glass, 16)
                 .save(provider);
 
         ARC_FURNACE_RECIPES.recipeBuilder("glass_from_sand").duration(20).EUt(VA[LV])

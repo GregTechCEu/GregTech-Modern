@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -109,7 +110,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
-        this.recipeCategory = GTRecipeCategory.of(recipeType);
+        this.recipeCategory = recipeType.getCategory();
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
@@ -166,7 +167,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        return builder.copy(builder.id).onSave(null).recipeType(recipeType);
+        return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
@@ -1091,7 +1092,7 @@ public class GTRecipeBuilder {
         json.add("tickInputChanceLogics", chanceLogicsToJson(tickInputChanceLogic));
         json.add("tickOutputChanceLogics", chanceLogicsToJson(tickOutputChanceLogic));
 
-        json.addProperty("category", recipeCategory.getResourceLocation().toString());
+        json.addProperty("category", recipeCategory.registryKey.toString());
 
         if (!conditions.isEmpty()) {
             JsonArray array = new JsonArray();
@@ -1176,7 +1177,7 @@ public class GTRecipeBuilder {
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory.getRecipeType() != this.recipeType) {
+            } else if (recipeCategory != GTRecipeCategory.DEFAULT && recipeCategory.getRecipeType() != recipeType) {
                 GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
                         new IllegalArgumentException());
             }
@@ -1185,11 +1186,12 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
+    // Hide raw recipes
     public GTRecipe buildRawRecipe() {
         var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel, recipeCategory);
+                conditions, List.of(), data, duration, isFuel, GTRecipeCategories.DUMMY);
         return recipe;
     }
 

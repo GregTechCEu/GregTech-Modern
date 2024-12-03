@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-public class IngotProperty implements IMaterialProperty<IngotProperty> {
+public class IngotProperty implements IMaterialProperty {
 
     /**
      * Specifies a material into which this material parts turn when heated

@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -213,7 +212,6 @@ public final class ResearchManager {
                             .notConsumable(copiedStick)
                             .outputItems(resultStick)
                             .duration(DURATION).EUt(EUT)
-                            .category(GTRecipeCategories.DUMMY)
                             .buildRawRecipe());
         }
     }

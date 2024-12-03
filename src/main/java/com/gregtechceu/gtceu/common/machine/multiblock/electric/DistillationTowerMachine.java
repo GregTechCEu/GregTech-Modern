@@ -112,7 +112,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     return;
                 }
             }
-        }
+        } else onStructureInvalid();
     }
 
     @Override

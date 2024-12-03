@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
-import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,9 +67,12 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            FluidStack tank = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.EMPTY, stack.is(CREATIVE_FLUID_ITEM));
+            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, FluidStack.EMPTY,
+                    stack.is(CREATIVE_FLUID_ITEM));
 
             poseStack.popPose();
         }
@@ -82,14 +85,14 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(),
-                    machine.getCache().getLockedFluid().getFluid(), machine instanceof CreativeTankMachine);
+            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getStoredAmount(),
+                    machine.getLockedFluid(), machine instanceof CreativeTankMachine);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored,
-                           FluidStack locked, boolean isCreative) {
+                           long storedAmount, FluidStack locked, boolean isCreative) {
         FluidStack fluid = !stored.isEmpty() ? stored : locked;
         if (fluid.isEmpty()) return;
 
@@ -120,8 +123,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         if (isCreative) {
             text = new TextTexture("∞").setDropShadow(false).scale(3.0f);
         } else {
-            var amount = stored.isEmpty() ? "*" :
-                    TextFormattingUtil.formatLongToCompactString(fluid.getAmount(), 4);
+            var amount = stored.isEmpty() ? "*" : FormattingUtil.formatNumberReadable(storedAmount, true);
             text = new TextTexture(amount).setDropShadow(false);
         }
         text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,

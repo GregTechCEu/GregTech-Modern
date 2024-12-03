@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
@@ -18,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,38 +34,33 @@ public abstract class ChanceLogic {
     public static final ChanceLogic OR = new ChanceLogic("or") {
 
         @Override
-        public @Nullable @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                                                   @NotNull ChanceBoostFunction boostFunction,
-                                                                   int baseTier, int machineTier,
-                                                                   @Nullable Object2IntMap<?> cache, int times,
-                                                                   RecipeCapability<?> cap) {
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
             for (Content entry : chancedEntries) {
-                int newChance = getChance(entry, boostFunction, baseTier, machineTier);
                 int maxChance = entry.maxChance;
 
-                // Chanced outputs are deterministic
+                // OR Chanced outputs are deterministic
                 // If a large batch is being done we can calculate how many we expect to get.
                 // Add the guaranteed part of that to the list, then roll for the remaining chanced part.
+                int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                 int totalChance = times * newChance;
                 int guaranteed = totalChance / maxChance;
-                if (guaranteed > 0) builder.add(entry.copyExplicit(cap, ContentModifier.multiplier(guaranteed)));
-                newChance = totalChance - (guaranteed * maxChance);
+                if (guaranteed > 0) builder.addAll(Collections.nCopies(guaranteed, entry));
+                newChance = totalChance % maxChance;
 
                 int cached = getCachedChance(entry, cache);
                 int chance = newChance + cached;
-                if (passesChance(chance, maxChance)) {
-                    do {
-                        builder.add(entry);
-                        chance -= maxChance;
-                        newChance -= maxChance;
-                    } while (passesChance(chance, maxChance));
+                while (passesChance(chance, maxChance)) {
+                    builder.add(entry);
+                    chance -= maxChance;
+                    newChance -= maxChance;
                 }
                 updateCachedChance(entry.content, cache, newChance / 2 + cached);
             }
-
-            List<Content> list = builder.build();
-            return list.isEmpty() ? null : list;
+            return builder.build();
         }
 
         @Override
@@ -86,27 +80,25 @@ public abstract class ChanceLogic {
     public static final ChanceLogic AND = new ChanceLogic("and") {
 
         @Override
-        public @Nullable @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                                                   @NotNull ChanceBoostFunction boostFunction,
-                                                                   int baseTier, int machineTier,
-                                                                   @Nullable Object2IntMap<?> cache, int times,
-                                                                   RecipeCapability<?> cap) {
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
             for (int i = 0; i < times; ++i) {
                 boolean failed = false;
                 for (Content entry : chancedEntries) {
+                    int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
-
-                    int newChance = getChance(entry, boostFunction, baseTier, machineTier);
                     int chance = newChance + cached;
-                    if (!passesChance(chance, entry.maxChance)) failed = true;
+                    if (passesChance(chance, entry.maxChance)) newChance -= entry.maxChance;
+                    else failed = true;
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
                     if (failed) break;
                 }
                 if (!failed) builder.addAll(chancedEntries);
             }
-            List<Content> list = builder.build();
-            return list.isEmpty() ? null : list;
+            return builder.build();
         }
 
         @Override
@@ -126,27 +118,27 @@ public abstract class ChanceLogic {
     public static final ChanceLogic XOR = new ChanceLogic("xor") {
 
         @Override
-        public @Nullable @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                                                   @NotNull ChanceBoostFunction boostFunction,
-                                                                   int baseTier, int machineTier,
-                                                                   @Nullable Object2IntMap<?> cache, int times,
-                                                                   RecipeCapability<?> cap) {
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
             for (int i = 0; i < times; ++i) {
                 Content selected = null;
                 for (Content entry : chancedEntries) {
+                    int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
-
-                    int newChance = getChance(entry, boostFunction, baseTier, machineTier);
                     int chance = newChance + cached;
-                    if (passesChance(chance, entry.maxChance)) selected = entry;
+                    if (passesChance(chance, entry.maxChance)) {
+                        selected = entry;
+                        newChance -= entry.maxChance;
+                    }
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
                     if (selected != null) break;
                 }
                 if (selected != null) builder.add(selected);
             }
-            List<Content> list = builder.build();
-            return list.isEmpty() ? null : list;
+            return builder.build();
         }
 
         @Override
@@ -166,12 +158,11 @@ public abstract class ChanceLogic {
     public static final ChanceLogic NONE = new ChanceLogic("none") {
 
         @Override
-        public @Nullable @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                                                   @NotNull ChanceBoostFunction boostFunction,
-                                                                   int baseTier, int machineTier,
-                                                                   @Nullable Object2IntMap<?> cache, int times,
-                                                                   RecipeCapability<?> cap) {
-            return null;
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
+            return Collections.emptyList();
         }
 
         @Override
@@ -192,13 +183,13 @@ public abstract class ChanceLogic {
     /**
      * @param entry         the entry to get the complete chance for
      * @param boostFunction the function boosting the entry's chance
-     * @param baseTier      the base tier of the recipe
-     * @param machineTier   the tier the recipe is run at
+     * @param recipeTier    the base tier of the recipe
+     * @param chanceTier    the tier the recipe is run at
      * @return the total chance for the entry
      */
-    static int getChance(@NotNull Content entry, @NotNull ChanceBoostFunction boostFunction, int baseTier,
-                         int machineTier) {
-        return boostFunction.getBoostedChance(entry, baseTier, machineTier);
+    static int getChance(@NotNull Content entry, @NotNull ChanceBoostFunction boostFunction, int recipeTier,
+                         int chanceTier) {
+        return boostFunction.getBoostedChance(entry, recipeTier, chanceTier);
     }
 
     /**
@@ -245,35 +236,33 @@ public abstract class ChanceLogic {
      *
      * @param chancedEntries the list of entries to roll
      * @param boostFunction  the function to boost the entries' chances
-     * @param baseTier       the base tier of the recipe
-     * @param machineTier    the tier the recipe is run at
+     * @param recipeTier     the base tier of the recipe
+     * @param chanceTier     the tier the recipe is run at
      * @param cache          the cache of previously rolled chances, can be null
-     * @param cap
-     * @return a list of the produced outputs, or null if failed
+     * @param times          the number of times to roll
+     * @return a list of the produced outputs, empty if roll fails
      */
-    public abstract @Nullable @Unmodifiable List<@NotNull Content> roll(
-                                                                        @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                                                        @NotNull ChanceBoostFunction boostFunction,
-                                                                        int baseTier, int machineTier,
-                                                                        @Nullable Object2IntMap<?> cache, int times,
-                                                                        RecipeCapability<?> cap);
+    public abstract @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                              @NotNull ChanceBoostFunction boostFunction,
+                                                              int recipeTier,
+                                                              int chanceTier, @Nullable Object2IntMap<?> cache,
+                                                              int times);
 
     /**
      * Roll the chance and attempt to produce the output
      *
      * @param chancedEntries the list of entries to roll
      * @param boostFunction  the function to boost the entries' chances
-     * @param baseTier       the base tier of the recipe
-     * @param machineTier    the tier the recipe is run at
+     * @param recipeTier     the base tier of the recipe
+     * @param chanceTier     the tier the recipe is run at
+     * @param times          the number of times to roll
      * @return a list of the produced outputs
      */
-    @Nullable
     @Unmodifiable
-    public List<@NotNull Content> roll(
-                                       @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
-                                       @NotNull ChanceBoostFunction boostFunction,
-                                       int baseTier, int machineTier, int times, RecipeCapability<?> cap) {
-        return roll(chancedEntries, boostFunction, baseTier, machineTier, null, times, cap);
+    public List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                       @NotNull ChanceBoostFunction boostFunction, int recipeTier, int chanceTier,
+                                       int times) {
+        return roll(chancedEntries, boostFunction, recipeTier, chanceTier, null, times);
     }
 
     @NotNull

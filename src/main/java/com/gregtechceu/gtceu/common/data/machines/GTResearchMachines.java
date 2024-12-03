@@ -49,7 +49,7 @@ import java.util.function.Function;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.createCreativeTooltips;
+import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
@@ -352,8 +352,11 @@ public class GTResearchMachines {
             .tier(MAX)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"))
-            .tooltipBuilder(createCreativeTooltips(true))
+            .tooltipBuilder((s, list) -> {
+                list.add(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
+                CREATIVE_TOOLTIPS.accept(s, list);
+                list.add(Component.translatable("gtceu.universal.enabled"));
+            })
             .overlayTieredHullRenderer("data_access_hatch_creative")
             .register();
 

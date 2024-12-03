@@ -106,8 +106,9 @@ public class MultiblockDisplayText {
 
                 String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
                 // wrap in text component to keep it from being formatted
+                byte voltageTier = GTUtil.getFloorTierByVoltage(maxVoltage);
                 Component voltageName = Component.literal(
-                        GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)]);
+                        GTValues.VNF[voltageTier]);
 
                 MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
                         energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
@@ -331,10 +332,12 @@ public class MultiblockDisplayText {
             return this;
         }
 
-        public Builder addOutputLines(GTRecipe recipe, int chanceTier) {
+        public Builder addOutputLines(GTRecipe recipe) {
             if (!isStructureFormed || !isActive)
                 return this;
             if (recipe != null) {
+                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+                int chanceTier = recipeTier + recipe.ocLevel;
                 var function = recipe.getType().getChanceFunction();
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
@@ -346,8 +349,7 @@ public class MultiblockDisplayText {
                     double countD = count;
                     if (item.chance < item.maxChance) {
                         countD = countD * recipe.parallels *
-                                function.getBoostedChance(item, RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier) /
-                                item.maxChance;
+                                function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                     }
                     if (count < maxDurationSec) {
@@ -365,8 +367,8 @@ public class MultiblockDisplayText {
                     int amount = stack.getAmount();
                     double amountD = amount;
                     if (fluid.chance < fluid.maxChance) {
-                        amountD = amountD * recipe.parallels * function.getBoostedChance(fluid,
-                                RecipeHelper.getPreOCRecipeEuTier(recipe), chanceTier) / fluid.maxChance;
+                        amountD = amountD * recipe.parallels *
+                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                     }
                     if (amount < maxDurationSec) {
@@ -564,6 +566,15 @@ public class MultiblockDisplayText {
          */
         public Builder addCustom(Consumer<List<Component>> customConsumer) {
             customConsumer.accept(textList);
+            return this;
+        }
+
+        /*
+         * Add a line specifying the current EU/t
+         */
+        public Builder addCurrentEnergyProductionLine(long euOutput) {
+            textList.add(Component.translatable("gtceu.multiblock.turbine.energy_per_tick_maxed",
+                    FormattingUtil.formatNumbers(euOutput)).withStyle(ChatFormatting.GRAY));
             return this;
         }
     }

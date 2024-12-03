@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -82,8 +81,7 @@ public class GTRecipeTypes {
                 // remove the * 12 if SteamBoilerMachine:240 is uncommented
                 var duration = (builder.duration / 12 / 80); // copied for large boiler
                 if (duration > 0) {
-                    GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration)
-                            .category(GTRecipeCategory.of(GTRecipeTypes.LARGE_BOILER_RECIPES)).save(provider);
+                    GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
             .setMaxTooltips(1)
@@ -98,8 +96,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.FURNACE_OVERLAY_1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_ARROW_STEAM, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.FURNACE)
-            .setXEIVisible(false);
+            .setSound(GTSoundEntries.FURNACE);
 
     public final static GTRecipeType ALLOY_SMELTER_RECIPES = register("alloy_smelter", ELECTRIC)
             .setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
@@ -199,7 +196,6 @@ public class GTRecipeTypes {
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
-                    .category(GTRecipeCategory.of(GTRecipeTypes.LARGE_CHEMICAL_RECIPES))
                     .save(provider));
 
     public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor", ELECTRIC).setMaxIOSize(1, 1, 0, 0)
@@ -672,7 +668,7 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
             .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                    FormattingUtil.formatCompactNumbers(data.getLong("eu_to_start")),
+                    FormattingUtil.formatNumberReadable2F(data.getLong("eu_to_start"), false),
                     FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
@@ -713,7 +709,6 @@ public class GTRecipeTypes {
                 CREATE_MIXER_RECIPES.copyFrom(builder)
                         .duration(Math.max((builder.duration / 2), 1))
                         .rpm(64)
-                        .category(GTRecipeCategory.of(CREATE_MIXER_RECIPES))
                         .save(provider);
             });
         }

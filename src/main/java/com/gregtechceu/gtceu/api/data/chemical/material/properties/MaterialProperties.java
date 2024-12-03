@@ -18,7 +18,7 @@ public class MaterialProperties {
         baseTypes.add(baseTypeKey);
     }
 
-    private final Map<PropertyKey<? extends IMaterialProperty<?>>, IMaterialProperty<?>> propertyMap;
+    private final Map<PropertyKey<? extends IMaterialProperty>, IMaterialProperty> propertyMap;
     private Material material;
 
     public MaterialProperties() {
@@ -29,15 +29,15 @@ public class MaterialProperties {
         return propertyMap.isEmpty();
     }
 
-    public <T extends IMaterialProperty<T>> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
         return key.cast(propertyMap.get(key));
     }
 
-    public <T extends IMaterialProperty<T>> boolean hasProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return propertyMap.get(key) != null;
     }
 
-    public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> value) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty value) {
         if (value == null) throw new IllegalArgumentException("Material Property must not be null!");
         if (hasProperty(key))
             throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
@@ -45,7 +45,7 @@ public class MaterialProperties {
         propertyMap.remove(PropertyKey.EMPTY);
     }
 
-    public <T extends IMaterialProperty<T>> void removeProperty(PropertyKey<T> property) {
+    public <T extends IMaterialProperty> void removeProperty(PropertyKey<T> property) {
         if (!hasProperty(property))
             throw new IllegalArgumentException("Material Property " + property.toString() + " not present!");
         propertyMap.remove(property);
@@ -53,7 +53,7 @@ public class MaterialProperties {
             propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
     }
 
-    public <T extends IMaterialProperty<T>> void ensureSet(PropertyKey<T> key, boolean verify) {
+    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key, boolean verify) {
         if (!hasProperty(key)) {
             propertyMap.put(key, key.constructDefault());
             propertyMap.remove(PropertyKey.EMPTY);
@@ -61,12 +61,12 @@ public class MaterialProperties {
         }
     }
 
-    public <T extends IMaterialProperty<T>> void ensureSet(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key) {
         ensureSet(key, false);
     }
 
     public void verify() {
-        List<IMaterialProperty<?>> oldList;
+        List<IMaterialProperty> oldList;
         do {
             oldList = new ArrayList<>(propertyMap.values());
             oldList.forEach(p -> p.verifyProperty(this));

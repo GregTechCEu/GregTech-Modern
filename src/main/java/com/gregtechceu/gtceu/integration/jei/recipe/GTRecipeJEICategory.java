@@ -7,15 +7,15 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 
 import lombok.Getter;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -25,14 +25,13 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipeWrapper>> TYPES = Util
-            .memoize(category -> new RecipeType<>(category.getResourceLocation(), GTRecipeWrapper.class));
+            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipeWrapper.class));
 
     private final GTRecipeCategory category;
     @Getter
@@ -47,37 +46,14 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         IGuiHelper guiHelper = helpers.getGuiHelper();
         var size = recipeType.getRecipeUI().getJEISize();
         this.background = guiHelper.createBlankDrawable(size.width, size.height);
-
-        Object icon1 = category.getIcon();
-        if (icon1 instanceof ResourceTexture tex) {
-            this.icon = helpers.getGuiHelper()
-                    .drawableBuilder(tex.imageLocation, 0, 0, (int) tex.imageWidth, (int) tex.imageHeight)
-                    .setTextureSize(16, 16).build();
-        } else if (recipeType.getIconSupplier() != null) {
-            this.icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
-        } else {
-            this.icon = helpers.getGuiHelper().createDrawableItemStack(Items.BARRIER.getDefaultInstance());
-        }
-    }
-
-    @Override
-    @NotNull
-    public RecipeType<GTRecipeWrapper> getRecipeType() {
-        return TYPES.apply(category);
-    }
-
-    @NotNull
-    @Override
-    public Component getTitle() {
-        return Component.translatable(category.getTranslation());
+        this.icon = IGui2IDrawable.toDrawable(category.getIcon(), 16, 16);
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
             var type = category.getRecipeType();
-            if (type == GTRecipeTypes.FURNACE_RECIPES) continue;
-            if (!type.getRecipeUI().isXEIVisible() && !Platform.isDevEnv()) continue;
-            var recipes = type.getCategoryMap().getOrDefault(category, Set.of()).stream();
+            var recipes = type.getRecipesInCategory(category).stream();
             var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
                     .map(GTRecipeWrapper::new)
                     .toList();
@@ -89,12 +65,30 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         for (MachineDefinition machine : GTRegistries.MACHINES) {
             if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                if (type == null || !(Platform.isDevEnv() || type.getRecipeUI().isXEIVisible())) continue;
-                for (GTRecipeCategory category : type.getRecipesByCategory().keySet()) {
-                    registration.addRecipeCatalyst(machine.asStack(), TYPES.apply(category));
+                if (type == null) continue;
+                for (GTRecipeCategory category : type.getCategories()) {
+                    if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+                    registration.addRecipeCatalyst(machine.asStack(), machineType(category));
                 }
             }
         }
+    }
+
+    public static RecipeType<?> machineType(GTRecipeCategory category) {
+        if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
+        return TYPES.apply(category);
+    }
+
+    @Override
+    @NotNull
+    public RecipeType<GTRecipeWrapper> getRecipeType() {
+        return TYPES.apply(category);
+    }
+
+    @Override
+    @NotNull
+    public Component getTitle() {
+        return Component.translatable(category.getLanguageKey());
     }
 
     @Override

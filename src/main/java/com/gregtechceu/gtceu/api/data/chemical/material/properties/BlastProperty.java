@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import lombok.Getter;
 import lombok.Setter;
 
-public class BlastProperty implements IMaterialProperty<BlastProperty> {
+public class BlastProperty implements IMaterialProperty {
 
     /**
      * Blast Furnace Temperature of this Material.

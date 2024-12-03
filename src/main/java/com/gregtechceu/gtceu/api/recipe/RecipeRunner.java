@@ -111,12 +111,10 @@ class RecipeRunner {
         // Only roll if there's anything to roll for
         if (!chancedContents.isEmpty()) {
             int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-            int holderTier = holder.getChanceTier();
+            int chanceTier = recipeTier + recipe.ocLevel;
             var cache = this.chanceCaches.get(cap);
-            chancedContents = logic.roll(chancedContents, function, recipeTier, holderTier, cache, recipe.parallels,
-                    cap);
+            chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache, recipe.parallels);
 
-            if (chancedContents == null) return;
             for (Content cont : chancedContents) {
                 if (cont.slotName == null) {
                     this.content.content.add(cont.content);

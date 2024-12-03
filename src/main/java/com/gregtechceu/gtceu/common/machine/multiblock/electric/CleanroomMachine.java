@@ -36,6 +36,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -69,6 +70,7 @@ import java.util.*;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -212,6 +214,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      */
     public void updateStructureDimensions() {
         Level world = getLevel();
+        if (world == null) return;
         Direction front = getFrontFacing();
         Direction back = front.getOpposite();
         Direction left = front.getCounterClockWise();
@@ -267,7 +270,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      */
     public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                @NotNull Direction direction) {
-        return world.getBlockState(pos.move(direction)) == GTBlocks.PLASTCRETE.getDefaultState();
+        var state = world.getBlockState(pos.move(direction));
+        return state == GTBlocks.PLASTCRETE.getDefaultState() || state == GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
     /**
@@ -278,8 +282,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      */
     public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                 @NotNull Direction direction) {
-        return isBlockEdge(world, pos, direction) ||
-                world.getBlockState(pos) == GTBlocks.CLEANROOM_GLASS.getDefaultState();
+        var state = world.getBlockState(pos.move(direction));
+        return state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
@@ -302,76 +306,60 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             rDist = tmp;
         }
 
-        // build each row of the structure
-        StringBuilder borderBuilder = new StringBuilder();     // BBBBB
-        StringBuilder wallBuilder = new StringBuilder();       // BXXXB
-        StringBuilder insideBuilder = new StringBuilder();     // X X
-        StringBuilder roofBuilder = new StringBuilder();       // BFFFB
-        StringBuilder controllerBuilder = new StringBuilder(); // BFSFB
-        StringBuilder centerBuilder = new StringBuilder();     // BXKXB
+        StringBuilder[] floorLayer = new StringBuilder[fDist + bDist + 1];
+        List<StringBuilder[]> wallLayers = new ArrayList<>();
+        StringBuilder[] ceilingLayer = new StringBuilder[fDist + bDist + 1];
 
-        // everything to the left of the controller
-        for (int i = 0; i < lDist; i++) {
-            borderBuilder.append("B");
-            if (i == 0) {
-                wallBuilder.append("B");
-                insideBuilder.append("X");
-                roofBuilder.append("B");
-                controllerBuilder.append("B");
-                centerBuilder.append("B");
-            } else {
-                insideBuilder.append(" ");
-                wallBuilder.append("X");
-                roofBuilder.append("F");
-                controllerBuilder.append("F");
-                centerBuilder.append("X");
+        for (int i = 0; i < floorLayer.length; i++) {
+            floorLayer[i] = new StringBuilder(lDist + rDist + 1);
+            ceilingLayer[i] = new StringBuilder(lDist + rDist + 1);
+        }
+
+        for (int i = 0; i < hDist - 1; i++) {
+            wallLayers.add(new StringBuilder[fDist + bDist + 1]);
+            for (int j = 0; j < fDist + bDist + 1; j++) {
+                var s = new StringBuilder(lDist + rDist + 1);
+                wallLayers.get(i)[j] = s;
             }
         }
 
-        // everything in-line with the controller
-        borderBuilder.append("B");
-        wallBuilder.append("X");
-        insideBuilder.append(" ");
-        roofBuilder.append("F");
-        controllerBuilder.append("S");
-        centerBuilder.append("K");
-
-        // everything to the right of the controller
-        for (int i = 0; i < rDist; i++) {
-            borderBuilder.append("B");
-            if (i == rDist - 1) {
-                wallBuilder.append("B");
-                insideBuilder.append("X");
-                roofBuilder.append("B");
-                controllerBuilder.append("B");
-                centerBuilder.append("B");
-            } else {
-                insideBuilder.append(" ");
-                wallBuilder.append("X");
-                roofBuilder.append("F");
-                controllerBuilder.append("F");
-                centerBuilder.append("X");
+        for (int i = 0; i < lDist + rDist + 1; i++) {
+            for (int j = 0; j < fDist + bDist + 1; j++) {
+                if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
+                    floorLayer[i].append('A'); // floor edge
+                    for (int k = 0; k < hDist - 1; k++) {
+                        wallLayers.get(k)[i].append('W'); // walls
+                    }
+                    ceilingLayer[i].append('D'); // ceiling edge
+                } else { // not edges
+                    if (i == lDist && j == fDist) { // very center
+                        floorLayer[i].append('K');
+                    } else {
+                        floorLayer[i].append('E'); // floor valid blocks
+                    }
+                    for (int k = 0; k < hDist - 1; k++) {
+                        wallLayers.get(k)[i].append(' ');
+                    }
+                    if (i == lDist && j == fDist) { // very center
+                        ceilingLayer[i].append('C'); // controller
+                    } else {
+                        ceilingLayer[i].append('F'); // filter
+                    }
+                }
             }
         }
 
-        // build each slice of the structure
-        String[] wall = new String[hDist + 1]; // "BBBBB", "BXXXB", "BXXXB", "BXXXB", "BBBBB"
-        Arrays.fill(wall, wallBuilder.toString());
-        wall[0] = borderBuilder.toString();
-        wall[wall.length - 1] = borderBuilder.toString();
-
-        String[] slice = new String[hDist + 1]; // "BXXXB", "X X", "X X", "X X", "BFFFB"
-        Arrays.fill(slice, insideBuilder.toString());
-        slice[0] = wallBuilder.toString();
-        slice[slice.length - 1] = roofBuilder.toString();
-
-        String[] center = Arrays.copyOf(slice, slice.length); // "BXKXB", "X X", "X X", "X X", "BFSFB"
-        if (this.getFrontFacing() == Direction.NORTH || this.getFrontFacing() == Direction.SOUTH) {
-            center[0] = centerBuilder.reverse().toString();
-            center[center.length - 1] = controllerBuilder.reverse().toString();
-        } else {
-            center[0] = centerBuilder.toString();
-            center[center.length - 1] = controllerBuilder.toString();
+        String[] f = new String[bDist + fDist + 1];
+        for (int i = 0; i < floorLayer.length; i++) {
+            f[i] = floorLayer[i].toString();
+        }
+        String[] m = new String[bDist + fDist + 1];
+        for (int i = 0; i < wallLayers.get(0).length; i++) {
+            m[i] = wallLayers.get(0)[i].toString();
+        }
+        String[] c = new String[bDist + fDist + 1];
+        for (int i = 0; i < ceilingLayer.length; i++) {
+            c[i] = ceilingLayer[i].toString();
         }
 
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
@@ -379,24 +367,24 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .setMaxGlobalLimited(2)
                 .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
                         .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
-                        .setMaxGlobalLimited(1));
+                        .setMaxGlobalLimited(1))
+                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
 
-        // layer the slices one behind the next
-        return FactoryBlockPattern.start()
-                .aisle(wall)
-                .aisle(slice).setRepeatable(bDist - 1)
-                .aisle(center)
-                .aisle(slice).setRepeatable(fDist - 1)
-                .aisle(wall)
-                .where('S', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
-                .where('B', states(getCasingState()).or(basePredicate))
-                .where('X', wallPredicate.or(basePredicate)
-                        .or(doorPredicate().setMaxGlobalLimited(8))
-                        .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30)))
-                .where('K', wallPredicate) // the block beneath the controller must only be a casing for structure
-                                           // dimension checks
+        return FactoryBlockPattern.start(LEFT, FRONT, UP)
+                .aisle(f)
+                .aisle(m).setRepeatable(wallLayers.size())
+                .aisle(c)
+                .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .where('F', Predicates.cleanroomFilters())
+                .where('D', states(getCasingState())) // ceiling edges
                 .where(' ', innerPredicate())
+                .where('E', wallPredicate.or(basePredicate) // inner floor
+                        .or(getValidFloorBlocks().setMaxGlobalLimited(4)))
+                .where('K', wallPredicate // very center floor, needed for height check
+                        .or(getValidFloorBlocks()))
+                .where('W', wallPredicate.or(basePredicate)// walls
+                        .or(doorPredicate().setMaxGlobalLimited(4)))
+                .where('A', wallPredicate.or(basePredicate)) // floor edges
                 .build();
     }
 
@@ -416,6 +404,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock,
                 () -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
                         Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER)) });
+    }
+
+    private TraceabilityPredicate getValidFloorBlocks() {
+        return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull

@@ -35,7 +35,6 @@ public class LangHandler {
         MachineLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
-        CompassLang.init(provider);
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
@@ -150,6 +149,7 @@ public class LangHandler {
         provider.add("gtceu.hazard_trigger.protection.description", "Protects from:");
         provider.add("gtceu.hazard_trigger.inhalation", "Inhalation");
         provider.add("gtceu.hazard_trigger.any", "Any contact");
+
         provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
         provider.add("gtceu.hazard_trigger.none", "Nothing");
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
@@ -233,6 +233,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
         provider.add("item.gtceu.tool.tooltip.crafting_uses", "%s §aCrafting Uses");
+        provider.add("item.gtceu.tool.tooltip.max_uses", "%s §eTotal Durability");
         provider.add("item.gtceu.tool.tooltip.general_uses", "%s §bDurability");
         provider.add("item.gtceu.tool.tooltip.attack_damage", "%s §cAttack Damage");
         provider.add("item.gtceu.tool.tooltip.attack_speed", "%s §9Attack Speed");
@@ -728,6 +729,13 @@ public class LangHandler {
         provider.add("behaviour.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
         provider.add("behaviour.prospecting", "Usable for Prospecting");
+        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
+        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
+        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
+        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
+        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
+        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
+        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
         provider.add("enchantment.damage.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",
                 "Applies Weakness and Slowness to Ender-related mobs.");
@@ -1360,6 +1368,13 @@ public class LangHandler {
 
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
         provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
+
+        provider.add("gtceu.direction.tooltip.up", "Up");
+        provider.add("gtceu.direction.tooltip.down", "Down");
+        provider.add("gtceu.direction.tooltip.left", "Left");
+        provider.add("gtceu.direction.tooltip.right", "Right");
+        provider.add("gtceu.direction.tooltip.back", "Back");
+        provider.add("gtceu.direction.tooltip.front", "Front");
     }
 
     /**
