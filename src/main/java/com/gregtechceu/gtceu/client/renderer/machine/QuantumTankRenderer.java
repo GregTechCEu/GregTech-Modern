@@ -42,8 +42,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     private static final float MIN = 0.16f;
-    private static final float MAX = 0.84f; 
-    
+    private static final float MAX = 0.84f;
+
     private static Item CREATIVE_FLUID_ITEM = null;
 
     public QuantumTankRenderer(int tier) {
