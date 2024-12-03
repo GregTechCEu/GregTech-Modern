@@ -423,11 +423,6 @@ public class ConfigHolder {
                 "Default: false" })
         public boolean harmlessActiveTransformers = false;
         @Configurable
-        @Configurable.Comment({ "Divisor for Recipe Duration per Overclock.", "Default: 2.0" })
-        @Configurable.DecimalRange(min = 2.0, max = 3.0)
-        @Configurable.Gui.NumberFormat("0.0#")
-        public double overclockDivisor = 2.0;
-        @Configurable
         @Configurable.Comment({ "Whether to play machine sounds while machines are active.", "Default: true" })
         public boolean machineSounds = true;
         @Configurable

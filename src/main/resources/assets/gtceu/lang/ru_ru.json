@@ -1822,7 +1822,6 @@
     "config.gtceu.option.oreVeinGridSize": "oreVeinGridSize",
     "config.gtceu.option.oreVeinRandomOffset": "oreVeinRandomOffset",
     "config.gtceu.option.oreVeins": "oreVeins",
-    "config.gtceu.option.overclockDivisor": "overclockDivisor",
     "config.gtceu.option.platformToEuRatio": "platformToEuRatio",
     "config.gtceu.option.recipeProgressLowEnergy": "recipeProgressLowEnergy",
     "config.gtceu.option.recipes": "recipes",
