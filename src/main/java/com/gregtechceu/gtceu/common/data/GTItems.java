@@ -2350,7 +2350,7 @@ public class GTItems {
     public static ItemEntry<Item> PLUGIN_FAKE_GUI;
     public static ItemEntry<Item> PLUGIN_ADVANCED_MONITOR;
 
-    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT = REGISTRATE
+    public static ItemEntry<ComponentItem> PROGRAMMED_CIRCUIT = REGISTRATE
             .item("programmed_circuit", ComponentItem::create)
             .lang("Programmed Circuit")
             .model(overrideModel(GTCEu.id("circuit"), 33))
