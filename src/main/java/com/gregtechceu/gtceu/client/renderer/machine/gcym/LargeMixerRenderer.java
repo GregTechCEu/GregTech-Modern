@@ -58,7 +58,10 @@ public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
             if (mm.metaMachine instanceof LargeMixerMachine lm) {
                 var lastRecipe = lm.recipeLogic.getLastRecipe();
-                if (lastRecipe != null && (lm.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe)) {
+                if (lastRecipe == null) {
+                    cachedRecipe = null;
+                    cachedFluid = null;
+                } else if (lm.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe) {
                     cachedRecipe = lastRecipe.id;
                     if (lm.isActive()) {
                         cachedFluid = RenderUtil.getRecipeFluidToRender(lastRecipe);

@@ -58,7 +58,10 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
             if (mm.metaMachine instanceof LargeChemicalBathMachine lcb) {
                 var lastRecipe = lcb.recipeLogic.getLastRecipe();
-                if (lastRecipe != null && (lcb.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe)) {
+                if (lastRecipe == null) {
+                    cachedRecipe = null;
+                    cachedFluid = null;
+                } else if (lcb.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe) {
                     cachedRecipe = lastRecipe.id;
                     if (lcb.isActive()) {
                         cachedFluid = RenderUtil.getRecipeFluidToRender(lastRecipe);
