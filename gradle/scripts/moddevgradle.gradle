@@ -34,8 +34,6 @@ neoForge {
             sourceSet = sourceSets.extra
             ideName = "Client 1"
 
-            programArguments.addAll('--width', '1920')
-            programArguments.addAll('--height', '1080')
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
@@ -45,8 +43,6 @@ neoForge {
             ideName = "Client 2"
 
             programArguments.addAll('--username', 'YoungOnion')
-            programArguments.addAll('--width', '1920')
-            programArguments.addAll('--height', '1080')
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
@@ -56,8 +52,6 @@ neoForge {
             sourceSet = sourceSets.main
             ideName = "Clean Client"
 
-            programArguments.addAll('--width', '1920')
-            programArguments.addAll('--height', '1080')
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
