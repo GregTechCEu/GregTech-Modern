@@ -107,7 +107,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         poseStack.pushPose();
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
         var gas = fluid.getFluid().getFluidType().isLighterThanAir();
-        var percentFull = isCreative ? 1f : (float) storedAmount / maxAmount;
+        var percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
         var facingYAxis = frontFacing.getAxis() == Direction.Axis.Y;
         var maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
         var minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
