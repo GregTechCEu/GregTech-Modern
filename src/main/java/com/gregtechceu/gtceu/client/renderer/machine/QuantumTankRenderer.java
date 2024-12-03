@@ -41,6 +41,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
  */
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
+    private static final float MIN = 0.16f;
+    private static final float MAX = 0.84f; 
+    
     private static Item CREATIVE_FLUID_ITEM = null;
 
     public QuantumTankRenderer(int tier) {
@@ -105,15 +108,13 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
         var gas = fluid.getFluid().getFluidType().isLighterThanAir();
         var percentFull = isCreative ? 1f : (float) storedAmount / maxAmount;
-        var min = .16f;
-        var max = .84f;
         var facingYAxis = frontFacing.getAxis() == Direction.Axis.Y;
-        var maxTop = gas ? max : min + percentFull * (max - min);
-        var minBot = gas ? min + (1 - percentFull) * (max - min) : min;
+        var maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
+        var minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
         float minY, maxY, minZ, maxZ;
         if (facingYAxis) {
-            minY = min;
-            maxY = max;
+            minY = MIN;
+            maxY = MAX;
             if (frontFacing == Direction.UP) {
                 minZ = minBot;
                 maxZ = maxTop;
@@ -125,10 +126,10 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         } else {
             minY = minBot;
             maxY = maxTop;
-            minZ = min;
-            maxZ = max;
+            minZ = MIN;
+            maxZ = MAX;
         }
-        RenderBufferUtils.renderCubeFace(poseStack, builder, min, minY, minZ, max, maxY, maxZ,
+        RenderBufferUtils.renderCubeFace(poseStack, builder, MIN, minY, minZ, MAX, maxY, maxZ,
                 ext.getTintColor() | 0xff000000, 0xf000f0, fluidTexture);
         poseStack.popPose();
 
