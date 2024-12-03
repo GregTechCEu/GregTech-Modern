@@ -3,9 +3,12 @@ package com.gregtechceu.gtceu.integration.jei;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.jei.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
@@ -26,6 +29,7 @@ import mezz.jei.api.registration.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -59,6 +63,7 @@ public class GTJEIPlugin implements IModPlugin {
                 registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }
+        registry.addRecipeCategories(new GTProgrammedCircuitCategory(jeiHelpers));
     }
 
     @Override
@@ -73,6 +78,7 @@ public class GTJEIPlugin implements IModPlugin {
             GTBedrockOreInfoCategory.registerRecipeCatalysts(registration);
         registration.addRecipeCatalyst(GTMachines.LARGE_CHEMICAL_REACTOR.asStack(),
                 GTRecipeJEICategory.TYPES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()));
+        registration.addRecipeCatalyst(IntCircuitBehaviour.stack(0), GTProgrammedCircuitCategory.RECIPE_TYPE);
     }
 
     @Override
@@ -87,11 +93,17 @@ public class GTJEIPlugin implements IModPlugin {
         GTBedrockFluidInfoCategory.registerRecipes(registration);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreInfoCategory.registerRecipes(registration);
+        registration.addRecipes(GTProgrammedCircuitCategory.RECIPE_TYPE, List.of(new GTProgrammedCircuitCategory.GTProgrammedCircuitWrapper()));
     }
 
     @Override
     public void registerIngredients(@NotNull IModIngredientRegistration registry) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register ingredients");
+    }
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
+        registration.useNbtForSubtypes(GTItems.PROGRAMMED_CIRCUIT.asItem());
     }
 }

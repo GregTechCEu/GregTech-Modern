@@ -15,7 +15,7 @@ dependencies {
     // JEI
     modCompileOnly(forge.jei.common.api) { transitive = false }
     modCompileOnly(forge.jei.forge.api) { transitive = false }
-    modCompileOnly(forge.jei.forge.impl) { transitive = false }
+    modImplementation(forge.jei.forge.impl) { transitive = false }
 
     // REI
     modCompileOnly forge.rei.plugin
@@ -24,7 +24,7 @@ dependencies {
 
     // EMI
     //modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modImplementation forge.emi
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
@@ -68,8 +68,8 @@ dependencies {
     modCompileOnly("maven.modrinth:oculus:1.20.1-1.7.0")
 
     // JAVD
-    modImplementation(forge.javd) { transitive = false }
-    modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
+    //modImplementation(forge.javd) { transitive = false }
+    //modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
 
     modCompileOnly(forge.ftbteams)
     modCompileOnly(forge.ftblibrary)

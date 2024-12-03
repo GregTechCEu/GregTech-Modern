@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.Platform;
 
+import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
@@ -110,6 +112,11 @@ public class GTREIPlugin implements REIClientPlugin {
             registry.group(GTCEu.id("ore/" + name), Component.translatable("tagprefix.stone", label),
                     EntryIngredients.ofItems(items));
         }
+    }
+
+    @Override
+    public void registerItemComparators(ItemComparatorRegistry registry) {
+        registry.registerNbt(GTItems.PROGRAMMED_CIRCUIT.asItem());
     }
 
     private static String toUpperAllWords(String text) {
