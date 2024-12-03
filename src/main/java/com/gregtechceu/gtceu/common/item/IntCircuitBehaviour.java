@@ -43,7 +43,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.INTEGRATED_CIRCUIT.asStack();
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -70,7 +70,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     public static boolean isIntegratedCircuit(ItemStack itemStack) {
-        boolean isCircuit = GTItems.INTEGRATED_CIRCUIT.isIn(itemStack);
+        boolean isCircuit = GTItems.PROGRAMMED_CIRCUIT.isIn(itemStack);
         if (isCircuit && !itemStack.hasTag()) {
             var compound = new CompoundTag();
             compound.putInt("Configuration", 0);

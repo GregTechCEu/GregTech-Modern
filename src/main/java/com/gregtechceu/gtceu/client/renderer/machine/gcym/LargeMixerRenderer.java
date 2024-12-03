@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine.gcym;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.WorkableCasingMachineRenderer;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -18,18 +14,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.RenderTypeHelper;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
 
     private final FluidBlockRenderer fluidBlockRenderer;
+    private Fluid cachedFluid;
+    private ResourceLocation cachedRecipe;
 
     public LargeMixerRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
         super(baseCasing, workableModel);
@@ -62,35 +56,31 @@ public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
 
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         if (blockEntity instanceof MetaMachineBlockEntity mm) {
-            if (mm.metaMachine instanceof LargeMixerMachine lm && lm.isActive()) {
-                GTRecipe last = lm.recipeLogic.getLastRecipe();
-                if (last == null) return;
+            if (mm.metaMachine instanceof LargeMixerMachine lm) {
+                var lastRecipe = lm.recipeLogic.getLastRecipe();
+                if (lastRecipe != null && (lm.getOffsetTimer() % 20 == 0 || lastRecipe.id != cachedRecipe)) {
+                    cachedRecipe = lastRecipe.id;
+                    if (lm.isActive()) {
+                        cachedFluid = RenderUtil.getRecipeFluidToRender(lastRecipe);
+                    } else {
+                        cachedFluid = null;
+                    }
+                }
 
-                List<Content> contents = last.inputs.get(FluidRecipeCapability.CAP);
-                if (contents == null || contents.isEmpty()) return;
-
-                Optional<Content> fluidContent = contents.stream().filter(
-                        content -> content.content instanceof FluidIngredient ingredient && !ingredient.isEmpty())
-                        .findAny();
-                if (fluidContent.isEmpty()) return;
-                FluidIngredient ingredient = (FluidIngredient) fluidContent.get().content;
-
-                FluidStack[] stacks = ingredient.getStacks();
-                if (stacks.length == 0) return;
-                Optional<FluidStack> first = Arrays.stream(stacks).filter(s -> !s.isEmpty()).findFirst();
-                if (first.isEmpty()) return;
+                if (cachedFluid == null) {
+                    return;
+                }
 
                 stack.pushPose();
                 var pose = stack.last().pose();
 
-                var fluid = first.get().getFluid();
-                var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(fluid.defaultFluidState());
+                var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
                 var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
                 var up = RelativeDirection.UP.getRelativeFacing(lm.getFrontFacing(), lm.getUpwardsFacing(),
                         lm.isFlipped());
                 if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
-                fluidBlockRenderer.drawPlane(up, lm.getFluidBlockOffsets(), pose, consumer, fluid,
+                fluidBlockRenderer.drawPlane(up, lm.getFluidBlockOffsets(), pose, consumer, cachedFluid,
                         RenderUtil.FluidTextureType.STILL, combinedOverlay, lm.getPos());
 
                 stack.popPose();

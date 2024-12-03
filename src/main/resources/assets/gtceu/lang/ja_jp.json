@@ -2265,7 +2265,6 @@
     "config.gtceu.option.oreVeinGridSize": "鉱脈グリッドサイズ",
     "config.gtceu.option.oreVeinRandomOffset": "鉱脈ランダムオフセット",
     "config.gtceu.option.oreVeins": "鉱脈",
-    "config.gtceu.option.overclockDivisor": "オーバークロック除算器",
     "config.gtceu.option.platformToEuRatio": "プラットフォームとEUの比率",
     "config.gtceu.option.prospectorEnergyUseMultiplier": "プロスペクター エネルギー使用乗数",
     "config.gtceu.option.recipeProgressLowEnergy": "レシピ プログレス 低エネルギー",

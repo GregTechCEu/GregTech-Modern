@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -21,7 +20,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
-import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -151,12 +149,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private EditableMachineUI editableUI;
     @Setter
     private String langValue = null;
-    private final Set<CompassSection> compassSections = new HashSet<>();
-    @Nullable
-    private String compassNode = null;
-    @Nullable
-    @Setter
-    private ResourceLocation compassPage = null;
     private final List<ResourceLocation> preNodes = new ArrayList<>();
 
     protected MachineBuilder(Registrate registrate, String name,
@@ -271,7 +263,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
-        compassSections(GTCompassSections.PARTS);
         return this;
     }
 
@@ -311,38 +302,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                                                                 boolean multiBlockXEIPreview) {
         this.renderMultiblockWorldPreview = multiBlockWorldPreview;
         this.renderMultiblockXEIPreview = multiBlockXEIPreview;
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassSections(CompassSection... sections) {
-        this.compassSections.addAll(Arrays.stream(sections).toList());
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassNodeSelf() {
-        this.compassNode = name;
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassNode(String compassNode) {
-        this.compassNode = compassNode;
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassPreNodes(CompassSection section, String... compassNodes) {
-        for (String nodeID : compassNodes) {
-            preNodes.add(GTCEu.id(section.sectionID().getPath() + "/" + nodeID));
-        }
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassPreNodes(ResourceLocation... compassNodes) {
-        preNodes.addAll(Arrays.asList(compassNodes));
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> compassPreNodes(CompassNode... compassNodes) {
-        preNodes.addAll(Arrays.stream(compassNodes).map(CompassNode::nodeID).toList());
         return this;
     }
 
@@ -386,21 +345,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 .properties(itemProp);
         if (this.itemBuilder != null) {
             this.itemBuilder.accept(itemBuilder);
-        }
-        if (this.compassNode != null) {
-            if (compassSections.isEmpty()) {
-                compassSections.add(GTCompassSections.MACHINES);
-            }
-            for (CompassSection section : compassSections) {
-                itemBuilder.onRegister(item -> {
-                    var node = CompassNode.getOrCreate(section, compassNode)
-                            .addItem(item::asItem)
-                            .addPreNode(preNodes.toArray(ResourceLocation[]::new));
-                    if (compassPage != null) {
-                        node.page(compassPage);
-                    }
-                });
-            }
         }
         var item = itemBuilder.register();
 
