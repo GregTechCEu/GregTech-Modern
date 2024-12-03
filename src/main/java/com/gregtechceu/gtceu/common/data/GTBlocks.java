@@ -291,7 +291,6 @@ public class GTBlocks {
                 .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .color(() -> MaterialPipeBlockItem::tintColor)
-
                 .build()
                 .register();
         CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material, entry);
@@ -871,7 +870,6 @@ public class GTBlocks {
                 .blockstate(GTModels.createCoilModel("%s_coil_block".formatted(coilType.getName()), coilType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(BlockItem::new)
-
                 .build()
                 .register();
         GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
