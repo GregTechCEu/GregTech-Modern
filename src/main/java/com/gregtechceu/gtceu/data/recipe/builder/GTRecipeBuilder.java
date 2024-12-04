@@ -174,7 +174,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
         var t = (perTick ? tickInput : input);
         if (t.get(capability) != null && t.get(capability).size() >= recipeType.getMaxInputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         t.computeIfAbsent(capability, c -> new ArrayList<>())
@@ -185,7 +185,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
         var t = (perTick ? tickInput : input);
         if (t.get(capability) != null && t.get(capability).size() + obj.length > recipeType.getMaxInputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
@@ -197,7 +197,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T obj) {
         var t = (perTick ? tickOutput : output);
         if (t.get(capability) != null && t.get(capability).size() >= recipeType.getMaxOutputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
@@ -208,7 +208,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T... obj) {
         var t = (perTick ? tickOutput : output);
         if (t.get(capability) != null && t.get(capability).size() + obj.length > recipeType.getMaxOutputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
@@ -220,7 +220,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder inputs(RecipeCapability<T> capability, Object obj) {
         var t = (perTick ? tickInput : input);
         if (t.get(capability) != null && t.get(capability).size() >= recipeType.getMaxInputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>())
@@ -231,7 +231,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder inputs(RecipeCapability<T> capability, Object... obj) {
         var t = (perTick ? tickInput : input);
         if (t.get(capability) != null && t.get(capability).size() + obj.length > recipeType.getMaxInputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
@@ -243,7 +243,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder outputs(RecipeCapability<T> capability, Object obj) {
         var t = (perTick ? tickOutput : output);
         if (t.get(capability) != null && t.get(capability).size() >= recipeType.getMaxOutputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
@@ -254,7 +254,7 @@ public class GTRecipeBuilder {
     public <T> GTRecipeBuilder outputs(RecipeCapability<T> capability, Object... obj) {
         var t = (perTick ? tickOutput : output);
         if (t.get(capability) != null && t.get(capability).size() + obj.length > recipeType.getMaxOutputs(capability)) {
-            GTCEu.LOGGER.error("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
+            GTCEu.LOGGER.warn("Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
@@ -274,7 +274,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder EUt(long eu) {
         if (eu == 0) {
-            GTCEu.LOGGER.warn("EUt can't be explicitly set to 0, id: {}", id);
+            GTCEu.LOGGER.error("EUt can't be explicitly set to 0, id: {}", id);
         }
         var lastPerTick = perTick;
         perTick = true;
@@ -299,7 +299,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder CWUt(int cwu) {
         if (cwu == 0) {
-            GTCEu.LOGGER.warn("CWUt can't be explicitly set to 0, id: {}", id);
+            GTCEu.LOGGER.error("CWUt can't be explicitly set to 0, id: {}", id);
         }
         var lastPerTick = perTick;
         perTick = true;
@@ -545,7 +545,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         var item = ChemicalHelper.get(orePrefix, material, count);
         if (item.isEmpty()) {
-            GTCEu.LOGGER.warn("Tried to set output item stack that doesn't exist, TagPrefix: {}, Material: {}",
+            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, TagPrefix: {}, Material: {}",
                     orePrefix, material);
         }
         return outputItems(item);
@@ -588,7 +588,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItemsRanged(TagPrefix orePrefix, Material material, IntProvider intProvider) {
         var item = ChemicalHelper.get(orePrefix, material, 1);
         if (item.isEmpty()) {
-            GTCEu.LOGGER.warn("Tried to set output ranged item stack that doesn't exist, TagPrefix: {}, Material: {}",
+            GTCEu.LOGGER.error("Tried to set output ranged item stack that doesn't exist, TagPrefix: {}, Material: {}",
                     orePrefix, material);
         }
         return outputItemsRanged(item, intProvider);
