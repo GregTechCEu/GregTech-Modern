@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -105,6 +107,13 @@ public interface GTRecipeSchema {
             }
             if (map != null) {
                 for (Object object : obj) {
+                    var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                    if (map.get(capability) != null &&
+                            map.get(capability).length >= recipeType.getMaxInputs(capability)) {
+                        GTCEu.LOGGER.error(
+                                "Trying to add more inputs than RecipeType can support, id: {}, Max {}{}Inputs: {}",
+                                id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
+                    }
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
                 }
             }
@@ -123,6 +132,13 @@ public interface GTRecipeSchema {
             }
             if (map != null) {
                 for (Object object : obj) {
+                    var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                    if (map.get(capability) != null &&
+                            map.get(capability).length >= recipeType.getMaxOutputs(capability)) {
+                        GTCEu.LOGGER.error(
+                                "Trying to add more outputs than RecipeType can support, id: {}, Max {}{}Outputs: {}",
+                                id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
+                    }
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
                 }
             }
@@ -147,6 +163,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS EUt(long eu) {
+            if (eu == 0) {
+                GTCEu.LOGGER.warn("EUt can't be explicitly set to 0, id: {}", id);
+            }
             var lastPerTick = perTick;
             perTick = true;
             if (eu > 0) {
@@ -167,6 +186,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS CWUt(int cwu) {
+            if (cwu == 0) {
+                GTCEu.LOGGER.warn("CWUt can't be explicitly set to 0, id: {}", id);
+            }
             var lastPerTick = perTick;
             perTick = true;
             if (cwu > 0) {
@@ -208,7 +230,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
+                    GTCEu.LOGGER.error("Input items is empty, id: {}", id);
                 }
             }
             return input(ItemRecipeCapability.CAP,
@@ -278,7 +300,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
             for (ExtendedOutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
+                    GTCEu.LOGGER.error("Output items is empty, id: {}", id);
                 }
             }
             return output(ItemRecipeCapability.CAP, (Object[]) outputs);
@@ -349,13 +371,16 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
+            if (configuration < 0 || configuration > IntCircuitBehaviour.CIRCUIT_MAX) {
+                GTCEu.LOGGER.error("Circuit configuration must be in the bounds 0 - 32");
+            }
             return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             int lastChance = this.chance;
@@ -371,8 +396,8 @@ public interface GTRecipeSchema {
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             int lastChance = this.chance;
@@ -387,8 +412,8 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             int lastChance = this.chance;
@@ -447,13 +472,13 @@ public interface GTRecipeSchema {
             }
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), maxChance, id, new Throwable());
                 return this;
             }
 
@@ -487,8 +512,8 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             int lastChance = this.chance;
@@ -540,13 +565,13 @@ public interface GTRecipeSchema {
             }
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), chance, id, new Throwable());
                 return this;
             }
             if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}, Actual: {}, id: {}",
+                        ChanceLogic.getMaxChancedValue(), maxChance, id, new Throwable());
                 return this;
             }
 
