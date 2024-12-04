@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.integration.xeiwidgets.GTProgrammedCircuitWidget;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -32,7 +33,7 @@ public class GTProgrammedCircuitCategory extends ModularUIRecipeCategory<GTProgr
     private final IDrawable icon;
 
     public GTProgrammedCircuitCategory(IJeiHelpers helpers) {
-        background = helpers.getGuiHelper().createBlankDrawable(186, 174);
+        background = helpers.getGuiHelper().createBlankDrawable(150, 80);
         icon = helpers.getGuiHelper().createDrawableItemStack(GTItems.PROGRAMMED_CIRCUIT.asStack());
     }
 
@@ -57,41 +58,8 @@ public class GTProgrammedCircuitCategory extends ModularUIRecipeCategory<GTProgr
     }
 
     public static class GTProgrammedCircuitWrapper extends ModularWrapper<GTProgrammedCircuitWidget> {
-
-
         public GTProgrammedCircuitWrapper() {
             super(new GTProgrammedCircuitWidget());
-        }
-    }
-
-    public static class GTProgrammedCircuitWidget extends WidgetGroup {
-        public GTProgrammedCircuitWidget() {
-            setClientSideWidget();
-            setRecipe();
-        }
-
-        public void setRecipe() {
-            addWidget(new ImageWidget(39, 0, 36, 36, GuiTextures.SLOT));
-
-            ItemStackHandler handler = new CustomItemStackHandler(33);
-            handler.setStackInSlot(0, IntCircuitBehaviour.stack(0));
-            var circ0 = new ImageWidget(39, 0, 36, 36, new ItemStackTexture(GTItems.PROGRAMMED_CIRCUIT.asItem()));
-            addWidget(circ0);
-
-            for(int j = 0; j < 2; j++) {
-                for(int i = 0; i < 4; i++) {
-                    handler.setStackInSlot(1 + (i + j * 4), IntCircuitBehaviour.stack(1 + (i + j * 4)));
-                    addWidget(new SlotWidget(handler, 1 + (i + j * 4),  75 + 18 * i, 18 * j, false, false)
-                            .setIngredientIO(IngredientIO.BOTH));
-                }
-            }
-            for(int j = 0; j < 4; j++) {
-                for(int i = 0; i < 6; i++) {
-                    handler.setStackInSlot(9 + (i + j * 6), IntCircuitBehaviour.stack(9 + (i + j * 6)));
-                    addWidget(new SlotWidget(handler, 9 + (i + j * 6), 39 + 18 * i, 36 + 18 * j, false, false)
-                            .setIngredientIO(IngredientIO.BOTH));
-                }
-            }
         }
     }
 }

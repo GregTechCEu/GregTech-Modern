@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.recipe;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.integration.GTRecipeWidget;
+import com.gregtechceu.gtceu.integration.xeiwidgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;

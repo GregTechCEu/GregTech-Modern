@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.xeiwidgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
 

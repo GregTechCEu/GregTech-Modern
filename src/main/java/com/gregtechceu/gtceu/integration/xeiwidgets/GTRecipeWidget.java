@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration;
+package com.gregtechceu.gtceu.integration.xeiwidgets;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;

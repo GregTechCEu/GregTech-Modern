@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.rei.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCategory;
@@ -45,6 +46,7 @@ public class GTREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
+        // Categories
         registry.add(new MultiblockInfoDisplayCategory());
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             registry.add(new GTOreProcessingDisplayCategory());
@@ -57,7 +59,9 @@ public class GTREIPlugin implements REIClientPlugin {
                 registry.add(new GTRecipeREICategory(category));
             }
         }
-        // workstations
+        registry.add(new GTProgrammedCircuitCategory());
+
+        // Workstations
         GTRecipeREICategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingDisplayCategory.registerWorkstations(registry);
