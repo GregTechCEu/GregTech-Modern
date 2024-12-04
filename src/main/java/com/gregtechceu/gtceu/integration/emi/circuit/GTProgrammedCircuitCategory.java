@@ -4,13 +4,15 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.xeiwidgets.GTProgrammedCircuitWidget;
+
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.stream.Streams;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.IntStream;
 public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
 
     public static final GTProgrammedCircuitCategory CATEGORY = new GTProgrammedCircuitCategory();
+
     public GTProgrammedCircuitCategory() {
         super(GTCEu.id("programmed_circuit"), EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asItem()));
     }
@@ -37,6 +40,7 @@ public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
         public GTProgrammedCircuitWrapper() {
             super(GTProgrammedCircuitWidget::new);
         }
+
         @Override
         public EmiRecipeCategory getCategory() {
             return CATEGORY;

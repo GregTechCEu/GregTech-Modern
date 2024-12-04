@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.integration.xeiwidgets.GTRecipeWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import net.minecraft.resources.ResourceLocation;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 
 import java.util.ArrayList;
 import java.util.List;

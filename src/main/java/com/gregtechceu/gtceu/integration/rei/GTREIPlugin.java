@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.Platform;
 
-import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
@@ -28,6 +27,7 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
+import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
@@ -83,6 +83,7 @@ public class GTREIPlugin implements REIClientPlugin {
         GTBedrockFluidDisplayCategory.registerDisplays(registry);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreDisplayCategory.registerDisplays(registry);
+        registry.add(new GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay());
     }
 
     @Override
