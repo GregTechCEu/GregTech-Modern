@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.map.cache;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -28,6 +29,11 @@ public class GridCache {
     public ListTag toNBT(boolean isClient) {
         ListTag result = new ListTag();
         for (GeneratedVeinMetadata pos : veins) {
+            if (!isClient) {
+                System.out.println("saving server from thread: " + Thread.currentThread().getName());
+                var key = GTRegistries.ORE_VEINS.getKey(pos.definition());
+                System.out.println("key = " + key);
+            }
             result.add((isClient ? GeneratedVeinMetadata.CLIENT_CODEC : GeneratedVeinMetadata.CODEC)
                     .encodeStart(NbtOps.INSTANCE, pos)
                     .getOrThrow(false, GTCEu.LOGGER::error));

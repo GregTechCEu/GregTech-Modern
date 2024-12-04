@@ -1,21 +1,16 @@
 package com.gregtechceu.gtceu.integration.map.cache.server;
 
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 public class ServerCacheSavedData extends SavedData {
 
     public static final String DATA_NAME = "gtceu_ore_vein_cache";
-
-    private final Long2ObjectMap<GeneratedVeinMetadata> veinMap = new Long2ObjectOpenHashMap<>();
 
     private DimensionCache backingCache;
     private CompoundTag toRead;

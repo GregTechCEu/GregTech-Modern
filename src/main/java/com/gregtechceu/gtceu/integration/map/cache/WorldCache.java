@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.integration.map.cache;
 
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -40,5 +42,18 @@ public abstract class WorldCache {
 
     public void clear() {
         cache.clear();
+    }
+
+    public void oreVeinDefinitionsChanged(Map<ResourceLocation, GTOreDefinition> defs) {
+        // Existing instances of vein definitions referenced by the cache are now invalid. Repopulate them here.
+        for (DimensionCache levelCache : cache.values()) {
+            for (GridCache gridCache : levelCache.getCache().values()) {
+                gridCache.getVeins().removeIf(vein -> {
+                    GTOreDefinition def = defs.get(vein.id());
+                    if (def != null) vein.definition(def);
+                    return def == null;
+                });
+            }
+        }
     }
 }
