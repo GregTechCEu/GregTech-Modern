@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
-import com.gregtechceu.gtceu.integration.xeiwidgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
