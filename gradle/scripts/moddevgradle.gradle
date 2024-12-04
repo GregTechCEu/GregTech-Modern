@@ -16,20 +16,53 @@ neoForge {
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
+    addModdingDependenciesTo(sourceSets.test)
+    addModdingDependenciesTo(sourceSets.extra)
+
+    mods {
+        // define mod <-> source bindings
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.test)
+            sourceSet(sourceSets.extra)
+        }
+    }
+
     runs {
         client {
             client()
+            sourceSet = sourceSets.extra
+            ideName = "Client 1"
 
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        client2 {
+            client()
+            sourceSet = sourceSets.extra
+            ideName = "Client 2"
+
+            programArguments.addAll('--username', 'YoungOnion')
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        // Client with GTM + Jade, EMI, AE2
+        cleanClient {
+            client()
+            sourceSet = sourceSets.main
+            ideName = "Clean Client"
+
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
         server {
             server()
+            sourceSet = sourceSets.main
+            ideName = "Server"
+
+            gameDirectory.set(file('run/server'))
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -37,17 +70,24 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            sourceSet = sourceSets.test
+            ideName = "Game Tests"
+
+            gameDirectory.set(file('run/gametest'))
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
         data {
             data()
+            sourceSet = sourceSets.main
+            ideName = "Data Generation"
 
-            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-            // gameDirectory = project.file('run-data')
-
+            gameDirectory.set(file('run/data'))
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            programArguments.addAll('--mod', project.mod_id)
+            programArguments.addAll('--all')
+            programArguments.addAll('--output', file('src/generated/resources/').getAbsolutePath())
+            programArguments.addAll('--existing', file('src/main/resources/').getAbsolutePath())
         }
 
         // applies to all the run configs above
@@ -63,16 +103,6 @@ neoForge {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             logLevel = org.slf4j.event.Level.INFO
-        }
-    }
-
-    mods {
-        // define mod <-> source bindings
-        // these are used to tell the game which sources are for which mod
-        // mostly optional in a single mod project
-        // but multi mod projects should define one per mod
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
         }
     }
 }
