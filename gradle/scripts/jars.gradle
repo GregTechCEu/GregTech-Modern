@@ -16,6 +16,7 @@ tasks.register('sourcesJar', Jar) {
 }
 
 jar.archiveClassifier = "dev"
+reobfJar.archiveClassifier = ""
 
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"
