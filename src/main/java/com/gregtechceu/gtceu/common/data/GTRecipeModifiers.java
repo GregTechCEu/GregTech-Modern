@@ -40,6 +40,7 @@ import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.NON_PERFECT_OVERCLOCK;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.applyCoilEUtDiscount;
 
 /**
@@ -182,11 +183,13 @@ public class GTRecipeModifiers {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
             }
-            var re = RecipeHelper.applyOverclock(
-                    new OverclockingLogic((p, r, maxVoltage) -> {
-                        OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
-                                .runOverclockingLogic(params, result, maxVoltage);
-                    }), recipe, coilMachine.getOverclockVoltage(), params, result);
+            var re = RecipeHelper.applyOverclock(OverclockingLogic.NON_PERFECT_OVERCLOCK, recipe, coilMachine.getOverclockVoltage(), params, result);
+
+//
+//                    new OverclockingLogic((p, r, maxVoltage) -> {
+//                        OverclockingLogic.NON_PERFECT_OVERCLOCK
+//                                .runOverclockingLogic(params, result, maxVoltage);
+//                    }), recipe, coilMachine.getOverclockVoltage(), params, result);
 
             if (coilMachine.getCoilTier() > 0) {
                 result.setEut(Math.max(1, (long) (result.getEut() * (1.0 - coilMachine.getCoilTier() * 0.1))));
@@ -214,11 +217,10 @@ public class GTRecipeModifiers {
                     ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(),
                     0, null, null)));
 
-            return RecipeHelper.applyOverclock(
-                    new OverclockingLogic((p, r, maxVoltage) -> OverclockingLogic.heatingCoilOC(
+            return RecipeHelper.applyOverclock((p, r, maxVoltage) -> OverclockingLogic.heatingCoilOC(
                             params, result, maxVoltage,
                             blastFurnaceTemperature,
-                            recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0)),
+                            recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0),
                     recipe, coilMachine.getOverclockVoltage(), params, result);
         }
         return null;
@@ -231,10 +233,7 @@ public class GTRecipeModifiers {
                 return null;
             }
 
-            var re = RecipeHelper.applyOverclock(new OverclockingLogic((p, r, maxVoltage) -> {
-                OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
-                        .runOverclockingLogic(params, result, maxVoltage);
-            }), recipe, coilMachine.getOverclockVoltage(), params, result);
+            var re = RecipeHelper.applyOverclock(NON_PERFECT_OVERCLOCK, recipe, coilMachine.getOverclockVoltage(), params, result);
 
             int tier = coilMachine.getCoilTier();
 
@@ -267,10 +266,7 @@ public class GTRecipeModifiers {
                     ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(),
                     0, null, null)));
 
-            RecipeHelper.applyOverclock(new OverclockingLogic((p, r, maxVoltage) -> {
-                OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic()
-                        .runOverclockingLogic(params, result, maxVoltage);
-            }), recipe, coilMachine.getOverclockVoltage(), params, result);
+            RecipeHelper.applyOverclock(NON_PERFECT_OVERCLOCK, recipe, coilMachine.getOverclockVoltage(), params, result);
             recipe = recipe.copy(ContentModifier.multiplier(parallelValue), false);
 
             return recipe;

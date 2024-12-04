@@ -2,75 +2,38 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A class for holding all the various Overclocking logics
  */
-public class OverclockingLogic {
+@FunctionalInterface
+public interface OverclockingLogic {
 
-    @FunctionalInterface
-    public interface Logic {
+    void runOverclockingLogic(@NotNull OCParams ocParams, @NotNull OCResult ocResult, long maxVoltage);
 
-        /**
-         * Calls the desired overclocking logic to be run for the recipe.
-         * Performs the actual overclocking on the provided recipe.
-         * Override this to call custom overclocking mechanics
-         *
-         * @param ocParams   the parameters for the overclock
-         * @param ocResult   the result to store the overclock in
-         * @param maxVoltage the maximum voltage the recipe is allowed to be run at
-         */
-        void runOverclockingLogic(@NotNull OCParams ocParams, @NotNull OCResult ocResult, long maxVoltage);
+    double STD_VOLTAGE_FACTOR = 4.0;
+    double PERFECT_HALF_VOLTAGE_FACTOR = 2.0;
+    double STD_DURATION_FACTOR = 0.5;
+    double STD_DURATION_FACTOR_INV = 2.0;
+    double PERFECT_DURATION_FACTOR = 0.25;
+    double PERFECT_DURATION_FACTOR_INV = 4.0;
+    double PERFECT_HALF_DURATION_FACTOR = 0.5;
+    double PERFECT_HALF_DURATION_FACTOR_INV = 2.0;
+    int COIL_EUT_DISCOUNT_TEMPERATURE = 900;
+
+    OverclockingLogic PERFECT_OVERCLOCK = create(PERFECT_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
+    OverclockingLogic NON_PERFECT_OVERCLOCK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
+
+    OverclockingLogic PERFECT_OVERCLOCK_SUBTICK = create(PERFECT_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
+    OverclockingLogic NON_PERFECT_OVERCLOCK_SUBTICK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
+
+    static OverclockingLogic create(double durationFactor, double voltageFactor, boolean subtick) {
+        if(subtick) return (p, r, v) -> subTickParallelOC(p, r, v, durationFactor, voltageFactor);
+        else return (p, r, v) -> standardOverclockingLogic(p, r, v, durationFactor, voltageFactor);
     }
 
-    public static final double STD_VOLTAGE_FACTOR = 4.0;
-    public static final double PERFECT_HALF_VOLTAGE_FACTOR = 2.0;
-    public static final double STD_DURATION_FACTOR = 0.5;
-    public static final double STD_DURATION_FACTOR_INV = 2.0;
-    public static final double PERFECT_DURATION_FACTOR = 0.25;
-    public static final double PERFECT_DURATION_FACTOR_INV = 4.0;
-    public static final double PERFECT_HALF_DURATION_FACTOR = 0.5;
-    public static final double PERFECT_HALF_DURATION_FACTOR_INV = 2.0;
-    public static final int COIL_EUT_DISCOUNT_TEMPERATURE = 900;
-
-    public static final OverclockingLogic PERFECT_OVERCLOCK = new OverclockingLogic(PERFECT_DURATION_FACTOR,
-            STD_VOLTAGE_FACTOR, false);
-    public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(
-            STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
-
-    public static final OverclockingLogic PERFECT_OVERCLOCK_SUBTICK = new OverclockingLogic(PERFECT_DURATION_FACTOR,
-            STD_VOLTAGE_FACTOR, true);
-    public static final OverclockingLogic NON_PERFECT_OVERCLOCK_SUBTICK = new OverclockingLogic(
-            STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
-
-    @Getter
-    protected Logic logic;
-
-    public OverclockingLogic(Logic logic) {
-        this.logic = logic;
-    }
-
-    public OverclockingLogic(double durationFactor, double voltageFactor, boolean subtick) {
-        if (subtick) {
-            this.logic = (ocParams, ocResult, maxVoltage) -> subTickParallelOC(
-                    ocParams,
-                    ocResult,
-                    maxVoltage,
-                    durationFactor,
-                    voltageFactor);
-        } else {
-            this.logic = (ocParams, ocResult, maxVoltage) -> standardOverclockingLogic(
-                    ocParams,
-                    ocResult,
-                    maxVoltage,
-                    durationFactor,
-                    voltageFactor);
-        }
-    }
 
     /**
      * Standard overclocking algorithm with no sub-tick behavior.
@@ -87,7 +50,7 @@ public class OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    public static void standardOverclockingLogic(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+    static void standardOverclockingLogic(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
                                                  double durationFactor,
                                                  double voltageFactor) {
         double duration = params.getDuration();
@@ -134,7 +97,7 @@ public class OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    public static void subTickNonParallelOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+    static void subTickNonParallelOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
                                             double durationFactor,
                                             double voltageFactor) {
         double duration = params.getDuration();
@@ -179,7 +142,7 @@ public class OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    public static void subTickParallelOC(@NotNull OCParams params, @NotNull OCResult result,
+    static void subTickParallelOC(@NotNull OCParams params, @NotNull OCResult result,
                                          long maxVoltage, double durationFactor, double voltageFactor) {
         double duration = params.getDuration();
         double eut = params.getEut();
@@ -239,7 +202,7 @@ public class OverclockingLogic {
      * @param providedTemp the provided temperature
      * @param requiredTemp the temperature required by the recipe
      */
-    public static void heatingCoilOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+    static void heatingCoilOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
                                      int providedTemp, int requiredTemp) {
         int perfectOCAmount = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp) / 2;
         double duration = params.getDuration();
@@ -314,7 +277,7 @@ public class OverclockingLogic {
      * @param providedTemp the provided temperature
      * @param requiredTemp the temperature required by the recipe
      */
-    public static void heatingCoilNonSubTickOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
+    static void heatingCoilNonSubTickOC(@NotNull OCParams params, @NotNull OCResult result, long maxVoltage,
                                                int providedTemp, int requiredTemp) {
         int amountPerfectOC = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp) / 2;
         double duration = params.getDuration();
@@ -363,21 +326,10 @@ public class OverclockingLogic {
      * @param requiredTemp the required temperature of the recipe
      * @return the discounted EU/t
      */
-    public static long applyCoilEUtDiscount(long recipeEUt, int providedTemp, int requiredTemp) {
+    static long applyCoilEUtDiscount(long recipeEUt, int providedTemp, int requiredTemp) {
         if (requiredTemp < COIL_EUT_DISCOUNT_TEMPERATURE) return recipeEUt;
         int amountEUtDiscount = calculateAmountCoilEUtDiscount(providedTemp, requiredTemp);
         if (amountEUtDiscount < 1) return recipeEUt;
         return (long) (recipeEUt * Math.min(1, Math.pow(0.95, amountEUtDiscount)));
-    }
-
-    /**
-     * Finds the maximum tier that a recipe can overclock to, when provided the maximum voltage a recipe can overclock
-     * to.
-     *
-     * @param voltage The maximum voltage the recipe is allowed to overclock to.
-     * @return the highest voltage tier the machine should use to overclock with
-     */
-    protected int getOverclockForTier(long voltage) {
-        return GTUtil.getTierByVoltage(voltage);
     }
 }

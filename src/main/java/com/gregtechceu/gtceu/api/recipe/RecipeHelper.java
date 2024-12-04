@@ -95,7 +95,7 @@ public class RecipeHelper {
                                            long maxOverclockVoltage,
                                            @NotNull OCParams params, @NotNull OCResult result) {
         int recipeTier = GTUtil.getTierByVoltage(Math.abs(EUt));
-        int maximumTier = logic.getOverclockForTier(maxOverclockVoltage);
+        int maximumTier = GTUtil.getTierByVoltage(maxOverclockVoltage);
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
         // and the maximum tier that the machine can overclock to.
         int numberOfOCs = maximumTier - recipeTier;
@@ -108,7 +108,7 @@ public class RecipeHelper {
             // number of OCs is <=0, so do not overclock
             result.init(params.getEut(), params.getDuration(), numberOfOCs);
         } else {
-            logic.getLogic().runOverclockingLogic(params, result, maxOverclockVoltage);
+            logic.runOverclockingLogic(params, result, maxOverclockVoltage);
         }
         params.reset();
     }
