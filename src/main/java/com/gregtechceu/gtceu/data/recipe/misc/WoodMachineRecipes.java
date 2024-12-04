@@ -564,7 +564,7 @@ public class WoodMachineRecipes {
                         .inputItems(new ItemStack(entry.planks), 6)
                         .inputItems(entry.getStick())
                         .outputItems(new ItemStack(entry.sign), 3)
-                        .circuitMeta(3)
+                        .circuitMeta(4)
                         .duration(100).EUt(4).save(provider);
             }
 

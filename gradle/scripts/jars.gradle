@@ -15,12 +15,16 @@ tasks.register('sourcesJar', Jar) {
     archiveClassifier = "sources"
 }
 
+jar.archiveClassifier = "dev"
+reobfJar.archiveClassifier = ""
+
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"
 }
 
 afterEvaluate {
     tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+        destinationDirectory = file('build/libs/')
         manifest.attributes([
                 'MixinConfigs': 'gtceu.mixins.json',
                 'Specification-Title': project.name,

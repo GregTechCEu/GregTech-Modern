@@ -152,6 +152,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         if (!forDrop) tag.put("lockedFluid", lockedFluid.writeToNBT(new CompoundTag()));
         tag.put("stored", stored.writeToNBT(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
+        tag.putLong("maxAmount", maxAmount);
     }
 
     @Override

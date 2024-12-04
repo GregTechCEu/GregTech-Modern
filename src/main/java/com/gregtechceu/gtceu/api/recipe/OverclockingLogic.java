@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
 import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import lombok.Getter;
@@ -30,8 +29,8 @@ public class OverclockingLogic {
 
     public static final double STD_VOLTAGE_FACTOR = 4.0;
     public static final double PERFECT_HALF_VOLTAGE_FACTOR = 2.0;
-    public static final double STD_DURATION_FACTOR = 1 / ConfigHolder.INSTANCE.machines.overclockDivisor;
-    public static final double STD_DURATION_FACTOR_INV = ConfigHolder.INSTANCE.machines.overclockDivisor;
+    public static final double STD_DURATION_FACTOR = 0.5;
+    public static final double STD_DURATION_FACTOR_INV = 2.0;
     public static final double PERFECT_DURATION_FACTOR = 0.25;
     public static final double PERFECT_DURATION_FACTOR_INV = 4.0;
     public static final double PERFECT_HALF_DURATION_FACTOR = 0.5;

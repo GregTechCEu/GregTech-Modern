@@ -2325,7 +2325,6 @@
     "config.gtceu.option.oreVeinGridSize":"礦脈網格大小",
     "config.gtceu.option.oreVeinRandomOffset":"礦脈隨機偏移",
     "config.gtceu.option.oreVeins":"礦脈",
-    "config.gtceu.option.overclockDivisor":"超頻除數",
     "config.gtceu.option.platformToEuRatio":"GTEU與載入器原生能量之間的轉化率（轉換器）",
     "config.gtceu.option.prospectorEnergyUseMultiplier":"探礦儀能源消耗倍率",
     "config.gtceu.option.recipeProgressLowEnergy":"跳電時，機器進度將",
