@@ -397,9 +397,11 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper"));
         registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
         registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:end_crystal"));
+        registry.accept(new ResourceLocation("minecraft:end_crystal"));
         registry.accept(new ResourceLocation("minecraft:end_rod"));
         registry.accept(new ResourceLocation("minecraft:mud_bricks"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_vine"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_moss_block"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {

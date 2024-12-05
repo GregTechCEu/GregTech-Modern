@@ -44,6 +44,7 @@ public class StoneMachineRecipes {
             return DEFAULT_ENTRIES = Arrays.asList(
                     new StoneTypeEntry.Builder(mcModID, "stone")
                             .stone(Items.STONE)
+                            .crackedStone(Items.COBBLESTONE)
                             .polishedStone(Items.STONE_BRICKS)
                             .smeltStone(Items.SMOOTH_STONE)
                             .slab(Items.STONE_SLAB)
@@ -335,8 +336,9 @@ public class StoneMachineRecipes {
                             // .material() // TODO purpur material?
                             .registerAllUnificationInfo()
                             .build(),
-                    new StoneTypeEntry.Builder(mcModID, "end_stone_brick")
-                            .stone(Items.END_STONE_BRICKS)
+                    new StoneTypeEntry.Builder(mcModID, "end_stone")
+                            .stone(Items.END_STONE)
+                            .polishedStone(Items.END_STONE_BRICKS)
                             .slab(Items.END_STONE_BRICK_SLAB)
                             .stair(Items.END_STONE_BRICK_STAIRS)
                             .wall(Items.END_STONE_BRICK_WALL)
@@ -383,6 +385,7 @@ public class StoneMachineRecipes {
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_deepslate")
                             .stone(Items.POLISHED_DEEPSLATE)
+                            .polishedStone(Items.DEEPSLATE_BRICKS)
                             .slab(Items.POLISHED_DEEPSLATE_SLAB)
                             .stair(Items.POLISHED_DEEPSLATE_STAIRS)
                             .wall(Items.POLISHED_DEEPSLATE_WALL)
@@ -531,7 +534,7 @@ public class StoneMachineRecipes {
                     .circuitMeta(4)
                     .outputItems(entry.polishedStone, 4)
                     .duration(160)
-                    .EUt(8)
+                    .EUt(1)
                     .save(provider);
         }
 
@@ -551,7 +554,7 @@ public class StoneMachineRecipes {
             if(entry.chiselStone != null) {
                 if(ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) {
                     VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_polished_hammer", new ItemStack(entry.chiselStone),
-                            "mS", " S", " S",
+                            "mSd", " S", " S",
                             'S', entry.slab);
                 }
                 GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("form_" + entry.stoneName + "_slab_into_pillar")
