@@ -53,14 +53,13 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .save(provider);
 
-        // todo autogenerate 2x2 recipes?
         COMPRESSOR_RECIPES.recipeBuilder("sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.SAND, 4))
+                .inputItems(new ItemStack(Blocks.SAND, 2))
                 .outputItems(new ItemStack(Blocks.SANDSTONE))
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("red_sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.RED_SAND))
+                .inputItems(new ItemStack(Blocks.RED_SAND), 2)
                 .outputItems(new ItemStack(Blocks.RED_SANDSTONE))
                 .save(provider);
 
@@ -1197,6 +1196,18 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.DIORITE))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
                 .outputItems(new ItemStack(Items.ANDESITE, 2))
+                .duration(80).EUt(4).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("assemble_block_of_quartz_into_quartz_pillar")
+                .inputItems(new ItemStack(Items.QUARTZ_BLOCK))
+                .circuitMeta(5)
+                .outputItems(new ItemStack(Items.QUARTZ_PILLAR))
+                .duration(80).EUt(1).save(provider);
+
+        MIXER_RECIPES.recipeBuilder("packed_mud")
+                .inputItems(new ItemStack(Items.MUD))
+                .inputItems(new ItemStack(Items.WHEAT))
+                .outputItems(new ItemStack(Items.PACKED_MUD))
                 .duration(80).EUt(4).save(provider);
     }
 

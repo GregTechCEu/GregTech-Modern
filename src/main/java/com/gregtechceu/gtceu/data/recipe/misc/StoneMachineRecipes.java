@@ -44,7 +44,6 @@ public class StoneMachineRecipes {
                             .stone(Items.STONE)
                             .crackedStone(Items.COBBLESTONE)
                             .polishedStone(Items.STONE_BRICKS)
-                            .smeltStone(Items.SMOOTH_STONE)
                             .slab(Items.STONE_SLAB)
                             .stair(Items.STONE_STAIRS)
                             .button(Items.STONE_BUTTON)
@@ -119,7 +118,6 @@ public class StoneMachineRecipes {
                     new StoneTypeEntry.Builder(mcModID, "sandstone")
                             .stone(Items.SANDSTONE)
                             .polishedStone(Items.CUT_SANDSTONE)
-                            .smeltStone(Items.SMOOTH_SANDSTONE)
                             .chiselStone(Items.CHISELED_SANDSTONE)
                             .slab(Items.SANDSTONE_SLAB)
                             .stair(Items.SANDSTONE_STAIRS)
@@ -143,7 +141,6 @@ public class StoneMachineRecipes {
                     new StoneTypeEntry.Builder(mcModID, "red_sandstone")
                             .stone(Items.RED_SANDSTONE)
                             .polishedStone(Items.CUT_RED_SANDSTONE)
-                            .smeltStone(Items.SMOOTH_RED_SANDSTONE)
                             .chiselStone(Items.CHISELED_RED_SANDSTONE)
                             .slab(Items.RED_SANDSTONE_SLAB)
                             .stair(Items.RED_SANDSTONE_STAIRS)
@@ -166,7 +163,6 @@ public class StoneMachineRecipes {
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cobblestone")
                             .stone(Items.COBBLESTONE)
-                            .smeltStone(Items.STONE)
                             .slab(Items.COBBLESTONE_SLAB)
                             .stair(Items.COBBLESTONE_STAIRS)
                             .wall(Items.COBBLESTONE_WALL)
@@ -256,7 +252,6 @@ public class StoneMachineRecipes {
                     new StoneTypeEntry.Builder(mcModID, "quartz")
                             .stone(Items.QUARTZ_BLOCK)
                             .polishedStone(Items.QUARTZ_BRICKS)
-                            .smeltStone(Items.SMOOTH_QUARTZ)
                             .chiselStone(Items.CHISELED_QUARTZ_BLOCK)
                             .slab(Items.QUARTZ_SLAB)
                             .stair(Items.QUARTZ_STAIRS)
@@ -370,10 +365,13 @@ public class StoneMachineRecipes {
                             .material(GTMaterials.Wood)
                             .registerAllUnificationInfo()
                             .build(),
+                    new StoneTypeEntry.Builder(mcModID, "deepslate")
+                            .stone(Items.DEEPSLATE)
+                            .crackedStone(Items.COBBLED_DEEPSLATE)
+                            .build(),
                     new StoneTypeEntry.Builder(mcModID, "cobbled_deepslate")
                             .stone(Items.COBBLED_DEEPSLATE)
                             .polishedStone(Items.POLISHED_DEEPSLATE)
-                            .smeltStone(Items.DEEPSLATE)
                             .chiselStone(Items.CHISELED_DEEPSLATE)
                             .slab(Items.COBBLED_DEEPSLATE_SLAB)
                             .stair(Items.COBBLED_DEEPSLATE_STAIRS)
@@ -412,7 +410,6 @@ public class StoneMachineRecipes {
                     new StoneTypeEntry.Builder(mcModID, "basalt")
                             .stone(Items.BASALT)
                             .polishedStone(Items.POLISHED_BASALT)
-                            .smeltStone(Items.SMOOTH_BASALT)
                             .material(GTMaterials.Basalt)
                             .registerAllUnificationInfo()
                             .build()
@@ -540,10 +537,10 @@ public class StoneMachineRecipes {
             }
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("assemble_" + entry.stoneName + "_into_polished")
-                    .inputItems(entry.stone, 4)
+                    .inputItems(entry.stone)
                     .circuitMeta(4)
-                    .outputItems(entry.polishedStone, 4)
-                    .duration(160)
+                    .outputItems(entry.polishedStone)
+                    .duration(80)
                     .EUt(1)
                     .save(provider);
         }
@@ -562,7 +559,7 @@ public class StoneMachineRecipes {
         }
 
         if(entry.smeltStone != null) {
-            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + entry.stoneName + "_into_" + entry.smeltStone, entry.stone, entry.smeltStone);
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + entry.stoneName + "_into_" + entry.smeltStone, entry.stone, entry.smeltStone, 0.1f);
         }
 
         if(entry.slab != null) {
@@ -587,7 +584,7 @@ public class StoneMachineRecipes {
                 GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("form_" + entry.stoneName + "_slab_into_pillar")
                         .inputItems(entry.slab, 2)
                         .outputItems(entry.chiselStone)
-                        .duration(160)
+                        .duration(80)
                         .EUt(8)
                         .save(provider);
             }
@@ -653,7 +650,7 @@ public class StoneMachineRecipes {
                     .inputItems(entry.stone, 3)
                     .circuitMeta(7)
                     .outputItems(entry.stair, 4)
-                    .duration(160)
+                    .duration(80)
                     .EUt(8)
                     .save(provider);
         }
