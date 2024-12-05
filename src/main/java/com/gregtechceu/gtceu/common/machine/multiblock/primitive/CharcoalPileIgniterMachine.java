@@ -279,7 +279,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             if (hDist == 0 && isBlockFloor(level, hPos)) hDist = i;
         }
 
-        if(Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
+        if (Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
             this.isFormed = false;
             return;
         }
