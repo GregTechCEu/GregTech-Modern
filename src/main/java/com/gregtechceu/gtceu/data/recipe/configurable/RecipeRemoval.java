@@ -163,6 +163,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));
         registry.accept(new ResourceLocation("minecraft:polished_blackstone_button"));
+        registry.accept(new ResourceLocation("minecraft:calibrated_sculk_sensor"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
