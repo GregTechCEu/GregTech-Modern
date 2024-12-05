@@ -550,7 +550,7 @@ public class StoneMachineRecipes {
 
             if(entry.chiselStone != null) {
                 if(ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) {
-                    VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_polished_hammer", new ItemStack(entry.chiselStone, ),
+                    VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_polished_hammer", new ItemStack(entry.chiselStone),
                             "mS", " S", " S",
                             'S', entry.slab);
                 }
