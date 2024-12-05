@@ -67,7 +67,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) return content.copy();
         FluidIngredient copy = content.copy();
-        copy.setAmount(modifier.apply(copy.getAmount()).intValue());
+        copy.setAmount(modifier.apply(copy.getAmount()));
         return copy;
     }
 

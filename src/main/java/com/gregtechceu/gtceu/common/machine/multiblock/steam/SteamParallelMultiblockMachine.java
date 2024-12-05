@@ -14,10 +14,10 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -79,21 +79,29 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SteamParallelMultiblockMachine steamMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
                 return null;
             }
             int duration = recipe.duration;
             var eut = RecipeHelper.getInputEUt(recipe);
-            var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, steamMachine.maxParallels, false);
-
-            // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
-            // also set the duration to just 1.5x the original, instead of fully multiplied
-            result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(),
-                    params.getOcAmount());
-            return recipe;
+            double eutMultiplier = (eut * 1.33 <= 32) ? 1.33 : (32.0 / eut);
+            var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, steamMachine.maxParallels);
+            int parallelAmount = parallelRecipe.getSecond();
+            return ModifierFunction.builder()
+                    .inputModifier(ContentModifier.multiplier(parallelAmount))
+                    .outputModifier(ContentModifier.multiplier(parallelAmount))
+                    .durationModifier(ContentModifier.multiplier(1.5))
+                    .eutModifier(ContentModifier.multiplier(eutMultiplier))
+                    .build();
+            //
+            // // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
+            // // also set the duration to just 1.5x the original, instead of fully multiplied
+            // result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5),
+            // parallelRecipe.getSecond(),
+            // params.getOcAmount());
+            // return recipe;
         }
         return null;
     }

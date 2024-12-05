@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe.logic;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public final class OCParams {
 
     private long eut;

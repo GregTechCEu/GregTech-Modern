@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -256,15 +256,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected abstract long getBaseSteamOutput();
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SteamBoilerMachine boilerMachine) {
-            recipe = recipe.copy();
-            result.init(0, recipe.duration, params.getOcAmount());
-            if (boilerMachine.isHighPressure)
-                result.setDuration(result.getDuration() / 2);
-            // recipe.duration *= 12; // maybe?
-            return recipe;
+            if (!boilerMachine.isHighPressure) return ModifierFunction.IDENTITY;
+            return ModifierFunction.builder().durationModifier(ContentModifier.multiplier(0.5)).build();
         }
         return null;
     }

@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -31,7 +33,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
 
     @Override
     public Long copyWithModifier(Long content, ContentModifier modifier) {
-        return modifier.apply(content).longValue();
+        return modifier.apply(content);
     }
 
     @Override
@@ -71,6 +73,11 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             return Integer.MAX_VALUE;
         }
         return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
+    }
+
+    public static List<Content> makeEUContent(Long eut) {
+        return List.of(
+                new Content(eut, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
     }
 
     public interface ICustomParallel {

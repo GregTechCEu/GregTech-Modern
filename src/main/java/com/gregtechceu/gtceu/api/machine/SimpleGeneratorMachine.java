@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -95,17 +95,18 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SimpleGeneratorMachine generator) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             if (EUt > 0) {
                 var maxParallel = GTMath.saturatedCast(Math.min(generator.getOverclockVoltage(),
                         GTValues.V[generator.getOverclockTier()]) / EUt);
-                var paraRecipe = GTRecipeModifiers.fastParallel(generator, recipe, maxParallel, false);
-                result.init(-RecipeHelper.getOutputEUt(paraRecipe.getFirst()), paraRecipe.getFirst().duration,
-                        paraRecipe.getSecond(), params.getOcAmount());
-                return paraRecipe.getFirst();
+                var paraRecipe = GTRecipeModifiers.fastParallel(generator, recipe, maxParallel);
+                int paraAmount = paraRecipe.getSecond();
+                return ModifierFunction.builder()
+                        .inputModifier(ContentModifier.multiplier(paraAmount))
+                        .outputModifier(ContentModifier.multiplier(paraAmount))
+                        .eutModifier(ContentModifier.multiplier(paraAmount)).build();
             }
         }
         return null;

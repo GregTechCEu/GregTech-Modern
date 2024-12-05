@@ -1,20 +1,21 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+
 import lombok.Getter;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ContentModifier {
 
+    public static final ContentModifier IDENTITY = new ContentModifier(1, 0);
     @Getter
-    private final double multiplier;
+    private double multiplier;
     @Getter
-    private final double addition;
-
-    public static ContentModifier of(double multiplier, double addition) {
-        return new ContentModifier(multiplier, addition);
-    }
+    private double addition;
 
     public static ContentModifier multiplier(double multiplier) {
         return new ContentModifier(multiplier, 0);
@@ -24,18 +25,49 @@ public class ContentModifier {
         return new ContentModifier(1, addition);
     }
 
+    public ContentModifier() {
+        this(1, 0);
+    }
+
     public ContentModifier(double multiplier, double addition) {
         this.multiplier = multiplier;
         this.addition = addition;
     }
 
-    public Number apply(Number number) {
-        if (number instanceof BigDecimal decimal) {
-            return decimal.multiply(BigDecimal.valueOf(multiplier)).add(BigDecimal.valueOf(addition));
+    public int apply(int number) {
+        return (int) (number * multiplier + addition);
+    }
+
+    public long apply(long number) {
+        return (long) (number * multiplier + addition);
+    }
+
+    public float apply(float number) {
+        return (float) (number * multiplier + addition);
+    }
+
+    public double apply(double number) {
+        return number * multiplier + addition;
+    }
+
+    public ContentModifier compose(ContentModifier that) {
+        return new ContentModifier(this.multiplier * that.multiplier,
+                this.multiplier * that.addition + this.addition);
+    }
+
+    public Map<RecipeCapability<?>, List<Content>> applyContents(Map<RecipeCapability<?>, List<Content>> contents) {
+        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
+        for (var entry : contents.entrySet()) {
+            var contentList = entry.getValue();
+            var cap = entry.getKey();
+            if (contentList != null && !contentList.isEmpty()) {
+                List<Content> contentsCopy = new ArrayList<>();
+                for (Content content : contentList) {
+                    contentsCopy.add(content.copy(cap, this));
+                }
+                copyContents.put(entry.getKey(), contentsCopy);
+            }
         }
-        if (number instanceof BigInteger bigInteger) {
-            return bigInteger.multiply(BigInteger.valueOf((long) multiplier)).add(BigInteger.valueOf((long) addition));
-        }
-        return number.doubleValue() * multiplier + addition;
+        return copyContents;
     }
 }

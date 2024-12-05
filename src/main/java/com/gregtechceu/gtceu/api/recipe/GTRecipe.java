@@ -125,8 +125,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (id != null) this.recipeType.addToCategoryMap(this.recipeCategory, this);
     }
 
-    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
-                                                                @Nullable ContentModifier modifier) {
+    public static Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents) {
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
             var contentList = entry.getValue();
@@ -134,7 +133,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             if (contentList != null && !contentList.isEmpty()) {
                 List<Content> contentsCopy = new ArrayList<>();
                 for (Content content : contentList) {
-                    contentsCopy.add(content.copy(cap, modifier));
+                    contentsCopy.add(content.copy(cap));
                 }
                 copyContents.put(entry.getKey(), contentsCopy);
             }
@@ -144,8 +143,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public GTRecipe copy() {
         return new GTRecipe(recipeType, id,
-                copyContents(inputs, null), copyContents(outputs, null),
-                copyContents(tickInputs, null), copyContents(tickOutputs, null),
+                copyContents(inputs), copyContents(outputs),
+                copyContents(tickInputs), copyContents(tickOutputs),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel,
@@ -158,14 +157,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
         var copied = new GTRecipe(recipeType, id,
-                copyContents(inputs, modifier), copyContents(outputs, modifier),
-                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier),
+                modifier.applyContents(inputs), modifier.applyContents(outputs),
+                modifier.applyContents(tickInputs), modifier.applyContents(tickOutputs),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
         if (modifyDuration) {
-            copied.duration = modifier.apply(this.duration).intValue();
+            copied.duration = modifier.apply(this.duration);
         }
         copied.parallels = parallels;
         return copied;

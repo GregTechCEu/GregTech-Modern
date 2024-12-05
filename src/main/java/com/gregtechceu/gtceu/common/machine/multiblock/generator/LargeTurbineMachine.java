@@ -12,8 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -71,14 +70,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return 0;
     }
 
-    protected long boostProduction(long production) {
+    protected double boostProduction() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
             int maxSpeed = rotorHolder.getMaxRotorHolderSpeed();
             int currentSpeed = rotorHolder.getRotorSpeed();
             if (currentSpeed >= maxSpeed)
-                return production;
-            return (long) (production * Math.pow(1.0 * currentSpeed / maxSpeed, 2));
+                return 1;
+            return Math.pow(1.0 * currentSpeed / maxSpeed, 2);
         }
         return 0;
     }
@@ -87,8 +86,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine))
             return null;
 
@@ -111,21 +109,29 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (long) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
-        var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
+        var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel));
+        int parallelAmount = parallelResult.getSecond();
+        double eutMultiplier = turbineMachine.boostProduction() * holderEfficiency * parallelAmount;
 
-        long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
-
-        recipe = new GTRecipe(recipe.recipeType, recipe.id,
-                recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
-                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
-                recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-
-        result.init(-eut, recipe.duration, 1, params.getOcAmount());
-
-        return recipe;
+        return ModifierFunction.builder()
+                .inputModifier(ContentModifier.multiplier(parallelAmount))
+                .outputModifier(ContentModifier.multiplier(parallelAmount))
+                .eutModifier(ContentModifier.multiplier(eutMultiplier))
+                .build();
+        //
+        // // long eut = boostProd(EUt) * holderEff * second
+        // // multiplier = boostProd() * holderEff * second
+        // recipe = new GTRecipe(recipe.recipeType, recipe.id,
+        // GTRecipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+        // GTRecipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+        // recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+        // recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+        // recipe.ingredientActions,
+        // recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
+        //
+        // result.init(-eut, recipe.duration, 1, params.getOcAmount());
+        //
+        // return recipe;
     }
 
     @Override

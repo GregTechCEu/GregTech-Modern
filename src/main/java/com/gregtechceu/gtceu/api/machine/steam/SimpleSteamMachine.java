@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -127,23 +127,18 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SimpleSteamMachine steamMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
                 return null;
             }
-
-            var modified = recipe.copy();
-            modified.conditions.add(VentCondition.INSTANCE);
-
+            var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
             if (steamMachine.isHighPressure) {
-                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration, params.getOcAmount());
+                builder.eutModifier(ContentModifier.multiplier(2));
             } else {
-                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2, params.getOcAmount());
+                builder.durationModifier(ContentModifier.multiplier(2));
             }
-
-            return modified;
+            return builder.build();
         }
         return null;
     }

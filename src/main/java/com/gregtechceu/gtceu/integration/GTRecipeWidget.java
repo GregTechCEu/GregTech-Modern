@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -262,11 +260,16 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > minTier && inputEUt != 0) {
-            OCParams p = new OCParams();
-            OCResult r = new OCResult();
-            RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier], p, r);
-            duration = r.getDuration();
-            inputEUt = r.getEut();
+
+            // OCParams p = new OCParams();
+            // OCResult r = new OCResult();
+            // logic.performOverclocking(recipe, inputEUt, GTValues.V[tier], p, r);
+            // duration = r.getDuration();
+            // inputEUt = r.getEut();
+            var copy = recipe.copy();
+            copy = logic.performOverclocking(recipe.duration, inputEUt, GTValues.V[tier]).apply(copy);
+            duration = copy.duration;
+            inputEUt = RecipeHelper.getInputEUt(copy);
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);

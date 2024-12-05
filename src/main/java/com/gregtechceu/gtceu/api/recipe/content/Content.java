@@ -61,18 +61,17 @@ public class Content {
                 .apply(instance, Content::new));
     }
 
+    public Content copy(RecipeCapability<?> capability) {
+        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost, slotName, uiName);
+    }
+
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
         if (modifier == null || chance < maxChance) {
-            return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost, slotName, uiName);
+            return copy(capability);
         } else {
             return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
                     slotName, uiName);
         }
-    }
-
-    public Content copyExplicit(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
-                slotName, uiName);
     }
 
     /**
