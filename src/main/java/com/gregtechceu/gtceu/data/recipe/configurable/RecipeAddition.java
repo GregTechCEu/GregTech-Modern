@@ -1217,7 +1217,7 @@ public class RecipeAddition {
         }
     }
 
-    private void vanillaBlockRecipes(Consumer<FinishedRecipe> provider) {
+    private static void vanillaBlockRecipes(Consumer<FinishedRecipe> provider) {
         COMPRESSOR_RECIPES.recipeBuilder("mud_bricks")
                 .inputItems(Items.PACKED_MUD, 1)
                 .outputItems(Items.MUD_BRICKS, 1)
