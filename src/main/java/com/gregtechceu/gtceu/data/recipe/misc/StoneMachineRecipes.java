@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.StoneTypeEntry;
@@ -18,7 +17,6 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +60,7 @@ public class StoneMachineRecipes {
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "stone_brick")
                             .stone(Items.STONE_BRICKS)
-                            .smeltStone(Items.CRACKED_STONE_BRICKS)
+                            .crackedStone(Items.CRACKED_STONE_BRICKS)
                             .chiselStone(Items.CHISELED_STONE_BRICKS)
                             .slab(Items.STONE_BRICK_SLAB)
                             .stair(Items.STONE_BRICK_STAIRS)
@@ -204,6 +202,7 @@ public class StoneMachineRecipes {
                             .stone(Items.POLISHED_BLACKSTONE)
                             .polishedStone(Items.POLISHED_BLACKSTONE_BRICKS)
                             .chiselStone(Items.CHISELED_POLISHED_BLACKSTONE)
+                            .crackedStone(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS)
                             .slab(Items.POLISHED_BLACKSTONE_SLAB)
                             .stair(Items.POLISHED_BLACKSTONE_STAIRS)
                             .wall(Items.POLISHED_BLACKSTONE_WALL)
@@ -213,7 +212,6 @@ public class StoneMachineRecipes {
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_blackstone_brick")
                             .stone(Items.POLISHED_BLACKSTONE_BRICKS)
-                            .smeltStone(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS)
                             .slab(Items.POLISHED_BLACKSTONE_BRICK_SLAB)
                             .stair(Items.POLISHED_BLACKSTONE_BRICK_STAIRS)
                             .button(Items.POLISHED_BLACKSTONE_BUTTON)
@@ -237,9 +235,9 @@ public class StoneMachineRecipes {
                             .material(GTMaterials.Clay) // maybe?
                             .registerAllUnificationInfo()
                             .build(),
-                    new StoneTypeEntry.Builder(mcModID, "nether_brick")
+                    new StoneTypeEntry.Builder(mcModID, "nether_bricks")
                             .stone(Items.NETHER_BRICKS)
-                            .smeltStone(Items.CRACKED_NETHER_BRICKS)
+                            .crackedStone(Items.CRACKED_NETHER_BRICKS)
                             .chiselStone(Items.CHISELED_NETHER_BRICKS)
                             .slab(Items.NETHER_BRICK_SLAB)
                             .stair(Items.NETHER_BRICK_STAIRS)
@@ -392,9 +390,10 @@ public class StoneMachineRecipes {
                             .material(GTMaterials.Deepslate)
                             .registerAllUnificationInfo()
                             .build(),
-                    new StoneTypeEntry.Builder(mcModID, "deepslate_brick")
+                    new StoneTypeEntry.Builder(mcModID, "deepslate_bricks")
                             .stone(Items.DEEPSLATE_BRICKS)
-                            .smeltStone(Items.CRACKED_DEEPSLATE_BRICKS)
+                            .polishedStone(Items.DEEPSLATE_TILES)
+                            .crackedStone(Items.CRACKED_DEEPSLATE_BRICKS)
                             .slab(Items.DEEPSLATE_BRICK_SLAB)
                             .stair(Items.DEEPSLATE_BRICK_STAIRS)
                             .wall(Items.DEEPSLATE_BRICK_WALL)
@@ -403,7 +402,7 @@ public class StoneMachineRecipes {
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "deepslate_tile")
                             .stone(Items.DEEPSLATE_TILES)
-                            .smeltStone(Items.CRACKED_DEEPSLATE_TILES)
+                            .crackedStone(Items.CRACKED_DEEPSLATE_TILES)
                             .slab(Items.DEEPSLATE_TILE_SLAB)
                             .stair(Items.DEEPSLATE_TILE_STAIRS)
                             .wall(Items.DEEPSLATE_TILE_WALL)
@@ -470,6 +469,16 @@ public class StoneMachineRecipes {
             }
         }
 
+        if (entry.material != null && entry.crackedStone != null) {
+            if (entry.addStoneOreDict) {
+                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.crackedStone);
+            }
+            if (entry.addCrackedStoneUnificationInfo) {
+                ChemicalHelper.registerMaterialInfo(entry.crackedStone,
+                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+            }
+        }
+
         if (entry.material != null && entry.slab != null) {
             if (entry.addSlabOreDict) {
                 ChemicalHelper.registerUnificationItems(TagPrefix.slab, entry.material, entry.slab);
@@ -529,6 +538,7 @@ public class StoneMachineRecipes {
                         "hSS", " SS",
                         'S', entry.stone);
             }
+
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder("assemble_" + entry.stoneName + "_into_polished")
                     .inputItems(entry.stone, 4)
                     .circuitMeta(4)
@@ -536,6 +546,23 @@ public class StoneMachineRecipes {
                     .duration(160)
                     .EUt(1)
                     .save(provider);
+        }
+
+        if(entry.crackedStone != null) {
+            if(ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_hammer", new ItemStack(entry.crackedStone),
+                        "h", "S",
+                        'S', entry.stone);
+            }
+
+            GTRecipeTypes.FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + entry.stoneName + "_into_cracked")
+                    .inputItems(entry.stone)
+                    .outputItems(entry.crackedStone)
+                    .duration(12).EUt(4).save(provider);
+        }
+
+        if(entry.smeltStone != null) {
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + entry.stoneName + "_into_" + entry.smeltStone, entry.stone, entry.smeltStone);
         }
 
         if(entry.slab != null) {
