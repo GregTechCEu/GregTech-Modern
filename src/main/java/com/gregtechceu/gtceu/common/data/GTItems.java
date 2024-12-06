@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.collect.ArrayTable;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -1883,7 +1886,9 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
             .item("ender_fluid_link_cover", ComponentItem::create)
             .lang("Ender Fluid Link")
-            .register();
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK))).register();
+
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
             .item("fluid_voiding_cover", ComponentItem::create)
             .lang("Fluid Voiding Cover")
@@ -2601,8 +2606,8 @@ public class GTItems {
 
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before,
                                         Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)),
-                Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList(before.toArray(ResourceLocation[]::new)),
+                Arrays.asList(after.toArray(ResourceLocation[]::new)));
     }
 
     public static ResourceLocation getTierName(Tier tier) {

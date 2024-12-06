@@ -10,14 +10,13 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
 import com.gregtechceu.gtceu.common.cover.detector.*;
+import com.gregtechceu.gtceu.common.cover.ender.EnderFluidLinkCover;
 import com.gregtechceu.gtceu.common.cover.voiding.AdvancedFluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
-
-import net.minecraftforge.fml.ModLoader;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import net.minecraftforge.fml.ModLoader;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -53,6 +52,10 @@ public class GTCovers {
     public final static CoverDefinition INFINITE_WATER = register(
             "infinite_water", InfiniteWaterCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_infinite_water")));
+
+    public final static CoverDefinition ENDER_FLUID_LINK = register(
+            "ender_fluid_link", EnderFluidLinkCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_ender_fluid_link")));
 
     public final static CoverDefinition SHUTTER = register(
             "shutter", ShutterCover::new,
