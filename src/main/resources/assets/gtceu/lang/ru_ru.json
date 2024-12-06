@@ -7588,5 +7588,7 @@
     "cover.item_smart_filter.filtering_mode.description.1": "Он автоматически отберет нужное кол-во предметов для роб. манипулятора.",
     "cover.item_smart_filter.filtering_mode.electrolyzer": "Электролизер",
     "cover.item_smart_filter.filtering_mode.sifter": "Просеиватель",
-    "cover.item_smart_filter.title": "Умный предметный фильтр"
+    "cover.item_smart_filter.title": "Умный предметный фильтр",
+    "behaviour.meta.machine.config.copy.tooltip": "§7Shift + ПКМ чтобы скопировать конфигурацию машины",
+    "behaviour.meta.machine.config.paste.tooltip": "§7ПКМ чтобы вставить конфигурацию машины"
 }
