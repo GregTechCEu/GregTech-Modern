@@ -21,6 +21,6 @@ public class FluidHelperMixin {
             require = 0)
     private void gtceu$injectFluidTooltips(ITooltipBuilder tooltip, FluidStack ingredient, TooltipFlag tooltipFlag,
                                            CallbackInfo ci) {
-        TooltipsHandler.appendFluidTooltips(ingredient.getFluid(), ingredient.getAmount(), tooltip::add, tooltipFlag);
+        TooltipsHandler.appendFluidTooltips(ingredient, tooltip::add, tooltipFlag);
     }
 }

@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
@@ -28,19 +29,26 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiRegistryAdapter;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.registry.EmiTags;
 import lombok.Getter;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.stream.Stream;
 
 @LDLRegister(name = "item_slot", group = "widget.container", priority = 50)
 public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
@@ -269,7 +277,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
     }
 
     private List<Object> getXEIIngredientsFromTagOrCycleHandler(TagOrCycleItemStackHandler handler, int index) {
-        Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> either = handler
+        Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> either = handler
                 .getStacks()
                 .get(index);
         var ref = new Object() {
@@ -280,10 +288,14 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (LDLib.isJeiLoaded()) {
                 ref.returnValue = list.stream()
                         .flatMap(pair -> BuiltInRegistries.ITEM
-                                .getTag(pair.getFirst())
+                                .getTag(pair.getLeft())
                                 .stream()
                                 .flatMap(HolderSet.ListBacked::stream)
-                                .map(item -> getRealStack(new ItemStack(item.value(), pair.getSecond()))))
+                                .map(item -> {
+                                    ItemStack stack = new ItemStack(item.value(), pair.getMiddle());
+                                    stack.setTag(pair.getRight());
+                                    return getRealStack(stack);
+                                }))
                         .collect(Collectors.toList());
             } else if (LDLib.isReiLoaded()) {
                 ref.returnValue = REICallWrapper.getReiIngredients(this::getRealStack, list);
@@ -307,7 +319,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private List<Object> getXEIIngredientsFromTagOrCycleHandlerClickable(TagOrCycleItemStackHandler handler,
                                                                          int index) {
-        Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> either = handler
+        Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> either = handler
                 .getStacks()
                 .get(index);
         var ref = new Object() {
@@ -318,12 +330,15 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (LDLib.isJeiLoaded()) {
                 ref.returnValue = list.stream()
                         .flatMap(pair -> BuiltInRegistries.ITEM
-                                .getTag(pair.getFirst())
+                                .getTag(pair.getLeft())
                                 .stream()
                                 .flatMap(HolderSet.ListBacked::stream)
-                                .map(item -> JEIPlugin.getItemIngredient(
-                                        getRealStack(new ItemStack(item.value(), pair.getSecond())),
-                                        getPosition().x, getPosition().y, getSize().width, getSize().height)))
+                                .map(item -> {
+                                    ItemStack stack = new ItemStack(item.value(), pair.getMiddle());
+                                    stack.setTag(pair.getRight());
+                                    return JEIPlugin.getItemIngredient(getRealStack(stack),
+                                            getPosition().x, getPosition().y, getSize().width, getSize().height);
+                                }))
                         .collect(Collectors.toList());
             } else if (LDLib.isReiLoaded()) {
                 ref.returnValue = REICallWrapper.getReiIngredients(this::getRealStack, list);
@@ -361,7 +376,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         }
 
         @Override
-        public boolean mayPlace(@Nonnull ItemStack stack) {
+        public boolean mayPlace(@NotNull ItemStack stack) {
             return SlotWidget.this.canPutStack(stack) &&
                     (!stack.isEmpty() && this.itemHandler.isItemValid(this.index, stack));
         }
@@ -372,24 +387,24 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         }
 
         @Override
-        @Nonnull
+        @NotNull
         public ItemStack getItem() {
             return this.itemHandler.getStackInSlot(index);
         }
 
         @Override
-        public void setByPlayer(ItemStack stack) {
+        public void setByPlayer(@NotNull ItemStack stack) {
             this.itemHandler.setStackInSlot(index, stack);
         }
 
         @Override
-        public void set(@Nonnull ItemStack stack) {
+        public void set(@NotNull ItemStack stack) {
             this.itemHandler.setStackInSlot(index, stack);
             this.setChanged();
         }
 
         @Override
-        public void onQuickCraft(@Nonnull ItemStack oldStackIn, @Nonnull ItemStack newStackIn) {}
+        public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}
 
         @Override
         public int getMaxStackSize() {
@@ -397,7 +412,7 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         }
 
         @Override
-        public int getMaxStackSize(@Nonnull ItemStack stack) {
+        public int getMaxStackSize(@NotNull ItemStack stack) {
             ItemStack maxAdd = stack.copy();
             int maxInput = stack.getMaxStackSize();
             maxAdd.setCount(maxInput);
@@ -429,6 +444,57 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         @Override
         public boolean isActive() {
             return SlotWidget.this.isEnabled() && (HOVER_SLOT == null || HOVER_SLOT == this);
+        }
+    }
+
+    public static final class REICallWrapper {
+
+        public static List<Object> getReiIngredients(Stream<ItemStack> stream) {
+            return List.of(EntryIngredient.of(stream.map(EntryStacks::of).toList()));
+        }
+
+        public static List<Object> getReiIngredients(UnaryOperator<ItemStack> realStack,
+                                                     List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> list) {
+            return list.stream()
+                    .map(pair -> EntryIngredients.ofTag(pair.getLeft(),
+                            holder -> {
+                                ItemStack stack = new ItemStack(holder.value(), pair.getMiddle());
+                                stack.setTag(pair.getRight());
+                                return EntryStacks.of(realStack.apply(stack));
+                            }))
+                    .collect(Collectors.toList());
+        }
+
+        public static List<Object> getReiIngredients(ItemStack stack) {
+            return List.of(EntryStacks.of(stack));
+        }
+    }
+
+    public static final class EMICallWrapper {
+
+        public static List<Object> getEmiIngredients(Stream<ItemStack> stream, float xeiChance) {
+            return List.of(EmiIngredient.of(stream.map(EmiStack::of).toList()).setChance(xeiChance));
+        }
+
+        // ignore generics, repeat, ignore @ApiStatus.Experimental, ignore forge deprecations
+        @SuppressWarnings({ "unchecked", "rawtypes", "UnstableApiUsage", "deprecation" })
+        public static List<Object> getEmiIngredients(List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> list,
+                                                     float xeiChance) {
+            return list.stream()
+                    .map(pair -> {
+                        // slight trickery to get the NBT onto all the stacks in the tag.
+                        EmiRegistryAdapter adapter = EmiTags.ADAPTERS_BY_REGISTRY.get(BuiltInRegistries.ITEM);
+                        var stacks = BuiltInRegistries.ITEM.getTag(pair.getLeft()).stream()
+                                .flatMap(HolderSet.ListBacked::stream)
+                                .map(holder -> adapter.of(holder.value(), pair.getRight(), pair.getMiddle()))
+                                .toList();
+                        return EmiIngredient.of(stacks).setAmount(pair.getMiddle()).setChance(xeiChance);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        public static List<Object> getEmiIngredients(ItemStack stack, float xeiChance) {
+            return List.of(EmiStack.of(stack).setChance(xeiChance));
         }
     }
 }

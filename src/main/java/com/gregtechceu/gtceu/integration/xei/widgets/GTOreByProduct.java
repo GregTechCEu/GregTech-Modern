@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -28,6 +29,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +50,9 @@ public class GTOreByProduct {
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
     private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
-    protected final List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = new ArrayList<>();
+    protected final List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> itemInputs = new ArrayList<>();
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
-    protected final List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = new ArrayList<>();
+    protected final List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> fluidInputs = new ArrayList<>();
     private boolean hasDirectSmelt = false;
     private boolean hasChemBath = false;
     private boolean hasSeparator = false;
@@ -92,12 +95,12 @@ public class GTOreByProduct {
         Pair<Material, Integer> washedIn = property.getWashedIn();
         List<Material> separatedInto = property.getSeparatedInto();
 
-        List<Pair<TagKey<Item>, Integer>> oreStacks = new ArrayList<>();
+        List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> oreStacks = new ArrayList<>();
         for (TagPrefix prefix : ORES) {
             // get all ores with the relevant oredicts instead of just the first unified ore
-            oreStacks.add(Pair.of(ChemicalHelper.getTag(prefix, material), 1));
+            oreStacks.add(Triple.of(ChemicalHelper.getTag(prefix, material), 1, null));
         }
-        oreStacks.add(Pair.of(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1));
+        oreStacks.add(Triple.of(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1, null));
         itemInputs.add(Either.left(oreStacks));
 
         // set up machines as inputs
@@ -141,8 +144,8 @@ public class GTOreByProduct {
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
         for (TagPrefix prefix : IN_PROCESSING_STEPS) {
-            List<Pair<TagKey<Item>, Integer>> tempList = new ArrayList<>();
-            tempList.add(Pair.of(ChemicalHelper.getTag(prefix, material), 1));
+            List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> tempList = new ArrayList<>();
+            tempList.add(Triple.of(ChemicalHelper.getTag(prefix, material), 1, null));
             itemInputs.add(Either.left(tempList));
         }
 
@@ -193,9 +196,9 @@ public class GTOreByProduct {
         addToOutputs(material, TagPrefix.crushedPurified, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, 1);
         addChance(3333, 0);
-        List<Pair<TagKey<Fluid>, Integer>> fluidStacks = new ArrayList<>();
-        fluidStacks.add(Pair.of(GTMaterials.Water.getFluidTag(), 1000));
-        fluidStacks.add(Pair.of(GTMaterials.DistilledWater.getFluidTag(), 100));
+        List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> fluidStacks = new ArrayList<>();
+        fluidStacks.add(Triple.of(GTMaterials.Water.getFluidTag(), 1000, null));
+        fluidStacks.add(Triple.of(GTMaterials.DistilledWater.getFluidTag(), 100, null));
         fluidInputs.add(Either.left(fluidStacks));
 
         // TC crushed/crushed purified -> centrifuged
@@ -233,9 +236,9 @@ public class GTOreByProduct {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 580);
-            List<Pair<TagKey<Fluid>, Integer>> washedFluid = new ArrayList<>();
+            List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> washedFluid = new ArrayList<>();
             // noinspection DataFlowIssue
-            washedFluid.add(Pair.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond()));
+            washedFluid.add(Triple.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
             fluidInputs.add(Either.left(washedFluid));
         } else {
             addEmptyOutputs(2);

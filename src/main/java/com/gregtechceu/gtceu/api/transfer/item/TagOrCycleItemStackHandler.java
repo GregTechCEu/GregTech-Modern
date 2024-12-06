@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +22,15 @@ import java.util.stream.Stream;
 public class TagOrCycleItemStackHandler implements IItemHandlerModifiable {
 
     @Getter
-    private List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> stacks;
+    private List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> stacks;
 
     private List<List<ItemStack>> unwrapped = null;
 
-    public TagOrCycleItemStackHandler(List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> stacks) {
+    public TagOrCycleItemStackHandler(List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> stacks) {
         updateStacks(stacks);
     }
 
-    public void updateStacks(List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> stacks) {
+    public void updateStacks(List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> stacks) {
         this.stacks = new ArrayList<>(stacks);
         this.unwrapped = null;
     }
@@ -43,9 +45,14 @@ public class TagOrCycleItemStackHandler implements IItemHandlerModifiable {
                         return tagOrItem.map(
                                 tagList -> tagList
                                         .stream()
-                                        .flatMap(pair -> BuiltInRegistries.ITEM.getTag(pair.getFirst())
+                                        .flatMap(pair -> BuiltInRegistries.ITEM.getTag(pair.getLeft())
                                                 .map(holderSet -> holderSet.stream()
-                                                        .map(holder -> new ItemStack(holder.value(), pair.getSecond())))
+                                                        .map(holder -> {
+                                                            ItemStack stack = new ItemStack(holder.value(),
+                                                                    pair.getMiddle());
+                                                            stack.setTag(pair.getRight());
+                                                            return stack;
+                                                        }))
                                                 .orElseGet(Stream::empty))
                                         .toList(),
                                 Function.identity());

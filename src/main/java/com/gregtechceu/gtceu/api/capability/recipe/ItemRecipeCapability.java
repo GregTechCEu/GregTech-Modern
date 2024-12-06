@@ -36,6 +36,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
@@ -55,6 +56,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -420,7 +422,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
 
-        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
+        List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> scannerPossibilities = null;
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
@@ -439,11 +441,11 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         researchItem = researchItem.copy();
                         researchItem.setCount(1);
                         boolean didMatch = false;
-                        for (Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> stacks : scannerPossibilities) {
+                        for (Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> stacks : scannerPossibilities) {
                             for (ItemStack stack : stacks.map(
                                     tag -> tag
                                             .stream()
-                                            .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                            .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getLeft()).stream())
                                             .flatMap(holders -> holders.stream()
                                                     .map(holder -> new ItemStack(holder.get())))
                                             .collect(Collectors.toList()),
@@ -473,7 +475,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
         return new TagOrCycleItemStackHandler(
-                (List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>>) contents);
+                (List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>>) contents);
     }
 
     @NotNull
@@ -567,7 +569,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     // Maps ingredients to Either <(Tag with count), ItemStack>s
     @SuppressWarnings("deprecation")
-    private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(final Ingredient ingredient) {
+    private static Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> mapItem(final Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
             if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
@@ -578,10 +580,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 var childEither = mapItem(children.get(0));
                 return Either.right(childEither.map(tags -> {
                     List<ItemStack> tagItems = tags.stream()
-                            .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
-                                    pair.getSecond()))
-                            .flatMap(pair -> pair.getFirst().flatMap(
-                                    tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                            .map(pair -> Triple.of(BuiltInRegistries.ITEM.getTag(pair.getLeft()).stream(),
+                                    pair.getMiddle(), pair.getRight()))
+                            .flatMap(pair -> pair.getLeft().flatMap(
+                                    tag -> tag.stream().map(holder -> {
+                                        ItemStack stack = new ItemStack(holder.value(), pair.getMiddle());
+                                        stack.setTag(pair.getRight());
+                                        return stack;
+                                    })))
                             .collect(Collectors.toList());
                     ListIterator<ItemStack> iterator = tagItems.listIterator();
                     iteratorLoop:
@@ -615,7 +621,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             } else if (((IngredientAccessor) sizedIngredient.getInner()).getValues().length > 0 &&
                     ((IngredientAccessor) sizedIngredient.getInner())
                             .getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                                return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), amount)));
+                                return Either
+                                        .left(List.of(Triple.of(((TagValueAccessor) tagValue).getTag(), amount, null)));
                             }
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             // Map intersection ingredients to the items inside, as recipe viewers don't support them.
@@ -626,9 +633,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             var childEither = mapItem(children.get(0));
             return Either.right(childEither.map(tags -> {
                 List<ItemStack> tagItems = tags.stream()
-                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
-                        .flatMap(pair -> pair.getFirst().flatMap(
-                                tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                        .map(pair -> Triple.of(BuiltInRegistries.ITEM.getTag(pair.getLeft()).stream(), pair.getMiddle(),
+                                pair.getRight()))
+                        .flatMap(pair -> pair.getLeft().flatMap(
+                                tag -> tag.stream().map(holder -> {
+                                    ItemStack stack = new ItemStack(holder.value(), pair.getMiddle());
+                                    stack.setTag(pair.getRight());
+                                    return stack;
+                                })))
                         .collect(Collectors.toList());
                 ListIterator<ItemStack> iterator = tagItems.listIterator();
                 while (iterator.hasNext()) {
@@ -665,10 +677,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 var childEither = mapItem(children.get(0));
                 return Either.right(childEither.map(tags -> {
                     List<ItemStack> tagItems = tags.stream()
-                            .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(),
-                                    pair.getSecond()))
-                            .flatMap(pair -> pair.getFirst().flatMap(
-                                    tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                            .map(pair -> Triple.of(BuiltInRegistries.ITEM.getTag(pair.getLeft()).stream(),
+                                    pair.getMiddle(), pair.getRight()))
+                            .flatMap(pair -> pair.getLeft().flatMap(
+                                    tag -> tag.stream().map(holder -> {
+                                        ItemStack stack = new ItemStack(holder.value(), pair.getMiddle());
+                                        stack.setTag(pair.getRight());
+                                        return stack;
+                                    })))
                             .collect(Collectors.toList());
                     ListIterator<ItemStack> iterator = tagItems.listIterator();
                     iteratorLoop:
@@ -702,12 +718,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             } else if (((IngredientAccessor) intProvider.getInner()).getValues().length > 0 &&
                     ((IngredientAccessor) intProvider.getInner())
                             .getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                                return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), amount)));
+                                return Either
+                                        .left(List.of(Triple.of(((TagValueAccessor) tagValue).getTag(), amount, null)));
                             }
 
         } else if (((IngredientAccessor) ingredient).getValues().length > 0 &&
                 ((IngredientAccessor) ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                    return Either.left(List.of(Pair.of(((TagValueAccessor) tagValue).getTag(), 1)));
+                    return Either.left(List.of(Triple.of(((TagValueAccessor) tagValue).getTag(), 1, null)));
                 }
         return Either.right(Arrays.stream(ingredient.getItems()).map(stack -> {
             //@formatter:off

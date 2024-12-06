@@ -40,6 +40,8 @@ public class IntegrationLang {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
             provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
         }
+
+        provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
     /** Jade, TheOneProbe, WTHIT */

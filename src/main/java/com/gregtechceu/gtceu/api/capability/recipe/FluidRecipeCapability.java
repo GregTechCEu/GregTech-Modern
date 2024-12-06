@@ -34,10 +34,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -305,7 +305,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
         return new TagOrCycleFluidHandler(
-                (List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>>) contents);
+                (List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>>) contents);
     }
 
     @NotNull
@@ -350,10 +350,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
                     if (!isXEI && ingredient.getStacks().length > 0) {
                         FluidStack stack = ingredient.getStacks()[0];
-                        TooltipsHandler.appendFluidTooltips(stack.getFluid(),
-                                stack.getAmount(),
-                                tooltips::add,
-                                TooltipFlag.NORMAL);
+                        TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
 
                     GTRecipeWidget.setConsumedChance(content,
@@ -371,15 +368,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     // Maps fluids to Either<(tag with count), FluidStack>s
-    public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+    public static Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
 
-        List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
+        List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> tags = new ArrayList<>();
         List<FluidStack> fluids = new ArrayList<>();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.TagValue tagValue) {
-                tags.add(Pair.of(tagValue.getTag(), amount));
+                tags.add(Triple.of(tagValue.getTag(), amount, ingredient.getNbt()));
             } else {
                 fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
             }

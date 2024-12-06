@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +21,15 @@ import java.util.stream.Stream;
 public class TagOrCycleFluidHandler implements IFluidHandlerModifiable {
 
     @Getter
-    private List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks;
+    private List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> stacks;
 
     private List<List<FluidStack>> unwrapped = null;
 
-    public TagOrCycleFluidHandler(List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks) {
+    public TagOrCycleFluidHandler(List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> stacks) {
         updateStacks(stacks);
     }
 
-    public void updateStacks(List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> stacks) {
+    public void updateStacks(List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> stacks) {
         this.stacks = new ArrayList<>(stacks);
         this.unwrapped = null;
     }
@@ -42,10 +44,10 @@ public class TagOrCycleFluidHandler implements IFluidHandlerModifiable {
                         return tagOrFluid.map(
                                 tagList -> tagList
                                         .stream()
-                                        .flatMap(pair -> BuiltInRegistries.FLUID.getTag(pair.getFirst())
+                                        .flatMap(pair -> BuiltInRegistries.FLUID.getTag(pair.getLeft())
                                                 .map(holderSet -> holderSet.stream()
                                                         .map(holder -> new FluidStack(holder.value(),
-                                                                pair.getSecond())))
+                                                                pair.getMiddle(), pair.getRight())))
                                                 .orElseGet(Stream::empty))
                                         .toList(),
                                 Function.identity());

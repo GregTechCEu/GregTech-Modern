@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +122,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_SIFT));
         }
 
-        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
+        List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
         TagOrCycleItemStackHandler itemInputsHandler = new TagOrCycleItemStackHandler(itemInputs);
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
@@ -162,7 +164,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             itemOutputExists.add(true);
         }
 
-        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
+        List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
         TagOrCycleFluidHandler fluidInputsHandler = new TagOrCycleFluidHandler(fluidInputs);
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {

@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.trait.customlogic.BreweryLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.CannerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.FormingPressLogic;
 import com.gregtechceu.gtceu.common.recipe.condition.RPMCondition;
@@ -143,6 +144,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(128).EUt(4))
             .setSlotOverlay(false, false, GuiTextures.BREWER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .addCustomRecipeLogic(new BreweryLogic())
             .setSound(GTSoundEntries.CHEMICAL);
 
     public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
