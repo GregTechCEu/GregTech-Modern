@@ -54,7 +54,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @DescSynced
     protected String description = VirtualEntry.DEFAULT_COLOR;
     @Persisted
-    protected IMachineOwner owner = null;
+    private IMachineOwner owner;
     @Getter
     @Setter
     @Persisted
