@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
@@ -25,6 +27,7 @@ import de.mari_023.ae2wtlib.wet.WETMenu;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 
 /**
@@ -37,6 +40,7 @@ public class GTEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
+        // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
@@ -56,7 +60,9 @@ public class GTEMIPlugin implements EmiPlugin {
         if (LDLib.isModLoaded(GTValues.MODID_AE2WTLIB)) {
             registry.addRecipeHandler(WETMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
-        // recipes
+        registry.addCategory(GTProgrammedCircuitCategory.CATEGORY);
+
+        // Recipes
         try {
             MultiblockInfoEmiCategory.registerDisplays(registry);
         } catch (NullPointerException ignored) {}
@@ -67,6 +73,8 @@ public class GTEMIPlugin implements EmiPlugin {
         GTBedrockFluidEmiCategory.registerDisplays(registry);
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerDisplays(registry);
+        GTProgrammedCircuitCategory.registerDisplays(registry);
+
         // workstations
         GTRecipeEMICategory.registerWorkStations(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -77,5 +85,8 @@ public class GTEMIPlugin implements EmiPlugin {
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
                 EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+
+        // Comparators
+        registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
     }
 }

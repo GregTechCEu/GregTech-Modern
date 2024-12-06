@@ -58,8 +58,9 @@ public final class GeneratedVeinMetadata {
     @NotNull
     private final BlockPos center;
     @Getter
+    @Setter
     @NotNull
-    private final GTOreDefinition definition;
+    private GTOreDefinition definition;
     @Getter
     @Setter
     private boolean depleted;

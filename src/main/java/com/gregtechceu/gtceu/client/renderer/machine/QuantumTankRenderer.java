@@ -41,6 +41,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
  */
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
+    private static final float MIN = 0.16f;
+    private static final float MAX = 0.84f;
+
     private static Item CREATIVE_FLUID_ITEM = null;
 
     public QuantumTankRenderer(int tier) {
@@ -70,8 +73,9 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
             // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, FluidStack.EMPTY,
+            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, maxAmount, FluidStack.EMPTY,
                     stack.is(CREATIVE_FLUID_ITEM));
 
             poseStack.popPose();
@@ -86,13 +90,13 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
             renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getStoredAmount(),
-                    machine.getLockedFluid(), machine instanceof CreativeTankMachine);
+                    machine.getMaxAmount(), machine.getLockedFluid(), machine instanceof CreativeTankMachine);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored,
-                           long storedAmount, FluidStack locked, boolean isCreative) {
+                           long storedAmount, long maxAmount, FluidStack locked, boolean isCreative) {
         FluidStack fluid = !stored.isEmpty() ? stored : locked;
         if (fluid.isEmpty()) return;
 
@@ -102,8 +106,31 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
         poseStack.pushPose();
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
-        RenderBufferUtils.renderCubeFace(poseStack, builder, 2.5f / 16, 2.5f / 16, 2.5f / 16, 13.5f / 16, 13.5f / 16,
-                13.5f / 16, ext.getTintColor() | 0xff000000, 0xf000f0, fluidTexture);
+        var gas = fluid.getFluid().getFluidType().isLighterThanAir();
+        var percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
+        var facingYAxis = frontFacing.getAxis() == Direction.Axis.Y;
+        var maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
+        var minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
+        float minY, maxY, minZ, maxZ;
+        if (facingYAxis) {
+            minY = MIN;
+            maxY = MAX;
+            if (frontFacing == Direction.UP) {
+                minZ = minBot;
+                maxZ = maxTop;
+            } else {
+                // -z is top
+                minZ = 1 - maxTop;
+                maxZ = 1 - minBot;
+            }
+        } else {
+            minY = minBot;
+            maxY = maxTop;
+            minZ = MIN;
+            maxZ = MAX;
+        }
+        RenderBufferUtils.renderCubeFace(poseStack, builder, MIN, minY, minZ, MAX, maxY, maxZ,
+                ext.getTintColor() | 0xff000000, 0xf000f0, fluidTexture);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -111,7 +138,7 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f,
                 frontFacing.getStepZ() * -1 / 16f);
         RenderUtils.moveToFace(poseStack, 0, 0, 0, frontFacing);
-        if (frontFacing.getAxis() == Direction.Axis.Y) {
+        if (facingYAxis) {
             RenderUtils.rotateToFace(poseStack, frontFacing,
                     frontFacing == Direction.UP ? Direction.SOUTH : Direction.NORTH);
         } else {
