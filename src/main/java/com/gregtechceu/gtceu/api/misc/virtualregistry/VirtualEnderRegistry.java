@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,14 +16,14 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class VirtualEnderRegistry extends SavedData {
+
     private static final String DATA_ID = GTCEu.MOD_ID + ".virtual_entry_data";
     private static final String PUBLIC_KEY = "Public";
     private static final String PRIVATE_KEY = "Private";
     private static volatile VirtualEnderRegistry data;
     private final Map<UUID, VirtualRegistryMap> VIRTUAL_REGISTRIES = new HashMap<>();
 
-    public VirtualEnderRegistry() {
-    }
+    public VirtualEnderRegistry() {}
 
     public VirtualEnderRegistry(CompoundTag name) {
         readFromNBT(name);
@@ -84,7 +86,8 @@ public class VirtualEnderRegistry extends SavedData {
                 owner == null ? "public" : String.format("private [%s]", owner), name, type);
     }
 
-    public <T extends VirtualEntry> void deleteEntryIf(@Nullable UUID owner, EntryTypes<T> type, String name, Predicate<T> shouldDelete) {
+    public <T extends VirtualEntry> void deleteEntryIf(@Nullable UUID owner, EntryTypes<T> type, String name,
+                                                       Predicate<T> shouldDelete) {
         T entry = getEntry(owner, type, name);
         if (entry != null && shouldDelete.test(entry)) deleteEntry(owner, type, name);
     }

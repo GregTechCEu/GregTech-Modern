@@ -1,15 +1,18 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry.entries;
 
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 @Accessors(chain = true)
 public class VisualTank extends FluidTank implements INBTSerializable<CompoundTag>, ITagSerializable<CompoundTag> {
+
     @Getter
     private VirtualTank virtualTank;
     @Setter

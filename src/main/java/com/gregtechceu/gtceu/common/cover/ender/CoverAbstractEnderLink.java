@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -24,18 +25,22 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends CoverBehavior implements IUICover, IControllable {
+public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends CoverBehavior
+                                            implements IUICover, IControllable {
+
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverAbstractEnderLink.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
     public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("[0-9a-fA-F]*");
@@ -192,11 +197,9 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
                         return VirtualTank.DEFAULT_COLOR;
                     }
                     return text;
-                }
-        ).setInputBoxTooltips(description);
+                }).setInputBoxTooltips(description);
         channelGroup.addWidget(confirmTextInputWidget);
         group.addWidget(channelGroup);
-
 
         group.addWidget(new ToggleButtonWidget(116, 82, SMALL_WIDGET_WIDTH, WIDGET_HEIGHT,
                 GuiTextures.BUTTON_POWER, this::isWorkingEnabled, this::setWorkingEnabled));
@@ -210,8 +213,7 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
         return group;
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
-    }
+    protected void buildAdditionalUI(WidgetGroup group) {}
 
     protected abstract String getUITitle();
 

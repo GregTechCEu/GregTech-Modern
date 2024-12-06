@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,10 +13,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
+
     private final Map<EntryTypes<?>, Map<String, VirtualEntry>> registryMap = new ConcurrentHashMap<>();
 
-    public VirtualRegistryMap() {
-    }
+    public VirtualRegistryMap() {}
 
     public VirtualRegistryMap(CompoundTag tag) {
         deserializeNBT(tag);
@@ -68,9 +69,8 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         for (String entryTypeString : nbt.getAllKeys()) {
-            EntryTypes<?> type = entryTypeString.contains(":")
-                    ? EntryTypes.fromLocation(entryTypeString)
-                    : EntryTypes.fromString(entryTypeString);
+            EntryTypes<?> type = entryTypeString.contains(":") ? EntryTypes.fromLocation(entryTypeString) :
+                    EntryTypes.fromString(entryTypeString);
 
             if (type == null) continue;
 

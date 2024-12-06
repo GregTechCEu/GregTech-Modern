@@ -2,15 +2,18 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry.entries;
 
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import lombok.Setter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class VirtualTank extends VirtualEntry implements IFluidTank, IFluidHandler {
+
     public static final int DEFAULT_CAPACITY = 64000; // 64B
     protected static final String CAPACITY_KEY = "capacity";
     protected static final String FLUID_KEY = "fluid";
@@ -23,6 +26,7 @@ public class VirtualTank extends VirtualEntry implements IFluidTank, IFluidHandl
     public VirtualTank(int capacity) {
         this.capacity = capacity;
         fluidTank = new FluidTank(this.capacity) {
+
             @Override
             protected void onContentsChanged() {
                 super.onContentsChanged();

@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
-import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {

@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +28,8 @@ public class ConfirmTextInputWidget extends WidgetGroup {
     private String inputText = "";
     private String hoverText = "";
 
-    public ConfirmTextInputWidget(int x, int y, int width, int height, String text, Consumer<String> textResponder, Function<String, String> validator) {
+    public ConfirmTextInputWidget(int x, int y, int width, int height, String text, Consumer<String> textResponder,
+                                  Function<String, String> validator) {
         super(x, y, width, height);
         this.textResponder = textResponder;
         this.validator = validator;

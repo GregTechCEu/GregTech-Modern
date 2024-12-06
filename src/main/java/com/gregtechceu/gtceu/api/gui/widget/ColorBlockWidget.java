@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntSupplier;
@@ -15,6 +17,7 @@ import java.util.function.IntSupplier;
 @Setter
 @Accessors(chain = true)
 public class ColorBlockWidget extends Widget {
+
     private IntSupplier colorSupplier;
     @Getter
     private int currentColor;

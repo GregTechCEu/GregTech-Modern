@@ -13,16 +13,19 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VisualTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
+
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderFluidLinkCover.class,
             CoverAbstractEnderLink.MANAGED_FIELD_HOLDER);
     public static final int TRANSFER_RATE = 8000; // mB/t
@@ -116,7 +120,7 @@ public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
     }
 
     //////////////////////////////////////
-    //   *********** GUI ************   //
+    // *********** GUI ************ //
 
     /// ///////////////////////////////////
 
@@ -135,51 +139,51 @@ public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
         return "cover.ender_fluid_link.title";
     }
 
-//    damn I can't make the list panel work in the server side
-//    private SelectableWidgetGroup createVisualTankWidget(VisualTank tank, int y) {
-//        final int TOTAL_WIDTH = 116;
-//        final int BUTTON_SIZE = 20;
-//        final int MARGIN = 2;
-//
-//        int currentX = 0;
-//        int availableWidth = TOTAL_WIDTH - BUTTON_SIZE + MARGIN;
-//
-//        SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(0, y, TOTAL_WIDTH, BUTTON_SIZE){
-//            @Override
-//            public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-//                super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-//                if (super.isSelected)
-//                    DrawerHelper.drawBorder(graphics, getPositionX(), getPositionY(), TOTAL_WIDTH, BUTTON_SIZE, 0xFFFFFFFF, 1);
-//            }
-//        };
-//        var name = tank.getVirtualTank().getColorStr();
-//
-//        // Color block
-//        channelGroup.addWidget(new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
-//                .setCurrentColor(tank.getVirtualTank().getColor()));
-//        currentX += BUTTON_SIZE + MARGIN;
-//
-//        // Text box
-//        int textBoxWidth = availableWidth;
-//        textBoxWidth -= BUTTON_SIZE + MARGIN;
-//        if (tank.getFluidAmount() == 0) {
-//            textBoxWidth -= BUTTON_SIZE + MARGIN;
-//        }
-//        channelGroup.addWidget(
-//                new TextBoxWidget(currentX, 6, textBoxWidth, List.of(name)).setCenter(true));
-//        currentX += textBoxWidth + MARGIN;
-//
-//        // Tank slot
-//        channelGroup.addWidget(new TankWidget(tank, currentX, 0,
-//                BUTTON_SIZE, BUTTON_SIZE, false, false)
-//                .setBackground(GuiTextures.FLUID_SLOT));
-//        currentX += BUTTON_SIZE + MARGIN;
-//
-//        // Remove button (if tank is empty)
-//        if (tank.getFluidAmount() == 0) {
-//            channelGroup.addWidget(new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE,
-//                    GuiTextures.BUTTON_INT_CIRCUIT_MINUS, cd -> removeChannel(tank)));
-//        }
-//        return channelGroup;
-//    }
+    // damn I can't make the list panel work in the server side
+    // private SelectableWidgetGroup createVisualTankWidget(VisualTank tank, int y) {
+    // final int TOTAL_WIDTH = 116;
+    // final int BUTTON_SIZE = 20;
+    // final int MARGIN = 2;
+    //
+    // int currentX = 0;
+    // int availableWidth = TOTAL_WIDTH - BUTTON_SIZE + MARGIN;
+    //
+    // SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(0, y, TOTAL_WIDTH, BUTTON_SIZE){
+    // @Override
+    // public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    // super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
+    // if (super.isSelected)
+    // DrawerHelper.drawBorder(graphics, getPositionX(), getPositionY(), TOTAL_WIDTH, BUTTON_SIZE, 0xFFFFFFFF, 1);
+    // }
+    // };
+    // var name = tank.getVirtualTank().getColorStr();
+    //
+    // // Color block
+    // channelGroup.addWidget(new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
+    // .setCurrentColor(tank.getVirtualTank().getColor()));
+    // currentX += BUTTON_SIZE + MARGIN;
+    //
+    // // Text box
+    // int textBoxWidth = availableWidth;
+    // textBoxWidth -= BUTTON_SIZE + MARGIN;
+    // if (tank.getFluidAmount() == 0) {
+    // textBoxWidth -= BUTTON_SIZE + MARGIN;
+    // }
+    // channelGroup.addWidget(
+    // new TextBoxWidget(currentX, 6, textBoxWidth, List.of(name)).setCenter(true));
+    // currentX += textBoxWidth + MARGIN;
+    //
+    // // Tank slot
+    // channelGroup.addWidget(new TankWidget(tank, currentX, 0,
+    // BUTTON_SIZE, BUTTON_SIZE, false, false)
+    // .setBackground(GuiTextures.FLUID_SLOT));
+    // currentX += BUTTON_SIZE + MARGIN;
+    //
+    // // Remove button (if tank is empty)
+    // if (tank.getFluidAmount() == 0) {
+    // channelGroup.addWidget(new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE,
+    // GuiTextures.BUTTON_INT_CIRCUIT_MINUS, cd -> removeChannel(tank)));
+    // }
+    // return channelGroup;
+    // }
 }
