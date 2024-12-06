@@ -12,11 +12,13 @@ import com.gregtechceu.gtceu.api.gui.widget.ConfirmTextInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -38,23 +40,21 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends CoverBehavior
+public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends CoverBehavior
                                             implements IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverAbstractEnderLink.class,
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AbstractEnderLinkCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
     public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("[0-9a-fA-F]*");
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     @Persisted
     @DescSynced
-    protected String channelName = VirtualEntry.DEFAULT_COLOR;
+    protected String color = VirtualEntry.DEFAULT_COLOR;
     @Persisted
     @DescSynced
     protected String description = VirtualEntry.DEFAULT_COLOR;
-    @Getter
     @Persisted
-    @DescSynced
-    protected UUID playerUUID = null;
+    protected IMachineOwner owner = null;
     @Getter
     @Setter
     @Persisted
@@ -73,7 +73,7 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
     @RequireRerender
     protected IO io = IO.OUT;
 
-    public CoverAbstractEnderLink(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
+    public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
     }
@@ -100,12 +100,20 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
     @Override
     public void onAttached(@NotNull ItemStack itemStack, @NotNull ServerPlayer player) {
         super.onAttached(itemStack, player);
-        playerUUID = player.getUUID();
+        if (coverHolder instanceof MachineCoverContainer mcc) {
+            this.owner = mcc.getMachine().getHolder().getOwner();
+        }
     }
 
+    protected final String getChannelName() {
+        return identifier() + this.color;
+    }
+
+    protected abstract String identifier();
+
     protected void setChannelName(String name) {
-        beforeChannelNameChanging(this.channelName);
-        this.channelName = name;
+        beforeChannelNameChanging(getChannelName());
+        this.color = name;
     }
 
     protected void beforeChannelNameChanging(String oldChannelName) {
@@ -119,7 +127,7 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
     protected abstract void updateEntry();
 
     public UUID getOwner() {
-        return isPrivate ? playerUUID : null;
+        return isPrivate ? owner.getPlayerUUID() : null;
     }
 
     protected void update() {
@@ -186,7 +194,7 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
 
         int textInputWidth = channelGroupWidth - currentX - SMALL_WIDGET_WIDTH - 2;
         var confirmTextInputWidget = new ConfirmTextInputWidget(currentX, 0, textInputWidth, WIDGET_HEIGHT,
-                channelName,
+                this.color,
                 text -> {
                     if (text != null && !text.isEmpty()) {
                         setChannelName(text);
@@ -218,7 +226,7 @@ public abstract class CoverAbstractEnderLink<T extends VirtualEntry> extends Cov
     protected abstract String getUITitle();
 
     protected int getColor() {
-        var colorString = this.channelName;
+        var colorString = this.color;
         colorString = String.format("%8s", colorString).replace(' ', '0');
 
         if (colorString.length() > 8) {

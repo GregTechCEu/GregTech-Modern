@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +70,8 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         for (String entryTypeString : nbt.getAllKeys()) {
-            EntryTypes<?> type = entryTypeString.contains(":") ? EntryTypes.fromLocation(entryTypeString) :
+            EntryTypes<?> type = entryTypeString.contains(":") ?
+                    EntryTypes.fromLocation(ResourceLocation.tryParse(entryTypeString)) :
                     EntryTypes.fromString(entryTypeString);
 
             if (type == null) continue;

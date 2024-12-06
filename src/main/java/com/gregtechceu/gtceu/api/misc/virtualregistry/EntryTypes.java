@@ -33,8 +33,8 @@ public final class EntryTypes<T extends VirtualEntry> {
     }
 
     @Nullable
-    public static EntryTypes<? extends VirtualEntry> fromLocation(String location) {
-        return TYPES_MAP.getOrDefault(new ResourceLocation(location), null);
+    public static EntryTypes<? extends VirtualEntry> fromLocation(ResourceLocation location) {
+        return TYPES_MAP.getOrDefault(location, null);
     }
 
     public static <E extends VirtualEntry> EntryTypes<E> addEntryType(ResourceLocation location, Supplier<E> supplier) {

@@ -4,20 +4,21 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
 
     public static final String DEFAULT_COLOR = "FFFFFFFF";
     protected static final String COLOR_KEY = "color";
     protected static final String DESC_KEY = "description";
 
-    @Getter
-    private int color = 0xFFFFFFFF;
-    @Getter
-    private String colorStr = DEFAULT_COLOR;
+    @Setter
     @NotNull
     private String description = "";
+    private int color = 0xFFFFFFFF;
+    private String colorStr = DEFAULT_COLOR;
 
     public abstract EntryTypes<? extends VirtualEntry> getType();
 
@@ -37,15 +38,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
             tmp -= 0x100000000L;
         }
         return (int) tmp;
-    }
-
-    @NotNull
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(@NotNull String desc) {
-        this.description = desc;
     }
 
     @Override

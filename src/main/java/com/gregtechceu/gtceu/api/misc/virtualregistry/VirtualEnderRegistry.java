@@ -35,7 +35,6 @@ public class VirtualEnderRegistry extends SavedData {
             if (server != null) {
                 data = server.overworld().getDataStorage()
                         .computeIfAbsent(VirtualEnderRegistry::new, VirtualEnderRegistry::new, DATA_ID);
-                GTCEu.LOGGER.debug("VirtualEnderRegistry has been successfully loaded");
             }
         }
 

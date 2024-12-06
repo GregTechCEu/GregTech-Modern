@@ -21,8 +21,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -32,10 +30,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
+public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EnderFluidLinkCover.class,
-            CoverAbstractEnderLink.MANAGED_FIELD_HOLDER);
+            AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
     public static final int TRANSFER_RATE = 8000; // mB/t
 
     @Persisted
@@ -64,12 +62,17 @@ public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
     }
 
     @Override
+    protected String identifier() {
+        return "EFLink#";
+    }
+
+    @Override
     protected void updateEntry() {
         var reg = VirtualEnderRegistry.getInstance();
         if (reg == null) return;
-        var tank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, this.channelName);
+        var tank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
         this.visualTank.setVirtualTank(tank);
-        this.visualTank.getVirtualTank().setColor(this.channelName);
+        this.visualTank.getVirtualTank().setColor(this.getColor());
         markAsDirty();
         markDirty("visualTank");
         this.visualTank.setFluid(this.visualTank.getVirtualTank().getFluid());
@@ -106,12 +109,6 @@ public class EnderFluidLinkCover extends CoverAbstractEnderLink<VirtualTank> {
 
         }
         return 0;
-    }
-
-    @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        super.onAttached(itemStack, player);
-        playerUUID = player.getUUID();
     }
 
     @Override
