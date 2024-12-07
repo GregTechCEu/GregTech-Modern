@@ -142,7 +142,7 @@ public class ReactorRecipes {
                 .duration(400).EUt(VA[LV])
                 .save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("iron_2_chloride")
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("iron_2_chloride")
                 .inputFluids(Iron3Chloride.getFluid(2000))
                 .inputFluids(Chlorobenzene.getFluid(1000))
                 .outputFluids(Iron2Chloride.getFluid(2000))
