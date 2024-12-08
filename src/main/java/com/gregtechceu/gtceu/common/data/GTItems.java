@@ -626,7 +626,7 @@ public class GTItems {
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
-            .register();;
+            .register();
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)
             .lang("Raw Carbon Fibers")
@@ -952,7 +952,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::create)
             .lang("HV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
@@ -963,7 +963,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::create)
             .lang("EV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
@@ -974,7 +974,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::create)
             .lang("IV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
@@ -985,7 +985,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE
             .item("luv_electric_pump", ComponentItem::create)
             .lang("LuV Electric Pump")
@@ -997,7 +997,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE
             .item("zpm_electric_pump", ComponentItem::create)
             .lang("ZPM Electric Pump")
@@ -1009,7 +1009,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::create)
             .lang("UV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
@@ -1021,7 +1021,7 @@ public class GTItems {
             })))
 
             .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();;
+            .register();
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = GTCEuAPI.isHighTier() ?
             REGISTRATE.item("uhv_electric_pump", ComponentItem::create)
