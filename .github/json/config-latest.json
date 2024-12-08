@@ -1,0 +1,23 @@
+{
+  "categories": [
+    {
+      "title": "### Added",
+      "labels": ["type: feature"]
+    },
+    {
+      "title": "### Fixed",
+      "labels": ["type: bugfix"]
+    },
+    {
+      "title": "### Changed",
+      "labels": ["type: refactor", "type: translation"]
+    }
+  ],
+  "sort": "ASC",
+  "template": "## What's Changed\n#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
+  "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
+  "empty_template": "",
+  "ignore_labels": ["ignore changelog"],
+  "max_pull_requests": 1000,
+  "max_back_track_time_days": 30
+}

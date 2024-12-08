@@ -234,10 +234,10 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
                                 new TextTexture("gtceu.creative.energy.source")))
                         .setPressed(source))
-                .widget(new SelectorWidget(7, 7, 30, 20, Arrays.stream(GTValues.VNF).toList(), -1)
+                .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
                         .setOnChanged(tier -> {
                             setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            voltage = GTValues.V[setTier];
+                            voltage = GTValues.VEX[setTier];
                         })
                         .setSupplier(() -> GTValues.VNF[setTier])
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)

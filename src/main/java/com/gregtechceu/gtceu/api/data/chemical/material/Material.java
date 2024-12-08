@@ -19,8 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,6 +28,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -43,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -236,10 +237,10 @@ public class Material implements Comparable<Material> {
     /**
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
-     * @see #getFluid(FluidStorageKey, long)
+     * @see #getFluid(FluidStorageKey, int)
      */
-    public FluidStack getFluid(long amount) {
-        return FluidStack.create(getFluid(), amount);
+    public FluidStack getFluid(int amount) {
+        return new FluidStack(getFluid(), amount);
     }
 
     /**
@@ -247,13 +248,13 @@ public class Material implements Comparable<Material> {
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
-    public FluidStack getFluid(@NotNull FluidStorageKey key, long amount) {
-        return FluidStack.create(getFluid(key), amount);
+    public FluidStack getFluid(@NotNull FluidStorageKey key, int amount) {
+        return new FluidStack(getFluid(key), amount);
     }
 
     /**
      * @return a {@code TagKey<Fluid>} with the material's name as the tag key
-     * @see #getFluid(FluidStorageKey, long)
+     * @see #getFluid(FluidStorageKey, int)
      */
     public TagKey<Fluid> getFluidTag() {
         return TagUtil.createFluidTag(this.getName());
@@ -314,9 +315,9 @@ public class Material implements Comparable<Material> {
         return prop == null ? null : prop.getFluid();
     }
 
-    public FluidStack getHotFluid(long amount) {
+    public FluidStack getHotFluid(int amount) {
         AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
-        return prop == null ? null : FluidStack.create(prop.getFluid(), amount);
+        return prop == null ? null : new FluidStack(prop.getFluid(), amount);
     }
 
     public Item getBucket() {
@@ -490,15 +491,15 @@ public class Material implements Comparable<Material> {
         return new MaterialStack(this, amount);
     }
 
-    public <T extends IMaterialProperty<T>> boolean hasProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return getProperty(key) != null;
     }
 
-    public <T extends IMaterialProperty<T>> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
         return properties.getProperty(key);
     }
 
-    public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
         if (!GTCEuAPI.materialManager.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
@@ -1033,22 +1034,33 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder blastTemp(int temp) {
+            return blast(temp);
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier) {
+            return blast(temp, gasTier);
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
+            return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride));
+        }
+
+        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
+            return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride, durationOverride));
+        }
+
+        public Builder blast(int temp) {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp));
             return this;
         }
 
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, -1, -1));
+        public Builder blast(int temp, BlastProperty.GasTier gasTier) {
+            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier));
             return this;
         }
 
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, -1));
-            return this;
-        }
-
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
-            properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, durationOverride));
+        public Builder blast(UnaryOperator<BlastProperty.Builder> b) {
+            properties.setProperty(PropertyKey.BLAST, b.apply(new BlastProperty.Builder()).build());
             return this;
         }
 
@@ -1166,13 +1178,13 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder cableProperties(long voltage, int amperage, int loss) {
-            cableProperties((int) voltage, amperage, loss, false);
+            cableProperties(voltage, amperage, loss, false);
             return this;
         }
 
         public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
             properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE, new WireProperties((int) voltage, amperage, loss, isSuperCon));
+            properties.setProperty(PropertyKey.WIRE, new WireProperties(voltage, amperage, loss, isSuperCon));
             return this;
         }
 
@@ -1180,7 +1192,7 @@ public class Material implements Comparable<Material> {
                                        int criticalTemperature) {
             properties.ensureSet(PropertyKey.DUST);
             properties.setProperty(PropertyKey.WIRE,
-                    new WireProperties((int) voltage, amperage, loss, isSuperCon, criticalTemperature));
+                    new WireProperties(voltage, amperage, loss, isSuperCon, criticalTemperature));
             return this;
         }
 
@@ -1325,12 +1337,12 @@ public class Material implements Comparable<Material> {
                     colors.set(0, 0xFFFFFF);
                 else {
                     long colorTemp = 0;
-                    int divisor = 0;
+                    long divisor = 0;
                     for (MaterialStack stack : componentList) {
                         colorTemp += stack.material().getMaterialARGB() * stack.amount();
                         divisor += stack.amount();
                     }
-                    colors.set(0, (int) (colorTemp / divisor));
+                    colors.set(0, GTMath.saturatedCast(colorTemp / divisor));
                 }
             }
         }

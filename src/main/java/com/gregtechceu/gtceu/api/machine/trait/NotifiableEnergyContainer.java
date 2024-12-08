@@ -15,13 +15,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -182,7 +182,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         }
     }
 
-    public boolean dischargeOrRechargeEnergyContainers(IItemTransfer itemHandler, int slotIndex, boolean simulate) {
+    public boolean dischargeOrRechargeEnergyContainers(IItemHandlerModifiable itemHandler, int slotIndex,
+                                                       boolean simulate) {
         var stackInSlot = itemHandler.getStackInSlot(slotIndex).copy();
         if (stackInSlot.isEmpty()) { // no stack to charge/discharge
             return false;
@@ -193,16 +194,14 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             if (handleElectricItem(electricItem, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);
-                    itemHandler.onContentsChanged();
                 }
                 return true;
             }
-        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
             IEnergyStorage energyStorage = GTCapabilityHelper.getForgeEnergyItem(stackInSlot);
             if (energyStorage != null && handleForgeEnergyItem(energyStorage, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);
-                    itemHandler.onContentsChanged();
                 }
                 return true;
             }

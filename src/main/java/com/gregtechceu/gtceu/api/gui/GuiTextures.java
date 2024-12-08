@@ -387,6 +387,9 @@ public class GuiTextures {
             .fullImage("gtceu:textures/gui/progress_bar/progress_bar_arrow_%s.png");
     public static final ResourceTexture PROGRESS_BAR_ARROW_MULTIPLE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_arrow_multiple.png");
+    public static final ResourceTexture PROGRESS_BAR_ASSEMBLER = new ResourceTexture(
+            "gtceu:textures/gui/progress_bar/progress_bar_assembler.png");
+
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_assembly_line.png");
     public static final ResourceTexture PROGRESS_BAR_ASSEMBLY_LINE_ARROW = new ResourceTexture(
@@ -404,7 +407,7 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_CANNER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_canner.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT = new ResourceTexture(
-            "gtceu:textures/gui/progress_bar/progress_bar_circuit.png");
+            "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_CIRCUIT_ASSEMBLER = new ResourceTexture(
             "gtceu:textures/gui/progress_bar/progress_bar_circuit_assembler.png");
     public static final ResourceTexture PROGRESS_BAR_COKE_OVEN = new ResourceTexture(
@@ -482,6 +485,13 @@ public class GuiTextures {
     public static final ResourceTexture INFO_ICON = new ResourceTexture("gtceu:textures/gui/widget/information.png");
     public static final ResourceTexture MULTIBLOCK_CATEGORY = new ResourceTexture(
             "gtceu:textures/gui/icon/coke_oven.png");
+
+    public static final ResourceTexture ARC_FURNACE_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/category/arc_furnace_recycling.png");
+    public static final ResourceTexture MACERATOR_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/category/macerator_recycling.png");
+    public static final ResourceTexture EXTRACTOR_RECYCLING_CATEGORY = new ResourceTexture(
+            "gtceu:textures/gui/icon/category/extractor_recycling.png");
 
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(

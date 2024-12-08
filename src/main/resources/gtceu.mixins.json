@@ -9,14 +9,19 @@
         "BlockColorsMixin",
         "BlockModelMixin",
         "ClientLevelAccessor",
-        "CompassManagerMixin",
         "GuiGraphicsAccessor",
         "GuiGraphicsMixin",
         "GuiHeartTypeMixin",
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
-        "rei.FluidEntryRendererMixin"
+        "journeymap.FullscreenMixin",
+        "rei.FluidEntryRendererMixin",
+        "xaeroworldmap.GuiMapMixin",
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
+        "xaerominimap.HighlighterRegistryMixin",
+        "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
         "AbstractRegistrateAccessor",
@@ -60,6 +65,7 @@
         "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "ldlib.SyncUtilsMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"
@@ -67,5 +73,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-    }
+  }
 }

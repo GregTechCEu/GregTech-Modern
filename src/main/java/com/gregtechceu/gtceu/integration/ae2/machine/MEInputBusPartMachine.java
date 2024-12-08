@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -31,7 +33,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStickInteractable, IMachineLife {
+public class MEInputBusPartMachine extends MEBusPartMachine
+                                   implements IDataStickInteractable, IMachineLife, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
             MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -88,10 +91,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
                 long inserted = networkInv.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE,
                         this.actionSource);
                 if (inserted > 0) {
-                    aeSlot.extractItem(0, (int) inserted, false);
+                    aeSlot.extractItem(0, GTMath.saturatedCast(inserted), false);
                     continue;
                 } else {
-                    aeSlot.extractItem(0, (int) total, false);
+                    aeSlot.extractItem(0, GTMath.saturatedCast(total), false);
                 }
             }
             // Fill it
@@ -187,6 +190,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         }
         tag.putByte("GhostCircuit",
                 (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+        tag.putBoolean("DistinctBuses", isDistinct());
         return tag;
     }
 
@@ -205,6 +209,9 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IDataStic
         }
         if (tag.contains("GhostCircuit")) {
             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+        }
+        if (tag.contains("DistinctBuses")) {
+            setDistinct(tag.getBoolean("DistinctBuses"));
         }
     }
 }

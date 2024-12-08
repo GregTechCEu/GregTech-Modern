@@ -46,14 +46,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public final boolean chargeable;
     public final boolean dischargeable;
 
-    protected ElectricStats(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    protected ElectricStats(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         this.maxCharge = maxCharge;
-        this.tier = (int) tier;
+        this.tier = tier;
         this.chargeable = chargeable;
         this.dischargeable = dischargeable;
     }
 
-    public static ElectricStats create(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    public static ElectricStats create(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         return new ElectricStats(maxCharge, tier, chargeable, dischargeable);
     }
 
@@ -109,7 +109,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                         transferLimit -= chargedAmount;
                         if (transferLimit == 0L) break;
                     }
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
+                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                     var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(itemInSlot);
                     if (feEnergyItem != null && feEnergyItem.canReceive() &&
                             feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
@@ -168,7 +168,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    private static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
+    public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
         double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
@@ -180,11 +180,11 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         long maxChargeTime;
         String unit;
 
-        if (durationMax.getSeconds() <= 180) {
+        if (durationCurrent.getSeconds() <= 60) {
             maxChargeTime = durationMax.getSeconds();
             currentChargeTime = durationCurrent.toSeconds();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (durationMax.toMinutes() <= 180) {
+        } else if (durationCurrent.toMinutes() <= 60) {
             maxChargeTime = durationMax.toMinutes();
             currentChargeTime = durationCurrent.toMinutes();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
@@ -231,7 +231,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    public static ElectricStats createElectricItem(long maxCharge, long tier) {
+    public static ElectricStats createElectricItem(long maxCharge, int tier) {
         return ElectricStats.create(maxCharge, tier, true, false);
     }
 

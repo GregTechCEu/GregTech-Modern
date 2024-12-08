@@ -51,13 +51,17 @@ public class MachineLang {
                 "§7Mines block on front face and collects its drops");
         provider.add("gtceu.machine.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
 
+        provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating up§r%s");
+        provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling down§r%s");
+        provider.add("gtceu.machine.boiler.info.producing.steam", " §a(boiling water)");
+
         ///////////////////////////////////////////////////
         // Standard Machines //
         // Ones done with more unique tooltips are first /
         ///////////////////////////////////////////////////
 
-        provider.add("gtceu.machine.lv_macerator.tooltip", "§7Shredding your Ores");
-        provider.add("gtceu.machine.mv_macerator.tooltip", "§7Shredding your Ores");
+        provider.add("gtceu.machine.lv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
+        provider.add("gtceu.machine.mv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
         provider.add("gtceu.machine.hv_macerator.tooltip", "§7Shredding your Ores with Byproducts");
         provider.add("gtceu.machine.ev_macerator.tooltip", "§7Shredding your Ores with Byproducts");
         provider.add("gtceu.machine.iv_macerator.tooltip", "§7Blend-O-Matic 9001");
@@ -864,7 +868,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
-                "Each Rotor Holder above %s§7 adds §f10%% efficiency§7.");
+                "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
         provider.add("gtceu.multiblock.turbine.fuel_needed", "Consumes %s per %s ticks");
         provider.add("gtceu.multiblock.large_boiler.max_temperature",
                 "Max Temperature: %dK, Steam Production: %dmB/t");
@@ -899,17 +903,17 @@ public class MachineLang {
         provider.add("gtceu.multiblock.ore_rig.ore_amount", "Drilling Rate: %s");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
-        provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");
-        provider.add("gtceu.multiblock.power_substation.capacity", "Capacity: %s EU");
-        provider.add("gtceu.multiblock.power_substation.passive_drain", "Passive Drain: %s EU/t");
-        provider.add("gtceu.multiblock.power_substation.average_in", "Avg. Input: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.stored", "§7Stored: %s §7EU");
+        provider.add("gtceu.multiblock.power_substation.capacity", "§7Capacity: %s §7EU");
+        provider.add("gtceu.multiblock.power_substation.passive_drain", "§7Passive Drain: %s §7EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_in", "§7Avg. Input: %s §7EU/t");
         provider.add("gtceu.multiblock.power_substation.average_in_hover",
                 "The average inserted EU into the Power Substation's internal energy bank");
-        provider.add("gtceu.multiblock.power_substation.average_out", "Avg. Output: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_out", "§7Avg. Output: %s §7EU/t");
         provider.add("gtceu.multiblock.power_substation.average_out_hover",
                 "The average extracted EU out of the Power Substation's internal energy bank");
-        provider.add("gtceu.multiblock.power_substation.time_to_fill", "Time to fill: %s");
-        provider.add("gtceu.multiblock.power_substation.time_to_drain", "Time to drain: %s");
+        provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");
+        provider.add("gtceu.multiblock.power_substation.time_to_drain", "§7Time to drain: %s");
         provider.add("gtceu.multiblock.power_substation.time_seconds", "%s Seconds");
         provider.add("gtceu.multiblock.power_substation.time_minutes", "%s Minutes");
         provider.add("gtceu.multiblock.power_substation.time_hours", "%s Hours");

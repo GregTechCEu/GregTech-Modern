@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -37,7 +40,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     private @NotNull ItemStack filterItem = ItemStack.EMPTY;
 
     private @Nullable F filter;
-    private @Nullable ItemStackTransfer filterSlot;
+    private @Nullable CustomItemStackHandler filterSlot;
     private @Nullable WidgetGroup filterGroup;
 
     private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
@@ -112,9 +115,9 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
-    private ItemStackTransfer getFilterSlot() {
+    private CustomItemStackHandler getFilterSlot() {
         if (this.filterSlot == null) {
-            this.filterSlot = new ItemStackTransfer(this.filterItem);
+            this.filterSlot = new CustomItemStackHandler(this.filterItem);
 
             this.filterSlot.setFilter(this::canInsertFilterItem);
         }
@@ -145,7 +148,13 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         if (!this.filterItem.isEmpty()) {
             this.filter = loadFilter(this.filterItem);
             filter.setOnUpdated(this.onFilterUpdated);
-
+            if (this.filter instanceof SmartItemFilter smart && container instanceof CoverBehavior cover &&
+                    cover.coverHolder instanceof MachineCoverContainer mcc) {
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                if (machine != null) {
+                    smart.setModeFromMachine(machine.getDefinition().getName());
+                }
+            }
             this.onFilterLoaded.accept(this.filter);
         }
         updateFilterGroupUI();

@@ -22,17 +22,6 @@ import org.jetbrains.annotations.Nullable;
 public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver,
                                      IVoidable {
 
-    @Override
-    default int getChanceTier() {
-        if (self() instanceof IOverclockMachine ocMachine) {
-            return ocMachine.getOverclockTier();
-        } else if (self() instanceof ITieredMachine tieredMachine) {
-            return tieredMachine.getTier();
-        }
-
-        return self().getDefinition().getTier();
-    }
-
     /**
      * RecipeType held
      */
@@ -152,6 +141,11 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @Override
     default void setWorkingEnabled(boolean isWorkingAllowed) {
         getRecipeLogic().setWorkingEnabled(isWorkingAllowed);
+    }
+
+    @Override
+    default void setSuspendAfterFinish(boolean suspendAfterFinish) {
+        getRecipeLogic().setSuspendAfterFinish(suspendAfterFinish);
     }
 
     @Override

@@ -1,20 +1,19 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-public class PipeNetRoutePath implements IRoutePath<IFluidTransfer> {
+public class PipeNetRoutePath implements IRoutePath<IFluidHandler> {
 
     @Getter
     private final BlockPos pipePos;
@@ -43,7 +42,7 @@ public class PipeNetRoutePath implements IRoutePath<IFluidTransfer> {
     }
 
     @Nullable
-    public IFluidTransfer getHandler(Level world) {
-        return FluidTransferHelper.getFluidTransfer(world, getTargetPipePos(), targetFacing.getOpposite());
+    public IFluidHandler getHandler(Level world) {
+        return GTTransferUtils.getAdjacentFluidHandler(world, pipePos, targetFacing).resolve().orElse(null);
     }
 }

@@ -54,7 +54,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
     private BlockPos bufferPos;
 
     public MEPatternBufferProxyPartMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.LuV, IO.BOTH);
+        super(holder, GTValues.LuV, IO.IN);
         this.itemProxyHandler = new MEPatternBufferProxyRecipeHandler<>(this, IO.IN, ItemRecipeCapability.CAP);
         this.fluidProxyHandler = new MEPatternBufferProxyRecipeHandler<>(this, IO.IN, FluidRecipeCapability.CAP);
     }

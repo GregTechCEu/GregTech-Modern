@@ -88,6 +88,14 @@ public final class WoodTypeEntry {
     public final Item hangingSign;
     @Nullable
     public final String hangingSignRecipeName;
+    @Nullable
+    public final Item button;
+    @Nullable
+    public final String buttonRecipeName;
+    @Nullable
+    public final Item pressurePlate;
+    @Nullable
+    public final String pressurePlateRecipeName;
     public final Material material;
 
     public final boolean addLogOreDict;
@@ -97,6 +105,11 @@ public final class WoodTypeEntry {
     public final boolean addFencesOreDict;
     public final boolean addFenceGatesOreDict;
     public final boolean addStairsOreDict;
+    public final boolean addBoatsOreDict;
+    public final boolean addChestBoatsOreDict;
+    public final boolean addButtonsOreDict;
+    public final boolean addPressurePlatesOreDict;
+
     public final boolean addPlanksUnificationInfo;
     public final boolean addDoorsUnificationInfo;
     public final boolean addSlabsUnificationInfo;
@@ -105,10 +118,12 @@ public final class WoodTypeEntry {
     public final boolean addStairsUnificationInfo;
     public final boolean addBoatsUnificationInfo;
     public final boolean addChestBoatsUnificationInfo;
+    public final boolean addButtonsUnificationInfo;
+    public final boolean addPressurePlatesUnificationInfo;
     public final boolean generateLogToPlankRecipe;
 
     /**
-     * @see WoodTypeEntry.Builder
+     * @see Builder
      */
     private WoodTypeEntry(@NotNull String modid, @NotNull String woodName, @NotNull TagKey<Item> logTag,
                           @Nullable Item log, @Nullable Item strippedLog,
@@ -125,14 +140,19 @@ public final class WoodTypeEntry {
                           @Nullable Item chestBoat, @Nullable String chestBoatRecipeName,
                           @Nullable Item sign, @Nullable String signRecipeName,
                           @Nullable Item hangingSign, @Nullable String hangingSignRecipeName,
+                          @Nullable Item button, @Nullable String buttonRecipeName,
+                          @Nullable Item pressurePlate, @Nullable String pressurePlateRecipeName,
                           @Nullable Material material,
                           boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict,
                           boolean addSlabsOreDict,
                           boolean addFencesOreDict, boolean addFenceGatesOreDict, boolean addStairsOreDict,
+                          boolean addBoatsOreDict, boolean addChestBoatsOreDict,
+                          boolean addButtonsOreDict, boolean addPressurePlatesOreDict,
                           boolean addPlanksUnificationInfo, boolean addDoorsUnificationInfo,
                           boolean addSlabsUnificationInfo, boolean addFencesUnificationInfo,
                           boolean addFenceGatesUnificationInfo, boolean addStairsUnificationInfo,
                           boolean addBoatsUnificationInfo, boolean addChestBoatsUnificationInfo,
+                          boolean addPressurePlatesUnificationInfo, boolean addButtonsUnificationInfo,
                           boolean generateLogToPlankRecipe) {
         this.modid = modid;
         this.woodName = woodName;
@@ -167,6 +187,10 @@ public final class WoodTypeEntry {
         this.signRecipeName = signRecipeName;
         this.hangingSign = hangingSign;
         this.hangingSignRecipeName = hangingSignRecipeName;
+        this.button = button;
+        this.buttonRecipeName = buttonRecipeName;
+        this.pressurePlate = pressurePlate;
+        this.pressurePlateRecipeName = pressurePlateRecipeName;
         this.material = material != null ? material : GTMaterials.Wood;
 
         this.addLogOreDict = addLogOreDict;
@@ -176,6 +200,10 @@ public final class WoodTypeEntry {
         this.addFencesOreDict = addFencesOreDict;
         this.addFenceGatesOreDict = addFenceGatesOreDict;
         this.addStairsOreDict = addStairsOreDict;
+        this.addBoatsOreDict = addBoatsOreDict;
+        this.addChestBoatsOreDict = addChestBoatsOreDict;
+        this.addButtonsOreDict = addButtonsOreDict;
+        this.addPressurePlatesOreDict = addPressurePlatesOreDict;
         this.addPlanksUnificationInfo = addPlanksUnificationInfo;
         this.addDoorsUnificationInfo = addDoorsUnificationInfo;
         this.addSlabsUnificationInfo = addSlabsUnificationInfo;
@@ -184,6 +212,8 @@ public final class WoodTypeEntry {
         this.addStairsUnificationInfo = addStairsUnificationInfo;
         this.addBoatsUnificationInfo = addBoatsUnificationInfo;
         this.addChestBoatsUnificationInfo = addChestBoatsUnificationInfo;
+        this.addButtonsUnificationInfo = addButtonsUnificationInfo;
+        this.addPressurePlatesUnificationInfo = addPressurePlatesUnificationInfo;
         this.generateLogToPlankRecipe = generateLogToPlankRecipe;
     }
 
@@ -237,6 +267,10 @@ public final class WoodTypeEntry {
         private String signRecipeName;
         private Item hangingSign = null;
         private String hangingSignRecipeName;
+        private Item button = null;
+        private String buttonRecipeName;
+        private Item pressurePlate = null;
+        private String pressurePlateRecipeName;
         @Nullable
         private Material material = null;
 
@@ -247,6 +281,10 @@ public final class WoodTypeEntry {
         private boolean addFencesOreDict;
         private boolean addFenceGatesOreDict;
         private boolean addStairsOreDict;
+        private boolean addBoatsOreDict;
+        private boolean addChestBoatsOreDict;
+        private boolean addButtonOreDict;
+        private boolean addPressurePlateOreDict;
 
         private boolean addPlanksUnificationInfo;
         private boolean addDoorsUnificationInfo;
@@ -256,6 +294,8 @@ public final class WoodTypeEntry {
         private boolean addStairsUnificationInfo;
         private boolean addBoatsUnificationInfo;
         private boolean addChestBoatsUnificationInfo;
+        private boolean addButtonUnificationInfo;
+        private boolean addPressurePlateUnificationInfo;
         private boolean generateLogToPlankRecipe = true;
 
         /**
@@ -507,6 +547,32 @@ public final class WoodTypeEntry {
         }
 
         /**
+         * Add an entry for a sign
+         *
+         * @param button           the hanging sign to add
+         * @param buttonRecipeName the recipe name for crafting the hanging sign
+         * @return this
+         */
+        public Builder button(@NotNull Item button, @Nullable String buttonRecipeName) {
+            this.button = button;
+            this.buttonRecipeName = buttonRecipeName;
+            return this;
+        }
+
+        /**
+         * Add an entry for a sign
+         *
+         * @param pressurePlate           the hanging sign to add
+         * @param pressurePlateRecipeName the recipe name for crafting the hanging sign
+         * @return this
+         */
+        public Builder pressurePlate(@NotNull Item pressurePlate, @Nullable String pressurePlateRecipeName) {
+            this.pressurePlate = pressurePlate;
+            this.pressurePlateRecipeName = pressurePlateRecipeName;
+            return this;
+        }
+
+        /**
          * Specify material for wood entry. If not provided, {@link GTMaterials#Wood} will be used
          *
          * @param material material for wood entry
@@ -518,12 +584,12 @@ public final class WoodTypeEntry {
         }
 
         /**
-         * Register all possible ore dictionary for wood entry.
+         * Register all possible tags for wood entry.
          *
          * @return this
          */
         public Builder registerAllTags() {
-            return registerTag(true, true, true, true, true, true, true);
+            return registerTag(true, true, true, true, true, true, true, true, true, true, true);
         }
 
         /**
@@ -532,23 +598,28 @@ public final class WoodTypeEntry {
          * @return this
          */
         public Builder registerAllUnificationInfo() {
-            return registerUnificationInfo(true, true, true, true, true, true, true, true);
+            return registerUnificationInfo(true, true, true, true, true, true, true, true, true, true);
         }
 
         /**
-         * Register ore dictionary for wood entry.
+         * Register tags for wood entry.
          *
-         * @param log       whether to add ore dictionary for logs
-         * @param planks    whether to add ore dictionary for planks
-         * @param door      whether to add ore dictionary for doors
-         * @param slab      whether to add ore dictionary for slab
-         * @param fence     whether to add ore dictionary for fences
-         * @param fenceGate whether to add ore dictionary for fence gates
-         * @param stairs    whether to add ore dictionary for stairs
+         * @param log           whether to add tags for logs
+         * @param planks        whether to add tags for planks
+         * @param door          whether to add tags for doors
+         * @param slab          whether to add tags for slab
+         * @param fence         whether to add tags for fences
+         * @param fenceGate     whether to add tags for fence gates
+         * @param stairs        whether to add tags for stairs
+         * @param boat          whether to add unification info for boats
+         * @param chestBoat     whether to add unification info for chest boats
+         * @param button        whether to add unification info for buttons
+         * @param pressurePlate whether to add unification info for pressure plates
          * @return this
          */
         public Builder registerTag(boolean log, boolean planks, boolean door, boolean slab, boolean fence,
-                                   boolean fenceGate, boolean stairs) {
+                                   boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat, boolean button,
+                                   boolean pressurePlate) {
             this.addLogOreDict = log;
             this.addPlanksOreDict = planks;
             this.addDoorsOreDict = door;
@@ -556,24 +627,31 @@ public final class WoodTypeEntry {
             this.addFencesOreDict = fence;
             this.addFenceGatesOreDict = fenceGate;
             this.addStairsOreDict = stairs;
+            this.addBoatsOreDict = boat;
+            this.addChestBoatsOreDict = chestBoat;
+            this.addButtonOreDict = button;
+            this.addPressurePlateOreDict = pressurePlate;
             return this;
         }
 
         /**
          * Register unification info for wood entry.
          *
-         * @param planks    whether to add unification info for planks
-         * @param door      whether to add unification info for doors
-         * @param slab      whether to add unification info for slab
-         * @param fence     whether to add unification info for fences
-         * @param fenceGate whether to add unification info for fence gates
-         * @param stairs    whether to add unification info for stairs
-         * @param boat      whether to add unification info for boats
-         * @param chestBoat whether to add unification info for chest boats
+         * @param planks        whether to add unification info for planks
+         * @param door          whether to add unification info for doors
+         * @param slab          whether to add unification info for slab
+         * @param fence         whether to add unification info for fences
+         * @param fenceGate     whether to add unification info for fence gates
+         * @param stairs        whether to add unification info for stairs
+         * @param boat          whether to add unification info for boats
+         * @param chestBoat     whether to add unification info for chest boats
+         * @param button        whether to add unification info for buttons
+         * @param pressurePlate whether to add unification info for pressure plates
          * @return this
          */
         public Builder registerUnificationInfo(boolean planks, boolean door, boolean slab, boolean fence,
-                                               boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat) {
+                                               boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat,
+                                               boolean button, boolean pressurePlate) {
             this.addPlanksUnificationInfo = planks;
             this.addDoorsUnificationInfo = door;
             this.addSlabsUnificationInfo = slab;
@@ -582,6 +660,8 @@ public final class WoodTypeEntry {
             this.addStairsUnificationInfo = stairs;
             this.addBoatsUnificationInfo = boat;
             this.addChestBoatsUnificationInfo = chestBoat;
+            this.addButtonUnificationInfo = button;
+            this.addPressurePlateUnificationInfo = pressurePlate;
             return this;
         }
 
@@ -618,12 +698,16 @@ public final class WoodTypeEntry {
                     stairs, stairsRecipeName, addStairsCraftingRecipe,
                     boat, boatRecipeName, chestBoat, chestBoatRecipeName,
                     sign, signRecipeName, hangingSign, hangingSignRecipeName,
+                    button, buttonRecipeName, pressurePlate, pressurePlateRecipeName,
                     material,
                     addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
-                    addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
-                    addDoorsUnificationInfo, addSlabsUnificationInfo, addFencesUnificationInfo,
+                    addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addBoatsOreDict, addChestBoatsOreDict,
+                    addButtonOreDict, addPressurePlateOreDict,
+                    addPlanksUnificationInfo, addDoorsUnificationInfo, addSlabsUnificationInfo,
+                    addFencesUnificationInfo,
                     addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo,
-                    addChestBoatsUnificationInfo, generateLogToPlankRecipe);
+                    addChestBoatsUnificationInfo, addButtonUnificationInfo, addPressurePlateUnificationInfo,
+                    generateLogToPlankRecipe);
         }
     }
 }

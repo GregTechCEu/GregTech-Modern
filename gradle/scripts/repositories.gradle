@@ -42,6 +42,18 @@ repositories {
             includeGroup "dev.latvian.mods"
         }
     }
+    // JourneyMap API releases are here
+    maven {
+        name = "JourneyMap (Public)"
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
+    maven {
+        name = "Kotlin for Forge"
+        url = "https://thedarkcolour.github.io/KotlinForForge/"
+        content {
+            includeGroup "thedarkcolour"
+        }
+    }
     maven { url "https://maven.architectury.dev/" }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM

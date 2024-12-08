@@ -17,8 +17,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.GTOreByProduct;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
@@ -717,7 +717,6 @@ public class TagPrefix {
     public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
             .unformattedTagPath("frames")
-            .unformattedTagPath("climbable", true)
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
@@ -1082,14 +1081,14 @@ public class TagPrefix {
     }
 
     @FunctionalInterface
-    public interface MaterialRecipeHandler<T extends IMaterialProperty<T>> {
+    public interface MaterialRecipeHandler<T extends IMaterialProperty> {
 
         void accept(TagPrefix prefix, Material material, T property, Consumer<FinishedRecipe> provider);
     }
 
-    public <T extends IMaterialProperty<T>> void executeHandler(Consumer<FinishedRecipe> provider,
-                                                                PropertyKey<T> propertyKey,
-                                                                MaterialRecipeHandler<T> handler) {
+    public <T extends IMaterialProperty> void executeHandler(Consumer<FinishedRecipe> provider,
+                                                             PropertyKey<T> propertyKey,
+                                                             MaterialRecipeHandler<T> handler) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) &&
                     !ChemicalHelper.get(this, material).isEmpty()) {

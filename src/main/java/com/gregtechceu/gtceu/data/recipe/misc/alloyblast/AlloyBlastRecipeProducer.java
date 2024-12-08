@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GCyMRecipeTypes;
+import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -17,10 +17,9 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,7 @@ public class AlloyBlastRecipeProducer {
     @SuppressWarnings("MethodMayBeStatic")
     @NotNull
     protected GTRecipeBuilder createBuilder(@NotNull BlastProperty property, @NotNull Material material) {
-        GTRecipeBuilder builder = GCyMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(material.getName());
+        GTRecipeBuilder builder = GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(material.getName());
         // apply the duration override
         int duration = property.getDurationOverride();
         if (duration < 0) duration = Math.max(1, (int) (material.getMass() * property.getBlastTemperature() / 100L));
@@ -109,7 +108,7 @@ public class AlloyBlastRecipeProducer {
                 if (fluidAmount >= 2) return -1; // more than 2 fluids won't fit in the machine
                 fluidAmount++;
                 // assume all fluids have 1000mB/mol, since other quantities should be as an item input
-                builder.inputFluids(msMat.getFluid(1000L * msAmount));
+                builder.inputFluids(msMat.getFluid(1000 * msAmount));
             } else return -1; // no fluid or item prop means no valid recipe
             outputAmount += msAmount;
         }
@@ -129,7 +128,7 @@ public class AlloyBlastRecipeProducer {
                                 int componentAmount,
                                 @NotNull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
         // add the fluid output with the correct amount
-        builder.outputFluids(FluidStack.create(molten, (long) GTValues.L * outputAmount));
+        builder.outputFluids(new FluidStack(molten, GTValues.L * outputAmount));
 
         // apply alloy blast duration reduction: 3/4
         int duration = builder.duration * outputAmount * 3 / 4;
@@ -179,7 +178,7 @@ public class AlloyBlastRecipeProducer {
                                      Consumer<FinishedRecipe> provider) {
         // build the freezer recipe
         GTRecipeBuilder freezerBuilder = GTRecipeTypes.VACUUM_RECIPES.recipeBuilder(material.getName())
-                .inputFluids(FluidStack.create(molten, GTValues.L))
+                .inputFluids(new FluidStack(molten, GTValues.L))
                 .duration((int) material.getMass() * 3)
                 .notConsumable(GTItems.SHAPE_MOLD_INGOT.asStack())
                 .outputItems(TagPrefix.ingot, material);

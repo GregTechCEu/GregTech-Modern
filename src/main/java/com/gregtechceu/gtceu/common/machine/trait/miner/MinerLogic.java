@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -18,8 +19,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -39,6 +38,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
@@ -60,7 +60,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private static final double DIVIDEND = MAX_SPEED * Math.pow(TICK_TOLERANCE, POWER);
     protected final IMiner miner;
     @Nullable
-    private ItemTransferList cachedItemTransfer = null;
+    private NotifiableAccountedInvWrapper cachedItemHandler = null;
     @Getter
     private final int fortune;
     @Getter
@@ -103,6 +103,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Getter
     private int minBuildHeight = Integer.MAX_VALUE;
     @Getter
+    private int maxBuildHeight = Integer.MAX_VALUE;
+    @Getter
     @Persisted
     private int pipeLength = 0;
     @Getter
@@ -118,6 +120,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     private final ItemRecipeHandler inputItemHandler, outputItemHandler;
     private final IgnoreEnergyRecipeHandler inputEnergyHandler;
+    @Setter
+    @Getter
+    private Direction dir = Direction.DOWN;
 
     /**
      * Creates the general logic for all in-world ore block miners
@@ -152,7 +157,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void resetRecipeLogic() {
         super.resetRecipeLogic();
         resetArea(false);
-        this.cachedItemTransfer = null;
+        this.cachedItemHandler = null;
         this.pipeLength = 0;
     }
 
@@ -164,7 +169,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Override
     public void inValid() {
         super.inValid();
-        this.cachedItemTransfer = null;
+        this.cachedItemHandler = null;
         this.pipeLength = 0;
     }
 
@@ -201,10 +206,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
             }
 
             // drill a hole beneath the miner and extend the pipe downwards by one
-            if (mineY < pipeY) {
+            if ((dir == Direction.DOWN && mineY < pipeY) || (dir == Direction.UP && mineY > pipeY)) {
                 BlockPos miningPos = getMiningPos();
                 serverLevel.destroyBlock(new BlockPos(miningPos.getX(), pipeY, miningPos.getZ()), false);
-                --pipeY;
+                if (dir == Direction.UP) {
+                    ++pipeY;
+                } else {
+                    --pipeY;
+                }
                 incrementPipeLength();
             }
 
@@ -336,11 +345,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
-        inputItemHandler.storage.onContentsChanged(0);
-        for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
-            outputItemHandler.storage.setStackInSlot(i, ItemStack.EMPTY);
-        }
-        outputItemHandler.storage.onContentsChanged(0);
+        outputItemHandler.storage.clear();
 
         var matches = machine.getRecipeType().searchRecipe(this);
 
@@ -382,12 +387,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         blockDrops.add(new ItemStack(blockState.getBlock()));
     }
 
-    protected ItemTransferList getCachedItemTransfer() {
-        if (cachedItemTransfer == null) {
-            cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy()
-                    .get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemTransfer.class::cast).toList());
+    protected NotifiableAccountedInvWrapper getCachedItemHandler() {
+        if (cachedItemHandler == null) {
+            cachedItemHandler = new NotifiableAccountedInvWrapper(machine.getCapabilitiesProxy()
+                    .get(IO.OUT, ItemRecipeCapability.CAP).stream()
+                    .map(IItemHandlerModifiable.class::cast)
+                    .toArray(IItemHandlerModifiable[]::new));
         }
-        return cachedItemTransfer;
+        return cachedItemHandler;
     }
 
     /**
@@ -401,10 +408,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         // If the block's drops can fit in the inventory, move the previously mined position to the block
         // replace the ore block with cobblestone instead of breaking it to prevent mob spawning
         // remove the ore block's position from the mining queue
-        var transfer = getCachedItemTransfer();
-        if (transfer != null) {
-            if (GTTransferUtils.addItemsToItemHandler(transfer, true, blockDrops)) {
-                GTTransferUtils.addItemsToItemHandler(transfer, false, blockDrops);
+        var handler = getCachedItemHandler();
+        if (handler != null) {
+            if (GTTransferUtils.addItemsToItemHandler(handler, true, blockDrops)) {
+                GTTransferUtils.addItemsToItemHandler(handler, false, blockDrops);
                 world.setBlock(blocksToMine.getFirst(), findMiningReplacementBlock(world), 3);
                 mineX = blocksToMine.getFirst().getX();
                 mineZ = blocksToMine.getFirst().getZ();
@@ -430,14 +437,26 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void initPos(@NotNull BlockPos pos, int currentRadius) {
         x = pos.getX() - currentRadius;
         z = pos.getZ() - currentRadius;
-        y = pos.getY() - 1;
+        if (dir == Direction.UP) {
+            y = pos.getY() + 1;
+        } else {
+            y = pos.getY() - 1;
+        }
         startX = pos.getX() - currentRadius;
         startZ = pos.getZ() - currentRadius;
         startY = pos.getY();
-        pipeY = pos.getY() - 1;
+        if (dir == Direction.UP) {
+            pipeY = pos.getY() + 1;
+        } else {
+            pipeY = pos.getY() - 1;
+        }
         mineX = pos.getX() - currentRadius;
         mineZ = pos.getZ() - currentRadius;
-        mineY = pos.getY() - 1;
+        if (dir == Direction.UP) {
+            mineY = pos.getY() + 1;
+        } else {
+            mineY = pos.getY() - 1;
+        }
         onRemove();
     }
 
@@ -487,10 +506,13 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (this.minBuildHeight == Integer.MAX_VALUE)
             this.minBuildHeight = this.getMachine().getLevel().getMinBuildHeight();
 
+        if (this.maxBuildHeight == Integer.MAX_VALUE)
+            this.maxBuildHeight = this.getMachine().getLevel().getMaxBuildHeight();
+
         // keep getting blocks until the target amount is reached
         while (calculated < calcAmount) {
             // moving down the y-axis
-            if (y > minBuildHeight) {
+            if (y > minBuildHeight && y < maxBuildHeight) {
                 // moving across the z-axis
                 if (z <= startZ + currentRadius * 2) {
                     // check every block along the x-axis
@@ -512,7 +534,11 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 } else {
                     // reset z and move to the next y layer
                     z = startZ;
-                    --y;
+                    if (dir == Direction.UP) {
+                        ++y;
+                    } else {
+                        --y;
+                    }
                 }
             } else
                 return blocks;
@@ -562,7 +588,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private void incrementPipeLength() {
         this.pipeLength++;
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getMiningPos().relative(Direction.DOWN, this.pipeLength);
+            var pos = getMiningPos().relative(dir, this.pipeLength);
             serverLevel.setBlockAndUpdate(pos, GTBlocks.MINER_PIPE.getDefaultState());
         }
     }
@@ -577,10 +603,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void onRemove() {
         pipeLength = 0;
         if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
-            var pos = getMiningPos().relative(Direction.DOWN);
+            var pos = getMiningPos().relative(dir);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
-                pos = pos.relative(Direction.DOWN);
+                pos = pos.relative(dir);
             }
         }
     }

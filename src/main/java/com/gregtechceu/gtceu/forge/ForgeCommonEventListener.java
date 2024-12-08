@@ -20,10 +20,12 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
@@ -43,6 +45,9 @@ import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
+import com.gregtechceu.gtceu.integration.map.WaypointManager;
+import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.Direction;
@@ -75,6 +80,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -246,15 +254,50 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void worldLoad(LevelEvent.Load event) {
+        if (event.getLevel().isClientSide()) {
+            WaypointManager.updateDimension(event.getLevel());
+        } else if (event.getLevel() instanceof ServerLevel serverLevel) {
+            ServerCache.instance.maybeInitWorld(serverLevel);
+        }
+    }
+
+    @SubscribeEvent
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
+            MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
+            ServerCache.instance.invalidateWorld(serverLevel);
+        } else if (event.getLevel().isClientSide()) {
+            ClientCacheManager.saveCaches();
+        }
+    }
+
+    @SubscribeEvent
+    public static void serverStarting(ServerStartingEvent event) {
+        WorldIDSaveData.init(event.getServer().overworld());
+    }
+
+    @SubscribeEvent
+    public static void serverStopped(ServerStoppedEvent event) {
+        ServerCache.instance.clear();
+    }
+
+    @SubscribeEvent
+    public static void serverStopping(ServerStoppingEvent event) {
+        var levels = event.getServer().getAllLevels();
+        for (var level : levels) {
+            if (!level.isClientSide()) {
+                MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
+            }
         }
     }
 
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            GTNetwork.NETWORK.sendToPlayer(new SPacketSendWorldID(), serverPlayer);
+
             if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
                 return;
 

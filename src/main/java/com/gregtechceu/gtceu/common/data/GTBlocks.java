@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
@@ -36,8 +34,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -52,7 +48,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
@@ -82,7 +77,6 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +89,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -162,13 +156,6 @@ public class GTBlocks {
                                     .onRegister(MaterialBlockItem::onRegister)
                                     .model(NonNullBiConsumer.noop())
                                     .color(() -> MaterialBlockItem::tintColor)
-                                    .onRegister(item -> {
-                                        CompassNode
-                                                .getOrCreate(GTCompassSections.MATERIALS,
-                                                        FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
-                                                .iconIfNull(() -> new ItemStackTexture(item))
-                                                .addTag(tagPrefix.getItemParentTags());
-                                    })
                                     .build()
                                     .register());
                         }
@@ -224,7 +211,6 @@ public class GTBlocks {
                     .onRegister(MaterialBlockItem::onRegister)
                     .model(NonNullBiConsumer.noop())
                     .color(() -> MaterialBlockItem::tintColor)
-                    .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
                     .build()
                     .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
@@ -255,11 +241,15 @@ public class GTBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .addLayer(() -> RenderType::cutoutMipped)
-                .color(() -> SurfaceRockBlock::tintedColor)
+                .color(() -> SurfaceRockBlock::tintedBlockColor)
+                .item((b, p) -> SurfaceRockBlockItem.create(b, p, material))
+                .color(() -> SurfaceRockBlock::tintedItemColor)
+                .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                .build()
                 .register();
         SURFACE_ROCK_BLOCKS_BUILDER.put(material, entry);
     }
@@ -301,7 +291,6 @@ public class GTBlocks {
                 .item(MaterialPipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .color(() -> MaterialPipeBlockItem::tintColor)
-                .onRegister(compassNodeExist(GTCompassSections.MATERIALS, "wire_and_cable"))
                 .build()
                 .register();
         CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material, entry);
@@ -560,7 +549,7 @@ public class GTBlocks {
         builder.put(GTMaterials.TungstenSteel, CASING_TUNGSTENSTEEL_ROBUST);
         builder.put(GTMaterials.Polytetrafluoroethylene, CASING_PTFE_INERT);
         builder.put(GTMaterials.HSSE, CASING_HSSE_STURDY);
-        // GCyM
+        // GCYM
         builder.put(GTMaterials.HSLASteel, CASING_NONCONDUCTING);
         builder.put(GTMaterials.IncoloyMA956, CASING_VIBRATION_SAFE);
         builder.put(GTMaterials.WatertightSteel, CASING_WATERTIGHT);
@@ -881,7 +870,6 @@ public class GTBlocks {
                 .blockstate(GTModels.createCoilModel("%s_coil_block".formatted(coilType.getName()), coilType))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(BlockItem::new)
-                .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
                 .register();
         GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
@@ -898,7 +886,6 @@ public class GTBlocks {
                         batteryData))
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(BlockItem::new)
-                .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
                 .build()
                 .register();
         GTCEuAPI.PSS_BATTERIES.put(batteryData, batteryBlock);
@@ -1003,7 +990,6 @@ public class GTBlocks {
             .item()
             .model(GTModels::rubberTreeSaplingModel)
             .tag(ItemTags.SAPLINGS)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
 
@@ -1024,8 +1010,7 @@ public class GTBlocks {
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.OVERWORLD_NATURAL_LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
 
@@ -1060,7 +1045,6 @@ public class GTBlocks {
             .item()
             .color(() -> GTBlocks::leavesItemColor)
             .tag(ItemTags.LEAVES)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
 
@@ -1076,18 +1060,18 @@ public class GTBlocks {
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
-    public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE
-            .block("rubber_wood", RotatedPillarBlock::new)
+    public static final BlockEntry<RubberWoodBlock> RUBBER_WOOD = REGISTRATE
+            .block("rubber_wood", RubberWoodBlock::new)
             .initialProperties(() -> Blocks.SPRUCE_WOOD)
             .lang("Rubber Wood")
             .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(),
                     provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE
@@ -1098,7 +1082,7 @@ public class GTBlocks {
                     provider.blockTexture(ctx.get())))
             .tag(BlockTags.LOGS_THAT_BURN, BlockTags.MINEABLE_WITH_AXE)
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS_THAT_BURN, CustomTags.RUBBER_LOGS)
             .build()
             .register();
 
@@ -1109,7 +1093,6 @@ public class GTBlocks {
             .tag(BlockTags.PLANKS, BlockTags.MINEABLE_WITH_AXE)
             .item()
             .tag(ItemTags.PLANKS)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
 
@@ -1122,7 +1105,6 @@ public class GTBlocks {
             .tag(BlockTags.WOODEN_SLABS, BlockTags.MINEABLE_WITH_AXE)
             .item()
             .tag(ItemTags.WOODEN_SLABS)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
 
@@ -1289,7 +1271,6 @@ public class GTBlocks {
             .tag(BlockTags.WOODEN_SLABS, BlockTags.MINEABLE_WITH_AXE)
             .item()
             .tag(ItemTags.WOODEN_SLABS)
-            .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
 
@@ -1690,15 +1671,6 @@ public class GTBlocks {
         };
     }
 
-    public static <T extends ItemLike> NonNullConsumer<T> compassNode(CompassSection section, CompassNode... preNodes) {
-        return item -> CompassNode.getOrCreate(section, item::asItem).addPreNode(preNodes);
-    }
-
-    public static <T extends ItemLike> NonNullConsumer<T> compassNodeExist(CompassSection section, String node,
-                                                                           CompassNode... preNodes) {
-        return item -> CompassNode.getOrCreate(section, node).addPreNode(preNodes).addItem(item::asItem);
-    }
-
     public static void init() {
         // Decor Blocks
         generateStoneBlocks();
@@ -1726,8 +1698,8 @@ public class GTBlocks {
         FLUID_PIPE_BLOCKS_BUILDER = null;
         ITEM_PIPE_BLOCKS_BUILDER = null;
 
-        // GCyM
-        GCyMBlocks.init();
+        // GCYM
+        GCYMBlocks.init();
     }
 
     public static boolean doMetalPipe(Material material) {

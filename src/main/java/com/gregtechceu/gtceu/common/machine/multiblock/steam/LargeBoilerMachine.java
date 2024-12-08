@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -68,7 +67,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
-    private long steamGenerated;
+    private int steamGenerated;
 
     public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
         super(holder, args);
@@ -117,8 +116,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
-                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100000L);
+            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
+                    (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
@@ -214,7 +213,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    (int) (currentTemperature + 274.15), (int) (maxTemperature + 274.15)));
+                    currentTemperature + 274, maxTemperature + 274));
             textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                     steamGenerated / TICKS_PER_STEAM_GENERATION));
 

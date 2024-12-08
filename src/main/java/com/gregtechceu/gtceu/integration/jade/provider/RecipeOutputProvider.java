@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
@@ -66,7 +65,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (var stack : RecipeHelper.getOutputFluids(recipe)) {
                     if (stack != null && !stack.isEmpty()) {
                         var fluidTag = new CompoundTag();
-                        stack.saveToTag(fluidTag);
+                        stack.writeToNBT(fluidTag);
                         fluidTags.add(fluidTag);
                     }
                 }
@@ -100,7 +99,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {
-                        var stack = FluidStack.loadFromTag(tCompoundTag);
+                        var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
                         if (!stack.isEmpty()) {
                             outputFluids.add(stack);
                         }

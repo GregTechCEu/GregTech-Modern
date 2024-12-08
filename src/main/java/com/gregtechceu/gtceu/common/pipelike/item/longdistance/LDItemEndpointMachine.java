@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,11 +15,11 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static class ItemHandlerWrapper implements IItemTransfer {
+    public static class ItemHandlerWrapper implements IItemHandler {
 
-        private final IItemTransfer delegate;
+        private final IItemHandler delegate;
 
-        public ItemHandlerWrapper(IItemTransfer delegate) {
+        public ItemHandlerWrapper(IItemHandler delegate) {
             this.delegate = delegate;
         }
 
@@ -37,13 +36,13 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-            return delegate.insertItem(slot, stack, simulate, notifyChanges);
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            return delegate.insertItem(slot, stack, simulate);
         }
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -55,17 +54,6 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return delegate.isItemValid(slot, stack);
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return delegate.createSnapshot();
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            delegate.restoreFromSnapshot(snapshot);
         }
     }
 }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class DummyRecipeLogicMachine extends WorkableTieredMachine implements IRecipeLogicMachine {
 
-    public DummyRecipeLogicMachine(IMachineBlockEntity be, int tier, Int2LongFunction tankScalingFunction,
+    public DummyRecipeLogicMachine(IMachineBlockEntity be, int tier, Int2IntFunction tankScalingFunction,
                                    Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy,
                                    Object... args) {
         super(be, tier, tankScalingFunction, args);

@@ -4,18 +4,19 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -55,15 +56,15 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     protected void doVoidFluids() {
-        IFluidTransfer fluidTransfer = getOwnFluidTransfer();
-        if (fluidTransfer == null) {
+        IFluidHandlerModifiable fluidHandler = getOwnFluidHandler();
+        if (fluidHandler == null) {
             return;
         }
-        voidAny(fluidTransfer);
+        voidAny(fluidHandler);
     }
 
-    void voidAny(IFluidTransfer fluidTransfer) {
-        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+    void voidAny(IFluidHandlerModifiable fluidHandler) {
+        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             if (!filterHandler.test(fluidStack))
@@ -72,7 +73,7 @@ public class FluidVoidingCover extends PumpCover {
             var toDrain = fluidStack.copy();
             toDrain.setAmount(fluidAmounts.get(fluidStack));
 
-            fluidTransfer.drain(toDrain, false);
+            fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 

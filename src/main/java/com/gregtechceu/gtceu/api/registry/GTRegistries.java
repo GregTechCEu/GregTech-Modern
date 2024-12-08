@@ -10,10 +10,9 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
-import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -47,6 +46,8 @@ public final class GTRegistries {
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
 
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
+    public static final GTRegistry.RL<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry.RL<>(
+            GTCEu.id("recipe_category"));
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
 
     public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));
@@ -57,9 +58,6 @@ public final class GTRegistries {
     public static final GTRegistry.String<ChanceLogic> CHANCE_LOGICS = new GTRegistry.String<>(
             GTCEu.id("chance_logic"));
     public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));
-    public static final GTRegistry.RL<CompassSection> COMPASS_SECTIONS = new GTRegistry.RL<>(
-            GTCEu.id("compass_section"));
-    public static final GTRegistry.RL<CompassNode> COMPASS_NODES = new GTRegistry.RL<>(GTCEu.id("compass_node"));
     public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(
             GTCEu.id("bedrock_fluid"));
     public static final GTRegistry.RL<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry.RL<>(

@@ -135,7 +135,7 @@ public class SmokingRecipeBuilder {
 
             @Override
             public RecipeSerializer<?> getType() {
-                return RecipeSerializer.BLASTING_RECIPE;
+                return RecipeSerializer.SMOKING_RECIPE;
             }
 
             @Nullable

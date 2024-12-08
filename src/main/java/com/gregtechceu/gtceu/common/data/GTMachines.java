@@ -36,7 +36,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTCreateMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
@@ -65,8 +65,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.ChatFormatting;
@@ -81,27 +79,27 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.ModLoader;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 import com.google.common.math.IntMath;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
@@ -127,17 +125,17 @@ public class GTMachines {
     public static final int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
     public static final int[] DUAL_HATCH_TIERS = GTValues.tiersBetween(LuV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
-    public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
+    public static final Int2IntFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
             tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) *
-            FluidHelper.getBucket();
-    public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
-            tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
-    public static final Int2LongFunction largeTankSizeFunction = tier -> (tier <= GTValues.LV ? 32 :
-            tier == GTValues.MV ? 48 : 64) * FluidHelper.getBucket();
-    public static final Int2LongFunction steamGeneratorTankSizeFunction = tier -> Math.min(16 * (1 << (tier - 1)), 64) *
-            FluidHelper.getBucket();
-    public static final Int2LongFunction genericGeneratorTankSizeFunction = tier -> Math.min(4 * (1 << (tier - 1)),
-            16) * FluidHelper.getBucket();
+            FluidType.BUCKET_VOLUME;
+    public static final Int2IntFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 :
+            tier == GTValues.MV ? 12 : 16) * FluidType.BUCKET_VOLUME;
+    public static final Int2IntFunction largeTankSizeFunction = tier -> (tier <= GTValues.LV ? 32 :
+            tier == GTValues.MV ? 48 : 64) * FluidType.BUCKET_VOLUME;
+    public static final Int2IntFunction steamGeneratorTankSizeFunction = tier -> Math.min(16 * (1 << (tier - 1)), 64) *
+            FluidType.BUCKET_VOLUME;
+    public static final Int2IntFunction genericGeneratorTankSizeFunction = tier -> Math.min(4 * (1 << (tier - 1)),
+            16) * FluidType.BUCKET_VOLUME;
 
     public static Object2IntMap<MachineDefinition> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
@@ -167,7 +165,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
-                                    FluidHelper.getBucket() / 20000))
+                                    FluidType.BUCKET_VOLUME / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines(
@@ -180,7 +178,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
-                                    FluidHelper.getBucket() / 20000))
+                                    FluidType.BUCKET_VOLUME / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines(
@@ -193,7 +191,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
-                                    FluidHelper.getBucket() / 20000))
+                                    FluidType.BUCKET_VOLUME / 20000))
                     .register());
 
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines(
@@ -229,7 +227,7 @@ public class GTMachines {
                 int maxArea = IMiner.getWorkingArea(4);
                 tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
             })
-            .compassNode("steam_miner")
+
             .renderer(() -> new SteamMinerRenderer(false, GTCEu.id("block/machines/steam_miner")))
             .register();
 
@@ -241,9 +239,9 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .overlayTieredHullRenderer("hull")
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .langValue("%s Machine Hull".formatted(VN[tier]))
+                    .langValue("%s §fMachine Hull".formatted(VNF[tier]))
                     .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
-                    .compassNode("machine_hull")
+
                     .register(),
             ALL_TIERS);
 
@@ -266,7 +264,7 @@ public class GTMachines {
     public static final MachineDefinition[] CHEMICAL_BATH = registerSimpleMachines("chemical_bath",
             GTRecipeTypes.CHEMICAL_BATH_RECIPES, hvCappedTankSizeFunction);
     public static final MachineDefinition[] CHEMICAL_REACTOR = registerSimpleMachines("chemical_reactor",
-            GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidHelper.getBucket(), true);
+            GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidType.BUCKET_VOLUME, true);
     public static final MachineDefinition[] COMPRESSOR = registerSimpleMachines("compressor",
             GTRecipeTypes.COMPRESSOR_RECIPES);
     public static final MachineDefinition[] CUTTER = registerSimpleMachines("cutter", GTRecipeTypes.CUTTER_RECIPES);
@@ -324,7 +322,7 @@ public class GTMachines {
                     .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
-                    .compassNode("macerator")
+
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector",
@@ -341,7 +339,7 @@ public class GTMachines {
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.apply(tier), true))
                     .tooltips(explosion())
-                    .compassNode("rock_crusher")
+
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineDefinition[] AIR_SCRUBBER = registerTieredMachines("air_scrubber",
@@ -356,7 +354,7 @@ public class GTMachines {
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.apply(tier), true))
                     .tooltips(explosion())
-                    .compassNode("air_scrubber")
+
                     .register(),
             LOW_TIERS);
 
@@ -399,7 +397,7 @@ public class GTMachines {
                             ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
                 }
             })
-            .compassNode("ld_item_pipeline")
+
             .register();
 
     public static final MachineDefinition LONG_DIST_FLUID_ENDPOINT = REGISTRATE
@@ -417,7 +415,7 @@ public class GTMachines {
                             ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
                 }
             })
-            .compassNode("ld_fluid_pipeline")
+
             .register();
 
     public static final MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
@@ -440,11 +438,11 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(16 * FluidHelper.getBucket() * Math.max(1, tier))),
+                                    FormattingUtil.formatNumbers(16 * FluidType.BUCKET_VOLUME * Math.max(1, tier))),
                             Component.translatable("gtceu.universal.tooltip.working_area",
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier,
-                                    PumpMachine.BASE_PUMP_RANGE + PumpMachine.EXTRA_PUMP_RANGE * tier))
-                    .compassNode("pump")
+                                    PumpMachine.getMaxPumpRadius(tier) * 2,
+                                    PumpMachine.getMaxPumpRadius(tier) * 2))
+
                     .register(),
             LV, MV, HV, EV);
 
@@ -455,7 +453,7 @@ public class GTMachines {
                     .tieredHullRenderer(GTCEu.id("block/machine/fisher_machine"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
-                            Component.translatable("gtceu.machine.fisher.speed", 1000 - tier * 200L),
+                            Component.translatable("gtceu.machine.fisher.speed", FisherMachine.calcMaxProgress(tier)),
                             Component.translatable("gtceu.machine.fisher.requirement", FisherMachine.WATER_CHECK_SIZE,
                                     FisherMachine.WATER_CHECK_SIZE),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -463,9 +461,9 @@ public class GTMachines {
                                     GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)))
-                    .compassNode("fisher")
+
                     .register(),
-            LV, MV, HV, EV);
+            LV, MV, HV, EV, IV, LuV);
 
     public static final MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker",
             BlockBreakerMachine::new,
@@ -483,7 +481,7 @@ public class GTMachines {
                                     GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)))
-                    .compassNode("block_breaker")
+
                     .register(),
             LV, MV, HV, EV);
 
@@ -512,7 +510,7 @@ public class GTMachines {
                         tooltip.add(
                                 Component.translatable("gtceu.universal.tooltip.working_area_max", maxArea, maxArea));
                     })
-                    .compassNode("miner")
+
                     .register(),
             LV, MV, HV);
 
@@ -539,7 +537,7 @@ public class GTMachines {
                         tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area_random",
                                 randTickWorkingArea, randTickWorkingArea));
                     })
-                    .compassNode("world_accelerator")
+
                     .register(),
             LV, MV, HV, EV, IV, LuV, ZPM, UV);
 
@@ -562,7 +560,7 @@ public class GTMachines {
                                     GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64L)))
-                    .compassNode("item_collector")
+
                     .register(),
             LV, MV, HV, EV);
 
@@ -584,67 +582,77 @@ public class GTMachines {
                             Component.translatable(
                                     "gtceu.universal.tooltip.fluid_storage_capacity_mult",
                                     BufferMachine.getTankSize(tier), BufferMachine.TANK_SIZE))
-                    .compassNode("buffer")
+
                     .register(),
             LV, MV, HV);
 
-    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, components) -> components
-            .add(Component.translatable("gtceu.creative_tooltip.1")
+    public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(
+            Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
                             .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
                     .append(Component.translatable("gtceu.creative_tooltip.3")));
-
-    public static BiConsumer<ItemStack, List<Component>> createCreativeTooltips(boolean share) {
-        return (stack, list) -> {
-            CREATIVE_TOOLTIPS.accept(stack, list);
-            list.add(Component.translatable("gtceu.universal.%s".formatted(share ? "enabled" : "disabled")));
-        };
-    }
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
             .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
             .rotationState(RotationState.NONE)
             .tooltipBuilder(CREATIVE_TOOLTIPS)
-            .compassNodeSelf()
+
             .register();
 
-    public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
+    public static final MachineDefinition CREATIVE_FLUID = REGISTRATE
+            .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltipBuilder((stack, list) -> {
+                CREATIVE_TOOLTIPS.accept(stack, list);
+                if (stack.hasTag()) {
+                    FluidStack f = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+                    int perCycle = stack.getOrCreateTag().getInt("mBPerCycle");
+                    list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", f.getDisplayName(),
+                            FormattingUtil.formatNumbers(perCycle)));
+                }
+            })
             .renderer(() -> new QuantumTankRenderer(MAX, GTCEu.id("block/machine/creative_tank")))
             .hasTESR(true)
-            .compassNodeSelf()
+
             .register();
+
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltipBuilder((stack, list) -> {
+                CREATIVE_TOOLTIPS.accept(stack, list);
+                if (stack.hasTag()) {
+                    ItemStack i = ItemStack.of(stack.getOrCreateTagElement("stored"));
+                    int perCycle = stack.getOrCreateTag().getInt("itemsPerCycle");
+                    list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", i.getHoverName(),
+                            FormattingUtil.formatNumbers(perCycle)));
+                }
+            })
             .renderer(() -> new QuantumChestRenderer(MAX, GTCEu.id("block/machine/creative_chest")))
             .hasTESR(true)
-            .compassNodeSelf()
+
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(),
-                    storedAmount));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
         }
     };
 
     public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
-            (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
+            (holder, tier) -> new QuantumChestMachine(holder, tier, 4_000_000 * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Super Chest " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Super Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
@@ -652,17 +660,16 @@ public class GTMachines {
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
-                    .compassNode("super_chest")
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+
                     .register(),
             LOW_TIERS);
 
     public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            (int) Math.min(4000000L * (long) Math.pow(2, tier - 1), Integer.MAX_VALUE)),
+                    tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Quantum Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumChestRenderer(tier))
@@ -670,64 +677,53 @@ public class GTMachines {
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
-                    .compassNode("super_chest")
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+
                     .register(),
             HIGH_TIERS);
 
-    public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName,
-                                                                            @Nullable Material material) {
-        return (stack, list) -> {
-            if (stack.hasTag()) {
-                FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement(nbtName));
-                list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                        FormattingUtil.formatNumbers(tank.getAmount())));
-            }
-
-            var item = stack.getItem();
-            if (item instanceof DrumMachineItem drumItem && material != null) {
-                if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                    FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                    pipeprops.appendTooltips(list, true, true);
-                }
-            }
-        };
-    }
+    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
+        if (stack.hasTag()) {
+            String key = stack.getTag().contains("stored") ? "stored" : "Fluid";
+            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getDisplayName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
+        }
+    };
 
     public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier - 1)),
+                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Super Tank " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Super Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored", null))
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
-                    .compassNode("super_tank")
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+
                     .register(),
             LOW_TIERS);
 
     public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    tier == GTValues.UHV ? Integer.MAX_VALUE :
-                            4000L * FluidHelper.getBucket() * (long) Math.pow(2, tier - 1)),
+                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
             (tier, builder) -> builder
-                    .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
+                    .langValue("Quantum Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
-                    .tooltipBuilder(createTankTooltips("stored", null))
+                    .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    /* tier == GTValues.UHV ? Integer.MAX_VALUE : */ FormattingUtil
-                                            .formatNumbers(4000000L * (long) Math.pow(2, tier - 1))))
-                    .compassNode("super_tank")
+                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+
                     .register(),
             HIGH_TIERS);
 
@@ -762,28 +758,28 @@ public class GTMachines {
     public static MachineDefinition TUNGSTENSTEEL_CRATE = registerCrate(GTMaterials.TungstenSteel, 144,
             "Tungstensteel Crate");
 
-    public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, (int) (16 * FluidHelper.getBucket()),
+    public static MachineDefinition WOODEN_DRUM = registerDrum(GTMaterials.Wood, (16 * FluidType.BUCKET_VOLUME),
             "Wooden Barrel");
-    public static MachineDefinition BRONZE_DRUM = registerDrum(GTMaterials.Bronze, (int) (32 * FluidHelper.getBucket()),
+    public static MachineDefinition BRONZE_DRUM = registerDrum(GTMaterials.Bronze, (32 * FluidType.BUCKET_VOLUME),
             "Bronze Drum");
-    public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, (int) (64 * FluidHelper.getBucket()),
+    public static MachineDefinition STEEL_DRUM = registerDrum(GTMaterials.Steel, (64 * FluidType.BUCKET_VOLUME),
             "Steel Drum");
     public static MachineDefinition ALUMINIUM_DRUM = registerDrum(GTMaterials.Aluminium,
-            (int) (128 * FluidHelper.getBucket()), "Aluminium Drum");
+            (128 * FluidType.BUCKET_VOLUME), "Aluminium Drum");
     public static MachineDefinition STAINLESS_STEEL_DRUM = registerDrum(GTMaterials.StainlessSteel,
-            (int) (256 * FluidHelper.getBucket()), "Stainless Steel Drum");
-    public static MachineDefinition GOLD_DRUM = registerDrum(GTMaterials.Gold, (int) (32 * FluidHelper.getBucket()),
+            (256 * FluidType.BUCKET_VOLUME), "Stainless Steel Drum");
+    public static MachineDefinition GOLD_DRUM = registerDrum(GTMaterials.Gold, (32 * FluidType.BUCKET_VOLUME),
             "Gold Drum");
     public static MachineDefinition TITANIUM_DRUM = registerDrum(GTMaterials.Titanium,
-            (int) (512 * FluidHelper.getBucket()), "Titanium Drum");
+            (512 * FluidType.BUCKET_VOLUME), "Titanium Drum");
     public static MachineDefinition TUNGSTENSTEEL_DRUM = registerDrum(GTMaterials.TungstenSteel,
-            (int) (1024 * FluidHelper.getBucket()), "Tungstensteel Drum");
+            (1024 * FluidType.BUCKET_VOLUME), "Tungstensteel Drum");
 
     //////////////////////////////////////
     // ********** Part **********//
     //////////////////////////////////////
     public static final MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("input_bus",
-            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
+            (holder, tier) -> new ItemBusPartMachine(holder, tier, IN),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
@@ -794,12 +790,12 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
-                    .compassNode("item_bus")
+
                     .register(),
             ALL_TIERS);
 
     public static final MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("output_bus",
-            (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
+            (holder, tier) -> new ItemBusPartMachine(holder, tier, OUT),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
@@ -810,141 +806,189 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
-                    .compassNode("item_bus")
+
                     .register(),
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
             "input_hatch", "Input Hatch", "fluid_hatch.import", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
             "input_hatch_4x", "Quadruple Input Hatch", "fluid_hatch.import_4x", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
             "input_hatch_9x", "Nonuple Input Hatch", "fluid_hatch.import_9x", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+            IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_9X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
             "output_hatch", "Output Hatch", "fluid_hatch.export", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
             "output_hatch_4x", "Quadruple Output Hatch", "fluid_hatch.export_4x", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
             "output_hatch_9x", "Nonuple Output Hatch", "fluid_hatch.export_9x", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+            OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_9X);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.input.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_in",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in", 2),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
+                            Component.translatable("gtceu.machine.energy_hatch.input.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.input")
-                    .compassNode("energy_hatch")
+
                     .register(),
             ALL_TIERS);
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_output_hatch",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.output.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_out",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_out", 2),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
+                            Component.translatable("gtceu.machine.energy_hatch.output.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.output")
-                    .compassNode("energy_hatch")
+
                     .register(),
             ALL_TIERS);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_input_hatch_4a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_in",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in", 4),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
+                            Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.input_4a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_out",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_out", 4),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
+                            Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.output_4a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_in",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in", 16),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
+                            Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.input_16a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_out",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_out", 16),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
+                            Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_INPUT_HATCH = registerTieredMachines(
             "substation_input_hatch_64a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 64),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IN, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Energy Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.SUBSTATION_INPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.substation_hatch.input.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_in",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_in", 64),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
+                            Component.translatable("gtceu.machine.substation_hatch.input.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.input_64a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_OUTPUT_HATCH = registerTieredMachines(
             "substation_output_hatch_64a",
-            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 64),
+            (holder, tier) -> new EnergyHatchPartMachine(holder, tier, OUT, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Dynamo Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY)
-                    .tooltips(Component.translatable("gtceu.machine.substation_hatch.output.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.voltage_out",
+                            FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.amperage_out", 64),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil
+                                            .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
+                            Component.translatable("gtceu.machine.substation_hatch.output.tooltip"))
                     .overlayTieredHullRenderer("energy_hatch.output_64a")
-                    .compassNode("energy_hatch")
+
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -960,28 +1004,26 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.enabled"),
                             LangHandler.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1)
                                     .withStyle(ChatFormatting.DARK_RED))
-                    .compassNode("muffler_hatch")
+
                     .register(),
             ELECTRIC_TIERS);
 
     public static final MachineDefinition STEAM_IMPORT_BUS = REGISTRATE
-            .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+            .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
             .langValue("Input Bus (Steam)")
-            .compassSections(GTCompassSections.STEAM)
-            .compassNode("item_bus")
+
             .register();
 
     public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE
-            .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+            .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
             .langValue("Output Bus (Steam)")
-            .compassSections(GTCompassSections.STEAM)
-            .compassNode("item_bus")
+
             .register();
 
     public static final MachineDefinition STEAM_HATCH = REGISTRATE
@@ -993,23 +1035,20 @@ public class GTMachines {
                     Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                             SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
                     Component.translatable("gtceu.machine.steam.steam_hatch.tooltip"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNode("steam_hatch")
+
             .register();
 
     public static final MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
             .modelRenderer(() -> GTCEu.id("block/machine/part/coke_oven_hatch"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNode("coke_oven_hatch")
+
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .renderer(PumpHatchPartRenderer::new)
-            .compassSections(GTCompassSections.STEAM)
-            .compassNode("pump_hatch")
+
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE
@@ -1018,7 +1057,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(1, GTCEu.id("block/machine/part/maintenance")))
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE
@@ -1029,24 +1068,23 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(
                     () -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.configurable")))
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE
-            .machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
+            .machine("cleaning_maintenance_hatch",
+                    holder -> new CleaningMaintenanceHatchPartMachine(holder, CleanroomType.CLEANROOM))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
-                for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes()) {
-                    tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN,
-                            Component.translatable(type.getTranslationKey()).getString())));
-                }
+                tooltips.add(Component.literal("  ").append(Component
+                        .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
             })
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE
@@ -1055,7 +1093,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.full_auto")))
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition[] ITEM_PASSTHROUGH_HATCH = registerTieredMachines("item_passthrough_hatch",
@@ -1069,7 +1107,7 @@ public class GTMachines {
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
                             Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("item_passthrough_hatch")
+
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1083,9 +1121,9 @@ public class GTMachines {
                     .overlayTieredHullRenderer("fluid_passthrough_hatch")
                     .tooltips(
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", tier + 1,
-                                    16 * FluidHelper.getBucket()),
+                                    16 * FluidType.BUCKET_VOLUME),
                             Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("fluid_passthrough_hatch")
+
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1100,12 +1138,12 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(ReservoirHatchPartMachine.FLUID_AMOUNT)),
                     Component.translatable("gtceu.universal.enabled"))
             .overlayTieredHullRenderer("reservoir_hatch")
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition[] DUAL_IMPORT_HATCH = registerTieredMachines(
             "dual_input_hatch",
-            (holder, tier) -> new DualHatchPartMachine(holder, tier, IO.IN),
+            (holder, tier) -> new DualHatchPartMachine(holder, tier, IN),
             (tier, builder) -> builder
                     .langValue("%s Dual Input Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
@@ -1122,13 +1160,13 @@ public class GTMachines {
                                     DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY,
                                             tier)),
                             Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("dual_hatch")
+
                     .register(),
             DUAL_HATCH_TIERS);
 
     public static final MachineDefinition[] DUAL_EXPORT_HATCH = registerTieredMachines(
             "dual_output_hatch",
-            (holder, tier) -> new DualHatchPartMachine(holder, tier, IO.OUT),
+            (holder, tier) -> new DualHatchPartMachine(holder, tier, OUT),
             (tier, builder) -> builder
                     .langValue("%s Dual Output Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
@@ -1145,7 +1183,7 @@ public class GTMachines {
                                     DualHatchPartMachine.getTankCapacity(
                                             DualHatchPartMachine.INITIAL_TANK_CAPACITY, tier)),
                             Component.translatable("gtceu.universal.enabled"))
-                    .compassNode("dual_hatch")
+
                     .register(),
             DUAL_HATCH_TIERS);
 
@@ -1163,7 +1201,7 @@ public class GTMachines {
                                     GTValues.VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.amperage_in_out_till",
                                     DiodePartMachine.MAX_AMPS))
-                    .compassNode("diode")
+
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1177,21 +1215,21 @@ public class GTMachines {
                     .tooltips(LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
                             LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
                             Component.translatable("gtceu.universal.disabled"))
-                    .compassNode("rotor_holder")
-                    .register(),
-            HV, EV, IV, LuV, ZPM, UV);
 
-    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256,
+                    .register(),
+            GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
+
+    public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IN, 256,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(OUT, 256,
             PartAbility.OUTPUT_LASER);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024,
+    public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IN, 1024,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(IO.OUT, 1024,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_1024 = registerLaserHatch(OUT, 1024,
             PartAbility.OUTPUT_LASER);
-    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096,
+    public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IN, 4096,
             PartAbility.INPUT_LASER);
-    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096,
+    public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(OUT, 4096,
             PartAbility.OUTPUT_LASER);
 
     //////////////////////////////////////
@@ -1234,14 +1272,16 @@ public class GTMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE
             .multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
+            .renderer(() -> new PrimitiveBlastFurnaceRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
+                    GTCEu.id("block/multiblock/primitive_blast_furnace")))
+            .hasTESR(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
@@ -1251,10 +1291,7 @@ public class GTMachines {
                     .where('#', Predicates.air())
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
-                    GTCEu.id("block/multiblock/primitive_blast_furnace"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE
@@ -1316,13 +1353,13 @@ public class GTMachines {
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
                 }
             })
-            .compassSections(GTCompassSections.TIER[MV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE
             .multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
-            .tooltips(GTMachines.defaultEnvironmentRequirement())
+            .conditionalTooltip(GTMachines.defaultEnvironmentRequirement(),
+                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
             .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT,
@@ -1339,7 +1376,7 @@ public class GTMachines {
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.or(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
-                        .where('C', blocks(COIL_CUPRONICKEL.get()).setExactLimit(1)
+                        .where('C', Predicates.heatingCoils().setExactLimit(1)
                                 .or(abilities)
                                 .or(casing))
                         .build();
@@ -1386,8 +1423,7 @@ public class GTMachines {
             })
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
                     GTCEu.id("block/multiblock/large_chemical_reactor"))
-            .compassSections(GTCompassSections.TIER[HV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE
@@ -1409,8 +1445,7 @@ public class GTMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/implosion_compressor"))
-            .compassSections(GTCompassSections.TIER[HV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE
@@ -1467,8 +1502,7 @@ public class GTMachines {
                             coilMachine.getCoilTier() == 0 ? 75 : 50 * (coilMachine.getCoilTier() + 1)));
                 }
             })
-            .compassSections(GTCompassSections.TIER[MV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE
@@ -1525,8 +1559,7 @@ public class GTMachines {
                             coilMachine.getCoilType().getEnergyDiscount()));
                 }
             })
-            .compassSections(GTCompassSections.TIER[MV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition CRACKER = REGISTRATE
@@ -1576,38 +1609,73 @@ public class GTMachines {
                             100 - 10 * coilMachine.getCoilTier()));
                 }
             })
-            .compassSections(GTCompassSections.TIER[EV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE
-            .multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
+            .multiblock("distillation_tower", DistillationTowerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
             .recipeModifiers(
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK))
             .appearanceBlock(CASING_STAINLESS_CLEAN)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("YSY", "YYY", "YYY")
-                    .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
-                    .aisle("XXX", "XXX", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.getBlock())))
-                    .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
-                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                    .setMaxGlobalLimited(2))
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
-                    .where('X', blocks(CASING_STAINLESS_CLEAN.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMinLayerLimited(1)
-                                    .setMaxLayerLimited(1)))
-                    .where('#', Predicates.air())
-                    .build())
+            .pattern(definition -> {
+                TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                if (GTCEu.isAE2Loaded())
+                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate.setMaxLayerLimited(1);
+                return FactoryBlockPattern.start(RIGHT, BACK, UP)
+                        .aisle("YSY", "YYY", "YYY")
+                        .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
+                        .aisle("XXX", "XXX", "XXX")
+                        .where('S', Predicates.controller(blocks(definition.getBlock())))
+                        .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
+                                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+                                        .setMaxGlobalLimited(2))
+                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                                .or(autoAbilities(true, false, false)))
+                        .where('X', blocks(CASING_STAINLESS_CLEAN.get()).or(exportPredicate))
+                        .where('#', Predicates.air())
+                        .build();
+            })
+            .shapeInfos(definition -> {
+                List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
+                var builder = MultiblockShapeInfo.builder()
+                        .where('C', definition, Direction.NORTH)
+                        .where('S', CASING_STAINLESS_CLEAN.getDefaultState())
+                        .where('X', ITEM_EXPORT_BUS[HV], Direction.NORTH)
+                        .where('I', FLUID_IMPORT_HATCH[HV], Direction.NORTH)
+                        .where('E', ENERGY_INPUT_HATCH[HV], Direction.SOUTH)
+                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH)
+                        .where('#', Blocks.AIR.defaultBlockState())
+                        .where('F', FLUID_EXPORT_HATCH[HV], Direction.SOUTH);
+                List<String> front = new ArrayList<>(15);
+                front.add("XCI");
+                front.add("SSS");
+                List<String> middle = new ArrayList<>(15);
+                middle.add("SSS");
+                middle.add("SSS");
+                List<String> back = new ArrayList<>(15);
+                back.add("MES");
+                back.add("SFS");
+                for (int i = 1; i <= 11; ++i) {
+                    front.add("SSS");
+                    middle.add(1, "S#S");
+                    back.add("SFS");
+                    var copy = builder.shallowCopy()
+                            .aisle(front.toArray(String[]::new))
+                            .aisle(middle.toArray(String[]::new))
+                            .aisle(back.toArray(String[]::new));
+                    shapeInfos.add(copy.build());
+                }
+                return shapeInfos;
+            })
             .allowExtendedFacing(false)
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
-            .compassSections(GTCompassSections.TIER[EV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MachineDefinition EVAPORATION_PLANT = REGISTRATE
@@ -1662,8 +1730,7 @@ public class GTMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/vacuum_freezer"))
-            .compassSections(GTCompassSections.TIER[HV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
@@ -1700,8 +1767,7 @@ public class GTMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"))
-            .compassSections(GTCompassSections.TIER[IV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE
@@ -1722,8 +1788,7 @@ public class GTMachines {
                     .build())
             .allowExtendedFacing(false)
             .sidedWorkableCasingRenderer("block/casings/pump_deck", GTCEu.id("block/multiblock/primitive_pump"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE
@@ -1746,8 +1811,7 @@ public class GTMachines {
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_grinder"))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition STEAM_OVEN = REGISTRATE
@@ -1773,8 +1837,7 @@ public class GTMachines {
             .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     BoilerFireboxType.BRONZE_FIREBOX,
                     GTCEu.id("block/multiblock/steam_oven")))
-            .compassSections(GTCompassSections.STEAM)
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor",
@@ -1866,8 +1929,7 @@ public class GTMachines {
                     .renderer(() -> new FusionReactorRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor")))
                     .hasTESR(true)
-                    .compassSections(GTCompassSections.TIER[LuV])
-                    .compassNodeSelf()
+
                     .register(),
             LuV, ZPM, UV);
 
@@ -1901,8 +1963,7 @@ public class GTMachines {
                             .build())
                     .workableCasingRenderer(FluidDrillMachine.getBaseTexture(tier),
                             GTCEu.id("block/multiblock/fluid_drilling_rig"))
-                    .compassSections(GTCompassSections.TIER[MV])
-                    .compassNode("fluid_drilling_rig")
+
                     .register(),
             MV, HV, EV);
 
@@ -1919,7 +1980,7 @@ public class GTMachines {
                             .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .where('S', controller(blocks(definition.getBlock())))
                             .where('X', blocks(LargeMinerMachine.getCasingState(tier))
-                                    .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                                    .or(abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1).setPreviewCount(1))
                                     .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
                                     .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2).setPreviewCount(1)))
@@ -1927,7 +1988,7 @@ public class GTMachines {
                             .where('F', frames(LargeMinerMachine.getMaterial(tier)))
                             .where('#', any())
                             .build())
-                    .allowExtendedFacing(false)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new LargeMinerRenderer(
                             MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner")))
@@ -1936,7 +1997,7 @@ public class GTMachines {
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
                             Component.translatable("gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5) * 2 / LargeMinerMachine.CHUNK_LENGTH;
+                        int workingAreaChunks = (2 * tier - 5);
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
@@ -1946,8 +2007,7 @@ public class GTMachines {
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
                                 GTValues.VNF[tier], GTValues.VNF[tier + 1]));
                     })
-                    .compassSections(GTCompassSections.TIER[EV])
-                    .compassNode("large_miner")
+
                     .register(),
             EV, IV, LuV);
 
@@ -2035,8 +2095,7 @@ public class GTMachines {
             .allowFlip(false)
             .workableCasingRenderer(GTCEu.id("block/casings/cleanroom/plascrete"),
                     GTCEu.id("block/multiblock/cleanroom"))
-            .compassSections(GTCompassSections.TIER[HV])
-            .compassNodeSelf()
+
             .register();
 
     public static final MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine(
@@ -2135,23 +2194,23 @@ public class GTMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("CCCCC", "CCCCC", "GGGGG", "GGGGG", "GGGGG")
-                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
-                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
-                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
                         .aisle("ICSCO", "NCMCT", "GGGGG", "GGGGG", "GGGGG")
-                        .where('S', definition, Direction.SOUTH)
+                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
+                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
+                        .aisle("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
+                        .aisle("CCCCC", "CCCCC", "GGGGG", "GGGGG", "GGGGG")
+                        .where('S', definition, Direction.NORTH)
                         .where('C', CASING_PALLADIUM_SUBSTATION)
                         .where('G', CASING_LAMINATED_GLASS)
-                        .where('I', GTMachines.ENERGY_INPUT_HATCH[HV], Direction.SOUTH)
-                        .where('N', GTMachines.SUBSTATION_ENERGY_INPUT_HATCH[EV], Direction.SOUTH)
-                        .where('O', GTMachines.ENERGY_OUTPUT_HATCH[HV], Direction.SOUTH)
-                        .where('T', GTMachines.SUBSTATION_ENERGY_OUTPUT_HATCH[EV], Direction.SOUTH)
+                        .where('I', GTMachines.ENERGY_INPUT_HATCH[HV], Direction.NORTH)
+                        .where('N', GTMachines.SUBSTATION_ENERGY_INPUT_HATCH[EV], Direction.NORTH)
+                        .where('O', GTMachines.ENERGY_OUTPUT_HATCH[HV], Direction.NORTH)
+                        .where('T', GTMachines.SUBSTATION_ENERGY_OUTPUT_HATCH[EV], Direction.NORTH)
                         .where('M',
                                 ConfigHolder.INSTANCE.machines.enableMaintenance ?
                                         GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(
                                                 GTMachines.MAINTENANCE_HATCH.get().getRotationState().property,
-                                                Direction.SOUTH) :
+                                                Direction.NORTH) :
                                         CASING_PALLADIUM_SUBSTATION.get().defaultBlockState());
 
                 GTCEuAPI.PSS_BATTERIES.entrySet().stream()
@@ -2199,16 +2258,12 @@ public class GTMachines {
         MachineDefinition lowTier = builder.apply(false,
                 REGISTRATE.machine("lp_%s".formatted(name), holder -> factory.apply(holder, false))
                         .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
-                        .compassSections(GTCompassSections.STEAM)
-                        .compassNode(name)
-                        .compassPreNodes(GTCompassNodes.STEAM)
+
                         .tier(0));
         MachineDefinition highTier = builder.apply(true,
                 REGISTRATE.machine("hp_%s".formatted(name), holder -> factory.apply(holder, true))
                         .langValue("High Pressure " + FormattingUtil.toEnglishName(name))
-                        .compassSections(GTCompassSections.STEAM)
-                        .compassNode(name)
-                        .compassPreNodes(GTCompassNodes.STEAM)
+
                         .tier(1));
         return Pair.of(lowTier, highTier);
     }
@@ -2229,7 +2284,7 @@ public class GTMachines {
     }
 
     private static MachineDefinition[] registerFluidHatches(String name, String displayname, String model,
-                                                            String tooltip, IO io, long initialCapacity, int slots,
+                                                            String tooltip, IO io, int initialCapacity, int slots,
                                                             int[] tiers, PartAbility... abilities) {
         return registerTieredMachines(name,
                 (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
@@ -2238,7 +2293,7 @@ public class GTMachines {
                             .rotationState(RotationState.ALL)
                             .overlayTieredHullRenderer(model)
                             .abilities(abilities)
-                            .compassNode("fluid_hatch")
+
                             .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"));
 
                     if (slots == 1) {
@@ -2266,7 +2321,8 @@ public class GTMachines {
                                         index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor)
                                                 .intValue() : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
-                        .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
+                        .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
@@ -2278,7 +2334,7 @@ public class GTMachines {
                                         baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier],
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
                                         GTValues.VNF[tier + 1]))
-                        .compassNode("transformer")
+
                         .register(),
                 GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV)); // UHV not needed, as a UV transformer
                                                                                // transforms up to UHV
@@ -2286,7 +2342,7 @@ public class GTMachines {
 
     public static MachineDefinition[] registerSimpleMachines(String name,
                                                              GTRecipeType recipeType,
-                                                             Int2LongFunction tankScalingFunction,
+                                                             Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff,
                                                              int... tiers) {
         return registerTieredMachines(name,
@@ -2295,7 +2351,8 @@ public class GTMachines {
                         builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                 .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
                                 GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
-                                .tooltips(defaultEnvironmentRequirement());
+                                .conditionalTooltip(defaultEnvironmentRequirement(),
+                                        ConfigHolder.INSTANCE.gameplay.environmentalHazards);
                     } else {
                         builder.recipeModifier(
                                 GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK));
@@ -2308,20 +2365,20 @@ public class GTMachines {
                             .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
                             .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.apply(tier), true))
-                            .compassNode(name)
+
                             .register();
                 },
                 tiers);
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
-                                                             Int2LongFunction tankScalingFunction,
+                                                             Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff) {
         return registerSimpleMachines(name, recipeType, tankScalingFunction, hasPollutionDebuff, ELECTRIC_TIERS);
     }
 
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
-                                                             Int2LongFunction tankScalingFunction) {
+                                                             Int2IntFunction tankScalingFunction) {
         return registerSimpleMachines(name, recipeType, tankScalingFunction, false);
     }
 
@@ -2331,7 +2388,7 @@ public class GTMachines {
 
     public static MachineDefinition[] registerSimpleGenerator(String name,
                                                               GTRecipeType recipeType,
-                                                              Int2LongFunction tankScalingFunction,
+                                                              Int2IntFunction tankScalingFunction,
                                                               float hazardStrengthPerOperation,
                                                               int... tiers) {
         return registerTieredMachines(name,
@@ -2348,7 +2405,7 @@ public class GTMachines {
                         .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.apply(tier), false))
-                        .compassNode(name)
+
                         .register(),
                 tiers);
     }
@@ -2369,7 +2426,8 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
-                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], batterySlotSize, "x Battery Buffer"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                batterySlotSize, "x Battery Buffer"))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                         batterySlotSize),
@@ -2379,7 +2437,7 @@ public class GTMachines {
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
                                         batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
                                 Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
-                        .compassNode("battery_buffer")
+
                         .register(),
                 ALL_TIERS);
     }
@@ -2390,27 +2448,35 @@ public class GTMachines {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new ChargerRenderer(tier))
-                        .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Turbo Charger"))
+                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                itemSlotSize, "x Turbo Charger"))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
                                         itemSlotSize * ChargerMachine.AMPS_PER_ITEM))
-                        .compassNode("charger")
+
                         .register(),
                 ALL_TIERS);
     }
 
     public static MachineDefinition[] registerLaserHatch(IO io, int amperage, PartAbility ability) {
-        String name = io == IO.IN ? "target" : "source";
+        String name = io == IN ? "target" : "source";
         return registerTieredMachines(amperage + "a_laser_" + name + "_hatch",
                 (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
-                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " +
+                        .langValue(VNF[tier] + "§r " + FormattingUtil.formatNumbers(amperage) + "§eA§r Laser " +
                                 FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
                         .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),
+                                Component.translatable("gtceu.universal.tooltip.voltage_" + (io == IN ? "in" : "out"),
+                                        FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.amperage_in", amperage),
+                                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                        FormattingUtil
+                                                .formatNumbers(
+                                                        EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
                                 Component.translatable("gtceu.universal.disabled"))
                         .abilities(ability)
                         .overlayTieredHullRenderer("laser_hatch." + name)
@@ -2441,8 +2507,8 @@ public class GTMachines {
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"))
                 .rotationState(RotationState.ALL)
-                .compassSections(GTCompassSections.MULTIBLOCK)
-                .compassNode("tank_valve");
+
+        ;
 
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
         return builder.register();
@@ -2471,11 +2537,7 @@ public class GTMachines {
                                 .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
-
-                .appearanceBlock(casing)
-                .compassSections(GTCompassSections.MULTIBLOCK)
-                .compassNode("multiblock_tank");
-
+                .appearanceBlock(casing);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/multiblock_tank"));
         return builder.register();
     }
@@ -2525,14 +2587,13 @@ public class GTMachines {
                 .renderer(() -> new LargeBoilerRenderer(texture, firebox,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name))))
                 .tooltips(
-                        Component.translatable("gtceu.multiblock.large_boiler.max_temperature",
-                                (int) (maxTemperature + 274.15), maxTemperature),
+                        Component.translatable("gtceu.multiblock.large_boiler.max_temperature", maxTemperature + 274,
+                                maxTemperature),
                         Component.translatable("gtceu.multiblock.large_boiler.heat_time_tooltip",
                                 maxTemperature / heatSpeed / 20),
                         Component.translatable("gtceu.multiblock.large_boiler.explosion_tooltip")
                                 .withStyle(ChatFormatting.DARK_RED))
-                .compassSections(GTCompassSections.STEAM)
-                .compassNode("large_boiler")
+
                 .register();
     }
 
@@ -2575,14 +2636,13 @@ public class GTMachines {
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",
-                                FluidHelper.getBucket()),
+                                FluidType.BUCKET_VOLUME),
                         tier > EV ?
                                 Component.translatable("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
                                         V[tier] * 4) :
                                 Component.translatable("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
                                         V[tier] * 3))
-                .compassSections(GTCompassSections.TIER[EV])
-                .compassNode("large_combustion")
+
                 .register();
     }
 
@@ -2630,8 +2690,7 @@ public class GTMachines {
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier] * 2),
                         Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]))
-                .compassSections(GTCompassSections.TIER[HV])
-                .compassNode("large_turbine")
+
                 .register();
     }
 
@@ -2646,7 +2705,7 @@ public class GTMachines {
                         GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .compassNode("crate")
+
                 .register();
     }
 
@@ -2655,29 +2714,41 @@ public class GTMachines {
         var definition = REGISTRATE
                 .machine(material.getName() + "_drum", MachineDefinition::createDefinition,
                         holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new,
-                        DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+                        (holder, prop) -> DrumMachineItem.create(holder, prop, material),
+                        MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(
                         () -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
-                .tooltipBuilder(createTankTooltips("Fluid", material))
+                .tooltipBuilder((stack, list) -> {
+                    TANK_TOOLTIPS.accept(stack, list);
+                    if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                        FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
+                        pipeprops.appendTooltips(list, false, true);
+                    }
+                })
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .compassNode("drum")
+
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;
     }
 
     public static MachineDefinition[] registerConverter(int amperage) {
-        return registerTieredMachines(amperage + "a_energy_converter",
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
+            REGISTRATE.creativeModeTab(() -> null);
+        }
+
+        MachineDefinition[] converters = registerTieredMachines(amperage + "a_energy_converter",
                 (holder, tier) -> new ConverterMachine(holder, tier, amperage),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .langValue("%s %sA Energy Converter".formatted(VN[tier], amperage))
+                        .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
+                                amperage))
                         .renderer(() -> new ConverterRenderer(tier, amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
@@ -2689,13 +2760,19 @@ public class GTMachines {
                                         V[tier], GTValues.VNF[tier],
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(false))))
-                        .compassNode("converter")
+
                         .register(),
                 ALL_TIERS);
+
+        if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
+            REGISTRATE.creativeModeTab(() -> MACHINE);
+        }
+
+        return converters;
     }
 
     public static Component explosion() {
-        if (ConfigHolder.INSTANCE.machines.doTerrainExplosion)
+        if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion)
             return Component.translatable("gtceu.universal.tooltip.terrain_resist");
         return null;
     }
@@ -2740,7 +2817,7 @@ public class GTMachines {
     }
 
     public static void init() {
-        GCyMMachines.init();
+        GCYMMachines.init();
         GTResearchMachines.init();
 
         if (GTCEu.isCreateLoaded()) {
@@ -2754,7 +2831,7 @@ public class GTMachines {
                     "bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
                             .rotationState(RotationState.NON_Y_AXIS)
                             .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                            .recipeType(new GTRecipeType(GTCEu.id("bedrock_ore_miner"), "dummy"))
+                            .recipeType(DUMMY_RECIPES)
                             .tooltips(
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
                                     Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",

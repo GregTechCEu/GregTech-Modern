@@ -42,15 +42,15 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     public static final int MIN_DURABILITY_TO_WARN = 10;
 
-    private final int BASE_EU_OUTPUT;
+    private final long BASE_EU_OUTPUT;
     @Getter
     private final int tier;
-    private int excessVoltage;
+    private long excessVoltage;
 
     public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
-        this.BASE_EU_OUTPUT = (int) GTValues.V[tier] * 2;
+        this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
     }
 
     @Nullable
@@ -67,7 +67,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     public long getOverclockVoltage() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor())
-            return (long) BASE_EU_OUTPUT * rotorHolder.getTotalPower() / 100;
+            return BASE_EU_OUTPUT * rotorHolder.getTotalPower() / 100;
         return 0;
     }
 
@@ -98,7 +98,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         if (rotorHolder == null || EUt <= 0)
             return null;
 
-        var turbineMaxVoltage = (int) turbineMachine.getOverclockVoltage();
+        var turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
             turbineMachine.excessVoltage -= turbineMaxVoltage;
             return null;
@@ -110,7 +110,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
 
         // this is necessary to prevent over-consumption of fuel
-        turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
+        turbineMachine.excessVoltage += (long) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
 
         long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
@@ -121,7 +121,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
                 recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
                 recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.isFuel);
+                recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
 
         result.init(-eut, recipe.duration, 1, params.getOcAmount());
 
@@ -156,12 +156,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                         rotorHolder.getTotalEfficiency()));
 
                 long maxProduction = getOverclockVoltage();
-                long currentProduction = isActive() ? boostProduction((int) maxProduction) : 0;
+                long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
+                        RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0;
                 String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                            FormattingUtil.formatNumbers(currentProduction), voltageName));
+                            FormattingUtil.formatNumbers(currentProduction),
+                            FormattingUtil.formatNumbers(maxProduction)));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();

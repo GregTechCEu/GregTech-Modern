@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;

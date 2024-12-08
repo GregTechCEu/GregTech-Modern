@@ -236,7 +236,10 @@ public class MaterialInfoLoader {
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
 
         ChemicalHelper.registerMaterialInfo(GTBlocks.CASING_PRIMITIVE_BRICKS.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
+                ConfigHolder.INSTANCE.recipes.harderBrickRecipes ?
+                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 6),
+                                new MaterialStack(GTMaterials.Gypsum, M * 2)) :
+                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
 
         if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
             ChemicalHelper.registerMaterialInfo(Items.ACACIA_DOOR, new ItemMaterialInfo(

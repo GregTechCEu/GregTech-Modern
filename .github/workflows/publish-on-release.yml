@@ -1,0 +1,58 @@
+name: Publish on Release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  meta:
+    name: Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Get Config
+        uses: actions/checkout@v4
+        with:
+          ref: '1.20.1'
+          sparse-checkout: '.github/json'
+      - name: Generate changelog
+        id: changelog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CONFIG: ${{ contains(github.ref_name, '1.21') && '-1.21' || '' }}
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          configuration: './.github/json/config${{ env.CONFIG }}.json'
+          ignorePreReleases: true
+          fetchViaCommits: true
+          failOnError: true
+
+  publish-20:
+    name: 1.20.1
+    needs: [ meta ]
+    if: ${{ contains(github.ref_name, '1.20.1') || !contains(github.ref_name, '1.21') }}
+    secrets: inherit
+    uses: ./.github/workflows/publish.yml
+    with:
+      simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
+      branch: '1.20.1'
+      tag-name: ${{ github.ref_name }}
+      release-body: ${{ github.event.release.body }}
+      changelog-body: ${{ needs.meta.outputs.CHANGELOG }}
+
+  publish-21:
+    name: 1.21.1
+    needs: [ meta ]
+    if: ${{ contains(github.ref_name, '1.21') || !contains(github.ref_name, '1.20.1') }}
+    secrets: inherit
+    uses: ./.github/workflows/publish.yml
+    with:
+      simulate: ${{ startsWith(github.event.release.name, 'simulate') || github.repository_owner != 'GregTechCEu' }}
+      branch: '1.21'
+      tag-name: ${{ github.ref_name }}
+      release-body: ${{ github.event.release.body }}
+      changelog-body: ${{ needs.meta.outputs.CHANGELOG }}

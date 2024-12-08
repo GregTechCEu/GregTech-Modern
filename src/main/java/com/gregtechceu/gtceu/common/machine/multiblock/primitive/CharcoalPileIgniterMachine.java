@@ -41,9 +41,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
+
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
 public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
@@ -72,6 +72,10 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private int lDist = 0;
     @DescSynced
     private int rDist = 0;
+    @DescSynced
+    private int bDist = 0;
+    @DescSynced
+    private int fDist = 0;
     @DescSynced
     private int hDist = 0;
     @DescSynced
@@ -151,78 +155,89 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             rDist = tmp;
         }
 
-        StringBuilder wallBuilder = new StringBuilder();    // " XXX "
-        StringBuilder floorBuilder = new StringBuilder();   // " BBB "
-        StringBuilder cornerBuilder = new StringBuilder();  // " "
-        StringBuilder ctrlBuilder = new StringBuilder();    // " XSX "
-        StringBuilder woodBuilder = new StringBuilder();    // "XCCCX"
+        StringBuilder[] floorLayer = new StringBuilder[fDist + bDist + 1];
+        List<StringBuilder[]> wallLayers = new ArrayList<>();
+        StringBuilder[] ceilingLayer = new StringBuilder[fDist + bDist + 1];
 
-        wallBuilder.append(" ");
-        floorBuilder.append(" ");
-        ctrlBuilder.append(" ");
-        woodBuilder.append("X");
+        for (int i = 0; i < floorLayer.length; i++) {
+            floorLayer[i] = new StringBuilder(lDist + rDist + 1);
+            ceilingLayer[i] = new StringBuilder(lDist + rDist + 1);
+        }
 
-        for (int i = 0; i < lDist; i++) {
-            cornerBuilder.append(" ");
-            if (i > 0) {
-                wallBuilder.append("X");
-                floorBuilder.append("B");
-                ctrlBuilder.append("X");
-                woodBuilder.append("C");
+        for (int i = 0; i < hDist - 1; i++) {
+            wallLayers.add(new StringBuilder[fDist + bDist + 1]);
+            for (int j = 0; j < fDist + bDist + 1; j++) {
+                var s = new StringBuilder(lDist + rDist + 3);
+                wallLayers.get(i)[j] = s;
             }
         }
 
-        wallBuilder.append("X");
-        floorBuilder.append("B");
-        cornerBuilder.append(" ");
-        ctrlBuilder.append("S");
-        woodBuilder.append("C");
-
-        for (int i = 0; i < rDist; i++) {
-            cornerBuilder.append(" ");
-            if (i < rDist - 1) {
-                wallBuilder.append("X");
-                floorBuilder.append("B");
-                ctrlBuilder.append("X");
-                woodBuilder.append("C");
+        for (int i = 0; i < lDist + rDist + 1; i++) {
+            for (int j = 0; j < fDist + bDist + 1; j++) {
+                if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
+                    floorLayer[i].append('A'); // floor edge
+                    for (int k = 0; k < hDist - 1; k++) {
+                        if ((i == 0 || i == lDist + rDist) && (j == 0 || j == fDist + bDist)) {
+                            wallLayers.get(k)[i].append('A');
+                        } else {
+                            wallLayers.get(k)[i].append('W'); // walls
+                        }
+                    }
+                    ceilingLayer[i].append('A'); // ceiling edge
+                } else { // not edges
+                    if (i == lDist && j == fDist) { // very center
+                        floorLayer[i].append('B');
+                    } else {
+                        floorLayer[i].append('B'); // floor valid blocks
+                    }
+                    for (int k = 0; k < hDist - 1; k++) {
+                        wallLayers.get(k)[i].append('L'); // log or air
+                    }
+                    if (i == lDist && j == fDist) { // very center
+                        ceilingLayer[i].append('S'); // controller
+                    } else {
+                        ceilingLayer[i].append('W'); // grass top
+                    }
+                }
             }
         }
 
-        wallBuilder.append(" ");
-        floorBuilder.append(" ");
-        ctrlBuilder.append(" ");
-        woodBuilder.append("X");
-
-        String[] wall = new String[hDist + 1];  // " ", " XXX ", " "
-        Arrays.fill(wall, wallBuilder.toString());
-        wall[0] = cornerBuilder.toString();
-        wall[wall.length - 1] = cornerBuilder.toString();
-
-        String[] slice = new String[hDist + 1]; // " BBB ", "XCCCX", " XXX "
-        Arrays.fill(slice, woodBuilder.toString());
-        slice[0] = floorBuilder.toString();
-
-        String[] center = Arrays.copyOf(slice, slice.length); // " BBB ", "XCCCX", " XSX "
-        if (this.getFrontFacing().getAxis() == Direction.Axis.X) {
-            center[center.length - 1] = ctrlBuilder.reverse().toString();
-        } else {
-            center[center.length - 1] = ctrlBuilder.toString();
+        String[] f = new String[bDist + fDist + 1];
+        for (int i = 0; i < floorLayer.length; i++) {
+            f[i] = floorLayer[i].toString();
+        }
+        String[] m = new String[bDist + fDist + 1];
+        for (int i = 0; i < wallLayers.get(0).length; i++) {
+            m[i] = wallLayers.get(0)[i].toString();
+        }
+        String[] c = new String[bDist + fDist + 1];
+        for (int i = 0; i < ceilingLayer.length; i++) {
+            c[i] = ceilingLayer[i].toString();
         }
 
-        slice[slice.length - 1] = wallBuilder.toString();
-
-        return FactoryBlockPattern.start()
-                .aisle(wall)
-                .aisle(slice).setRepeatable(0, 4)
-                .aisle(center)
-                .aisle(slice).setRepeatable(0, 4)
-                .aisle(wall)
+        return FactoryBlockPattern.start(LEFT, FRONT, UP)
+                .aisle(f)
+                .aisle(m).setRepeatable(wallLayers.size())
+                .aisle(c)
                 .where('S', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .where('B', Predicates.blocks(Blocks.BRICKS))
-                .where('X', Predicates.blocks(WALL_BLOCKS.toArray(new Block[0])))
-                .where('C', logPredicate())
-                .where(' ', Predicates.any())
+                .where('W', wallPredicate())
+                .where('L', logPredicate())
+                .where('A', Predicates.any())
                 .build();
+    }
+
+    private TraceabilityPredicate wallPredicate() {
+        return new TraceabilityPredicate(multiblockState -> {
+            boolean match = false;
+            for (var b : WALL_BLOCKS) {
+                if (multiblockState.getBlockState().getBlock() == b) {
+                    match = true;
+                    break;
+                }
+            }
+            return match;
+        }, null);
     }
 
     private TraceabilityPredicate logPredicate() {
@@ -235,38 +250,50 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         }, null);
     }
 
-    public boolean updateDimensions() {
+    public void updateDimensions() {
         Level level = getLevel();
-        Direction left = getFrontFacing().getOpposite().getCounterClockWise();
+        if (level == null) return;
+        Direction front = getFrontFacing();
+        Direction back = front.getOpposite();
+        Direction left = front.getCounterClockWise();
         Direction right = left.getOpposite();
 
-        BlockPos.MutableBlockPos lPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ())
-                .move(Direction.DOWN);
-        BlockPos.MutableBlockPos rPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ())
-                .move(Direction.DOWN);
-        BlockPos.MutableBlockPos hPos = new BlockPos.MutableBlockPos(getPos().getX(), getPos().getY(), getPos().getZ());
+        BlockPos.MutableBlockPos lPos = getPos().mutable().move(Direction.DOWN);
+        BlockPos.MutableBlockPos rPos = getPos().mutable().move(Direction.DOWN);
+        BlockPos.MutableBlockPos fPos = getPos().mutable().move(Direction.DOWN);
+        BlockPos.MutableBlockPos bPos = getPos().mutable().move(Direction.DOWN);
+        BlockPos.MutableBlockPos hPos = getPos().mutable();
 
         int lDist = 0;
         int rDist = 0;
+        int bDist = 0;
+        int fDist = 0;
         int hDist = 0;
 
         for (int i = 1; i < 6; i++) {
             if (lDist != 0 && rDist != 0 && hDist != 0) break;
             if (lDist == 0 && isBlockWall(level, lPos, left)) lDist = i;
             if (rDist == 0 && isBlockWall(level, rPos, right)) rDist = i;
+            if (bDist == 0 && isBlockWall(level, bPos, back)) bDist = i;
+            if (fDist == 0 && isBlockWall(level, fPos, front)) fDist = i;
             if (hDist == 0 && isBlockFloor(level, hPos)) hDist = i;
         }
 
-        if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || hDist < MIN_DEPTH) {
-            onStructureInvalid();
-            return false;
+        if (Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
+            this.isFormed = false;
+            return;
+        }
+
+        if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || fDist < MIN_RADIUS || bDist < MIN_RADIUS || hDist < MIN_DEPTH) {
+            this.isFormed = false;
+            return;
         }
 
         this.lDist = lDist;
         this.rDist = rDist;
+        this.fDist = fDist;
+        this.bDist = bDist;
         this.hDist = hDist;
-
-        return true;
     }
 
     private static boolean isBlockWall(Level level, BlockPos.MutableBlockPos pos, Direction direction) {

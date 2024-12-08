@@ -356,6 +356,9 @@ public class UnknownCompositionMaterials {
         Lava = new Material.Builder(GTCEu.id("lava"))
                 .fluid().color(0xFF4000).buildAndRegister();
 
+        Netherite = new Material.Builder(GTCEu.id("netherite"))
+                .ingot().color(0x005073).buildAndRegister();
+
         Glowstone = new Material.Builder(GTCEu.id("glowstone"))
                 .dust(1)
                 .liquid(new FluidBuilder().temperature(500))

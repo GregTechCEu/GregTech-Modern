@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -163,9 +164,10 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (pipeTile != null) {
             Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
             if (facing == null) return;
+            CoverBehavior cover = pipeTile.getCoverContainer().getCoverAtSide(facing);
             if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
                 boolean open = pipeTile.isConnected(facing);
-                boolean canConnect = pipeTile.getCoverContainer().getCoverAtSide(facing) != null ||
+                boolean canConnect = cover != null ||
                         canConnect(pipeTile, facing);
                 if (!open && canConnect)
                     pipeTile.setConnection(facing, true, false);
@@ -177,6 +179,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             if (net != null) {
                 pipeTile.getPipeNet().onNeighbourUpdate(neighbor);
             }
+            if (cover != null) cover.onNeighborChanged(state.getBlock(), pos, false);
         }
     }
 
@@ -347,7 +350,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (!types.isEmpty() && ToolHelper.canUse(itemStack)) {
+        if ((!types.isEmpty() && ToolHelper.canUse(itemStack)) || (types.isEmpty() && player.isShiftKeyDown())) {
             var result = pipeBlockEntity.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
@@ -364,6 +367,10 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         var pipeNode = getPipeTile(level, pos);
+        if (pipeNode == null) {
+            GTCEu.LOGGER.error("Pipe was null");
+            return;
+        }
         if (pipeNode.getFrameMaterial() != null) {
             BlockState frameState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();

@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -13,24 +15,25 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -41,15 +44,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -60,6 +69,14 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumChestMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
+
+    /**
+     * Sourced from FunctionalStorage's
+     * <a
+     * href=https://github.com/Buuz135/FunctionalStorage/blob/1.21/src/main/java/com/buuz135/functionalstorage/block/tile/ItemControllableDrawerTile.java>
+     * ItemControllerDrawerTile</a>
+     */
+    public static final Object2LongOpenHashMap<UUID> INTERACTION_LOGGER = new Object2LongOpenHashMap<>();
 
     @Getter
     @Persisted
@@ -75,45 +92,30 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Setter
     @Persisted
     protected boolean allowInputFromOutputSideItems;
-    @Getter
-    private final int maxStoredItems;
     @Persisted
+    private boolean isVoiding;
+
+    private final long maxAmount;
+    protected final ItemCache cache;
     @DescSynced
-    @DropSaved
-    protected int itemsStoredInside = 0;
+    private final CustomItemStackHandler lockedItem;
+
     @Getter
-    @Persisted
     @DescSynced
-    @DropSaved
-    protected int storedAmount = 0;
-    @Getter
-    @Persisted
-    @DescSynced
-    @DropSaved
-    @NotNull
     protected ItemStack stored = ItemStack.EMPTY;
-    @Persisted
-    @DropSaved
-    protected final NotifiableItemStackHandler cache;
+    @Getter
+    @DescSynced
+    protected long storedAmount = 0;
+
     @Nullable
     protected TickableSubscription autoOutputSubs;
-    @Nullable
-    protected ISubscription exportItemSubs;
-    @Persisted
-    @Getter
-    @Setter
-    private boolean isVoiding;
-    @Persisted
-    @DescSynced
-    @Getter
-    private final ItemStackTransfer lockedItem;
 
-    public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
+    public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
         super(holder, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
-        this.maxStoredItems = maxStoredItems;
+        this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler(args);
-        this.lockedItem = new ItemStackTransfer();
+        this.lockedItem = new CustomItemStackHandler();
     }
 
     //////////////////////////////////////
@@ -125,75 +127,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH) {
-
-            @Override
-            public @NotNull ItemStack getStackInSlot(int slot) {
-                var item = super.getStackInSlot(slot).copy();
-                if (!item.isEmpty()) {
-                    item.setCount(Math.min(itemsStoredInside + item.getCount(), Integer.MAX_VALUE));
-                }
-                return item;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return slot == 0 ? maxStoredItems : 0;
-            }
-
-            @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate,
-                                                 boolean notifyChanges) {
-                var remained = super.insertItem(slot, stack, simulate, notifyChanges).copy();
-                if (!remained.isEmpty()) {
-                    if (ItemTransferHelper.canItemStacksStack(getStackInSlot(0), remained)) {
-                        int added = Math.min(maxStoredItems - itemsStoredInside, remained.getCount());
-                        if (!simulate && notifyChanges) {
-                            itemsStoredInside += added;
-                            onContentsChanged();
-                        }
-                        remained.shrink(added);
-                        if (isVoiding) {
-                            remained.setCount(0);
-                        }
-                    }
-                }
-                return remained;
-            }
-
-            @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                var extracted = super.extractItem(slot, amount, simulate, notifyChanges).copy();
-                if (!extracted.isEmpty()) {
-                    var additional = Math.min(amount - extracted.getCount(), itemsStoredInside);
-                    extracted.grow(additional);
-                    if (!simulate && notifyChanges) {
-                        itemsStoredInside -= additional;
-                        if (getStackInSlot(0).isEmpty() && itemsStoredInside > 0) {
-                            var copied = extracted.copy();
-                            copied.setCount(
-                                    Math.min(itemsStoredInside, Math.min(64, copied.getItem().getMaxStackSize())));
-                            itemsStoredInside -= copied.getCount();
-                            setStackInSlot(0, copied);
-                        }
-                        onContentsChanged();
-                    }
-                }
-                return extracted;
-            }
-
-            @Override
-            public void onContentsChanged() {
-                super.onContentsChanged();
-                if (!isRemote()) {
-                    stored = getStackInSlot(0).copy();
-                    storedAmount = stored.getCount();
-                    stored.setCount(1);
-                }
-            }
-        }.setFilter(itemStack -> !isLocked() ||
-                ItemTransferHelper.canItemStacksStack(lockedItem.getStackInSlot(0), itemStack));
+    protected ItemCache createCacheItemHandler(Object... args) {
+        return new ItemCache(this);
     }
 
     @Override
@@ -202,21 +137,38 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
         }
-        exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (exportItemSubs != null) {
-            exportItemSubs.unsubscribe();
-            exportItemSubs = null;
+    protected void onItemChanged() {
+        if (!isRemote()) {
+            updateAutoOutputSubscription();
         }
     }
 
     @Override
     public boolean savePickClone() {
         return false;
+    }
+
+    @Override
+    public boolean saveBreak() {
+        return !stored.isEmpty();
+    }
+
+    @Override
+    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        if (!forDrop) tag.put("lockedItem", lockedItem.serializeNBT());
+        tag.put("stored", stored.serializeNBT());
+        tag.putLong("storedAmount", storedAmount);
+    }
+
+    @Override
+    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        lockedItem.deserializeNBT(tag.getCompound("lockedItem"));
+        stored = ItemStack.of(tag.getCompound("stored"));
+        storedAmount = tag.getLong("storedAmount");
     }
 
     //////////////////////////////////////
@@ -253,8 +205,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null && ItemTransferHelper
-                .getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
+        if ((isAutoOutputItems() && !stored.isEmpty()) && outputFacing != null &&
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacing)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -284,28 +236,43 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        if (hit.getDirection() == getFrontFacing()) {
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            // Check to see if the hit is within the glass frame of the chest
+            var aabb = new AABB(hit.getBlockPos()).deflate(0.12);
+            var hitVector = hit.getLocation().relative(getFrontFacing(), -0.5);
+            if (!aabb.contains(hitVector)) return InteractionResult.PASS;
+
             var held = player.getMainHandItem();
-            if (!held.isEmpty() && (ItemTransferHelper.canItemStacksStack(held, stored) || stored.isEmpty())) { // push
-                if (!isRemote()) {
-                    var remaining = cache.insertItem(0, held, false);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
-                }
+            if (!held.isEmpty() && cache.canInsert(held)) { // push
+                var remaining = cache.insertItem(0, held, false);
+                player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
                 return InteractionResult.SUCCESS;
+            } else if (isDoubleHit(player.getUUID())) {
+                for (var stack : player.getInventory().items) {
+                    if (!stack.isEmpty() && cache.canInsert(stack)) {
+                        stack.setCount(cache.insertItem(0, stack, false).getCount());
+                    }
+                }
             }
+            INTERACTION_LOGGER.put(player.getUUID(), System.currentTimeMillis());
+            return InteractionResult.SUCCESS;
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+        return InteractionResult.PASS;
+    }
+
+    private static boolean isDoubleHit(UUID uuid) {
+        return (System.currentTimeMillis() - INTERACTION_LOGGER.getOrDefault(uuid, System.currentTimeMillis())) < 300;
     }
 
     @Override
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
+            if (player.getItemInHand(hand).is(GTToolType.WRENCH.itemTags.get(0))) return false;
             if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1,
-                        false);
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (!player.addItem(drained)) {
-                        Block.popResource(world, getPos().relative(getFrontFacing()), drained);
+                        Block.popResourceFromFace(world, getPos(), getFrontFacing(), drained);
                     }
                 }
             }
@@ -360,13 +327,15 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     protected void setLocked(boolean locked) {
         if (!stored.isEmpty() && locked) {
-            var copied = stored.copy();
-            copied.setCount(1);
+            var copied = stored.copyWithCount(1);
             lockedItem.setStackInSlot(0, copied);
         } else if (!locked) {
             lockedItem.setStackInSlot(0, ItemStack.EMPTY);
         }
-        lockedItem.onContentsChanged(0);
+    }
+
+    public ItemStack getLockedItem() {
+        return lockedItem.getStackInSlot(0);
     }
 
     //////////////////////////////////////
@@ -375,47 +344,23 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 109, 63);
-        var importItems = new ItemStackTransfer();
-        importItems.setFilter(itemStack -> {
-            var item = cache.getStackInSlot(0);
-            return (maxStoredItems - storedAmount) > itemStack.getCount() &&
-                    ((item.isEmpty() && (!isLocked() ||
-                            ItemTransferHelper.canItemStacksStack(itemStack, getLockedItem().getStackInSlot(0)))) ||
-                            ItemTransferHelper.canItemStacksStack(itemStack, item));
-        });
-        importItems.setOnContentsChanged(() -> {
-            var item = importItems.getStackInSlot(0).copy();
-            if (!item.isEmpty()) {
-                importItems.setStackInSlot(0, ItemStack.EMPTY);
-                importItems.onContentsChanged(0);
-                cache.insertItem(0, item.copy(), false);
-            }
-        });
-        var current = cache.getStackInSlot(0).copy();
-        if (!current.isEmpty()) {
-            current.setCount(Math.min(current.getCount(), current.getItem().getMaxStackSize()));
-        }
+        var importItems = createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
-                .addWidget(new LabelWidget(8, 18, () -> storedAmount + "").setTextColor(-1).setDropShadow(true))
+                .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
+                        .setTextColor(-1)
+                        .setDropShadow(true))
                 .addWidget(new SlotWidget(importItems, 0, 87, 5, false, true)
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IN_SLOT_OVERLAY)))
                 .addWidget(new SlotWidget(cache, 0, 87, 23, false, false)
-                        .setItemHook(itemStack -> {
-                            var copied = itemStack.copy();
-                            if (!copied.isEmpty()) {
-                                copied.setCount(1);
-                            }
-                            return copied;
-                        })
+                        .setItemHook(s -> s.copyWithCount((int) Math.min(storedAmount, s.getMaxStackSize())))
                         .setBackgroundTexture(GuiTextures.SLOT))
                 .addWidget(new ButtonWidget(87, 42, 18, 18,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
                             if (!cd.isRemote) {
-                                var stored = cache.getStackInSlot(0);
                                 if (!stored.isEmpty()) {
                                     var extracted = cache.extractItem(0,
-                                            Math.min(stored.getCount(), stored.getItem().getMaxStackSize()), false);
+                                            (int) Math.min(storedAmount, stored.getMaxStackSize()), false);
                                     if (!group.getGui().entityPlayer.addItem(extracted)) {
                                         Block.popResource(group.getGui().entityPlayer.level(),
                                                 group.getGui().entityPlayer.getOnPos(), extracted);
@@ -423,7 +368,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                                 }
                             }
                         }))
-                .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41))
+                .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41,
+                        stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored))
+                        .setMaxStackSize(1))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
                         GuiTextures.BUTTON_ITEM_OUTPUT, this::isAutoOutputItems, this::setAutoOutputItems)
                         .setShouldUseBaseBackground()
@@ -433,11 +380,25 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_lock.tooltip"))
                 .addWidget(new ToggleButtonWidget(40, 41, 18, 18,
-                        GuiTextures.BUTTON_VOID, this::isVoiding, this::setVoiding)
+                        GuiTextures.BUTTON_VOID, () -> isVoiding, (b) -> isVoiding = b)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.item_voiding_partial.tooltip"));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
+    }
+
+    private @NotNull CustomItemStackHandler createImportItems() {
+        var importItems = new CustomItemStackHandler();
+        importItems.setFilter(cache::canInsert);
+        importItems.setOnContentsChanged(() -> {
+            var item = importItems.getStackInSlot(0).copy();
+            if (!item.isEmpty()) {
+                importItems.setStackInSlot(0, ItemStack.EMPTY);
+                importItems.onContentsChanged(0);
+                cache.insertItem(0, item.copy(), false);
+            }
+        });
+        return importItems;
     }
 
     //////////////////////////////////////
@@ -456,7 +417,94 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             if (side == getOutputFacingItems()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            if (side == getFrontFacing()) return null;
         }
         return super.sideTips(player, pos, state, toolTypes, side);
+    }
+
+    protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
+
+        private final Predicate<ItemStack> filter = i -> !isLocked() ||
+                ItemStack.isSameItemSameTags(i, getLockedItem());
+
+        public ItemCache(MetaMachine holder) {
+            super(holder);
+        }
+
+        @Override
+        public void setStackInSlot(int index, ItemStack stack) {
+            stored = stack.copyWithCount(1);
+            storedAmount = stack.getCount();
+            onItemChanged();
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return stored.copyWithCount(GTMath.saturatedCast(storedAmount));
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            long free = isVoiding ? Long.MAX_VALUE : maxAmount - storedAmount;
+            long canStore = 0;
+            if ((stored.isEmpty() || ItemHandlerHelper.canItemStacksStack(stored, stack)) && filter.test(stack)) {
+                canStore = Math.min(stack.getCount(), free);
+            }
+            if (!simulate && canStore > 0) {
+                if (stored.isEmpty()) stored = stack.copyWithCount(1);
+                storedAmount = Math.min(maxAmount, storedAmount + canStore);
+                onItemChanged();
+            }
+            return stack.copyWithCount((int) (stack.getCount() - canStore));
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (stored.isEmpty()) return ItemStack.EMPTY;
+            long toExtract = Math.min(storedAmount, amount);
+            var copy = stored.copyWithCount((int) toExtract);
+            if (!simulate && toExtract > 0) {
+                storedAmount -= toExtract;
+                if (storedAmount == 0) stored = ItemStack.EMPTY;
+                onItemChanged();
+            }
+            return copy;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return GTMath.saturatedCast(maxAmount);
+        }
+
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return filter.test(stack);
+        }
+
+        public void exportToNearby(@NotNull Direction... facings) {
+            if (stored.isEmpty()) return;
+            var level = getMachine().getLevel();
+            var pos = getMachine().getPos();
+            for (Direction facing : facings) {
+                var filter = getMachine().getItemCapFilter(facing, IO.OUT);
+                GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
+                        .ifPresent(adj -> GTTransferUtils.transferItemsFiltered(this, adj, filter));
+            }
+        }
+
+        public boolean canInsert(ItemStack stack) {
+            return filter.test(stack) && (insertItem(0, stack, true).getCount() != stack.getCount());
+        }
+
+        @Override
+        public ManagedFieldHolder getFieldHolder() {
+            return MANAGED_FIELD_HOLDER;
+        }
     }
 }

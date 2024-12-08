@@ -4,16 +4,16 @@ on:
   pull_request:
     paths: ['**']
 
+# Cancel previous jobs if PR gets another push
+concurrency:
+  group: PR-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Check Path Filter
         uses: dorny/paths-filter@v3
         id: filter
@@ -21,23 +21,20 @@ jobs:
           filters: |
             code:
               - 'src/**'
-              - '**.gradle'
+              - '*.gradle'
               - 'gradle.properties'
-              - 'gradlew**'
+              - 'gradlew*'
               - 'gradle/**'
-
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
-
       - name: Build
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew assemble --build-cache
-          
       - name: Upload Artifact
         if: steps.filter.outputs.code == 'true'
         uses: actions/upload-artifact@v4.0.0
         with:
           name: build output
           path: build/libs/*
-          retention-days: 30
+          retention-days: 15

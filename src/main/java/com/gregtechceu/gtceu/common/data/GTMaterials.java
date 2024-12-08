@@ -60,7 +60,7 @@ public class GTMaterials {
         HigherDegreeMaterials.register();
 
         // Gregicality Multiblocks
-        GCyMMaterials.register();
+        GCYMMaterials.register();
 
         /*
          * Register info for cyclical references
@@ -123,6 +123,7 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
+        ingot.setIgnored(Netherite, Items.NETHERITE_INGOT);
         ingot.setIgnored(Brick, Items.BRICK);
         ingot.setIgnored(Wax, Items.HONEYCOMB);
 
@@ -134,6 +135,7 @@ public class GTMaterials {
         block.setIgnored(Iron, Blocks.IRON_BLOCK);
         block.setIgnored(Gold, Blocks.GOLD_BLOCK);
         block.setIgnored(Copper, Blocks.COPPER_BLOCK);
+        block.setIgnored(Netherite, Items.NETHERITE_BLOCK);
         block.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
         block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
@@ -176,8 +178,8 @@ public class GTMaterials {
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
         block.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
@@ -514,6 +516,7 @@ public class GTMaterials {
     public static Material AluminiumSulfite;
     public static Material Tantalite;
     public static Material Coke;
+    public static Material Netherite;
 
     public static Material SolderingAlloy;
     public static Material Spessartine;
@@ -987,7 +990,7 @@ public class GTMaterials {
     public static Material RadAway;
 
     /**
-     * GCyM Materials
+     * GCYM Materials
      */
     public static Material TantalumCarbide;
     public static Material HSLASteel;

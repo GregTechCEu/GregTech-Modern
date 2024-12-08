@@ -10,10 +10,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -31,6 +32,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -64,7 +66,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
                                      extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IEnhancedManaged,
-                                     IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
+                                     IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighlight, IToolable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
     @Getter
@@ -377,6 +379,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
+        if (toolTypes.isEmpty() && playerIn.isShiftKeyDown()) {
+            if (coverBehavior != null) {
+                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            }
+        }
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
@@ -443,5 +450,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     public static boolean isConnected(int connections, Direction side) {
         return (connections & (1 << side.ordinal())) > 0;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        TagFixer.fixFluidTags(tag);
+        super.load(tag);
     }
 }

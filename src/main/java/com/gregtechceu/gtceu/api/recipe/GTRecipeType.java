@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -91,6 +92,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected boolean hasResearchSlot;
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
+    @Getter
+    private final GTRecipeCategory category;
+    @Getter
+    private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
     private CompoundTag customUICache;
     @Getter
     private final GTRecipeLookup lookup = new GTRecipeLookup(this);
@@ -107,6 +112,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
         this.group = group;
+        this.category = GTRecipeCategory.registerDefault(this);
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
@@ -175,7 +181,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
-        this.recipeUI.setXEIVisible(XEIVisible);
+        this.category.setXEIVisible(XEIVisible);
         return this;
     }
 
@@ -334,6 +340,18 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             }
         }
         return recipes;
+    }
+
+    public void addToCategoryMap(GTRecipeCategory category, GTRecipe recipe) {
+        categoryMap.computeIfAbsent(category, k -> new ObjectLinkedOpenHashSet<>()).add(recipe);
+    }
+
+    public Set<GTRecipeCategory> getCategories() {
+        return Collections.unmodifiableSet(categoryMap.keySet());
+    }
+
+    public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
+        return Collections.unmodifiableSet(categoryMap.getOrDefault(category, Set.of()));
     }
 
     public interface ICustomRecipeLogic {

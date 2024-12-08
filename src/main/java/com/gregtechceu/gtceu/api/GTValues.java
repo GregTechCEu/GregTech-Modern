@@ -120,13 +120,15 @@ public class GTValues {
             MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
             MODID_CREATE = "create",
-            MODID_REBORN_ENERGY = "team_reborn_energy",
-            MODID_ALMOSTUNIFIED = "almostunified",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
+            MODID_JOURNEYMAP = "journeymap",
+            MODID_XAEROS_MINIMAP = "xaerominimap",
+            MODID_XAEROS_WORLDMAP = "xaeroworldmap",
+            MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
-            MODID_FTBTEAMS = "ftbteams",
+            MODID_FTB_TEAMS = "ftbteams",
             MODID_ARGONAUTS = "argonauts";
 
     /**
@@ -158,7 +160,57 @@ public class GTValues {
             DARK_GREEN + "UIV",
             YELLOW + "UXV",
             BLUE.toString() + BOLD + "OpV",
-            RED.toString() + BOLD + "MAX" };
+            RED.toString() + BOLD + "MAX",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "1",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "2",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "3",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "4",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "5",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "6",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "7",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "8",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "9",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "10",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "11",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "12",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "13",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "14",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "15",
+            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
+                    "16",
+    };
+
+    public static final String[] VCF = new String[] {
+            DARK_GRAY.toString(),
+            GRAY.toString(),
+            AQUA.toString(),
+            GOLD.toString(),
+            DARK_PURPLE.toString(),
+            BLUE.toString(),
+            LIGHT_PURPLE.toString(),
+            RED.toString(),
+            DARK_AQUA.toString(),
+            DARK_RED.toString(),
+            GREEN.toString(),
+            DARK_GREEN.toString(),
+            YELLOW.toString(),
+            BLUE.toString() + BOLD.toString(),
+            RED.toString() + BOLD.toString() };
 
     public static final String[] VLVH = new String[] {
             "Primitive", // not doing the gray color for these first two because it looks weird

@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLight {
+public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
@@ -180,11 +181,15 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         return coverDefinition.getCoverRenderer();
     }
 
+    public @Nullable IFancyConfigurator getConfigurator() {
+        return null;
+    }
+
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         return toolTypes.contains(GTToolType.CROWBAR) ||
-                (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover);
+                ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover);
     }
 
     @Override
@@ -193,7 +198,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GuiTextures.TOOL_REMOVE_COVER;
         }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover) {
+        if ((toolTypes.isEmpty() || toolTypes.contains(GTToolType.SCREWDRIVER)) && this instanceof IUICover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;
@@ -212,12 +217,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     //////////////////////////////////////
 
     @Nullable
-    public IItemTransfer getItemTransferCap(IItemTransfer defaultValue) {
+    public IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
         return defaultValue;
     }
 
     @Nullable
-    public IFluidTransfer getFluidTransferCap(IFluidTransfer defaultValue) {
+    public IFluidHandlerModifiable getFluidHandlerCap(IFluidHandlerModifiable defaultValue) {
         return defaultValue;
     }
 }

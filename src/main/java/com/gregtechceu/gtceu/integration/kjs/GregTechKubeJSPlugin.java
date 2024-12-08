@@ -41,10 +41,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.machines.GCyMMachines;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -111,6 +113,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
+                true);
 
         GTRegistryInfo.MACHINE.addType("simple", SimpleMachineBuilder.class,
                 (id, args) -> SimpleMachineBuilder.create(id.getPath(), args), true);
@@ -197,11 +201,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTElements", GTElements.class);
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("GTBlocks", GTBlocks.class);
-        event.add("GCyMBlocks", GCyMBlocks.class);
+        event.add("GCyMBlocks", GCYMBlocks.class);
+        event.add("GCYMBlocks", GCYMBlocks.class);
         event.add("GTMachines", GTMachines.class);
-        event.add("GCyMMachines", GCyMMachines.class);
+        event.add("GCyMMachines", GCYMMachines.class);
+        event.add("GCYMMachines", GCYMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTRecipeTypes", GTRecipeTypes.class);
+        event.add("GTRecipeCategories", GTRecipeCategories.class);
         event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
@@ -257,6 +264,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
             if (o instanceof GTRecipeType recipeType) return recipeType;
             if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
+            return null;
+        });
+        typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
+            if (o instanceof Wrapper w) {
+                o = w.unwrap();
+            }
+            if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
+            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
             return null;
         });
 
@@ -399,6 +414,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
                     builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
                 }
+                if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
+                    builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
+                            .get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
+                }
                 builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
@@ -438,11 +457,25 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
 
+                if (gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS) != null) {
+                    builder.inputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS));
+                }
+                if (gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS) != null) {
+                    builder.outputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS));
+                }
+                if (gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS) != null) {
+                    builder.tickInputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS));
+                }
+                if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
+                    builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
+                }
+
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
             }
         })));
 
+        PowerlessJetpack.FUELS.clear();
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {

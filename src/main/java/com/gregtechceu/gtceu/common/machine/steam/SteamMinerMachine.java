@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
@@ -15,14 +16,12 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -37,6 +36,8 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,7 +74,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
         super(holder, false, fortune, speed, maximumRadius);
         this.inventorySize = 4;
-        this.energyPerTick = (int) (16 * FluidHelper.getBucket() / 1000);
+        this.energyPerTick = 16;
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
     }
@@ -98,7 +99,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(@SuppressWarnings("unused") Object... args) {
@@ -145,8 +146,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     //////////////////////////////////////
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getFrontFacing();
-        if (!exportItems.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(),
-                getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null) {
+        if (!exportItems.isEmpty() && GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -222,7 +222,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drainInternal(energyPerTick, false);
+                steamTank.drainInternal(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;

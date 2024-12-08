@@ -1,16 +1,20 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.SurfaceRockBlockItem;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
+import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -63,9 +68,29 @@ public class SurfaceRockBlock extends Block {
     }
 
     @Override
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest,
+                                       FluidState fluid) {
+        if (!level.isClientSide) {
+            ServerCache.instance.prospectSurfaceRockMaterial(
+                    level.dimension(),
+                    this.material,
+                    pos,
+                    (ServerPlayer) player);
+        }
+        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    }
+
+    @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
+        if (!level.isClientSide) {
+            ServerCache.instance.prospectSurfaceRockMaterial(
+                    level.dimension(),
+                    this.material,
+                    pos,
+                    (ServerPlayer) player);
+        }
         if (level.destroyBlock(pos, true, player)) {
             return InteractionResult.SUCCESS;
         }
@@ -127,10 +152,20 @@ public class SurfaceRockBlock extends Block {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static BlockColor tintedColor() {
+    public static BlockColor tintedBlockColor() {
         return (state, reader, pos, tintIndex) -> {
             if (state.getBlock() instanceof SurfaceRockBlock block) {
                 return block.material.getMaterialRGB();
+            }
+            return -1;
+        };
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static ItemColor tintedItemColor() {
+        return (stack, tintIndex) -> {
+            if (stack.getItem() instanceof SurfaceRockBlockItem surfaceRock) {
+                return surfaceRock.getMat().getMaterialRGB();
             }
             return -1;
         };

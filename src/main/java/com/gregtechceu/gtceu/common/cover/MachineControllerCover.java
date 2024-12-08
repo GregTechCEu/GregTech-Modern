@@ -8,14 +8,18 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -46,7 +50,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
-    private ItemStackTransfer sideCoverSlot;
+    private CustomItemStackHandler sideCoverSlot;
     private ButtonWidget modeButton;
 
     @Override
@@ -219,7 +223,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
             }
         });
 
-        sideCoverSlot = new ItemStackTransfer(1);
+        sideCoverSlot = new CustomItemStackHandler(1);
         group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
 
             @Override

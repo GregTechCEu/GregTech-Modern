@@ -14,6 +14,10 @@ public class GTMath {
         return Math.max(min, Math.min(max, value));
     }
 
+    public static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
     public static int[] split(long value) {
         IntArrayList result = new IntArrayList();
         while (value > 0) {
@@ -22,5 +26,13 @@ public class GTMath {
             value -= intValue;
         }
         return result.toIntArray();
+    }
+
+    public static int saturatedCast(long value) {
+        if (value > 2147483647L) {
+            return Integer.MAX_VALUE;
+        } else {
+            return value < -2147483648L ? Integer.MIN_VALUE : (int) value;
+        }
     }
 }

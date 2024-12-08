@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -105,20 +104,17 @@ class RecipeRunner {
                     this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
             } else {
-                // unparallel the chanced contents - bandaid fix
-                chancedContents.add(cont.copy(cap, ContentModifier.multiplier(1.0 / recipe.parallels)));
+                chancedContents.add(cont);
             }
         }
 
         // Only roll if there's anything to roll for
         if (!chancedContents.isEmpty()) {
             int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-            int holderTier = holder.getChanceTier();
+            int chanceTier = recipeTier + recipe.ocLevel;
             var cache = this.chanceCaches.get(cap);
-            chancedContents = logic.roll(chancedContents, function, recipeTier, holderTier, cache, recipe.parallels,
-                    cap);
+            chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache, recipe.parallels);
 
-            if (chancedContents == null) return;
             for (Content cont : chancedContents) {
                 if (cont.slotName == null) {
                     this.content.content.add(cont.content);

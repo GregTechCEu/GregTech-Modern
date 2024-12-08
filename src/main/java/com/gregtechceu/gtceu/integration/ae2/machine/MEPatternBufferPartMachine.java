@@ -13,16 +13,19 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -30,9 +33,6 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -49,6 +49,8 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -77,7 +79,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEPatternBufferPartMachine extends MEBusPartMachine
-                                        implements ICraftingProvider, PatternContainer {
+                                        implements ICraftingProvider, PatternContainer, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
@@ -106,7 +108,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Persisted
     @DescSynced // Maybe an Expansion Option in the future? a bit redundant for rn. Maybe Packdevs want to add their own
                 // version.
-    private final ItemStackTransfer patternInventory = new ItemStackTransfer(MAX_PATTERN_COUNT);
+    private final CustomItemStackHandler patternInventory = new CustomItemStackHandler(MAX_PATTERN_COUNT);
     // DO NOT remove this and use a default circuitInventory. It will cause the circuit inventory to vanish entirely and
     // crash clients as well as cause unintended behaviors.
     @Getter
@@ -143,6 +145,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     protected TickableSubscription updateSubs;
 
     @Override
+    public NotifiableItemStackHandler getCircuitInventory() {
+        return getCircuitInventorySimulated();
+    }
+
+    @Override
     public boolean isWorkingEnabled() {
         return true;
     }
@@ -160,7 +167,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
-        this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidHelper.getBucket(), IO.IN, IO.NONE);
+        this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE);
     }
 
     @Override
@@ -450,15 +457,15 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             recipeHandler.getItemInputHandler().notifyListeners();
         }
 
-        private void addFluid(AEFluidKey key, long amount) {
+        private void addFluid(AEFluidKey key, int amount) {
             if (amount <= 0L) return;
             for (FluidStack fluid : fluidInventory) {
-                if (AEUtil.matches(key, fluid)) {
-                    long free = Long.MAX_VALUE - fluid.getAmount();
+                if (key.matches(fluid)) {
+                    int free = Integer.MAX_VALUE - fluid.getAmount();
                     if (amount <= free) {
                         fluid.grow(amount);
                     } else {
-                        fluid.setAmount(Long.MAX_VALUE);
+                        fluid.setAmount(Integer.MAX_VALUE);
                         fluidInventory.add(AEUtil.toFluidStack(key, amount - free));
                     }
                     return;
@@ -500,12 +507,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 for (FluidStack stack : fluidInventory) {
                     if (stack == null || stack.isEmpty()) continue;
 
-                    long inserted = StorageHelper.poweredInsert(
+                    int inserted = GTMath.saturatedCast(StorageHelper.poweredInsert(
                             energy,
                             networkInv,
                             AEFluidKey.of(stack.getFluid(), stack.getTag()),
                             stack.getAmount(),
-                            actionSource);
+                            actionSource));
                     if (inserted > 0) {
                         stack.shrink(inserted);
                         if (stack.isEmpty()) {
@@ -520,7 +527,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         public void pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
             patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                 if (what instanceof AEFluidKey key) {
-                    addFluid(key, amount);
+                    addFluid(key, GTMath.saturatedCast(amount));
                 }
 
                 if (what instanceof AEItemKey key) {
@@ -579,7 +586,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     foundStack = stack;
                 }
                 if (!found) continue;
-                long drained = Math.min(foundStack.getAmount(), fluidStack.getAmount());
+                int drained = Math.min(foundStack.getAmount(), fluidStack.getAmount());
                 if (!simulate) {
                     foundStack.shrink(drained);
                     if (foundStack.isEmpty()) {
@@ -608,7 +615,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
             ListTag fluidInventoryTag = new ListTag();
             for (FluidStack fluidStack : fluidInventory) {
-                fluidInventoryTag.add(fluidStack.saveToTag(new CompoundTag()));
+                fluidInventoryTag.add(fluidStack.writeToNBT(new CompoundTag()));
             }
             tag.put("fluidInventory", fluidInventoryTag);
 
@@ -635,7 +642,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             ListTag fluidInv = tag.getList("fluidInventory", Tag.TAG_COMPOUND);
             for (int i = 0; i < fluidInv.size(); i++) {
                 CompoundTag tagFluidStack = fluidInv.getCompound(i);
-                var fluid = FluidStack.loadFromTag(tagFluidStack);
+                var fluid = FluidStack.loadFluidStackFromNBT(tagFluidStack);
                 if (fluid != null) {
                     if (!fluid.isEmpty()) {
                         fluidInventory.add(fluid);

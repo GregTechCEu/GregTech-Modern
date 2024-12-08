@@ -9,12 +9,14 @@ import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
-import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
-import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -24,7 +26,10 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -53,6 +58,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 public class GTRecipeTypeUI {
@@ -78,10 +84,6 @@ public class GTRecipeTypeUI {
     @Setter
     @Getter
     protected int maxTooltips = 3;
-
-    @Getter
-    @Setter
-    private boolean XEIVisible = true;
 
     private CompoundTag customUICache;
     private Size xeiSize;
@@ -242,15 +244,19 @@ public class GTRecipeTypeUI {
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
                                     if (LDLib.isReiLoaded()) {
-                                        ViewSearchBuilder.builder()
-                                                .addCategory(GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType))
+                                        ViewSearchBuilder.builder().addCategories(
+                                                recipeType.getCategories().stream()
+                                                        .map(GTRecipeREICategory::machineCategory)
+                                                        .collect(Collectors.toList()))
                                                 .open();
                                     } else if (LDLib.isJeiLoaded()) {
-                                        JEIPlugin.jeiRuntime.getRecipesGui()
-                                                .showTypes(List.of(GTRecipeTypeCategory.TYPES.apply(recipeType)));
+                                        JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
+                                                recipeType.getCategories().stream()
+                                                        .map(GTRecipeJEICategory::machineType)
+                                                        .collect(Collectors.toList()));
                                     } else if (LDLib.isEmiLoaded()) {
                                         EmiApi.displayRecipeCategory(
-                                                GTRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                                                GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
@@ -270,7 +276,7 @@ public class GTRecipeTypeUI {
                                 widget -> {
                                     var index = WidgetUtils.widgetIdIndex(widget);
                                     cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null,
-                                            storage);
+                                            storage, 0, 0);
                                 });
                     }
                 }
