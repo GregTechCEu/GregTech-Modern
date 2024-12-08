@@ -2484,7 +2484,6 @@ public class GTItems {
             .item("machine_memory_card", ComponentItem::create)
             .lang("Machine Memory Card")
             .properties(p -> p.stacksTo(1))
-
             .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
             .register();
 
