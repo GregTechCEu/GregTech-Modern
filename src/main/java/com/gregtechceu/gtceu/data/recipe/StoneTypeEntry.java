@@ -224,7 +224,8 @@ public class StoneTypeEntry {
 
         public StoneTypeEntry build() {
             return new StoneTypeEntry(modid, stoneName,
-                    stone, polishedStone, smeltStone, chiselStone, crackedStone, slab, stair, button, wall, pressurePlate,
+                    stone, polishedStone, smeltStone, chiselStone, crackedStone, slab, stair, button, wall,
+                    pressurePlate,
                     material, materialAmount,
                     addStoneOreDict, addPolishedStoneOreDict, addSlabOreDict, addStairOreDict,
                     addButtonOreDict, addWallOreDict, addPressurePlateOreDict,

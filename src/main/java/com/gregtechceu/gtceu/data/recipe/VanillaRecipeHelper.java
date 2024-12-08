@@ -168,7 +168,8 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Item input,
                                          Item output, float experience) {
-        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(), experience);
+        addSmeltingRecipe(provider, GTCEu.id(regName), input.getDefaultInstance(), output.getDefaultInstance(),
+                experience);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, ItemStack input,
