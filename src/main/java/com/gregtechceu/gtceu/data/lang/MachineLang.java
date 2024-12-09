@@ -590,7 +590,7 @@ public class MachineLang {
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
         // Parallel
-        provider.add("gtceu.multiblock.parallelizable.tooltip", "§7Can parallelize with §bParallel Control Hatches&r.");
+        provider.add("gtceu.multiblock.parallelizable.tooltip", "§7Can parallelize with §bParallel Control Hatches§r.");
 
         provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "§7Allows to run up to §b4 §rrecipes in parallel.");
         provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "§7Allows to run up to §b16 §rrecipes in parallel.");
@@ -703,9 +703,9 @@ public class MachineLang {
                 "§cLaser cables must be in a straight line!§7");
 
         multiLang(provider, "gtceu.machine.endpoint.tooltip",
-                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
-                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
-                "Only pipeline endpoints need to be §fchunk-loaded§7.");
+                "§7Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
+                "§7Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
+                "§7Only pipeline endpoints need to be §fchunk-loaded§7.");
         provider.add("block.gtceu.long_distance_item_pipeline_no_network", "No network found");
         provider.add("block.gtceu.long_distance_item_pipeline_input_endpoint", "Input Endpoint");
         provider.add("block.gtceu.long_distance_item_pipeline_output_endpoint", "Output Endpoint");
@@ -715,29 +715,29 @@ public class MachineLang {
         provider.add("block.gtceu.long_distance_item_pipeline_output_pos", " - Output: %s");
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
 
-        provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
-        provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
-        provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
+//        provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
+//        provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
+//        provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
 
         // Hatch tooltips
-        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
-        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
-        provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-        provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
+        provider.add("gtceu.machine.item_bus.import.tooltip", "§7Item Input for Multiblocks");
+        provider.add("gtceu.machine.item_bus.export.tooltip", "§7Item Output for Multiblocks");
+        provider.add("gtceu.machine.fluid_hatch.import.tooltip", "§7Fluid Input for Multiblocks");
+        provider.add("gtceu.machine.fluid_hatch.export.tooltip", "§7Fluid Output for Multiblocks");
         provider.add("block.gtceu.pattern_buffer.desc.0",
-                "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
+                "§7Allows direct §6AE2 pattern storage §7for GregTech Multiblocks.");
         provider.add("block.gtceu.pattern_buffer.desc.1",
-                "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
+                "§7AE2 Patterns can utilize anything stored in the §6shared inventory §7widget.");
         provider.add("block.gtceu.pattern_buffer.desc.2",
-                "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!");
+                "§7Link §6Pattern Buffer Proxies §7with a §bdatastick §7to link machines together!");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.0",
-                "§fAllows linking many machines to a singular §6ME Pattern Buffer§f.");
+                "§7Allows linking many machines to a singular §6ME Pattern Buffer§7.");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.1",
-                "§fAll connected proxies will share the patterns held within the §6original buffer§f.");
+                "§7All connected proxies will share the patterns held within the §6original buffer§7.");
         provider.add("block.gtceu.pattern_buffer_proxy.desc.2",
-                "§fLet the factory grow!");
+                "§7Let the factory grow!");
         provider.add("gtceu.tooltip.proxy_bind",
-                "§fBinding to a Pattern Buffer at %s %s %s");
+                "§7Binding to a Pattern Buffer at %s %s %s");
 
         provider.add("gui.gtceu.share_inventory.title", "Shared Item Inventory");
         provider.add("gui.gtceu.share_inventory.desc.0", "Shares inserted items with all patterns within buffer!");

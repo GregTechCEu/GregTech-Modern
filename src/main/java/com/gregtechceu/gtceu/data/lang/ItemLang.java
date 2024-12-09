@@ -360,7 +360,6 @@ public class ItemLang {
         multilineLang(provider,"item.gtceu.sus_record.desc", "§7Leonz - Among Us Drip\nsussy!");
         provider.add("item.gtceu.iron_minecart_wheels.tooltip", "§To get things rolling");
         provider.add("item.gtceu.steel_minecart_wheels.tooltip", "§To get things rolling");
-                "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
         provider.add("item.gtceu.terminal.tooltip",
                 "Shift + R-Click on a controller to automatically build the multi-block");
         provider.add("item.gtceu.sus_record.desc", "§7sussy!");
