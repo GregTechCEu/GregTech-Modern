@@ -33,7 +33,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
 
     // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    public static final double CONVERSION_RATE = 0.5D;
+    public static final double CONVERSION_RATE = 2.0;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
@@ -71,39 +70,40 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
                     }
                     capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP)
-                            .add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE));
+                            .add(new SteamEnergyRecipeHandler(tank, getConversionRate()));
                     return;
                 }
             }
         }
     }
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof SteamParallelMultiblockMachine steamMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
-                return null;
-            }
-            int duration = recipe.duration;
-            var eut = RecipeHelper.getInputEUt(recipe);
-            double eutMultiplier = (eut * 1.33 <= 32) ? 1.33 : (32.0 / eut);
-            var parallelRecipe = ParallelLogic.applyParallel(machine, recipe, steamMachine.maxParallels);
-            int parallelAmount = parallelRecipe.getSecond();
-            return ModifierFunction.builder()
-                    .inputModifier(ContentModifier.multiplier(parallelAmount))
-                    .outputModifier(ContentModifier.multiplier(parallelAmount))
-                    .durationModifier(ContentModifier.multiplier(1.5))
-                    .eutModifier(ContentModifier.multiplier(eutMultiplier))
-                    .build();
-            //
-            // // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
-            // // also set the duration to just 1.5x the original, instead of fully multiplied
-            // result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5),
-            // parallelRecipe.getSecond(),
-            // params.getOcAmount());
-            // return recipe;
+    protected double getConversionRate() {
+        return CONVERSION_RATE;
+    }
+
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
+            return ModifierFunction.nullWithLog(SteamParallelMultiblockMachine.class, machine);
         }
-        return null;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
+
+        long eut = RecipeHelper.getInputEUt(recipe);
+        int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.maxParallels);
+        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
+        return ModifierFunction.builder()
+                .inputModifier(ContentModifier.multiplier(parallelAmount))
+                .outputModifier(ContentModifier.multiplier(parallelAmount))
+                .durationMultiplier(1.5)
+                .eutMultiplier(eutMultiplier)
+                .parallels(parallelAmount)
+                .build();
+
+        // // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
+        // // also set the duration to just 1.5x the original, instead of fully multiplied
+        // result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5),
+        // parallelRecipe.getSecond(),
+        // params.getOcAmount());
+        // return recipe;
     }
 
     @Override

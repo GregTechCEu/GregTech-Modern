@@ -200,7 +200,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Nullable
     protected GTRecipe getRealRecipe(GTRecipe recipe) {
         var modifier = self().getDefinition().getRecipeModifier().getModifier(self(), recipe);
-        if (modifier == null) return null;
         return modifier.apply(recipe);
     }
 

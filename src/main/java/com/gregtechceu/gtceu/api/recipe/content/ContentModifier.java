@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
 import lombok.Getter;
@@ -66,6 +67,26 @@ public class ContentModifier {
                     contentsCopy.add(content.copy(cap, this));
                 }
                 copyContents.put(entry.getKey(), contentsCopy);
+            }
+        }
+        return copyContents;
+    }
+
+    public Map<RecipeCapability<?>, List<Content>> applyAllButEU(Map<RecipeCapability<?>, List<Content>> contents) {
+        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
+        for (var entry : contents.entrySet()) {
+            var cap = entry.getKey();
+            var contentList = entry.getValue();
+            if (contentList != null && !contentList.isEmpty()) {
+                if(cap == EURecipeCapability.CAP) {
+                    copyContents.put(cap, contentList);
+                    continue;
+                }
+                List<Content> contentsCopy = new ArrayList<>();
+                for (Content content : contentList) {
+                    contentsCopy.add(content.copy(cap, this));
+                }
+                copyContents.put(cap, contentsCopy);
             }
         }
         return copyContents;

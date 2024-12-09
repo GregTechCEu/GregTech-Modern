@@ -122,8 +122,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private final List<Component> tooltips = new ArrayList<>();
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.ELECTRIC_OVERCLOCK
-            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK));
+    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
@@ -289,7 +288,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> noRecipeModifier() {
-        this.recipeModifier = new RecipeModifierList(((machine, recipe) -> ModifierFunction.IDENTITY));
+        this.recipeModifier = new RecipeModifierList(RecipeModifier.NO_MODIFIER);
         this.alwaysTryModifyRecipe = false;
         return this;
     }

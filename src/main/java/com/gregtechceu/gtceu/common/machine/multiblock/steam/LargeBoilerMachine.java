@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -195,17 +194,14 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return value;
     }
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
-            if (largeBoilerMachine.throttle < 100) {
-                return ModifierFunction.builder()
-                        .durationModifier(ContentModifier.multiplier(100.0 / largeBoilerMachine.throttle))
-                        .build();
-            }
-            return ModifierFunction.IDENTITY;
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeBoilerMachine largeBoilerMachine)) {
+            return ModifierFunction.nullWithLog(LargeBoilerMachine.class, machine);
         }
-        return null;
+        // throttle clamps at 100 = durationMult of 1
+        return ModifierFunction.builder()
+                .durationMultiplier(100.0 / largeBoilerMachine.throttle)
+                .build();
     }
 
     public void addDisplayText(List<Component> textList) {

@@ -115,40 +115,41 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe();
     }
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof LargeCombustionEngineMachine engineMachine) {
-            long EUt = RecipeHelper.getOutputEUt(recipe);
-            // has lubricant
-            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() &&
-                    !engineMachine.isIntakesObstructed()) {
-                int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
-                var parallelResult = ParallelLogic.applyParallel(engineMachine, recipe, maxParallel);
-                double eutModifier = parallelResult.getSecond();
-                if (engineMachine.isOxygenBoosted) { // boost production
-                    eutModifier *= (engineMachine.isExtreme() ? 2 : 1.5);
-                }
+    protected double getProductionBoost() {
+        if(!isOxygenBoosted) return 1;
+        return isExtreme() ? 2.0 : 1.5;
+    }
 
-                var modifier = ModifierFunction.builder()
-                        .inputModifier(ContentModifier.multiplier(parallelResult.getSecond()))
-                        .outputModifier(ContentModifier.multiplier(parallelResult.getSecond()))
-                        .eutModifier(ContentModifier.multiplier(eutModifier))
-                        .build();
-
-                return modifier.compose(parallelResult.getFirst());
-                //
-                // recipe = new GTRecipe(recipe.recipeType, recipe.id,
-                // GTRecipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                // GTRecipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                // recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
-                // recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
-                // recipe.ingredientActions, recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-                //
-                // result.init(-eut, recipe.duration, 1, params.getOcAmount());
-                // return recipe;
-            }
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
+            return ModifierFunction.nullWithLog(LargeCombustionEngineMachine.class, machine);
         }
-        return null;
+        long EUt = RecipeHelper.getOutputEUt(recipe);
+        // has lubricant
+        if (EUt > 0 && !engineMachine.isIntakesObstructed() &&
+                engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess()) {
+            int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
+            int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
+            double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
+
+            return ModifierFunction.builder()
+                    .inputModifier(ContentModifier.multiplier(actualParallel))
+                    .outputModifier(ContentModifier.multiplier(actualParallel))
+                    .eutMultiplier(eutMultiplier)
+                    .parallels(actualParallel)
+                    .build();
+
+            // recipe = new GTRecipe(recipe.recipeType, recipe.id,
+            // GTRecipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
+            // GTRecipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
+            // recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+            // recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+            // recipe.ingredientActions, recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
+            //
+            // result.init(-eut, recipe.duration, 1, params.getOcAmount());
+            // return recipe;
+        }
+        return ModifierFunction.NULL;
     }
 
     @Override

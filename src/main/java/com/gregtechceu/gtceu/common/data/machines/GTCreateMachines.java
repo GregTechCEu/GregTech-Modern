@@ -113,7 +113,7 @@ public class GTCreateMachines {
                         .blockProp(BlockBehaviour.Properties::noOcclusion)
                         .recipeType(recipeType)
                         .recipeModifier(
-                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                                GTRecipeModifiers.OC_NON_PERFECT)
                         .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
                                 GTCEu.id("block/machine/kinetic_electric_machine"), GTCEu.id("block/machines/" + name)))
                         .tooltips(explosion())

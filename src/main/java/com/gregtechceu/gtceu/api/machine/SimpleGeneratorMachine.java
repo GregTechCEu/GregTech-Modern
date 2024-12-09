@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -28,7 +28,6 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -94,22 +93,23 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof SimpleGeneratorMachine generator) {
-            var EUt = RecipeHelper.getOutputEUt(recipe);
-            if (EUt > 0) {
-                var maxParallel = GTMath.saturatedCast(Math.min(generator.getOverclockVoltage(),
-                        GTValues.V[generator.getOverclockTier()]) / EUt);
-                var paraRecipe = GTRecipeModifiers.fastParallel(generator, recipe, maxParallel);
-                int paraAmount = paraRecipe.getSecond();
-                return ModifierFunction.builder()
-                        .inputModifier(ContentModifier.multiplier(paraAmount))
-                        .outputModifier(ContentModifier.multiplier(paraAmount))
-                        .eutModifier(ContentModifier.multiplier(paraAmount)).build();
-            }
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SimpleGeneratorMachine generator)) {
+            return ModifierFunction.nullWithLog(SimpleGeneratorMachine.class, machine);
         }
-        return null;
+        long EUt = RecipeHelper.getOutputEUt(recipe);
+        if (EUt <= 0) return ModifierFunction.NULL;
+
+        int maxParallel = GTMath.saturatedCast(Math.min(generator.getOverclockVoltage(),
+                GTValues.V[generator.getOverclockTier()]) / EUt);
+        int parallels = ParallelLogic.getParallelAmountFast(generator, recipe, maxParallel);
+
+        return ModifierFunction.builder()
+                .inputModifier(ContentModifier.multiplier(parallels))
+                .outputModifier(ContentModifier.multiplier(parallels))
+                .eutMultiplier(parallels)
+                .parallels(parallels)
+                .build();
     }
 
     @Override

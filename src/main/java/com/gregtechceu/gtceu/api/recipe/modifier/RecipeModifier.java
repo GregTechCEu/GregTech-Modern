@@ -10,7 +10,8 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface RecipeModifier {
 
-    @Nullable
+    RecipeModifier NO_MODIFIER = (m ,r) -> ModifierFunction.IDENTITY;
+
     @Contract(pure = true)
     ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe);
 }

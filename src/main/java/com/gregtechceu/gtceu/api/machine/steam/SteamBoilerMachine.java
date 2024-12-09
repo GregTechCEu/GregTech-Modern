@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -255,13 +254,15 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected abstract long getBaseSteamOutput();
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof SteamBoilerMachine boilerMachine) {
-            if (!boilerMachine.isHighPressure) return ModifierFunction.IDENTITY;
-            return ModifierFunction.builder().durationModifier(ContentModifier.multiplier(0.5)).build();
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
+            return ModifierFunction.nullWithLog(SteamBoilerMachine.class, machine);
         }
-        return null;
+        if (!boilerMachine.isHighPressure) return ModifierFunction.IDENTITY;
+
+        return ModifierFunction.builder()
+                .durationMultiplier(0.5)
+                .build();
     }
 
     @Override

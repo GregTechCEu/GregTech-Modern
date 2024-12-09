@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
@@ -35,7 +34,6 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.Tables;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -89,7 +87,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super.onLoad();
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
-                List.of(new SteamEnergyRecipeHandler(steamTank, 1d)));
+                List.of(new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
     }
 
     @Override
@@ -122,25 +120,25 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         this.needsVenting = false;
     }
 
+    public double getConversionRate() {
+        return isHighPressure() ? 2.0 : 1.0;
+    }
+
     //////////////////////////////////////
     // ****** Recipe Logic ******//
     //////////////////////////////////////
 
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof SimpleSteamMachine steamMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
-                return null;
-            }
-            var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
-            if (steamMachine.isHighPressure) {
-                builder.eutModifier(ContentModifier.multiplier(2));
-            } else {
-                builder.durationModifier(ContentModifier.multiplier(2));
-            }
-            return builder.build();
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SimpleSteamMachine steamMachine)) {
+            return ModifierFunction.nullWithLog(SimpleSteamMachine.class, machine);
         }
-        return null;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+            return ModifierFunction.NULL;
+        }
+
+        var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
+        if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
+        return builder.build();
     }
 
     @Override

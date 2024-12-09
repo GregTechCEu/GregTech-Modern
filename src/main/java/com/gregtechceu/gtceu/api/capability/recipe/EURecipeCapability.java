@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author KilaBash
@@ -78,6 +79,10 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     public static List<Content> makeEUContent(Long eut) {
         return List.of(
                 new Content(eut, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
+    }
+
+    public static void putEUContent(Map<RecipeCapability<?>, List<Content>> contents, long eut) {
+        contents.put(EURecipeCapability.CAP, makeEUContent(eut));
     }
 
     public interface ICustomParallel {

@@ -103,7 +103,7 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
                 // recipeType))
                 .blockProp(BlockBehaviour.Properties::dynamicShape)
                 .blockProp(BlockBehaviour.Properties::noOcclusion)
-                .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                 .renderer(() -> new KineticWorkableTieredHullMachineRenderer(tier,
                         GTCEu.id("block/machine/kinetic_electric_machine"),
                         GTCEu.id("block/machines/" + builder.id.getPath())))

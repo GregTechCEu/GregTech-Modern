@@ -260,16 +260,9 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > minTier && inputEUt != 0) {
-
-            // OCParams p = new OCParams();
-            // OCResult r = new OCResult();
-            // logic.performOverclocking(recipe, inputEUt, GTValues.V[tier], p, r);
-            // duration = r.getDuration();
-            // inputEUt = r.getEut();
-            var copy = recipe.copy();
-            copy = logic.performOverclocking(recipe.duration, inputEUt, GTValues.V[tier]).apply(copy);
-            duration = copy.duration;
-            inputEUt = RecipeHelper.getInputEUt(copy);
+            var result = logic.performOverclocking(inputEUt, recipe.duration, GTValues.V[tier], 1);
+            duration = (int) (duration * result.durationMultiplier());
+            inputEUt = (long) (inputEUt * result.eutMultiplier());
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);

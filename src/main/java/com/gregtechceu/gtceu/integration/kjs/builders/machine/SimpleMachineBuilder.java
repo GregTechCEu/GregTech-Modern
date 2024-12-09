@@ -73,7 +73,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
                 // recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
                 // .recipeType(recipeType)
-                .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.name))
                 .tooltips(explosion());
         // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,

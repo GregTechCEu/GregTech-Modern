@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RecipeModifierList implements RecipeModifier {
 
@@ -14,16 +13,18 @@ public class RecipeModifierList implements RecipeModifier {
         this.modifiers = modifiers;
     }
 
-    @Nullable
     @Override
     public ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        ModifierFunction func = ModifierFunction.IDENTITY;
+        ModifierFunction result = ModifierFunction.IDENTITY;
+        var runningRecipe = recipe.copy();
         for (RecipeModifier modifier : modifiers) {
-            var r = modifier.getModifier(machine, recipe);
-            if (r == null) return null;
-            func = r.compose(func);
+            var func = modifier.getModifier(machine, runningRecipe);
+            runningRecipe = func.apply(runningRecipe);
+            if(runningRecipe == null) return ModifierFunction.NULL;
+            result = func.compose(result);
+
         }
-        return func;
+        return result;
     }
 }
 //

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -70,7 +70,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return 0;
     }
 
-    protected double boostProduction() {
+    protected double productionBoost() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
             int maxSpeed = rotorHolder.getMaxRotorHolderSpeed();
@@ -85,38 +85,37 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
-    @Nullable
-    public static ModifierFunction recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (!(machine instanceof LargeTurbineMachine turbineMachine))
-            return null;
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeTurbineMachine turbineMachine)) {
+            return ModifierFunction.nullWithLog(LargeTurbineMachine.class, machine);
+        }
 
         var rotorHolder = turbineMachine.getRotorHolder();
         var EUt = RecipeHelper.getOutputEUt(recipe);
 
-        if (rotorHolder == null || EUt <= 0)
-            return null;
+        if (rotorHolder == null || EUt <= 0) return ModifierFunction.NULL;
 
         var turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
             turbineMachine.excessVoltage -= turbineMaxVoltage;
-            return null;
+            return ModifierFunction.NULL;
         }
 
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
         // get the amount of parallel required to match the desired output voltage
-        var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
+        int maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
 
         // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (long) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
-        var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel));
-        int parallelAmount = parallelResult.getSecond();
-        double eutMultiplier = turbineMachine.boostProduction() * holderEfficiency * parallelAmount;
+        int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, Math.max(1, maxParallel));
+        double eutMultiplier = turbineMachine.productionBoost() * holderEfficiency * actualParallel;
 
         return ModifierFunction.builder()
-                .inputModifier(ContentModifier.multiplier(parallelAmount))
-                .outputModifier(ContentModifier.multiplier(parallelAmount))
+                .inputModifier(ContentModifier.multiplier(actualParallel))
+                .outputModifier(ContentModifier.multiplier(actualParallel))
                 .eutModifier(ContentModifier.multiplier(eutMultiplier))
+                .parallels(actualParallel)
                 .build();
         //
         // // long eut = boostProd(EUt) * holderEff * second
