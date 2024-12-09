@@ -147,6 +147,7 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
+            .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .setSlotOverlay(false, false, GuiTextures.CRUSHED_ORE_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)

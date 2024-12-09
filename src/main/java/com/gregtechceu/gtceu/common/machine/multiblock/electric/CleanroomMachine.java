@@ -250,6 +250,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (hDist != 0) break;
         }
 
+        if (Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
+            this.isFormed = false;
+            return;
+        }
+
         if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || bDist < MIN_RADIUS || fDist < MIN_RADIUS || hDist < MIN_DEPTH) {
             this.isFormed = false;
             return;

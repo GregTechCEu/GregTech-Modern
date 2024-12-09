@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration;
+package com.gregtechceu.gtceu.integration.xei.widgets;
 
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;

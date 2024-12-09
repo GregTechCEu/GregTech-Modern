@@ -21,6 +21,7 @@ public class IntegrationLang {
         provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
         provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
         provider.add("gtceu.jei.ore_vein_diagram", "Ore Vein Diagram");
+        provider.add("gtceu.jei.programmed_circuit", "Programmed Circuit Page");
         provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
         provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
         provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration;
+package com.gregtechceu.gtceu.integration.xei.widgets;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;

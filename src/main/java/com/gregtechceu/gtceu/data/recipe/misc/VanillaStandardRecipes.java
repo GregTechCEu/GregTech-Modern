@@ -794,12 +794,6 @@ public class VanillaStandardRecipes {
                     .inputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_SLAB))
                     .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
                     .duration(250).EUt(VA[ULV]).save(provider);
-
-            CUTTER_RECIPES.recipeBuilder("polished_blackstone_pressure_plate")
-                    .inputItems(plate, Iron)
-                    .outputItems(new ItemStack(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, 8))
-                    .circuitMeta(10)
-                    .duration(250).EUt(VA[ULV]).save(provider);
         }
     }
 

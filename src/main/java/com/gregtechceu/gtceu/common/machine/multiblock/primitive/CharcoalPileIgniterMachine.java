@@ -250,9 +250,9 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         }, null);
     }
 
-    public boolean updateDimensions() {
+    public void updateDimensions() {
         Level level = getLevel();
-        if (level == null) return false;
+        if (level == null) return;
         Direction front = getFrontFacing();
         Direction back = front.getOpposite();
         Direction left = front.getCounterClockWise();
@@ -279,9 +279,14 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             if (hDist == 0 && isBlockFloor(level, hPos)) hDist = i;
         }
 
+        if (Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
+            this.isFormed = false;
+            return;
+        }
+
         if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || fDist < MIN_RADIUS || bDist < MIN_RADIUS || hDist < MIN_DEPTH) {
-            onStructureInvalid();
-            return false;
+            this.isFormed = false;
+            return;
         }
 
         this.lDist = lDist;
@@ -289,8 +294,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         this.fDist = fDist;
         this.bDist = bDist;
         this.hDist = hDist;
-
-        return true;
     }
 
     private static boolean isBlockWall(Level level, BlockPos.MutableBlockPos pos, Direction direction) {
