@@ -202,7 +202,7 @@ public class GTOres {
                     .surfaceRock(CertusQuartz)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
-    public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
+    public static final GTOreDefinition MANGANESE_VEIN_NETHER = create("manganese_vein_nether", vein -> vein
             .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
@@ -260,7 +260,7 @@ public class GTOres {
                     .surfaceRock(NetherQuartz)
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
-    public static final GTOreDefinition REDSTONE_VEIN = create("redstone_vein", vein -> vein
+    public static final GTOreDefinition REDSTONE_VEIN_NETHER = create("redstone_vein_nether", vein -> vein
             .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(60)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 40)

@@ -40,6 +40,15 @@ public class IntegrationLang {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
             provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
         }
+
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.bauxite_vein_end", "End Bauxite Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_end", "End Magnetite Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_ow", "Magnetite Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.manganese_vein_nether", "Nether Manganese Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_ow", "Manganese Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.pitchblende_vein_end", "End Pitchblende Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.redstone_vein_ow", "Redstone Vein");
+        LangHandler.replace(provider, "gtceu.jei.ore_vein.redstone_vein_nether", "Nether Redstone Vein");
     }
 
     /** Jade, TheOneProbe, WTHIT */
@@ -100,6 +109,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_tick", " / %s t");
     }
 
+    /** Xaero, JourneyMap*/
     private static void initMinimapLang(RegistrateLangProvider provider) {
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
 
