@@ -39,9 +39,9 @@ public interface OverclockingLogic {
     }
 
     default ModifierFunction getModifierNoParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
-        long EUt = RecipeHelper.getRealEUt(recipe);
+        long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
-            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, 1).toModifier();
+            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, 1).asModifierFunction();
         }
         return ModifierFunction.IDENTITY;
     }
@@ -53,12 +53,21 @@ public interface OverclockingLogic {
      * @return a new recipe
      */
     default ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
-        long EUt = RecipeHelper.getRealEUt(recipe);
+        long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
+            int recipeTier = GTUtil.getTierByVoltage(EUt);
+            int maximumTier = GTUtil.getTierByVoltage(maxOverclockVoltage);
+
             int maxParallels;
-            if(this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) maxParallels = 1; // short-circuit for these common OCs
-            else maxParallels = ParallelLogic.getParallelAmount(machine, recipe, Integer.MAX_VALUE);
-            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, maxParallels).toModifier();
+            if(this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // short-circuit for these common OCs
+                maxParallels = 1;
+            } else if((Math.pow(PERFECT_DURATION_FACTOR, maximumTier - recipeTier) * recipe.duration) > 1) {
+                maxParallels = Integer.MAX_VALUE; // if duration cannot possibly go below 1, give it max parallels
+            } else {
+                maxParallels = ParallelLogic.getParallelAmount(machine, recipe, Integer.MAX_VALUE);
+            }
+
+            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, maxParallels).asModifierFunction();
         }
         return ModifierFunction.IDENTITY;
     }
@@ -322,7 +331,7 @@ public interface OverclockingLogic {
     record OCParams(long eut, int duration, int ocAmount, int maxParallels) {}
 
     record OCResult(double eutMultiplier, double durationMultiplier, int ocLevel, int parallels) {
-        public ModifierFunction toModifier() {
+        public ModifierFunction asModifierFunction() {
             return ModifierFunction.builder()
                     .modifyAllContents(ContentModifier.multiplier(parallels))
                     .eutMultiplier(eutMultiplier)
