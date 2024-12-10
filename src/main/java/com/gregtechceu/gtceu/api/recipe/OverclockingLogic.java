@@ -38,10 +38,11 @@ public interface OverclockingLogic {
         else return (p, v) -> standardOverclockingLogic(p, v, durationFactor, voltageFactor);
     }
 
-    default ModifierFunction getModifierNoParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
+    default ModifierFunction getModifierNoParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
+                                                   long maxOverclockVoltage) {
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
-            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, 1).asModifierFunction();
+            return performOverclocking(EUt, recipe.duration, maxOverclockVoltage, 1).asModifierFunction();
         }
         return ModifierFunction.IDENTITY;
     }
@@ -52,22 +53,23 @@ public interface OverclockingLogic {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    default ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
+    default ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
+                                         long maxOverclockVoltage) {
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
             int recipeTier = GTUtil.getTierByVoltage(EUt);
             int maximumTier = GTUtil.getTierByVoltage(maxOverclockVoltage);
 
             int maxParallels;
-            if(this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // short-circuit for these common OCs
+            if (this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // short-circuit for these common OCs
                 maxParallels = 1;
-            } else if((Math.pow(PERFECT_DURATION_FACTOR, maximumTier - recipeTier) * recipe.duration) > 1) {
+            } else if ((Math.pow(PERFECT_DURATION_FACTOR, maximumTier - recipeTier) * recipe.duration) > 1) {
                 maxParallels = Integer.MAX_VALUE; // if duration cannot possibly go below 1, give it max parallels
             } else {
                 maxParallels = ParallelLogic.getParallelAmount(machine, recipe, Integer.MAX_VALUE);
             }
 
-            return performOverclocking(Math.abs(EUt), recipe.duration, maxOverclockVoltage, maxParallels).asModifierFunction();
+            return performOverclocking(EUt, recipe.duration, maxOverclockVoltage, maxParallels).asModifierFunction();
         }
         return ModifierFunction.IDENTITY;
     }
@@ -104,7 +106,8 @@ public interface OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    static OCResult standardOverclockingLogic(@NotNull OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
+    static OCResult standardOverclockingLogic(@NotNull OCParams params, long maxVoltage, double durationFactor,
+                                              double voltageFactor) {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
@@ -149,7 +152,8 @@ public interface OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    static OCResult subTickNonParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
+    static OCResult subTickNonParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor,
+                                         double voltageFactor) {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
@@ -194,7 +198,8 @@ public interface OverclockingLogic {
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
      */
-    static OCResult subTickParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
+    static OCResult subTickParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor,
+                                      double voltageFactor) {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
@@ -214,20 +219,15 @@ public interface OverclockingLogic {
             eut = potentialVoltage;
 
             if (shouldParallel) {
-                parallel /= durationFactor;
-                if((int) parallel > maxParallels) {
-                    parallel *= durationFactor;
-                    break;
-                }
+                double potentialParallel = parallel / durationFactor;
+                if (potentialParallel > maxParallels) break;
+                parallel = potentialParallel;
             } else {
                 double potentialDuration = duration * durationFactor;
                 if (potentialDuration < 1) {
-                    if(parallel / durationFactor > maxParallels) break;
-                    parallel /= durationFactor;
-                    if((int) parallel > maxParallels) {
-                        parallel *= durationFactor;
-                        break;
-                    }
+                    double potentialParallel = parallel / durationFactor;
+                    if (potentialParallel > maxParallels) break;
+                    parallel = potentialParallel;
                     shouldParallel = true;
                 } else {
                     duration = potentialDuration;
@@ -238,9 +238,6 @@ public interface OverclockingLogic {
         }
 
         return new OCResult(Math.pow(voltageFactor, ocLevel), durationMultiplier, ocLevel, (int) parallel);
-
-        // result.init((long) (eut / Math.pow(voltageFactor, parallelIterAmount)), (int) duration, (int) parallel,
-        // (long) eut, ocLevel);
     }
 
     /**
@@ -285,13 +282,14 @@ public interface OverclockingLogic {
 
             if (shouldParallel) {
                 double potentialParallel = parallel * (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
-                if(potentialParallel > maxParallels) break;
+                if (potentialParallel > maxParallels) break;
                 parallel = potentialParallel;
             } else {
                 double potentialDuration = duration * (perfect ? PERFECT_DURATION_FACTOR : STD_DURATION_FACTOR);
                 if (potentialDuration < 1) {
-                    double potentialParallel = parallel * (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
-                    if(potentialParallel > maxParallels) break;
+                    double potentialParallel = parallel *
+                            (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
+                    if (potentialParallel > maxParallels) break;
                     parallel = potentialParallel;
                     shouldParallel = true;
                 } else {
@@ -331,6 +329,7 @@ public interface OverclockingLogic {
     record OCParams(long eut, int duration, int ocAmount, int maxParallels) {}
 
     record OCResult(double eutMultiplier, double durationMultiplier, int ocLevel, int parallels) {
+
         public ModifierFunction asModifierFunction() {
             return ModifierFunction.builder()
                     .modifyAllContents(ContentModifier.multiplier(parallels))

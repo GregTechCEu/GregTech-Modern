@@ -4,14 +4,14 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -28,7 +28,7 @@ public class ParallelLogic {
     /**
      * Get the maximum parallel amount that can be done by the given machine, up to a limit
      *
-     * @param machine Machine to match the recipe against
+     * @param machine       Machine to match the recipe against
      * @param recipe
      * @param parallelLimit
      * @return
@@ -45,8 +45,8 @@ public class ParallelLogic {
     }
 
     /**
-     * @param holder         The inventories
-     * @param recipe         The recipe
+     * @param holder        The inventories
+     * @param recipe        The recipe
      * @param parallelLimit hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
@@ -76,13 +76,14 @@ public class ParallelLogic {
     }
 
     /**
-     * @param holder         the inventories
-     * @param recipe         The recipe
+     * @param holder        the inventories
+     * @param recipe        The recipe
      * @param parallelLimit the maximum expected amount
-     * @param canVoid        predicate for what parallel limits should be ignored
+     * @param canVoid       predicate for what parallel limits should be ignored
      * @return returns the amount of recipes that can be merged successfully into a given output inventory
      */
-    public static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit, Predicate<RecipeCapability<?>> canVoid) {
+    public static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
+                                           Predicate<RecipeCapability<?>> canVoid) {
         Object2IntMap<RecipeCapability<?>> modifiedParallelAmounts = new Object2IntOpenHashMap<>();
         boolean canVoidAll = true;
         for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
@@ -190,9 +191,9 @@ public class ParallelLogic {
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。
      *
-     * @param machine        recipe holder
-     * @param recipe         current recipe
-     * @param maxParallel    max parallel limited
+     * @param machine     recipe holder
+     * @param recipe      current recipe
+     * @param maxParallel max parallel limited
      * @return Returns the number of parallels that can be done (fast calc)
      */
     public static int getParallelAmountFast(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel) {

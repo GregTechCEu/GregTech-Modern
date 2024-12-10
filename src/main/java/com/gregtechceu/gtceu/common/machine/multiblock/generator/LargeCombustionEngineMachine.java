@@ -116,7 +116,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     protected double getProductionBoost() {
-        if(!isOxygenBoosted) return 1;
+        if (!isOxygenBoosted) return 1;
         return isExtreme() ? 2.0 : 1.5;
     }
 
@@ -138,16 +138,6 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                     .eutMultiplier(eutMultiplier)
                     .parallels(actualParallel)
                     .build();
-
-            // recipe = new GTRecipe(recipe.recipeType, recipe.id,
-            // GTRecipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
-            // GTRecipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
-            // recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
-            // recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
-            // recipe.ingredientActions, recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-            //
-            // result.init(-eut, recipe.duration, 1, params.getOcAmount());
-            // return recipe;
         }
         return ModifierFunction.NULL;
     }

@@ -41,7 +41,8 @@ public class GTRecipeModifiers {
     /**
      * Use it if machines are {@link IOverclockMachine}.
      */
-    public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util.memoize(ElectricOverclockModifier::new);
+    public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
+            .memoize(ElectricOverclockModifier::new);
     // Shortcuts for common OC logics
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
@@ -122,7 +123,8 @@ public class GTRecipeModifiers {
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
 
-        var oc = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+        var oc = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe,
+                coilMachine.getOverclockVoltage());
         if (coilMachine.getCoilTier() > 0) {
             var coilModifier = ModifierFunction.builder()
                     .eutMultiplier(1.0 - coilMachine.getCoilTier() * 0.1)
@@ -166,7 +168,6 @@ public class GTRecipeModifiers {
 
         var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
 
-
         int tier = coilMachine.getCoilTier();
         var durationModifier = ModifierFunction.builder();
         if (tier == 0) { // 75% speed with cupro coils
@@ -190,7 +191,7 @@ public class GTRecipeModifiers {
         int dur = (int) Math.max(1, FURNACE_DURATION * 2 * parallels / Math.max(1.0, maxParallel));
         long eut = 4 * Math.max(1, (parallels / 8) / coilMachine.getCoilType().getEnergyDiscount());
         ModifierFunction baseModifier = r -> {
-            var copy = recipe.copy();
+            var copy = r.copy();
             EURecipeCapability.putEUContent(copy.tickInputs, eut);
             copy.duration = dur;
             return copy;
@@ -199,9 +200,9 @@ public class GTRecipeModifiers {
         GTRecipe copy = baseModifier.apply(recipe);
         var ocModifier = NON_PERFECT_OVERCLOCK.getModifier(machine, copy, coilMachine.getOverclockVoltage());
         var parallelModifier = ModifierFunction.builder()
-                        .modifyAllContents(ContentModifier.multiplier(parallels))
-                        .parallels(parallels)
-                        .build();
+                .modifyAllContents(ContentModifier.multiplier(parallels))
+                .parallels(parallels)
+                .build();
 
         return baseModifier.andThen(ocModifier).andThen(parallelModifier);
     }

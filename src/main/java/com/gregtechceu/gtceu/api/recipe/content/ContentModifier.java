@@ -51,11 +51,6 @@ public class ContentModifier {
         return number * multiplier + addition;
     }
 
-    public ContentModifier compose(ContentModifier that) {
-        return new ContentModifier(this.multiplier * that.multiplier,
-                this.multiplier * that.addition + this.addition);
-    }
-
     public Map<RecipeCapability<?>, List<Content>> applyContents(Map<RecipeCapability<?>, List<Content>> contents) {
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
@@ -78,7 +73,7 @@ public class ContentModifier {
             var cap = entry.getKey();
             var contentList = entry.getValue();
             if (contentList != null && !contentList.isEmpty()) {
-                if(cap == EURecipeCapability.CAP) {
+                if (cap == EURecipeCapability.CAP) {
                     copyContents.put(cap, contentList);
                     continue;
                 }

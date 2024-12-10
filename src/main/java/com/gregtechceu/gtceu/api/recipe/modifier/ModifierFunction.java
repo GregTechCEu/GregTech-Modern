@@ -25,7 +25,8 @@ public interface ModifierFunction {
     ModifierFunction IDENTITY = r -> r;
 
     static ModifierFunction nullWithLog(Class<?> type, MetaMachine actual) {
-        GTCEu.LOGGER.error("Incorrect use of modifier, expected machine of type {}, received {}", type.getSimpleName(), actual.getDefinition().getName());
+        GTCEu.LOGGER.error("Incorrect use of modifier, expected machine of type {}, received {}", type.getSimpleName(),
+                actual.getDefinition().getName());
         return NULL;
     }
 
@@ -92,7 +93,7 @@ public interface ModifierFunction {
         }
 
         public ModifierFunction build() {
-            if(parallels == 0) return NULL;
+            if (parallels == 0) return NULL;
             return recipe -> {
                 var newConditions = new ArrayList<>(recipe.conditions);
                 newConditions.addAll(addedConditions);

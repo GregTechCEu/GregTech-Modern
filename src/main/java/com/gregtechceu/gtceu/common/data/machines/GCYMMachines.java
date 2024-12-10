@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeChemicalBathRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeMixerRenderer;
 import com.gregtechceu.gtceu.common.data.*;

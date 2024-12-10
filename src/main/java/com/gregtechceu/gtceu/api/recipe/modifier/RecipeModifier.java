@@ -5,12 +5,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
 public interface RecipeModifier {
 
-    RecipeModifier NO_MODIFIER = (m ,r) -> ModifierFunction.IDENTITY;
+    RecipeModifier NO_MODIFIER = (m, r) -> ModifierFunction.IDENTITY;
 
     @Contract(pure = true)
     ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe);

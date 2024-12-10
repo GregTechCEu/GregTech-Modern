@@ -95,8 +95,8 @@ dependencies {
     // Runtime mods for dev testing with unclean client //
     // Non-transitive by default                        //
     //////////////////////////////////////////////////////
-//    modExtraRuntimeOnly(forge.javd)
-//    modExtraRuntimeOnly("curse.maven:trenzalore-870210:4848244")
+    modExtraRuntimeOnly(forge.javd)
+    modExtraRuntimeOnly("curse.maven:trenzalore-870210:4848244")
 
     modExtraRuntimeOnly("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:slim")
     modExtraRuntimeOnly(forge.flywheel)
@@ -105,9 +105,9 @@ dependencies {
     modExtraRuntimeOnly(forge.architectury)
     modExtraRuntimeOnly(forge.rhino)
 
-//    modExtraRuntimeOnly(forge.xaerosminimap)
-//    modExtraRuntimeOnly(forge.xaerosworldmap)
-//    modExtraRuntimeOnly(forge.journeymap.forge)
+    modExtraRuntimeOnly(forge.xaerosminimap)
+    modExtraRuntimeOnly(forge.xaerosworldmap)
+    modExtraRuntimeOnly(forge.journeymap.forge)
 
     modExtraRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
     modExtraRuntimeOnly("curse.maven:spark-361579:4738952")

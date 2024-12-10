@@ -26,7 +26,7 @@ import java.util.List;
 public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     private final NotifiableFluidTank steamTank;
-    private final double conversionRate; // energy units per millibucket
+    private final double conversionRate; // mB per EU
 
     public SteamEnergyRecipeHandler(NotifiableFluidTank steamTank, double conversionRate) {
         this.steamTank = steamTank;

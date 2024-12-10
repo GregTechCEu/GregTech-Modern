@@ -45,7 +45,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     public int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
 
-    // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
+    // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
     public static final double CONVERSION_RATE = 2.0;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
@@ -77,7 +77,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    protected double getConversionRate() {
+    public double getConversionRate() {
         return CONVERSION_RATE;
     }
 
@@ -87,6 +87,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
 
+        // Duration = 1.5x base duration
+        // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
         long eut = RecipeHelper.getInputEUt(recipe);
         int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.maxParallels);
         double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
@@ -97,13 +99,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .eutMultiplier(eutMultiplier)
                 .parallels(parallelAmount)
                 .build();
-
-        // // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
-        // // also set the duration to just 1.5x the original, instead of fully multiplied
-        // result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5),
-        // parallelRecipe.getSecond(),
-        // params.getOcAmount());
-        // return recipe;
     }
 
     @Override
