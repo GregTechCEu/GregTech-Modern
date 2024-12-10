@@ -122,7 +122,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.duration = duration;
         this.isFuel = isFuel;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
-        if (id != null) this.recipeType.addToCategoryMap(this.recipeCategory, this);
     }
 
     public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,

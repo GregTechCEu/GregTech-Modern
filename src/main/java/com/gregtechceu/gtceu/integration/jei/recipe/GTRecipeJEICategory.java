@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
 
@@ -53,8 +52,8 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
             var type = category.getRecipeType();
-            var recipes = type.getRecipesInCategory(category).stream();
-            var wrapped = Stream.concat(recipes, type.getRepresentativeRecipes().stream())
+            if (category == type.getCategory()) type.buildRepresentativeRecipes();
+            var wrapped = type.getRecipesInCategory(category).stream()
                     .map(GTRecipeWrapper::new)
                     .toList();
             registration.addRecipes(TYPES.apply(category), wrapped);
