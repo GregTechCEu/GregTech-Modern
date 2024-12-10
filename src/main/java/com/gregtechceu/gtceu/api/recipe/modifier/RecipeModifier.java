@@ -12,5 +12,6 @@ public interface RecipeModifier {
     RecipeModifier NO_MODIFIER = (m, r) -> ModifierFunction.IDENTITY;
 
     @Contract(pure = true)
+    @NotNull
     ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe);
 }

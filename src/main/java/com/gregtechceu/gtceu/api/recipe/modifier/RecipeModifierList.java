@@ -14,7 +14,7 @@ public class RecipeModifierList implements RecipeModifier {
     }
 
     @Override
-    public ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         ModifierFunction result = ModifierFunction.IDENTITY;
         var runningRecipe = recipe.copy();
         for (RecipeModifier modifier : modifiers) {

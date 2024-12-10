@@ -38,8 +38,8 @@ public interface OverclockingLogic {
         else return (p, v) -> standardOverclockingLogic(p, v, durationFactor, voltageFactor);
     }
 
-    default ModifierFunction getModifierNoParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
-                                                   long maxOverclockVoltage) {
+    default @NotNull ModifierFunction getModifierNoParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
+                                                            long maxOverclockVoltage) {
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
             return performOverclocking(EUt, recipe.duration, maxOverclockVoltage, 1).asModifierFunction();
@@ -53,8 +53,8 @@ public interface OverclockingLogic {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    default ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
-                                         long maxOverclockVoltage) {
+    default @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe,
+                                                  long maxOverclockVoltage) {
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt > 0) {
             int recipeTier = GTUtil.getTierByVoltage(EUt);
@@ -157,6 +157,7 @@ public interface OverclockingLogic {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
+
         int ocLevel = 0;
         double durationMultiplier = 1;
 
@@ -203,7 +204,8 @@ public interface OverclockingLogic {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
-        final int maxParallels = params.maxParallels;
+        int maxParallels = params.maxParallels;
+
         double parallel = 1;
         boolean shouldParallel = false;
         int ocLevel = 0;
@@ -267,10 +269,10 @@ public interface OverclockingLogic {
         double eut = params.eut;
         int ocAmount = params.ocAmount;
         int maxParallels = params.maxParallels;
+
         double parallel = 1;
         boolean shouldParallel = false;
         int ocLevel = 0;
-
         double durationMultiplier = 1;
 
         while (ocAmount-- > 0) {
@@ -280,21 +282,23 @@ public interface OverclockingLogic {
             if (potentialEUt > maxVoltage) break;
             eut = potentialEUt;
 
+            double pFactor = (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
+
             if (shouldParallel) {
-                double potentialParallel = parallel * (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
+                double potentialParallel = parallel * pFactor;
                 if (potentialParallel > maxParallels) break;
                 parallel = potentialParallel;
             } else {
-                double potentialDuration = duration * (perfect ? PERFECT_DURATION_FACTOR : STD_DURATION_FACTOR);
+                double dFactor = (perfect ? PERFECT_DURATION_FACTOR : STD_DURATION_FACTOR);
+                double potentialDuration = duration * dFactor;
                 if (potentialDuration < 1) {
-                    double potentialParallel = parallel *
-                            (perfect ? PERFECT_DURATION_FACTOR_INV : STD_DURATION_FACTOR_INV);
+                    double potentialParallel = parallel * pFactor;
                     if (potentialParallel > maxParallels) break;
                     parallel = potentialParallel;
                     shouldParallel = true;
                 } else {
                     duration = potentialDuration;
-                    durationMultiplier *= perfect ? PERFECT_DURATION_FACTOR : STD_DURATION_FACTOR;
+                    durationMultiplier *= dFactor;
                 }
             }
             ocLevel++;

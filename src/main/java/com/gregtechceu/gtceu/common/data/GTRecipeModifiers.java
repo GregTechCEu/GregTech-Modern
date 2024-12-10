@@ -54,27 +54,23 @@ public class GTRecipeModifiers {
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
+
                 Level level = machine.getLevel();
-                if (!(level instanceof ServerLevel serverLevel)) {
-                    return ModifierFunction.NULL;
-                }
+                if (!(level instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
+
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
                 BlockPos machinePos = machine.getPos();
                 var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
-                if (zone == null) {
-                    return ModifierFunction.IDENTITY;
-                }
+                if (zone == null) return ModifierFunction.IDENTITY;
 
                 float strength = zone.strength();
-                if (strength > maxAllowedStrength) {
-                    return ModifierFunction.NULL;
-                }
+                if (strength > maxAllowedStrength) return ModifierFunction.NULL;
 
                 int multiplier = (1 + (int) (strength * 5 / maxAllowedStrength));
-                if (multiplier > 5) return null;
+                if (multiplier > 5) return ModifierFunction.NULL;
 
                 return ModifierFunction.builder()
-                        .durationModifier(ContentModifier.multiplier(multiplier))
+                        .durationMultiplier(multiplier)
                         .build();
             });
 
@@ -90,7 +86,7 @@ public class GTRecipeModifiers {
         }
 
         @Override
-        public ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
             if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
             if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                 return ModifierFunction.NULL;
@@ -99,7 +95,7 @@ public class GTRecipeModifiers {
         }
     }
 
-    public static ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParts().stream()
                     .filter(IParallelHatch.class::isInstance)
@@ -117,7 +113,7 @@ public class GTRecipeModifiers {
         return ModifierFunction.IDENTITY;
     }
 
-    public static ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -134,7 +130,7 @@ public class GTRecipeModifiers {
         return oc;
     }
 
-    public static ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -160,7 +156,8 @@ public class GTRecipeModifiers {
         return oc.compose(discount);
     }
 
-    public static ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
+                                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -178,7 +175,8 @@ public class GTRecipeModifiers {
         return oc.compose(durationModifier.build());
     }
 
-    public static ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
+                                                                 @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return ModifierFunction.nullWithLog(SteamBoilerMachine.class, machine);
         }
