@@ -2253,6 +2253,9 @@
     "gtceu.fluid_solidifier": "液体成型機",
     "gtceu.forge_hammer": "鍛造機",
     "gtceu.forming_press": "圧縮成型機",
+    "gtceu.forming_press.naming.named": "§o名前付きアイテム",
+    "gtceu.forming_press.naming.press": "§o名前付きプレス",
+    "gtceu.forming_press.naming.to_name": "§o名前を付けるアイテム",
     "gtceu.fusion_reactor": "核融合炉",
     "gtceu.gas_collector": "ガス収集機",
     "gtceu.gas_turbine": "ガスタービン",
@@ -5016,6 +5019,7 @@
     "material.gtceu.nether_air": "ネザーの空気",
     "material.gtceu.nether_quartz": "ネザークォーツ",
     "material.gtceu.nether_star": "ネザースター",
+    "material.gtceu.netherite": "ネザライト",
     "material.gtceu.netherrack": "ネザーラック",
     "material.gtceu.neutronium": "ニュートロニウム",
     "material.gtceu.nichrome": "ニクロム",
@@ -5510,6 +5514,6 @@
     "tile.gtceu.foam.name": "フォーム",
     "tile.gtceu.petrified_foam.name": "石化したフォーム",
     "tile.gtceu.reinforced_foam.name": "強化フォーム",
-    "tile.gtceu.reinforced_stone.name": "強化石材",
+    "tile.gtceu.reinforced_stone.name": "強化石材", 
     "tile.gtceu.seal.name": "密封されたブロック"
 }
