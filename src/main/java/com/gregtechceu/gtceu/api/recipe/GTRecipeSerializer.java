@@ -149,6 +149,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, isFuel, category);
 
+        recipe.recipeCategory.addRecipe(recipe);
+
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
         ResearchCondition researchCondition = conditions.stream().filter(ResearchCondition.class::isInstance).findAny()

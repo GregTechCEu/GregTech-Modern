@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -78,5 +80,23 @@ public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
                     .buildRawRecipe();
         }
         return null;
+    }
+
+    @Override
+    public void buildRepresentativeRecipes() {
+        ItemStack press = GTItems.SHAPE_MOLD_NAME.asStack();
+        press.setHoverName(Component.translatable("gtceu.forming_press.naming.press"));
+        ItemStack toName = new ItemStack(Items.NAME_TAG);
+        toName.setHoverName(Component.translatable("gtceu.forming_press.naming.to_name"));
+        ItemStack named = new ItemStack(Items.NAME_TAG);
+        named.setHoverName(Component.translatable("gtceu.forming_press.naming.named"));
+        var recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("copy")
+                .notConsumable(press)
+                .inputItems(toName)
+                .outputItems(named)
+                .duration(40)
+                .EUt(4)
+                .buildRawRecipe();
+        GTRecipeTypes.FORMING_PRESS_RECIPES.addToMainCategory(recipe);
     }
 }
