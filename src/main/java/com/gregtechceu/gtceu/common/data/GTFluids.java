@@ -25,11 +25,14 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTFluids {
 
     public static void init() {
+
+        // Register fluids for non-materials
         handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
         handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK);
+
+        // Register fluids for materials
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
-        // register fluids for materials
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
             GTRegistrate registrate = registry.getRegistrate();
             for (var material : registry.getAllMaterials()) {

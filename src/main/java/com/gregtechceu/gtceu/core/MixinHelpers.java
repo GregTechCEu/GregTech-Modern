@@ -16,7 +16,8 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -76,7 +77,7 @@ public class MixinHelpers {
                 }
             });
 
-            GTItems.TOOL_ITEMS.rowMap().forEach((material, map) -> {
+            GTMaterialItems.TOOL_ITEMS.rowMap().forEach((material, map) -> {
                 map.forEach((type, item) -> {
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
@@ -88,16 +89,16 @@ public class MixinHelpers {
                 });
             });
         } else if (registry == BuiltInRegistries.BLOCK) {
-            GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTMaterialBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTMaterialBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTMaterialBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
-            GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+            GTMaterialBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
             GTRegistries.MACHINES.forEach(machine -> {
@@ -190,7 +191,7 @@ public class MixinHelpers {
     private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot();
 
     public static void generateGTDynamicLoot(Map<ResourceLocation, LootTable> lootTables) {
-        GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTMaterialBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
@@ -241,16 +242,16 @@ public class MixinHelpers {
                 MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
             }
         });
-        GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTMaterialBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTMaterialBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
+        GTMaterialBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
-        GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
+        GTMaterialBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
             ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(),
                     "blocks/" + blockEntry.getId().getPath());
             LootTable.Builder builder = BLOCK_LOOT

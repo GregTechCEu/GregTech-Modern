@@ -512,7 +512,7 @@ public class GTMachineUtils {
                             .build();
                 })
                 .recoveryItems(
-                        () -> new ItemLike[] { GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                        () -> new ItemLike[] { GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .renderer(() -> new LargeBoilerRenderer(texture, firebox,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name))))
                 .tooltips(
@@ -559,7 +559,7 @@ public class GTMachineUtils {
                         .where('Y', controller(blocks(definition.getBlock())))
                         .build())
                 .recoveryItems(
-                        () -> new ItemLike[] { GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                        () -> new ItemLike[] { GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingRenderer(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
@@ -612,7 +612,7 @@ public class GTMachineUtils {
                                 .or(autoAbilities(true, true, false)))
                         .build())
                 .recoveryItems(
-                        () -> new ItemLike[] { GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                        () -> new ItemLike[] { GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingRenderer(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier] * 2),

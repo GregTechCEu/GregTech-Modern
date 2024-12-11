@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -170,7 +171,7 @@ public class ToolHelper {
 
     public static ItemStack get(GTToolType toolType, Material material) {
         if (material.hasProperty(PropertyKey.TOOL)) {
-            var entry = GTItems.TOOL_ITEMS.get(material, toolType);
+            var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
             if (entry != null) {
                 return entry.get().get();
             }
@@ -248,7 +249,7 @@ public class ToolHelper {
     public static ItemStack getAndSetToolData(GTToolType toolType, Material material, int maxDurability,
                                               int harvestLevel,
                                               float toolSpeed, float attackDamage) {
-        var entry = GTItems.TOOL_ITEMS.get(material, toolType);
+        var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
         if (entry == null) return ItemStack.EMPTY;
         ItemStack stack = entry.get().getRaw();
         stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
@@ -756,7 +757,7 @@ public class ToolHelper {
      */
     @NotNull
     public static List<ItemStack> getSilkTouchDrop(ServerLevel world, BlockPos origin, @NotNull BlockState state) {
-        ItemStack tool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         tool.enchant(Enchantments.SILK_TOUCH, 1);
 
         return state.getDrops(new LootParams.Builder(world).withParameter(LootContextParams.BLOCK_STATE, state)
