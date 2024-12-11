@@ -75,8 +75,12 @@ public interface OverclockingLogic {
     }
 
     /**
-     * Determines the maximum number of overclocks that can be performed for a recipe.
-     * Then performs overclocking on the Recipe.
+     * Determines the maximum number of overclocks that can be performed for a recipe and applies them.
+     *
+     * @param EUt                 voltage of the recipe
+     * @param duration            duration of the recipe
+     * @param maxOverclockVoltage max voltage of the machine running
+     * @return the result of the overclock
      */
     default OCResult performOverclocking(long EUt, int duration, long maxOverclockVoltage, int maxParallels) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
@@ -101,10 +105,10 @@ public interface OverclockingLogic {
      * <li>Limit {@code duration} to {@code 1} tick, and stop overclocking early if needed
      *
      * @param params         the overclocking parameters
-     * @param result         the result of the overclock
      * @param maxVoltage     the maximum voltage allowed to be overclocked to
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
+     * @return the result of the overclock
      */
     static OCResult standardOverclockingLogic(@NotNull OCParams params, long maxVoltage, double durationFactor,
                                               double voltageFactor) {
@@ -147,10 +151,10 @@ public interface OverclockingLogic {
      * overclocks that would have {@code duration < 1}
      *
      * @param params         the overclocking parameters
-     * @param result         the result of the overclock
      * @param maxVoltage     the maximum voltage allowed to be overclocked to
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
+     * @return the result of the overclock
      */
     static OCResult subTickNonParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor,
                                          double voltageFactor) {
@@ -194,10 +198,10 @@ public interface OverclockingLogic {
      * <li>Parallel amount per overclock is {@code 1 / durationFactor}
      *
      * @param params         the overclocking parameters
-     * @param result         the result of the overclock
      * @param maxVoltage     the maximum voltage allowed to be overclocked to
      * @param durationFactor the factor to multiply duration by
      * @param voltageFactor  the factor to multiply voltage by
+     * @return the result of the overclock
      */
     static OCResult subTickParallelOC(@NotNull OCParams params, long maxVoltage, double durationFactor,
                                       double voltageFactor) {
@@ -308,6 +312,8 @@ public interface OverclockingLogic {
     }
 
     /**
+     * Finds the coil discount amount based on the recipe temp.
+     * 
      * @param recipeTemp  the required temperature of the recipe
      * @param machineTemp the temperature provided by the machine
      * @return the amount of EU/t discounts to apply
