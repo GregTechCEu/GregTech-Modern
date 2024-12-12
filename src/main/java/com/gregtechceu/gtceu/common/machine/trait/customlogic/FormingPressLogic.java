@@ -90,13 +90,15 @@ public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
         toName.setHoverName(Component.translatable("gtceu.forming_press.naming.to_name"));
         ItemStack named = new ItemStack(Items.NAME_TAG);
         named.setHoverName(Component.translatable("gtceu.forming_press.naming.named"));
-        var recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("copy")
+        GTRecipe recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("name_item")
                 .notConsumable(press)
                 .inputItems(toName)
                 .outputItems(named)
                 .duration(40)
                 .EUt(4)
                 .buildRawRecipe();
+        // for EMI to detect it's a synthetic recipe (not ever in JSON)
+        recipe.setId(recipe.getId().withPrefix("/"));
         GTRecipeTypes.FORMING_PRESS_RECIPES.addToMainCategory(recipe);
     }
 }

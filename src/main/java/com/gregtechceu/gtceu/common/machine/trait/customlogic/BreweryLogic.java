@@ -29,7 +29,6 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -141,10 +140,8 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     @Override
-    public @Nullable List<GTRecipe> getRepresentativeRecipes() {
-        List<GTRecipe> list = new ArrayList<>(BuiltInRegistries.POTION.size());
+    public void buildRepresentativeRecipes() {
         int index = 0;
-
         for (PotionBrewing.Mix<Potion> mix : PotionBrewingAccessor.getPotionMixes()) {
             FluidStack fromFluid = PotionFluidHelper.getFluidFromPotion(mix.from.get(),
                     PotionFluidHelper.MB_PER_RECIPE);
@@ -161,7 +158,7 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
             recipe.setId(recipe.getId().withPrefix("/"));
-            list.add(recipe);
+            GTRecipeTypes.BREWING_RECIPES.addToMainCategory(recipe);
         }
 
         for (IBrewingRecipe brewingRecipe : BrewingRecipeRegistry.getRecipes()) {
@@ -189,9 +186,7 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
             recipe.setId(recipe.getId().withPrefix("/"));
-            list.add(recipe);
+            GTRecipeTypes.BREWING_RECIPES.addToMainCategory(recipe);
         }
-
-        return list;
     }
 }

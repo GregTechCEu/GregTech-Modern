@@ -106,21 +106,24 @@ public class TooltipsHandler {
                             .append(Component.literal(fluidAmount)));
                 }
             }
+        }
 
-            if (fluid instanceof GTFluid attributedFluid) {
-                FluidState state = attributedFluid.getState();
-                switch (state) {
-                    case LIQUID -> tooltips.accept(Component.translatable("gtceu.fluid.state_liquid"));
-                    case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
-                    case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
-                }
+        if (fluid instanceof GTFluid attributedFluid) {
+            FluidState state = attributedFluid.getState();
+            switch (state) {
+                case LIQUID -> tooltips.accept(Component.translatable("gtceu.fluid.state_liquid"));
+                case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
+                case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
+            }
+            attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
+        } else {
+            String key = "gtceu.fluid.state_" + (fluidType.isLighterThanAir() ? "gas" : "liquid");
+            tooltips.accept(Component.translatable(key));
+        }
 
-                attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
-            }
-            tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
-            if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-                tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
-            }
+        tooltips.accept(Component.translatable("gtceu.fluid.temperature", fluidType.getTemperature()));
+        if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
+            tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
         }
     }
 }
