@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -39,6 +40,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     protected VirtualTank visualTank = new VirtualTank();
     @Persisted
     @DescSynced
+    protected final CustomFluidTank shownFluidTank = new CustomFluidTank(VirtualTank.DEFAULT_CAPACITY);
+    @Persisted
+    @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected int mBLeftToTransferLastSecond;
 
@@ -46,6 +50,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
+        shownFluidTank.setOnContentsChanged(() -> {
+            if (this.visualTank != null) this.visualTank.setFluid(shownFluidTank.getFluid().copy());
+        });
     }
 
     @Override
@@ -68,6 +75,14 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         var reg = VirtualEnderRegistry.getInstance();
         if (reg == null) return;
         this.visualTank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
+        onShownFluidChanged();
+    }
+
+    private void onShownFluidChanged() {
+        if (visualTank != null) {
+            var fluid = visualTank.getFluidTank().getFluidInTank(0);
+            this.shownFluidTank.setFluid(fluid.copy());
+        }
         markAsDirty();
     }
 
