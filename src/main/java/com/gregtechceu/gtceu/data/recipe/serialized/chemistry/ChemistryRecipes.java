@@ -143,7 +143,6 @@ public class ChemistryRecipes {
                 .inputItems(dust, Charcoal)
                 .inputFluids(Nitrogen.getFluid(2000))
                 .outputItems(dust, ActivatedCarbon)
-                .chancedOutput(dust, Ash, 2000, 0)
                 .duration(640).EUt(64)
                 .save(provider);
     }

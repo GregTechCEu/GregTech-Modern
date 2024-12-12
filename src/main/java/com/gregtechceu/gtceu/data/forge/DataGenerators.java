@@ -41,7 +41,6 @@ public class DataGenerators {
             DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
-
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                             .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
                             .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)

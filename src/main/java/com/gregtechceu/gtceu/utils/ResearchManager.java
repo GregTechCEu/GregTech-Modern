@@ -27,8 +27,6 @@ import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 
 public final class ResearchManager {
@@ -194,12 +192,12 @@ public final class ResearchManager {
                     .inputItems(first)
                     .notConsumable(second)
                     .outputItems(output)
-                    .duration(DURATION).EUt(EUT).buildRawRecipe();
+                    .duration(DURATION).EUt(EUT)
+                    .buildRawRecipe();
         }
 
-        @Nullable
         @Override
-        public List<GTRecipe> getRepresentativeRecipes() {
+        public void buildRepresentativeRecipes() {
             ItemStack copiedStick = GTItems.TOOL_DATA_STICK.asStack();
             copiedStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_from"));
             ItemStack emptyStick = GTItems.TOOL_DATA_STICK.asStack();
@@ -216,7 +214,7 @@ public final class ResearchManager {
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
             recipe.setId(recipe.getId().withPrefix("/"));
-            return Collections.singletonList(recipe);
+            GTRecipeTypes.SCANNER_RECIPES.addToMainCategory(recipe);
         }
     }
 }

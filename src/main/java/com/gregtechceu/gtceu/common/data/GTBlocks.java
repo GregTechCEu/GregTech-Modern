@@ -769,7 +769,7 @@ public class GTBlocks {
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(BlockItem::new)
             .build()
-            .register();;
+            .register();
     public static final BlockEntry<Block> HIGH_POWER_CASING = createCasingBlock("high_power_casing",
             GTCEu.id("block/casings/hpca/high_power_casing"));
 
