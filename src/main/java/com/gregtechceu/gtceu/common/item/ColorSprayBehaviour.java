@@ -458,10 +458,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         // MTE special case
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof IMachineBlockEntity machineBe) {
+        if (be instanceof IMachineBlockEntity machineBe && first instanceof IMachineBlockEntity og) {
             MetaMachine mte = machineBe.getMetaMachine();
-            if (mte != null) {
-                if (mte.isPainted()) {
+            MetaMachine ogMte = og.getMetaMachine();
+            if (mte != null && ogMte != null) {
+                if (mte.isPainted() && mte.getPaintingColor() == ogMte.getPaintingColor()) {
                     mte.setPaintingColor(mte.getDefaultPaintingColor());
                     return true;
                 } else return false;
