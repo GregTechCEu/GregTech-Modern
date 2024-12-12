@@ -14,8 +14,11 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.api.transfer.fluid.TagOrCycleFluidHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
+import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FluidKey;
 import com.gregtechceu.gtceu.utils.GTHashMaps;
@@ -28,16 +31,13 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -304,8 +304,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public Object createXEIContainer(List<?> contents) {
         // cast is safe if you don't pass the wrong thing.
         // noinspection unchecked
-        return new TagOrCycleFluidHandler(
-                (List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>>) contents);
+        return new CycleFluidEntryHandler((List<FluidEntryList>) contents);
     }
 
     @NotNull
@@ -334,8 +333,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof TagOrCycleFluidHandler fluidHandler) {
-                tank.setFluidTank(fluidHandler, index);
+            if (storage instanceof CycleFluidEntryHandler cycleHandler) {
+                tank.setFluidTank(cycleHandler, index);
             } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
                 tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
             }
@@ -367,24 +366,24 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         }
     }
 
-    // Maps fluids to Either<(tag with count), FluidStack>s
-    public static Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+    // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
+    public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
 
-        List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> tags = new ArrayList<>();
-        List<FluidStack> fluids = new ArrayList<>();
+        FluidTagList tags = new FluidTagList();
+        FluidStackList fluids = new FluidStackList();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.TagValue tagValue) {
-                tags.add(Triple.of(tagValue.getTag(), amount, ingredient.getNbt()));
+                tags.add(tagValue.getTag(), amount, ingredient.getNbt());
             } else {
                 fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
             }
         }
         if (!tags.isEmpty()) {
-            return Either.left(tags);
+            return tags;
         } else {
-            return Either.right(fluids);
+            return fluids;
         }
     }
 

@@ -11,26 +11,24 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +48,9 @@ public class GTOreByProduct {
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
     private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
-    protected final List<Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>>> itemInputs = new ArrayList<>();
+    protected final List<ItemEntryList> itemInputs = new ArrayList<>();
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
-    protected final List<Either<List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>>, List<FluidStack>>> fluidInputs = new ArrayList<>();
+    protected final List<FluidEntryList> fluidInputs = new ArrayList<>();
     private boolean hasDirectSmelt = false;
     private boolean hasChemBath = false;
     private boolean hasSeparator = false;
@@ -95,13 +93,13 @@ public class GTOreByProduct {
         Pair<Material, Integer> washedIn = property.getWashedIn();
         List<Material> separatedInto = property.getSeparatedInto();
 
-        List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> oreStacks = new ArrayList<>();
+        ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
             // get all ores with the relevant oredicts instead of just the first unified ore
-            oreStacks.add(Triple.of(ChemicalHelper.getTag(prefix, material), 1, null));
+            oreStacks.add(ChemicalHelper.getTag(prefix, material), 1, null);
         }
-        oreStacks.add(Triple.of(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1, null));
-        itemInputs.add(Either.left(oreStacks));
+        oreStacks.add(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1, null);
+        itemInputs.add(oreStacks);
 
         // set up machines as inputs
         List<ItemStack> simpleWashers = new ArrayList<>();
@@ -119,9 +117,9 @@ public class GTOreByProduct {
             addToInputs(stack);
         }
         // same amount of lines as a for loop :trol:
-        itemInputs.add(Either.right(simpleWashers));
-        itemInputs.add(Either.right(simpleWashers));
-        itemInputs.add(Either.right(simpleWashers));
+        itemInputs.add(ItemStackList.of(simpleWashers));
+        itemInputs.add(ItemStackList.of(simpleWashers));
+        itemInputs.add(ItemStackList.of(simpleWashers));
 
         if (washedIn != null && washedIn.getFirst() != null) {
             hasChemBath = true;
@@ -144,9 +142,7 @@ public class GTOreByProduct {
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
         for (TagPrefix prefix : IN_PROCESSING_STEPS) {
-            List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> tempList = new ArrayList<>();
-            tempList.add(Triple.of(ChemicalHelper.getTag(prefix, material), 1, null));
-            itemInputs.add(Either.left(tempList));
+            itemInputs.add(ItemTagList.of(ChemicalHelper.getTag(prefix, material), 1, null));
         }
 
         // total number of inputs added
@@ -196,10 +192,10 @@ public class GTOreByProduct {
         addToOutputs(material, TagPrefix.crushedPurified, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, 1);
         addChance(3333, 0);
-        List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> fluidStacks = new ArrayList<>();
-        fluidStacks.add(Triple.of(GTMaterials.Water.getFluidTag(), 1000, null));
-        fluidStacks.add(Triple.of(GTMaterials.DistilledWater.getFluidTag(), 100, null));
-        fluidInputs.add(Either.left(fluidStacks));
+        FluidTagList tagList = new FluidTagList();
+        tagList.add(GTMaterials.Water.getFluidTag(), 1000, null);
+        tagList.add(GTMaterials.DistilledWater.getFluidTag(), 100, null);
+        fluidInputs.add(tagList);
 
         // TC crushed/crushed purified -> centrifuged
         addToOutputs(material, TagPrefix.crushedRefined, 1);
@@ -236,14 +232,10 @@ public class GTOreByProduct {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 580);
-            List<Triple<TagKey<Fluid>, Integer, @Nullable CompoundTag>> washedFluid = new ArrayList<>();
-            // noinspection DataFlowIssue
-            washedFluid.add(Triple.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
-            fluidInputs.add(Either.left(washedFluid));
+            fluidInputs.add(FluidTagList.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
         } else {
             addEmptyOutputs(2);
-            List<FluidStack> washedFluid = new ArrayList<>();
-            fluidInputs.add(Either.right(washedFluid));
+            fluidInputs.add(new FluidStackList());
         }
 
         // electromagnetic separator
@@ -342,9 +334,7 @@ public class GTOreByProduct {
     }
 
     private void addToInputs(ItemStack stack) {
-        List<ItemStack> tempList = new ArrayList<>();
-        tempList.add(stack);
-        itemInputs.add(Either.right(tempList));
+        itemInputs.add(ItemStackList.of(stack));
     }
 
     private void addChance(int base, int tier) {

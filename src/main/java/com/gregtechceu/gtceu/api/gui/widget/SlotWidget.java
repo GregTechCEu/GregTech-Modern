@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.transfer.item.CycleItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.item.TagOrCycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -12,32 +15,24 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.utils.Position;
+import com.lowdragmc.lowdraglib.utils.Size;
 
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
-import com.mojang.datafixers.util.Either;
 import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiRegistryAdapter;
 import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.registry.EmiTags;
 import lombok.Getter;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -202,20 +197,19 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (handler == null) return null;
             ItemStack realStack = getRealStack(handler.getItem());
             if (handler instanceof WidgetSlotItemHandler slotHandler) {
-                if (slotHandler.itemHandler instanceof CycleItemStackHandler cycleHandler) {
-                    return getXEIIngredientsFromCycleHandlerClickable(cycleHandler, slotHandler.index);
-                } else if (slotHandler.itemHandler instanceof TagOrCycleItemStackHandler tagHandler) {
-                    return getXEIIngredientsFromTagOrCycleHandlerClickable(tagHandler, slotHandler.index);
+                if (slotHandler.itemHandler instanceof CycleItemStackHandler stackHandler) {
+                    return getXEIIngredientsClickable(stackHandler, slotHandler.index);
+                } else if (slotHandler.itemHandler instanceof CycleItemEntryHandler entryHandler) {
+                    return getXEIIngredientsClickable(entryHandler, slotHandler.index);
                 }
             }
 
             if (LDLib.isJeiLoaded() && !realStack.isEmpty()) {
-                return JEIPlugin.getItemIngredient(realStack, getPositionX(), getPositionY(), getSizeWidth(),
-                        getSizeHeight());
+                return JEICallWrapper.getJEIStackClickable(realStack, getPosition(), getSize());
             } else if (LDLib.isReiLoaded()) {
-                return REICallWrapper.getReiIngredients(realStack);
+                return EntryStacks.of(realStack);
             } else if (LDLib.isEmiLoaded()) {
-                return EMICallWrapper.getEmiIngredients(realStack, getXEIChance());
+                return EmiStack.of(realStack).setChance(getXEIChance());
             }
             return realStack;
         }
@@ -229,137 +223,69 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         if (handler == null) return Collections.emptyList();
         ItemStack realStack = getRealStack(handler.getItem());
         if (handler instanceof WidgetSlotItemHandler slotHandler) {
-            if (slotHandler.itemHandler instanceof CycleItemStackHandler cycleHandler) {
-                return getXEIIngredientsFromCycleHandlerClickable(cycleHandler, slotHandler.index);
-            } else if (slotHandler.itemHandler instanceof TagOrCycleItemStackHandler tagHandler) {
-                return getXEIIngredientsFromTagOrCycleHandlerClickable(tagHandler, slotHandler.index);
+            if (slotHandler.itemHandler instanceof CycleItemStackHandler stackHandler) {
+                return getXEIIngredientsClickable(stackHandler, slotHandler.index);
+            } else if (slotHandler.itemHandler instanceof CycleItemEntryHandler entryHandler) {
+                return getXEIIngredientsClickable(entryHandler, slotHandler.index);
             }
         }
 
-        if (LDLib.isJeiLoaded()) {
-            var ingredient = JEIPlugin.getItemIngredient(realStack, getPosition().x, getPosition().y, getSize().width,
-                    getSize().height);
-            return ingredient == null ? Collections.emptyList() : List.of(ingredient);
+        if (LDLib.isJeiLoaded() && !realStack.isEmpty()) {
+            return List.of(JEICallWrapper.getJEIStackClickable(realStack, getPosition(), getSize()));
         } else if (LDLib.isReiLoaded()) {
-            return REICallWrapper.getReiIngredients(realStack);
+            return List.of(EntryStacks.of(realStack));
         } else if (LDLib.isEmiLoaded()) {
-            return EMICallWrapper.getEmiIngredients(realStack, getXEIChance());
+            return List.of(EmiStack.of(realStack).setChance(getXEIChance()));
         }
         return List.of(realStack);
     }
 
-    private List<Object> getXEIIngredientsFromCycleHandler(CycleItemStackHandler handler, int index) {
-        var stream = handler.getStackList(index).stream().map(this::getRealStack);
+    private List<Object> getXEIIngredients(CycleItemStackHandler handler, int index) {
+        var stackList = handler.getStackList(index);
         if (LDLib.isJeiLoaded()) {
-            return stream.filter(stack -> !stack.isEmpty()).collect(Collectors.toList());
+            return JEICallWrapper.getJEIIngredients(stackList, this::getRealStack);
         } else if (LDLib.isReiLoaded()) {
-            return REICallWrapper.getReiIngredients(stream);
+            return REICallWrapper.getREIIngredients(stackList, this::getRealStack);
         } else if (LDLib.isEmiLoaded()) {
-            return EMICallWrapper.getEmiIngredients(stream, getXEIChance());
+            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromCycleHandlerClickable(CycleItemStackHandler handler, int index) {
-        var stream = handler.getStackList(index).stream().map(this::getRealStack);
+    private List<Object> getXEIIngredientsClickable(CycleItemStackHandler handler, int index) {
+        var stackList = handler.getStackList(index);
         if (LDLib.isJeiLoaded()) {
-            return stream
-                    .filter(stack -> !stack.isEmpty())
-                    .map(item -> JEIPlugin.getItemIngredient(item, getPositionX(), getPositionY(), getSizeWidth(),
-                            getSizeHeight()))
-                    .toList();
+            return JEICallWrapper.getJEIIngredientsClickable(stackList, getPosition(), getSize(), this::getRealStack);
         } else if (LDLib.isReiLoaded()) {
-            return REICallWrapper.getReiIngredients(stream);
+            return REICallWrapper.getREIIngredients(stackList, this::getRealStack);
         } else if (LDLib.isEmiLoaded()) {
-            return EMICallWrapper.getEmiIngredients(stream, getXEIChance());
+            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleHandler(TagOrCycleItemStackHandler handler, int index) {
-        Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> either = handler
-                .getStacks()
-                .get(index);
-        var ref = new Object() {
-
-            List<Object> returnValue = Collections.emptyList();
-        };
-        either.ifLeft(list -> {
-            if (LDLib.isJeiLoaded()) {
-                ref.returnValue = list.stream()
-                        .flatMap(pair -> BuiltInRegistries.ITEM
-                                .getTag(pair.getLeft())
-                                .stream()
-                                .flatMap(HolderSet.ListBacked::stream)
-                                .map(item -> {
-                                    ItemStack stack = new ItemStack(item.value(), pair.getMiddle());
-                                    stack.setTag(pair.getRight());
-                                    return getRealStack(stack);
-                                }))
-                        .collect(Collectors.toList());
-            } else if (LDLib.isReiLoaded()) {
-                ref.returnValue = REICallWrapper.getReiIngredients(this::getRealStack, list);
-            } else if (LDLib.isEmiLoaded()) {
-                ref.returnValue = EMICallWrapper.getEmiIngredients(list, getXEIChance());
-            }
-        }).ifRight(items -> {
-            var stream = items.stream().map(this::getRealStack);
-            if (LDLib.isJeiLoaded()) {
-                ref.returnValue = stream
-                        .filter(stack -> !stack.isEmpty())
-                        .collect(Collectors.toList());
-            } else if (LDLib.isReiLoaded()) {
-                ref.returnValue = REICallWrapper.getReiIngredients(stream);
-            } else if (LDLib.isEmiLoaded()) {
-                ref.returnValue = EMICallWrapper.getEmiIngredients(stream, getXEIChance());
-            }
-        });
-        return ref.returnValue;
+    private List<Object> getXEIIngredients(CycleItemEntryHandler handler, int index) {
+        ItemEntryList entryList = handler.getEntry(index);
+        if (LDLib.isJeiLoaded()) {
+            return JEICallWrapper.getJEIIngredients(entryList, this::getRealStack);
+        } else if (LDLib.isReiLoaded()) {
+            return REICallWrapper.getREIIngredients(entryList, this::getRealStack);
+        } else if (LDLib.isEmiLoaded()) {
+            return EMICallWrapper.getEMIIngredients(entryList, getXEIChance(), this::getRealStack);
+        }
+        return Collections.emptyList();
     }
 
-    private List<Object> getXEIIngredientsFromTagOrCycleHandlerClickable(TagOrCycleItemStackHandler handler,
-                                                                         int index) {
-        Either<List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>>, List<ItemStack>> either = handler
-                .getStacks()
-                .get(index);
-        var ref = new Object() {
-
-            List<Object> returnValue = Collections.emptyList();
-        };
-        either.ifLeft(list -> {
-            if (LDLib.isJeiLoaded()) {
-                ref.returnValue = list.stream()
-                        .flatMap(pair -> BuiltInRegistries.ITEM
-                                .getTag(pair.getLeft())
-                                .stream()
-                                .flatMap(HolderSet.ListBacked::stream)
-                                .map(item -> {
-                                    ItemStack stack = new ItemStack(item.value(), pair.getMiddle());
-                                    stack.setTag(pair.getRight());
-                                    return JEIPlugin.getItemIngredient(getRealStack(stack),
-                                            getPosition().x, getPosition().y, getSize().width, getSize().height);
-                                }))
-                        .collect(Collectors.toList());
-            } else if (LDLib.isReiLoaded()) {
-                ref.returnValue = REICallWrapper.getReiIngredients(this::getRealStack, list);
-            } else if (LDLib.isEmiLoaded()) {
-                ref.returnValue = EMICallWrapper.getEmiIngredients(list, getXEIChance());
-            }
-        }).ifRight(items -> {
-            var stream = items.stream().map(this::getRealStack);
-            if (LDLib.isJeiLoaded()) {
-                ref.returnValue = stream
-                        .filter(stack -> !stack.isEmpty())
-                        .map(item -> JEIPlugin.getItemIngredient(item, getPosition().x, getPosition().y,
-                                getSize().width, getSize().height))
-                        .toList();
-            } else if (LDLib.isReiLoaded()) {
-                ref.returnValue = REICallWrapper.getReiIngredients(stream);
-            } else if (LDLib.isEmiLoaded()) {
-                ref.returnValue = EMICallWrapper.getEmiIngredients(stream, getXEIChance());
-            }
-        });
-        return ref.returnValue;
+    private List<Object> getXEIIngredientsClickable(CycleItemEntryHandler handler, int index) {
+        ItemEntryList entryList = handler.getEntry(index);
+        if (LDLib.isJeiLoaded()) {
+            return JEICallWrapper.getJEIIngredientsClickable(entryList, getPosition(), getSize(), this::getRealStack);
+        } else if (LDLib.isReiLoaded()) {
+            return REICallWrapper.getREIIngredients(entryList, this::getRealStack);
+        } else if (LDLib.isEmiLoaded()) {
+            return EMICallWrapper.getEMIIngredients(entryList, getXEIChance(), this::getRealStack);
+        }
+        return Collections.emptyList();
     }
 
     public class WidgetSlotItemHandler extends Slot {
@@ -447,54 +373,81 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         }
     }
 
-    public static final class REICallWrapper {
+    public static final class JEICallWrapper {
 
-        public static List<Object> getReiIngredients(Stream<ItemStack> stream) {
-            return List.of(EntryIngredient.of(stream.map(EntryStacks::of).toList()));
+        public static Object getJEIStackClickable(ItemStack stack, Position pos, Size size) {
+            return JEIPlugin.getItemIngredient(stack, pos.x, pos.y, size.width, size.height);
         }
 
-        public static List<Object> getReiIngredients(UnaryOperator<ItemStack> realStack,
-                                                     List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> list) {
-            return list.stream()
-                    .map(pair -> EntryIngredients.ofTag(pair.getLeft(),
-                            holder -> {
-                                ItemStack stack = new ItemStack(holder.value(), pair.getMiddle());
-                                stack.setTag(pair.getRight());
-                                return EntryStacks.of(realStack.apply(stack));
-                            }))
+        public static List<Object> getJEIIngredients(ItemEntryList list, UnaryOperator<ItemStack> realStack) {
+            return list.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .map(realStack)
                     .collect(Collectors.toList());
         }
 
-        public static List<Object> getReiIngredients(ItemStack stack) {
-            return List.of(EntryStacks.of(stack));
+        public static List<Object> getJEIIngredientsClickable(ItemEntryList list, Position pos, Size size,
+                                                              UnaryOperator<ItemStack> realStack) {
+            return list.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .map(realStack)
+                    .map(stack -> getJEIStackClickable(stack, pos, size))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public static final class REICallWrapper {
+
+        private static EntryIngredient toREIIngredient(Stream<ItemStack> stream, UnaryOperator<ItemStack> realStack) {
+            return EntryIngredient.of(stream.map(realStack)
+                    .map(EntryStacks::of)
+                    .toList());
+        }
+
+        public static List<Object> getREIIngredients(ItemStackList list, UnaryOperator<ItemStack> realStack) {
+            return List.of(toREIIngredient(list.stream(), realStack));
+        }
+
+        public static List<Object> getREIIngredients(ItemTagList list, UnaryOperator<ItemStack> realStack) {
+            return list.getEntries().stream()
+                    .map(ItemTagList.ItemTagEntry::stacks)
+                    .map(stream -> toREIIngredient(stream, realStack))
+                    .collect(Collectors.toList());
+        }
+
+        public static List<Object> getREIIngredients(ItemEntryList list, UnaryOperator<ItemStack> realStack) {
+            if (list instanceof ItemTagList tagList) return getREIIngredients(tagList, realStack);
+            if (list instanceof ItemStackList stackList) return getREIIngredients(stackList, realStack);
+            return Collections.emptyList();
         }
     }
 
     public static final class EMICallWrapper {
 
-        public static List<Object> getEmiIngredients(Stream<ItemStack> stream, float xeiChance) {
-            return List.of(EmiIngredient.of(stream.map(EmiStack::of).toList()).setChance(xeiChance));
+        private static EmiIngredient toEMIIngredient(Stream<ItemStack> stream, UnaryOperator<ItemStack> realStack) {
+            return EmiIngredient.of(stream.map(realStack).map(EmiStack::of).toList());
         }
 
-        // ignore generics, repeat, ignore @ApiStatus.Experimental, ignore forge deprecations
-        @SuppressWarnings({ "unchecked", "rawtypes", "UnstableApiUsage", "deprecation" })
-        public static List<Object> getEmiIngredients(List<Triple<TagKey<Item>, Integer, @Nullable CompoundTag>> list,
-                                                     float xeiChance) {
-            return list.stream()
-                    .map(pair -> {
-                        // slight trickery to get the NBT onto all the stacks in the tag.
-                        EmiRegistryAdapter adapter = EmiTags.ADAPTERS_BY_REGISTRY.get(BuiltInRegistries.ITEM);
-                        var stacks = BuiltInRegistries.ITEM.getTag(pair.getLeft()).stream()
-                                .flatMap(HolderSet.ListBacked::stream)
-                                .map(holder -> adapter.of(holder.value(), pair.getRight(), pair.getMiddle()))
-                                .toList();
-                        return EmiIngredient.of(stacks).setAmount(pair.getMiddle()).setChance(xeiChance);
-                    })
+        public static List<Object> getEMIIngredients(ItemStackList list, float xeiChance,
+                                                     UnaryOperator<ItemStack> realStack) {
+            return List.of(toEMIIngredient(list.stream(), realStack).setChance(xeiChance));
+        }
+
+        public static List<Object> getEMIIngredients(ItemTagList list, float xeiChance,
+                                                     UnaryOperator<ItemStack> realStack) {
+            return list.getEntries().stream()
+                    .map(ItemTagList.ItemTagEntry::stacks)
+                    .map(stream -> toEMIIngredient(stream, realStack).setChance(xeiChance))
                     .collect(Collectors.toList());
         }
 
-        public static List<Object> getEmiIngredients(ItemStack stack, float xeiChance) {
-            return List.of(EmiStack.of(stack).setChance(xeiChance));
+        public static List<Object> getEMIIngredients(ItemEntryList list, float xeiChance,
+                                                     UnaryOperator<ItemStack> realStack) {
+            if (list instanceof ItemTagList tagList) return getEMIIngredients(tagList, xeiChance, realStack);
+            if (list instanceof ItemStackList stackList) return getEMIIngredients(stackList, xeiChance, realStack);
+            return Collections.emptyList();
         }
     }
 }
