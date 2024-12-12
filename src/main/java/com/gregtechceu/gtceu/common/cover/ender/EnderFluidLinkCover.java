@@ -10,13 +10,11 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VisualTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -38,8 +36,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     @Persisted
     @DescSynced
-    @LazyManaged
-    protected final VisualTank visualTank = new VisualTank();
+    protected VirtualTank visualTank = new VirtualTank();
     @Persisted
     @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
@@ -70,12 +67,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     protected void updateEntry() {
         var reg = VirtualEnderRegistry.getInstance();
         if (reg == null) return;
-        var tank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
-        this.visualTank.setVirtualTank(tank);
-        this.visualTank.getVirtualTank().setColor(this.getColor());
+        this.visualTank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
         markAsDirty();
-        markDirty("visualTank");
-        this.visualTank.setFluid(this.visualTank.getVirtualTank().getFluid());
     }
 
     @Override
@@ -100,9 +93,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
         if (ownFluidHandler != null) {
             return switch (io) {
-                case IN -> GTTransferUtils.transferFluidsFiltered(ownFluidHandler, visualTank.getVirtualTank(),
+                case IN -> GTTransferUtils.transferFluidsFiltered(ownFluidHandler, visualTank.getFluidTank(),
                         filterHandler.getFilter(), platformTransferLimit);
-                case OUT -> GTTransferUtils.transferFluidsFiltered(visualTank.getVirtualTank(), ownFluidHandler,
+                case OUT -> GTTransferUtils.transferFluidsFiltered(visualTank.getFluidTank(), ownFluidHandler,
                         filterHandler.getFilter(), platformTransferLimit);
                 default -> 0;
             };
@@ -123,7 +116,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new TankWidget(visualTank, 0, 146, 20, 20, 20,
+        group.addWidget(new TankWidget(visualTank.getFluidTank(), 0, 146, 20, 20, 20,
                 true, true).setBackground(GuiTextures.FLUID_SLOT));
 
         group.addWidget(filterHandler.createFilterSlotUI(117, 108));
