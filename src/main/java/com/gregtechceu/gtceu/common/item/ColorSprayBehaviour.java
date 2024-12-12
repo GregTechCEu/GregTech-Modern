@@ -345,7 +345,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (be instanceof IMachineBlockEntity machineBe && first instanceof IMachineBlockEntity og) {
             MetaMachine mte = machineBe.getMetaMachine();
             MetaMachine ogMte = og.getMetaMachine();
-            if (mte != null) {
+            if (mte != null && ogMte != null) {
                 if (mte.getPaintingColor() != this.color.getTextColor() &&
                         mte.getPaintingColor() == ogMte.getPaintingColor()) {
                     mte.setPaintingColor(this.color.getTextColor());
