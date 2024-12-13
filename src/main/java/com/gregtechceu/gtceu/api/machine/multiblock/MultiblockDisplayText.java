@@ -345,7 +345,7 @@ public class MultiblockDisplayText {
 
                 for (var item : itemOutputs) {
                     var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
-                    if(stacks.length == 0) continue;
+                    if (stacks.length == 0) continue;
                     var stack = stacks[0];
                     int count = stack.getCount();
                     double countD = count;
@@ -366,7 +366,7 @@ public class MultiblockDisplayText {
                 }
                 for (var fluid : fluidOutputs) {
                     var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
-                    if(stacks.length == 0) continue;
+                    if (stacks.length == 0) continue;
                     var stack = stacks[0];
                     int amount = stack.getAmount();
                     double amountD = amount;
