@@ -109,5 +109,6 @@ public class IntegrationLang {
 
         provider.add("gtceu.journeymap.options.layers", "Prospection layers");
         provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
+        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
     }
 }
