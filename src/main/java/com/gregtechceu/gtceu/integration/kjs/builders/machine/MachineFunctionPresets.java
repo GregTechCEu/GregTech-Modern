@@ -492,16 +492,6 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            public MachineBuilder<D> isSource(boolean isSource) {
-                if (KineticMachineBuilder.class.isAssignableFrom(builderClass)) {
-                    for (var builder : builders) {
-                        if (builder == null) continue;
-                        ((KineticMachineBuilder) builder).isSource(isSource);
-                    }
-                }
-                return this;
-            }
-
             @Override
             public D register() {
                 for (var builder : builders) {

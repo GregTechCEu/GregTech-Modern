@@ -930,14 +930,6 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, outputs);
     }
 
-    public GTRecipeBuilder inputStress(float stress) {
-        return input(StressRecipeCapability.CAP, stress);
-    }
-
-    public GTRecipeBuilder outputStress(float stress) {
-        return output(StressRecipeCapability.CAP, stress);
-    }
-
     //////////////////////////////////////
     // ********** DATA ***********//
     //////////////////////////////////////
@@ -1053,14 +1045,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder posY(int min, int max) {
         return posY(min, max, false);
-    }
-
-    public GTRecipeBuilder rpm(float rpm, boolean reverse) {
-        return addCondition(new RPMCondition(rpm).setReverse(reverse));
-    }
-
-    public GTRecipeBuilder rpm(float rpm) {
-        return rpm(rpm, false);
     }
 
     public GTRecipeBuilder environmentalHazard(MedicalCondition condition, boolean reverse) {

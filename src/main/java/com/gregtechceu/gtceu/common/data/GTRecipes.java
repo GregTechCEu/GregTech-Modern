@@ -82,11 +82,6 @@ public class GTRecipes {
         // Must run recycling recipes very last
         RecyclingRecipes.init(consumer);
 
-        // Kinetic Machines
-        if (GTCEu.isCreateLoaded()) {
-            CreateRecipeLoader.init(consumer);
-        }
-
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
     }
 
