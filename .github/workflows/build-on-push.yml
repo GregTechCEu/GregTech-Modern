@@ -12,6 +12,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SNAPSHOT: true
     steps:
       - uses: actions/checkout@v4
       - name: Check Path Filter

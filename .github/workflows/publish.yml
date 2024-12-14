@@ -41,7 +41,7 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Get Version
         id: ver
-        run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
+        run: echo "version=$(./gradlew -q printModVersion)" >> $GITHUB_OUTPUT
       - name: Build
         run: ./gradlew assemble --build-cache
       - name: Upload Build Artifacts

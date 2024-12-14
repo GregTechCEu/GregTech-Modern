@@ -10,7 +10,7 @@ def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
 def mod_issue_tracker = getConfig("mod_issue_tracker")
 
-task printVersion {
+task printModVersion {
     doLast {
         println mod_version
     }
