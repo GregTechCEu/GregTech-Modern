@@ -147,7 +147,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
         if (entity instanceof MetaMachineBlockEntity machineEntity && context.isSecondaryUseActive()) {
-            if (machineEntity.metaMachine instanceof IHasCircuitSlot circuitMachine && circuitMachine.getCircuitInventory().getSlots() > 0) {
+            if (machineEntity.metaMachine instanceof IHasCircuitSlot circuitMachine &&
+                    circuitMachine.getCircuitInventory().getSlots() > 0) {
                 setCircuitConfig(circuitMachine.getCircuitInventory(), circuitSetting);
             }
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit)
