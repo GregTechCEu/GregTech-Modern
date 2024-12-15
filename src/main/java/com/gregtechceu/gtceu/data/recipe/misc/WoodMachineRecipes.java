@@ -439,6 +439,31 @@ public class WoodMachineRecipes {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
+        //strip log
+        VanillaRecipeHolder.addShapelessRecipe(provider,
+                "file_" + entry.woodName + "log",
+                new ItemStack(entry.strippedLog),
+                "f", "L", 'L', entry.log
+        );
+        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_log")
+                .inputItems(entry.log)
+                .outputItems(entry.strippedLog)
+                .outputItems(dustSmall, Wood, 2)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
+        //strip wood
+        VanillaRecipeHolder.addShapelessRecipe(provider,
+                "file_" + entry.woodName + "wood",
+                new ItemStack(entry.strippedWood),
+                "f", "W", 'W', entry.wood
+        );
+        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_wood")
+                .inputItems(entry.wood)
+                .outputItems(entry.strippedWood)
+                .outputItems(dustSmall, Wood, 2)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
+
         if (entry.generateLogToPlankRecipe) {
             if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
                 VanillaRecipeHelper.addShapelessRecipe(provider,
