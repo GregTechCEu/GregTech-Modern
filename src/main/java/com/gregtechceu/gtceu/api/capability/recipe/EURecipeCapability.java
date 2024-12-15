@@ -76,13 +76,25 @@ public class EURecipeCapability extends RecipeCapability<Long> {
         return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
     }
 
-    public static List<Content> makeEUContent(Long eut) {
+    /**
+     * Creates a {@code List<Content>} with the specified EU
+     * 
+     * @param eu EU/t value to put in the Content
+     * @return Singleton list of a new Content with the given EU value
+     */
+    public static List<Content> makeEUContent(Long eu) {
         return List.of(
-                new Content(eut, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
+                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
     }
 
-    public static void putEUContent(Map<RecipeCapability<?>, List<Content>> contents, long eut) {
-        contents.put(EURecipeCapability.CAP, makeEUContent(eut));
+    /**
+     * Puts an EU Singleton Content in the given content map
+     * 
+     * @param contents content map
+     * @param eu       EU value to put inside content map
+     */
+    public static void putEUContent(Map<RecipeCapability<?>, List<Content>> contents, long eu) {
+        contents.put(EURecipeCapability.CAP, makeEUContent(eu));
     }
 
     public interface ICustomParallel {

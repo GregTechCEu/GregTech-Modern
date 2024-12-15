@@ -22,26 +22,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ParallelLogic {
 
-    // At this point, the recipe is already trimmed according to the item and fluid output limit, so we just need to
-    // take care of voiding
-
     /**
-     * Get the maximum parallel amount that can be done by the given machine, up to a limit
+     * Calculates the maximum parallel amount that can be done for the given machine and recipe, up to the passed limit
      *
-     * @param machine       Machine to match the recipe against
-     * @param recipe
-     * @param parallelLimit
-     * @return
+     * @param machine       machine to test against
+     * @param recipe        recipe to test with
+     * @param parallelLimit hard upper limit of parallels that can be done
+     * @return The number of possible parallels, 0 if the recipe cannot be done
      */
     public static int getParallelAmount(MetaMachine machine, GTRecipe recipe, int parallelLimit) {
         if (parallelLimit == 1 || !(machine instanceof IRecipeLogicMachine rlm)) return 1;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int multiplierByInputs = getMaxRecipeMultiplier(rlm, recipe, parallelLimit);
-        if (multiplierByInputs == 0) return 0;
+        int maxInputMultiplier = limitByInput(rlm, recipe, parallelLimit);
+        if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        return ParallelLogic.limitByOutputMerging(rlm, recipe, multiplierByInputs, rlm::canVoidRecipeOutputs);
+        return limitByOutputMerging(rlm, recipe, maxInputMultiplier, rlm::canVoidRecipeOutputs);
     }
 
     /**
@@ -50,7 +47,7 @@ public class ParallelLogic {
      * @param parallelLimit hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int getMaxRecipeMultiplier(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit) {
+    public static int limitByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit) {
         IntSet multipliers = new IntOpenHashSet();
 
         // non-tick inputs.
@@ -197,14 +194,13 @@ public class ParallelLogic {
      * @return Returns the number of parallels that can be done (fast calc)
      */
     public static int getParallelAmountFast(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel) {
-        if (machine instanceof IRecipeCapabilityHolder holder) {
-            while (maxParallel > 0) {
-                var copied = recipe.copy(ContentModifier.multiplier(maxParallel), false);
-                if (copied.matchRecipe(holder).isSuccess() && copied.matchTickRecipe(holder).isSuccess()) {
-                    return maxParallel;
-                }
-                maxParallel /= 2;
+        if (maxParallel == 1 || !(machine instanceof IRecipeCapabilityHolder holder)) return 1;
+        while (maxParallel > 0) {
+            var copied = recipe.copy(ContentModifier.multiplier(maxParallel), false);
+            if (copied.matchRecipe(holder).isSuccess() && copied.matchTickRecipe(holder).isSuccess()) {
+                return maxParallel;
             }
+            maxParallel /= 2;
         }
         return 1;
     }

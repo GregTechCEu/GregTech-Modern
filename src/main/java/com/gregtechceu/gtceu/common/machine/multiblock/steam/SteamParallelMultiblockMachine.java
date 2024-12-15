@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -81,9 +82,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         return CONVERSION_RATE;
     }
 
+    // Parallels up to multi's parallel limit, EUt and Duration are multiplied accordingly
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
-            return ModifierFunction.nullWithLog(SteamParallelMultiblockMachine.class, machine);
+            return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
 

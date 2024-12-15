@@ -125,30 +125,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (id != null) this.recipeType.addToCategoryMap(this.recipeCategory, this);
     }
 
-    public static Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents) {
-        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
-        for (var entry : contents.entrySet()) {
-            var contentList = entry.getValue();
-            var cap = entry.getKey();
-            if (contentList != null && !contentList.isEmpty()) {
-                List<Content> contentsCopy = new ArrayList<>();
-                for (Content content : contentList) {
-                    contentsCopy.add(content.copy(cap));
-                }
-                copyContents.put(entry.getKey(), contentsCopy);
-            }
-        }
-        return copyContents;
-    }
-
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id,
-                copyContents(inputs), copyContents(outputs),
-                copyContents(tickInputs), copyContents(tickOutputs),
-                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
-                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
-                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel,
-                recipeCategory);
+        return copy(ContentModifier.IDENTITY, false);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -166,6 +144,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
+        copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         return copied;
     }
@@ -411,7 +390,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             else if (nonChanced.size() >= outputLimit) {
                 outputs.computeIfAbsent(key, $ -> new ArrayList<>())
                         .addAll(nonChanced.stream()
-                                .map(cont -> cont.copy(key, null))
+                                .map(cont -> cont.copy(key))
                                 .toList()
                                 .subList(0, outputLimit));
 
@@ -420,7 +399,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             // If the regular outputs and chanced outputs are required to satisfy the outputLimit
             else if (!nonChanced.isEmpty() && (nonChanced.size() + chanced.size()) >= outputLimit) {
                 outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
+                        .addAll(nonChanced.stream().map(cont -> cont.copy(key)).toList());
 
                 // Calculate the number of chanced outputs after adding all the regular outputs
                 int numChanced = outputLimit - nonChanced.size();
@@ -434,13 +413,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             // The number of outputs + chanced outputs is lower than the trim number, so just add everything
             else {
                 outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
+                        .addAll(nonChanced.stream().map(cont -> cont.copy(key)).toList());
                 // Chanced outputs are taken care of in the original copy
             }
 
             if (!chanced.isEmpty())
                 outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(chanced.stream().map(cont -> cont.copy(key, null)).toList());
+                        .addAll(chanced.stream().map(cont -> cont.copy(key)).toList());
 
             trimmed.add(key);
         }

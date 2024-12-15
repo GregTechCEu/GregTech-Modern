@@ -260,7 +260,10 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > minTier && inputEUt != 0) {
-            var result = logic.performOverclocking(inputEUt, recipe.duration, GTValues.V[tier], 1);
+            int ocs = tier - minTier;
+            if (minTier == ULV) ocs--;
+            var params = new OverclockingLogic.OCParams(inputEUt, recipe.duration, ocs, 1);
+            var result = logic.runOverclockingLogic(params, V[tier]);
             duration = (int) (duration * result.durationMultiplier());
             inputEUt = (long) (inputEUt * result.eutMultiplier());
             tierText = tierText.formatted(ChatFormatting.ITALIC);

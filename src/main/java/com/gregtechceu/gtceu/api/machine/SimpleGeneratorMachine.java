@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -93,9 +94,10 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
+    // Fast parallels base recipe to produce up to voltage tier output
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
-            return ModifierFunction.nullWithLog(SimpleGeneratorMachine.class, machine);
+            return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
         long EUt = RecipeHelper.getOutputEUt(recipe);
         if (EUt <= 0) return ModifierFunction.NULL;

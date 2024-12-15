@@ -92,8 +92,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                             new AddedFloat(
                                     new MultipliedFloat(
                                             new CastedFloat(intProviderIngredient.getCountProvider()),
-                                            ConstantFloat.of((float) modifier.getMultiplier())),
-                                    ConstantFloat.of((float) modifier.getAddition()))));
+                                            ConstantFloat.of((float) modifier.multiplier())),
+                                    ConstantFloat.of((float) modifier.addition()))));
         }
         return SizedIngredient.create(content, modifier.apply(1));
     }

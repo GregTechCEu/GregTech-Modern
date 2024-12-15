@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -194,11 +195,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return value;
     }
 
+    // Increase duration based on boiler throttle
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeBoilerMachine largeBoilerMachine)) {
-            return ModifierFunction.nullWithLog(LargeBoilerMachine.class, machine);
+            return RecipeModifier.nullWrongType(LargeBoilerMachine.class, machine);
         }
-        // throttle clamps at 100 = durationMult of 1
+        if (largeBoilerMachine.throttle == 100) return ModifierFunction.IDENTITY;
         return ModifierFunction.builder()
                 .durationMultiplier(100.0 / largeBoilerMachine.throttle)
                 .build();

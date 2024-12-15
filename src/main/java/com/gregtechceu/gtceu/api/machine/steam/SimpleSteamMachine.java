@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -128,9 +129,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     // ****** Recipe Logic ******//
     //////////////////////////////////////
 
+    // Rejects recipe if > LV or if machine isn't vented. Adds vent condition and multiplies duration by 2 if LP
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
-            return ModifierFunction.nullWithLog(SimpleSteamMachine.class, machine);
+            return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
             return ModifierFunction.NULL;

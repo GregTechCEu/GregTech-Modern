@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -51,6 +52,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+
+    public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
+            PERFECT_HALF_VOLTAGE_FACTOR, false);
 
     @Getter
     private final int tier;
@@ -147,7 +151,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
-            return ModifierFunction.nullWithLog(FusionReactorMachine.class, machine);
+            return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
@@ -159,8 +163,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         // if the stored heat is >= required energy, recipe is okay to run
         if (heatDiff <= 0) {
-            return OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false)
-                    .getModifierNoParallel(machine, recipe, fusionReactorMachine.getMaxVoltage());
+            return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
         }
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff) return ModifierFunction.NULL;
@@ -170,8 +173,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         // increase the stored heat
         fusionReactorMachine.heat += heatDiff;
         fusionReactorMachine.updatePreHeatSubscription();
-        return OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false)
-                .getModifierNoParallel(machine, recipe, fusionReactorMachine.getMaxVoltage());
+        return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
     }
 
     public static String getFusionTier(long eu) {

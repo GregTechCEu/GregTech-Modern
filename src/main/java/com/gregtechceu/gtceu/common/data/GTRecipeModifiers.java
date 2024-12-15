@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -22,7 +21,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,24 +37,27 @@ import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 public class GTRecipeModifiers {
 
     /**
-     * Use it if machines are {@link IOverclockMachine}.
+     * Given an {@link OverclockingLogic}, creates a {@link RecipeModifier} designed for an {@link IOverclockMachine}
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
-            .memoize(ElectricOverclockModifier::new);
+            .memoize(logic -> (machine, recipe) -> {
+                if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
+                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+                    return ModifierFunction.NULL;
+                }
+                return logic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
+            });
+
     // Shortcuts for common OC logics
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
     public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
 
-    public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
-
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
-
-                Level level = machine.getLevel();
-                if (!(level instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
+                if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
                 BlockPos machinePos = machine.getPos();
@@ -77,24 +78,9 @@ public class GTRecipeModifiers {
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
             .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
-    public static class ElectricOverclockModifier implements RecipeModifier {
+    public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
 
-        private final OverclockingLogic overclockingLogic;
-
-        public ElectricOverclockModifier(OverclockingLogic overclockingLogic) {
-            this.overclockingLogic = overclockingLogic;
-        }
-
-        @Override
-        public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-            if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
-            if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
-                return ModifierFunction.NULL;
-            }
-            return overclockingLogic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
-        }
-    }
-
+    // Looks for parallel hatch and tries to do as many parallels as is set
     public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParts().stream()
@@ -113,9 +99,10 @@ public class GTRecipeModifiers {
         return ModifierFunction.IDENTITY;
     }
 
+    // Non-perfect subtick OC + 10% EUt discount per coil
     public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
 
@@ -130,9 +117,10 @@ public class GTRecipeModifiers {
         return oc;
     }
 
+    // 5% EUt discount per 900K excess heat -> heating coil OC
     public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
 
         int blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
@@ -156,10 +144,11 @@ public class GTRecipeModifiers {
         return oc.compose(discount);
     }
 
+    // Coil duration multipler -> non-perfect subtick OC
     public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
                                                                   @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return ModifierFunction.nullWithLog(CoilWorkableElectricMultiblockMachine.class, machine);
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
 
@@ -175,10 +164,11 @@ public class GTRecipeModifiers {
         return oc.compose(durationModifier.build());
     }
 
+    // Set EUt and Duration to calculated values -> OC -> apply parallels
     public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
                                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return ModifierFunction.nullWithLog(SteamBoilerMachine.class, machine);
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -84,9 +85,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
+    // Fast parallels up to desired EUt -> multiply by production boost & efficiency
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine)) {
-            return ModifierFunction.nullWithLog(LargeTurbineMachine.class, machine);
+            return RecipeModifier.nullWrongType(LargeTurbineMachine.class, machine);
         }
 
         var rotorHolder = turbineMachine.getRotorHolder();

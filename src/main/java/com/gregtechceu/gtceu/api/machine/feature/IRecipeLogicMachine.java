@@ -57,8 +57,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        var modifier = self().getDefinition().getRecipeModifier().getModifier(self(), recipe);
-        return modifier.apply(recipe);
+        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
     }
 
     /**

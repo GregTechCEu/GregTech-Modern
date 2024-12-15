@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -120,9 +121,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return isExtreme() ? 2.0 : 1.5;
     }
 
+    // Parallels up to desired EUt -> multiply by production boost
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
-            return ModifierFunction.nullWithLog(LargeCombustionEngineMachine.class, machine);
+            return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
         long EUt = RecipeHelper.getOutputEUt(recipe);
         // has lubricant

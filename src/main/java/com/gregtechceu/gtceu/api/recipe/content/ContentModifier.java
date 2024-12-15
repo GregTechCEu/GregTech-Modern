@@ -1,22 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ContentModifier {
+public record ContentModifier(double multiplier, double addition) {
 
     public static final ContentModifier IDENTITY = new ContentModifier(1, 0);
-    @Getter
-    private double multiplier;
-    @Getter
-    private double addition;
 
     public static ContentModifier multiplier(double multiplier) {
         return new ContentModifier(multiplier, 0);
@@ -24,15 +17,6 @@ public class ContentModifier {
 
     public static ContentModifier addition(double addition) {
         return new ContentModifier(1, addition);
-    }
-
-    public ContentModifier() {
-        this(1, 0);
-    }
-
-    public ContentModifier(double multiplier, double addition) {
-        this.multiplier = multiplier;
-        this.addition = addition;
     }
 
     public int apply(int number) {
@@ -51,7 +35,14 @@ public class ContentModifier {
         return number * multiplier + addition;
     }
 
+    /**
+     * Applies this ContentModifier to all entries in the given Content map
+     *
+     * @param contents the content map to apply to
+     * @return A new Content map that is the modified version of the argument
+     */
     public Map<RecipeCapability<?>, List<Content>> applyContents(Map<RecipeCapability<?>, List<Content>> contents) {
+        if (this == IDENTITY) return new HashMap<>(contents);
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
             var contentList = entry.getValue();
@@ -62,26 +53,6 @@ public class ContentModifier {
                     contentsCopy.add(content.copy(cap, this));
                 }
                 copyContents.put(entry.getKey(), contentsCopy);
-            }
-        }
-        return copyContents;
-    }
-
-    public Map<RecipeCapability<?>, List<Content>> applyAllButEU(Map<RecipeCapability<?>, List<Content>> contents) {
-        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
-        for (var entry : contents.entrySet()) {
-            var cap = entry.getKey();
-            var contentList = entry.getValue();
-            if (contentList != null && !contentList.isEmpty()) {
-                if (cap == EURecipeCapability.CAP) {
-                    copyContents.put(cap, contentList);
-                    continue;
-                }
-                List<Content> contentsCopy = new ArrayList<>();
-                for (Content content : contentList) {
-                    contentsCopy.add(content.copy(cap, this));
-                }
-                copyContents.put(cap, contentsCopy);
             }
         }
         return copyContents;
