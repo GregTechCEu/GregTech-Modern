@@ -38,7 +38,6 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
-import com.gregtechceu.gtceu.common.data.machines.GTCreateMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
@@ -2739,9 +2738,6 @@ public class GTMachines {
         GCYMMachines.init();
         GTResearchMachines.init();
 
-        if (GTCEu.isCreateLoaded()) {
-            GTCreateMachines.init();
-        }
         if (GTCEu.isAE2Loaded()) {
             GTAEMachines.init();
         }
