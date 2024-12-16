@@ -40,6 +40,8 @@ public class IntegrationLang {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
             provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
         }
+
+        provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
     /** Jade, TheOneProbe, WTHIT */
@@ -109,5 +111,6 @@ public class IntegrationLang {
 
         provider.add("gtceu.journeymap.options.layers", "Prospection layers");
         provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
+        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
     }
 }

@@ -28,13 +28,21 @@ public final class FTBOwner implements IMachineOwner {
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putUUID("teamUUID", team.getTeamId());
+        if (team != null)
+            tag.putUUID("teamUUID", team.getTeamId());
         tag.putUUID("playerUUID", playerUUID);
     }
 
     @Override
     public void load(CompoundTag tag) {
-        this.team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamByID(tag.getUUID("teamUUID")).orElse(null);
+        try {
+            if (tag.contains("teamUUID"))
+                this.team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamByID(tag.getUUID("teamUUID")).orElse(null);
+            else this.team = null;
+        } catch (NullPointerException e) {
+            this.team = null;
+        }
+
         this.playerUUID = tag.getUUID("playerUUID");
     }
 

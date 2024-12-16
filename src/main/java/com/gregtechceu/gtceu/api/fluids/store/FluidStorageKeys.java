@@ -44,7 +44,7 @@ public final class FluidStorageKeys {
             FluidState.PLASMA, -1);
 
     public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"),
-            "moltens",
+            "molten",
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),
             m -> "gtceu.fluid.molten",

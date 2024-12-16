@@ -128,8 +128,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 (id, args) -> CustomMultiblockBuilder.createMultiblock(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("primitive", CustomMultiblockBuilder.class,
                 (id, args) -> CustomMultiblockBuilder.createPrimitiveMultiblock(id.getPath(), args), false);
-        GTRegistryInfo.MACHINE.addType("kinetic", KineticMachineBuilder.class,
-                (id, args) -> KineticMachineBuilder.createAll(id.getPath(), args), false);
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
@@ -183,8 +181,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtFluidOut", GTRecipeComponents.FLUID_OUT);
         event.register("gtEuIn", GTRecipeComponents.EU_IN);
         event.register("gtEuOut", GTRecipeComponents.EU_OUT);
-        event.register("gtSuIn", GTRecipeComponents.SU_IN);
-        event.register("gtSuOut", GTRecipeComponents.SU_OUT);
 
         event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
         event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUTPUT);
