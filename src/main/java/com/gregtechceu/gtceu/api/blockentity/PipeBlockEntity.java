@@ -142,7 +142,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public long getOffsetTimer() {
-        return level == null ? offset : (level.getGameTime() + offset);
+        return level == null ? offset : (level.getServer().getTickCount() + offset);
     }
 
     @Override
