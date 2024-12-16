@@ -195,7 +195,16 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return value;
     }
 
-    // Increase duration based on boiler throttle
+    /**
+     * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Duration is multiplied by {@code 100 / throttle} if throttle is less than 100
+     * </p>
+     * 
+     * @param machine a {@link LargeBoilerMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Large Boiler and recipe
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeBoilerMachine largeBoilerMachine)) {
             return RecipeModifier.nullWrongType(LargeBoilerMachine.class, machine);

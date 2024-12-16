@@ -53,6 +53,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
+    // Standard OC used for Fusion
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
             PERFECT_HALF_VOLTAGE_FACTOR, false);
 
@@ -149,6 +150,19 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
+    /**
+     * Recipe Modifier for <b>Fusion Reactors</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * If the Fusion Reactor has enough heat or can get enough heat to run the recipe based on the {@code eu_to_start}
+     * data,
+     * apply {@link FusionReactorMachine#FUSION_OC} to the recipe.
+     * Otherwise, the recipe is rejected.
+     * </p>
+     * 
+     * @param machine a {@link FusionReactorMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Fusion Reactor and recipe
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);

@@ -82,7 +82,21 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         return CONVERSION_RATE;
     }
 
-    // Parallels up to multi's parallel limit, EUt and Duration are multiplied accordingly
+    /**
+     * Recipe Modifier for <b>Steam Multiblock Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if tier is greater than LV
+     * </p>
+     * <p>
+     * Recipe is parallelized up to the Multiblock's parallel limit.
+     * Then, duration is multiplied by {@code 1.5×} and EUt is multiplied by {@code (8/9) × parallels}, up to a cap of
+     * 32 EUt
+     * </p>
+     * 
+     * @param machine a {@link SteamParallelMultiblockMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Multiblock Machine and recipe
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);

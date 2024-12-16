@@ -175,7 +175,7 @@ public interface ModifierFunction {
                 var contentList = entry.getValue();
                 if (contentList != null && !contentList.isEmpty()) {
                     if (cap == EURecipeCapability.CAP) {
-                        copyContents.put(cap, contentList);
+                        copyContents.put(cap, new ArrayList<>(contentList));
                         continue;
                     }
                     List<Content> contentsCopy = new ArrayList<>();

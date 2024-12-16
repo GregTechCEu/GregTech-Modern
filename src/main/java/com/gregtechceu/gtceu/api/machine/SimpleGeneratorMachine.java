@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -94,7 +93,16 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
-    // Fast parallels base recipe to produce up to voltage tier output
+    /**
+     * Recipe Modifier for <b>Simple Generator Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is fast parallelized up to {@code desiredEUt / recipeEUt} times.
+     * </p>
+     * 
+     * @param machine a {@link SimpleGeneratorMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Simple Generator
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
@@ -102,8 +110,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         long EUt = RecipeHelper.getOutputEUt(recipe);
         if (EUt <= 0) return ModifierFunction.NULL;
 
-        int maxParallel = GTMath.saturatedCast(Math.min(generator.getOverclockVoltage(),
-                GTValues.V[generator.getOverclockTier()]) / EUt);
+        int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
         int parallels = ParallelLogic.getParallelAmountFast(generator, recipe, maxParallel);
 
         return ModifierFunction.builder()

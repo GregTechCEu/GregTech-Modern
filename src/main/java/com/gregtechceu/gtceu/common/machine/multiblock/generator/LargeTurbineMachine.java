@@ -45,7 +45,6 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     private final long BASE_EU_OUTPUT;
     @Getter
     private final int tier;
-    private long excessVoltage;
 
     public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
@@ -71,6 +70,9 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return 0;
     }
 
+    /**
+     * @return EUt multiplier that should be applied to the turbine's output
+     */
     protected double productionBoost() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
@@ -85,38 +87,42 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
-    // Fast parallels up to desired EUt -> multiply by production boost & efficiency
+    /**
+     * Recipe Modifier for <b>Large Turbine Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is fast parallelized up to {@code (baseEUt * power) / recipeEUt} times.
+     * Duration is then multiplied by the holder efficiency.
+     * </p>
+     * 
+     * @param machine a {@link LargeTurbineMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Turbine Multiblock and recipe
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeTurbineMachine turbineMachine)) {
             return RecipeModifier.nullWrongType(LargeTurbineMachine.class, machine);
         }
 
         var rotorHolder = turbineMachine.getRotorHolder();
-        var EUt = RecipeHelper.getOutputEUt(recipe);
+        if (rotorHolder == null) return ModifierFunction.NULL;
 
-        if (rotorHolder == null || EUt <= 0) return ModifierFunction.NULL;
-
-        var turbineMaxVoltage = turbineMachine.getOverclockVoltage();
-        if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
-            turbineMachine.excessVoltage -= turbineMaxVoltage;
-            return ModifierFunction.NULL;
-        }
-
+        long EUt = RecipeHelper.getOutputEUt(recipe);
+        long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        // get the amount of parallel required to match the desired output voltage
-        int maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
-        int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, Math.max(1, maxParallel));
+        if (EUt <= 0 || turbineMaxVoltage <= EUt || holderEfficiency <= 0) return ModifierFunction.NULL;
 
-        // this is necessary to prevent over-consumption of fuel
-        turbineMachine.excessVoltage += (long) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
-        double eutMultiplier = turbineMachine.productionBoost() * holderEfficiency * actualParallel;
+        // get the amount of parallel required to match the desired output voltage
+        int maxParallel = (int) (turbineMaxVoltage / EUt);
+        int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, maxParallel);
+        double eutMultiplier = turbineMachine.productionBoost() * actualParallel;
 
         return ModifierFunction.builder()
                 .inputModifier(ContentModifier.multiplier(actualParallel))
                 .outputModifier(ContentModifier.multiplier(actualParallel))
                 .eutMultiplier(eutMultiplier)
                 .parallels(actualParallel)
+                .durationMultiplier(holderEfficiency)
                 .build();
     }
 

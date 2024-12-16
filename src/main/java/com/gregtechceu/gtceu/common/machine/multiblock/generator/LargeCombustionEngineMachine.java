@@ -102,10 +102,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     @Override
     public long getOverclockVoltage() {
-        if (isOxygenBoosted)
-            return GTValues.V[tier] * 2;
-        else
-            return GTValues.V[tier];
+        if (isOxygenBoosted) return GTValues.V[tier] * 2;
+        else return GTValues.V[tier];
     }
 
     protected GTRecipe getLubricantRecipe() {
@@ -116,12 +114,25 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe();
     }
 
+    /**
+     * @return EUt multiplier that should be applied to the engine's output
+     */
     protected double getProductionBoost() {
         if (!isOxygenBoosted) return 1;
         return isExtreme() ? 2.0 : 1.5;
     }
 
-    // Parallels up to desired EUt -> multiply by production boost
+    /**
+     * Recipe Modifier for <b>Combustion Engine Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if the machine's intakes are obstructed or if it doesn't have lubricant<br>
+     * Recipe is parallelized up to {@code desiredEUt / recipeEUt} times.
+     * EUt is further multiplied by the production boost of the engine.
+     * 
+     * @param machine a {@link LargeCombustionEngineMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Combustion Engine
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);

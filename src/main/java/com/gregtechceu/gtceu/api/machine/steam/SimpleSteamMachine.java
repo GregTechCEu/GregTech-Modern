@@ -129,7 +129,17 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     // ****** Recipe Logic ******//
     //////////////////////////////////////
 
-    // Rejects recipe if > LV or if machine isn't vented. Adds vent condition and multiplies duration by 2 if LP
+    /**
+     * Recipe Modifier for <b>Simple Steam Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if tier is greater than LV or if machine cannot vent.<br>
+     * Duration is multiplied by {@code 2} if the machine is low pressure
+     * </p>
+     * 
+     * @param machine a {@link SimpleSteamMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Machine
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);

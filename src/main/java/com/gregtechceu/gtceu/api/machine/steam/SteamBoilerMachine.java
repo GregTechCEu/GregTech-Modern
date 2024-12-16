@@ -255,7 +255,15 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected abstract long getBaseSteamOutput();
 
-    // Multiplies duration by 0.5x if HP
+    /**
+     * Recipe Modifier for <b>Steam Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Duration is multiplied by {@code 0.5} if the machine is high pressure
+     * 
+     * @param machine a {@link SteamBoilerMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Boiler
+     */
     public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
             return RecipeModifier.nullWrongType(SteamBoilerMachine.class, machine);

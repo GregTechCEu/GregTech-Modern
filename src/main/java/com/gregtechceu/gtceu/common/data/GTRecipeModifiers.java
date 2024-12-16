@@ -80,7 +80,16 @@ public class GTRecipeModifiers {
 
     public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
 
-    // Looks for parallel hatch and tries to do as many parallels as is set
+    /**
+     * Recipe Modifier for <b>Parallel Multiblock Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Looks for the Parallel Hatch on a Multiblock and attempts to parallelize the recipe up to the set amount
+     * </p>
+     * 
+     * @param machine an {@link IMultiController} machine
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Parallel Multiblock
+     */
     public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParts().stream()
@@ -90,6 +99,7 @@ public class GTRecipeModifiers {
                     .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
 
+            if (parallels == 1) return ModifierFunction.IDENTITY;
             return ModifierFunction.builder()
                     .modifyAllContents(ContentModifier.multiplier(parallels))
                     .eutMultiplier(parallels)
@@ -99,7 +109,17 @@ public class GTRecipeModifiers {
         return ModifierFunction.IDENTITY;
     }
 
-    // Non-perfect subtick OC + 10% EUt discount per coil
+    /**
+     * Recipe Modifier for <b>Cracker Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.
+     * Then, EUt is multiplied by {@code 1 - (0.1 × coilTier)}
+     * </p>
+     * 
+     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Cracking
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Cracker
+     */
     public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
@@ -117,7 +137,21 @@ public class GTRecipeModifiers {
         return oc;
     }
 
-    // 5% EUt discount per 900K excess heat -> heating coil OC
+    /**
+     * Recipe Modifier for <b>Blast Furnace Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if the required temperature is higher than the blast furnace's working temperature.
+     * This working temperature is equal to {@code coilTemp + (100K × (voltageTier - MV))} for energy tiers over MV.
+     * </p>
+     * <p>
+     * Recipe is OC'd via {@link OverclockingLogic#heatingCoilOC}.<br>
+     * Then, EUt is multiplied by {@code 0.95×} for every {@code 900K} over the required temperature.
+     * </p>
+     * 
+     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Blasting
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Blast Furnace
+     */
     public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
@@ -144,7 +178,18 @@ public class GTRecipeModifiers {
         return oc.compose(discount);
     }
 
-    // Coil duration multipler -> non-perfect subtick OC
+    /**
+     * Recipe Modifier for <b>Pyrolyse Oven Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.<br>
+     * Then, duration is multiplied by {@code 1.333×} for Cupronickel Coils
+     * or {@code 2 / (tier + 1)} for higher tiercoils.
+     * </p>
+     * 
+     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Pyrolysis
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Pyrolyse Oven
+     */
     public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
                                                                   @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
@@ -152,19 +197,34 @@ public class GTRecipeModifiers {
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
 
-        var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
-
         int tier = coilMachine.getCoilTier();
-        var durationModifier = ModifierFunction.builder();
-        if (tier == 0) { // 75% speed with cupro coils
-            durationModifier.durationMultiplier(4.0 / 3);
-        } else {
-            durationModifier.durationMultiplier(2.0 / (tier + 1));
-        }
-        return oc.compose(durationModifier.build());
+        double durationMultiplier = (tier == 0) ? (4.0 / 3.0) : (2.0 / (tier + 1)); // 75% speed with cupro coils
+        var durationModifier = ModifierFunction.builder()
+                .durationMultiplier(durationMultiplier)
+                .build();
+
+        var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+        return oc.andThen(durationModifier);
     }
 
-    // Set EUt and Duration to calculated values -> OC -> apply parallels
+    /**
+     * Recipe Modifier for <b>Multi Smelters</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Modifies the recipe in the following order:
+     * <ol>
+     * <li>Calculates the maximum parallel as {@code 32 × coilLevel}</li>
+     * <li>Finds the actual parallel amount that the smelter can do</li>
+     * <li>Sets the recipe duration to {@code 128 × 2 × parallels / maxParallels}</li>
+     * <li>Sets the recipe EUt to {@code parallels / (8 × coilDiscount)}</li>
+     * <li>Applies {@link OverclockingLogic#NON_PERFECT_OVERCLOCK} to this modified recipe</li>
+     * <li>Multiplies the recipe contents by the parallel amount</li>
+     * </ol>
+     * </p>
+     * 
+     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for parallel smelting
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Multi Smelter
+     */
     public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
                                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
@@ -172,16 +232,15 @@ public class GTRecipeModifiers {
         }
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();
-        final int FURNACE_DURATION = 128;
         int parallels = ParallelLogic.getParallelAmount(machine, recipe, maxParallel);
         if (parallels == 0) return ModifierFunction.NULL;
 
-        int dur = (int) Math.max(1, FURNACE_DURATION * 2 * parallels / Math.max(1.0, maxParallel));
-        long eut = 4 * Math.max(1, (parallels / 8) / coilMachine.getCoilType().getEnergyDiscount());
+        int duration = (int) (128 * 2.0 * parallels / maxParallel);
+        long eut = 4 * (long) (parallels / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
         ModifierFunction baseModifier = r -> {
             var copy = r.copy();
-            EURecipeCapability.putEUContent(copy.tickInputs, eut);
-            copy.duration = dur;
+            EURecipeCapability.putEUContent(copy.tickInputs, Math.max(1, eut));
+            copy.duration = Math.max(1, duration);
             return copy;
         };
 

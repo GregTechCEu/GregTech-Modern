@@ -31,7 +31,8 @@ public class ParallelLogic {
      * @return The number of possible parallels, 0 if the recipe cannot be done
      */
     public static int getParallelAmount(MetaMachine machine, GTRecipe recipe, int parallelLimit) {
-        if (parallelLimit == 1 || !(machine instanceof IRecipeLogicMachine rlm)) return 1;
+        if (parallelLimit <= 1) return parallelLimit;
+        if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
         int maxInputMultiplier = limitByInput(rlm, recipe, parallelLimit);
         if (maxInputMultiplier == 0) return 0;
@@ -186,21 +187,23 @@ public class ParallelLogic {
     }
 
     /**
-     * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。
+     * Fast parallel, the parallel amount is always the 2 times the divisor of parallelLimit.
      *
-     * @param machine     recipe holder
-     * @param recipe      current recipe
-     * @param maxParallel max parallel limited
+     * @param machine       recipe holder
+     * @param recipe        current recipe
+     * @param parallelLimit max parallel limited
      * @return Returns the number of parallels that can be done (fast calc)
      */
-    public static int getParallelAmountFast(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel) {
-        if (maxParallel == 1 || !(machine instanceof IRecipeCapabilityHolder holder)) return 1;
-        while (maxParallel > 0) {
-            var copied = recipe.copy(ContentModifier.multiplier(maxParallel), false);
+    public static int getParallelAmountFast(MetaMachine machine, @NotNull GTRecipe recipe, int parallelLimit) {
+        if (parallelLimit <= 1) return parallelLimit;
+        if (!(machine instanceof IRecipeCapabilityHolder holder)) return 1;
+
+        while (parallelLimit > 0) {
+            var copied = recipe.copy(ContentModifier.multiplier(parallelLimit), false);
             if (copied.matchRecipe(holder).isSuccess() && copied.matchTickRecipe(holder).isSuccess()) {
-                return maxParallel;
+                return parallelLimit;
             }
-            maxParallel /= 2;
+            parallelLimit /= 2;
         }
         return 1;
     }
