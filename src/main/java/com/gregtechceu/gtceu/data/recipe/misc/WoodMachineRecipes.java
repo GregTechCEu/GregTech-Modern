@@ -440,10 +440,6 @@ public class WoodMachineRecipes {
         }
 
         // strip log
-        VanillaRecipeHelper.addShapelessRecipe(provider,
-                "file_" + entry.woodName + "log",
-                new ItemStack(entry.strippedLog),
-                "f", "L", 'L', entry.log);
         LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_log")
                 .inputItems(entry.log)
                 .outputItems(entry.strippedLog)
@@ -451,10 +447,6 @@ public class WoodMachineRecipes {
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
         // strip wood
-        VanillaRecipeHelper.addShapelessRecipe(provider,
-                "file_" + entry.woodName + "wood",
-                new ItemStack(entry.strippedWood),
-                "f", "W", 'W', entry.wood);
         LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_wood")
                 .inputItems(entry.wood)
                 .outputItems(entry.strippedWood)
