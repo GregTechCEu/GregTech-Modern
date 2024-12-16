@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
@@ -207,7 +208,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         var player = context.getPlayer();
         var level = context.getLevel();
         var pos = context.getClickedPos();
@@ -217,9 +218,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         if (player != null) {
             var first = level.getBlockEntity(pos);
-            if (first != null) {
-                handleSpecialBlockEntities(first, maxBlocksToRecolor, context);
-            } else {
+            if (first == null || handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
                 handleBlocks(pos, maxBlocksToRecolor, context);
             }
             GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
@@ -243,15 +242,19 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @SuppressWarnings("rawtypes")
-    private void handleSpecialBlockEntities(BlockEntity first, int limit, UseOnContext context) {
+    private boolean handleSpecialBlockEntities(BlockEntity first, int limit, UseOnContext context) {
         var player = context.getPlayer();
-        if (player == null) return;
+        if (player == null) {
+            return false;
+        }
         if (GTCEu.isAE2Loaded() && first instanceof CableBusBlockEntity cable) {
             var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(CableBusBlockEntity.class, cable,
                     ae2CablePredicate, limit, limit * 6);
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
-                if (c.getColor() == ae2Color) continue;
+                if (c.getColor() == ae2Color) {
+                    continue;
+                }
                 c.recolourBlock(null, ae2Color, player);
                 if (!useItemDurability(player, context.getHand(), context.getItemInHand(), ItemStack.EMPTY)) {
                     break;
@@ -261,12 +264,27 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(PipeBlockEntity.class, pipe,
                     gtPipePredicate, limit, limit * 6);
             for (var c : collected) {
-                if (!paintPaintable(c, color)) continue;
+                if (!paintPaintable(c, color)) {
+                    continue;
+                }
                 if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(),
                         ItemStack.EMPTY)) {
                     break;
                 }
             }
+        } else if (first instanceof MetaMachineBlockEntity mmbe) {
+            var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(MetaMachineBlockEntity.class, mmbe,
+                    gtMetaMachinePredicate, limit, limit * 6);
+            for (var c : collected) {
+                if (!paintPaintable(c.getMetaMachine(), color)) {
+                    continue;
+                }
+                if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(),
+                        ItemStack.EMPTY)) {
+                    break;
+                }
+            }
+
         } else if (first instanceof IPaintable) {
             var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(BlockEntity.class, first,
                     paintablePredicateWrapper, limit, limit * 6);
@@ -279,7 +297,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     break;
                 }
             }
+        } else {
+            return false;
         }
+        return true;
     }
 
     private void handleBlocks(BlockPos start, int limit, UseOnContext context) {
@@ -289,8 +310,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             return;
         }
         var stack = context.getItemInHand();
-        var state = level.getBlockState(start);
-        final var block = state.getBlock();
         var collected = BreadthFirstBlockSearch
                 .conditionalBlockPosSearch(start,
                         (parent, child) -> parent == null ||
@@ -527,5 +546,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             return false;
         }
         return parent.isConnected(direction) && child.isConnected(direction.getOpposite());
+    };
+
+    private static final TriPredicate<MetaMachineBlockEntity, MetaMachineBlockEntity, Direction> gtMetaMachinePredicate = (parent,
+                                                                                                                           child,
+                                                                                                                           direction) -> {
+        if (parent == null) return true;
+        return paintablePredicate.test(parent.getMetaMachine(), child.getMetaMachine()) &&
+                parent.getMetaMachine().getDefinition().equals(child.getMetaMachine().getDefinition());
     };
 }
