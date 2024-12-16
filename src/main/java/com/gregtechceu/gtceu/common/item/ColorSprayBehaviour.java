@@ -46,7 +46,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.logging.LogUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -297,7 +296,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                         (parent, child) -> parent == null ||
                                 level.getBlockState(child).is(level.getBlockState(parent).getBlock()),
                         limit, limit * 6);
-        LogUtils.getLogger().info("Collected {} blocks that are: {}", collected.size(), block);
         for (var pos : collected) {
             if (!tryPaintBlock(level, pos)) {
                 break;
