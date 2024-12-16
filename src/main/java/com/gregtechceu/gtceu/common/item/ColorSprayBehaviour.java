@@ -88,8 +88,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         ImmutableMap.Builder<DyeColor, Block> shulkerBoxBuilder = ImmutableMap.builder();
         ImmutableMap.Builder<DyeColor, Block> candleBuilder = ImmutableMap.builder();
 
-        ImmutableMap.Builder<DyeColor, Block> seatBuilder = ImmutableMap.builder();
-
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
             if (color.ordinal() > 15 && Platform.isModLoaded(GTValues.MODID_TINTED)) {
@@ -120,14 +118,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                         BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
                 shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "shulker_box")));
                 candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "candle")));
-
-                /*
-                 * somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so
-                 * `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
-                 * if (GTCEu.isCreateLoaded()) {
-                 * seatBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_CREATE, color, "seat")));
-                 * }
-                 */
             }
         }
         GLASS_MAP = glassBuilder.build();
