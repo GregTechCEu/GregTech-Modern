@@ -218,7 +218,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         if (player != null) {
             var first = level.getBlockEntity(pos);
-            if (first == null || handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
+            if (first == null || !handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
                 handleBlocks(pos, maxBlocksToRecolor, context);
             }
             GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
