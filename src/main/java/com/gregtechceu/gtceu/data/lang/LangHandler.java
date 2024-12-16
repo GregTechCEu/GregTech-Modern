@@ -328,7 +328,19 @@ public class LangHandler {
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.tag_filter.title", "Tag Filter");
         multilineLang(provider, "cover.tag_filter.info",
-                "§bAccepts complex expressions\n& = AND\n| = OR\n^ = XOR\n! = NOT\n( ) for priority\n* for wildcard\n§bExample:\n§6dust*Gold | (plate* & !*Double*)\nWill match all gold dusts of all sizes or all plates, but not double plates");
+                """
+                        §bAccepts complex expressions
+                        §6a & b§r = AND
+                        §6a | b§r = OR
+                        §6a ^ b§r = XOR
+                        §6!a§r = NOT
+                        §6(a)§r for grouping
+                        §6*§r for wildcard
+                        §6$§r for untagged
+                        §bTags come in the form 'namespace:tag/subtype'.
+                        The 'forge:' namespace is assumed if one isn't provided.
+                        §bExample: §6*dusts/gold | (gtceu:circuits & !*lv)
+                        This matches all gold dusts or all circuits except LV ones""");
         provider.add("cover.tag_filter.test_slot.info",
                 "Insert a item to test if it matches the filter expression");
         provider.add("cover.tag_filter.matches", "Item matches");
