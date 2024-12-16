@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -73,7 +72,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
                 // recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
                 // .recipeType(recipeType)
-                .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.name))
                 .tooltips(explosion());
         // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,

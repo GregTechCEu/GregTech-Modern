@@ -226,7 +226,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         @Override
         public boolean checkMatchedRecipeAvailable(GTRecipe match) {
             var matchCopy = match.copy();
-            var modified = machine.fullModifyRecipe(matchCopy, ocParams, ocResult);
+            var modified = machine.fullModifyRecipe(matchCopy);
             if (modified != null) {
                 if (modified.checkConditions(this).isSuccess() &&
                         matchDTRecipe(modified, machine).isSuccess() &&
@@ -250,7 +250,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 handleRecipeIO(lastRecipe, IO.OUT);
                 if (machine.alwaysTryModifyRecipe()) {
                     if (lastOriginRecipe != null) {
-                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), ocParams, ocResult);
+                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
                         if (modified == null) markLastRecipeDirty();
                         else lastRecipe = modified;
                     } else {

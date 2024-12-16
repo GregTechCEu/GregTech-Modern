@@ -18,8 +18,8 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -52,6 +52,10 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+
+    // Standard OC used for Fusion
+    public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
+            PERFECT_HALF_VOLTAGE_FACTOR, false);
 
     @Getter
     private final int tier;
@@ -146,38 +150,44 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof FusionReactorMachine fusionReactorMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
-                    !recipe.data.contains("eu_to_start") ||
-                    recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
-                return null;
-            }
-
-            long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
-
-            // if the stored heat is >= required energy, recipe is okay to run
-            if (heatDiff <= 0) {
-                return RecipeHelper.applyOverclock(
-                        new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
-                        fusionReactorMachine.getMaxVoltage(), params, result);
-            }
-            // if the remaining energy needed is more than stored, do not run
-            if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
-                return null;
-
-            // remove the energy needed
-            fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
-            // increase the stored heat
-            fusionReactorMachine.heat += heatDiff;
-            fusionReactorMachine.updatePreHeatSubscription();
-            return RecipeHelper.applyOverclock(
-                    new OverclockingLogic(PERFECT_HALF_DURATION_FACTOR, PERFECT_HALF_VOLTAGE_FACTOR, false), recipe,
-                    fusionReactorMachine.getMaxVoltage(), params, result);
+    /**
+     * Recipe Modifier for <b>Fusion Reactors</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * If the Fusion Reactor has enough heat or can get enough heat to run the recipe based on the {@code eu_to_start}
+     * data,
+     * apply {@link FusionReactorMachine#FUSION_OC} to the recipe.
+     * Otherwise, the recipe is rejected.
+     * </p>
+     * 
+     * @param machine a {@link FusionReactorMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Fusion Reactor and recipe
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
+            return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
-        return null;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
+                !recipe.data.contains("eu_to_start") ||
+                recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
+            return ModifierFunction.NULL;
+        }
+
+        long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
+
+        // if the stored heat is >= required energy, recipe is okay to run
+        if (heatDiff <= 0) {
+            return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
+        }
+        // if the remaining energy needed is more than stored, do not run
+        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff) return ModifierFunction.NULL;
+
+        // remove the energy needed
+        fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
+        // increase the stored heat
+        fusionReactorMachine.heat += heatDiff;
+        fusionReactorMachine.updatePreHeatSubscription();
+        return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
     }
 
     public static String getFusionTier(long eu) {

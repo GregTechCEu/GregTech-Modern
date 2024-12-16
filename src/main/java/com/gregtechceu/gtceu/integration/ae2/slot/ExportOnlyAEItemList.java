@@ -35,7 +35,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     public ExportOnlyAEItemList(MetaMachine holder, int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
-        super(holder, 0, IO.IN);
+        super(holder, 0, IO.IN, IO.NONE);
         this.inventory = new ExportOnlyAEItemSlot[slots];
         for (int i = 0; i < slots; i++) {
             this.inventory[i] = slotFactory.get();
@@ -84,7 +84,7 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
 
     @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
         if (slot >= 0 && slot < inventory.length) {
             return this.inventory[slot].extractItem(0, amount, simulate);
         }
@@ -145,11 +145,13 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
 
         @Override
+        @NotNull
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
+        @NotNull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (amount == 0) return ItemStack.EMPTY;
             validateSlotIndex(slot);

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSave
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
@@ -57,7 +56,6 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                var copied = match.copy(new ContentModifier(match.duration, 0));
                 if (match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
                     setupRecipe(match);
                 }
@@ -121,7 +119,6 @@ public class FluidDrillLogic extends RecipeLogic {
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            var copied = match.copy(new ContentModifier(match.duration, 0));
             if (match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
                 setupRecipe(match);
                 return;
