@@ -73,9 +73,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private static final ImmutableMap<DyeColor, Block> SHULKER_BOX_MAP;
     private static final ImmutableMap<DyeColor, Block> CANDLE_MAP;
 
-    // mod support
-    private static final ImmutableMap<DyeColor, Block> SEAT_MAP;
-
     private static ResourceLocation getId(String modid, DyeColor color, String postfix) {
         return new ResourceLocation(modid, "%s_%s".formatted(color.getSerializedName(), postfix));
     }
@@ -143,7 +140,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         SHULKER_BOX_MAP = shulkerBoxBuilder.build();
         CANDLE_MAP = candleBuilder.build();
 
-        SEAT_MAP = seatBuilder.build();
     }
 
     private final Supplier<ItemStack> empty;
