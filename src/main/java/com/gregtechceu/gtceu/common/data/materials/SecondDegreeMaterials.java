@@ -204,12 +204,6 @@ public class SecondDegreeMaterials {
                 .components(Aluminium, 2, PotassiumFeldspar, 1, Oxygen, 3)
                 .buildAndRegister();
 
-        Blackstone = new Material.Builder(GTCEu.id("blackstone"))
-                .dust()
-                .color(0x090a0a).iconSet(ROUGH)
-                .flags(NO_SMASHING, DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
         VanadiumMagnetite = new Material.Builder(GTCEu.id("vanadium_magnetite"))
                 .dust().ore()
                 .color(0x505d70).secondaryColor(0x170322).iconSet(METALLIC)
