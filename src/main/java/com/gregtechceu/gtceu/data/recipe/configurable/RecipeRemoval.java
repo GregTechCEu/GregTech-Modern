@@ -163,6 +163,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));
         registry.accept(new ResourceLocation("minecraft:polished_blackstone_button"));
+        registry.accept(new ResourceLocation("minecraft:calibrated_sculk_sensor"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
@@ -355,7 +356,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_diorite"));
         registry.accept(new ResourceLocation("minecraft:polished_granite"));
         registry.accept(new ResourceLocation("minecraft:coarse_dirt"));
-        registry.accept(new ResourceLocation("minecraft:smooth_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_quartz_block"));
         registry.accept(new ResourceLocation("minecraft:stone_bricks"));
@@ -365,7 +365,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:red_nether_bricks"));
         registry.accept(new ResourceLocation("minecraft:red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_red_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:bookshelf"));
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
@@ -397,9 +396,12 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper"));
         registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
         registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:end_crystal"));
+        registry.accept(new ResourceLocation("minecraft:end_crystal"));
         registry.accept(new ResourceLocation("minecraft:end_rod"));
         registry.accept(new ResourceLocation("minecraft:mud_bricks"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_vine"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_moss_block"));
+        registry.accept(new ResourceLocation("minecraft:packed_mud"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {

@@ -23,6 +23,8 @@ public class StoneTypeEntry {
     @Nullable
     public final Item chiselStone;
     @Nullable
+    public final Item crackedStone;
+    @Nullable
     public final Item slab;
     @Nullable
     public final Item stair;
@@ -45,6 +47,7 @@ public class StoneTypeEntry {
     public final boolean addPolishedStoneUnificationInfo;
     public final boolean addSmeltStoneUnificationInfo;
     public final boolean addChiselStoneUnificationInfo;
+    public final boolean addCrackedStoneUnificationInfo;
     public final boolean addSlabUnificationInfo;
     public final boolean addStairUnificationInfo;
     public final boolean addButtonUnificationInfo;
@@ -54,7 +57,7 @@ public class StoneTypeEntry {
     private StoneTypeEntry(@NotNull String modid, @NotNull String stoneName,
                            @Nullable Item stone, @Nullable Item polishedStone,
                            @Nullable Item smeltStone, @Nullable Item chiselStone,
-                           @Nullable Item slab,
+                           @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
                            @Nullable Material material, long materialAmount,
@@ -64,7 +67,7 @@ public class StoneTypeEntry {
                            boolean addWallOreDict, boolean addPressurePlateOreDict,
                            boolean addStoneUnificationInfo, boolean addPolishedStoneUnificationInfo,
                            boolean addSmeltStoneUnificationInfo, boolean addChiselStoneUnificationInfo,
-                           boolean addSlabUnificationInfo,
+                           boolean addCrackedStoneUnificationInfo, boolean addSlabUnificationInfo,
                            boolean addStairUnificationInfo, boolean addButtonUnificationInfo,
                            boolean addWallUnificationInfo, boolean addPressurePlateUnificationInfo) {
         this.modid = modid;
@@ -73,6 +76,7 @@ public class StoneTypeEntry {
         this.polishedStone = polishedStone;
         this.smeltStone = smeltStone;
         this.chiselStone = chiselStone;
+        this.crackedStone = crackedStone;
         this.slab = slab;
         this.stair = stair;
         this.button = button;
@@ -90,6 +94,7 @@ public class StoneTypeEntry {
         this.addStoneUnificationInfo = addStoneUnificationInfo;
         this.addPolishedStoneUnificationInfo = addPolishedStoneUnificationInfo;
         this.addChiselStoneUnificationInfo = addChiselStoneUnificationInfo;
+        this.addCrackedStoneUnificationInfo = addCrackedStoneUnificationInfo;
         this.addSmeltStoneUnificationInfo = addSmeltStoneUnificationInfo;
         this.addSlabUnificationInfo = addSlabUnificationInfo;
         this.addStairUnificationInfo = addStairUnificationInfo;
@@ -106,6 +111,7 @@ public class StoneTypeEntry {
         public Item polishedStone = null;
         public Item smeltStone = null;
         public Item chiselStone = null;
+        public Item crackedStone = null;
         public Item slab = null;
         public Item stair = null;
         public Item button = null;
@@ -125,6 +131,7 @@ public class StoneTypeEntry {
         public boolean addPolishedStoneUnificationInfo = false;
         public boolean addSmeltStoneUnificationInfo = false;
         public boolean addChiselStoneUnificationInfo = false;
+        public boolean addCrackedStoneUnificationInfo = false;
         public boolean addSlabUnificationInfo = false;
         public boolean addStairUnificationInfo = false;
         public boolean addButtonUnificationInfo = false;
@@ -153,6 +160,11 @@ public class StoneTypeEntry {
 
         public Builder chiselStone(@NotNull Item chiselStone) {
             this.chiselStone = chiselStone;
+            return this;
+        }
+
+        public Builder crackedStone(@NotNull Item crackedStone) {
+            this.crackedStone = crackedStone;
             return this;
         }
 
@@ -212,12 +224,13 @@ public class StoneTypeEntry {
 
         public StoneTypeEntry build() {
             return new StoneTypeEntry(modid, stoneName,
-                    stone, polishedStone, smeltStone, chiselStone, slab, stair, button, wall, pressurePlate,
+                    stone, polishedStone, smeltStone, chiselStone, crackedStone, slab, stair, button, wall,
+                    pressurePlate,
                     material, materialAmount,
                     addStoneOreDict, addPolishedStoneOreDict, addSlabOreDict, addStairOreDict,
                     addButtonOreDict, addWallOreDict, addPressurePlateOreDict,
                     addStoneUnificationInfo, addPolishedStoneUnificationInfo, addSmeltStoneUnificationInfo,
-                    addChiselStoneUnificationInfo, addSlabUnificationInfo,
+                    addChiselStoneUnificationInfo, addCrackedStoneUnificationInfo, addSlabUnificationInfo,
                     addStairUnificationInfo, addButtonUnificationInfo,
                     addWallUnificationInfo, addPressurePlateUnificationInfo);
         }
