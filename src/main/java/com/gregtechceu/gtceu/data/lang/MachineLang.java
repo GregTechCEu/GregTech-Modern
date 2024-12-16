@@ -405,6 +405,11 @@ public class MachineLang {
         provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
 
+        // Forming Press
+        provider.add("gtceu.forming_press.naming.press", "§oNamed Press");
+        provider.add("gtceu.forming_press.naming.to_name", "§oItem to Name");
+        provider.add("gtceu.forming_press.naming.named", "§oNamed Item");
+
         // Scanner
         provider.add("gtceu.scanner.copy_stick_from", "§oStick to Copy");
         provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");

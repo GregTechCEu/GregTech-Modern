@@ -18,7 +18,6 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
@@ -35,9 +34,9 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
             var type = category.getRecipeType();
+            if (category == type.getCategory()) type.buildRepresentativeRecipes();
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
-            var recipes = type.getRecipesInCategory(category).stream();
-            Stream.concat(recipes, type.getRepresentativeRecipes().stream())
+            type.getRecipesInCategory(category).stream()
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
         }

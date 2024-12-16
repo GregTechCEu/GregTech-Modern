@@ -510,6 +510,7 @@ public class FirstDegreeMaterials {
 
         Ruridit = new Material.Builder(GTCEu.id("ruridit"))
                 .ingot(3)
+                .fluid()
                 .color(0x88b5b9).secondaryColor(0x4e885c).iconSet(BRIGHT)
                 .flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_LONG_ROD, GENERATE_FRAME, GENERATE_BOLT_SCREW)
                 .components(Ruthenium, 2, Iridium, 1)

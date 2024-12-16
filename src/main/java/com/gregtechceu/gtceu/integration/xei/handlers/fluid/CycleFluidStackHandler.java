@@ -1,21 +1,24 @@
-package com.gregtechceu.gtceu.api.transfer.fluid;
+package com.gregtechceu.gtceu.integration.xei.handlers.fluid;
+
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CycleFluidHandler implements IFluidHandlerModifiable {
+public class CycleFluidStackHandler implements IFluidHandlerModifiable {
 
-    private List<List<FluidStack>> stacks;
+    private final List<FluidStackList> stacks;
 
-    public CycleFluidHandler(List<List<FluidStack>> stacks) {
-        this.updateStacks(stacks);
-    }
-
-    public void updateStacks(List<List<FluidStack>> stacks) {
-        this.stacks = stacks;
+    public CycleFluidStackHandler(List<List<FluidStack>> stacks) {
+        this.stacks = new ArrayList<>();
+        for (var list : stacks) {
+            this.stacks.add(FluidStackList.of(list));
+        }
     }
 
     @Override
@@ -26,7 +29,7 @@ public class CycleFluidHandler implements IFluidHandlerModifiable {
     @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        List<FluidStack> stackList = this.stacks.get(tank);
+        List<FluidStack> stackList = stacks.get(tank).getStacks();
         return stackList != null && !stackList.isEmpty() ?
                 stackList.get(Math.abs((int) (System.currentTimeMillis() / 1000L) % stackList.size())) :
                 FluidStack.EMPTY;
@@ -35,7 +38,7 @@ public class CycleFluidHandler implements IFluidHandlerModifiable {
     @Override
     public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
         if (tank >= 0 && tank < this.stacks.size()) {
-            this.stacks.set(tank, List.of(fluidStack));
+            this.stacks.set(tank, FluidStackList.of(fluidStack));
         }
     }
 
@@ -75,7 +78,7 @@ public class CycleFluidHandler implements IFluidHandlerModifiable {
         return false;
     }
 
-    public List<FluidStack> getStackList(int i) {
+    public FluidStackList getStackList(int i) {
         return this.stacks.get(i);
     }
 }

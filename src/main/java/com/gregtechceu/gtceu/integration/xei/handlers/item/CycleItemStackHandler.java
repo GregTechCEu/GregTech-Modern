@@ -1,24 +1,26 @@
-package com.gregtechceu.gtceu.api.transfer.item;
+package com.gregtechceu.gtceu.integration.xei.handlers.item;
+
+import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 public class CycleItemStackHandler implements IItemHandlerModifiable {
 
-    private List<List<ItemStack>> stacks;
+    private final List<ItemStackList> stacks;
 
     public CycleItemStackHandler(List<List<ItemStack>> stacks) {
-        updateStacks(stacks);
-    }
-
-    public void updateStacks(List<List<ItemStack>> stacks) {
-        this.stacks = stacks;
+        this.stacks = new ArrayList<>();
+        for (var list : stacks) {
+            this.stacks.add(ItemStackList.of(list));
+        }
     }
 
     @Override
@@ -29,19 +31,19 @@ public class CycleItemStackHandler implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int i) {
-        List<ItemStack> stackList = stacks.get(i);
+        List<ItemStack> stackList = stacks.get(i).getStacks();
         return stackList == null || stackList.isEmpty() ? ItemStack.EMPTY :
                 stackList.get(Math.abs((int) (System.currentTimeMillis() / 1000) % stackList.size()));
     }
 
     @Override
-    public void setStackInSlot(int index, ItemStack stack) {
+    public void setStackInSlot(int index, @NotNull ItemStack stack) {
         if (index >= 0 && index < stacks.size()) {
-            stacks.set(index, List.of(stack));
+            stacks.set(index, ItemStackList.of(stack));
         }
     }
 
-    public List<ItemStack> getStackList(int i) {
+    public ItemStackList getStackList(int i) {
         return stacks.get(i);
     }
 
