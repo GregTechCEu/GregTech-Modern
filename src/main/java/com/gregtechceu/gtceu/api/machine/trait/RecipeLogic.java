@@ -609,13 +609,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         CompoundTag chanceCache = tag.getCompound("chance_cache");
         for (String key : chanceCache.getAllKeys()) {
             RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-            // noinspection DataFlowIssue,rawtypes
-            Object2IntMap map = this.chanceCaches.computeIfAbsent(cap, val -> val.makeChanceCache());
+            if (cap == null) continue; // Necessary since we removed a RecipeCapability when nuking Create
+            // noinspection rawtypes
+            Object2IntMap map = this.chanceCaches.computeIfAbsent(cap, RecipeCapability::makeChanceCache);
 
             ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
             for (int i = 0; i < chanceTag.size(); ++i) {
                 CompoundTag chanceKey = chanceTag.getCompound(i);
-                // noinspection DataFlowIssue
                 var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
                 int value = chanceKey.getInt("cached_chance");
                 // noinspection unchecked

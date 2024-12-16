@@ -23,6 +23,9 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -114,6 +117,21 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         public InaccessibleInfiniteHandler(MetaMachine holder) {
             super(holder, 1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
+        }
+
+        @Override
+        public List<Object> getContents() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
         }
     }
 
