@@ -142,10 +142,11 @@ public interface IRotorHolderMachine extends IMultiPart {
     default boolean isFrontFaceFree() {
         var facing = self().getFrontFacing();
         boolean permuteXZ = facing.getAxis() == Direction.Axis.Z;
+        boolean permuteY = facing.getAxis() == Direction.Axis.Y;
         var centerPos = self().getPos().relative(facing);
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
-                var blockPos = centerPos.offset(permuteXZ ? x : 0, y, permuteXZ ? 0 : x);
+                var blockPos = centerPos.offset(permuteXZ ? x : permuteY ? y : 0, permuteY ? 0 : y, permuteXZ ? 0 : x);
                 var blockState = self().getLevel().getBlockState(blockPos);
                 if (!blockState.isAir()) {
                     return false;
