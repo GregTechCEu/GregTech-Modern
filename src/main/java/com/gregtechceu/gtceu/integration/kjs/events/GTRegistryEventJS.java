@@ -8,8 +8,6 @@ import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 
-import java.util.stream.Stream;
-
 public class GTRegistryEventJS<K, V> extends StartupEventJS {
 
     private final GTRegistryInfo<K, V> registry;

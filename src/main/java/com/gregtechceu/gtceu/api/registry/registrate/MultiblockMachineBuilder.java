@@ -109,7 +109,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
                 MetaMachineBlockEntity::createBlockEntity);
-
     }
 
     @ApiStatus.Internal
