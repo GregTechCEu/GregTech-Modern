@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
@@ -283,6 +284,14 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     break;
                 }
             }
+        } else if (first instanceof ShulkerBoxBlockEntity shulkerBoxBE) {
+            var tag = shulkerBoxBE.saveWithFullMetadata();
+            var level = first.getLevel();
+            var pos = first.getBlockPos();
+            recolorBlockNoState(SHULKER_BOX_MAP, color, level, pos, Blocks.SHULKER_BOX);
+            if (level.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity newShulker) {
+                newShulker.load(tag);
+            }
         } else {
             return false;
         }
@@ -369,11 +378,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return true;
             }
         }
-        if (block.defaultBlockState().is(BlockTags.SHULKER_BOXES)) {
-            if (recolorBlockNoState(SHULKER_BOX_MAP, this.color, world, pos, Blocks.SHULKER_BOX)) {
-                return true;
-            }
-        }
         if (block.defaultBlockState().is(BlockTags.CANDLES)) {
             if (recolorBlockNoState(CANDLE_MAP, this.color, world, pos)) {
                 return true;
@@ -433,10 +437,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
         if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK) && block != Blocks.WHITE_CONCRETE_POWDER) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState(), 3);
-            return true;
-        }
-        if (block.defaultBlockState().is(BlockTags.SHULKER_BOXES) && block != Blocks.SHULKER_BOX) {
-            recolorBlockNoState(SHULKER_BOX_MAP, null, world, pos, Blocks.SHULKER_BOX);
             return true;
         }
         if (block.defaultBlockState().is(BlockTags.CANDLES) && block != Blocks.WHITE_CANDLE) {
