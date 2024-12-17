@@ -64,12 +64,12 @@ public class ShutterCover extends CoverBehavior implements IControllable {
 
     @Override
     public @Nullable IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
-        return null;
+        return isWorkingEnabled() ? null : super.getItemHandlerCap(defaultValue);
     }
 
     @Override
     public @Nullable IFluidHandlerModifiable getFluidHandlerCap(IFluidHandlerModifiable defaultValue) {
-        return null;
+        return isWorkingEnabled() ? null : super.getFluidHandlerCap(defaultValue);
     }
 
     @Override
