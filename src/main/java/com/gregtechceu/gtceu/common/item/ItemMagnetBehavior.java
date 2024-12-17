@@ -178,12 +178,10 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         if (!GTCEu.isCuriosLoaded()) {
             return false;
         }
-        return CuriosApi.getCuriosInventory(player)
-                .map(curios -> curios.findFirstCurio(i -> isMagnet(i) && isActive(i)).isPresent())
-                .orElse(false);
+        return CuriosUtils.hasMagnetCurios(player);
     }
 
-    private boolean isMagnet(@NotNull ItemStack stack) {
+    private static boolean isMagnet(@NotNull ItemStack stack) {
         if (stack.getItem() instanceof IComponentItem metaItem) {
             for (var behavior : metaItem.getComponents()) {
                 if (behavior instanceof ItemMagnetBehavior) {
@@ -207,5 +205,14 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                                 TooltipFlag isAdvanced) {
         lines.add(Component
                 .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+    }
+
+    private static class CuriosUtils {
+
+        public static boolean hasMagnetCurios(Player player) {
+            return CuriosApi.getCuriosInventory(player)
+                    .map(curios -> curios.findFirstCurio(i -> isMagnet(i) && isActive(i)).isPresent())
+                    .orElse(false);
+        }
     }
 }
