@@ -26,7 +26,7 @@ import java.util.List;
 public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     private final NotifiableFluidTank steamTank;
-    private final double conversionRate; // energy units per millibucket
+    private final double conversionRate; // mB steam per EU
 
     public SteamEnergyRecipeHandler(NotifiableFluidTank steamTank, double conversionRate) {
         this.steamTank = steamTank;
@@ -36,18 +36,18 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     @Override
     public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
                                         boolean simulate) {
-        long sum = left.stream().reduce(0L, Long::sum);
-        int realSum = GTMath.saturatedCast((long) Math.ceil(sum * conversionRate));
-        if (realSum > 0) {
-            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) :
-                    FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+        long eut = left.stream().reduce(0L, Long::sum);
+        int totalSteam = GTMath.saturatedCast((long) Math.ceil(eut * conversionRate));
+        if (totalSteam > 0) {
+            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                    FluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
             var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
-            sum = (long) (leftSteam.get(0).getAmount() / conversionRate);
+            eut = (long) (leftSteam.get(0).getAmount() / conversionRate);
         }
-        return sum <= 0 ? null : Collections.singletonList(sum);
+        return eut <= 0 ? null : Collections.singletonList(eut);
     }
 
     @Override

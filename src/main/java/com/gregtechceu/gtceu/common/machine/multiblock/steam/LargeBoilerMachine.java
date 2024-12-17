@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -195,18 +195,24 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         return value;
     }
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
-            if (largeBoilerMachine.throttle < 100) {
-                var copied = recipe.copy();
-                result.setDuration(recipe.duration * 100 / largeBoilerMachine.throttle);
-                return copied;
-            }
-            return recipe;
+    /**
+     * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Duration is multiplied by {@code 100 / throttle} if throttle is less than 100
+     * </p>
+     * 
+     * @param machine a {@link LargeBoilerMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Large Boiler and recipe
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeBoilerMachine largeBoilerMachine)) {
+            return RecipeModifier.nullWrongType(LargeBoilerMachine.class, machine);
         }
-        return null;
+        if (largeBoilerMachine.throttle == 100) return ModifierFunction.IDENTITY;
+        return ModifierFunction.builder()
+                .durationMultiplier(100.0 / largeBoilerMachine.throttle)
+                .build();
     }
 
     public void addDisplayText(List<Component> textList) {

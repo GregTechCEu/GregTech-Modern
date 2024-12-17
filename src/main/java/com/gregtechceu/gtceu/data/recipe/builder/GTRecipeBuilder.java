@@ -904,13 +904,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
-                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
+                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()),
+                input.getAmount(), input.getTag()));
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> FluidIngredient.of(
                 TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()),
-                fluid.getAmount())).toArray(FluidIngredient[]::new));
+                fluid.getAmount(), fluid.getTag())).toArray(FluidIngredient[]::new));
     }
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
@@ -928,14 +929,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputFluids(FluidIngredient... outputs) {
         return output(FluidRecipeCapability.CAP, outputs);
-    }
-
-    public GTRecipeBuilder inputStress(float stress) {
-        return input(StressRecipeCapability.CAP, stress);
-    }
-
-    public GTRecipeBuilder outputStress(float stress) {
-        return output(StressRecipeCapability.CAP, stress);
     }
 
     //////////////////////////////////////
@@ -1053,14 +1046,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder posY(int min, int max) {
         return posY(min, max, false);
-    }
-
-    public GTRecipeBuilder rpm(float rpm, boolean reverse) {
-        return addCondition(new RPMCondition(rpm).setReverse(reverse));
-    }
-
-    public GTRecipeBuilder rpm(float rpm) {
-        return rpm(rpm, false);
     }
 
     public GTRecipeBuilder environmentalHazard(MedicalCondition condition, boolean reverse) {

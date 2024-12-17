@@ -344,7 +344,9 @@ public class MultiblockDisplayText {
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
                 for (var item : itemOutputs) {
-                    var stack = (ItemRecipeCapability.CAP.of(item.content).getItems()[0]);
+                    var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                    if (stacks.length == 0) continue;
+                    var stack = stacks[0];
                     int count = stack.getCount();
                     double countD = count;
                     if (item.chance < item.maxChance) {
@@ -363,7 +365,9 @@ public class MultiblockDisplayText {
                     }
                 }
                 for (var fluid : fluidOutputs) {
-                    var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
+                    var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                    if (stacks.length == 0) continue;
+                    var stack = stacks[0];
                     int amount = stack.getAmount();
                     double amountD = amount;
                     if (fluid.chance < fluid.maxChance) {

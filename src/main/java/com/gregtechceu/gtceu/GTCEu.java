@@ -57,10 +57,6 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_KUBEJS);
     }
 
-    public static boolean isCreateLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_CREATE);
-    }
-
     public static boolean isIrisOculusLoaded() {
         return LDLib.isModLoaded(GTValues.MODID_IRIS) || LDLib.isModLoaded(GTValues.MODID_OCULUS);
     }
