@@ -2020,6 +2020,8 @@
   "cover.robotic_arm.transfer_mode.keep_exact": "ʇɔɐxƎ dǝǝʞ",
   "cover.robotic_arm.transfer_mode.transfer_any": "ʎuⱯ ɹǝɟsuɐɹ⟘",
   "cover.robotic_arm.transfer_mode.transfer_exact": "ʇɔɐxƎ ʎןddnS",
+  "cover.shutter.message.disabled": "ɹǝʇʇnɥs pǝuǝdO",
+  "cover.shutter.message.enabled": "ɹǝʇʇnɥs pǝsoןƆ",
   "cover.storage.title": "ɹǝʌoƆ ǝbɐɹoʇS",
   "cover.tag_filter.info.0": "suoıssǝɹdxǝ xǝןdɯoɔ sʇdǝɔɔⱯq§",
   "cover.tag_filter.info.1": "ᗡNⱯ = &",

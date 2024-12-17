@@ -2020,6 +2020,8 @@
   "cover.robotic_arm.transfer_mode.keep_exact": "Keep Exact",
   "cover.robotic_arm.transfer_mode.transfer_any": "Transfer Any",
   "cover.robotic_arm.transfer_mode.transfer_exact": "Supply Exact",
+  "cover.shutter.message.disabled": "Opened shutter",
+  "cover.shutter.message.enabled": "Closed shutter",
   "cover.storage.title": "Storage Cover",
   "cover.tag_filter.info.0": "§bAccepts complex expressions",
   "cover.tag_filter.info.1": "& = AND",
