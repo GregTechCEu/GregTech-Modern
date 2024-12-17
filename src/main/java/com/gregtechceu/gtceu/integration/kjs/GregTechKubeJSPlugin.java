@@ -46,8 +46,6 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
@@ -131,7 +129,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                                 SimpleTieredMachine.EDITABLE_UI_CREATOR)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)), false);
+                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
+                false);
         GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
                 KJSSteamMachineBuilder::new, false);
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
@@ -141,6 +140,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 false);
         GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilder.class,
                 MultiblockMachineBuilder::createKJSMulti, false);
+        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
+                (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
         GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilder.class,
                 (id) -> MultiblockMachineBuilder.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new),
                 false);
