@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -20,10 +19,9 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @Setter
     public volatile boolean hasHighPressure = true;
     @Setter
-    public volatile SteamCreationFunction machine;
+    public volatile SteamCreationFunction machine = SimpleSteamMachine::new;
     @Setter
     public volatile SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
-
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -38,8 +36,8 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
                 .tier(0)
                 .recipeModifier(SimpleSteamMachine::recipeModifier)
                 .renderer(() -> new WorkableSteamMachineRenderer(false, id.withPrefix("block/machines/")));
-        var lowPressure = definition.create(false, lowPressureBuilder)
-                .register();
+        definition.apply(false, lowPressureBuilder);
+        var lowPressure = lowPressureBuilder.register();
 
         if (hasHighPressure) {
             MachineBuilder<?> highPressureBuilder = GTRegistration.REGISTRATE.machine(
@@ -49,11 +47,11 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .renderer(() -> new WorkableSteamMachineRenderer(true, id.withPrefix("block/machines/")));
-            var highPressure = definition.create(true, highPressureBuilder)
-                    .register();
+            definition.apply(true, highPressureBuilder);
+            var highPressure = highPressureBuilder.register();
         }
 
-        return lowPressure;
+        return value = lowPressure;
     }
 
     @FunctionalInterface
@@ -65,6 +63,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        MachineBuilder<?> create(boolean isHighPressure, MachineBuilder<?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?> builder);
     }
 }

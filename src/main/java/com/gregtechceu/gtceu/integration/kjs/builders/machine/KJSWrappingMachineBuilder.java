@@ -52,7 +52,7 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {
-                return def;
+                return value = def;
             }
         }
         // should never happen.

@@ -76,7 +76,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
 
             builder.workableTieredHullRenderer(id.withPrefix("block/machines/"))
                     .tier(tier);
-            builder = this.definition.apply(tier, builder);
+            this.definition.apply(tier, builder);
             if (builder.recipeTypes() != null && builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
                 if (this.editableUI != null && builder.editableUI() == null) {
@@ -87,9 +87,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                             tankScalingFunction.apply(tier), true));
                 }
             }
-            definitions[tier] = this.definition.apply(tier, builder).register();
+            definitions[tier] = builder.register();
         }
-        return definitions;
+        return value = definitions;
     }
 
     @FunctionalInterface
@@ -105,8 +105,8 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @FunctionalInterface
-    public static interface DefinitionFunction {
+    public interface DefinitionFunction {
 
-        MachineBuilder<?> apply(int tier, MachineBuilder<?> builder);
+        void apply(int tier, MachineBuilder<?> builder);
     }
 }
