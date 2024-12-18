@@ -1,6 +1,3 @@
-!.vscode
-.vscode/*
-!.vscode/settings.json
 env/
 venv/
 .env

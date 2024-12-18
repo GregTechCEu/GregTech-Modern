@@ -1,28 +1,47 @@
 name: Publish docs via GitHub Pages
 on:
   workflow_dispatch:
-#  push:
-#    branches: [1.20.1]
-#    paths: ['docs/**']
+  push:
+    branches: [1.20.1]
+    paths: ['docs/**']
   
 jobs:
   build:
-    name: Deploy Docs
+    name: build docs
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
+    defaults:
+      run:
+        working-directory: './docs'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          # ref: '1.20.1'
+          sparse-checkout: './docs'
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v3
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r ./requirements.txt
+      - uses: actions/cache@v4
         with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
-      - run: pip install -r requirements.txt
-      - run: mkdocs gh-deploy --force
+          key: 'mkdocs-cache'
+          path: './docs/.cache'
+      - name: Build static files
+        id: mkdocs
+        run: mkdocs build
+      - name: Upload pages as artifact
+        id: artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs/site/'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
