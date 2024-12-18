@@ -4,7 +4,16 @@ on:
   push:
     branches: [1.20.1]
     paths: ['docs/**']
-  
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
 jobs:
   build:
     name: build docs
