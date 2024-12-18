@@ -1,0 +1,11 @@
+!.vscode
+.vscode/*
+!.vscode/settings.json
+env/
+venv/
+.env
+.venv
+[Ii]nclude
+[Ll]ib
+[Ss]cripts
+site
