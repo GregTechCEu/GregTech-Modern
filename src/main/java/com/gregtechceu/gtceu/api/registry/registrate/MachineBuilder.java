@@ -48,11 +48,13 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
@@ -78,17 +80,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
-    @Setter
-    protected Function<ResourceLocation, DEFINITION> definitionFactory; // non-final for KJS
-    @Setter
-    protected Function<IMachineBlockEntity, MetaMachine> metaMachine; // non-final for KJS
+    @Setter // non-final for KJS
+    protected Function<ResourceLocation, DEFINITION> definition;
+    @Setter // non-final for KJS
+    protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Setter
     private Supplier<IRenderer> renderer;
     @Setter
     private VoxelShape shape = Shapes.block();
     @Setter
-    private RotationState rotationState = RotationState.NONE;
+    private RotationState rotationState = RotationState.NON_Y_AXIS;
     @Setter
     private boolean hasTESR;
     @Setter
@@ -105,6 +107,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
+    @Getter // getter for KJS
     private GTRecipeType[] recipeTypes;
     @Getter
     @Setter // getter for KJS
@@ -142,27 +145,28 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @Setter
     private Supplier<BlockState> appearance;
+    @Getter // getter for KJS
     @Setter
     @Nullable
     private EditableMachineUI editableUI;
+    @Getter // getter for KJS
     @Setter
     private String langValue = null;
-    private final List<ResourceLocation> preNodes = new ArrayList<>();
 
     protected MachineBuilder(Registrate registrate, String name,
-                             Function<ResourceLocation, DEFINITION> definitionFactory,
-                             Function<IMachineBlockEntity, MetaMachine> metaMachine,
+                             Function<ResourceLocation, DEFINITION> definition,
+                             Function<IMachineBlockEntity, MetaMachine> machine,
                              BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                              BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                              TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
-        this.metaMachine = metaMachine;
+        this.machine = machine;
         this.blockFactory = blockFactory;
         this.itemFactory = itemFactory;
         this.blockEntityFactory = blockEntityFactory;
-        this.definitionFactory = definitionFactory;
+        this.definition = definition;
     }
 
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
@@ -170,6 +174,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    @Tolerate
     public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
@@ -304,10 +309,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     protected DEFINITION createDefinition() {
-        return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
+        return definition.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
-    // @HideFromJS
+    @HideFromJS
     public DEFINITION register() {
         var definition = createDefinition();
 
@@ -329,6 +334,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 .onRegister(b -> Arrays.stream(abilities).forEach(a -> a.register(tier, b)));
         if (this.langValue != null) {
             blockBuilder.lang(langValue);
+            definition.setLangValue(langValue);
         }
         if (this.blockBuilder != null) {
             this.blockBuilder.accept(blockBuilder);
@@ -360,7 +366,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setTier(tier);
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
-        definition.setMachineSupplier(metaMachine);
+        definition.setMachineSupplier(machine);
         definition.setTooltipBuilder((itemStack, components) -> {
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);

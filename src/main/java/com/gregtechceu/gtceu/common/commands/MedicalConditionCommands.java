@@ -102,10 +102,11 @@ public class MedicalConditionCommands {
                     entry.getKey().canBePermanent) {
                 langKey = "command.gtceu.medical_condition.get.element.permanent";
             }
+            float time = entry.getFloatValue();
             target.sendSystemMessage(
                     Component.translatable(langKey,
                             Component.translatable("gtceu.medical_condition." + entry.getKey().name),
-                            entry.getFloatValue() / 20f));
+                            (int) (time / 60), (int) (time % 60)));
         }
         return count;
     }

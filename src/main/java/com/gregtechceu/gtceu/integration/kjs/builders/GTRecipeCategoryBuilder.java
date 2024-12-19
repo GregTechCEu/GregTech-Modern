@@ -19,7 +19,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     private transient IGuiTexture icon;
     private transient boolean isXEIVisible;
 
-    public GTRecipeCategoryBuilder(ResourceLocation id, Object... args) {
+    public GTRecipeCategoryBuilder(ResourceLocation id) {
         super(id);
         name = id.getPath();
         recipeType = null;

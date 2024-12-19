@@ -45,6 +45,10 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Getter
     private final ResourceLocation id;
+    // This is only stored here for KJS use.
+    @Getter
+    @Setter
+    private String langValue;
     @Setter
     private Supplier<? extends Block> blockSupplier;
     @Setter

@@ -10,14 +10,14 @@ import net.minecraft.world.level.ChunkPos;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class DimensionCache {
 
     @Getter
-    private final Map<GridPos, GridCache> cache = new HashMap<>();
+    private final ConcurrentMap<GridPos, GridCache> cache = new ConcurrentHashMap<>();
 
     public boolean dirty;
 

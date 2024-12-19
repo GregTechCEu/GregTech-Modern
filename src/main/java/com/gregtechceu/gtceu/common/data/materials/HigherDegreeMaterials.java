@@ -214,5 +214,12 @@ public class HigherDegreeMaterials {
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(PotassiumIodide, 5, PrussianBlue, 3, DiethylenetriaminepentaaceticAcid, 5)
                 .buildAndRegister();
+
+        Blackstone = new Material.Builder(GTCEu.id("blackstone"))
+                .dust()
+                .color(0x090a0a).iconSet(ROUGH)
+                .flags(NO_SMASHING)
+                .components(DarkAsh, 2, Basalt, 1, Stone, 5)
+                .buildAndRegister();
     }
 }

@@ -60,6 +60,7 @@ public class GTRecipes {
         MiscRecipeLoader.init(consumer);
         VanillaStandardRecipes.init(consumer);
         WoodMachineRecipes.init(consumer);
+        StoneMachineRecipes.init(consumer);
         CraftingRecipeLoader.init(consumer);
         FuelRecipes.init(consumer);
         FusionLoader.init(consumer);

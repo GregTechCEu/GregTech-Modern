@@ -389,11 +389,13 @@ public class MiscRecipeLoader {
             EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputFluids(Glass.getFluid(108))
+                    .category(GTRecipeCategories.EXTRACTOR_RECYCLING)
                     .save(provider);
 
             MACERATOR_RECIPES.recipeBuilder("macerate_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputItems(dustSmall, Glass, 3)
+                    .category(GTRecipeCategories.MACERATOR_RECYCLING)
                     .save(provider);
         }
 
