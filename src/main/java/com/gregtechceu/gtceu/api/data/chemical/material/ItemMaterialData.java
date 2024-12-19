@@ -82,6 +82,25 @@ public class ItemMaterialData {
         return ITEM_MATERIAL_INFO.get(item);
     }
 
+    public static void clearMaterialInfo(ItemLike item) {
+        if (item instanceof Block block) {
+            ITEM_MATERIAL_INFO.remove(block);
+            return;
+        } else if (item instanceof BlockItem blockItem) {
+            var info = ITEM_MATERIAL_INFO.get(blockItem.getBlock());
+            if (info != null) {
+                ITEM_MATERIAL_INFO.remove(blockItem.getBlock());
+                return;
+            }
+            ITEM_MATERIAL_INFO.remove(item);
+            return;
+        } else if (item instanceof ItemEntry<?> entry) {
+            ITEM_MATERIAL_INFO.remove(entry.asItem());
+            return;
+        }
+        ITEM_MATERIAL_INFO.remove(item);
+    }
+
     @SafeVarargs
     public static void registerMaterialInfoItems(MaterialEntry materialEntry,
                                                  Supplier<? extends ItemLike>... items) {

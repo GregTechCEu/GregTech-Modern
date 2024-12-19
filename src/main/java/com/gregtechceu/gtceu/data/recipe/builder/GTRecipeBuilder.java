@@ -50,6 +50,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
@@ -1344,9 +1345,26 @@ public class GTRecipeBuilder {
             }
 
             if(addMaterialFluidInfo) {
-                for(var input : tempFluidStacks) {
-                    long am = input.amount() / outputCount;
-                    matStacks.merge(input.material(), am, Long::sum);
+                var fluidInputs = input.get(FluidRecipeCapability.CAP);
+                for(int i = 0; i < fluidInputs.size(); i++) {
+                    if(fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
+                        MaterialStack matStack = null;
+                        for(var value : fluidIngredient.values) {
+                            var fluid = value.getFluids().toArray(new Fluid[0]);
+                            if(fluid.length != 0 && fluid[0] != null)
+                                matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
+
+                            if(matStack != null && matStack.material() != null) {
+                                matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
+                                break;
+                            }
+                        }
+                    } else if(fluidInputs.get(i).content instanceof FluidStack fluidStack) {
+                        MaterialStack matStack = new MaterialStack(ChemicalHelper.getMaterial(fluidStack.getFluid()), tempFluidStacks.get(i).amount());
+                        if(matStack.material() != null) {
+                            matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
+                        }
+                    }
                 }
             }
 
@@ -1356,7 +1374,10 @@ public class GTRecipeBuilder {
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
 
             var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
-            if((existingItemInfo == null || existingItemInfo.getMaterials().isEmpty()) && !matStacks.isEmpty()) {
+            if(!matStacks.isEmpty()) {
+                if(existingItemInfo != null) {
+                    ItemMaterialData.clearMaterialInfo(out);
+                }
                 ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matList));
             }
         }
