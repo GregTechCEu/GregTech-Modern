@@ -427,9 +427,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
-        if (ResearchManager.readResearchId(dataStick) != null) {
-            return InteractionResult.PASS;
-        }
         dataStick.getOrCreateTag().putIntArray("pos", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
         return InteractionResult.SUCCESS;
     }

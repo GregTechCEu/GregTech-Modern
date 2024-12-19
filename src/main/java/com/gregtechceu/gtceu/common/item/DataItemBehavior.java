@@ -87,7 +87,9 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             var machine = blockEntity.getMetaMachine();
             if (machine instanceof IDataStickInteractable interactable) {
                 if (context.isSecondaryUseActive()) {
-                    return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
+                    if (ResearchManager.readResearchId(itemStack) == null) {
+                        return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
+                    }
                 } else {
                     return interactable.onDataStickUse(context.getPlayer(), itemStack);
                 }
