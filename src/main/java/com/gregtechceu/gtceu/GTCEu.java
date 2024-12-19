@@ -90,6 +90,10 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_ARGONAUTS);
     }
 
+    public static boolean isFTBChunksLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_FTB_CHUNKS);
+    }
+
     @Deprecated(forRemoval = true, since = "1.0.21")
     public static boolean isHighTier() {
         return GTCEuAPI.isHighTier();
