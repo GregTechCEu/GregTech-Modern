@@ -43,7 +43,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
 
     @Override
     public boolean test(ItemStack itemStack) {
-        if (oreDictFilterExpression.isEmpty()) return true;
+        if (oreDictFilterExpression.isEmpty()) return false;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
         if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);

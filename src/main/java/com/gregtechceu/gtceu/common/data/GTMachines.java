@@ -2276,8 +2276,7 @@ public class GTMachines {
                                 .conditionalTooltip(defaultEnvironmentRequirement(),
                                         ConfigHolder.INSTANCE.gameplay.environmentalHazards);
                     } else {
-                        builder.recipeModifier(
-                                GTRecipeModifiers.OC_NON_PERFECT);
+                        builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                     }
                     return builder
                             .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))

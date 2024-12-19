@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.recipe.misc.StoneMachineRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
@@ -414,5 +415,6 @@ public class ChemicalHelper {
         }
         GTItems.toUnify.forEach(ChemicalHelper::registerUnificationItems);
         WoodMachineRecipes.registerUnificationInfo();
+        StoneMachineRecipes.registerUnificationInfo();
     }
 }

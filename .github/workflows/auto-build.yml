@@ -3,7 +3,7 @@ name: Latest Build
 on:
   push:
     branches: ['1.20.1', '1.21']
-    paths-ignore: ['.github/**', '**/*.md']
+    paths: ['src/**', '**/*.gradle', 'gradle.properties']
 
 concurrency:
   group: auto-build-${{ github.ref }}
@@ -13,24 +13,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      GITHUB_TOKEN: ${{ github.token }}
       MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
       SNAPSHOT: true
-      GITHUB_TOKEN: ${{ github.token }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Setup Build
         uses: ./.github/actions/build_setup
-      - name: Get Version
+      - name: Get Mod Version
         id: ver
         run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
+      - name: Version Suffix
+        id: suffix
+        run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
       - name: Build
         run: ./gradlew build --build-cache
       - name: Publish to Maven
         if: github.repository_owner == 'GregTechCEu'
         run: ./gradlew publish --build-cache
+      - name: Rename Jars
+        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -51,7 +56,7 @@ jobs:
         uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
         with:
           tag_name: latest-${{ github.ref_name }}
-          name: '${{ github.ref_name }}-${{ steps.ver.outputs.version}} SNAPSHOT $$'
+          name: '${{ github.ref_name }}-${{ steps.ver.outputs.version}} SNAPSHOT ${{ env.VERSION_SUFFIX }}'
           prerelease: true
           body: |
             The latest build of GTM for Minecraft ${{ github.ref_name }}.
