@@ -4,11 +4,12 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class ItemMaterialInfo {
 
-    private final List<MaterialStack> materials = new ArrayList<>();
+    private List<MaterialStack> materials = new ArrayList<>();
 
     public ItemMaterialInfo(MaterialStack... materials) {
         this.materials.addAll(Arrays.asList(materials));
@@ -30,6 +31,12 @@ public class ItemMaterialInfo {
      */
     public ImmutableList<MaterialStack> getMaterials() {
         return ImmutableList.copyOf(materials);
+    }
+
+    public void addMaterialStacks(List<MaterialStack> stacks) {
+        if(stacks.isEmpty()) return;
+        materials.addAll(stacks);
+        materials.sort(Comparator.comparingLong(MaterialStack::amount));
     }
 
     @Override

@@ -728,6 +728,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV])
                 .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32)
                 .inputFluids(Trinium.getFluid(GTValues.L * 24)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
+                .addMaterialInfo(true)
                 .duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_zpm").EUt(VA[ZPM])
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16).inputItems(foil, NiobiumTitanium, 16)
@@ -753,6 +754,7 @@ public class MachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_LuV).inputItems(plate, TungstenSteel, 6)
                 .inputFluids(Polybenzimidazole.getFluid(GTValues.L))
                 .outputItems(GTBlocks.FUSION_CASING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .addMaterialInfo(true)
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing_mk2").EUt(VA[ZPM])
                 .inputItems(GTBlocks.MACHINE_CASING_ZPM.asStack()).inputItems(GTBlocks.FUSION_COIL.asStack())

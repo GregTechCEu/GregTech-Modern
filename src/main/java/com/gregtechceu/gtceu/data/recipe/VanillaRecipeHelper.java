@@ -270,10 +270,10 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof MaterialEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -351,10 +351,10 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof MaterialEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -421,10 +421,10 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof MaterialEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -491,10 +491,10 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemLike itemLike) {
                 builder.requires(itemLike);
             } else if (content instanceof MaterialEntry entry) {
-                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                 if (tag != null) {
                     builder.requires(tag);
-                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else builder.requires(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
@@ -555,7 +555,7 @@ public class VanillaRecipeHelper {
             } else if (ingredient instanceof ItemLike) {
                 itemLike = (ItemLike) ingredient;
             } else if (ingredient instanceof MaterialEntry entry) {
-                ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
+                ItemStack stack = ChemicalHelper.get(entry.tagPrefix(), entry.material());
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
             } else if (ingredient instanceof ItemProviderEntry<?> entry) {

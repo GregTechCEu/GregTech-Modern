@@ -428,21 +428,21 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry == null || entry.material == null) return false;
-        if (entry.material == getToolMaterial(toRepair)) {
+        if (entry == null || entry.material() == null) return false;
+        if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
-                return entry.tagPrefix == TagPrefix.planks;
+            if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
+                return entry.tagPrefix() == TagPrefix.planks;
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix == TagPrefix.plate) {
+            if (entry.tagPrefix() == TagPrefix.plate) {
                 return true;
             }
-            if (entry.material.hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix == TagPrefix.ingot;
+            if (entry.material().hasProperty(PropertyKey.INGOT)) {
+                return entry.tagPrefix() == TagPrefix.ingot;
             }
-            if (entry.material.hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix == TagPrefix.gem;
+            if (entry.material().hasProperty(PropertyKey.GEM)) {
+                return entry.tagPrefix() == TagPrefix.gem;
             }
         }
         return false;

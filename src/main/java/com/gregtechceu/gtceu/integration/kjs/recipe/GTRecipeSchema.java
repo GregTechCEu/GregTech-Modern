@@ -268,11 +268,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(MaterialEntry input) {
-            return inputItems(input.tagPrefix, input.material, 1);
+            return inputItems(input.tagPrefix(), input.material(), 1);
         }
 
         public GTRecipeJS inputItems(MaterialEntry input, int count) {
-            return inputItems(input.tagPrefix, input.material, count);
+            return inputItems(input.tagPrefix(), input.material(), count);
         }
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
@@ -292,11 +292,11 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS itemOutput(MaterialEntry materialEntry) {
-            return outputItems(materialEntry.tagPrefix, materialEntry.material);
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material());
         }
 
         public GTRecipeJS itemOutput(MaterialEntry materialEntry, int count) {
-            return outputItems(materialEntry.tagPrefix, materialEntry.material, count);
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material(), count);
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {

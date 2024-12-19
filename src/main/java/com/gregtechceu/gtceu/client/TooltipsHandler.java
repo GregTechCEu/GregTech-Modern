@@ -45,10 +45,10 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var unificationEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
-        if (unificationEntry != null && unificationEntry.material != null) {
-            if (unificationEntry.material.getChemicalFormula() != null &&
-                    !unificationEntry.material.getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
+        if (unificationEntry != null && unificationEntry.material() != null) {
+            if (unificationEntry.material().getChemicalFormula() != null &&
+                    !unificationEntry.material().getChemicalFormula().isEmpty())
+                tooltips.add(1, Component.literal(unificationEntry.material().getChemicalFormula())
                         .withStyle(ChatFormatting.YELLOW));
         }
         if (stack.getItem() instanceof BucketItem bucket) {

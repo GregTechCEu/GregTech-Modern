@@ -110,16 +110,16 @@ public final class WoodTypeEntry {
     public final boolean addButtonsOreDict;
     public final boolean addPressurePlatesOreDict;
 
-    public final boolean addPlanksUnificationInfo;
-    public final boolean addDoorsUnificationInfo;
-    public final boolean addSlabsUnificationInfo;
-    public final boolean addFencesUnificationInfo;
-    public final boolean addFenceGatesUnificationInfo;
-    public final boolean addStairsUnificationInfo;
-    public final boolean addBoatsUnificationInfo;
-    public final boolean addChestBoatsUnificationInfo;
-    public final boolean addButtonsUnificationInfo;
-    public final boolean addPressurePlatesUnificationInfo;
+    public final boolean addPlanksMaterialInfo;
+    public final boolean addDoorsMaterialInfo;
+    public final boolean addSlabsMaterialInfo;
+    public final boolean addFencesMaterialInfo;
+    public final boolean addFenceGatesMaterialInfo;
+    public final boolean addStairsMaterialInfo;
+    public final boolean addBoatsMaterialInfo;
+    public final boolean addChestBoatsMaterialInfo;
+    public final boolean addButtonsMaterialInfo;
+    public final boolean addPressurePlatesMaterialInfo;
     public final boolean generateLogToPlankRecipe;
 
     /**
@@ -148,11 +148,11 @@ public final class WoodTypeEntry {
                           boolean addFencesOreDict, boolean addFenceGatesOreDict, boolean addStairsOreDict,
                           boolean addBoatsOreDict, boolean addChestBoatsOreDict,
                           boolean addButtonsOreDict, boolean addPressurePlatesOreDict,
-                          boolean addPlanksUnificationInfo, boolean addDoorsUnificationInfo,
-                          boolean addSlabsUnificationInfo, boolean addFencesUnificationInfo,
-                          boolean addFenceGatesUnificationInfo, boolean addStairsUnificationInfo,
-                          boolean addBoatsUnificationInfo, boolean addChestBoatsUnificationInfo,
-                          boolean addPressurePlatesUnificationInfo, boolean addButtonsUnificationInfo,
+                          boolean addPlanksMaterialInfo, boolean addDoorsMaterialInfo,
+                          boolean addSlabsMaterialInfo, boolean addFencesMaterialInfo,
+                          boolean addFenceGatesMaterialInfo, boolean addStairsMaterialInfo,
+                          boolean addBoatsMaterialInfo, boolean addChestBoatsMaterialInfo,
+                          boolean addPressurePlatesMaterialInfo, boolean addButtonsMaterialInfo,
                           boolean generateLogToPlankRecipe) {
         this.modid = modid;
         this.woodName = woodName;
@@ -204,16 +204,16 @@ public final class WoodTypeEntry {
         this.addChestBoatsOreDict = addChestBoatsOreDict;
         this.addButtonsOreDict = addButtonsOreDict;
         this.addPressurePlatesOreDict = addPressurePlatesOreDict;
-        this.addPlanksUnificationInfo = addPlanksUnificationInfo;
-        this.addDoorsUnificationInfo = addDoorsUnificationInfo;
-        this.addSlabsUnificationInfo = addSlabsUnificationInfo;
-        this.addFencesUnificationInfo = addFencesUnificationInfo;
-        this.addFenceGatesUnificationInfo = addFenceGatesUnificationInfo;
-        this.addStairsUnificationInfo = addStairsUnificationInfo;
-        this.addBoatsUnificationInfo = addBoatsUnificationInfo;
-        this.addChestBoatsUnificationInfo = addChestBoatsUnificationInfo;
-        this.addButtonsUnificationInfo = addButtonsUnificationInfo;
-        this.addPressurePlatesUnificationInfo = addPressurePlatesUnificationInfo;
+        this.addPlanksMaterialInfo = addPlanksMaterialInfo;
+        this.addDoorsMaterialInfo = addDoorsMaterialInfo;
+        this.addSlabsMaterialInfo = addSlabsMaterialInfo;
+        this.addFencesMaterialInfo = addFencesMaterialInfo;
+        this.addFenceGatesMaterialInfo = addFenceGatesMaterialInfo;
+        this.addStairsMaterialInfo = addStairsMaterialInfo;
+        this.addBoatsMaterialInfo = addBoatsMaterialInfo;
+        this.addChestBoatsMaterialInfo = addChestBoatsMaterialInfo;
+        this.addButtonsMaterialInfo = addButtonsMaterialInfo;
+        this.addPressurePlatesMaterialInfo = addPressurePlatesMaterialInfo;
         this.generateLogToPlankRecipe = generateLogToPlankRecipe;
     }
 
@@ -286,16 +286,16 @@ public final class WoodTypeEntry {
         private boolean addButtonOreDict;
         private boolean addPressurePlateOreDict;
 
-        private boolean addPlanksUnificationInfo;
-        private boolean addDoorsUnificationInfo;
-        private boolean addSlabsUnificationInfo;
-        private boolean addFencesUnificationInfo;
-        private boolean addFenceGatesUnificationInfo;
-        private boolean addStairsUnificationInfo;
-        private boolean addBoatsUnificationInfo;
-        private boolean addChestBoatsUnificationInfo;
-        private boolean addButtonUnificationInfo;
-        private boolean addPressurePlateUnificationInfo;
+        private boolean addPlanksMaterialInfo;
+        private boolean addDoorsMaterialInfo;
+        private boolean addSlabsMaterialInfo;
+        private boolean addFencesMaterialInfo;
+        private boolean addFenceGatesMaterialInfo;
+        private boolean addStairsMaterialInfo;
+        private boolean addBoatsMaterialInfo;
+        private boolean addChestBoatsMaterialInfo;
+        private boolean addButtonMaterialInfo;
+        private boolean addPressurePlateMaterialInfo;
         private boolean generateLogToPlankRecipe = true;
 
         /**
@@ -652,16 +652,16 @@ public final class WoodTypeEntry {
         public Builder registerUnificationInfo(boolean planks, boolean door, boolean slab, boolean fence,
                                                boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat,
                                                boolean button, boolean pressurePlate) {
-            this.addPlanksUnificationInfo = planks;
-            this.addDoorsUnificationInfo = door;
-            this.addSlabsUnificationInfo = slab;
-            this.addFencesUnificationInfo = fence;
-            this.addFenceGatesUnificationInfo = fenceGate;
-            this.addStairsUnificationInfo = stairs;
-            this.addBoatsUnificationInfo = boat;
-            this.addChestBoatsUnificationInfo = chestBoat;
-            this.addButtonUnificationInfo = button;
-            this.addPressurePlateUnificationInfo = pressurePlate;
+            this.addPlanksMaterialInfo = planks;
+            this.addDoorsMaterialInfo = door;
+            this.addSlabsMaterialInfo = slab;
+            this.addFencesMaterialInfo = fence;
+            this.addFenceGatesMaterialInfo = fenceGate;
+            this.addStairsMaterialInfo = stairs;
+            this.addBoatsMaterialInfo = boat;
+            this.addChestBoatsMaterialInfo = chestBoat;
+            this.addButtonMaterialInfo = button;
+            this.addPressurePlateMaterialInfo = pressurePlate;
             return this;
         }
 
@@ -703,10 +703,10 @@ public final class WoodTypeEntry {
                     addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
                     addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addBoatsOreDict, addChestBoatsOreDict,
                     addButtonOreDict, addPressurePlateOreDict,
-                    addPlanksUnificationInfo, addDoorsUnificationInfo, addSlabsUnificationInfo,
-                    addFencesUnificationInfo,
-                    addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo,
-                    addChestBoatsUnificationInfo, addButtonUnificationInfo, addPressurePlateUnificationInfo,
+                    addPlanksMaterialInfo, addDoorsMaterialInfo, addSlabsMaterialInfo,
+                    addFencesMaterialInfo,
+                    addFenceGatesMaterialInfo, addStairsMaterialInfo, addBoatsMaterialInfo,
+                    addChestBoatsMaterialInfo, addButtonMaterialInfo, addPressurePlateMaterialInfo,
                     generateLogToPlankRecipe);
         }
     }

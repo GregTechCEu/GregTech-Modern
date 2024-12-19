@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -51,6 +52,8 @@ public class ChemicalHelper {
             return getMaterialStack(itemStack);
         } else if (object instanceof ItemLike item) {
             return getMaterialStack(item);
+        } else if (object instanceof SizedIngredient sized) {
+            return getMaterialStack(sized.getItems()[0]);
         }
         return null;
     }

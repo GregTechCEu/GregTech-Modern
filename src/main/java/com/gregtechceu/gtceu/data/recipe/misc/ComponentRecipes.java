@@ -125,6 +125,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 2))
                 .inputFluids(Lubricant.getFluid(500))
                 .outputItems(ELECTRIC_MOTOR_ZPM)
+                .addMaterialInfo(true)
                 .scannerResearch(b -> b
                         .researchStack(ELECTRIC_MOTOR_LuV.asStack())
                         .duration(1200)

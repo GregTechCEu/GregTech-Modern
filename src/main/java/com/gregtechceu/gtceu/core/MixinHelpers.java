@@ -63,9 +63,9 @@ public class MixinHelpers {
         if (registry == BuiltInRegistries.ITEM) {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
-                var material = entry.material;
+                var material = entry.material();
                 if (material != null) {
-                    var materialTags = entry.tagPrefix.getAllItemTags(material);
+                    var materialTags = entry.tagPrefix().getAllItemTags(material);
                     for (TagKey<Item> materialTag : materialTags) {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(

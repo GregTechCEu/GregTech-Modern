@@ -347,7 +347,7 @@ public class WoodMachineRecipes {
         if (entry.addPlanksOreDict) {
             ItemMaterialData.registerMaterialInfoItems(planks, entry.material, entry.planks);
         }
-        if (entry.addPlanksUnificationInfo) {
+        if (entry.addPlanksMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.planks,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M)));
         }
@@ -356,7 +356,7 @@ public class WoodMachineRecipes {
             if (entry.addDoorsOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(door, entry.material, entry.door);
             }
-            if (entry.addDoorsUnificationInfo) {
+            if (entry.addDoorsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.door, ConfigHolder.INSTANCE.recipes.hardWoodRecipes ?
                         new ItemMaterialInfo(new MaterialStack(entry.material, M * 2),
                                 new MaterialStack(GTMaterials.Iron, M / 9)) : // screw
@@ -368,7 +368,7 @@ public class WoodMachineRecipes {
             if (entry.addSlabsOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(slab, entry.material, entry.slab);
             }
-            if (entry.addSlabsUnificationInfo) {
+            if (entry.addSlabsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M / 2)));
             }
@@ -378,7 +378,7 @@ public class WoodMachineRecipes {
             if (entry.addFencesOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(fence, entry.material, entry.fence);
             }
-            if (entry.addFencesUnificationInfo) {
+            if (entry.addFencesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fence,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M)));
             }
@@ -388,7 +388,7 @@ public class WoodMachineRecipes {
             if (entry.addFenceGatesOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(fenceGate, entry.material, entry.fenceGate);
             }
-            if (entry.addFenceGatesUnificationInfo) {
+            if (entry.addFenceGatesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fenceGate,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M * 3)));
             }
@@ -398,28 +398,28 @@ public class WoodMachineRecipes {
             if (entry.addStairsOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(stairs, entry.material, entry.stairs);
             }
-            if (entry.addStairsUnificationInfo) {
+            if (entry.addStairsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stairs,
                         new ItemMaterialInfo(new MaterialStack(entry.material, (3 * M) / 2)));
             }
         }
 
-        if (entry.boat != null && entry.addBoatsUnificationInfo) {
+        if (entry.boat != null && entry.addBoatsMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.boat,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M * 5)));
         }
 
-        if (entry.chestBoat != null && entry.addChestBoatsUnificationInfo) {
+        if (entry.chestBoat != null && entry.addChestBoatsMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.chestBoat,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
         }
 
-        if (entry.button != null && entry.addButtonsUnificationInfo) {
+        if (entry.button != null && entry.addButtonsMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.button,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M / 6)));
         }
 
-        if (entry.pressurePlate != null && entry.addPressurePlatesUnificationInfo) {
+        if (entry.pressurePlate != null && entry.addPressurePlatesMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M)));
         }

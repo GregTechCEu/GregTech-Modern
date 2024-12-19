@@ -583,7 +583,7 @@ public class MaterialRecipeHandler {
 
                 VanillaRecipeHelper.addShapelessRecipe(provider,
                         String.format("block_decompress_%s", material.getName()),
-                        GTUtil.copyAmount(size, ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
+                        GTUtil.copyAmount(size, ChemicalHelper.get(blockEntry.tagPrefix(), blockEntry.material())),
                         new MaterialEntry(blockPrefix, material));
             }
 

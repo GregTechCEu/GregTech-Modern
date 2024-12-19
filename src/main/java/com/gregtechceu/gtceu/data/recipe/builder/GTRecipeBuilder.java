@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
@@ -28,6 +32,10 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -100,6 +108,13 @@ public class GTRecipeBuilder {
     public int tierChanceBoost = 0;
     @Setter
     public boolean isFuel = false;
+    @Setter
+    private boolean addMaterialInfo = false;
+    @Setter
+    private boolean addMaterialFluidInfo = false;
+    private List<ItemStack> tempItemStacks = new ArrayList<>();
+    private List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
+    private List<MaterialStack> tempFluidStacks = new ArrayList<>();
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -381,6 +396,13 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack input) {
         if (input.isEmpty()) {
             GTCEu.LOGGER.error("Input items is empty, id: {}", id);
+        } else {
+            var matStack = ItemMaterialData.getMaterialInfo(input.getItem());
+            if(matStack != null) {
+                tempItemMaterialStacks.addAll(matStack.getMaterials());
+            }
+            else
+                tempItemStacks.add(input);
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
     }
@@ -389,6 +411,13 @@ public class GTRecipeBuilder {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
                 GTCEu.LOGGER.error("Input item is empty, id: {}", id);
+            } else {
+                var matStack = ItemMaterialData.getMaterialInfo(itemStack.getItem());
+                if(matStack != null) {
+                    tempItemMaterialStacks.addAll(matStack.getMaterials());
+                }
+                else
+                    tempItemStacks.add(itemStack);
             }
         }
         return input(ItemRecipeCapability.CAP,
@@ -427,20 +456,30 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input) {
-        if (input.material == null) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix);
+        if (input.material() == null) {
+            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
+        } else {
+            tempItemMaterialStacks.add(new MaterialStack(input.material(), input.tagPrefix().getMaterialAmount(input.material())));
         }
-        return inputItems(input.tagPrefix, input.material, 1);
+        return inputItems(input.tagPrefix(), input.material(), 1);
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
-        if (input.material == null) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix);
+        if (input.material() == null) {
+            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         }
-        return inputItems(input.tagPrefix, input.material, count);
+        return inputItems(input.tagPrefix(), input.material(), count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material, int count) {
+    public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
+        if(material == null) {
+            GTCEu.LOGGER.error(
+                    "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
+                    id, orePrefix, "null", count);
+            return inputItems(ItemStack.EMPTY);
+        } else {
+            tempItemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
+        }
         TagKey<Item> tag = ChemicalHelper.getTag(orePrefix, material);
         if (tag == null) {
             var item = ChemicalHelper.get(orePrefix, material, count);
@@ -449,7 +488,7 @@ public class GTRecipeBuilder {
                         "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                         id, orePrefix, material, count);
             }
-            return inputItems(item);
+            return input(ItemRecipeCapability.CAP, SizedIngredient.create(item));
         }
         return inputItems(tag, count);
     }
@@ -541,27 +580,32 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
+        if(material == null) {
+            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
+                    id, orePrefix, "null", count);
+            return outputItems(ItemStack.EMPTY);
+        }
         var item = ChemicalHelper.get(orePrefix, material, count);
         if (item.isEmpty()) {
-            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, TagPrefix: {}, Material: {}",
-                    orePrefix, material);
+            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
+                    id, orePrefix, "null", count);
         }
         return outputItems(item);
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry) {
-        if (entry.material == null) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix);
+        if (entry.material() == null) {
+            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
-        return outputItems(entry.tagPrefix, entry.material);
+        return outputItems(entry.tagPrefix(), entry.material());
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry, int count) {
-        if (entry.material == null) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix);
+        if (entry.material() == null) {
+            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
-        return outputItems(entry.tagPrefix, entry.material, count);
+        return outputItems(entry.tagPrefix(), entry.material(), count);
     }
 
     public GTRecipeBuilder outputItems(MachineDefinition machine) {
@@ -903,12 +947,22 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
+        var matStack = ChemicalHelper.getMaterial(input.getFluid());
+        if(matStack != null) {
+            tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
+        }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
                 TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()),
                 input.getAmount(), input.getTag()));
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
+        for(var input : inputs) {
+            var matStack = ChemicalHelper.getMaterial(input.getFluid());
+            if(matStack != null) {
+                tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
+            }
+        }
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> FluidIngredient.of(
                 TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()),
                 fluid.getAmount(), fluid.getTag())).toArray(FluidIngredient[]::new));
@@ -1248,7 +1302,64 @@ public class GTRecipeBuilder {
             }
         }
 
+        if(addMaterialInfo) {
+            addOutputMaterialInfo();
+        }
+        tempItemStacks = null;
+        tempItemMaterialStacks = null;
+        tempFluidStacks = null;
+
         consumer.accept(build());
+    }
+
+    public void addOutputMaterialInfo() {
+        var itemOutputs = output.get(ItemRecipeCapability.CAP);
+        var itemInputs = input.get(ItemRecipeCapability.CAP);
+        if(itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
+            var currOutput = itemOutputs.get(0).content;
+            ItemLike out = null;
+            int outputCount = 0;
+
+            if(currOutput instanceof Item i) {
+                out = i;
+                outputCount = 1;
+            }
+            else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
+                out = i;
+                outputCount = 1;
+            }
+            else if (currOutput instanceof ItemStack stack) {
+                out = stack.getItem();
+                outputCount = stack.getCount();
+            }
+            else if (currOutput instanceof SizedIngredient sized) {
+                out = sized.getItems()[0].getItem();
+                outputCount = sized.getItems()[0].getCount();
+            }
+
+            Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
+            for(var input : tempItemMaterialStacks) {
+                long am = input.amount() / outputCount;
+                matStacks.merge(input.material(), am, Long::sum);
+            }
+
+            if(addMaterialFluidInfo) {
+                for(var input : tempFluidStacks) {
+                    long am = input.amount() / outputCount;
+                    matStacks.merge(input.material(), am, Long::sum);
+                }
+            }
+
+            var matList = matStacks.reference2LongEntrySet().stream().map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
+
+            if(out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
+                ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
+
+            var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
+            if((existingItemInfo == null || existingItemInfo.getMaterials().isEmpty()) && !matStacks.isEmpty()) {
+                ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matList));
+            }
+        }
     }
 
     public GTRecipe buildRawRecipe() {
@@ -1285,13 +1396,6 @@ public class GTRecipeBuilder {
      * @param EUt           the EUt of the recipe
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
-    public record ResearchRecipeEntry(
-                                      @NotNull String researchId,
-                                      @NotNull ItemStack researchStack,
-                                      @NotNull ItemStack dataStack,
-                                      int duration,
-                                      int EUt,
-                                      int CWUt) {
-
-    }
+    public record ResearchRecipeEntry(@NotNull String researchId, @NotNull ItemStack researchStack,
+                                      @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {}
 }

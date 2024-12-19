@@ -237,6 +237,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(plateDouble, TungstenCarbide, 2)
                 .inputFluids(TinAlloy.getFluid(L * 32))
                 .outputItems(NEUTRON_REFLECTOR)
+                .addMaterialInfo(true)
                 .save(provider);
 
         // hazmat pieces
