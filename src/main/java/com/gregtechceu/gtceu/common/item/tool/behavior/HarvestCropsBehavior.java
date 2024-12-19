@@ -97,16 +97,17 @@ public class HarvestCropsBehavior implements IToolBehavior {
         var cropBlock = (CropBlock) block;
         final var seed = cropBlock.getCloneItemStack(level, pos, blockState).getItem();
         if (cropBlock.isMaxAge(blockState)) {
-            final var check = new boolean[] { true };
-            var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null).stream()
-                    .peek(itemStack -> {
-                        if (check[0] && itemStack.is(seed)) {
-                            itemStack.shrink(1);
-                            check[0] = false;
-                        }
-                    })
-                    .filter(itemStack -> itemStack.getCount() > 0)
-                    .toList();
+            var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
+            for (int i = 0; i < drops.size(); i++) {
+                var drop = drops.get(i);
+                if (drop.is(seed)) {
+                    drop.shrink(1);
+                    if (drop.isEmpty()) {
+                        drops.remove(drop);
+                    }
+                    break;
+                }
+            }
             dropListOfItems(level, pos, drops);
             level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
             level.setBlock(pos, cropBlock.getStateForAge(0), Block.UPDATE_ALL);
