@@ -35,7 +35,7 @@ jobs:
         if: github.repository_owner == 'GregTechCEu'
         run: ./gradlew publish --build-cache
       - name: Rename Jars
-        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(data --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
+        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
