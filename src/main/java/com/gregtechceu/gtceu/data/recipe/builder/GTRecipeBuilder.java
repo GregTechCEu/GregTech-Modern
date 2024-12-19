@@ -1350,6 +1350,9 @@ public class GTRecipeBuilder {
                     if(fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
                         MaterialStack matStack = null;
                         for(var value : fluidIngredient.values) {
+                            if(value instanceof FluidIngredient.TagValue) {
+
+                            }
                             var fluid = value.getFluids().toArray(new Fluid[0]);
                             if(fluid.length != 0 && fluid[0] != null)
                                 matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
