@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -14,14 +12,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.integration.kjs.builders.machine.KJSTieredMachineBuilder;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -51,7 +46,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.function.TriFunction;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -100,25 +94,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
-    }
-
-    @ApiStatus.Internal
-    public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id) {
-        return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                WorkableElectricMultiblockMachine::new,
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
-    }
-
-    @ApiStatus.Internal
-    public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
-                                                          KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
-                machine::create,
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name,
