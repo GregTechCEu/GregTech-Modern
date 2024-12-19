@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import net.minecraft.resources.ResourceLocation;
@@ -22,19 +22,17 @@ import lombok.experimental.Accessors;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
-import static com.gregtechceu.gtceu.common.data.GTMachines.workableTiered;
-
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
 
     @Setter
-    public volatile int[] tiers = GTMachines.ELECTRIC_TIERS;
+    public volatile int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
     public volatile TieredCreationFunction machine;
     @Setter
     public volatile DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    public volatile Int2IntFunction tankScalingFunction = GTMachines.defaultTankSizeFunction;
+    public volatile Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public volatile boolean addDefaultTooltips = true;
 
@@ -83,8 +81,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                     builder.editableUI(this.editableUI.apply(this.id, recipeType));
                 }
                 if (tankScalingFunction != null && addDefaultTooltips) {
-                    builder.tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                            tankScalingFunction.apply(tier), true));
+                    builder.tooltips(
+                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                    tankScalingFunction.apply(tier), true));
                 }
             }
             definitions[tier] = builder.register();
