@@ -60,6 +60,9 @@ dependencies {
     // FTB Teams
     modCompileOnly(forge.ftbteams)
     modCompileOnly(forge.ftblibrary)
+    
+    // FTB Chunks
+    modCompileOnly(forge.ftbchunks)
 
     // Argonauts
     modCompileOnly(forge.argonauts)
@@ -101,6 +104,10 @@ dependencies {
     modExtraRuntimeOnly(forge.xaerosminimap)
     modExtraRuntimeOnly(forge.xaerosworldmap)
     modExtraRuntimeOnly(forge.journeymap.forge)
+    
+    modExtraRuntimeOnly(forge.ftblibrary)
+    modExtraRuntimeOnly(forge.ftbteams)
+    modExtraRuntimeOnly(forge.ftbchunks)
 
     modExtraRuntimeOnly("top.theillusivec4.curios:curios-forge:${forge.versions.curios.get()}")
     modExtraRuntimeOnly("curse.maven:spark-361579:4738952")
