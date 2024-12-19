@@ -524,6 +524,7 @@ public class MachineRecipeLoader {
                 .inputFluids(solder)
                 .outputItems(COVER_ENERGY_DETECTOR)
                 .EUt(16).duration(100)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_energy_detector")
