@@ -53,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
@@ -234,9 +235,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.isAE2Loaded() && first instanceof CableBusBlockEntity cable) {
-            var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(CableBusBlockEntity.class, cable,
-                    ae2CablePredicate, limit, limit * 6);
+        if (GTCEu.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
+            var collected = AE2CallWrapper.collect(first, limit);
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
@@ -510,20 +510,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return parent instanceof IPaintable pp && child instanceof IPaintable pc && paintablePredicate.test(pp, pc);
     };
 
-    private static final TriPredicate<CableBusBlockEntity, CableBusBlockEntity, Direction> ae2CablePredicate = (parent,
-                                                                                                                child,
-                                                                                                                direction) -> {
-        if (parent == null) return true;
-        var childDirection = direction.getOpposite();
-        if (parent.getPart(direction) != null || parent.getCableConnectionType(direction) == AECableType.NONE ||
-                child.getPart(childDirection) != null ||
-                child.getCableConnectionType(childDirection) == AECableType.NONE ||
-                parent.getColor() != child.getColor()) {
-            return false;
-        }
-        return true;
-    };
-
     @SuppressWarnings("rawtypes")
     private static final TriPredicate<PipeBlockEntity, PipeBlockEntity, Direction> gtPipePredicate = (parent, child,
                                                                                                       direction) -> {
@@ -541,4 +527,30 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return paintablePredicate.test(parent.getMetaMachine(), child.getMetaMachine()) &&
                 parent.getMetaMachine().getDefinition().equals(child.getMetaMachine().getDefinition());
     };
+
+    private static class AE2CallWrapper {
+
+        static Set<CableBusBlockEntity> collect(BlockEntity first, int limit) {
+            return BreadthFirstBlockSearch.conditionalBlockEntitySearch(CableBusBlockEntity.class,
+                    (CableBusBlockEntity) first,
+                    AE2CallWrapper::ae2CablePredicate,
+                    limit, limit * 6);
+        }
+
+        static boolean isAE2Cable(BlockEntity be) {
+            return be instanceof CableBusBlockEntity;
+        }
+
+        static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {
+            if (parent == null) return true;
+            var childDirection = direction.getOpposite();
+            if (parent.getPart(direction) != null || parent.getCableConnectionType(direction) == AECableType.NONE ||
+                    child.getPart(childDirection) != null ||
+                    child.getCableConnectionType(childDirection) == AECableType.NONE ||
+                    parent.getColor() != child.getColor()) {
+                return false;
+            }
+            return true;
+        }
+    }
 }
