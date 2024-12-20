@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksRenderer;
 import com.gregtechceu.gtceu.integration.map.journeymap.JourneymapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 
@@ -34,7 +35,7 @@ public class GroupingMapRenderer extends GenericMapRenderer {
             renderers.put(GTValues.MODID_XAEROS_MINIMAP, new XaerosRenderer());
         }
         if (Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
-            // TODO FTB chunks support
+            renderers.put(GTValues.MODID_FTB_CHUNKS, new FTBChunksRenderer());
         }
 
         instance = new GroupingMapRenderer(renderers);
