@@ -2322,7 +2322,7 @@ public class GTMachines {
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
-                        .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
+                        .simpleGeneratorMachineRenderer(GTCEu.id("block/generators/" + name))
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.apply(tier), false))
                         .register(),

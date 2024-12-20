@@ -42,7 +42,8 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        for (MachineDefinition def : this.value) {
+        for (int tier : tiers) {
+            MachineDefinition def = value[tier];
             lang.add(def.getDescriptionId(), def.getLangValue());
         }
     }
