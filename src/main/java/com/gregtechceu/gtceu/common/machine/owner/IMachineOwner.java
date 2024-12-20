@@ -56,6 +56,13 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
         return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
     }
 
+    static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player);
+    }
+
     enum MachineOwnerType {
 
         PLAYER,
