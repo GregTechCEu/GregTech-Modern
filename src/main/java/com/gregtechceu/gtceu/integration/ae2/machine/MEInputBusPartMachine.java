@@ -142,7 +142,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     ////////////////////////////////
     // ******* Interaction *******//
-    /// /////////////////////////////
+    ////////////////////////////////
 
     @Override
     public final InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {

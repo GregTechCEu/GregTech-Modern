@@ -143,7 +143,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     ////////////////////////////////
     // ******* Interaction *******//
-    /// /////////////////////////////
+    ////////////////////////////////
 
     @Override
     public final InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
