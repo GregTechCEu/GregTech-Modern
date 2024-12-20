@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
+import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
-public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
+public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITagSerializable<CompoundTag> {
 
     public static final String DEFAULT_COLOR = "FFFFFFFF";
     protected static final String COLOR_KEY = "color";
@@ -31,13 +32,23 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
         setColor(Integer.toHexString(color));
     }
 
-    private int parseColor(String s) {
-        // stupid java not having actual unsigned ints
-        long tmp = Long.parseLong(s, 16);
-        if (tmp > 0x7FFFFFFF) {
-            tmp -= 0x100000000L;
+    public static int parseColor(String colorString) {
+        colorString = formatColorString(colorString);
+
+        if (colorString.length() > 8) {
+            colorString = colorString.substring(colorString.length() - 8);
         }
-        return (int) tmp;
+
+        int alpha = Integer.parseInt(colorString.substring(6, 8), 16);
+        int red = Integer.parseInt(colorString.substring(0, 2), 16);
+        int green = Integer.parseInt(colorString.substring(2, 4), 16);
+        int blue = Integer.parseInt(colorString.substring(4, 6), 16);
+
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+
+    public static @NotNull String formatColorString(String colorString) {
+        return String.format("%8s", colorString).replace(' ', '0').toUpperCase();
     }
 
     @Override

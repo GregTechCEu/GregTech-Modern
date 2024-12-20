@@ -18,6 +18,6 @@ public class MachineOwnerPayload extends ObjectTypedPayload<IMachineOwner> {
 
     @Override
     public void deserializeNBT(Tag tag) {
-        payload.save((CompoundTag) tag);
+        payload = IMachineOwner.create((CompoundTag) tag);
     }
 }

@@ -20,12 +20,10 @@ public class ConfirmTextInputWidget extends WidgetGroup {
 
     private final Consumer<String> textResponder;
     private final Function<String, String> validator;
-    @Getter
-    @Setter
-    private String text = "";
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private String inputText = "";
+    @Setter
     private String hoverText = "";
 
     public ConfirmTextInputWidget(int x, int y, int width, int height, String text, Consumer<String> textResponder,
@@ -36,11 +34,6 @@ public class ConfirmTextInputWidget extends WidgetGroup {
         if (text != null) {
             this.inputText = text;
         }
-    }
-
-    public ConfirmTextInputWidget setInputBoxTooltips(String text) {
-        this.hoverText = text;
-        return this;
     }
 
     @Override

@@ -9,12 +9,12 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
+import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
-import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -27,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
@@ -35,12 +38,11 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
             AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
     public static final int TRANSFER_RATE = 8000; // mB/t
 
+    @DescSynced
+    protected final List<VirtualTank> tanks = new ArrayList<>();
     @Persisted
     @DescSynced
     protected VirtualTank visualTank = new VirtualTank();
-    @Persisted
-    @DescSynced
-    protected final CustomFluidTank shownFluidTank = new CustomFluidTank(VirtualTank.DEFAULT_CAPACITY);
     @Persisted
     @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
@@ -50,9 +52,31 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
-        shownFluidTank.setOnContentsChanged(() -> {
-            if (this.visualTank != null) this.visualTank.setFluid(shownFluidTank.getFluid().copy());
-        });
+    }
+
+    @Override
+    protected VirtualTank getEntry() {
+        return visualTank;
+    }
+
+    @Override
+    protected void setEntry(VirtualEntry entry) {
+        visualTank = (VirtualTank) entry;
+    }
+
+    @Override
+    protected Stream<VirtualEntry> getEntries(){
+        var reg = VirtualEnderRegistry.getInstance();
+        if (reg == null) return Stream.empty();
+        tanks.clear();
+        reg.getEntryNames(getOwner(), EntryTypes.ENDER_FLUID).stream()
+                .map(name -> reg.getEntry(getOwner(), EntryTypes.ENDER_FLUID, name)).forEach(tanks::add);
+        return tanks.stream().map(t -> t);
+    }
+
+    @Override
+    public void clearEntries() {
+        tanks.clear();
     }
 
     @Override
@@ -68,22 +92,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected String identifier() {
         return "EFLink#";
-    }
-
-    @Override
-    protected void updateEntry() {
-        var reg = VirtualEnderRegistry.getInstance();
-        if (reg == null) return;
-        this.visualTank = reg.getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
-        onShownFluidChanged();
-    }
-
-    private void onShownFluidChanged() {
-        if (visualTank != null) {
-            var fluid = visualTank.getFluidTank().getFluidInTank(0);
-            this.shownFluidTank.setFluid(fluid.copy());
-        }
-        markAsDirty();
     }
 
     @Override
@@ -126,16 +134,12 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
 
     //////////////////////////////////////
     // *********** GUI ************ //
-
     /// ///////////////////////////////////
 
     @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new TankWidget(visualTank.getFluidTank(), 0, 146, 20, 20, 20,
-                true, true).setBackground(GuiTextures.FLUID_SLOT));
-
-        group.addWidget(filterHandler.createFilterSlotUI(117, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
+    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height){
+        return new TankWidget(((VirtualTank)entry).getFluidTank(), 0, x, y, width, height,
+                true, true).setBackground(GuiTextures.FLUID_SLOT);
     }
 
     @NotNull
@@ -144,51 +148,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         return "cover.ender_fluid_link.title";
     }
 
-    // damn I can't make the list panel work in the server side
-    // private SelectableWidgetGroup createVisualTankWidget(VisualTank tank, int y) {
-    // final int TOTAL_WIDTH = 116;
-    // final int BUTTON_SIZE = 20;
-    // final int MARGIN = 2;
-    //
-    // int currentX = 0;
-    // int availableWidth = TOTAL_WIDTH - BUTTON_SIZE + MARGIN;
-    //
-    // SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(0, y, TOTAL_WIDTH, BUTTON_SIZE){
-    // @Override
-    // public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-    // super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-    // if (super.isSelected)
-    // DrawerHelper.drawBorder(graphics, getPositionX(), getPositionY(), TOTAL_WIDTH, BUTTON_SIZE, 0xFFFFFFFF, 1);
-    // }
-    // };
-    // var name = tank.getVirtualTank().getColorStr();
-    //
-    // // Color block
-    // channelGroup.addWidget(new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
-    // .setCurrentColor(tank.getVirtualTank().getColor()));
-    // currentX += BUTTON_SIZE + MARGIN;
-    //
-    // // Text box
-    // int textBoxWidth = availableWidth;
-    // textBoxWidth -= BUTTON_SIZE + MARGIN;
-    // if (tank.getFluidAmount() == 0) {
-    // textBoxWidth -= BUTTON_SIZE + MARGIN;
-    // }
-    // channelGroup.addWidget(
-    // new TextBoxWidget(currentX, 6, textBoxWidth, List.of(name)).setCenter(true));
-    // currentX += textBoxWidth + MARGIN;
-    //
-    // // Tank slot
-    // channelGroup.addWidget(new TankWidget(tank, currentX, 0,
-    // BUTTON_SIZE, BUTTON_SIZE, false, false)
-    // .setBackground(GuiTextures.FLUID_SLOT));
-    // currentX += BUTTON_SIZE + MARGIN;
-    //
-    // // Remove button (if tank is empty)
-    // if (tank.getFluidAmount() == 0) {
-    // channelGroup.addWidget(new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE,
-    // GuiTextures.BUTTON_INT_CIRCUIT_MINUS, cd -> removeChannel(tank)));
-    // }
-    // return channelGroup;
-    // }
+    @Override
+    protected FilterHandler<FluidStack, FluidFilter> getFilterHandler() {
+        return filterHandler;
+    }
 }
