@@ -5510,5 +5510,7 @@
     "gtceu.direction.tooltip.down": "Снизу",
     "gtceu.direction.tooltip.front": "Спереди",
     "gtceu.direction.tooltip.left": "Слева",
-    "item.toggle.advanced.info.tooltip": "§8<SHIFT для просмотра сохраненной конфигурации>"
+    "item.toggle.advanced.info.tooltip": "§8<SHIFT для просмотра сохраненной конфигурации>",
+    "cover.shutter.message.enabled": "Затвор закрыт",
+    "cover.shutter.message.disabled": "Затвор открыт"
 }
