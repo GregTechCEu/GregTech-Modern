@@ -560,7 +560,7 @@ public class GTRecipeTypes {
                                 .EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
-                        int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR);
+                        int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR_INV);
                         boolean shouldDivide = ratio != 1;
 
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&

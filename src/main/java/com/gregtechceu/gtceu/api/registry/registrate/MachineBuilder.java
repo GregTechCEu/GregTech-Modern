@@ -220,6 +220,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return renderer(() -> new WorkableTieredHullMachineRenderer(tier, workableModel));
     }
 
+    public MachineBuilder<DEFINITION> simpleGeneratorMachineRenderer(ResourceLocation workableModel) {
+        return renderer(() -> new SimpleGeneratorMachineRenderer(tier, workableModel));
+    }
+
     public MachineBuilder<DEFINITION> workableSteamHullRenderer(boolean isHighPressure,
                                                                 ResourceLocation workableModel) {
         return renderer(() -> new WorkableSteamMachineRenderer(isHighPressure, workableModel));
