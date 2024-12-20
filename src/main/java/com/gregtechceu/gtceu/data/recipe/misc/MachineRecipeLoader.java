@@ -1299,11 +1299,19 @@ public class MachineRecipeLoader {
                                            List<ItemStack> mossStack) {
         for (int i = 0; i < regularStack.size(); i++) {
             ResourceLocation mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
-            CHEMICAL_BATH_RECIPES.recipeBuilder("bath_" + mossId.getPath())
+            MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_moss_block")
                     .inputItems(regularStack.get(i))
-                    .inputFluids(Water.getFluid(100))
+                    .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
+                    .inputFluids(Water.getFluid(250))
                     .outputItems(mossStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+                    .duration(40).EUt(1).save(provider);
+
+            MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_vine")
+                    .inputItems(regularStack.get(i))
+                    .inputItems(new ItemStack(Blocks.VINE))
+                    .inputFluids(Water.getFluid(250))
+                    .outputItems(mossStack.get(i))
+                    .duration(40).EUt(1).save(provider);
         }
     }
 

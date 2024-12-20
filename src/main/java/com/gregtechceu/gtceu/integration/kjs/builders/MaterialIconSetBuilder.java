@@ -9,8 +9,8 @@ public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
 
     private transient MaterialIconSet parent;
 
-    public MaterialIconSetBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public MaterialIconSetBuilder(ResourceLocation id) {
+        super(id);
         parent = MaterialIconSet.DULL;
     }
 

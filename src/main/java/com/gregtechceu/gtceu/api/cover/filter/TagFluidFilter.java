@@ -44,7 +44,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
 
     @Override
     public boolean test(FluidStack fluidStack) {
-        if (oreDictFilterExpression.isEmpty()) return true;
+        if (oreDictFilterExpression.isEmpty()) return false;
         if (cache.containsKey(fluidStack.getFluid())) return cache.getOrDefault(fluidStack.getFluid(), false);
         if (TagExprFilter.tagsMatch(matchExpr, fluidStack)) {
             cache.put(fluidStack.getFluid(), true);

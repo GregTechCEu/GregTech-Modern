@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
@@ -140,14 +141,14 @@ public interface IRotorHolderMachine extends IMultiPart {
      * @return true if the front face is unobstructed
      */
     default boolean isFrontFaceFree() {
-        var facing = self().getFrontFacing();
-        boolean permuteXZ = facing.getAxis() == Direction.Axis.Z;
-        var centerPos = self().getPos().relative(facing);
-        for (int x = -1; x < 2; x++) {
-            for (int y = -1; y < 2; y++) {
-                var blockPos = centerPos.offset(permuteXZ ? x : 0, y, permuteXZ ? 0 : x);
-                var blockState = self().getLevel().getBlockState(blockPos);
-                if (!blockState.isAir()) {
+        final var facing = self().getFrontFacing();
+        final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
+        final var pos = self().getPos();
+        final var level = self().getLevel();
+        for (int dLeft = -1; dLeft < 2; dLeft++) {
+            for (int dUp = -1; dUp < 2; dUp++) {
+                final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);
+                if (!level.getBlockState(checkPos).isAir()) {
                     return false;
                 }
             }
