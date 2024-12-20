@@ -55,7 +55,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
+        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
         for (final int tier : tiers) {
             String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
             MultiblockMachineBuilder builder = GTRegistration.REGISTRATE.multiblock(

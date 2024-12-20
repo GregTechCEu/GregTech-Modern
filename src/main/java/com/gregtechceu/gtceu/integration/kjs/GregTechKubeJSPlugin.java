@@ -45,6 +45,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.*;
@@ -280,6 +281,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTOres", GTOres.class);
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);
+        event.add("ModifierFunction", ModifierFunction.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
     }
 

@@ -22,7 +22,10 @@ import lombok.experimental.Accessors;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
+import static com.gregtechceu.gtceu.api.GTValues.VLVH;
+import static com.gregtechceu.gtceu.api.GTValues.VLVT;
 import static com.gregtechceu.gtceu.common.data.GTMachines.workableTiered;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
@@ -67,14 +70,15 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
+        MachineDefinition[] definitions = new MachineDefinition[tiers.length];
         for (final int tier : tiers) {
             String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
             MachineBuilder<?> builder = GTRegistration.REGISTRATE.machine(
                     String.format("%s_%s", tierName, this.id.getPath()),
                     holder -> machine.create(holder, tier, tankScalingFunction));
 
-            builder.workableTieredHullRenderer(id.withPrefix("block/machines/"))
+            builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
+                    .workableTieredHullRenderer(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
             if (builder.recipeTypes() != null && builder.recipeTypes().length > 0) {

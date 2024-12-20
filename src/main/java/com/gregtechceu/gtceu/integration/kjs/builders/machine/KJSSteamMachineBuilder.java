@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
 
+import dev.latvian.mods.kubejs.client.LangEventJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -24,6 +25,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     public volatile SteamCreationFunction machine = SimpleSteamMachine::new;
     @Setter
     public volatile SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
+    private volatile MachineDefinition hp = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -43,17 +45,26 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
         if (hasHighPressure) {
             MachineBuilder<?> highPressureBuilder = GTRegistration.REGISTRATE.machine(
-                    String.format("lp_%s", this.id.getPath()),
+                    String.format("hp_%s", this.id.getPath()),
                     holder -> machine.create(holder, true));
             highPressureBuilder.langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .renderer(() -> new WorkableSteamMachineRenderer(true, id.withPrefix("block/machines/")));
             definition.apply(true, highPressureBuilder);
-            var highPressure = highPressureBuilder.register();
+            hp = highPressureBuilder.register();
         }
 
         return value = lowPressure;
+    }
+
+    @Override
+    public void generateLang(LangEventJS lang) {
+        super.generateLang(lang);
+        lang.add(value.getDescriptionId(), value.getLangValue());
+        if (hp != null) {
+            lang.add(hp.getDescriptionId(), hp.getLangValue());
+        }
     }
 
     @FunctionalInterface
