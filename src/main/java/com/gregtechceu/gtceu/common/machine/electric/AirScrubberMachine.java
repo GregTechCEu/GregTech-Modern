@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -39,7 +39,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     private float removedLastSecond;
 
     public AirScrubberMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachines.largeTankSizeFunction, args);
+        super(holder, tier, GTMachineUtils.largeTankSizeFunction, args);
         this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * tier;
     }
 

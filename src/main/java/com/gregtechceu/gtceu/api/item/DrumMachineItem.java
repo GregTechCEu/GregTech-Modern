@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,7 +42,7 @@ public class DrumMachineItem extends MetaMachineItem {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(
                     () -> new ThermalFluidHandlerItemStack(
                             itemStack,
-                            Math.toIntExact(GTMachines.DRUM_CAPACITY.get(getDefinition())),
+                            Math.toIntExact(GTMachineUtils.DRUM_CAPACITY.get(getDefinition())),
                             property.getMaxFluidTemperature(), property.isGasProof(), property.isAcidProof(),
                             property.isCryoProof(), property.isPlasmaProof())));
         }

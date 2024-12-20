@@ -720,7 +720,7 @@ public class GTOres {
     }
 
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
-        var block = GTBlocks.MATERIAL_BLOCKS.get(oreTag, material);
+        var block = GTMaterialBlocks.MATERIAL_BLOCKS.get(oreTag, material);
         if (block == null) {
             ResourceLocation oreKey;
             if (oreTag == ore) {

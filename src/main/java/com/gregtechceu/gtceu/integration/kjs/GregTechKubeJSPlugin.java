@@ -45,10 +45,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
@@ -59,6 +62,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
@@ -224,63 +228,77 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerBindings(BindingsEvent event) {
         super.registerBindings(event);
+        // Mod related
+        event.add("GTCEu", GTCEu.class);
+        event.add("GTCEuAPI", GTCEuAPI.class);
         event.add("GTRegistries", GTRegistries.class);
-        event.add("GTMaterials", GTMaterials.class);
+        event.add("GTValues", GTValues.class);
+        // Material related
         event.add("GTElements", GTElements.class);
-        event.add("GTSoundEntries", GTSoundEntries.class);
-        event.add("GTBlocks", GTBlocks.class);
-        event.add("GCyMBlocks", GCYMBlocks.class);
-        event.add("GCYMBlocks", GCYMBlocks.class);
-        event.add("GTMachines", GTMachines.class);
-        event.add("GCyMMachines", GCYMMachines.class);
-        event.add("GCYMMachines", GCYMMachines.class);
-        event.add("GTItems", GTItems.class);
-        event.add("GTRecipeTypes", GTRecipeTypes.class);
-        event.add("GTRecipeCategories", GTRecipeCategories.class);
-        event.add("GTMedicalConditions", GTMedicalConditions.class);
-        event.add("TagPrefix", TagPrefix.class);
+        event.add("GTMaterials", GTMaterials.class);
+        event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("UnificationEntry", UnificationEntry.class);
-        event.add("RecipeCapability", RecipeCapability.class);
-        event.add("ChanceLogic", ChanceLogic.class);
+        event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
         event.add("GTFluidState", FluidState.class);
-        event.add("PropertyKey", PropertyKey.class);
-        event.add("ToolProperty", ToolProperty.class);
-        event.add("HazardProperty", HazardProperty.class);
-        event.add("MedicalCondition", MedicalCondition.class);
-        event.add("Symptom", Symptom.class);
-        event.add("CleanroomType", CleanroomType.class);
-        event.add("ChemicalHelper", ChemicalHelper.class);
-        event.add("CraftingComponent", CraftingComponent.class);
-
-        event.add("GTValues", GTValues.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
         event.add("GTMaterialIconType", MaterialIconType.class);
-        event.add("GTMaterialFlags", MaterialFlags.class);
+        event.add("ChemicalHelper", ChemicalHelper.class);
+        event.add("PropertyKey", PropertyKey.class);
+        event.add("ToolProperty", ToolProperty.class);
         event.add("GTToolType", GTToolType.class);
+        // Block/Item related
+        event.add("GTBlocks", GTBlocks.class);
+        event.add("GTMaterialBlocks", GTMaterialBlocks.class);
+        event.add("GCYMBlocks", GCYMBlocks.class);
+        event.add("GTMachines", GTMachines.class);
+        event.add("GTMultiMachines", GTMultiMachines.class);
+        event.add("GTMachineUtils", GTMachineUtils.class);
+        event.add("GCYMMachines", GCYMMachines.class);
+        event.add("GTItems", GTItems.class);
+        event.add("GTMaterialItems", GTMaterialItems.class);
+        event.add("TagPrefix", TagPrefix.class);
+        // Recipe related
+        event.add("GTRecipeTypes", GTRecipeTypes.class);
+        event.add("GTRecipeCategories", GTRecipeCategories.class);
+        event.add("GTMedicalConditions", GTMedicalConditions.class);
+        event.add("GTRecipeModifiers", GTRecipeModifiers.class);
+        event.add("OverclockingLogic", OverclockingLogic.class);
+        event.add("ModifierFunction", ModifierFunction.class);
+        event.add("RecipeCapability", RecipeCapability.class);
+        event.add("ChanceLogic", ChanceLogic.class);
+        event.add("CleanroomType", CleanroomType.class);
+        event.add("CraftingComponent", CraftingComponent.class);
+        // Sound related
+        event.add("GTSoundEntries", GTSoundEntries.class);
+        event.add("SoundType", SoundType.class);
+        // GUI related
+        event.add("GuiTextures", GuiTextures.class);
+        // Multiblock related
         event.add("RotationState", RotationState.class);
         event.add("FactoryBlockPattern", FactoryBlockPattern.class);
         event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
-        event.add("GuiTextures", GuiTextures.class);
-        event.add("GTCEu", GTCEu.class);
-        event.add("GTCEuAPI", GTCEuAPI.class);
-        event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
 
-        // MaterialColor stuff, for TagPrefix
-        event.add("SoundType", SoundType.class);
-
+        // Hazard Related
+        event.add("HazardProperty", HazardProperty.class);
+        event.add("MedicalCondition", MedicalCondition.class);
+        event.add("Symptom", Symptom.class);
+        // World Gen Related
         event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOres.class);
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);
+        event.add("ModifierFunction", ModifierFunction.class);
+        event.add("MachineModifiers", MachineModifiers.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
+        // MaterialColor stuff, for TagPrefix
     }
 
     @Override

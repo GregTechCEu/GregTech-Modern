@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,22 +36,22 @@ public class ItemTagLoader {
                 Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
                 Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
                 Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, Glass).get());
-        create(provider, lens, Color.White, GTItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
-        create(provider, lens, Color.LightBlue, GTItems.MATERIAL_ITEMS.get(lens, Diamond).get());
-        create(provider, lens, Color.Red, GTItems.MATERIAL_ITEMS.get(lens, Ruby).get());
-        create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).get());
-        create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
-        create(provider, lens, Color.Purple, GTItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
+        create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get());
+        create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+        create(provider, lens, Color.LightBlue, GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
+        create(provider, lens, Color.Red, GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
+        create(provider, lens, Color.Green, GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
+        create(provider, lens, Color.Blue, GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
+        create(provider, lens, Color.Purple, GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
 
         create(provider, CustomTags.PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
-        create(provider, dye, Color.Brown, GTItems.MATERIAL_ITEMS.get(dust, MetalMixture).get());
+        create(provider, dye, Color.Brown, GTMaterialItems.MATERIAL_ITEMS.get(dust, MetalMixture).get());
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
+                .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
 
         // todo match ae2 certus quartz tag
         // OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem,
@@ -58,8 +59,8 @@ public class ItemTagLoader {
 
         // add treated and untreated wood plates to vanilla planks tag
         provider.addTag(ItemTags.PLANKS)
-                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, TreatedWood).getId()))
-                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(plate, Wood).getId()));
+                .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(plate, TreatedWood).getId()))
+                .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood).getId()));
 
         provider.addTag(CustomTags.CIRCUITS)
                 .addTag(CustomTags.ULV_CIRCUITS)
