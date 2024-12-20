@@ -6,7 +6,11 @@ import net.minecraft.world.item.ItemStack;
 
 public interface IDataStickInteractable {
 
-    InteractionResult onDataStickUse(Player player, ItemStack dataStick);
+    default InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
+        return InteractionResult.PASS;
+    }
 
-    InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick);
+    default InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
+        return InteractionResult.PASS;
+    }
 }

@@ -156,9 +156,4 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
         }
         return InteractionResult.PASS;
     }
-
-    @Override
-    public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
-        return InteractionResult.PASS;
-    }
 }
