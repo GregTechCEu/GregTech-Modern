@@ -98,7 +98,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            if (IMachineOwner.canOpenOwnerMachine(context.getPlayer(), blockEntity))
+            if (!IMachineOwner.canOpenOwnerMachine(context.getPlayer(), blockEntity))
                 return InteractionResult.FAIL;
             MetaMachine machine = blockEntity.getMetaMachine();
             if (context.isSecondaryUseActive())
