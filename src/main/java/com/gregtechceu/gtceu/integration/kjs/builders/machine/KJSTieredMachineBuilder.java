@@ -22,8 +22,7 @@ import lombok.experimental.Accessors;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
-import static com.gregtechceu.gtceu.api.GTValues.VLVH;
-import static com.gregtechceu.gtceu.api.GTValues.VLVT;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.workableTiered;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -58,7 +57,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (MachineDefinition def : this.value) {
-            lang.add(def.getDescriptionId(), def.getLangValue());
+            if (def != null) {
+                lang.add(def.getDescriptionId(), def.getLangValue());
+            }
         }
     }
 
@@ -70,7 +71,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        MachineDefinition[] definitions = new MachineDefinition[tiers.length];
+        MachineDefinition[] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
             MachineBuilder<?> builder = GTRegistration.REGISTRATE.machine(

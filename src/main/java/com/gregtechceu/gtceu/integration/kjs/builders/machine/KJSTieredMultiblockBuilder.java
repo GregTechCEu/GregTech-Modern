@@ -43,7 +43,9 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (MachineDefinition def : this.value) {
-            lang.add(def.getDescriptionId(), def.getLangValue());
+            if (def != null) {
+                lang.add(def.getDescriptionId(), def.getLangValue());
+            }
         }
     }
 
@@ -55,7 +57,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[tiers.length];
+        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
             MultiblockMachineBuilder builder = GTRegistration.REGISTRATE.multiblock(
