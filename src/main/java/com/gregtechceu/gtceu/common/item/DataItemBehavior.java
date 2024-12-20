@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.ChatFormatting;
@@ -81,7 +82,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            if (blockEntity.getOwner() != null && !blockEntity.getOwner().isPlayerInTeam(context.getPlayer())) {
+            if (IMachineOwner.canOpenOwnerMachine(context.getPlayer(), blockEntity)) {
                 return InteractionResult.FAIL;
             }
             var machine = blockEntity.getMetaMachine();
