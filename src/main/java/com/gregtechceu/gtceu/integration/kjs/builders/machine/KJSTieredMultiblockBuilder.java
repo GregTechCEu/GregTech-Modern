@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +24,7 @@ import java.util.Locale;
 public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition[]> {
 
     @Setter
-    public volatile int[] tiers = GTMachines.ELECTRIC_TIERS;
+    public volatile int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
     public volatile TieredCreationFunction machine;
     @Setter

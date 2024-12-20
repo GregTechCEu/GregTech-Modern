@@ -11,10 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -632,7 +629,7 @@ public class MaterialRecipeHandler {
             for (Material material : registry.getAllMaterials()) {
                 if (material.hasProperty(PropertyKey.ORE)) {
                     VanillaRecipeHelper.addShapedRecipe(provider, "%s_surface_indicator".formatted(material.getName()),
-                            GTBlocks.SURFACE_ROCK_BLOCKS.get(material).asStack(2),
+                            GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material).asStack(2),
                             "DDD", "DGD", "DDD",
                             'D', ChemicalHelper.get(dustSmall, material),
                             'G', Items.GRAVEL);

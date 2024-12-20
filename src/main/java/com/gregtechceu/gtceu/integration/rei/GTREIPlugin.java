@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -74,7 +75,7 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreDisplayCategory.registerWorkstations(registry);
         registry.addWorkstations(GTRecipeREICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
-                EntryStacks.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+                EntryStacks.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 
     @Override
@@ -100,7 +101,7 @@ public class GTREIPlugin implements REIClientPlugin {
             // EntryIngredients.ofItemStacks(GTItems.TOOL_ITEMS.column(toolType).values().stream().filter(Objects::nonNull).map(ItemProviderEntry::get).map(IGTTool::get).collect(Collectors.toSet()))
         }
 
-        for (var cell : GTBlocks.MATERIAL_BLOCKS.columnMap().entrySet()) {
+        for (var cell : GTMaterialBlocks.MATERIAL_BLOCKS.columnMap().entrySet()) {
             var value = cell.getValue();
             if (value.size() <= 1) continue;
 
