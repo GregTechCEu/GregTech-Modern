@@ -56,10 +56,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        for (MachineDefinition def : this.value) {
-            if (def != null) {
-                lang.add(def.getDescriptionId(), def.getLangValue());
-            }
+        for (int tier : tiers) {
+            MachineDefinition def = value[tier];
+            lang.add(def.getDescriptionId(), def.getLangValue());
         }
     }
 
