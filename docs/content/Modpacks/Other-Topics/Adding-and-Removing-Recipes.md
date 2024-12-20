@@ -96,6 +96,32 @@ ServerEvents.recipes(event => {
 - More granular functionality:
     - `.perTick()`: Using this will enable you to control whether a recipe input/output is consumed/produced per tick the recipe is running or all at once at recipe start/end. Set to true with `.perTick(true)` to make the recipe builder consider any following input/output calls as per-tick. Remember to set the value to false with `.perTick(false)` after the calls you intend to be per-tick, to prevent behaviour you don't want!
 
+### Cleanroom
+Making your recipe require the (sterile) Cleanroom is not that hard, as there is build in support, in the form of `.cleanroom(CleanroomType.type)`
+
+```js title="cleanroom.js"
+ServerEvents.recipes(event => {
+    event.recipes.gtceu.canner('cleanroom_test')
+        .itemInputs('minecraft:cobblestone')
+        .inputFluids('minecraft:water 1000')
+        .itemOutputs('minecraft:dripstone_block')
+        .duration(200)
+        .EUt(GTValues.VA[GTValues.EV])
+        .cleanroom(CleanroomType.CLEANROOM)
+})
+```
+
+```js title="sterile_cleanroom.js"
+ServerEvents.recipes(event => {
+    event.recipes.gtceu.mixer('sterile_cleanroom_test')
+        .itemInputs('minecraft:gunpowder', '3x minecraft:paper')
+        .itemOutputs('minecraft:rocket')
+        .duration(100)
+        .EUt(GTValues.VA[GTValues.ZPM])
+        .cleanroom(CleanroomType.STERILE_CLEANROOM)
+})
+```
+
 ### The Research System
 GTCEu has Research System which allows for adding extra requirements to recipes such as: Scanner Research, Station Research and Computation.
 
