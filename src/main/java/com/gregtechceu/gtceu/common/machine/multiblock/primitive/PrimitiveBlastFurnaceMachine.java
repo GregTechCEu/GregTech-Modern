@@ -45,7 +45,6 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
-        this.onServerTick = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
@@ -61,15 +60,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
-        this.onServerTick.unsubscribe();
+        if (onServerTick != null) {
+            this.onServerTick.unsubscribe();
+        }
     }
 
     @Override
@@ -96,7 +91,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             var shouldZ = up.getAxis() == Direction.Axis.Z;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
-            if (getOffsetTimer() % 20 == 0) {
+            if (GTValues.CLIENT_TIME % 20 == 0) {
                 getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
                         shouldX ? speed * 2 : 0,
                         shouldY ? speed * 2 : 0,
