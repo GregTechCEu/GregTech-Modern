@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -13,8 +14,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -92,7 +91,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
-            if (color.ordinal() > 15 && Platform.isModLoaded(GTValues.MODID_TINTED)) {
+            if (color.ordinal() > 15 && GTCEuAPI.isModLoaded(GTValues.MODID_TINTED)) {
                 glassBuilder.put(color,
                         BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
                 glassPaneBuilder.put(color,

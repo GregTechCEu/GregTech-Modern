@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.map;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.integration.map.journeymap.JourneymapWaypointHandler;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaeroWaypointHandler;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceKey;
@@ -27,11 +26,11 @@ public class WaypointManager {
     private static boolean active = false;
 
     public static void init() {
-        if (Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
+        if (GTCEuAPI.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
             WaypointManager.registerWaypointHandler(new XaeroWaypointHandler());
             active = true;
         }
-        if (Platform.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
+        if (GTCEuAPI.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
             WaypointManager.registerWaypointHandler(new JourneymapWaypointHandler());
             active = true;
         }

@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.IModBusEvent;
 
 import lombok.Getter;
@@ -54,6 +55,10 @@ public class GTCEuAPI {
 
         if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
+    }
+
+    public static boolean isModLoaded(java.lang.String modId) {
+        return ModList.get().isLoaded(modId);
     }
 
     public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
