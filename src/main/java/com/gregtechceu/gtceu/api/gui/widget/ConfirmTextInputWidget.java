@@ -44,8 +44,7 @@ public class ConfirmTextInputWidget extends WidgetGroup {
                 getSizeHeight(),
                 pressed -> textResponder.accept(inputText))
                 .setButtonTexture(
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON,
-                                GuiTextures.CLIPBOARD_BUTTON.getSubTexture(0, 0.25, 1, 0.25))));
+                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, GuiTextures.BUTTON_CHECK)));
         this.addWidget(new TextFieldWidget(
                 1,
                 1,

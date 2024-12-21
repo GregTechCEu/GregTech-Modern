@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -284,6 +285,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             currentX += WIDGET_BOARD + 2;
             mainChannelGroup.addWidget(createConfirmTextInputWidget(currentX));
 
+            mainChannelGroup.addWidget(new ConfirmTextInputWidget(0, WIDGET_BOARD + 2, GROUP_WIDTH - WIDGET_BOARD,
+                    WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription, t -> t));
+
             mainGroup.addWidget(mainChannelGroup);
             mainGroup.addWidget(createWorkingEnabledButton());
             addEnumSelectorWidgets();
@@ -298,13 +302,16 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         @Contract(" -> new")
         private @NotNull ToggleButtonWidget createToggleButton() {
-            return new ToggleButtonWidget(156, 5, 10, 10, GuiTextures.TOGGLE_BUTTON_BACK, showChannels::getValue,
-                    cd -> {
-                        showChannels.setValue(!showChannels.getValue());
-                        mainGroup.setVisible(showChannels.isFalse());
-                        channelsGroup.setVisible(showChannels.isTrue());
-                        sendChannelList();
-                    });
+            return (ToggleButtonWidget) new ToggleButtonWidget(156, 5, 12, 12, showChannels::getValue, cd -> {
+                showChannels.setValue(!showChannels.getValue());
+                mainGroup.setVisible(showChannels.isFalse());
+                channelsGroup.setVisible(showChannels.isTrue());
+                sendChannelList();
+            }).setTexture(
+                    new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
+                            GuiTextures.BUTTON_LIST),
+                    new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
+                            GuiTextures.BUTTON_LIST));
         }
 
         @Contract("_ -> new")
