@@ -1069,14 +1069,12 @@ public class GTMachines {
             PartAbility.OUTPUT_LASER);
 
     public static void init() {
+        GTMultiMachines.init();
         GCYMMachines.init();
         GTResearchMachines.init();
-
         if (GTCEu.isAE2Loaded()) {
             GTAEMachines.init();
         }
-
-        GTMultiMachines.init();
 
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
