@@ -14,11 +14,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
+
+    public static ICondition.IContext RECIPE_CONTEXT = null;
 
     public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 

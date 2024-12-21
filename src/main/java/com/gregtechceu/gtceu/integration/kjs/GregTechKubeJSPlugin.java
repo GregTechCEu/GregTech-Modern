@@ -237,8 +237,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTElements", GTElements.class);
         event.add("GTMaterials", GTMaterials.class);
         event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
+        event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
-        event.add("UnificationEntry", UnificationEntry.class);
+        event.add("UnificationEntry", MaterialEntry.class);
+        event.add("MaterialEntry", MaterialEntry.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
@@ -260,9 +262,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTMaterialItems", GTMaterialItems.class);
-        event.add("TagPrefix", TagPrefix.class);
-        event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
-        event.add("UnificationEntry", MaterialEntry.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);

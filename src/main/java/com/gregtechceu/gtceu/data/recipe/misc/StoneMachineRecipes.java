@@ -3,9 +3,10 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -428,91 +429,91 @@ public class StoneMachineRecipes {
     public static void registerStoneUnificationInfo(@NotNull StoneTypeEntry entry) {
         if (entry.material != null && entry.stone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.stone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.stone);
             }
             if (entry.addStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.stone,
+                ItemMaterialData.registerMaterialInfo(entry.stone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.polishedStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.polishedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.polishedStone);
             }
             if (entry.addPolishedStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.polishedStone,
+                ItemMaterialData.registerMaterialInfo(entry.polishedStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.smeltStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.smeltStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.smeltStone);
             }
             if (entry.addSmeltStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.smeltStone,
+                ItemMaterialData.registerMaterialInfo(entry.smeltStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.chiselStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.chiselStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.chiselStone);
             }
             if (entry.addChiselStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.chiselStone,
+                ItemMaterialData.registerMaterialInfo(entry.chiselStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.crackedStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.crackedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.crackedStone);
             }
             if (entry.addCrackedStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.crackedStone,
+                ItemMaterialData.registerMaterialInfo(entry.crackedStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.slab != null) {
             if (entry.addSlabOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.slab, entry.material, entry.slab);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.slab, entry.material, entry.slab);
             }
             if (entry.addSlabUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.slab,
+                ItemMaterialData.registerMaterialInfo(entry.slab,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 2)));
             }
         }
 
         if (entry.material != null && entry.stair != null) {
             if (entry.addStairOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.stairs, entry.material, entry.stair);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.stairs, entry.material, entry.stair);
             }
             if (entry.addStairUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.stair,
+                ItemMaterialData.registerMaterialInfo(entry.stair,
                         new ItemMaterialInfo(new MaterialStack(entry.material, (3 * entry.materialAmount) / 4)));
             }
         }
 
         if (entry.material != null && entry.wall != null) {
             if (entry.addWallOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.fence, entry.material, entry.wall);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.fence, entry.material, entry.wall);
             }
             if (entry.addWallUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.wall,
+                ItemMaterialData.registerMaterialInfo(entry.wall,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
         if (entry.material != null && entry.pressurePlate != null && entry.addPressurePlateUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.pressurePlate,
+            ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 4)));
         }
 
         if (entry.material != null && entry.button != null && entry.addButtonUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.button,
+            ItemMaterialData.registerMaterialInfo(entry.button,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 6)));
         }
     }
@@ -624,9 +625,9 @@ public class StoneMachineRecipes {
             if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes && entry.slab != null) {
                 VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_pressure_plate",
                         new ItemStack(entry.pressurePlate, 2), "ShS", "LCL", "SdS",
-                        'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
+                        'S', new MaterialEntry(TagPrefix.screw, GTMaterials.Iron),
                         'L', entry.slab,
-                        'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron));
+                        'C', new MaterialEntry(TagPrefix.spring, GTMaterials.Iron));
 
                 ASSEMBLER_RECIPES.recipeBuilder(entry.stoneName + "_pressure_plate")
                         .inputItems(TagPrefix.spring, GTMaterials.Iron)

@@ -611,7 +611,7 @@ public class MetaTileEntityLoader {
                 "RFR", "PwP", 'R', new MaterialEntry(TagPrefix.rotor, GTMaterials.TungstenSteel), 'F',
                 GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(), 'P',
                 new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.TungstenSteel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "multi_furnace", GTMachines.MULTI_SMELTER.asStack(), "PPP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "multi_furnace", GTMultiMachines.MULTI_SMELTER.asStack(), "PPP",
                 "ASA", "CAC", 'P', Blocks.FURNACE, 'A', CustomTags.HV_CIRCUITS, 'S',
                 GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'C',
                 new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Copper));
@@ -620,7 +620,7 @@ public class MetaTileEntityLoader {
                 GTMultiMachines.LARGE_STEAM_TURBINE.asStack(), "PSP", "SAS", "CSC", 'S',
                 new MaterialEntry(TagPrefix.gear, GTMaterials.Steel), 'P', CustomTags.HV_CIRCUITS, 'A',
                 GTMachines.HULL[HV].asStack(), 'C', new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_gas_turbine", GTMachines.LARGE_GAS_TURBINE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_gas_turbine", GTMultiMachines.LARGE_GAS_TURBINE.asStack(),
                 "PSP", "SAS", "CSC", 'S', new MaterialEntry(TagPrefix.gear, GTMaterials.StainlessSteel), 'P',
                 CustomTags.EV_CIRCUITS, 'A', GTMachines.HULL[GTValues.EV].asStack(), 'C',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel));

@@ -32,9 +32,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -113,15 +110,17 @@ public class GTRecipeBuilder {
     private boolean addMaterialInfo = false;
     @Setter
     private boolean addMaterialFluidInfo = false;
-    private List<ItemStack> tempItemStacks = new ArrayList<>();
-    private List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
-    private List<MaterialStack> tempFluidStacks = new ArrayList<>();
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
+
     @Getter
     private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
     private boolean generatingRecipes = true;
+
+    private List<ItemStack> tempItemStacks = new ArrayList<>();
+    private List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
+    private List<MaterialStack> tempFluidStacks = new ArrayList<>();
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
@@ -399,11 +398,11 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("Input items is empty, id: {}", id);
         } else {
             var matStack = ItemMaterialData.getMaterialInfo(input.getItem());
-            if(matStack != null) {
+            if (matStack != null) {
                 tempItemMaterialStacks.addAll(matStack.getMaterials());
-            }
-            else
+            } else {
                 tempItemStacks.add(input);
+            }
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
     }
@@ -414,11 +413,11 @@ public class GTRecipeBuilder {
                 GTCEu.LOGGER.error("Input item is empty, id: {}", id);
             } else {
                 var matStack = ItemMaterialData.getMaterialInfo(itemStack.getItem());
-                if(matStack != null) {
+                if (matStack != null) {
                     tempItemMaterialStacks.addAll(matStack.getMaterials());
-                }
-                else
+                } else {
                     tempItemStacks.add(itemStack);
+                }
             }
         }
         return input(ItemRecipeCapability.CAP,
@@ -473,7 +472,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
-        if(material == null) {
+        if (material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
@@ -582,7 +581,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
-        if(material == null) {
+        if (material == null) {
             GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
             return outputItems(ItemStack.EMPTY);
@@ -949,7 +948,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if(matStack != null) {
+        if (matStack != null) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -958,9 +957,9 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
-        for(var input : inputs) {
+        for (var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
-            if(matStack != null) {
+            if (matStack != null) {
                 tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
             }
         }
@@ -988,7 +987,8 @@ public class GTRecipeBuilder {
 
     //////////////////////////////////////
     // ********** DATA ***********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     public GTRecipeBuilder addData(String key, Tag data) {
         this.data.put(key, data);
         return this;
@@ -1057,7 +1057,8 @@ public class GTRecipeBuilder {
 
     //////////////////////////////////////
     // ******* CONDITIONS ********//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
 
     public GTRecipeBuilder cleanroom(CleanroomType cleanroomType) {
         return addCondition(new CleanroomCondition(cleanroomType));
@@ -1303,7 +1304,7 @@ public class GTRecipeBuilder {
             }
         }
 
-        if(addMaterialInfo) {
+        if (addMaterialInfo) {
             addOutputMaterialInfo();
         }
         tempItemStacks = null;
@@ -1316,55 +1317,50 @@ public class GTRecipeBuilder {
     public void addOutputMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         var itemInputs = input.get(ItemRecipeCapability.CAP);
-        if(itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
+        if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
             var currOutput = itemOutputs.get(0).content;
             ItemLike out = null;
             int outputCount = 0;
 
-            if(currOutput instanceof Item i) {
+            if (currOutput instanceof Item i) {
                 out = i;
                 outputCount = 1;
-            }
-            else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
+            } else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
                 out = i;
                 outputCount = 1;
-            }
-            else if (currOutput instanceof ItemStack stack) {
+            } else if (currOutput instanceof ItemStack stack) {
                 out = stack.getItem();
                 outputCount = stack.getCount();
-            }
-            else if (currOutput instanceof SizedIngredient sized) {
+            } else if (currOutput instanceof SizedIngredient sized) {
                 out = sized.getItems()[0].getItem();
-                outputCount = sized.getItems()[0].getCount();
+                outputCount = sized.getAmount();
             }
 
             Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
-            for(var input : tempItemMaterialStacks) {
+            for (var input : tempItemMaterialStacks) {
                 long am = input.amount() / outputCount;
                 matStacks.merge(input.material(), am, Long::sum);
             }
 
-            if(addMaterialFluidInfo) {
+            if (addMaterialFluidInfo) {
                 var fluidInputs = input.get(FluidRecipeCapability.CAP);
-                for(int i = 0; i < fluidInputs.size(); i++) {
-                    if(fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
+                for (int i = 0; i < fluidInputs.size(); i++) {
+                    if (fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
                         MaterialStack matStack = null;
-                        for(var value : fluidIngredient.values) {
-                            if(value instanceof FluidIngredient.TagValue) {
-
-                            }
-                            var fluid = value.getFluids().toArray(new Fluid[0]);
-                            if(fluid.length != 0 && fluid[0] != null)
+                        for (var value : fluidIngredient.values) {
+                            var fluid = value.getFluids().toArray(Fluid[]::new);
+                            if (fluid.length != 0 && fluid[0] != null) {
                                 matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
+                            }
 
-                            if(matStack != null && matStack.material() != null) {
+                            if (matStack != null && matStack.material() != null) {
                                 matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
                                 break;
                             }
                         }
-                    } else if(fluidInputs.get(i).content instanceof FluidStack fluidStack) {
+                    } else if (fluidInputs.get(i).content instanceof FluidStack fluidStack) {
                         MaterialStack matStack = new MaterialStack(ChemicalHelper.getMaterial(fluidStack.getFluid()), tempFluidStacks.get(i).amount());
-                        if(matStack.material() != null) {
+                        if (matStack.material() != null) {
                             matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
                         }
                     }
@@ -1373,12 +1369,12 @@ public class GTRecipeBuilder {
 
             var matList = matStacks.reference2LongEntrySet().stream().map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
 
-            if(out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
+            if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
 
             var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
-            if(!matStacks.isEmpty()) {
-                if(existingItemInfo != null) {
+            if (!matStacks.isEmpty()) {
+                if (existingItemInfo != null) {
                     ItemMaterialData.clearMaterialInfo(out);
                 }
                 ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matList));
@@ -1396,7 +1392,8 @@ public class GTRecipeBuilder {
 
     //////////////////////////////////////
     // ******* Quick Query *******//
-    //////////////////////////////////////
+
+    /// ///////////////////////////////////
     public long EUt() {
         if (!tickInput.containsKey(EURecipeCapability.CAP)) return 0;
         if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return 0;
@@ -1421,5 +1418,8 @@ public class GTRecipeBuilder {
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
     public record ResearchRecipeEntry(@NotNull String researchId, @NotNull ItemStack researchStack,
-                                      @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {}
+                                      @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {
+
+    }
+
 }
