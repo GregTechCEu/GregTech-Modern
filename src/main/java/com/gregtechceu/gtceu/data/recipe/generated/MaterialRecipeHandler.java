@@ -21,6 +21,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -344,12 +345,15 @@ public final class MaterialRecipeHandler {
         }
 
         if (material.hasFluid()) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_ingot")
-                    .notConsumable(GTItems.SHAPE_MOLD_INGOT)
-                    .inputFluids(material.getFluid(L))
-                    .outputItems(ingot, material)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
+            FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L);
+            if (!stack.isEmpty()) {
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_ingot")
+                        .notConsumable(GTItems.SHAPE_MOLD_INGOT)
+                        .inputFluids(stack)
+                        .outputItems(ingot, material)
+                        .duration(20).EUt(VA[ULV])
+                        .save(provider);
+            }
         }
 
         if (material.hasFlag(NO_SMASHING)) {
@@ -528,13 +532,16 @@ public final class MaterialRecipeHandler {
                     .save(provider);
 
             if (material.hasFluid()) {
-                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_nugget")
-                        .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
-                        .inputFluids(material.getFluid(L))
-                        .outputItems(nugget, material, 9)
-                        .duration((int) material.getMass())
-                        .EUt(VA[ULV])
-                        .save(provider);
+                FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L);
+                if (!stack.isEmpty()) {
+                    FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_nugget")
+                            .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
+                            .inputFluids(stack)
+                            .outputItems(nugget, material, 9)
+                            .duration((int) material.getMass())
+                            .EUt(VA[ULV])
+                            .save(provider);
+                }
             }
         } else if (material.hasProperty(PropertyKey.GEM)) {
             ItemStack gemStack = ChemicalHelper.get(gem, material);
@@ -590,12 +597,15 @@ public final class MaterialRecipeHandler {
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
         long materialAmount = block.getMaterialAmount(material);
         if (material.hasFluid()) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_block")
-                    .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
-                    .inputFluids(material.getFluid((int) (materialAmount * L / M)))
-                    .outputItems(blockStack)
-                    .duration((int) material.getMass()).EUt(VA[ULV])
-                    .save(provider);
+            FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom((int) (materialAmount * L / M));
+            if (!stack.isEmpty()) {
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_block")
+                        .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
+                        .inputFluids(stack)
+                        .outputItems(blockStack)
+                        .duration((int) material.getMass()).EUt(VA[ULV])
+                        .save(provider);
+            }
         }
 
         if (material.hasFlag(GENERATE_PLATE)) {

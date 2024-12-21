@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -242,13 +243,16 @@ public final class PartsRecipeHandler {
         }
 
         if (material.hasFluid()) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.name)
-                    .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
-                    .inputFluids(material.getFluid(L * (isSmall ? 1 : 4)))
-                    .outputItems(stack)
-                    .duration(isSmall ? 20 : 100)
-                    .EUt(VA[ULV])
-                    .save(provider);
+            FluidStack fluidStack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L * (isSmall ? 1 : 4));
+            if (!fluidStack.isEmpty()) {
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.name)
+                        .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
+                        .inputFluids(fluidStack)
+                        .outputItems(stack)
+                        .duration(isSmall ? 20 : 100)
+                        .EUt(VA[ULV])
+                        .save(provider);
+            }
         }
 
         if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD)) {
@@ -324,13 +328,16 @@ public final class PartsRecipeHandler {
         }
 
         if (material.hasFluid()) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_plate")
-                    .notConsumable(GTItems.SHAPE_MOLD_PLATE)
-                    .inputFluids(material.getFluid(L))
-                    .outputItems(plate, material)
-                    .duration(40)
-                    .EUt(VA[ULV])
-                    .save(provider);
+            FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L);
+            if (!stack.isEmpty()) {
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_plate")
+                        .notConsumable(GTItems.SHAPE_MOLD_PLATE)
+                        .inputFluids(stack)
+                        .outputItems(plate, material)
+                        .duration(40)
+                        .EUt(VA[ULV])
+                        .save(provider);
+            }
         }
     }
 
@@ -486,13 +493,16 @@ public final class PartsRecipeHandler {
                 'R', new UnificationEntry(ring, material));
 
         if (material.hasFluid()) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_rotor")
-                    .notConsumable(GTItems.SHAPE_MOLD_ROTOR)
-                    .inputFluids(material.getFluid(L * 4))
-                    .outputItems(stack.copy())
-                    .duration(120)
-                    .EUt(20)
-                    .save(provider);
+            FluidStack fluidStack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L * 4);
+            if (!fluidStack.isEmpty()) {
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_rotor")
+                        .notConsumable(GTItems.SHAPE_MOLD_ROTOR)
+                        .inputFluids(fluidStack)
+                        .outputItems(stack.copy())
+                        .duration(120)
+                        .EUt(20)
+                        .save(provider);
+            }
         }
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_rotor")
