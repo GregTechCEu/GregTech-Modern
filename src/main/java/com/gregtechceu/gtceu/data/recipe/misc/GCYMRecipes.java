@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -105,12 +106,12 @@ public class GCYMRecipes {
                 "WXW", "TCT", 'C', CustomTags.EV_CIRCUITS, 'T', new MaterialEntry(plate, TantalumCarbide), 'W',
                 new MaterialEntry(cableGtSingle, Aluminium), 'X', ALLOY_SMELTER[EV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_blast_furnace", MEGA_BLAST_FURNACE.asStack(), "PCP",
-                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', ELECTRIC_BLAST_FURNACE.asStack(), 'F',
+                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), 'F',
                 FIELD_GENERATOR_ZPM.asStack(), 'P', new MaterialEntry(spring, Naquadah), 'D',
                 new MaterialEntry(plateDense, NaquadahAlloy), 'W',
                 new MaterialEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_vacuum_freezer", MEGA_VACUUM_FREEZER.asStack(), "PCP",
-                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', VACUUM_FREEZER.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P',
+                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.VACUUM_FREEZER.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P',
                 new MaterialEntry(pipeNormalFluid, NiobiumTitanium), 'D',
                 new MaterialEntry(plateDense, RhodiumPlatedPalladium), 'W',
                 new MaterialEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
@@ -132,7 +133,7 @@ public class GCYMRecipes {
                 new MaterialEntry(toolHeadBuzzSaw, TungstenCarbide), 'K',
                 new MaterialEntry(cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_distillery", LARGE_DISTILLERY.asStack(), "PZP",
-                "EDE", "PZP", 'Z', CustomTags.IV_CIRCUITS, 'D', DISTILLATION_TOWER.asStack(), 'E',
+                "EDE", "PZP", 'Z', CustomTags.IV_CIRCUITS, 'D', GTMultiMachines.DISTILLATION_TOWER.asStack(), 'E',
                 ELECTRIC_PUMP_IV.asStack(), 'P', ChemicalHelper.get(pipeLargeFluid, Iridium));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_extractor", LARGE_EXTRACTOR.asStack(), "PTP", "EZC",
                 "BKB", 'Z', CustomTags.IV_CIRCUITS, 'B', ELECTRIC_PISTON_IV.asStack(), 'P', ELECTRIC_PUMP_IV.asStack(),

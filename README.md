@@ -11,7 +11,7 @@
     <a href="https://github.com/GregTechCEu/GregTech-Modern/releases"><img src="https://img.shields.io/github/downloads/GregTechCEu/GregTech-Modern/total?sort=semver&logo=github&label=&style=for-the-badge&color=2d2d2d&labelColor=545454&logoColor=FFFFFF" alt="GitHub"></a>
 </h1>
 
-### [Wiki](https://gregtechceu.github.io/gtceu-modern-docs/)
+### [Wiki](https://gregtechceu.github.io/GregTech-Modern/)
 
 ## Developers
 

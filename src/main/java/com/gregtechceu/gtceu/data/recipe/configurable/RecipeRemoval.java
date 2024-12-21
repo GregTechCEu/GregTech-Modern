@@ -163,6 +163,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:light_weighted_pressure_plate"));
         registry.accept(new ResourceLocation("minecraft:stone_button"));
         registry.accept(new ResourceLocation("minecraft:polished_blackstone_button"));
+        registry.accept(new ResourceLocation("minecraft:calibrated_sculk_sensor"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
@@ -355,7 +356,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_diorite"));
         registry.accept(new ResourceLocation("minecraft:polished_granite"));
         registry.accept(new ResourceLocation("minecraft:coarse_dirt"));
-        registry.accept(new ResourceLocation("minecraft:smooth_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_quartz_block"));
         registry.accept(new ResourceLocation("minecraft:stone_bricks"));
@@ -365,43 +365,43 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:red_nether_bricks"));
         registry.accept(new ResourceLocation("minecraft:red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_red_sandstone"));
-        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:bookshelf"));
         registry.accept(new ResourceLocation("minecraft:quartz_pillar"));
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
         registry.accept(new ResourceLocation("minecraft:white_wool_from_string"));
-        // TODO Add extruder/laser engraver recipes for all vanilla stones to keep parity with GT stones
         registry.accept(new ResourceLocation("minecraft:cracked_stone_bricks"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_moss_block"));
         registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_from_vine"));
-        // TODO add recipes for ALL of these. sigh where do the nitpicks end
-        // registry.accept(new ResourceLocation("minecraft:deepslate_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:cracked_nether_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:chiseled_nether_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:polished_blackstone_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:cracked_polished_blackstone_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:quartz_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:polished_deepslate"));
-        // registry.accept(new ResourceLocation("minecraft:polished_basalt"));
-        // registry.accept(new ResourceLocation("minecraft:chiseled_polished_blackstone"));
-        // registry.accept(new ResourceLocation("minecraft:deepslate_tiles"));
-        // registry.accept(new ResourceLocation("minecraft:cracked_deepslate_tiles"));
-        // registry.accept(new ResourceLocation("minecraft:chiseled_deepslate"));
-        // registry.accept(new ResourceLocation("minecraft:cracked_deepslate_bricks"));
-        // registry.accept(new ResourceLocation("minecraft:cut_red_sandstone"));
-        // registry.accept(new ResourceLocation("minecraft:polished_basalt"));
-        // registry.accept(new ResourceLocation("minecraft:polished_blackstone"));
-        // registry.accept(new ResourceLocation("minecraft:cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:exposed_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:weathered_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:oxidized_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:waxed_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
-        // registry.accept(new ResourceLocation("minecraft:end_crystal"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_bricks"));
+        registry.accept(new ResourceLocation("minecraft:cracked_nether_bricks"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_nether_bricks"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_bricks"));
+        registry.accept(new ResourceLocation("minecraft:cracked_polished_blackstone_bricks"));
+        registry.accept(new ResourceLocation("minecraft:quartz_bricks"));
+        registry.accept(new ResourceLocation("minecraft:polished_deepslate"));
+        registry.accept(new ResourceLocation("minecraft:polished_basalt"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_polished_blackstone"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_tiles"));
+        registry.accept(new ResourceLocation("minecraft:cracked_deepslate_tiles"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_deepslate"));
+        registry.accept(new ResourceLocation("minecraft:cracked_deepslate_bricks"));
+        registry.accept(new ResourceLocation("minecraft:cut_red_sandstone"));
+        registry.accept(new ResourceLocation("minecraft:polished_basalt"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone"));
+        registry.accept(new ResourceLocation("minecraft:cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:exposed_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:weathered_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:oxidized_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:waxed_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper"));
+        registry.accept(new ResourceLocation("minecraft:end_crystal"));
         registry.accept(new ResourceLocation("minecraft:end_rod"));
-        // registry.accept(new ResourceLocation("minecraft:mud_bricks")); //no other way to obtain these rn
+        registry.accept(new ResourceLocation("minecraft:mud_bricks"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_vine"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_bricks_from_moss_block"));
+        registry.accept(new ResourceLocation("minecraft:packed_mud"));
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
@@ -456,5 +456,70 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_deepslate_slab"));
         registry.accept(new ResourceLocation("minecraft:deepslate_brick_slab"));
         registry.accept(new ResourceLocation("minecraft:deepslate_tile_slab"));
+        // stair
+        registry.accept(new ResourceLocation("minecraft:stone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:cobblestone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:stone_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:granite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_granite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:diorite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_diorite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:andesite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_andesite_stairs"));
+        registry.accept(new ResourceLocation("minecraft:cobbled_deepslate_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_deepslate_stairs"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_tile_stairs"));
+        registry.accept(new ResourceLocation("minecraft:brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:mud_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:sandstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:smooth_sandstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:red_sandstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:prismarine_stairs"));
+        registry.accept(new ResourceLocation("minecraft:prismarine_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:dark_prismarine_stairs"));
+        registry.accept(new ResourceLocation("minecraft:nether_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:red_nether_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:blackstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_stairs"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:end_stone_brick_stairs"));
+        registry.accept(new ResourceLocation("minecraft:purpur_stairs"));
+        registry.accept(new ResourceLocation("minecraft:quartz_stairs"));
+        registry.accept(new ResourceLocation("minecraft:smooth_quartz_stairs"));
+        registry.accept(new ResourceLocation("minecraft:cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:exposed_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:weathered_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:oxidized_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:waxed_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper_stairs"));
+        registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper_stairs"));
+        // wall
+        registry.accept(new ResourceLocation("minecraft:cobblestone_wall"));
+        registry.accept(new ResourceLocation("minecraft:mossy_cobblestone_wall"));
+        registry.accept(new ResourceLocation("minecraft:stone_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:mossy_stone_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:granite_wall"));
+        registry.accept(new ResourceLocation("minecraft:diorite_wall"));
+        registry.accept(new ResourceLocation("minecraft:andesite_wall"));
+        registry.accept(new ResourceLocation("minecraft:cobbled_deepslate_wall"));
+        registry.accept(new ResourceLocation("minecraft:polished_deepslate_wall"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:deepslate_tile_wall"));
+        registry.accept(new ResourceLocation("minecraft:brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:mud_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:sandstone_wall"));
+        registry.accept(new ResourceLocation("minecraft:red_sandstone_wall"));
+        registry.accept(new ResourceLocation("minecraft:prismarine_wall"));
+        registry.accept(new ResourceLocation("minecraft:nether_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:red_nether_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:blackstone_wall"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_wall"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_brick_wall"));
+        registry.accept(new ResourceLocation("minecraft:end_stone_brick_wall"));
     }
 }

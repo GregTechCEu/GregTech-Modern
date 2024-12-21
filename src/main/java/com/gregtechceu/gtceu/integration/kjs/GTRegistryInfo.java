@@ -35,7 +35,7 @@ public class GTRegistryInfo<K, V> {
     @FunctionalInterface
     public interface BuilderFactory<T> {
 
-        BuilderBase<? extends T> createBuilder(ResourceLocation id, Object... args);
+        BuilderBase<? extends T> createBuilder(ResourceLocation id);
     }
 
     public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass,

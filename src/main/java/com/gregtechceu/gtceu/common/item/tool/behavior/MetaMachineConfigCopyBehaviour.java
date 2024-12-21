@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -97,7 +98,7 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            if (blockEntity.getOwner() != null && !blockEntity.getOwner().isPlayerInTeam(context.getPlayer()))
+            if (!IMachineOwner.canOpenOwnerMachine(context.getPlayer(), blockEntity))
                 return InteractionResult.FAIL;
             MetaMachine machine = blockEntity.getMetaMachine();
             if (context.isSecondaryUseActive())
