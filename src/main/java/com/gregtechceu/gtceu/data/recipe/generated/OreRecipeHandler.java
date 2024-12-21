@@ -104,10 +104,11 @@ public final class OreRecipeHandler {
         if (!crushedStack.isEmpty()) {
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(orePrefix, material)
+                    .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
+                            Ingredient.of(orePrefix.getItemParentTags()[0])))
                     .category(GTRecipeCategories.ORE_FORGING)
                     .duration(10).EUt(16);
-            if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
+            if (material.hasProperty(PropertyKey.GEM) && !ChemicalHelper.get(gem, material).isEmpty()) {
                 builder.outputItems(GTUtil.copy(property.getOreMultiplier() * oreTypeMultiplier,
                         ChemicalHelper.get(gem, material, crushedStack.getCount())));
             } else {
@@ -185,7 +186,7 @@ public final class OreRecipeHandler {
                     .inputItems(rawOre, material)
                     .category(GTRecipeCategories.ORE_FORGING)
                     .duration(10).EUt(16);
-            if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
+            if (material.hasProperty(PropertyKey.GEM) && !ChemicalHelper.get(gem, material).isEmpty()) {
                 builder.outputItems(GTUtil.copy(property.getOreMultiplier(),
                         ChemicalHelper.get(gem, material, crushedStack.getCount())));
             } else {
