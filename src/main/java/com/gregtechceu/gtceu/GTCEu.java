@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
@@ -51,43 +49,6 @@ public class GTCEu {
             }
         }
         return new ResourceLocation(strings[0], strings[1]);
-    }
-
-    public static boolean isKubeJSLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_KUBEJS);
-    }
-
-    public static boolean isIrisOculusLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_IRIS) || LDLib.isModLoaded(GTValues.MODID_OCULUS);
-    }
-
-    public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_SODIUM) || LDLib.isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
-    }
-
-    public static boolean isAE2Loaded() {
-        return LDLib.isModLoaded(GTValues.MODID_APPENG);
-    }
-
-    public static boolean isCuriosLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_CURIOS);
-    }
-
-    public static boolean isShimmerLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_SHIMMER);
-    }
-
-    public static boolean isJAVDLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_JAVD);
-    }
-
-    public static boolean isFTBTeamsLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_FTB_TEAMS);
-    }
-
-    public static boolean isArgonautsLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_ARGONAUTS);
     }
 
     @Deprecated(forRemoval = true, since = "1.0.21")

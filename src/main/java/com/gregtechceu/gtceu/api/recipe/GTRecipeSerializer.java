@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -36,7 +37,7 @@ import java.util.*;
  */
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
-    public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.isKubeJSLoaded());
+    public static final Codec<GTRecipe> CODEC = makeCodec(GTCEuAPI.Mods.isKubeJSLoaded());
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
@@ -131,7 +132,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(),
                 GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
             ingredientActions = KJSCallWrapper.getIngredientActions(buf);
         }
         CompoundTag data = buf.readNbt();
@@ -186,7 +187,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
 
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
         }
         buf.writeNbt(recipe.data);

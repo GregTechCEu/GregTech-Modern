@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -72,7 +71,7 @@ public class GTDimensionMarkers {
 
     public static void init() {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.DIMENSION_MARKERS.getRegistryName());
         }
         GTRegistries.DIMENSION_MARKERS.freeze();

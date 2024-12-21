@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.pipenet;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -139,7 +137,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
         running = false;
         root.walked.clear();
         if (i >= maxWalks)
-            LDLib.LOGGER.warn("The walker reached the maximum amount of walks {}", i);
+            GTCEu.LOGGER.warn("The walker reached the maximum amount of walks {}", i);
         invalid = true;
     }
 

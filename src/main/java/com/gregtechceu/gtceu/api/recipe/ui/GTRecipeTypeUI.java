@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ui;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -19,7 +20,6 @@ import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
@@ -101,7 +101,7 @@ public class GTRecipeTypeUI {
     public CompoundTag getCustomUI() {
         if (this.customUICache == null) {
             ResourceManager resourceManager = null;
-            if (LDLib.isClient()) {
+            if (GTCEuAPI.isClientSide()) {
                 resourceManager = Minecraft.getInstance().getResourceManager();
             } else if (Platform.getMinecraftServer() != null) {
                 resourceManager = Platform.getMinecraftServer().getResourceManager();
@@ -239,25 +239,25 @@ public class GTRecipeTypeUI {
                 progress.add(dualProgressWidget);
             });
             // add recipe button
-            if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
+            if (!isJEI && (GTCEuAPI.Mods.isReiLoaded() || GTCEuAPI.Mods.isJeiLoaded() || GTCEuAPI.Mods.isEmiLoaded())) {
                 for (Widget widget : progress) {
                     template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y,
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
-                                    if (LDLib.isReiLoaded()) {
+                                    if (GTCEuAPI.Mods.isReiLoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
                                                 recipeType.getCategories().stream()
                                                         .filter(GTRecipeCategory::isXEIVisible)
                                                         .map(GTRecipeREICategory::machineCategory)
                                                         .collect(Collectors.toList()))
                                                 .open();
-                                    } else if (LDLib.isJeiLoaded()) {
+                                    } else if (GTCEuAPI.Mods.isJeiLoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
                                                 recipeType.getCategories().stream()
                                                         .filter(GTRecipeCategory::isXEIVisible)
                                                         .map(GTRecipeJEICategory::machineType)
                                                         .collect(Collectors.toList()));
-                                    } else if (LDLib.isEmiLoaded()) {
+                                    } else if (GTCEuAPI.Mods.isEmiLoaded()) {
                                         EmiApi.displayRecipeCategory(
                                                 GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                     }

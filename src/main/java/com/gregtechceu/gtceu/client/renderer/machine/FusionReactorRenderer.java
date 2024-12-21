@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -33,7 +33,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-            if (GTCEu.isShimmerLoaded()) {
+            if (GTCEuAPI.Mods.isShimmerLoaded()) {
                 PoseStack finalStack = RenderUtils.copyPoseStack(stack);
                 BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
             } else {

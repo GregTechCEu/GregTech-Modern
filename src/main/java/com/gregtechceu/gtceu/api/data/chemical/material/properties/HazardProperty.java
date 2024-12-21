@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -120,7 +120,7 @@ public class HazardProperty implements IMaterialProperty {
                     correctArmorItems.add(equipmentType);
                 }
             }
-            if (!GTCEu.isCuriosLoaded() || this.curioSlots.isEmpty()) {
+            if (!GTCEuAPI.Mods.isCuriosLoaded() || this.curioSlots.isEmpty()) {
                 return correctArmorItems.containsAll(equipmentTypes);
             }
             Set<String> correctCurios = new HashSet<>();
@@ -153,7 +153,7 @@ public class HazardProperty implements IMaterialProperty {
                         armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
                 }
-                if (GTCEu.isCuriosLoaded()) {
+                if (GTCEuAPI.Mods.isCuriosLoaded()) {
                     ICuriosItemHandler curiosInventory = CuriosApi.getCuriosInventory(player)
                             .resolve()
                             .orElse(null);
