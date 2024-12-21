@@ -173,7 +173,7 @@ public class GTRecipeModifiers {
                 .build();
 
         OverclockingLogic logic = (p, v) -> OverclockingLogic.heatingCoilOC(p, v, recipeTemp, blastFurnaceTemperature);
-        var oc = logic. getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+        var oc = logic.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
 
         return oc.compose(discount);
     }
