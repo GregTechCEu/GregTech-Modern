@@ -90,10 +90,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
             var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
-            var sign = up == Direction.UP || up == Direction.EAST || up == Direction.SOUTH ? 1 : -1;
-            var shouldX = up == Direction.EAST || up == Direction.WEST;
-            var shouldY = up == Direction.UP || up == Direction.DOWN;
-            var shouldZ = up == Direction.NORTH || up == Direction.SOUTH;
+            var sign = up.getAxisDirection().getStep();
+            var shouldX = up.getAxis() == Direction.Axis.X;
+            var shouldY = up.getAxis() == Direction.Axis.Y;
+            var shouldZ = up.getAxis() == Direction.Axis.Z;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
             if (getOffsetTimer() % 20 == 0) {
