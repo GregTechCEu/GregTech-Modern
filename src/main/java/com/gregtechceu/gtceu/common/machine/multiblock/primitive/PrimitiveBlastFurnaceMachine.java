@@ -91,7 +91,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             var shouldZ = up.getAxis() == Direction.Axis.Z;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
-            if (GTValues.CLIENT_TIME % 20 == 0) {
+            if ((GTValues.CLIENT_TIME + getHolder().getOffset()) % 20 == 0) {
                 getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
                         shouldX ? speed * 2 : 0,
                         shouldY ? speed * 2 : 0,
