@@ -68,6 +68,14 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (onServerTick != null) {
+            this.onServerTick.unsubscribe();
+        }
+    }
+
+    @Override
     public void onStructureFormed() {
         super.onStructureFormed();
         this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
@@ -165,7 +173,6 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     private void hurtEntities() {
-        if (!isFormed) return;
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null,
                 new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
