@@ -27,9 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
@@ -38,11 +35,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
             AbstractEnderLinkCover.MANAGED_FIELD_HOLDER);
     public static final int TRANSFER_RATE = 8000; // mB/t
 
-    @DescSynced
-    protected final List<VirtualTank> tanks = new ArrayList<>();
     @Persisted
     @DescSynced
-    protected VirtualTank visualTank = new VirtualTank();
+    protected VirtualTank visualTank;
     @Persisted
     @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
@@ -52,6 +47,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
         super(definition, coverHolder, attachedSide);
         this.mBLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.fluid(this);
+        if (!isRemote()) visualTank = VirtualEnderRegistry.getInstance()
+                .getOrCreateEntry(getOwner(), EntryTypes.ENDER_FLUID, getChannelName());
     }
 
     @Override
@@ -62,21 +59,6 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected void setEntry(VirtualEntry entry) {
         visualTank = (VirtualTank) entry;
-    }
-
-    @Override
-    protected Stream<VirtualEntry> getEntries(){
-        var reg = VirtualEnderRegistry.getInstance();
-        if (reg == null) return Stream.empty();
-        tanks.clear();
-        reg.getEntryNames(getOwner(), EntryTypes.ENDER_FLUID).stream()
-                .map(name -> reg.getEntry(getOwner(), EntryTypes.ENDER_FLUID, name)).forEach(tanks::add);
-        return tanks.stream().map(t -> t);
-    }
-
-    @Override
-    public void clearEntries() {
-        tanks.clear();
     }
 
     @Override
@@ -137,8 +119,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     /// ///////////////////////////////////
 
     @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height){
-        return new TankWidget(((VirtualTank)entry).getFluidTank(), 0, x, y, width, height,
+    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height) {
+        return new TankWidget(((VirtualTank) entry).getFluidTank(), 0, x, y, width, height,
                 true, true).setBackground(GuiTextures.FLUID_SLOT);
     }
 

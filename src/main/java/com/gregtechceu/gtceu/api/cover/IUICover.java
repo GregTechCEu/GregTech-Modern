@@ -50,8 +50,7 @@ public interface IUICover extends IUIHolder {
         return modularUI;
     }
 
-    default void onUIClosed() {
-    }
+    default void onUIClosed() {}
 
     Widget createUIWidget();
 }

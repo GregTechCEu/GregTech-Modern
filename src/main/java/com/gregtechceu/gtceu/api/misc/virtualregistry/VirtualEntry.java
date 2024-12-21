@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
+@Accessors(chain = true)
 public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITagSerializable<CompoundTag> {
 
     public static final String DEFAULT_COLOR = "FFFFFFFF";
@@ -54,7 +57,8 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof VirtualEntry other)) return false;
-        return this.getType() == other.getType() && this.color == other.color;
+        return this.getType() == other.getType() && this.color == other.color &&
+                this.description.equals(other.description);
     }
 
     @Override
@@ -63,7 +67,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
         tag.putString(COLOR_KEY, this.colorStr);
 
         if (!description.isEmpty())
-            this.description = tag.getString(DESC_KEY);
+            tag.putString(DESC_KEY, this.description);
 
         return tag;
     }
@@ -73,7 +77,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
         setColor(nbt.getString(COLOR_KEY));
 
         if (nbt.contains(DESC_KEY))
-            setDescription(nbt.getString(DESC_KEY));
+            this.description = nbt.getString(DESC_KEY);
     }
 
     public abstract boolean canRemove();
