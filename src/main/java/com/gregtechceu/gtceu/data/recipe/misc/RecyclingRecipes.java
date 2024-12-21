@@ -528,11 +528,11 @@ public class RecyclingRecipes {
                                     UnificationEntry entry) {
         int amount = originalStack.getCount();
         while (amount > 64) {
-            list.add(new Tuple<>(GTUtil.copyAmount(64, originalStack),
+            list.add(new Tuple<>(GTUtil.copy(64, originalStack),
                     new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * 64)));
             amount -= 64;
         }
-        list.add(new Tuple<>(GTUtil.copyAmount(amount, originalStack),
+        list.add(new Tuple<>(GTUtil.copy(amount, originalStack),
                 new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * amount)));
     }
 
