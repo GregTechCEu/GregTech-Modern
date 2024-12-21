@@ -20,11 +20,11 @@ public class TooltipHelper {
     /**
      * Returns a continually changing rainbow TextColor
      * 
-     * @param speed degrees of hue change per tick, or equivalently, number of complete hue cycles per 360 ticks
+     * @param speed degrees of hue change per tick
      * @return Rainbow TextColor
      */
     public static TextColor rainbowColor(float speed) {
-        return TextColor.fromRgb(GradientUtil.toRGB((GTValues.CLIENT_TIME % 360) * speed, 95f, 60f));
+        return TextColor.fromRgb(GradientUtil.toRGB((GTValues.CLIENT_TIME & ((1 << 20) - 1)) * speed, 95f, 60f));
     }
 
     public static final UnaryOperator<Style> RAINBOW_HSL = style -> style.withColor(rainbowColor(2.5f));
