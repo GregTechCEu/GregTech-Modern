@@ -33,7 +33,18 @@ public record MaterialEntry(TagPrefix tagPrefix, @Nullable Material material) {
 
     @Override
     public String toString() {
-        return (tagPrefix != null ? tagPrefix.name : "") + (material != null ? material.toCamelCaseString() : "");
+        if (tagPrefix == null && material == null) {
+            return "Empty MaterialEntry";
+        } else if (tagPrefix == null) {
+            return material.getResourceLocation().toString();
+        } else if (material == null) {
+            return tagPrefix.name;
+        }
+        var tags = tagPrefix.getItemTags(material);
+        if (tags.length == 0) {
+            return tagPrefix.name + "/" + material.getName();
+        }
+        return tags[0].location().toString();
     }
 
     public static final MaterialEntry NullEntry = new MaterialEntry(null, null);
