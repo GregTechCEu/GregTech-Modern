@@ -58,7 +58,7 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
         } else if (level().isClientSide() || level().getServer() == null) {
             return level().getGameTime() + getOffset();
         } else {
-            return level().getServer().getTickCount() + getOffset(); 
+            return level().getServer().getTickCount() + getOffset();
         }
     }
 
