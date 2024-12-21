@@ -41,7 +41,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    private TickableSubscription onServerTick;
+    private TickableSubscription hurtSubscription;
 
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -62,23 +62,19 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     @Override
     public void onUnload() {
         super.onUnload();
-        if (this.onServerTick != null) {
-            this.onServerTick.unsubscribe();
-        }
+        unsubscribe(hurtSubscription);
     }
 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
+        this.hurtSubscription = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (this.onServerTick != null) {
-            this.onServerTick.unsubscribe();
-        }
+        unsubscribe(hurtSubscription);
     }
 
     @Override
