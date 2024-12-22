@@ -75,6 +75,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @DescSynced
     protected GTRecipe lastRecipe;
+    @Getter
+    @Persisted
+    @DescSynced
+    protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
     /**
      * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
      * which can be found
@@ -368,7 +372,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 if (lastRecipe != null && !recipe.equals(lastRecipe)) {
                     chanceCaches.clear();
                 }
-
                 recipeDirty = false;
                 lastRecipe = recipe;
                 setStatus(Status.WORKING);
@@ -476,6 +479,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     lastRecipe.matchRecipe(this.machine).isSuccess() &&
                     lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                     lastRecipe.checkConditions(this).isSuccess()) {
+                consecutiveRecipes++;
                 setupRecipe(lastRecipe);
             } else {
                 if (suspendAfterFinish) {
@@ -484,6 +488,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 } else {
                     setStatus(Status.IDLE);
                 }
+                consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
                 isActive = false;
