@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Reference2LongLinkedOpenHashMap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,14 +15,14 @@ public class ItemMaterialInfo {
     private List<MaterialStack> sortedMaterials = new ArrayList<>();
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
-        for(var mat : materialStacks) {
+        for (var mat : materialStacks) {
             materials.merge(mat.material(), mat.amount(), Long::sum);
         }
         setSortedMaterials();
     }
 
     public ItemMaterialInfo(List<MaterialStack> materialStacks) {
-        for(var mat : materialStacks) {
+        for (var mat : materialStacks) {
             materials.merge(mat.material(), mat.amount(), Long::sum);
         }
         setSortedMaterials();
@@ -43,7 +43,7 @@ public class ItemMaterialInfo {
     }
 
     public void addMaterialStacks(List<MaterialStack> stacks) {
-        for(var mat : stacks) {
+        for (var mat : stacks) {
             materials.merge(mat.material(), mat.amount(), Long::sum);
         }
         setSortedMaterials();
@@ -51,7 +51,7 @@ public class ItemMaterialInfo {
 
     private void setSortedMaterials() {
         sortedMaterials.clear();
-        for(var m : materials.keySet()) {
+        for (var m : materials.keySet()) {
             sortedMaterials.add(new MaterialStack(m, materials.getLong(m)));
         }
         sortedMaterials.sort(Comparator.comparingLong(MaterialStack::amount));

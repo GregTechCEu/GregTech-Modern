@@ -12,9 +12,9 @@ import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.Set;
 import java.util.function.Consumer;

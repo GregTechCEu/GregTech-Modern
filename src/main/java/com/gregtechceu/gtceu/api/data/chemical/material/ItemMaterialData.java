@@ -14,11 +14,7 @@ import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-import com.mojang.datafixers.util.Pair;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenCustomHashMap;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -33,6 +29,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.RegistryObject;
+
+import com.mojang.datafixers.util.Pair;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenCustomHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +44,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ItemMaterialData {
-
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new ConcurrentHashMap<>();
@@ -60,7 +61,8 @@ public class ItemMaterialData {
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new ConcurrentHashMap<>();
 
-    public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ReferenceOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
+    public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ReferenceOpenCustomHashMap<>(
+            ItemStackHashStrategy.comparingAllButCount());
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
@@ -172,7 +174,7 @@ public class ItemMaterialData {
         }
         GTMaterialItems.toUnify.forEach(ItemMaterialData::registerMaterialInfoItems);
         WoodMachineRecipes.registerUnificationInfo();
-        //resolveFluidMaterialInfos(context);
+        // resolveFluidMaterialInfos(context);
     }
 
     @ApiStatus.Internal
@@ -212,7 +214,8 @@ public class ItemMaterialData {
                 FluidStorageKey.allKeys().stream()
                         .map(property::get)
                         .filter(Objects::nonNull)
-                        .map(f -> Pair.of(f, new ResourceLocation("forge", BuiltInRegistries.FLUID.getKey(f).getPath())))
+                        .map(f -> Pair.of(f,
+                                new ResourceLocation("forge", BuiltInRegistries.FLUID.getKey(f).getPath())))
                         .filter(pair -> allFluidTags.containsKey(pair.getSecond()))
                         .forEach(pair -> {
                             allFluidTags.remove(pair.getSecond());
@@ -221,5 +224,4 @@ public class ItemMaterialData {
             }
         }
     }
-
 }

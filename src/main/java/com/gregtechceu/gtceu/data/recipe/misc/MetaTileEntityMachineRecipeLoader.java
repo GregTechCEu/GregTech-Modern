@@ -319,8 +319,10 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = POWER_TRANSFORMER[tier];
             if (hatch == null) continue;
             // Assume they actually are nonnull for now.
-            var materialPrime = ChemicalHelper.getMaterialStack(CraftingComponent.CABLE_HEX.getIngredient(tier)).material();
-            var materialSecond = ChemicalHelper.getMaterialStack(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
+            var materialPrime = ChemicalHelper.getMaterialStack(CraftingComponent.CABLE_HEX.getIngredient(tier))
+                    .material();
+            var materialSecond = ChemicalHelper
+                    .getMaterialStack(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
                     .material();
 
             ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_power_transformer")

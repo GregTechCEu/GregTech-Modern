@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;

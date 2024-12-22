@@ -123,7 +123,7 @@ public class ComponentRecipes {
                 .inputItems(wireFine, Europium, 64)
                 .inputItems(wireFine, Europium, 32)
                 .inputItems(cableGtSingle, VanadiumGallium, 2)
-                .inputFluids(SolderingAlloy,L * 2)
+                .inputFluids(SolderingAlloy, L * 2)
                 .inputFluids(Lubricant, 500)
                 .outputItems(ELECTRIC_MOTOR_ZPM)
                 .scannerResearch(b -> b
@@ -515,7 +515,8 @@ public class ComponentRecipes {
                 .duration(100).EUt(VA[LV])
                 .addMaterialInfo(true).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, false, "cover_fluid_voiding", COVER_FLUID_VOIDING.asStack(), "SDS",
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "cover_fluid_voiding", COVER_FLUID_VOIDING.asStack(),
+                "SDS",
                 "dPw", " E ", 'S', new MaterialEntry(screw, Steel), 'D', COVER_FLUID_DETECTOR.asStack(), 'P',
                 new MaterialEntry(pipeNormalFluid, Bronze), 'E', Items.ENDER_PEARL);
 

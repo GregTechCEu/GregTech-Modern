@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -171,11 +171,11 @@ public class SizedIngredient extends Ingredient {
         List<ItemStack> list = Lists.newArrayList();
 
         if (GTRecipes.RECIPE_CONTEXT != null) {
-            for(Holder<Item> holder : GTRecipes.RECIPE_CONTEXT.getTag(tag)) {
+            for (Holder<Item> holder : GTRecipes.RECIPE_CONTEXT.getTag(tag)) {
                 list.add(new ItemStack(holder));
             }
         } else {
-            for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+            for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                 list.add(new ItemStack(holder));
             }
         }

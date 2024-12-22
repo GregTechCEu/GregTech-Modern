@@ -572,7 +572,8 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'O', new MaterialEntry(TagPrefix.rock, GTMaterials.Obsidian),
                 'C', CustomTags.HV_CIRCUITS, 'W', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "distillation_tower",
-                GTMultiMachines.DISTILLATION_TOWER.asStack(), "CBC", "FMF", "CBC", 'M', GTMachines.HULL[HV].asStack(), 'B',
+                GTMultiMachines.DISTILLATION_TOWER.asStack(), "CBC", "FMF", "CBC", 'M', GTMachines.HULL[HV].asStack(),
+                'B',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel), 'C', CustomTags.EV_CIRCUITS,
                 'F', GTItems.ELECTRIC_PUMP_HV);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "evaporation_plant",
@@ -611,7 +612,8 @@ public class MetaTileEntityLoader {
                 "RFR", "PwP", 'R', new MaterialEntry(TagPrefix.rotor, GTMaterials.TungstenSteel), 'F',
                 GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(), 'P',
                 new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.TungstenSteel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "multi_furnace", GTMultiMachines.MULTI_SMELTER.asStack(), "PPP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "multi_furnace", GTMultiMachines.MULTI_SMELTER.asStack(),
+                "PPP",
                 "ASA", "CAC", 'P', Blocks.FURNACE, 'A', CustomTags.HV_CIRCUITS, 'S',
                 GTBlocks.CASING_INVAR_HEATPROOF.asStack(), 'C',
                 new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Copper));
@@ -620,7 +622,8 @@ public class MetaTileEntityLoader {
                 GTMultiMachines.LARGE_STEAM_TURBINE.asStack(), "PSP", "SAS", "CSC", 'S',
                 new MaterialEntry(TagPrefix.gear, GTMaterials.Steel), 'P', CustomTags.HV_CIRCUITS, 'A',
                 GTMachines.HULL[HV].asStack(), 'C', new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_gas_turbine", GTMultiMachines.LARGE_GAS_TURBINE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_gas_turbine",
+                GTMultiMachines.LARGE_GAS_TURBINE.asStack(),
                 "PSP", "SAS", "CSC", 'S', new MaterialEntry(TagPrefix.gear, GTMaterials.StainlessSteel), 'P',
                 CustomTags.EV_CIRCUITS, 'A', GTMachines.HULL[GTValues.EV].asStack(), 'C',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel));
@@ -737,10 +740,12 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_multiblock_tank",
                 GTMultiMachines.STEEL_MULTIBLOCK_TANK.asStack(), " R ", "hCw", " R ", 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_tank_valve", GTMultiMachines.WOODEN_TANK_VALVE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_tank_valve",
+                GTMultiMachines.WOODEN_TANK_VALVE.asStack(),
                 " R ", "rCs", " O ", 'O', new MaterialEntry(TagPrefix.rotor, GTMaterials.Copper), 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Copper), 'C', GTBlocks.CASING_WOOD_WALL.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve", GTMultiMachines.STEEL_TANK_VALVE.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_tank_valve",
+                GTMultiMachines.STEEL_TANK_VALVE.asStack(),
                 " R ", "hCw", " O ", 'O', new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel), 'R',
                 new MaterialEntry(TagPrefix.ring, GTMaterials.Steel), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wood_wall", GTBlocks.CASING_WOOD_WALL.asStack(), "W W",

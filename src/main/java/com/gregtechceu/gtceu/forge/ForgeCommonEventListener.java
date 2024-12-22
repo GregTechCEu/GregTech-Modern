@@ -76,7 +76,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -16,144 +15,150 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
 public class MaterialInfoLoader {
 
     public static void init() {
-        /*ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_CUPRONICKEL.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Cupronickel, M * 8), // double wire
-                        new MaterialStack(GTMaterials.Bronze, M * 2), // foil
-                        new MaterialStack(GTMaterials.TinAlloy, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Kanthal, M * 8), // double wire
-                        new MaterialStack(GTMaterials.Aluminium, M * 2), // foil
-                        new MaterialStack(GTMaterials.Copper, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NICHROME.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Nichrome, M * 8), // double wire
-                        new MaterialStack(GTMaterials.StainlessSteel, M * 2), // foil
-                        new MaterialStack(GTMaterials.Aluminium, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_RTMALLOY.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.RTMAlloy, M * 8), // double wire
-                        new MaterialStack(GTMaterials.VanadiumSteel, M * 2), // foil
-                        new MaterialStack(GTMaterials.Nichrome, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_HSSG.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.HSSG, M * 8), // double wire
-                        new MaterialStack(GTMaterials.TungstenCarbide, M * 2), // foil
-                        new MaterialStack(GTMaterials.Tungsten, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NAQUADAH.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Naquadah, M * 8), // double wire
-                        new MaterialStack(GTMaterials.Osmium, M * 2), // foil
-                        new MaterialStack(GTMaterials.TungstenSteel, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRINIUM.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Trinium, M * 8), // double wire
-                        new MaterialStack(GTMaterials.NaquadahEnriched, M * 2), // foil
-                        new MaterialStack(GTMaterials.Naquadah, M)) // ingot
-        );
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRITANIUM.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, M * 8), // double wire
-                        new MaterialStack(GTMaterials.Naquadria, M * 2), // foil
-                        new MaterialStack(GTMaterials.Trinium, M)) // ingot
-        );*/
+        /*
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_CUPRONICKEL.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Cupronickel, M * 8), // double wire
+         * new MaterialStack(GTMaterials.Bronze, M * 2), // foil
+         * new MaterialStack(GTMaterials.TinAlloy, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Kanthal, M * 8), // double wire
+         * new MaterialStack(GTMaterials.Aluminium, M * 2), // foil
+         * new MaterialStack(GTMaterials.Copper, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NICHROME.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Nichrome, M * 8), // double wire
+         * new MaterialStack(GTMaterials.StainlessSteel, M * 2), // foil
+         * new MaterialStack(GTMaterials.Aluminium, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_RTMALLOY.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.RTMAlloy, M * 8), // double wire
+         * new MaterialStack(GTMaterials.VanadiumSteel, M * 2), // foil
+         * new MaterialStack(GTMaterials.Nichrome, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_HSSG.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.HSSG, M * 8), // double wire
+         * new MaterialStack(GTMaterials.TungstenCarbide, M * 2), // foil
+         * new MaterialStack(GTMaterials.Tungsten, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NAQUADAH.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Naquadah, M * 8), // double wire
+         * new MaterialStack(GTMaterials.Osmium, M * 2), // foil
+         * new MaterialStack(GTMaterials.TungstenSteel, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRINIUM.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Trinium, M * 8), // double wire
+         * new MaterialStack(GTMaterials.NaquadahEnriched, M * 2), // foil
+         * new MaterialStack(GTMaterials.Naquadah, M)) // ingot
+         * );
+         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRITANIUM.get(),
+         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, M * 8), // double wire
+         * new MaterialStack(GTMaterials.Naquadria, M * 2), // foil
+         * new MaterialStack(GTMaterials.Trinium, M)) // ingot
+         * );
+         */
 
-        /*ItemMaterialData.registerMaterialInfo(GTMachines.HULL[0].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.WroughtIron, M * 8), // plate
-                new MaterialStack(GTMaterials.RedAlloy, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+        /*
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[0].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.WroughtIron, M * 8), // plate
+         * new MaterialStack(GTMaterials.RedAlloy, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[1].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Steel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Tin, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[2].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Aluminium, M * 8), // plate
+         * new MaterialStack(GTMaterials.Copper, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[3].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Gold, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[4].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
+         * new MaterialStack(GTMaterials.Aluminium, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[5].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Platinum, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[6].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.RhodiumPlatedPalladium, M * 8), // plate
+         * new MaterialStack(GTMaterials.NiobiumTitanium, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[7].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.NaquadahAlloy, M * 8), // plate
+         * new MaterialStack(GTMaterials.VanadiumGallium, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[8].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Darmstadtium, M * 8), // plate
+         * new MaterialStack(GTMaterials.YttriumBariumCuprate, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[9].getBlock(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Neutronium, M * 8), // plate
+         * new MaterialStack(GTMaterials.Europium, M), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+         */
 
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[1].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Steel, M * 8), // plate
-                new MaterialStack(GTMaterials.Tin, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[2].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Aluminium, M * 8), // plate
-                new MaterialStack(GTMaterials.Copper, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[3].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Gold, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[4].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-                new MaterialStack(GTMaterials.Aluminium, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[5].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Platinum, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[6].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.RhodiumPlatedPalladium, M * 8), // plate
-                new MaterialStack(GTMaterials.NiobiumTitanium, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[7].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.NaquadahAlloy, M * 8), // plate
-                new MaterialStack(GTMaterials.VanadiumGallium, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[8].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Darmstadtium, M * 8), // plate
-                new MaterialStack(GTMaterials.YttriumBariumCuprate, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[9].getBlock(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Neutronium, M * 8), // plate
-                new MaterialStack(GTMaterials.Europium, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate*/
-
-        /*ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[3].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Gold, M * 2), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-                new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
-                new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[4].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-                new MaterialStack(GTMaterials.Aluminium, M * 2), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-                new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
-                new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[5].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Tungsten, M * 2), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-                new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
-                new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[3].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Gold, 3 * M), // single cable + spring
-                new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-                new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
-                new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[4].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-                new MaterialStack(GTMaterials.Aluminium, 3 * M), // single cable + spring
-                new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-                new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
-                new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[5].getItem(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-                new MaterialStack(GTMaterials.Tungsten, 3 * M), // single cable + spring
-                new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-                new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
-                new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-        ));*/
+        /*
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[3].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Gold, M * 2), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
+         * new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
+         * ));
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[4].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
+         * new MaterialStack(GTMaterials.Aluminium, M * 2), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
+         * new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
+         * ));
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[5].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Tungsten, M * 2), // single cable
+         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
+         * new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
+         * ));
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[3].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Gold, 3 * M), // single cable + spring
+         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
+         * new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
+         * ));
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[4].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
+         * new MaterialStack(GTMaterials.Aluminium, 3 * M), // single cable + spring
+         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
+         * new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
+         * ));
+         * 
+         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[5].getItem(), new ItemMaterialInfo(
+         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
+         * new MaterialStack(GTMaterials.Tungsten, 3 * M), // single cable + spring
+         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
+         * new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
+         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
+         * ));
+         */
 
         ItemMaterialData.registerMaterialInfo(GTBlocks.PLASTCRETE.get(), new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Steel, M), // frame / 2
@@ -530,13 +535,15 @@ public class MaterialInfoLoader {
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
         }
 
-        ItemMaterialData.registerMaterialInfo(Items.WHEAT, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wheat, M)));
+        ItemMaterialData.registerMaterialInfo(Items.WHEAT,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wheat, M)));
         ItemMaterialData.registerMaterialInfo(Blocks.HAY_BLOCK,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Wheat, M * 9)));
 
         ItemMaterialData.registerMaterialInfo(Items.SNOWBALL,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Water, M / 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SNOW, new ItemMaterialInfo(new MaterialStack(GTMaterials.Water, M)));
+        ItemMaterialData.registerMaterialInfo(Blocks.SNOW,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Water, M)));
 
         ItemMaterialData.registerMaterialInfo(Blocks.ICE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M)));
         ItemMaterialData.registerMaterialInfo(Blocks.PACKED_ICE,

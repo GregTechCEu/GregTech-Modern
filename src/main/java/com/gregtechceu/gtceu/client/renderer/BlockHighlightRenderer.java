@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
@@ -41,7 +40,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.Set;
@@ -69,7 +67,7 @@ public class BlockHighlightRenderer {
 
             var block = level.getBlockState(blockPos);
 
-            if(block.getBlock() instanceof MaterialBlock) {
+            if (block.getBlock() instanceof MaterialBlock) {
                 rColour = gColour = 0;
                 bColour = 0;
                 alpha = 0.55f;
@@ -82,8 +80,8 @@ public class BlockHighlightRenderer {
                 RenderSystem.enableBlend();
                 var mat = poseStack.last().pose();
                 var box = new AABB(blockPos);
-                float minX = (float)box.minX, minY = (float)box.minY, minZ = (float)box.minZ,
-                        maxX = (float)box.maxX, maxY = (float)box.maxY, maxZ = (float)box.maxZ;
+                float minX = (float) box.minX, minY = (float) box.minY, minZ = (float) box.minZ,
+                        maxX = (float) box.maxX, maxY = (float) box.maxY, maxZ = (float) box.maxZ;
                 drawLine(mat, buffer, new Vector3f(minX, minY, minZ), new Vector3f(maxX, minY, minZ)); // bottom face
                 drawLine(mat, buffer, new Vector3f(maxX, minY, minZ), new Vector3f(maxX, minY, maxZ));
                 drawLine(mat, buffer, new Vector3f(maxX, minY, maxZ), new Vector3f(minX, minY, maxZ));
@@ -408,7 +406,8 @@ public class BlockHighlightRenderer {
 
         buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, alpha)
                 .normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, alpha).normal(normal.x, normal.y, normal.z)
+        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, alpha)
+                .normal(normal.x, normal.y, normal.z)
                 .endVertex();
     }
 }

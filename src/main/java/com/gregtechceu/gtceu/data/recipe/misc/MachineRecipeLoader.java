@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.LampBlock;
@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -643,7 +642,7 @@ public class MachineRecipeLoader {
                 .inputItems(SENSOR_HV)
                 .inputItems(EMITTER_HV)
                 .inputItems(ELECTRIC_PUMP_HV)
-                .inputFluids(Polyethylene,L * 2)
+                .inputFluids(Polyethylene, L * 2)
                 .outputItems(COVER_ENDER_FLUID_LINK)
                 .EUt(VA[HV]).duration(320)
                 .addMaterialInfo(true)
@@ -654,7 +653,7 @@ public class MachineRecipeLoader {
                 .inputItems(Tags.Blocks.CHESTS_WOODEN)
                 .inputItems(ELECTRIC_PISTON_LV)
                 .inputItems(plate, Iron)
-                .inputFluids(SolderingAlloy,L / 2)
+                .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_STORAGE)
                 .EUt(16)
                 .duration(100)
@@ -778,8 +777,9 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_evaporation")
                 .inputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(1))
                 .inputItems(wireGtDouble, AnnealedCopper, 4)
-                .inputFluids(PolyvinylChloride,L * 2)
-                .outputItems(GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .inputFluids(PolyvinylChloride, L * 2)
+                .outputItems(
+                        GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(30).EUt(VA[HV]).addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
@@ -793,18 +793,19 @@ public class MachineRecipeLoader {
                 .duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_zpm").EUt(VA[ZPM])
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16).inputItems(foil, NiobiumTitanium, 16)
-                .inputFluids(Trinium,GTValues.L * 16).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
+                .inputFluids(Trinium, GTValues.L * 16).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_uv").EUt(VA[UV])
                 .inputItems(wireGtDouble, EnrichedNaquadahTriniumEuropiumDuranide, 8)
-                .inputItems(foil, NiobiumTitanium, 8).inputFluids(Trinium,GTValues.L * 8)
+                .inputItems(foil, NiobiumTitanium, 8).inputFluids(Trinium, GTValues.L * 8)
                 .outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_coil").EUt(VA[ZPM]).inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .inputItems(FIELD_GENERATOR_IV.asStack(2)).inputItems(ELECTRIC_PUMP_IV)
                 .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(CustomTags.LuV_CIRCUITS, 4)
                 .inputItems(pipeSmallFluid, Naquadah, 4).inputItems(plate, Europium, 4)
                 .inputFluids(VanadiumGallium, GTValues.L * 4).outputItems(GTBlocks.FUSION_COIL.asStack())
-                .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true).addMaterialFluidInfo(true)
+                .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_glass").EUt(VA[LuV])
                 .inputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack()).inputItems(plate, Naquadah, 4)
                 .inputItems(NEUTRON_REFLECTOR.asStack(4)).outputItems(GTBlocks.FUSION_GLASS.asStack(2))

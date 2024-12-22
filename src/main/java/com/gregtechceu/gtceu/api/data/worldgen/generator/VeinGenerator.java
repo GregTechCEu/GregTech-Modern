@@ -72,11 +72,13 @@ public abstract class VeinGenerator {
         return getAllEntries().stream()
                 .filter(entry -> entry.getKey()
                         .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null, Function.identity()) !=
+                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null,
+                                Function.identity()) !=
                         null)
                 .map(entry -> Map.entry(entry.getValue(), entry.getKey()
                         .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null, Function.identity())))
+                                ChemicalHelper.getMaterialStack(state.getBlock()).material() : null,
+                                Function.identity())))
                 .collect(Collectors.toList());
     }
 

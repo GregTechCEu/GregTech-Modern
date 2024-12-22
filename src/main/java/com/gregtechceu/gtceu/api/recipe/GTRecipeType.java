@@ -276,7 +276,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeBuilder recipeBuilder(MaterialEntry entry, Object... append) {
-        return recipeBuilder(GTCEu.id(entry.tagPrefix() + (entry.material() == null ? "" : "_" + entry.material().getName())),
+        return recipeBuilder(
+                GTCEu.id(entry.tagPrefix() + (entry.material() == null ? "" : "_" + entry.material().getName())),
                 append);
     }
 

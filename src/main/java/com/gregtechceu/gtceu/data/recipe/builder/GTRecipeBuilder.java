@@ -32,7 +32,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
-import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -47,11 +46,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -400,9 +399,8 @@ public class GTRecipeBuilder {
             var matStack = ItemMaterialData.getMaterialInfo(input.getItem());
             if (matStack != null) {
                 tempItemMaterialStacks.addAll(matStack.getMaterials());
-            }
-            else {
-                if(chance == maxChance) {
+            } else {
+                if (chance == maxChance) {
                     tempItemStacks.add(input);
                 }
             }
@@ -418,8 +416,7 @@ public class GTRecipeBuilder {
                 var matStack = ItemMaterialData.getMaterialInfo(itemStack.getItem());
                 if (matStack != null) {
                     tempItemMaterialStacks.addAll(matStack.getMaterials());
-                }
-                else {
+                } else {
                     if (chance == maxChance) {
                         tempItemStacks.add(itemStack);
                     }
@@ -447,11 +444,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(Item input) {
         var matStack = ItemMaterialData.getMaterialInfo(input);
-        if(matStack != null) {
+        if (matStack != null) {
             tempItemMaterialStacks.addAll(matStack.getMaterials());
-        }
-        else {
-            if(chance == maxChance) {
+        } else {
+            if (chance == maxChance) {
                 tempItemStacks.add(new ItemStack(input));
             }
         }
@@ -460,11 +456,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
         var matStack = ItemMaterialData.getMaterialInfo(input);
-        if(matStack != null) {
+        if (matStack != null) {
             tempItemMaterialStacks.addAll(matStack.getMaterials());
-        }
-        else {
-            if(chance == maxChance) {
+        } else {
+            if (chance == maxChance) {
                 tempItemStacks.add(new ItemStack(input.get()));
             }
         }
@@ -483,7 +478,8 @@ public class GTRecipeBuilder {
         if (input.material() == null) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         } else {
-            tempItemMaterialStacks.add(new MaterialStack(input.material(), input.tagPrefix().getMaterialAmount(input.material())));
+            tempItemMaterialStacks
+                    .add(new MaterialStack(input.material(), input.tagPrefix().getMaterialAmount(input.material())));
             tempItemMaterialStacks.addAll(input.tagPrefix().secondaryMaterials());
         }
         return inputItems(input.tagPrefix(), input.material(), 1);
@@ -497,14 +493,15 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @Nullable Material material, int count) {
-        if(material == null) {
+        if (material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, tagPrefix, "null", count);
             return inputItems(ItemStack.EMPTY);
         } else {
             tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
-            tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(new MaterialStack(mat.material(), mat.amount() * count)));
+            tagPrefix.secondaryMaterials().forEach(
+                    mat -> tempItemMaterialStacks.add(new MaterialStack(mat.material(), mat.amount() * count)));
         }
         TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
         if (tag == null) {
@@ -607,14 +604,16 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
-        if(material == null) {
-            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
+        if (material == null) {
+            GTCEu.LOGGER.error(
+                    "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
             return outputItems(ItemStack.EMPTY);
         }
         var item = ChemicalHelper.get(orePrefix, material, count);
         if (item.isEmpty()) {
-            GTCEu.LOGGER.error("Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
+            GTCEu.LOGGER.error(
+                    "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
         }
         return outputItems(item);
@@ -973,7 +972,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(@NotNull Material material, int amount) {
-        if(chance == maxChance) {
+        if (chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(material, amount * GTValues.M / GTValues.L));
         }
         return inputFluids(material.getFluid(amount));
@@ -981,7 +980,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if(matStack != null) {
+        if (matStack != null) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -990,10 +989,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
-        for(var input : inputs) {
+        for (var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
-            if(matStack != null) {
-                if(chance == maxChance) {
+            if (matStack != null) {
+                if (chance == maxChance) {
                     tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
                 }
             }
@@ -1337,7 +1336,7 @@ public class GTRecipeBuilder {
             }
         }
 
-        if(addMaterialInfo) {
+        if (addMaterialInfo) {
             addOutputMaterialInfo();
         }
         tempItemStacks = null;
@@ -1350,64 +1349,65 @@ public class GTRecipeBuilder {
     public void addOutputMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         var itemInputs = input.get(ItemRecipeCapability.CAP);
-        if(itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
+        if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
             var currOutput = itemOutputs.get(0).content;
             ItemLike out = null;
             int outputCount = 0;
 
-            if(currOutput instanceof Item i) {
+            if (currOutput instanceof Item i) {
                 out = i;
                 outputCount = 1;
-            }
-            else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
+            } else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
                 out = i;
                 outputCount = 1;
-            }
-            else if (currOutput instanceof ItemStack stack) {
+            } else if (currOutput instanceof ItemStack stack) {
                 out = stack.getItem();
                 outputCount = stack.getCount();
-            }
-            else if (currOutput instanceof SizedIngredient sized) {
+            } else if (currOutput instanceof SizedIngredient sized) {
                 out = sized.getItems()[0].getItem();
                 outputCount = sized.getItems()[0].getCount();
             }
 
             Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
-            for(var input : tempItemMaterialStacks) {
+            for (var input : tempItemMaterialStacks) {
                 long am = input.amount() / outputCount;
                 matStacks.merge(input.material(), am, Long::sum);
             }
 
-            if(addMaterialFluidInfo) {
+            if (addMaterialFluidInfo) {
                 var fluidInputs = input.get(FluidRecipeCapability.CAP);
                 for (var input : tempFluidStacks) {
                     long am = input.amount() / outputCount;
                     matStacks.merge(input.material(), am, Long::sum);
                 }
-                /*for (int i = 0; i < fluidInputs.size(); i++) {
-                    if (fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
-                        MaterialStack matStack = null;
-                        for (var value : fluidIngredient.values) {
-                            var fluid = value.getFluids().toArray(Fluid[]::new);
-                            if (fluid.length != 0 && fluid[0] != null) {
-                                matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
-                            }
-
-                            if (matStack != null && matStack.material() != null) {
-                                matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
-                                break;
-                            }
-                        }
-                    } else if (fluidInputs.get(i).content instanceof FluidStack fluidStack) {
-                        MaterialStack matStack = new MaterialStack(ChemicalHelper.getMaterial(fluidStack.getFluid()), tempFluidStacks.get(i).amount());
-                        if (matStack.material() != null) {
-                            matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
-                        }
-                    }
-                }*/
+                /*
+                 * for (int i = 0; i < fluidInputs.size(); i++) {
+                 * if (fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
+                 * MaterialStack matStack = null;
+                 * for (var value : fluidIngredient.values) {
+                 * var fluid = value.getFluids().toArray(Fluid[]::new);
+                 * if (fluid.length != 0 && fluid[0] != null) {
+                 * matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
+                 * }
+                 * 
+                 * if (matStack != null && matStack.material() != null) {
+                 * matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
+                 * break;
+                 * }
+                 * }
+                 * } else if (fluidInputs.get(i).content instanceof FluidStack fluidStack) {
+                 * MaterialStack matStack = new MaterialStack(ChemicalHelper.getMaterial(fluidStack.getFluid()),
+                 * tempFluidStacks.get(i).amount());
+                 * if (matStack.material() != null) {
+                 * matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
+                 * }
+                 * }
+                 * }
+                 */
             }
 
-            var matList = matStacks.reference2LongEntrySet().stream().map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
+            var matList = matStacks.reference2LongEntrySet().stream()
+                    .map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
 
             if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
@@ -1460,5 +1460,4 @@ public class GTRecipeBuilder {
                                       @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {
 
     }
-
 }

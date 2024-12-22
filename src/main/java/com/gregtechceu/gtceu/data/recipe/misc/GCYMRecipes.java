@@ -111,7 +111,8 @@ public class GCYMRecipes {
                 new MaterialEntry(plateDense, NaquadahAlloy), 'W',
                 new MaterialEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_vacuum_freezer", MEGA_VACUUM_FREEZER.asStack(), "PCP",
-                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.VACUUM_FREEZER.asStack(), 'F', FIELD_GENERATOR_ZPM.asStack(), 'P',
+                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.VACUUM_FREEZER.asStack(), 'F',
+                FIELD_GENERATOR_ZPM.asStack(), 'P',
                 new MaterialEntry(pipeNormalFluid, NiobiumTitanium), 'D',
                 new MaterialEntry(plateDense, RhodiumPlatedPalladium), 'W',
                 new MaterialEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));
