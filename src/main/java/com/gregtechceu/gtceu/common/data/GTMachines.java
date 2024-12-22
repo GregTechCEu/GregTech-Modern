@@ -491,7 +491,7 @@ public class GTMachines {
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(
             Component.translatable("gtceu.creative_tooltip.1")
                     .append(Component.translatable("gtceu.creative_tooltip.2")
-                            .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+                            .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))
                     .append(Component.translatable("gtceu.creative_tooltip.3")));
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
@@ -1067,16 +1067,15 @@ public class GTMachines {
             PartAbility.OUTPUT_LASER);
 
     public static void init() {
+        GTMultiMachines.init();
         GCYMMachines.init();
         GTResearchMachines.init();
 
-        if (GTCEuAPI.Mods.isAE2Loaded()) {
+        if (GTCEu.isAE2Loaded()) {
             GTAEMachines.init();
         }
 
-        GTMultiMachines.init();
-
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));

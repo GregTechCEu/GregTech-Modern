@@ -47,7 +47,6 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
         super.onStructureFormed();
         initializeTank();
         produceWaterSubscription = subscribeServerTick(this::produceWater);
-        produceWater();
     }
 
     private void initializeTank() {

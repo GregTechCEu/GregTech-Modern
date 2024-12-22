@@ -54,13 +54,11 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
     }
 
     default long getOffsetTimer() {
-        if (level() == null) {
-            return getOffset();
-        } else if (level().isClientSide()) {
-            return GTValues.CLIENT_TIME + getOffset();
-        } else if (level().getServer() != null) {
-            return level().getServer().getTickCount() + getOffset();
-        }
+        if (level() == null) return getOffset();
+        else if (level().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
+
+        var server = level().getServer();
+        if (server != null) return server.getTickCount() + getOffset();
         return getOffset();
     }
 
