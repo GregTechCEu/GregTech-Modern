@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -128,7 +129,9 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTMachineUtils.init();
         GTMachines.init();
+
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init();
@@ -265,15 +268,6 @@ public class CommonProxy {
         } else if (event.getPackType() == PackType.SERVER_DATA) {
             // Clear old data
             GTDynamicDataPack.clearServer();
-
-            // Register recipes & unification data again
-            long startTime = System.currentTimeMillis();
-            ItemMaterialData.reinitializeMaterialData();
-            GTRecipes.recipeRemoval();
-            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-            // Initialize dungeon loot additions
-            DungeonLootLoader.init();
-            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
                     event.getPackType(),

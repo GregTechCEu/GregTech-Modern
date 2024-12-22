@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -30,13 +31,12 @@ import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
@@ -46,6 +46,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
+import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -74,6 +76,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -267,7 +270,7 @@ public class ForgeCommonEventListener {
     public static void onBreakEvent(BlockEvent.BreakEvent event) {
         var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
         if (machine != null) {
-            if (!MetaMachineBlock.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
+            if (!IMachineOwner.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
                 event.setCanceled(true);
             }
         }
@@ -282,6 +285,20 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
+        // moved here so that we can get tag info for decomp recipes
+        {
+            GTRecipes.RECIPE_CONTEXT = event.getConditionContext();
+            // Register recipes & unification data again
+            long startTime = System.currentTimeMillis();
+            ItemMaterialData.reinitializeMaterialData(GTRecipes.RECIPE_CONTEXT);
+            GTRecipes.recipeRemoval();
+            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
+            // Initialize dungeon loot additions
+            DungeonLootLoader.init();
+            GTRecipes.RECIPE_CONTEXT = null;
+            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
+        }
+
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
@@ -570,7 +587,7 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                    BlockEntry<? extends MaterialBlock> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
                             GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.get());
@@ -580,12 +597,12 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                    BlockEntry<? extends MaterialBlock> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
                             GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends TagPrefixItem> item = GTItems.MATERIAL_ITEMS.get(prefix,
+                        ItemEntry<? extends TagPrefixItem> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
                                 GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                         if (item != null && item.isPresent()) {
                             mapping.remap(item.asItem());

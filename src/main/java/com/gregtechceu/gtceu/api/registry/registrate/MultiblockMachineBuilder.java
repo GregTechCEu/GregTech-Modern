@@ -68,10 +68,14 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
-    /** Whether this multi can be rotated or face upwards. */
+    /**
+     * Whether this multi can be rotated or face upwards.
+     */
     @Setter
     private boolean allowExtendedFacing = true;
-    /** Set this to false only if your multiblock is set up such that it could have a wall-shared controller. */
+    /**
+     * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
+     */
     @Setter
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();

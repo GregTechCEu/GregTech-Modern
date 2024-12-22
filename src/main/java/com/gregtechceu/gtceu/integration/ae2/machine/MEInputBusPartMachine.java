@@ -145,7 +145,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     ////////////////////////////////
 
     @Override
-    public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
+    public final InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         if (!isRemote()) {
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputBus", writeConfigToTag());
@@ -153,11 +153,11 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             dataStick.setHoverName(Component.translatable("gtceu.machine.me.item_import.data_stick.name"));
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public final InteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
+    public final InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
         CompoundTag tag = dataStick.getTag();
         if (tag == null || !tag.contains("MEInputBus")) {
             return InteractionResult.PASS;
