@@ -341,7 +341,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
             ItemStack extractedStack = sourceInventory.extractItem(i,
                     Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
 
-            ItemStack remainderStack = ItemHandlerHelper.insertItem(targetInventory, extractedStack, true);
+            ItemStack remainderStack = ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, true);
             int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
 
             if (amountToInsert > 0) {
@@ -349,7 +349,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
                 if (!extractedStack.isEmpty()) {
 
-                    ItemHandlerHelper.insertItem(targetInventory, extractedStack, false);
+                    ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, false);
                     itemsLeftToTransfer -= extractedStack.getCount();
                     itemInfo.totalCount -= extractedStack.getCount();
 

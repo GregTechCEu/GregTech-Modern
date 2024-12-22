@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
@@ -53,7 +54,13 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
     }
 
     default long getOffsetTimer() {
-        return level() == null ? getOffset() : (level().getGameTime() + getOffset());
+        if (level() == null) return getOffset();
+        else if (level().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
+
+        var server = level().getServer();
+        if (server != null) return server.getTickCount() + getOffset();
+
+        return getOffset();
     }
 
     default MachineDefinition getDefinition() {

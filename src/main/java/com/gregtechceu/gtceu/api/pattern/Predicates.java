@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -250,11 +250,21 @@ public class Predicates {
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
+    public static TraceabilityPredicate dataHatchPredicate(TraceabilityPredicate def) {
+        // if research is enabled, require the data hatch, otherwise use a grate instead
+        if (ConfigHolder.INSTANCE.machines.enableResearch) {
+            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+                    .setExactLimit(1)
+                    .or(def);
+        }
+        return def;
+    }
+
     /**
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */
     public static TraceabilityPredicate frames(Material... frameMaterials) {
-        return blocks(Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
+        return blocks(Arrays.stream(frameMaterials).map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                 .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                 .toArray(Block[]::new))
                 .or(new TraceabilityPredicate(blockWorldState -> {
@@ -263,7 +273,8 @@ public class Predicates {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
-                }, () -> Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
+                }, () -> Arrays.stream(frameMaterials)
+                        .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                         .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                         .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
     }

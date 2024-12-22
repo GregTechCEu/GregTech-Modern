@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.core.mixins.emi;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.emi.emi.api.render.EmiTooltipComponents;
@@ -25,6 +28,9 @@ public class FluidEmiStackMixin {
     @Shadow
     @Final
     private Fluid fluid;
+    @Shadow
+    @Final
+    private CompoundTag nbt;
 
     @Inject(method = "getTooltip",
             at = @At(value = "INVOKE", target = "Ldev/emi/emi/EmiPort;getFluidRegistry()Lnet/minecraft/core/Registry;"),
@@ -32,8 +38,9 @@ public class FluidEmiStackMixin {
             require = 0)
     private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir,
                                        @Local List<ClientTooltipComponent> list) {
-        TooltipsHandler.appendFluidTooltips(this.fluid,
-                ((EmiStack) (Object) this).getAmount(),
+        TooltipsHandler.appendFluidTooltips(new FluidStack(this.fluid,
+                Math.max(GTMath.saturatedCast(((EmiStack) (Object) this).getAmount()), 1),
+                nbt),
                 text -> list.add(EmiTooltipComponents.of(text)),
                 TooltipFlag.NORMAL);
     }

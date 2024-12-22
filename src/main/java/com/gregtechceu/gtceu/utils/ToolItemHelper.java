@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.Item;
@@ -47,9 +47,9 @@ public class ToolItemHelper {
     public static ItemStack getToolItem(GTToolType toolType) {
         return TOOL_CACHE.computeIfAbsent(toolType, type -> {
             if (type == GTToolType.SOFT_MALLET) {
-                return GTItems.TOOL_ITEMS.get(GTMaterials.Rubber, type).asStack();
+                return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Rubber, type).asStack();
             }
-            return GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, type).asStack();
+            return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, type).asStack();
         });
     }
 }

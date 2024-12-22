@@ -641,14 +641,6 @@ public interface GTRecipeSchema {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTRecipeJS inputStress(float stress) {
-            return input(StressRecipeCapability.CAP, stress);
-        }
-
-        public GTRecipeJS outputStress(float stress) {
-            return output(StressRecipeCapability.CAP, stress);
-        }
-
         //////////////////////////////////////
         // ********** DATA ***********//
         //////////////////////////////////////
@@ -786,14 +778,6 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS posY(int min, int max) {
             return posY(min, max, false);
-        }
-
-        public GTRecipeJS rpm(float rpm, boolean reverse) {
-            return addCondition(new RPMCondition(rpm).setReverse(reverse));
-        }
-
-        public GTRecipeJS rpm(float rpm) {
-            return rpm(rpm, false);
         }
 
         public GTRecipeJS environmentalHazard(MedicalCondition condition, boolean reverse) {

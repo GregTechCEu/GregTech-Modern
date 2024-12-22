@@ -1,26 +1,33 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -117,31 +124,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
     }
 
-    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
-                                                                @Nullable ContentModifier modifier) {
-        Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
-        for (var entry : contents.entrySet()) {
-            var contentList = entry.getValue();
-            var cap = entry.getKey();
-            if (contentList != null && !contentList.isEmpty()) {
-                List<Content> contentsCopy = new ArrayList<>();
-                for (Content content : contentList) {
-                    contentsCopy.add(content.copy(cap, modifier));
-                }
-                copyContents.put(entry.getKey(), contentsCopy);
-            }
-        }
-        return copyContents;
-    }
-
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id,
-                copyContents(inputs, null), copyContents(outputs, null),
-                copyContents(tickInputs, null), copyContents(tickOutputs, null),
-                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
-                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
-                new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel,
-                recipeCategory);
+        return copy(ContentModifier.IDENTITY, false);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -150,15 +134,16 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
         var copied = new GTRecipe(recipeType, id,
-                copyContents(inputs, modifier), copyContents(outputs, modifier),
-                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier),
+                modifier.applyContents(inputs), modifier.applyContents(outputs),
+                modifier.applyContents(tickInputs), modifier.applyContents(tickOutputs),
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
         if (modifyDuration) {
-            copied.duration = modifier.apply(this.duration).intValue();
+            copied.duration = modifier.apply(this.duration);
         }
+        copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         return copied;
     }

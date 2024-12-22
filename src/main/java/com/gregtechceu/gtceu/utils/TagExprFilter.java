@@ -67,8 +67,7 @@ public class TagExprFilter {
                 return switch (op.type) {
                     case And -> left.matches(input) && right.matches(input);
                     case Or -> left.matches(input) || right.matches(input);
-                    case Xor -> (left.matches(input) && !right.matches(input)) ||
-                            (!left.matches(input) && right.matches(input));
+                    case Xor -> left.matches(input) ^ right.matches(input);
                     default -> false;
                 };
             }
@@ -87,7 +86,7 @@ public class TagExprFilter {
             @Override
             public boolean matches(Set<String> input) {
                 if (token.type == TokenType.Not) {
-                    return !expr.matches(input);
+                    return expr != null && !expr.matches(input);
                 }
 
                 return false;
@@ -104,6 +103,8 @@ public class TagExprFilter {
 
             @Override
             public boolean matches(Set<String> input) {
+                if (value == null || value.isEmpty()) return false;
+                if (value.equals("$") && input.isEmpty()) return true;
                 if (!value.contains(":") && !value.startsWith("*")) {
                     value = "forge:" + value;
                 }
@@ -136,7 +137,7 @@ public class TagExprFilter {
 
             @Override
             public boolean matches(Set<String> input) {
-                return inner.matches(input);
+                return inner != null && inner.matches(input);
             }
         }
 
@@ -278,24 +279,20 @@ public class TagExprFilter {
      * @return if any of the items oreDicts matches the rules
      */
     public static boolean tagsMatch(TagExprParser.MatchExpr expr, ItemStack stack) {
-        Set<String> oreDicts = stack.getTags().map(TagKey::location)
-                .map(ResourceLocation::toString).collect(Collectors.toSet());
+        Set<String> tags = stack.getTags()
+                .map(TagKey::location)
+                .map(ResourceLocation::toString)
+                .collect(Collectors.toSet());
 
-        if (oreDicts.isEmpty() || expr == null) {
-            return false;
-        }
-
-        return expr.matches(oreDicts);
+        return expr != null && expr.matches(tags);
     }
 
     public static boolean tagsMatch(TagExprParser.MatchExpr expr, FluidStack stack) {
-        Set<String> oreDicts = stack.getFluid().defaultFluidState().getTags().map(TagKey::location)
-                .map(ResourceLocation::toString).collect(Collectors.toSet());
+        Set<String> tags = stack.getFluid().defaultFluidState().getTags()
+                .map(TagKey::location)
+                .map(ResourceLocation::toString)
+                .collect(Collectors.toSet());
 
-        if (oreDicts.isEmpty() || expr == null) {
-            return false;
-        }
-
-        return expr.matches(oreDicts);
+        return expr != null && expr.matches(tags);
     }
 }

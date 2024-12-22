@@ -15,10 +15,11 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -34,7 +35,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
     public int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
 
-    // if in millibuckets, this is 0.5, Meaning 2mb of steam -> 1 EU
-    public static final double CONVERSION_RATE = 0.5D;
+    // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
+    public static final double CONVERSION_RATE = 2.0;
 
     public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder);
@@ -71,7 +71,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 if (tank.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
                     itr.remove();
                     capabilitiesProxy.computeIfAbsent(IO.IN, c -> new ArrayList<>())
-                            .add(RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(tank, CONVERSION_RATE)));
+                            .add(RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(tank, getConversionRate())));
                     /*
                      * if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
                      * capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
@@ -85,24 +85,43 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof SteamParallelMultiblockMachine steamMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
-                return null;
-            }
-            int duration = recipe.duration;
-            var eut = RecipeHelper.getInputEUt(recipe);
-            var parallelRecipe = GTRecipeModifiers.accurateParallel(machine, recipe, steamMachine.maxParallels, false);
+    public double getConversionRate() {
+        return CONVERSION_RATE;
+    }
 
-            // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
-            // also set the duration to just 1.5x the original, instead of fully multiplied
-            result.init((long) Math.min(32, Math.ceil(eut * 1.33)), (int) (duration * 1.5), parallelRecipe.getSecond(),
-                    params.getOcAmount());
-            return recipe;
+    /**
+     * Recipe Modifier for <b>Steam Multiblock Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if tier is greater than LV
+     * </p>
+     * <p>
+     * Recipe is parallelized up to the Multiblock's parallel limit.
+     * Then, duration is multiplied by {@code 1.5×} and EUt is multiplied by {@code (8/9) × parallels}, up to a cap of
+     * 32 EUt
+     * </p>
+     *
+     * @param machine a {@link SteamParallelMultiblockMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Multiblock Machine and recipe
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
+            return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
-        return null;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
+
+        // Duration = 1.5x base duration
+        // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
+        long eut = RecipeHelper.getInputEUt(recipe);
+        int parallelAmount = ParallelLogic.getParallelAmount(machine, recipe, steamMachine.maxParallels);
+        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
+        return ModifierFunction.builder()
+                .inputModifier(ContentModifier.multiplier(parallelAmount))
+                .outputModifier(ContentModifier.multiplier(parallelAmount))
+                .durationMultiplier(1.5)
+                .eutMultiplier(eutMultiplier)
+                .parallels(parallelAmount)
+                .build();
     }
 
     @Override

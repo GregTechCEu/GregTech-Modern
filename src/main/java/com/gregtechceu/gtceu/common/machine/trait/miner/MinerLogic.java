@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -142,7 +142,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.currentRadius = maximumRadius;
         this.maximumRadius = maximumRadius;
         this.isDone = false;
-        this.pickaxeTool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+        this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.capabilitiesProxy = new Object2ObjectOpenHashMap<>();
         this.capabilitiesFlat = new Object2ObjectOpenHashMap<>();

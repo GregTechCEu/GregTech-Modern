@@ -47,12 +47,10 @@ public class LangHandler {
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
         provider.add("recipe.capability.item.name", "Item");
-        provider.add("recipe.capability.su.name", "Create Stress");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
 
-        provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
         provider.add("recipe.condition.dimension.tooltip", "Dimension: %s");
@@ -123,8 +121,9 @@ public class LangHandler {
 
         provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
         provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
-        provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s seconds");
-        provider.add("command.gtceu.medical_condition.get.element.permanent", "Condition %s§r: %s seconds (permanent)");
+        provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s minutes %s seconds");
+        provider.add("command.gtceu.medical_condition.get.element.permanent",
+                "Condition %s§r: %s minutes %s seconds (permanent)");
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
@@ -330,7 +329,19 @@ public class LangHandler {
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.tag_filter.title", "Tag Filter");
         multilineLang(provider, "cover.tag_filter.info",
-                "§bAccepts complex expressions\n& = AND\n| = OR\n^ = XOR\n! = NOT\n( ) for priority\n* for wildcard\n§bExample:\n§6dust*Gold | (plate* & !*Double*)\nWill match all gold dusts of all sizes or all plates, but not double plates");
+                """
+                        §bAccepts complex expressions
+                        §6a & b§r = AND
+                        §6a | b§r = OR
+                        §6a ^ b§r = XOR
+                        §6!a§r = NOT
+                        §6(a)§r for grouping
+                        §6*§r for wildcard
+                        §6$§r for untagged
+                        §bTags come in the form 'namespace:tag/subtype'.
+                        The 'forge:' namespace is assumed if one isn't provided.
+                        §bExample: §6*dusts/gold | (gtceu:circuits & !*lv)
+                        This matches all gold dusts or all circuits except LV ones""");
         provider.add("cover.tag_filter.test_slot.info",
                 "Insert a item to test if it matches the filter expression");
         provider.add("cover.tag_filter.matches", "Item matches");
@@ -472,6 +483,8 @@ public class LangHandler {
                 "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
         provider.add("cover.advanced_item_detector.max", "Max Items");
         provider.add("cover.advanced_item_detector.min", "Min Items");
+        provider.add("cover.shutter.message.enabled", "Closed shutter");
+        provider.add("cover.shutter.message.disabled", "Opened shutter");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");

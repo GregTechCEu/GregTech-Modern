@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -1299,11 +1300,19 @@ public class MachineRecipeLoader {
                                            List<ItemStack> mossStack) {
         for (int i = 0; i < regularStack.size(); i++) {
             ResourceLocation mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
-            CHEMICAL_BATH_RECIPES.recipeBuilder("bath_" + mossId.getPath())
+            MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_moss_block")
                     .inputItems(regularStack.get(i))
-                    .inputFluids(Water.getFluid(100))
+                    .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
+                    .inputFluids(Water.getFluid(250))
                     .outputItems(mossStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+                    .duration(40).EUt(1).save(provider);
+
+            MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_vine")
+                    .inputItems(regularStack.get(i))
+                    .inputItems(new ItemStack(Blocks.VINE))
+                    .inputFluids(Water.getFluid(250))
+                    .outputItems(mossStack.get(i))
+                    .duration(40).EUt(1).save(provider);
         }
     }
 
@@ -1420,7 +1429,7 @@ public class MachineRecipeLoader {
             }
         }
 
-        for (int tier : MULTI_HATCH_TIERS) {
+        for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
             var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
@@ -1447,7 +1456,7 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : DUAL_HATCH_TIERS) {
+        for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
             var inputBuffer = DUAL_IMPORT_HATCH[tier];

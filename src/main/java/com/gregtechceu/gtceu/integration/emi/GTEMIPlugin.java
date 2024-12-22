@@ -4,9 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
+import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
@@ -21,6 +25,11 @@ import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import de.mari_023.ae2wtlib.wet.WETMenu;
@@ -84,9 +93,22 @@ public class GTEMIPlugin implements EmiPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
-                EmiStack.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+                EmiStack.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
 
         // Comparators
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
+        registry.removeEmiStacks(EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asStack()));
+        registry.addEmiStack(EmiStack.of(IntCircuitBehaviour.stack(0)));
+        registry.addWorkstation(GTProgrammedCircuitCategory.CATEGORY, EmiStack.of(IntCircuitBehaviour.stack(0)));
+
+        Comparison potionComparison = Comparison.compareData(stack -> PotionUtils.getPotion(stack.getNbt()));
+        PotionFluid potionFluid = GTFluids.POTION.get();
+        registry.setDefaultComparison(potionFluid.getSource(), potionComparison);
+        registry.setDefaultComparison(potionFluid.getFlowing(), potionComparison);
+
+        for (Potion potion : BuiltInRegistries.POTION) {
+            FluidStack stack = PotionFluidHelper.getFluidFromPotion(potion, PotionFluidHelper.BOTTLE_AMOUNT);
+            registry.addEmiStack(EmiStack.of(stack.getFluid(), stack.getTag()));
+        }
     }
 }

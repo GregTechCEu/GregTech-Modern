@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
@@ -61,6 +60,7 @@ public class GTRecipes {
         MiscRecipeLoader.init(consumer);
         VanillaStandardRecipes.init(consumer);
         WoodMachineRecipes.init(consumer);
+        StoneMachineRecipes.init(consumer);
         CraftingRecipeLoader.init(consumer);
         FuelRecipes.init(consumer);
         FusionLoader.init(consumer);
@@ -81,11 +81,6 @@ public class GTRecipes {
         RecipeAddition.init(consumer);
         // Must run recycling recipes very last
         RecyclingRecipes.init(consumer);
-
-        // Kinetic Machines
-        if (GTCEu.isCreateLoaded()) {
-            CreateRecipeLoader.init(consumer);
-        }
 
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
     }

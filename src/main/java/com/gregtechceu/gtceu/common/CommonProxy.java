@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -56,7 +57,6 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -122,7 +122,6 @@ public class CommonProxy {
         GTSoundEntries.init();
         GTDamageTypes.init();
         GTCovers.init();
-        ForgeMod.enableMilkFluid();
         GTFluids.init();
         GTCreativeModeTabs.init();
         GTBlocks.init();
@@ -130,7 +129,9 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTMachineUtils.init();
         GTMachines.init();
+
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init();

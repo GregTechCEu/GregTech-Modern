@@ -23,6 +23,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Content {
@@ -52,16 +53,16 @@ public class Content {
                 .apply(instance, Content::new));
     }
 
-    public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        if (modifier == null || chance < maxChance) {
-            return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
+    public Content copy(RecipeCapability<?> capability) {
+        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
+    }
+
+    public Content copy(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
+        if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
+            return copy(capability);
         } else {
             return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
         }
-    }
-
-    public Content copyExplicit(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
     }
 
     /**

@@ -2,16 +2,34 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import static net.minecraft.ChatFormatting.*;
 
 public class TooltipHelper {
+
+    /**
+     * Returns a continually changing rainbow TextColor
+     * 
+     * @param speed degrees of hue change per tick
+     * @return Rainbow TextColor
+     */
+    public static TextColor rainbowColor(float speed) {
+        return TextColor.fromRgb(GradientUtil.toRGB((GTValues.CLIENT_TIME & ((1 << 20) - 1)) * speed, 95f, 60f));
+    }
+
+    public static final UnaryOperator<Style> RAINBOW_HSL = style -> style.withColor(rainbowColor(2.5f));
+    public static final UnaryOperator<Style> RAINBOW_HSL_SLOW = style -> style.withColor(rainbowColor(1.25f));
+    public static final UnaryOperator<Style> RAINBOW_HSL_FAST = style -> style.withColor(rainbowColor(3.75f));
 
     private static final List<GTFormattingCode> CODES = new ArrayList<>();
 

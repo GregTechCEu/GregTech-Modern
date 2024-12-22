@@ -189,7 +189,111 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        public RecipeHelper.ActionResult checkRecipe(GTRecipe recipe) {
+        @Nullable
+        public Iterator<GTRecipe> searchRecipe() {
+            var recipeType = machine.getRecipeType();
+            if (recipeType == GTRecipeTypes.DISTILLERY_RECIPES) return super.searchRecipe();
+
+            // Do recipe searching ourselves so we can match the outputs how we want
+            IRecipeCapabilityHolder holder = this.machine;
+            if (!holder.hasProxies()) return null;
+            var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
+                    this.matchDTRecipe(recipe, holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+
+            boolean any = false;
+            while (iterator.hasNext()) {
+                GTRecipe recipe = iterator.next();
+                if (recipe == null) continue;
+                any = true;
+                break;
+            }
+
+            if (any) {
+                iterator.reset();
+                return iterator;
+            }
+
+            for (GTRecipeType.ICustomRecipeLogic logic : recipeType.getCustomRecipeLogicRunners()) {
+                GTRecipe recipe = logic.createCustomRecipe(holder);
+                if (recipe != null) return Collections.singleton(recipe).iterator();
+            }
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public void findAndHandleRecipe() {
+            lastFailedMatches = null;
+            if (!recipeDirty && lastRecipe != null &&
+                    matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
+                    lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+                    lastRecipe.checkConditions(this).isSuccess()) {
+                var recipe = lastRecipe;
+                lastRecipe = null;
+                lastOriginRecipe = null;
+                setupRecipe(recipe);
+            } else {
+                workingRecipe = null;
+                lastRecipe = null;
+                lastOriginRecipe = null;
+                handleSearchingRecipes(searchRecipe());
+            }
+        }
+
+        @Override
+        public boolean checkMatchedRecipeAvailable(GTRecipe match) {
+            var matchCopy = match.copy();
+            var modified = machine.fullModifyRecipe(matchCopy);
+            if (modified != null) {
+                if (modified.checkConditions(this).isSuccess() &&
+                        matchDTRecipe(modified, machine).isSuccess() &&
+                        modified.matchTickRecipe(machine).isSuccess()) {
+                    setupRecipe(modified);
+                }
+                if (lastRecipe != null && getStatus() == Status.WORKING) {
+                    lastOriginRecipe = match;
+                    lastFailedMatches = null;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public void onRecipeFinish() {
+            machine.afterWorking();
+            if (lastRecipe != null) {
+                lastRecipe.postWorking(machine);
+                handleRecipeIO(lastRecipe, IO.OUT);
+                if (machine.alwaysTryModifyRecipe()) {
+                    if (lastOriginRecipe != null) {
+                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
+                        if (modified == null) markLastRecipeDirty();
+                        else lastRecipe = modified;
+                    } else {
+                        markLastRecipeDirty();
+                    }
+                }
+
+                if (!recipeDirty && !suspendAfterFinish &&
+                        matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
+                        lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+                        lastRecipe.checkConditions(this).isSuccess()) {
+                    setupRecipe(lastRecipe);
+                } else {
+                    if (suspendAfterFinish) {
+                        setStatus(Status.SUSPEND);
+                        suspendAfterFinish = false;
+                    } else {
+                        setStatus(Status.IDLE);
+                    }
+                    progress = 0;
+                    duration = 0;
+                    isActive = false;
+                }
+            }
+        }
+
+        private RecipeHelper.ActionResult checkRecipe(GTRecipe recipe) {
             var result = RecipeHelper.handleRecipe(IO.IN, machine, recipe, recipe.inputs, Collections.emptyMap(),
                     false, true);
             if (!result.isSuccess()) return result;
