@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -62,10 +62,10 @@ public class GTEMIPlugin implements EmiPlugin {
             }
         }
         registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
-        if (GTCEuAPI.Mods.isAE2Loaded()) {
+        if (GTCEu.isAE2Loaded()) {
             registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
-        if (GTCEuAPI.isModLoaded(GTValues.MODID_AE2WTLIB)) {
+        if (GTCEu.isModLoaded(GTValues.MODID_AE2WTLIB)) {
             registry.addRecipeHandler(WETMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
         registry.addCategory(GTProgrammedCircuitCategory.CATEGORY);

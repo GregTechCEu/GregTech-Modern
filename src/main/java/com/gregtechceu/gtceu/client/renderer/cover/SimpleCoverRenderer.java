@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
@@ -35,7 +35,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
 
     public SimpleCoverRenderer(ResourceLocation texture) {
         this.texture = texture;
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }

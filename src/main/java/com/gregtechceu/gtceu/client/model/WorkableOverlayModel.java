@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -126,7 +126,7 @@ public class WorkableOverlayModel {
 
     public WorkableOverlayModel(ResourceLocation location) {
         this.location = location;
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
         }
     }

@@ -48,7 +48,7 @@ public class GTRecipeCategories {
         // Remove these categories, so they don't get registered in XEI at all, dev or not
         GTRegistries.RECIPE_CATEGORIES.remove(DUMMY.registryKey);
         GTRegistries.RECIPE_CATEGORIES.remove(GTRecipeTypes.FURNACE_RECIPES.getCategory().registryKey);
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));

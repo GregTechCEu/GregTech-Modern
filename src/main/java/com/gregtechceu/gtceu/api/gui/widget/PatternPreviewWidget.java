@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -255,10 +254,10 @@ public class PatternPreviewWidget extends WidgetGroup {
     public void updateScreen() {
         super.updateScreen();
         // I can only think of this way
-        if (!isLoaded && GTCEuAPI.Mods.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
+        if (!isLoaded && GTCEu.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
             setPage(0);
             isLoaded = true;
-        } else if (!isLoaded && GTCEuAPI.Mods.isReiLoaded() &&
+        } else if (!isLoaded && GTCEu.isReiLoaded() &&
                 Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) {
                     setPage(0);
                     isLoaded = true;

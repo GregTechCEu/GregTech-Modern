@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -49,7 +49,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     public PipeBlockRenderer(PipeModel pipeModel) {
         this.pipeModel = pipeModel;
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }

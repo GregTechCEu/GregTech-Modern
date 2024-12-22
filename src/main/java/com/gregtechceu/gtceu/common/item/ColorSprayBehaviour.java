@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -90,7 +90,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
-            if (color.ordinal() > 15 && GTCEuAPI.isModLoaded(GTValues.MODID_TINTED)) {
+            if (color.ordinal() > 15 && GTCEu.isModLoaded(GTValues.MODID_TINTED)) {
                 glassBuilder.put(color,
                         BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
                 glassPaneBuilder.put(color,
@@ -233,7 +233,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEuAPI.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
+        if (GTCEu.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
             var collected = AE2CallWrapper.collect(first, limit);
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {

@@ -634,7 +634,7 @@ public class GCYMMachines {
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
-                if (GTCEuAPI.Mods.isAE2Loaded())
+                if (GTCEu.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 exportPredicate.setMaxLayerLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)

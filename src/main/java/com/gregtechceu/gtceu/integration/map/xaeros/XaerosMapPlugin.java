@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.xaeros;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -31,7 +31,7 @@ public class XaerosMapPlugin {
             dimHighlightHandler.requestRefresh();
         }
 
-        if (GTCEuAPI.isModLoaded(GTValues.MODID_XAEROS_WORLDMAP)) {
+        if (GTCEu.isModLoaded(GTValues.MODID_XAEROS_WORLDMAP)) {
             WorldMapSession session = WorldMapSession.getCurrentSession();
             MapWorld world = session.getMapProcessor().getMapWorld();
             for (MapDimension mapDim : world.getDimensionsList()) {

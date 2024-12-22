@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
@@ -26,13 +26,13 @@ public class GroupingMapRenderer extends GenericMapRenderer {
 
     static {
         Map<String, GenericMapRenderer> renderers = new HashMap<>();
-        if (GTCEuAPI.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
+        if (GTCEu.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
             renderers.put(GTValues.MODID_JOURNEYMAP, new JourneymapRenderer());
         }
-        if (GTCEuAPI.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
+        if (GTCEu.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
             renderers.put(GTValues.MODID_XAEROS_MINIMAP, new XaerosRenderer());
         }
-        if (GTCEuAPI.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
+        if (GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             // TODO FTB chunks support
         }
 

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.factory;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.editor.GTUIEditor;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -44,7 +44,7 @@ public class GTUIEditorFactory extends UIFactory<GTUIEditorFactory> implements I
 
     @Override
     public boolean isRemote() {
-        return GTCEuAPI.isClientThread();
+        return GTCEu.isClientThread();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.loader;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -55,7 +56,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ORE_VEINS, GTOreDefinition.class));
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent();
         }
 

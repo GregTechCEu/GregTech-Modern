@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
@@ -925,7 +926,7 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             KJSCallWrapper.craftingComponentModification();
         }
     }

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -302,7 +301,7 @@ public class GTUtil {
     }
 
     public static boolean isShiftDown() {
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
@@ -311,7 +310,7 @@ public class GTUtil {
     }
 
     public static boolean isCtrlDown() {
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
@@ -320,7 +319,7 @@ public class GTUtil {
     }
 
     public static boolean isAltDown() {
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
@@ -430,7 +429,7 @@ public class GTUtil {
         }
 
         ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEuAPI.Mods.isJAVDLoaded() &&
+        if (GTCEu.isJAVDLoaded() &&
                 world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
             return !world.isDay();
         } else return world.isDay();

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -40,7 +40,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public TextureOverrideRenderer(ResourceLocation model, @NotNull Map<String, ResourceLocation> override) {
         super(model);
         this.override = override;
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }
@@ -50,7 +50,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         super(model);
         this.override = Collections.emptyMap();
         this.overrideSupplier = overrideSupplier;
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }
@@ -58,7 +58,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public TextureOverrideRenderer(ResourceLocation model) {
         super(model);
         this.override = Collections.emptyMap();
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }

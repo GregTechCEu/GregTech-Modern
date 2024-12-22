@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
@@ -40,7 +39,7 @@ public class ConveyorCoverRenderer implements ICoverRenderer {
             .id("block/cover/overlay_conveyor_inverted_emissive");
 
     protected ConveyorCoverRenderer() {
-        if (GTCEuAPI.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }

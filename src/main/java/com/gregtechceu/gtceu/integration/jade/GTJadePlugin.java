@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -42,7 +42,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new TransformerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new PrimitivePumpBlockProvider(), BlockEntity.class);
-        if (GTCEuAPI.Mods.isAE2Loaded()) {
+        if (GTCEu.isAE2Loaded()) {
             registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
             registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
         }
@@ -71,7 +71,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
         registration.registerBlockComponent(new TransformerBlockProvider(), Block.class);
         registration.registerBlockComponent(new PrimitivePumpBlockProvider(), Block.class);
-        if (GTCEuAPI.Mods.isAE2Loaded()) {
+        if (GTCEu.isAE2Loaded()) {
             registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);
             registration.registerBlockComponent(new MEPatternBufferProvider(), Block.class);
         }

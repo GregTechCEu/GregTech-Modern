@@ -446,7 +446,7 @@ public class GTMultiMachines {
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
-                if (GTCEuAPI.Mods.isAE2Loaded())
+                if (GTCEu.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 exportPredicate.setMaxLayerLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
@@ -844,7 +844,7 @@ public class GTMultiMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     // tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
-                    if (GTCEuAPI.Mods.isAE2Loaded()) {
+                    if (GTCEu.isAE2Loaded()) {
                         tooltip.add(
                                 Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
                                         "gtceu.machine.cleanroom.tooltip.ae2.no_channels" :

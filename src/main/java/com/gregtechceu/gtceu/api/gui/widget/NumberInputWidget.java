@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -133,7 +133,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     private IGuiTexture getButtonTexture(String prefix, int buttonWidth) {
         var texture = new TextTexture(prefix + "1");
 
-        if (!GTCEuAPI.isClientThread()) {
+        if (!GTCEu.isClientThread()) {
             return texture;
         }
 

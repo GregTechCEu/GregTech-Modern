@@ -2654,7 +2654,7 @@ public class GTItems {
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
                                                                      Function<ItemStack, Float> property) {
         return item -> {
-            if (GTCEuAPI.isClientSide()) {
+            if (GTCEu.isClientSide()) {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
             }
         };
@@ -2664,7 +2664,7 @@ public class GTItems {
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
                                                                      Supplier<Supplier<ItemPropertyFunction>> property) {
         return item -> {
-            if (GTCEuAPI.isClientSide()) {
+            if (GTCEu.isClientSide()) {
                 ItemProperties.register(item, predicate, property.get().get());
             }
         };

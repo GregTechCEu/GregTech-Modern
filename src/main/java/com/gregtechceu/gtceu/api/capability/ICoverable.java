@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -168,7 +168,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEuAPI.isClientThread() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
     }
 
     default VoxelShape[] addCoverCollisionBoundingBox() {

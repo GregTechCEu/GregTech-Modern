@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
@@ -62,17 +62,17 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
     }
 
     default Object convertIngredient(Object ingredient) {
-        if (GTCEuAPI.Mods.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+        if (GTCEu.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
             ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getTag());
         }
 
-        if (GTCEuAPI.Mods.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
+        if (GTCEu.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
             Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
             ingredient = fluid == null ? FluidStack.EMPTY :
                     new FluidStack(fluid, (int) fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
         }
 
-        if (GTCEuAPI.Mods.isJeiLoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
+        if (GTCEu.isJeiLoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
             ingredient = new FluidStack(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
         }
         return ingredient;

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -104,7 +104,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
             long transferLimit = electricItem.getTransferLimit();
 
-            if (GTCEuAPI.Mods.isCuriosLoaded()) {
+            if (GTCEu.isCuriosLoaded()) {
                 IItemHandler curios = CuriosApi.getCuriosInventory(player)
                         .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
                         .orElse(EmptyHandler.INSTANCE);

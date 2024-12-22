@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -128,7 +127,7 @@ public record MaterialIconType(String name) {
     }
 
     public static void init() {
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_TYPE.registryKey);
         }
     }

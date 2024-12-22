@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.loader;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -51,7 +52,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
         ModLoader.get().postEvent(
                 new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS, BedrockFluidDefinition.class));
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent();
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());

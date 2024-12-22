@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -168,7 +168,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @Nullable
     private static ItemStack getActioned(CustomItemStackHandler storage, int index, List<?> actions) {
-        if (!GTCEuAPI.Mods.isKubeJSLoaded()) return null;
+        if (!GTCEu.isKubeJSLoaded()) return null;
         // noinspection unchecked
         var actioned = KJSCallWrapper.applyIngredientAction(storage, index, (List<IngredientAction>) actions);
         if (!actioned.isEmpty()) return actioned;

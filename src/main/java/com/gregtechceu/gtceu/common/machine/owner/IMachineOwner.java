@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -67,8 +66,8 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
     enum MachineOwnerType {
 
         PLAYER,
-        FTB(GTCEuAPI.Mods::isFTBTeamsLoaded, "FTB Teams"),
-        ARGONAUTS(GTCEuAPI.Mods::isArgonautsLoaded, "Argonauts Guild");
+        FTB(GTCEu::isFTBTeamsLoaded, "FTB Teams"),
+        ARGONAUTS(GTCEu::isArgonautsLoaded, "Argonauts Guild");
 
         public static final MachineOwnerType[] VALUES = values();
 

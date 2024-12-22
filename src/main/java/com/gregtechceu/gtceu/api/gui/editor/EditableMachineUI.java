@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.lowdragmc.lowdraglib.Platform;
@@ -76,7 +76,7 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
     public CompoundTag getCustomUI() {
         if (this.customUICache == null) {
             ResourceManager resourceManager = null;
-            if (GTCEuAPI.isClientSide()) {
+            if (GTCEu.isClientSide()) {
                 resourceManager = Minecraft.getInstance().getResourceManager();
             } else if (Platform.getMinecraftServer() != null) {
                 resourceManager = Platform.getMinecraftServer().getResourceManager();

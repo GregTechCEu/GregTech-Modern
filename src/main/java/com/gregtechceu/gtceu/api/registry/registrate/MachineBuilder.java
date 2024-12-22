@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -402,7 +402,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             definition.setEditableUI(editableUI);
         }
         definition.setAppearance(appearance);
-        definition.setRenderer(GTCEuAPI.isClientSide() ? renderer.get() : IRenderer.EMPTY);
+        definition.setRenderer(GTCEu.isClientSide() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);

@@ -200,7 +200,7 @@ public class CommonProxy {
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
 
@@ -208,7 +208,7 @@ public class CommonProxy {
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
         ModLoader.get().postEvent(new PostMaterialEvent());
-        if (GTCEuAPI.Mods.isKubeJSLoaded()) {
+        if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialModification();
         }
 
@@ -242,7 +242,7 @@ public class CommonProxy {
     @SubscribeEvent
     public void loadComplete(FMLLoadCompleteEvent e) {
         e.enqueueWork(() -> {
-            if (GTCEuAPI.isModLoaded(GTValues.MODID_TOP)) {
+            if (GTCEu.isModLoaded(GTValues.MODID_TOP)) {
                 GTCEu.LOGGER.info("TheOneProbe found. Enabling integration...");
                 TheOneProbePluginImpl.init();
             }

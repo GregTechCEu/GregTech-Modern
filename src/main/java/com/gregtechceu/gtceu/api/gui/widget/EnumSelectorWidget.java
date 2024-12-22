@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
@@ -125,7 +125,7 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
     }
 
     private void updateTooltip() {
-        if (!GTCEuAPI.isClientThread())
+        if (!GTCEu.isClientThread())
             return;
 
         T selectedValue = getCurrentValue();

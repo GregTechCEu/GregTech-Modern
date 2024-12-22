@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -69,7 +69,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
     public void onLoad() {
         super.onLoad();
 
-        if (!GTCEuAPI.isClientThread())
+        if (!GTCEu.isClientThread())
             reinitializeEnergyContainer();
     }
 
