@@ -1,5 +1,27 @@
 # ChangeLog
 
+## Version [v1.6.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.6.0-1.20.1...v1.6.1-1.20.1)
+### Added
+
+- Add new Continuous Rainbow Tooltips by @krossgg in [#2618](https://github.com/GregTechCEu/GregTech-Modern/pull/2618)
+- Better error messages for . by @tomprince in [#2605](https://github.com/GregTechCEu/GregTech-Modern/pull/2605)
+
+### Fixed
+
+- Fix PBF issues by @krossgg in [#2615](https://github.com/GregTechCEu/GregTech-Modern/pull/2615)
+- fixes netherite material color and add netherite tools by @Spicierspace153 in [#2614](https://github.com/GregTechCEu/GregTech-Modern/pull/2614)
+- Fix Air Scrubber issues by @krossgg in [#2613](https://github.com/GregTechCEu/GregTech-Modern/pull/2613)
+- Fix various issues with 1.6.0 by @krossgg in [#2611](https://github.com/GregTechCEu/GregTech-Modern/pull/2611)
+- Fix killing/shearing mobs adding empty NBT tag by @screret in [#2610](https://github.com/GregTechCEu/GregTech-Modern/pull/2610)
+- Fix Robot Arms not prioritizing existing stacks in slots by @Natanaelel in [#2612](https://github.com/GregTechCEu/GregTech-Modern/pull/2612)
+- Add overrides for builder accessors by @krossgg in [#2620](https://github.com/GregTechCEu/GregTech-Modern/pull/2620)
+
+### Changed
+
+- Migrate Recent GTR Textures & Advanced Jetpack Item Sprite by @Ghostipedia in [#2617](https://github.com/GregTechCEu/GregTech-Modern/pull/2617)
+- Remove Deprecated Dual Hatch config by @Pumpkin7266 in [#2606](https://github.com/GregTechCEu/GregTech-Modern/pull/2606)
+
+ 
 ## Version [v1.6.0](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.5.4-1.20.1...v1.6.0-1.20.1)
 ### Added
 
