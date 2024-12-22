@@ -457,9 +457,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 cover.setChannelName(newChannelColorStr);
             } else if (id == 100) {
                 if (!buffer.readBoolean()) return;
-                var entries = VirtualEnderRegistry.getInstance().getEntryNames(cover.getOwner(), EntryTypes.ENDER_FLUID)
+                var entries = VirtualEnderRegistry.getInstance().getEntryNames(cover.getOwner(), cover.getEntryType())
                         .stream().map(name -> VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(),
-                                EntryTypes.ENDER_FLUID, name))
+                                cover.getEntryType(), name))
                         .sorted(Comparator.comparing(VirtualEntry::getColorStr));
                 writeUpdateInfo(101, buf -> {
                     var list = entries.toList();
@@ -470,7 +470,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 });
             } else if (id == 200) {
                 String channelName = buffer.readUtf();
-                VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(), EntryTypes.ENDER_FLUID, channelName)
+                VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(), cover.getEntryType(), channelName)
                         .setDescription("");
             }
         }
