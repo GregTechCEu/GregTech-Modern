@@ -447,6 +447,10 @@ public class LangHandler {
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
+        provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
+        provider.add("cover.ender_fluid_link.tooltip.channel_name", "Set channel name with input text");
+        provider.add("cover.ender_fluid_link.tooltip.list_button", "Show channel list");
+        provider.add("cover.ender_fluid_link.tooltip.clear_button", "Clear channel description");
         multilineLang(provider, "cover.ender_fluid_link.private.tooltip.disabled",
                 "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");

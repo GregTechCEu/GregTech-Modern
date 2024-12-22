@@ -286,7 +286,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
             mainChannelGroup.addWidget(new ConfirmTextInputWidget(0, WIDGET_BOARD + 2, GROUP_WIDTH - WIDGET_BOARD,
                     WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription,
-                    t -> t == null ? "" : t));
+                    t -> t == null ? "" : t).setTooltip("cover.ender_fluid_link.tooltip.channel_description"));
 
             mainGroup.addWidget(mainChannelGroup);
             mainGroup.addWidget(createWorkingEnabledButton());
@@ -311,7 +311,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                     new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                             GuiTextures.BUTTON_LIST),
                     new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-                            GuiTextures.BUTTON_LIST));
+                            GuiTextures.BUTTON_LIST))
+                    .setHoverTooltips("cover.ender_fluid_link.tooltip.list_button");
         }
 
         @Contract("_ -> new")
@@ -333,7 +334,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                             return VirtualTank.DEFAULT_COLOR;
                         }
                         return text;
-                    });
+                    }).setTooltip("cover.ender_fluid_link.tooltip.channel_name");
         }
 
         @Contract(" -> new")
@@ -395,7 +396,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
             // Color block
             ColorBlockWidget colorBlockWidget = new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
-                    .setCurrentColor(entry.getColor());
+                    .setCurrentColor(VirtualEntry.parseColor(entry.getColorStr()));
             channelGroup.addWidget(colorBlockWidget);
             currentX += BUTTON_SIZE + MARGIN;
 
@@ -413,7 +414,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             channelGroup.addWidget(slotWidget);
             currentX += BUTTON_SIZE + MARGIN;
 
-            // Delete button
+            // Clear Description button
             channelGroup.addWidget(
                     new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE, GuiTextures.BUTTON_CLEAR_GRID, press -> {
                         writeClientAction(200, buffer -> buffer.writeUtf(cover.getChannelName(entry)));
@@ -426,7 +427,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                             if (canSelect.getValue() == isOver) canSelect.setValue(!isOver);
                             return isOver;
                         }
-                    });
+                    }.appendHoverTooltips("cover.ender_fluid_link.tooltip.clear_button"));
 
             return channelGroup;
         }
@@ -456,8 +457,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 });
             } else if (id == 200) {
                 String channelName = buffer.readUtf();
-                VirtualEnderRegistry.getInstance().deleteEntry(cover.getOwner(), EntryTypes.ENDER_FLUID, channelName);
-                cover.setVirtualEntry();
+                VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(), EntryTypes.ENDER_FLUID, channelName)
+                        .setDescription("");
             }
         }
 

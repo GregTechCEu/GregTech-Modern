@@ -23,6 +23,8 @@ public class ConfirmTextInputWidget extends WidgetGroup {
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private String inputText = "";
+    @Setter
+    private String tooltip = "";
 
     public ConfirmTextInputWidget(int x, int y, int width, int height, String text, Consumer<String> textResponder,
                                   Function<String, String> validator) {
@@ -52,6 +54,7 @@ public class ConfirmTextInputWidget extends WidgetGroup {
                 getSizeHeight() - 2,
                 this::getInputText,
                 this::setInputText)
-                .setValidator(validator));
+                .setValidator(validator)
+                .setHoverTooltips(tooltip));
     }
 }
