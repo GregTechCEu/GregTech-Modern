@@ -72,7 +72,7 @@ public class PipeRecipeHandler {
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider,
-                FormattingUtil.toLowerCaseUnder(pipePrefix.toString() + "_" + material.getName()),
+                FormattingUtil.toLowerCaseUnder(pipePrefix + "_" + material.getName()),
                 ChemicalHelper.get(pipePrefix, material), "PR", "Rh",
                 'P', new MaterialEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
     }

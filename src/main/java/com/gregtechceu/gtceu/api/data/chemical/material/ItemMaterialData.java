@@ -172,7 +172,7 @@ public class ItemMaterialData {
         }
         GTMaterialItems.toUnify.forEach(ItemMaterialData::registerMaterialInfoItems);
         WoodMachineRecipes.registerUnificationInfo();
-        resolveFluidMaterialInfos(context);
+        //resolveFluidMaterialInfos(context);
     }
 
     @ApiStatus.Internal
