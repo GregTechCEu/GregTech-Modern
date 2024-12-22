@@ -65,15 +65,15 @@ public class MEPatternBufferRecipeHandler extends MachineTrait {
         }
 
         this.lockedRecipeId = recipe.id;
-        List<Ingredient> contents = left;
         for (int i = 0; i < internalInv.length; i++) {
             if (internalInv[i].isItemEmpty()) continue;
+            List<Ingredient> contents = left;
             contents = internalInv[i].handleItemInternal(contents, simulate);
             if (contents == null) {
                 this.lockedSlot = i;
                 return null;
             }
-            contents = copyIngredients(left);
+            // contents = copyIngredients(left);
         }
         this.lockedSlot = -1;
         return left;
