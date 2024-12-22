@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -81,7 +82,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 .toList();
 
         if (!parts.isEmpty()) {
-            // Loop from controller y + offset -> highest output hatch
+            // Loop from controller y + offset -> the highest output hatch
             int y = getPos().getY() + yOffset;
             int maxY = parts.get(parts.size() - 1).self().getPos().getY();
             fluidOutputs = new ObjectArrayList<>(maxY - y);
@@ -94,9 +95,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 var part = parts.get(outputIndex);
                 if (part.self().getPos().getY() == y) {
                     part.getRecipeHandlers().handlerMap.forEach((cap, handler) -> {
-                        boolean found = false;
                         if (handler instanceof IFluidHandler fluidHandler) {
-                            found = true;
                             fluidOutputs.add(fluidHandler);
                             if (firstValid == null) {
                                 firstValid = fluidHandler;
@@ -196,9 +195,11 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
             // Do recipe searching ourselves so we can match the outputs how we want
             IRecipeCapabilityHolder holder = this.machine;
-            if (!holder.hasProxies()) return null;
+            if (!holder.hasCapabilityProxies()) return null;
             var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
-                    this.matchDTRecipe(recipe, holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+
+                    this.matchDTRecipe(recipe, holder).isSuccess() &&
+                    RecipeHelper.matchTickRecipe(holder, recipe).isSuccess());
 
             boolean any = false;
             while (iterator.hasNext()) {
@@ -225,8 +226,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             lastFailedMatches = null;
             if (!recipeDirty && lastRecipe != null &&
                     matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                    lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                    lastRecipe.checkConditions(this).isSuccess()) {
+                    RecipeHelper.matchTickRecipe(this.machine, lastRecipe).isSuccess() &&
+                    RecipeHelper.checkConditions(lastRecipe, this).size() == 1 &&
+                    RecipeHelper.checkConditions(lastRecipe, this).get(0).isSuccess()) {
                 var recipe = lastRecipe;
                 lastRecipe = null;
                 lastOriginRecipe = null;
@@ -244,9 +246,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var matchCopy = match.copy();
             var modified = machine.fullModifyRecipe(matchCopy);
             if (modified != null) {
-                if (modified.checkConditions(this).isSuccess() &&
+                var conditions = RecipeHelper.checkConditions(modified, this);
+                if (conditions.size() == 1 && conditions.get(0).isSuccess() &&
                         matchDTRecipe(modified, machine).isSuccess() &&
-                        modified.matchTickRecipe(machine).isSuccess()) {
+                        RecipeHelper.matchTickRecipe(machine, modified).isSuccess()) {
                     setupRecipe(modified);
                 }
                 if (lastRecipe != null && getStatus() == Status.WORKING) {
@@ -262,7 +265,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         public void onRecipeFinish() {
             machine.afterWorking();
             if (lastRecipe != null) {
-                lastRecipe.postWorking(machine);
+                RecipeHelper.postWorking(machine, lastRecipe);
                 handleRecipeIO(lastRecipe, IO.OUT);
                 if (machine.alwaysTryModifyRecipe()) {
                     if (lastOriginRecipe != null) {
@@ -273,11 +276,11 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                         markLastRecipeDirty();
                     }
                 }
-
+                var conditions = RecipeHelper.checkConditions(lastRecipe, this);
                 if (!recipeDirty && !suspendAfterFinish &&
                         matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                        lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                        lastRecipe.checkConditions(this).isSuccess()) {
+                        RecipeHelper.matchTickRecipe(this.machine, lastRecipe).isSuccess() &&
+                        conditions.size() == 1 && conditions.get(0).isSuccess()) {
                     setupRecipe(lastRecipe);
                 } else {
                     if (suspendAfterFinish) {
@@ -293,9 +296,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        private RecipeHelper.ActionResult checkRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(IO.IN, machine, recipe, recipe.inputs, Collections.emptyMap(),
-                    false, true);
+        private RecipeHelper.ActionResult matchDTRecipe(GTRecipe recipe, IRecipeCapabilityHolder holder) {
+            var result = RecipeHelper.handleRecipe(IO.IN, holder, recipe, recipe.inputs,
+                    Collections.emptyMap(), false, false);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);

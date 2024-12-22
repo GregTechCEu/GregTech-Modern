@@ -39,7 +39,7 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var itemInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                .requireNonNullElseGet(holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
                 .stream()
                 .filter(IItemHandlerModifiable.class::isInstance)
@@ -47,7 +47,7 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 .toArray(IItemHandlerModifiable[]::new);
 
         var fluidInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
+                .requireNonNullElseGet(holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP),
                         ArrayList::new)
                 .stream()
                 .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)

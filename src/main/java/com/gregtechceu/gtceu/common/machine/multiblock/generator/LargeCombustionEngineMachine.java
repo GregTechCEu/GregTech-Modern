@@ -140,7 +140,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         long EUt = RecipeHelper.getOutputEUt(recipe);
         // has lubricant
         if (EUt > 0 && !engineMachine.isIntakesObstructed() &&
-                engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess()) {
+                RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
             int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
             double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
