@@ -402,8 +402,11 @@ public class GTRecipeBuilder {
             if(matStack != null) {
                 tempItemMaterialStacks.addAll(matStack.getMaterials());
             }
-            else
-                tempItemStacks.add(input);
+            else {
+                if(chance == maxChance) {
+                    tempItemStacks.add(input);
+                }
+            }
         }
         return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
     }
@@ -417,8 +420,11 @@ public class GTRecipeBuilder {
                 if(matStack != null) {
                     tempItemMaterialStacks.addAll(matStack.getMaterials());
                 }
-                else
-                    tempItemStacks.add(itemStack);
+                else {
+                    if (chance == maxChance) {
+                        tempItemStacks.add(itemStack);
+                    }
+                }
             }
         }
         return input(ItemRecipeCapability.CAP,
@@ -441,10 +447,28 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Item input) {
+        var matStack = ItemMaterialData.getMaterialInfo(input);
+        if(matStack != null) {
+            tempItemMaterialStacks.addAll(matStack.getMaterials());
+        }
+        else {
+            if(chance == maxChance) {
+                tempItemStacks.add(new ItemStack(input));
+            }
+        }
         return inputItems(SizedIngredient.create(new ItemStack(input)));
     }
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
+        var matStack = ItemMaterialData.getMaterialInfo(input);
+        if(matStack != null) {
+            tempItemMaterialStacks.addAll(matStack.getMaterials());
+        }
+        else {
+            if(chance == maxChance) {
+                tempItemStacks.add(new ItemStack(input.get()));
+            }
+        }
         return inputItems(input.get());
     }
 
@@ -461,6 +485,7 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         } else {
             tempItemMaterialStacks.add(new MaterialStack(input.material(), input.tagPrefix().getMaterialAmount(input.material())));
+            tempItemMaterialStacks.addAll(input.tagPrefix().secondaryMaterials());
         }
         return inputItems(input.tagPrefix(), input.material(), 1);
     }
@@ -472,22 +497,23 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix(), input.material(), count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @Nullable Material material, int count) {
         if(material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, "null", count);
+                    id, tagPrefix, "null", count);
             return inputItems(ItemStack.EMPTY);
         } else {
-            tempItemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
+            tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
+            tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(new MaterialStack(mat.material(), mat.amount() * count)));
         }
-        TagKey<Item> tag = ChemicalHelper.getTag(orePrefix, material);
+        TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
         if (tag == null) {
-            var item = ChemicalHelper.get(orePrefix, material, count);
+            var item = ChemicalHelper.get(tagPrefix, material, count);
             if (item.isEmpty()) {
                 GTCEu.LOGGER.error(
                         "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                        id, orePrefix, material, count);
+                        id, tagPrefix, material, count);
             }
             return input(ItemRecipeCapability.CAP, SizedIngredient.create(item));
         }
@@ -947,6 +973,13 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder inputFluids(@NotNull Material material, int amount) {
+        if(chance == maxChance) {
+            tempFluidStacks.add(new MaterialStack(material, amount * GTValues.M / GTValues.L));
+        }
+        return inputFluids(material.getFluid(amount));
+    }
+
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
         if(matStack != null) {
@@ -961,7 +994,9 @@ public class GTRecipeBuilder {
         for(var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
             if(matStack != null) {
-                tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
+                if(chance == maxChance) {
+                    tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
+                }
             }
         }
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> FluidIngredient.of(
@@ -1346,7 +1381,12 @@ public class GTRecipeBuilder {
 
             if(addMaterialFluidInfo) {
                 var fluidInputs = input.get(FluidRecipeCapability.CAP);
-                for(int i = 0; i < fluidInputs.size(); i++) {
+
+                for (var input : tempFluidStacks) {
+                    long am = input.amount() / outputCount;
+                    matStacks.merge(input.material(), am, Long::sum);
+                }
+                /*for(int i = 0; i < fluidInputs.size(); i++) {
                     if(fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
                         MaterialStack matStack = null;
                         for(var value : fluidIngredient.values) {
@@ -1368,7 +1408,7 @@ public class GTRecipeBuilder {
                             matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
                         }
                     }
-                }
+                }*/
             }
 
             var matList = matStacks.reference2LongEntrySet().stream().map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();

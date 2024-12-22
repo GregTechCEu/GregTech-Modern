@@ -200,6 +200,7 @@ public class MiscRecipeLoader {
                 .inputItems(rotor, Steel)
                 .inputItems(cableGtSingle, Copper, 2)
                 .outputItems(POWER_THRUSTER)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
@@ -209,6 +210,7 @@ public class MiscRecipeLoader {
                 .inputItems(rotor, Chromium)
                 .inputItems(cableGtSingle, Gold, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
+                .addMaterialInfo(true)
                 .save(provider);
 
         // QuarkTech Suite
@@ -224,6 +226,8 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 32)
                 .inputFluids(Titanium.getFluid(L * 10))
                 .outputItems(QUANTUM_HELMET)
+                .addMaterialInfo(true)
+                .addMaterialFluidInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
@@ -238,6 +242,8 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 48)
                 .inputFluids(Titanium.getFluid(L * 16))
                 .outputItems(QUANTUM_CHESTPLATE)
+                .addMaterialInfo(true)
+                .addMaterialFluidInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
@@ -252,6 +258,8 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 40)
                 .inputFluids(Titanium.getFluid(L * 14))
                 .outputItems(QUANTUM_LEGGINGS)
+                .addMaterialInfo(true)
+                .addMaterialFluidInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
@@ -266,6 +274,8 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
                 .outputItems(QUANTUM_BOOTS)
+                .addMaterialInfo(true)
+                .addMaterialFluidInfo(true)
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
@@ -282,6 +292,8 @@ public class MiscRecipeLoader {
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
                 .inputItems(screw, HSSS, 8)
                 .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
+                .addMaterialInfo(true)
+                .addMaterialFluidInfo(true)
                 .save(provider);
 
         // TODO Central monitor
@@ -426,6 +438,7 @@ public class MiscRecipeLoader {
                 .inputItems(block, Neutronium, 64)
                 .inputItems(block, Neutronium, 64)
                 .outputItems(NAN_CERTIFICATE)
+                .addMaterialInfo(true)
                 .duration(Integer.MAX_VALUE).EUt(VA[ULV]).save(provider);
 
         // Fertilizer
@@ -609,7 +622,8 @@ public class MiscRecipeLoader {
                 .inputItems(rod, Iron)
                 .inputItems(ring, Iron, 2)
                 .outputItems(IRON_MINECART_WHEELS)
-                .duration(100).EUt(20).save(provider);
+                .duration(100).EUt(20)
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("steel_minecart_wheels")
                 .inputItems(rod, Steel)

@@ -509,7 +509,7 @@ public class RecyclingRecipes {
                 .filter(e -> isAshMaterial(e.getKey()))
                 .sorted(Comparator.comparingLong(e -> -e.getKey().amount()))
                 .map(Entry::getValue)
-                .collect(Collectors.toList());
+                .toList();
 
         List<ItemStack> returnValues = temp.entrySet().stream()
                 .sorted(Comparator.comparingLong(e -> -e.getKey().amount()))

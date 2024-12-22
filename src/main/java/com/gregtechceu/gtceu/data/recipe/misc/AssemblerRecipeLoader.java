@@ -186,6 +186,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(wireFine, Aluminium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_MV)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_hv").duration(200).EUt(VA[HV])

@@ -35,7 +35,7 @@ public class DecorationRecipes {
                 .circuitMeta(8)
                 .outputItems(METAL_SHEETS.get(DyeColor.WHITE), 32)
                 .EUt(4).duration(20)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("large_metal_sheet_white")
                 .inputItems(block, Concrete, 5)
@@ -43,7 +43,7 @@ public class DecorationRecipes {
                 .circuitMeta(9)
                 .outputItems(LARGE_METAL_SHEETS.get(DyeColor.WHITE), 32)
                 .EUt(4).duration(20)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("studs_black")
                 .inputItems(block, Concrete, 3)
@@ -51,7 +51,7 @@ public class DecorationRecipes {
                 .circuitMeta(8)
                 .outputItems(STUDS.get(DyeColor.BLACK), 32)
                 .EUt(4).duration(20)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
     }
 
     private static void dyeRecipes(Consumer<FinishedRecipe> provider) {

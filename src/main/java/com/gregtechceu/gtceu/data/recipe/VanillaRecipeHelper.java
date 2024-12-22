@@ -228,7 +228,7 @@ public class VanillaRecipeHelper {
      * @param result  the output for the recipe
      * @param recipe  the contents of the recipe
      */
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict,
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
         var builder = new ShapedRecipeBuilder(regName).output(result);
@@ -284,26 +284,26 @@ public class VanillaRecipeHelper {
         }
         builder.save(provider);
 
-        if (withUnificationData) {
+        if (setMaterialInfoData) {
             ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull String regName, @NotNull ItemStack result, @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, false, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
     }
 
-    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                              @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, true, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, true, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,

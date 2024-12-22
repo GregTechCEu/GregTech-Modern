@@ -184,7 +184,7 @@ public class ItemMaterialData {
             } else {
                 matInfo.addMaterialStacks(stacks);
             }
-            RecyclingRecipes.registerRecyclingRecipes(provider, entry.getKey(),
+            RecyclingRecipes.registerRecyclingRecipes(provider, entry.getKey().copyWithCount(1),
                     ITEM_MATERIAL_INFO.get(entry.getKey().getItem()).getMaterials(), false, null);
         }
         UNRESOLVED_ITEM_MATERIAL_INFO.clear();

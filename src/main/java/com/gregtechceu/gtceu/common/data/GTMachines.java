@@ -312,7 +312,7 @@ public class GTMachines {
                     .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
                         case 1, 2 -> 1;
                         case 3 -> 3;
-                        default -> 4;
+                        default -> 12;
                     })
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))

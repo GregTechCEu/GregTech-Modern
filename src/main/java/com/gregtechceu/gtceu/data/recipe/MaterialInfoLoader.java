@@ -16,7 +16,7 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
 public class MaterialInfoLoader {
 
     public static void init() {
-        ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_CUPRONICKEL.get(),
+        /*ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_CUPRONICKEL.get(),
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Cupronickel, M * 8), // double wire
                         new MaterialStack(GTMaterials.Bronze, M * 2), // foil
                         new MaterialStack(GTMaterials.TinAlloy, M)) // ingot
@@ -55,9 +55,9 @@ public class MaterialInfoLoader {
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, M * 8), // double wire
                         new MaterialStack(GTMaterials.Naquadria, M * 2), // foil
                         new MaterialStack(GTMaterials.Trinium, M)) // ingot
-        );
+        );*/
 
-        ItemMaterialData.registerMaterialInfo(GTMachines.HULL[0].getBlock(), new ItemMaterialInfo(
+        /*ItemMaterialData.registerMaterialInfo(GTMachines.HULL[0].getBlock(), new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.WroughtIron, M * 8), // plate
                 new MaterialStack(GTMaterials.RedAlloy, M), // single cable
                 new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
@@ -105,9 +105,9 @@ public class MaterialInfoLoader {
         ItemMaterialData.registerMaterialInfo(GTMachines.HULL[9].getBlock(), new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Neutronium, M * 8), // plate
                 new MaterialStack(GTMaterials.Europium, M), // single cable
-                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
+                new MaterialStack(GTMaterials.Rubber, M * 2))); // plate*/
 
-        ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[3].getItem(), new ItemMaterialInfo(
+        /*ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[3].getItem(), new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
                 new MaterialStack(GTMaterials.Gold, M * 2), // single cable
                 new MaterialStack(GTMaterials.Rubber, M * 4), // plate
@@ -153,7 +153,7 @@ public class MaterialInfoLoader {
                 new MaterialStack(GTMaterials.Rubber, M * 2), // plate
                 new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
                 new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-        ));
+        ));*/
 
         ItemMaterialData.registerMaterialInfo(GTBlocks.PLASTCRETE.get(), new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Steel, M), // frame / 2
