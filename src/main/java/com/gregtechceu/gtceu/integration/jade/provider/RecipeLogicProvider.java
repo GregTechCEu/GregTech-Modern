@@ -87,7 +87,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
-                        var tier = GTUtil.getTierByVoltage(EUt);
+                        var tier = GTUtil.getOCTierByVoltage(EUt);
                         text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
                                 .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
                                         .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
