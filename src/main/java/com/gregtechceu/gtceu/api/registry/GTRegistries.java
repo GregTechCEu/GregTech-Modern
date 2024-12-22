@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -102,6 +100,6 @@ public final class GTRegistries {
     }
 
     public static RegistryAccess builtinRegistry() {
-        return Platform.getFrozenRegistry();
+        return GTCEu.getFrozenRegistry();
     }
 }

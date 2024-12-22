@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.integration.emi.recipe.Ae2PatternTerminalHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,7 +56,7 @@ public class GTEMIPlugin implements EmiPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addCategory(GTBedrockOreEmiCategory.CATEGORY);
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (Platform.isDevEnv() || category.isXEIVisible()) {
+            if (GTCEu.isDev() || category.isXEIVisible()) {
                 registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
         }

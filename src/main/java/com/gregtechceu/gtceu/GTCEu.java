@@ -7,17 +7,24 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.server.ServerLifecycleHooks;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
 
 @Mod(GTCEu.MOD_ID)
 public class GTCEu {
@@ -26,6 +33,8 @@ public class GTCEu {
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
+    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;
@@ -33,7 +42,7 @@ public class GTCEu {
     }
 
     public static void init() {
-        LOGGER.info("{} is initializing on platform: {}", NAME, Platform.platformName());
+        LOGGER.info("{} is initializing...", NAME);
     }
 
     public static ResourceLocation id(String path) {
@@ -61,6 +70,32 @@ public class GTCEu {
         return GTCEuAPI.isHighTier();
     }
 
+    public static RegistryAccess getFrozenRegistry() {
+        // todo: see if this behaves correctly, the ldlib version just assigns it to a different var and returns it
+        if (BLANK == null && isClientThread()) {
+            if (Minecraft.getInstance().getConnection() != null) {
+                return Minecraft.getInstance().getConnection().registryAccess();
+            }
+        }
+        return BLANK;
+    }
+
+    public static boolean isProd() {
+        return FMLLoader.isProduction();
+    }
+
+    public static boolean isDev() {
+        return !isProd();
+    }
+
+    public static boolean isDataGen() {
+        return FMLLoader.getLaunchHandler().isData();
+    }
+
+    public static MinecraftServer getMinecraftServer() {
+        return ServerLifecycleHooks.getCurrentServer();
+    }
+
     public static boolean isModLoaded(String modId) {
         return ModList.get().isLoaded(modId);
     }
@@ -77,6 +112,22 @@ public class GTCEu {
      */
     public static boolean isClientSide() {
         return FMLEnvironment.dist.isClient();
+    }
+
+    /**
+     * @return if it's safe to access the {@code ServerLevel}
+     */
+    public static boolean canGetServerLevel() {
+        if (isClientSide()) {
+            return Minecraft.getInstance().level != null;
+        }
+        var server = getMinecraftServer();
+        return server != null &&
+                !(server.isStopped() || server.isShutdown() || !server.isRunning() || server.isCurrentlySaving());
+    }
+
+    public static Path getGameDir() {
+        return FMLPaths.GAMEDIR.get();
     }
 
     public static boolean isJeiLoaded() {

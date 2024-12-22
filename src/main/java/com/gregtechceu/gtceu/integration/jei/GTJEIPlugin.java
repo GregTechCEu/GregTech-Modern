@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.jei.subtype.PotionFluidSubtypeInterpreter;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -69,7 +67,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (Platform.isDevEnv() || category.isXEIVisible()) {
+            if (GTCEu.isDev() || category.isXEIVisible()) {
                 registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }

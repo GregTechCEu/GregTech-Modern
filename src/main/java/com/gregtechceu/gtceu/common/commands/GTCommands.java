@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
@@ -102,7 +100,7 @@ public class GTCommands {
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
                                             GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {
-        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
+        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
         var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
         int dumpedCount = 0;
         for (ResourceLocation id : registry.keys()) {

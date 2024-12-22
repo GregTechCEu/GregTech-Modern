@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -103,8 +102,8 @@ public class GTRecipeTypeUI {
             ResourceManager resourceManager = null;
             if (GTCEu.isClientSide()) {
                 resourceManager = Minecraft.getInstance().getResourceManager();
-            } else if (Platform.getMinecraftServer() != null) {
-                resourceManager = Platform.getMinecraftServer().getResourceManager();
+            } else if (GTCEu.getMinecraftServer() != null) {
+                resourceManager = GTCEu.getMinecraftServer().getResourceManager();
             }
             if (resourceManager == null) {
                 this.customUICache = new CompoundTag();
