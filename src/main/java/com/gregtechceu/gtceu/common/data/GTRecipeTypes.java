@@ -143,7 +143,7 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(new BreweryLogic())
             .setSound(GTSoundEntries.CHEMICAL);
 
-    public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 12, 0, 0)
+    public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .setSlotOverlay(false, false, GuiTextures.CRUSHED_ORE_OVERLAY)
