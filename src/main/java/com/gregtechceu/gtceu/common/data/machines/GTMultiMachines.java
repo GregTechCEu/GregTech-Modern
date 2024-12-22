@@ -955,7 +955,7 @@ public class GTMultiMachines {
                     (stack,
                      components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
                              .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
-                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
+                                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
@@ -984,7 +984,7 @@ public class GTMultiMachines {
                     (stack,
                      components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
                              .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
-                                     .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())))))
+                                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")

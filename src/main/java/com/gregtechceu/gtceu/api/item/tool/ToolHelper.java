@@ -712,7 +712,8 @@ public class ToolHelper {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
                             tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
-                    boolean relocateMinedBlocks = getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
+                    boolean relocateMinedBlocks = hasBehaviorsTag(tool) &&
+                            getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
                         ItemStack stack = iter.next();

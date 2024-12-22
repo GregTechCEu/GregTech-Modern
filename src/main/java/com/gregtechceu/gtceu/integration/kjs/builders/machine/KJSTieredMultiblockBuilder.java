@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -44,7 +45,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         super.generateLang(lang);
         for (int tier : tiers) {
             MachineDefinition def = value[tier];
-            lang.add(def.getDescriptionId(), def.getLangValue());
+            lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
         }
     }
 

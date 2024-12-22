@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
@@ -53,7 +54,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         if (langValue != null) lang.add(value.getLanguageKey(), langValue);
-        else lang.add(value.getLanguageKey(), FormattingUtil.toEnglishName(value.name));
+        else lang.add(GTCEu.MOD_ID, value.getLanguageKey(), FormattingUtil.toEnglishName(value.name));
     }
 
     @Override
