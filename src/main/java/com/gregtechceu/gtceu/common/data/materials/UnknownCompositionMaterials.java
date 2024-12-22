@@ -357,7 +357,10 @@ public class UnknownCompositionMaterials {
                 .fluid().color(0xFF4000).buildAndRegister();
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
-                .ingot().color(0x005073).buildAndRegister();
+                .ingot().color(0x4b4042).secondaryColor(0x474447)
+                .toolStats(ToolProperty.Builder.of(10.0F, 14.0F, 900, 4)
+                        .enchantability(21).build())
+                .buildAndRegister();
 
         Glowstone = new Material.Builder(GTCEu.id("glowstone"))
                 .dust(1)
