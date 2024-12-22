@@ -196,15 +196,14 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0) return;
+
         if (isWorkingEnabled() && !isRemote()) {
-            if (!VirtualEnderRegistry.getInstance().hasEntry(getOwner(), getEntryType(), getChannelName())) {
-                var entry = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(),
-                        getChannelName());
-                entry.setColor(this.colorStr);
-            }
             var entry = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(),
                     getChannelName());
-            if (!entry.equals(getEntry())) {
+            if (!entry.getColorStr().equals(this.colorStr)) {
+                entry.setColor(this.colorStr);
+            }
+            if (!getEntry().equals(entry)) {
                 setEntry(entry);
             }
             transfer();
@@ -233,7 +232,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected abstract String getUITitle();
 
-    protected int getColorStr() {
+    protected int getColor() {
         return VirtualEntry.parseColor(this.colorStr);
     }
 
@@ -286,7 +285,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             mainChannelGroup.addWidget(createConfirmTextInputWidget(currentX));
 
             mainChannelGroup.addWidget(new ConfirmTextInputWidget(0, WIDGET_BOARD + 2, GROUP_WIDTH - WIDGET_BOARD,
-                    WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription, t -> t));
+                    WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription,
+                    t -> t == null ? "" : t));
 
             mainGroup.addWidget(mainChannelGroup);
             mainGroup.addWidget(createWorkingEnabledButton());
@@ -302,11 +302,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         @Contract(" -> new")
         private @NotNull ToggleButtonWidget createToggleButton() {
-            return (ToggleButtonWidget) new ToggleButtonWidget(156, 5, 12, 12, showChannels::getValue, cd -> {
+            return (ToggleButtonWidget) new ToggleButtonWidget(146, 3, 12, 12, showChannels::getValue, cd -> {
                 showChannels.setValue(!showChannels.getValue());
                 mainGroup.setVisible(showChannels.isFalse());
                 channelsGroup.setVisible(showChannels.isTrue());
-                sendChannelList();
+                requestUpdate();
             }).setTexture(
                     new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                             GuiTextures.BUTTON_LIST),
@@ -321,7 +321,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         }
 
         private ColorBlockWidget createColorBlockWidget(int currentX) {
-            return new ColorBlockWidget(currentX, 0, WIDGET_BOARD, WIDGET_BOARD).setColorSupplier(cover::getColorStr);
+            return new ColorBlockWidget(currentX, 0, WIDGET_BOARD, WIDGET_BOARD).setColorSupplier(cover::getColor);
         }
 
         private ConfirmTextInputWidget createConfirmTextInputWidget(int currentX) {
@@ -370,21 +370,28 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         private @NotNull SelectableWidgetGroup createChannelWidget(@NotNull VirtualEntry entry, int x, int y) {
             int currentX = 0;
             int MARGIN = 2;
-            int availableWidth = TOTAL_WIDTH - (BUTTON_SIZE + MARGIN) * 2;
+            int availableWidth = TOTAL_WIDTH - (BUTTON_SIZE + MARGIN) * 3;
 
+            final MutableBoolean canSelect = new MutableBoolean(false);
             var des = entry.getDescription();
             TextBoxWidget textBoxWidget = new TextBoxWidget(BUTTON_SIZE + MARGIN,
                     !des.isEmpty() ? 0 : 4, availableWidth, List.of(entry.getColorStr())).setCenter(true);
-            SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(x, y, TOTAL_WIDTH, BUTTON_SIZE)
-                    .setOnSelected(group -> {
-                        if (cover.getChannelName().equals(cover.getChannelName(entry))) return;
-                        writeClientAction(0, buffer -> {
-                            // send new channel name to server
-                            String newChannelColorStr = entry.getColorStr();
-                            buffer.writeUtf(newChannelColorStr);
-                        });
-                        playButtonClickSound();
-                    }).setSelectedTexture(1, -1);
+            SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(x, y, TOTAL_WIDTH, BUTTON_SIZE) {
+
+                @Override
+                public boolean allowSelected(double mouseX, double mouseY, int button) {
+                    return canSelect.getValue() && super.allowSelected(mouseX, mouseY, button);
+                }
+            };
+            channelGroup.setOnSelected(group -> {
+                if (cover.getChannelName().equals(cover.getChannelName(entry))) return;
+                writeClientAction(0, buffer -> {
+                    // send new channel name to server
+                    String newChannelColorStr = entry.getColorStr();
+                    buffer.writeUtf(newChannelColorStr);
+                });
+                playButtonClickSound();
+            }).setSelectedTexture(1, -1);
 
             // Color block
             ColorBlockWidget colorBlockWidget = new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
@@ -404,11 +411,27 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             // Slot
             Widget slotWidget = cover.addVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE);
             channelGroup.addWidget(slotWidget);
+            currentX += BUTTON_SIZE + MARGIN;
+
+            // Delete button
+            channelGroup.addWidget(
+                    new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE, GuiTextures.BUTTON_CLEAR_GRID, press -> {
+                        writeClientAction(200, buffer -> buffer.writeUtf(cover.getChannelName(entry)));
+                        requestUpdate();
+                    }) {
+
+                        @Override
+                        public boolean isMouseOverElement(double mouseX, double mouseY) {
+                            var isOver = super.isMouseOverElement(mouseX, mouseY);
+                            if (canSelect.getValue() == isOver) canSelect.setValue(!isOver);
+                            return isOver;
+                        }
+                    });
 
             return channelGroup;
         }
 
-        private void sendChannelList() {
+        private void requestUpdate() {
             writeClientAction(100, buffer -> buffer.writeBoolean(showChannels.isTrue()));
         }
 
@@ -431,6 +454,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         buf.writeNbt(entry.serializeNBT());
                     }
                 });
+            } else if (id == 200) {
+                String channelName = buffer.readUtf();
+                VirtualEnderRegistry.getInstance().deleteEntry(cover.getOwner(), EntryTypes.ENDER_FLUID, channelName);
+                cover.setVirtualEntry();
             }
         }
 
@@ -458,8 +485,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         @Override
         public @NotNull String getTooltip() {
             return switch (this) {
-                case PUBLIC -> "cover.ender_fluid_link.private.tooltip.enabled";
-                case PRIVATE -> "cover.ender_fluid_link.private.tooltip.disabled";
+                case PUBLIC -> "cover.ender_fluid_link.private.tooltip.disabled";
+                case PRIVATE -> "cover.ender_fluid_link.private.tooltip.enabled";
             };
         }
 

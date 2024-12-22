@@ -42,7 +42,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
             colorString = colorString.substring(colorString.length() - 8);
         }
 
-        int alpha = Integer.parseInt(colorString.substring(6, 8), 16);
+        int alpha = 255;  // make alpha 100%
         int red = Integer.parseInt(colorString.substring(0, 2), 16);
         int green = Integer.parseInt(colorString.substring(2, 4), 16);
         int blue = Integer.parseInt(colorString.substring(4, 6), 16);
@@ -80,5 +80,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
             this.description = nbt.getString(DESC_KEY);
     }
 
-    public abstract boolean canRemove();
+    public boolean canRemove() {
+        return this.description.isEmpty();
+    }
 }

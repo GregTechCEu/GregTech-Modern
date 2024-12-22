@@ -66,6 +66,6 @@ public class VirtualTank extends VirtualEntry {
 
     @Override
     public boolean canRemove() {
-        return this.fluidTank.isEmpty();
+        return super.canRemove() && this.fluidTank.isEmpty();
     }
 }
