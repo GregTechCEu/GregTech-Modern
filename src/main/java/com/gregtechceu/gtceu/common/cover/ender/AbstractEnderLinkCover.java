@@ -238,7 +238,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return null;
     }
 
-    protected abstract Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height);
+    protected abstract Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height,
+                                                    boolean canClick);
 
     protected abstract String getUITitle();
 
@@ -305,7 +306,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             mainGroup.addWidget(createWorkingEnabledButton());
             addEnumSelectorWidgets();
             mainGroup.addWidget(
-                    cover.addVirtualEntryWidget(cover.getEntry(), 146, WIDGET_BOARD, WIDGET_BOARD, WIDGET_BOARD));
+                    cover.addVirtualEntryWidget(cover.getEntry(), 146, WIDGET_BOARD, WIDGET_BOARD, WIDGET_BOARD, true));
 
             if (cover.getFilterHandler() != null) {
                 mainGroup.addWidget(cover.getFilterHandler().createFilterSlotUI(117, 108));
@@ -423,7 +424,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             }
 
             // Slot
-            Widget slotWidget = cover.addVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE);
+            Widget slotWidget = cover.addVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE, false);
             channelGroup.addWidget(slotWidget);
             currentX += BUTTON_SIZE + MARGIN;
 

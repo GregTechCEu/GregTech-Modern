@@ -119,9 +119,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     /// ///////////////////////////////////
 
     @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height) {
-        return new TankWidget(((VirtualTank) entry).getFluidTank(), 0, x, y, width, height,
-                true, true).setBackground(GuiTextures.FLUID_SLOT);
+    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
+        return new TankWidget(((VirtualTank) entry).getFluidTank(), 0, x, y, width, height, canClick, canClick)
+                .setBackground(GuiTextures.FLUID_SLOT);
     }
 
     @NotNull
