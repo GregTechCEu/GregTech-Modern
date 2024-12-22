@@ -106,6 +106,16 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
+    public void onRemoved() {
+        super.onRemoved();
+        subscriptionHandler.unsubscribe();
+        if (!isRemote()) {
+            VirtualEnderRegistry.getInstance()
+                    .deleteEntryIf(getOwner(), getEntryType(), getChannelName(), VirtualEntry::canRemove);
+        }
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
         subscriptionHandler.unsubscribe();
@@ -271,11 +281,14 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         private void initWidgets() {
             int currentX = 0;
+            final var titleGroup = new WidgetGroup(10, 5, GROUP_WIDTH, 20);
 
-            this.addWidget(new LabelWidget(10, 5, cover.getUITitle()));
-            this.addWidget(createToggleButton());
+            this.addWidget(titleGroup);
             this.addWidget(mainGroup);
             this.addWidget(channelsGroup.setVisible(false));
+
+            titleGroup.addWidget(createToggleButton());
+            titleGroup.addWidget(new LabelWidget(15, 3, cover.getUITitle()));
 
             var toggleButtonWidget = createToggleButtonForPrivacy(currentX);
             mainChannelGroup.addWidget(toggleButtonWidget);
@@ -302,7 +315,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
         @Contract(" -> new")
         private @NotNull ToggleButtonWidget createToggleButton() {
-            return (ToggleButtonWidget) new ToggleButtonWidget(146, 3, 12, 12, showChannels::getValue, cd -> {
+            return (ToggleButtonWidget) new ToggleButtonWidget(0, 0, 12, 12, showChannels::getValue, cd -> {
                 showChannels.setValue(!showChannels.getValue());
                 mainGroup.setVisible(showChannels.isFalse());
                 channelsGroup.setVisible(showChannels.isTrue());
