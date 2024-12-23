@@ -494,11 +494,13 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
 
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "1.7.0")
     public static final MultiblockMachineDefinition EVAPORATION_PLANT = REGISTRATE
             .multiblock("evaporation_plant", WorkableElectricMultiblockMachine::new)
             .langValue("Evaporation Tower")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.EVAPORATION_RECIPES)
+            .recipeType(DUMMY_RECIPES)
             .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
             .appearanceBlock(CASING_STAINLESS_EVAPORATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
