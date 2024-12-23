@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -87,13 +88,21 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
-                        var tier = GTUtil.getOCTierByVoltage(EUt);
-                        text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
-                                        .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
-                                                .append(Component.literal(GTValues.VNF[tier])
-                                                        .withStyle(style -> style.withColor(GTValues.VC[tier])))
-                                                .append(Component.literal(")").withStyle(ChatFormatting.GREEN))));
+                        var tier = GTUtil.getTierByVoltage(EUt);
+                        if(tier <= GTValues.VNF.length) {
+                            text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
+                                    .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
+                                            .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
+                                                    .append(Component.literal(GTValues.VNF[tier])
+                                                            .withStyle(style -> style.withColor(GTValues.VC[tier])))
+                                                    .append(Component.literal(")").withStyle(ChatFormatting.GREEN))));
+                        }
+                        else {
+
+                            text = Component.translatable("MAX_OC_JADE_TOOLTIP", FormattingUtil.formatNumbers(tier - 14))
+                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier-14)));
+
+                        }
                     }
 
                     if (isInput) {

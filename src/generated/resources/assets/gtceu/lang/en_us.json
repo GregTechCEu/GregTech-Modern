@@ -1,4 +1,5 @@
 {
+  "MAX_OC_JADE_TOOLTIP": "MAX+%s",
   "behavior.data_item.assemblyline.data": "- §a%s",
   "behavior.data_item.assemblyline.title": "§nAssembly Line Construction Data:",
   "behavior.item_magnet.disabled": "§cMagnetic Field Disabled",
@@ -1742,7 +1743,6 @@
   "config.gtceu.option.enableCleanroom": "enableCleanroom",
   "config.gtceu.option.enableFEConverters": "enableFEConverters",
   "config.gtceu.option.enableMaintenance": "enableMaintenance",
-  "config.gtceu.option.enableMoreDualHatchAbility": "enableMoreDualHatchAbility",
   "config.gtceu.option.enableResearch": "enableResearch",
   "config.gtceu.option.enableTieredCasings": "enableTieredCasings",
   "config.gtceu.option.enableWorldAccelerators": "enableWorldAccelerators",
