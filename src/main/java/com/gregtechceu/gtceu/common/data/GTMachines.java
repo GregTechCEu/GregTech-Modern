@@ -131,36 +131,22 @@ public class GTMachines {
             "alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines(
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
-    public static final MachineDefinition STEAM_MINER = REGISTRATE
-            .machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0, 16))
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_MINER = registerSteamMachines(
+            "steam_miner",
+            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, 240, 6, 0, 32) :
+                    new SteamMinerMachine(holder, 320, 4, 0, 16),
+             (isHP, builder) -> builder
             .rotationState(RotationState.NON_Y_AXIS)
-            .langValue("Steam Miner")
             .recipeType(DUMMY_RECIPES)
-            .tier(0)
-            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16)
+            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32:16)
                     .append(ChatFormatting.GRAY + ", ")
-                    .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
+                    .append(Component.translatable("gtceu.machine.miner.per_block", isHP ? 240 / 20 : 280 / 20)))
             .tooltipBuilder((item, tooltip) -> {
-                int maxArea = IMiner.getWorkingArea(4);
+                int maxArea = IMiner.getWorkingArea(isHP?6:4);
                 tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
             })
-            .renderer(() -> new SteamMinerRenderer(false, GTCEu.id("block/machines/steam_miner")))
-            .register();
-    public static final MachineDefinition HIGH_PRESSURE_STEAM_MINER = REGISTRATE
-            .machine("high_pressure_steam_miner", holder -> new SteamMinerMachine(holder, 240, 6, 0, 32))
-            .rotationState(RotationState.NON_Y_AXIS)
-            .langValue("High Pressure Steam Miner")
-            .recipeType(DUMMY_RECIPES)
-            .tier(0)
-            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 32)
-                    .append(ChatFormatting.GRAY + ", ")
-                    .append(Component.translatable("gtceu.machine.miner.per_block", 280 / 20)))
-            .tooltipBuilder((item, tooltip) -> {
-                int maxArea = IMiner.getWorkingArea(6);
-                tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
-            })
-            .renderer(() -> new SteamMinerRenderer(true, GTCEu.id("block/machines/high_pressure_steam_miner")))
-            .register();
+            .renderer(() -> new SteamMinerRenderer(isHP, isHP?GTCEu.id("block/machines/high_pressure_steam_miner"):GTCEu.id("block/machines/steam_miner")))
+            .register());
 
     //////////////////////////////////////
     // *** SimpleTieredMachine ***//
