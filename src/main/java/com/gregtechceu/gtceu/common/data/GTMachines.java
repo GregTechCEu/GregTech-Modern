@@ -135,18 +135,21 @@ public class GTMachines {
             "steam_miner",
             (holder, isHP) -> isHP ? new SteamMinerMachine(holder, 240, 6, 0, 32) :
                     new SteamMinerMachine(holder, 320, 4, 0, 16),
-             (isHP, builder) -> builder
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(DUMMY_RECIPES)
-            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32:16)
-                    .append(ChatFormatting.GRAY + ", ")
-                    .append(Component.translatable("gtceu.machine.miner.per_block", isHP ? 240 / 20 : 280 / 20)))
-            .tooltipBuilder((item, tooltip) -> {
-                int maxArea = IMiner.getWorkingArea(isHP?6:4);
-                tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
-            })
-            .renderer(() -> new SteamMinerRenderer(isHP, isHP?GTCEu.id("block/machines/high_pressure_steam_miner"):GTCEu.id("block/machines/steam_miner")))
-            .register());
+            (isHP, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(DUMMY_RECIPES)
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
+                            .append(ChatFormatting.GRAY + ", ")
+                            .append(Component.translatable("gtceu.machine.miner.per_block",
+                                    isHP ? 240 / 20 : 280 / 20)))
+                    .tooltipBuilder((item, tooltip) -> {
+                        int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
+                    })
+                    .renderer(() -> new SteamMinerRenderer(isHP,
+                            isHP ? GTCEu.id("block/machines/high_pressure_steam_miner") :
+                                    GTCEu.id("block/machines/steam_miner")))
+                    .register());
 
     //////////////////////////////////////
     // *** SimpleTieredMachine ***//

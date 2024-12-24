@@ -89,7 +89,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
             return new SteamMinerLogic(this, fortune, speed, maxRadius);
         }
         throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
+                "MinerMachine need args [fortune, speed, maximumRadius] for initialization");
     }
 
     @Override
