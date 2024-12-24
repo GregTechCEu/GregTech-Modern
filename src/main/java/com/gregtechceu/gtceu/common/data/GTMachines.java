@@ -132,7 +132,7 @@ public class GTMachines {
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines(
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
     public static final MachineDefinition STEAM_MINER = REGISTRATE
-            .machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0,16))
+            .machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0, 16))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("Steam Miner")
             .recipeType(DUMMY_RECIPES)
@@ -147,7 +147,7 @@ public class GTMachines {
             .renderer(() -> new SteamMinerRenderer(false, GTCEu.id("block/machines/steam_miner")))
             .register();
     public static final MachineDefinition HIGH_PRESSURE_STEAM_MINER = REGISTRATE
-            .machine("high_pressure_steam_miner", holder -> new SteamMinerMachine(holder, 240, 6, 0,32))
+            .machine("high_pressure_steam_miner", holder -> new SteamMinerMachine(holder, 240, 6, 0, 32))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("High Pressure Steam Miner")
             .recipeType(DUMMY_RECIPES)
