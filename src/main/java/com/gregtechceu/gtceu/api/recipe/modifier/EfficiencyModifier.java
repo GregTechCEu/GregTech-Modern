@@ -7,11 +7,17 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Recipe Modifier that scales recipe duration based on the number of times the recipe has been consecutively run
+ * Multiplies duration by a base amount, then by a multiplicative amount relative to the number of runs, up to a set
+ * limit
+ */
 public class EfficiencyModifier implements RecipeModifier {
 
     private final double baseMultiplier;
     private final double efficiency;
     private final double hardCap;
+    private final double heuristic;
 
     private EfficiencyModifier(double baseMultiplier, double efficiency, double hardCap) {
         Preconditions.checkArgument(baseMultiplier > 0, "Base multiplier must be > 0: %s", baseMultiplier);
@@ -20,6 +26,7 @@ public class EfficiencyModifier implements RecipeModifier {
         this.baseMultiplier = baseMultiplier;
         this.efficiency = efficiency;
         this.hardCap = hardCap;
+        this.heuristic = 300 * efficiency * efficiency;
     }
 
     /**
@@ -35,11 +42,11 @@ public class EfficiencyModifier implements RecipeModifier {
     }
 
     public static EfficiencyModifier of(double baseMultiplier, double efficiency) {
-        return of(baseMultiplier, efficiency, 0.25);
+        return of(baseMultiplier, efficiency, 0.5);
     }
 
     public static EfficiencyModifier of(double efficiency) {
-        return of(2, efficiency, 0.25);
+        return of(2, efficiency, 0.5);
     }
 
     /**
@@ -56,9 +63,14 @@ public class EfficiencyModifier implements RecipeModifier {
         if (!(machine instanceof IRecipeLogicMachine rlm)) {
             return RecipeModifier.nullWrongType(IRecipeLogicMachine.class, machine);
         }
+        if (recipe.duration <= 1) return ModifierFunction.IDENTITY;
         int runs = rlm.getRecipeLogic().getConsecutiveRecipes();
+        double mult;
+        // Heuristic to not do insane floating point math - if you need more than this to get to the cap, seek help
+        if (runs > heuristic) mult = hardCap;
+        else mult = Math.max(hardCap, baseMultiplier * Math.pow(efficiency, runs));
         return ModifierFunction.builder()
-                .durationMultiplier(Math.max(hardCap, baseMultiplier * Math.pow(efficiency, runs)))
+                .durationMultiplier(mult)
                 .build();
     }
 }

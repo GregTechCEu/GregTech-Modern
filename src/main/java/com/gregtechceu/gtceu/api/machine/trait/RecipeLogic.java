@@ -363,6 +363,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (handleFuelRecipe()) {
             if (!machine.beforeWorking(recipe)) {
                 setStatus(Status.IDLE);
+                consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
                 isActive = false;
@@ -461,6 +462,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
+            consecutiveRecipes++;
             lastRecipe.postWorking(this.machine);
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
@@ -481,7 +483,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                     lastRecipe.checkConditions(this).isSuccess()) {
                 setupRecipe(lastRecipe);
-                if (isActive) consecutiveRecipes++;
             } else {
                 if (suspendAfterFinish) {
                     setStatus(Status.SUSPEND);
