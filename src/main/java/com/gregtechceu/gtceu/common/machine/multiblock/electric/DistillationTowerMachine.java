@@ -118,7 +118,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
     private void addOutput(IFluidHandler handler) {
         fluidOutputs.add(handler);
-        if (handler != VoidFluidHandler.INSTANCE) firstValid = handler;
+        if (firstValid == null && handler != VoidFluidHandler.INSTANCE) firstValid = handler;
     }
 
     @Override
