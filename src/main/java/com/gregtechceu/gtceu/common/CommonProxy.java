@@ -47,7 +47,6 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksIntegration;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
@@ -247,10 +246,6 @@ public class CommonProxy {
             if (LDLib.isModLoaded(GTValues.MODID_TOP)) {
                 GTCEu.LOGGER.info("TheOneProbe found. Enabling integration...");
                 TheOneProbePluginImpl.init();
-            }
-            if (GTCEu.isFTBChunksLoaded()) {
-                GTCEu.LOGGER.info("FTB Chunks found. Enabling integration...");
-                FTBChunksIntegration.init();
             }
         });
     }
