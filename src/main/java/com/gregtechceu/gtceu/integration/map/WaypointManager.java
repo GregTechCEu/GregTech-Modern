@@ -37,7 +37,7 @@ public class WaypointManager {
             WaypointManager.registerWaypointHandler(new JourneymapWaypointHandler());
             active = true;
         }
-        if (GTCEu.isFTBChunksLoaded()) {
+        if (Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             WaypointManager.registerWaypointHandler(new FTBChunksWaypointHandler());
             active = true;
         }
