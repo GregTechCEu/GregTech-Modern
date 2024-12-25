@@ -6,12 +6,15 @@ import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.FTBChunksClientAPI;
 import dev.ftb.mods.ftbchunks.api.client.event.MapIconEvent;
 import dev.ftb.mods.ftbchunks.client.map.MapDimension;
+import lombok.Getter;
 
 public class FTBChunksPlugin {
 
     private static FTBChunksPlugin instance;
 
+    @Getter
     protected FTBChunksClientAPI clientAPI;
+    @Getter
     protected FTBChunksOptions options;
 
     protected FTBChunksPlugin() {}
