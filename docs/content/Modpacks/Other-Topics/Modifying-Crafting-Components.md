@@ -8,7 +8,7 @@ title: "Modifying Crafting Components"
 
 With KubeJS it is possible to modify the predefined components of existing GTCEu Modern machine crafting recipes.
 You can replace singular entries, or do bulk modification of components.
--1 is defined as a fallback value if no other entries exist. if you modify in bulk, you **MUST** insert one if the component expects it to exist. otherwise the game may crash when loading recipes. Other numbers correspond to tier indices. for example: `3 == GTValues.HV`
+-1 is defined as a fallback value if no other entries exist. if you modify in bulk, you **MUST** insert one if the craftingComponent expects it to exist. otherwise the game may crash when loading recipes. Other numbers correspond to tier indices. for example: `3 == GTValues.HV`
 
 ```js title="modification.js"
 const Map = Java.loadClass("java.util.Map")
@@ -34,7 +34,7 @@ GTCEuServerEvents.craftingComponents(event => {
 1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of `minecraft:dirt`.
 2. Modifies all pumps in GT machine crafting recipes by replacing the pump with a robot arm, and reinserts the FALLBACK entry.
 3. Replaces the EV casing with the `#minecraft:logs` tag. note the lack of `#` at the beginning of the tag!
-4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:infinity`.
+4. Adds a new entry to the plate craftingComponent for UEV with prefix `plate` and material `gtceu:infinity`.
 
 !!! tip "Bulk Callbacks"
 
@@ -91,9 +91,9 @@ GTCEuServerEvents.craftingComponents(event => {
 })
 ```
 
-1. Creates a new crafting component with item stack entries.
-2. Creates a new crafting component with item tag entries. note the lack of `#` at the beginning of the tag!
-3. Creates a new crafting component with UnificationEntry entries.
+1. Creates a new crafting craftingComponent with item stack entries.
+2. Creates a new crafting craftingComponent with item tag entries. note the lack of `#` at the beginning of the tag!
+3. Creates a new crafting craftingComponent with UnificationEntry entries.
 
 
 ### Builtin Crafting Components

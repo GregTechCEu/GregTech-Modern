@@ -56,7 +56,7 @@ contents, etc. are not influenced by previous queries to the random generator.
 It is completely and exclusively seeded from the world's seed, as well as the chunk position.
 
 For the random ore vein offset, we also include the vein's world generation layer in the random seed.  
-This may need to include an additional component in the future, in case we add support for multiple veins per chunk and worldgen-layer.
+This may need to include an additional craftingComponent in the future, in case we add support for multiple veins per chunk and worldgen-layer.
 
 
 ## Vein Generation

@@ -1,7 +1,12 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class BlastProperty implements IMaterialProperty {
 

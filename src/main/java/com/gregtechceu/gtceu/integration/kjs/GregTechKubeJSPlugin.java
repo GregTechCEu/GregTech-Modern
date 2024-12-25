@@ -55,7 +55,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
@@ -271,7 +271,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("RecipeCapability", RecipeCapability.class);
         event.add("ChanceLogic", ChanceLogic.class);
         event.add("CleanroomType", CleanroomType.class);
-        event.add("CraftingComponent", CraftingComponent.class);
+        event.add("CraftingComponent", GTCraftingComponents.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
