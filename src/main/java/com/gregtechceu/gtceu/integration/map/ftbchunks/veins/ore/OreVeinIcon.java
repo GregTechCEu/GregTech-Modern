@@ -37,6 +37,11 @@ public class OreVeinIcon implements MapIcon {
         this.veinMetadata = veinMetadata;
     }
 
+    public boolean isEnabled() {
+        return FTBChunksPlugin.getInstance().getOptions().showLayer("ore_veins") &&
+                !(veinMetadata.depleted() && FTBChunksPlugin.getInstance().getOptions().hideDepleted());
+    }
+
     public String getName() {
         return name == null ? name = OreRenderLayer.getName(veinMetadata).getString() : name;
     }
@@ -65,6 +70,9 @@ public class OreVeinIcon implements MapIcon {
 
     @Override
     public boolean onMousePressed(BaseScreen baseScreen, MouseButton mouseButton) {
+        if (!isEnabled()) {
+            return false;
+        }
         MapDimension.getCurrent()
                 .ifPresent(mapDimension -> FTBChunksPlugin.getInstance().getClientAPI()
                         .getWaypointManager(mapDimension.dimension)
@@ -81,6 +89,10 @@ public class OreVeinIcon implements MapIcon {
 
     @Override
     public boolean onKeyPressed(BaseScreen baseScreen, Key key) {
+        if (!isEnabled()) {
+            return false;
+        }
+
         if (key.is(InputConstants.KEY_DELETE)) {
             veinMetadata.depleted(!veinMetadata.depleted());
         }
@@ -89,13 +101,17 @@ public class OreVeinIcon implements MapIcon {
 
     @Override
     public void addTooltip(TooltipList list) {
+        if (!isEnabled()) {
+            return;
+        }
+
         OreRenderLayer.getTooltip(getName(), veinMetadata).forEach(list::add);
     }
 
     @Override
     public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h, boolean outsideVisibleArea,
                      int iconAlpha) {
-        if (outsideVisibleArea) {
+        if (outsideVisibleArea || !isEnabled()) {
             return;
         }
 

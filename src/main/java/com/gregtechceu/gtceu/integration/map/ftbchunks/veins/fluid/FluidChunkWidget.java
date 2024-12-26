@@ -59,6 +59,10 @@ public class FluidChunkWidget extends Widget {
 
     @Override
     public boolean mouseDoubleClicked(MouseButton button) {
+        if (!shouldDraw()) {
+            return false;
+        }
+        
         MapDimension.getCurrent()
                 .ifPresent(mapDimension -> FTBChunksPlugin.getInstance().getClientAPI()
                         .getWaypointManager(mapDimension.dimension)
@@ -81,7 +85,16 @@ public class FluidChunkWidget extends Widget {
 
     @Override
     public void addMouseOverText(TooltipList list) {
+        if (!shouldDraw()) {
+            return;
+        }
+        
         FluidRenderLayer.getTooltip(fluidInfo).forEach(list::add);
+    }
+
+    @Override
+    public boolean shouldDraw() {
+        return fluidInfo.left() > 0 || !FTBChunksPlugin.getInstance().getOptions().hideDepleted();
     }
 
     @Override
