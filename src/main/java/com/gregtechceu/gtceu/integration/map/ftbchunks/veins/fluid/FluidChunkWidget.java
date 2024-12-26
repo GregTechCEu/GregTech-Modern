@@ -65,7 +65,7 @@ public class FluidChunkWidget extends Widget {
         if (material != null) {
             color = material.getMaterialARGB();
         }
-        return (color & 0xFF) << 24 | (color >> 8 & 0xFF) << 16 | (color >> 16 & 0xFF) << 8;
+        return color;
     }
 
     @Override
@@ -101,11 +101,8 @@ public class FluidChunkWidget extends Widget {
             return;
         }
 
-        var color = Color4I.rgba(getColor());
-        var hsb = Color4I.RGBtoHSB(color.redi(), color.greeni(), color.bluei(), null);
-        hsb[0] = (hsb[0] + 0.5f) % 1f;
         Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
-                .withColor(Color4I.hsb(hsb[0], hsb[1], hsb[2]))
+                .withColor(Color4I.rgba(getColor()))
                 .draw(graphics, x, y, FTBChunks.TILE_SIZE, FTBChunks.TILE_SIZE);
     }
 }
