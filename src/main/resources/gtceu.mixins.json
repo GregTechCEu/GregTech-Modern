@@ -17,6 +17,7 @@
         "MultiPlayerGameModeMixin",
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
+        "ftbchunks.RegionMapPanelMixin",
         "xaeroworldmap.GuiMapMixin",
         "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaerominimap.HighlighterRegistryMixin",

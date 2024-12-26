@@ -32,8 +32,11 @@ public class FTBChunksPlugin {
     }
 
     private void mapIconEventHandler(MapIconEvent event) {
-        if (!GroupingMapRenderer.getInstance().doShowLayer("ore_veins")) return;
-        MapDimension.getCurrent().ifPresent(
-                mapDimension -> FTBChunksRenderer.oreElements.row(mapDimension.dimension).values().forEach(event::add));
+        if (GroupingMapRenderer.getInstance().doShowLayer("ore_veins")) {
+            MapDimension.getCurrent()
+                    .ifPresent(mapDimension -> FTBChunksRenderer.oreElements.row(mapDimension.dimension)
+                            .values()
+                            .forEach(event::add));
+        }
     }
 }
