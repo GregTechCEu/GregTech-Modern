@@ -11,12 +11,15 @@ public class FTBChunksOptions {
 
     private final Map<String, BooleanValue> layerOptions = new HashMap<>();
 
+    private final BooleanValue hideDepleted;
+
     public FTBChunksOptions() {
         var group = CONFIG.addGroup("gtceu_prospecting");
         final var oreLayer = group.addBoolean("ore_veins", false);
         layerOptions.put(oreLayer.key, oreLayer);
         final var fluidLayer = group.addBoolean("bedrock_fluids", false);
         layerOptions.put(fluidLayer.key, fluidLayer);
+        hideDepleted = group.addBoolean("hide_depleted", false);
     }
 
     public boolean showLayer(String name) {
@@ -32,5 +35,9 @@ public class FTBChunksOptions {
                 }
             });
         });
+    }
+
+    public boolean hideDepleted() {
+        return hideDepleted.get();
     }
 }
