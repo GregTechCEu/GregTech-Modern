@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import lombok.Getter;
+
 public class PropertyKey<T extends IMaterialProperty> {
 
     public static final PropertyKey<BlastProperty> BLAST = new PropertyKey<>("blast", BlastProperty.class);
@@ -16,6 +18,7 @@ public class PropertyKey<T extends IMaterialProperty> {
             ItemPipeProperties.class);
     public static final PropertyKey<OreProperty> ORE = new PropertyKey<>("ore", OreProperty.class);
     public static final PropertyKey<ToolProperty> TOOL = new PropertyKey<>("tool", ToolProperty.class);
+    public static final PropertyKey<ArmorProperty> ARMOR = new PropertyKey<>("armor", ArmorProperty.class);
     public static final PropertyKey<RotorProperty> ROTOR = new PropertyKey<>("rotor", RotorProperty.class);
     public static final PropertyKey<WireProperties> WIRE = new PropertyKey<>("wire", WireProperties.class);
     public static final PropertyKey<WoodProperty> WOOD = new PropertyKey<>("wood", WoodProperty.class);
@@ -25,16 +28,14 @@ public class PropertyKey<T extends IMaterialProperty> {
     // Empty property used to allow property-less Materials without removing base type enforcement
     public static final PropertyKey<EmptyProperty> EMPTY = new PropertyKey<>("empty", EmptyProperty.class);
 
+    @Getter
     private final String key;
+    @Getter
     private final Class<T> type;
 
     public PropertyKey(String key, Class<T> type) {
         this.key = key;
         this.type = type;
-    }
-
-    protected String getKey() {
-        return key;
     }
 
     protected T constructDefault() {

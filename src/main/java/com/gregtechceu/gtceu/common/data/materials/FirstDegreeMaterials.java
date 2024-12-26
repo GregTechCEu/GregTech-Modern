@@ -1,17 +1,22 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -105,6 +110,8 @@ public class FirstDegreeMaterials {
                 .components(Tin, 1, Copper, 3)
                 .toolStats(ToolProperty.Builder.of(3.0F, 2.0F, 192, 2)
                         .enchantability(18).addTypes(GTToolType.MORTAR).build())
+                .armorStats(ArmorProperty.Builder.of(17, new int[] { 3, 7, 6, 2 })
+                        .enchantability(8).build())
                 .rotorStats(115, 105, 2.5f, 192)
                 .fluidPipeProperties(1696, 20, true)
                 .buildAndRegister();
@@ -213,6 +220,8 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.0F, 768, 3)
                         .attackSpeed(0.1F).enchantability(18).build())
+                .armorStats(ArmorProperty.Builder.of(16, new int[] { 3, 8, 6, 3 })
+                        .enchantability(18).toughness(2.0f).build())
                 .buildAndRegister();
 
         Electrum = new Material.Builder(GTCEu.id("electrum"))
@@ -301,6 +310,8 @@ public class FirstDegreeMaterials {
                         .enchantability(18)
                         .enchantment(Enchantments.BANE_OF_ARTHROPODS, 3)
                         .enchantment(Enchantments.BLOCK_EFFICIENCY, 1).build())
+                .armorStats(ArmorProperty.Builder.of(17, new int[] { 3, 7, 5, 3 })
+                        .enchantability(18).toughness(1.8f).build())
                 .rotorStats(130, 115, 3.0f, 512)
                 .buildAndRegister();
 
@@ -415,6 +426,8 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(3.0F, 8.0F, 768, 2)
                         .attackSpeed(0.3F).enchantability(33)
                         .enchantment(Enchantments.SMITE, 3).build())
+                .armorStats(ArmorProperty.Builder.of(29, new int[] { 4, 11, 8, 4 })
+                        .enchantability(33).toughness(3.0f).build())
                 .rotorStats(100, 160, 2.0f, 196)
                 .itemPipeProperties(1024, 2)
                 .blast(b -> b.temp(1700, GasTier.LOW)
@@ -430,6 +443,8 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(12.0F, 2.0F, 768, 2)
                         .enchantability(33)
                         .enchantment(Enchantments.BLOCK_FORTUNE, 2).build())
+                .armorStats(ArmorProperty.Builder.of(28, new int[] { 4, 11, 8, 4 })
+                        .enchantability(33).build())
                 .rotorStats(100, 170, 2.0f, 152)
                 .itemPipeProperties(1024, 2)
                 .blast(b -> b.temp(1600, GasTier.LOW)
@@ -611,6 +626,8 @@ public class FirstDegreeMaterials {
                 .components(Iron, 6, Chromium, 1, Manganese, 1, Nickel, 1)
                 .toolStats(ToolProperty.Builder.of(7.0F, 5.0F, 1024, 3)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(56, new int[] { 5, 10, 7, 4 })
+                        .enchantability(14).toughness(5.0f).knockbackResistance(0.4f).build())
                 .rotorStats(160, 115, 4.0f, 480)
                 .fluidPipeProperties(2428, 75, true, true, true, false)
                 .blast(b -> b.temp(1700, GasTier.LOW)
@@ -627,6 +644,8 @@ public class FirstDegreeMaterials {
                 .components(Iron, 1)
                 .toolStats(ToolProperty.Builder.of(5.0F, 3.0F, 512, 3)
                         .addTypes(GTToolType.MORTAR)
+                        .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(19, new int[] { 3, 7, 5, 2 })
                         .enchantability(14).build())
                 .rotorStats(130, 105, 3.0f, 512)
                 .fluidPipeProperties(1855, 50, true)
@@ -680,6 +699,8 @@ public class FirstDegreeMaterials {
                 .components(Cobalt, 5, Chromium, 2, Nickel, 1, Molybdenum, 1)
                 .toolStats(ToolProperty.Builder.of(10.0F, 7.0F, 2048, 4)
                         .attackSpeed(0.1F).enchantability(21).build())
+                .armorStats(ArmorProperty.Builder.of(80, new int[] { 7, 14, 10, 7 })
+                        .enchantability(21).toughness(7.0f).knockbackResistance(0.8f).build())
                 .rotorStats(160, 130, 4.0f, 2048)
                 .itemPipeProperties(128, 16)
                 .blast(b -> b.temp(2700, GasTier.MID)
@@ -722,6 +743,8 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 384, 2)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
+                .armorStats(ArmorProperty.Builder.of(22, new int[] { 3, 8, 6, 3 })
+                        .enchantability(5).toughness(2.5f).build())
                 .rotorStats(145, 105, 3.5f, 384)
                 .buildAndRegister();
         Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
@@ -1112,6 +1135,8 @@ public class FirstDegreeMaterials {
                 .components(Tungsten, 1, Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(60.0F, 2.0F, 1024, 4)
                         .enchantability(21).build())
+                .armorStats(ArmorProperty.Builder.of(56, new int[] { 5, 10, 7, 4 })
+                        .enchantability(18).toughness(5.0f).knockbackResistance(0.4f).build())
                 .rotorStats(160, 155, 4.0f, 1280)
                 .fluidPipeProperties(3837, 200, true)
                 .blast(b -> b.temp(3058, GasTier.MID)

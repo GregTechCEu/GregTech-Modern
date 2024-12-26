@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -13,6 +16,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -37,6 +41,8 @@ public class ElementMaterials {
                 .element(GTElements.Al)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(29, new int[] { 3, 7, 6, 3 })
+                        .enchantability(10).build())
                 .rotorStats(100, 140, 2.0f, 128)
                 .cableProperties(V[EV], 1, 1)
                 .fluidPipeProperties(1166, 100, true)
@@ -398,6 +404,10 @@ public class ElementMaterials {
                 .element(GTElements.Fe)
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
+                .armorStats(ArmorProperty.Builder.of(16, new int[] { 2, 5, 6, 2 })
+                        .enchantability(9)
+                        .repairIngredient(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, Iron)))
+                        .build())
                 .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(V[MV], 2, 3)
                 .buildAndRegister();
@@ -859,6 +869,8 @@ public class ElementMaterials {
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(48, new int[] { 4, 9, 7, 4 })
+                        .enchantability(18).toughness(5.0f).knockbackResistance(0.4f).build())
                 .rotorStats(130, 115, 3.0f, 1600)
                 .fluidPipeProperties(2426, 150, true)
                 .blast(b -> b.temp(1941, GasTier.MID)
@@ -991,6 +1003,8 @@ public class ElementMaterials {
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
+                .armorStats(ArmorProperty.Builder.of(0, new int[] { 75, 200, 150, 75 })
+                        .enchantability(33).toughness(10.0f).knockbackResistance(1.0f).unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
                 .radioactiveHazard(10)
@@ -1015,6 +1029,8 @@ public class ElementMaterials {
                 .element(GTElements.Dr)
                 .toolStats(ToolProperty.Builder.of(14.0F, 12.0F, 8192, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
+                .armorStats(ArmorProperty.Builder.of(173, new int[] { 12, 24, 15, 12 })
+                        .enchantability(33).toughness(4.0f).knockbackResistance(0.5f).build())
                 .fluidPipeProperties(9625, 500, true, true, true, true)
                 .buildAndRegister();
 

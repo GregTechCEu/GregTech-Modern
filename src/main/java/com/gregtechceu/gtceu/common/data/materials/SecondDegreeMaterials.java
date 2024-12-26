@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -141,6 +142,8 @@ public class SecondDegreeMaterials {
                 .components(Steel, 1, Tungsten, 1)
                 .toolStats(ToolProperty.Builder.of(9.0F, 7.0F, 2048, 4)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(73, new int[] { 6, 12, 8, 6 })
+                        .enchantability(14).toughness(5.5f).knockbackResistance(0.3f).build())
                 .rotorStats(160, 120, 4.0f, 2560)
                 .fluidPipeProperties(3587, 225, true)
                 .cableProperties(V[IV], 3, 2)
@@ -158,6 +161,8 @@ public class SecondDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(2.5F, 2.0F, 1024, 2)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
+                .armorStats(ArmorProperty.Builder.of(56, new int[] { 4, 9, 6, 4 })
+                        .enchantability(5).toughness(3.5f).build())
                 .rotorStats(100, 120, 2.0f, 256)
                 .itemPipeProperties(2048, 1)
                 .buildAndRegister();
@@ -305,6 +310,8 @@ public class SecondDegreeMaterials {
                 .components(Vanadium, 1, Chromium, 1, Steel, 7)
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
                         .attackSpeed(-0.2F).enchantability(5).build())
+                .armorStats(ArmorProperty.Builder.of(78, new int[] { 6, 12, 8, 6 })
+                        .enchantability(5).toughness(5.5f).knockbackResistance(0.3f).build())
                 .rotorStats(130, 115, 3.0f, 1920)
                 .fluidPipeProperties(2073, 50, true, true, false, false)
                 .blast(1453, GasTier.LOW)
@@ -343,6 +350,8 @@ public class SecondDegreeMaterials {
                 .components(Naquadah, 2, Osmiridium, 1, Trinium, 1)
                 .toolStats(ToolProperty.Builder.of(40.0F, 12.0F, 3072, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
+                .armorStats(ArmorProperty.Builder.of(156, new int[] { 8, 14, 10, 8 })
+                        .enchantability(33).toughness(6.0f).knockbackResistance(0.5f).build())
                 .rotorStats(190, 120, 5.0f, 5120)
                 .cableProperties(V[UV], 2, 4)
                 .blast(b -> b.temp(7200, GasTier.HIGH)

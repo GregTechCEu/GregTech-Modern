@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -358,8 +359,10 @@ public class UnknownCompositionMaterials {
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
-                .toolStats(ToolProperty.Builder.of(10.0F, 14.0F, 900, 4)
+                .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
+                .armorStats(ArmorProperty.Builder.of(37, new int[] { 3, 8, 6, 3 })
+                        .enchantability(21).toughness(3.0f).knockbackResistance(0.1f).build())
                 .buildAndRegister();
 
         Glowstone = new Material.Builder(GTCEu.id("glowstone"))

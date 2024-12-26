@@ -26,6 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -218,8 +219,21 @@ public class ToolRecipeHandler {
             addToolRecipe(provider, material, GTToolType.WRENCH, false,
                     "PhP", " P ", " P ",
                     'P', plate);
+
+            addArmorRecipe(provider, material, ArmorItem.Type.HELMET,
+                    "PPP", "PhP",
+                    'P', plate);
+            addArmorRecipe(provider, material, ArmorItem.Type.CHESTPLATE,
+                    "PhP", "PPP", "PPP",
+                    'P', plate);
+            addArmorRecipe(provider, material, ArmorItem.Type.LEGGINGS,
+                    "PPP", "PhP", "P P",
+                    'P', plate);
+            addArmorRecipe(provider, material, ArmorItem.Type.BOOTS,
+                    "P P", "PhP",
+                    'P', plate);
         } else {
-            GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
+            GTCEu.LOGGER.warn("Did not find plate for " + material.getName() +
                     ", skipping mining hammer, spade, saw, axe, hoe, pickaxe, scythe, shovel, sword, hammer, file, knife, wrench recipes");
         }
 
@@ -240,10 +254,10 @@ public class ToolRecipeHandler {
                             'S', rod);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
-                            .info("Did not find bolt for " + material.getName() + ", skipping wirecutter recipe");
+                            .warn("Did not find bolt for " + material.getName() + ", skipping wirecutter recipe");
                 }
             } else {
-                GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
+                GTCEu.LOGGER.warn("Did not find plate for " + material.getName() +
                         ", skipping wirecutter, butchery knife recipes");
             }
 
@@ -256,7 +270,7 @@ public class ToolRecipeHandler {
                     "hDS", "DSD", "SDf",
                     'S', rod);
         } else if (!ArrayUtils.contains(softMaterials, material)) {
-            GTCEu.LOGGER.info("Did not find rod for " + material.getName() +
+            GTCEu.LOGGER.warn("Did not find rod for " + material.getName() +
                     ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
         }
     }
@@ -347,12 +361,12 @@ public class ToolRecipeHandler {
                             .EUt(8L * voltageMultiplier)
                             .save(provider);
                 } else {
-                    GTCEu.LOGGER.info("Did not find gear for " + material.getName() +
+                    GTCEu.LOGGER.warn("Did not find gear for " + material.getName() +
                             ", skipping gear -> buzzsaw blade recipe");
                 }
             }
         } else {
-            GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
+            GTCEu.LOGGER.warn("Did not find plate for " + material.getName() +
                     ", skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe");
         }
 
@@ -367,7 +381,7 @@ public class ToolRecipeHandler {
                         "fR", " h",
                         'R', new UnificationEntry(TagPrefix.rodLong, material));
             } else {
-                GTCEu.LOGGER.info("Did not find long rod for " + material.getName() +
+                GTCEu.LOGGER.warn("Did not find long rod for " + material.getName() +
                         ", skipping electric screwdriver recipe");
             }
         }
@@ -404,6 +418,14 @@ public class ToolRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.getName()),
                     toolStack, recipe);
         }
+    }
+
+    public static void addArmorRecipe(Consumer<FinishedRecipe> provider, @NotNull Material material,
+                                      @NotNull ArmorItem.Type armor, Object... recipe) {
+        ItemStack armorStack = ToolHelper.getArmor(armor, material);
+        if (armorStack.isEmpty()) return;
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", armor.getName(), material.getName()),
+                armorStack, recipe);
     }
 
     /**

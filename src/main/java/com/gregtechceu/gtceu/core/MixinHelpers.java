@@ -27,10 +27,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagKey;
-import net.minecraft.tags.TagLoader;
+import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -50,6 +47,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +86,23 @@ public class MixinHelpers {
                     }
                 });
             });
+
+            GTMaterialItems.ARMOR_ITEMS.rowMap().forEach((material, map) -> {
+                map.forEach((type, item) -> {
+                    if (item != null) {
+                        var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
+                                GTValues.CUSTOM_TAG_SOURCE);
+                        tagMap.computeIfAbsent(ItemTags.TRIMMABLE_ARMOR.location(), $ -> new ArrayList<>())
+                                .add(entry);
+                        tagMap.computeIfAbsent(switch (type) {
+                            case HELMET -> Tags.Items.ARMORS_HELMETS.location();
+                            case CHESTPLATE -> Tags.Items.ARMORS_CHESTPLATES.location();
+                            case LEGGINGS -> Tags.Items.ARMORS_LEGGINGS.location();
+                            case BOOTS -> Tags.Items.ARMORS_BOOTS.location();
+                        }, $ -> new ArrayList<>()).add(entry);
+                    }
+                });
+            });
         } else if (registry == BuiltInRegistries.BLOCK) {
             GTMaterialBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
@@ -114,7 +129,7 @@ public class MixinHelpers {
             GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block.get());
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(),
-                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
             });
         } else if (registry == BuiltInRegistries.FLUID) {
@@ -131,7 +146,7 @@ public class MixinHelpers {
                             TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
                                     GTValues.CUSTOM_TAG_SOURCE);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
-                                    path -> new ArrayList<>())
+                                            path -> new ArrayList<>())
                                     .add(entry);
                             tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
                                     .add(entry);
@@ -143,7 +158,7 @@ public class MixinHelpers {
                     if (fluid != null) {
                         ResourceLocation moltenID = BuiltInRegistries.FLUID.getKey(fluid);
                         tagMap.computeIfAbsent(CustomTags.MOLTEN_FLUIDS.location(),
-                                path -> new ArrayList<>())
+                                        path -> new ArrayList<>())
                                 .add(new TagLoader.EntryWithSource(TagEntry.element(moltenID),
                                         GTValues.CUSTOM_TAG_SOURCE));
                     }
@@ -159,7 +174,7 @@ public class MixinHelpers {
         if (!prefix.miningToolTag().isEmpty()) {
             map.forEach((material, block) -> {
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
-                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE));
 
@@ -291,4 +306,5 @@ public class MixinHelpers {
             }
         }
     }
+
 }
