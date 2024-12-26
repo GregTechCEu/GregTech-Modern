@@ -116,5 +116,6 @@ public class IntegrationLang {
         provider.add("ftbchunks.gtceu_prospecting", "GTCEu Prospecting");
         provider.add("ftbchunks.gtceu_prospecting.ore_veins", "Show Ore Veins");
         provider.add("ftbchunks.gtceu_prospecting.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("ftbchunks.gtceu_prospecting.hide_depleted", "Hide Depleted Veins");
     }
 }

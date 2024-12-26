@@ -2123,6 +2123,7 @@
   "fluid_cell.empty": "Empty",
   "ftbchunks.gtceu_prospecting": "GTCEu Prospecting",
   "ftbchunks.gtceu_prospecting.bedrock_fluids": "Show Bedrock Fluid Veins",
+  "ftbchunks.gtceu_prospecting.hide_depleted": "Hide Depleted Veins",
   "ftbchunks.gtceu_prospecting.ore_veins": "Show Ore Veins",
   "gtceu.air_scrubber": "Air Scrubber",
   "gtceu.alloy_blast_smelter": "Alloy Blast Smelter",
