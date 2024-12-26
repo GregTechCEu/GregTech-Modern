@@ -96,8 +96,11 @@ public class FluidChunkWidget extends Widget {
             return;
         }
 
-        Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
-                .withColor(Color4I.rgba(getColor()))
-                .draw(graphics, x, y, FTBChunks.TILE_SIZE, FTBChunks.TILE_SIZE);
+        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
+                .withColor(Color4I.rgba(getColor()).withAlphaf(isMouseOver() ? 0.9f : 0.8f));
+        if (isMouseOver()) {
+            fluidIcon = fluidIcon.withBorder(Color4I.rgba(getColor()), false);
+        }
+        fluidIcon.draw(graphics, x, y, w, h);
     }
 }
