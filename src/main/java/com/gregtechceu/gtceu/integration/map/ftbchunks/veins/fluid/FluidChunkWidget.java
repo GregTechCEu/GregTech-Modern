@@ -62,7 +62,7 @@ public class FluidChunkWidget extends Widget {
         if (!shouldDraw()) {
             return false;
         }
-        
+
         MapDimension.getCurrent()
                 .ifPresent(mapDimension -> FTBChunksPlugin.getInstance().getClientAPI()
                         .getWaypointManager(mapDimension.dimension)
@@ -88,7 +88,7 @@ public class FluidChunkWidget extends Widget {
         if (!shouldDraw()) {
             return;
         }
-        
+
         FluidRenderLayer.getTooltip(fluidInfo).forEach(list::add);
     }
 
