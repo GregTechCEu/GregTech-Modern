@@ -32,7 +32,6 @@ public class FluidChunkWidget extends Widget {
     private final XZ chunkPos;
     private final ProspectorMode.FluidInfo fluidInfo;
 
-    private List<Component> tooltip;
     private String name;
 
     public FluidChunkWidget(RegionMapPanel panel, XZ chunkPos,
@@ -41,10 +40,6 @@ public class FluidChunkWidget extends Widget {
         setSize(FTBChunks.TILE_SIZE, FTBChunks.TILE_SIZE);
         this.chunkPos = chunkPos;
         this.fluidInfo = fluidInfo;
-    }
-
-    public List<Component> getTooltip() {
-        return tooltip == null ? tooltip = FluidRenderLayer.getTooltip(fluidInfo) : tooltip;
     }
 
     public ChunkPos getChunkPos() {
@@ -92,7 +87,7 @@ public class FluidChunkWidget extends Widget {
 
     @Override
     public void addMouseOverText(TooltipList list) {
-        getTooltip().forEach(list::add);
+        FluidRenderLayer.getTooltip(fluidInfo).forEach(list::add);
     }
 
     @Override
