@@ -151,10 +151,10 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
                         recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-                copied.parallels *= parallels;
-                copied.ocLevel += addOCs;
+                copied.parallels = recipe.parallels * parallels;
+                copied.ocLevel = recipe.ocLevel + addOCs;
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                    copied.duration = (int) Math.max(1, (copied.duration * (1f - 0.025f * addOCs)));
+                    copied.duration = (int) Math.max(1, (recipe.duration * (1f - 0.025f * addOCs)));
                 } else {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));
                 }
