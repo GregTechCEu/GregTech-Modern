@@ -14,6 +14,8 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,6 +32,13 @@ public class PotionFluid extends ForgeFlowingFluid {
         super(properties
                 .bucket(() -> Items.AIR)
                 .block(() -> (LiquidBlock) Blocks.WATER));
+        registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
+    }
+
+    @Override
+    protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+        super.createFluidStateDefinition(builder);
+        builder.add(LEVEL);
     }
 
     public static FluidStack of(int amount, Potion potion) {
@@ -74,7 +83,7 @@ public class PotionFluid extends ForgeFlowingFluid {
 
     @Override
     public int getAmount(FluidState state) {
-        return 0;
+        return state.getValue(LEVEL);
     }
 
     public static class PotionFluidType extends FluidType {
