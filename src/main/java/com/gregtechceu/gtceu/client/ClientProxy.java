@@ -35,6 +35,7 @@ import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -60,9 +61,6 @@ public class ClientProxy extends CommonProxy {
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
-            if (LDLib.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
-                FTBChunksPlugin.getInstance().initialize();
-            }
         }
     }
 
@@ -98,5 +96,12 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
+    }
+
+    @SubscribeEvent
+    public void onClientSetup(FMLClientSetupEvent event) {
+        if (LDLib.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
+            FTBChunksPlugin.getInstance().initialize();
+        }
     }
 }
