@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import dev.ftb.mods.ftbchunks.FTBChunks;
+import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.client.gui.RegionMapPanel;
 import dev.ftb.mods.ftbchunks.client.map.MapDimension;
 import dev.ftb.mods.ftbchunks.client.map.WaypointImpl;
@@ -64,7 +65,7 @@ public class FluidChunkWidget extends Widget {
         }
 
         MapDimension.getCurrent()
-                .ifPresent(mapDimension -> FTBChunksPlugin.getInstance().getClientAPI()
+                .ifPresent(mapDimension -> FTBChunksAPI.clientApi()
                         .getWaypointManager(mapDimension.dimension)
                         .ifPresent(waypointManager -> {
                             var pos = BlockPos.containing(getPos());
@@ -81,7 +82,7 @@ public class FluidChunkWidget extends Widget {
 
     @Override
     public boolean isEnabled() {
-        return FTBChunksPlugin.getInstance().getOptions().showLayer("bedrock_fluids");
+        return FTBChunksOptions.showLayer("bedrock_fluids");
     }
 
     @Override
@@ -95,7 +96,7 @@ public class FluidChunkWidget extends Widget {
 
     @Override
     public boolean shouldDraw() {
-        return fluidInfo.left() > 0 || !FTBChunksPlugin.getInstance().getOptions().hideDepleted();
+        return fluidInfo.left() > 0 || !FTBChunksOptions.hideDepleted();
     }
 
     @Override

@@ -2,36 +2,19 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks;
 
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
-import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
-import dev.ftb.mods.ftbchunks.api.client.FTBChunksClientAPI;
 import dev.ftb.mods.ftbchunks.api.client.event.MapIconEvent;
 import dev.ftb.mods.ftbchunks.client.map.MapDimension;
-import lombok.Getter;
 
 public class FTBChunksPlugin {
 
-    private static FTBChunksPlugin instance;
+    private FTBChunksPlugin() {}
 
-    @Getter
-    protected FTBChunksClientAPI clientAPI;
-    @Getter
-    protected FTBChunksOptions options;
-
-    protected FTBChunksPlugin() {}
-
-    public static FTBChunksPlugin getInstance() {
-        return instance == null ? instance = new FTBChunksPlugin() : instance;
+    public static void addEventListeners() {
+        MapIconEvent.MINIMAP.register(FTBChunksPlugin::mapIconEventHandler);
+        MapIconEvent.LARGE_MAP.register(FTBChunksPlugin::mapIconEventHandler);
     }
 
-    public void initialize() {
-        options = new FTBChunksOptions();
-        clientAPI = FTBChunksAPI.clientApi();
-
-        MapIconEvent.MINIMAP.register(this::mapIconEventHandler);
-        MapIconEvent.LARGE_MAP.register(this::mapIconEventHandler);
-    }
-
-    private void mapIconEventHandler(MapIconEvent event) {
+    private static void mapIconEventHandler(MapIconEvent event) {
         if (GroupingMapRenderer.getInstance().doShowLayer("ore_veins")) {
             MapDimension.getCurrent()
                     .ifPresent(mapDimension -> FTBChunksRenderer.oreElements.row(mapDimension.dimension)

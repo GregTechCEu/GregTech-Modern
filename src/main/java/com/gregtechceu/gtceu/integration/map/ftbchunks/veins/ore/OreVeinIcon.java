@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
@@ -16,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
 import dev.ftb.mods.ftbchunks.client.map.MapDimension;
@@ -38,8 +39,8 @@ public class OreVeinIcon implements MapIcon {
     }
 
     public boolean isEnabled() {
-        return FTBChunksPlugin.getInstance().getOptions().showLayer("ore_veins") &&
-                !(veinMetadata.depleted() && FTBChunksPlugin.getInstance().getOptions().hideDepleted());
+        return FTBChunksOptions.showLayer("ore_veins") &&
+                !(veinMetadata.depleted() && FTBChunksOptions.hideDepleted());
     }
 
     public String getName() {
@@ -74,7 +75,7 @@ public class OreVeinIcon implements MapIcon {
             return false;
         }
         MapDimension.getCurrent()
-                .ifPresent(mapDimension -> FTBChunksPlugin.getInstance().getClientAPI()
+                .ifPresent(mapDimension -> FTBChunksAPI.clientApi()
                         .getWaypointManager(mapDimension.dimension)
                         .ifPresent(waypointManager -> {
                             var waypoint = new WaypointImpl(WaypointType.DEFAULT, mapDimension, veinMetadata.center());

@@ -47,11 +47,11 @@ public class FTBChunksRenderer extends GenericMapRenderer {
 
     @Override
     public boolean doShowLayer(String name) {
-        return FTBChunksPlugin.getInstance().options.showLayer(name);
+        return FTBChunksOptions.showLayer(name);
     }
 
     @Override
     public void setLayerActive(String name, boolean active) {
-        FTBChunksPlugin.getInstance().options.toggleLayer(name, active);
+        FTBChunksOptions.toggleLayer(name, active);
     }
 }

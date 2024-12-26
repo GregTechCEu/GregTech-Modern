@@ -101,7 +101,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onClientSetup(FMLClientSetupEvent event) {
         if (LDLib.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
-            FTBChunksPlugin.getInstance().initialize();
+            FTBChunksPlugin.addEventListeners();
         }
     }
 }

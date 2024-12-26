@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks;
 
+import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
+import dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig;
 import dev.ftb.mods.ftblibrary.snbt.config.BooleanValue;
 
 import java.util.HashMap;
@@ -9,26 +11,29 @@ import static dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig.CONFIG;
 
 public class FTBChunksOptions {
 
-    private final Map<String, BooleanValue> layerOptions = new HashMap<>();
+    private static final Map<String, BooleanValue> layerOptions = new HashMap<>();
 
-    private final BooleanValue hideDepleted;
+    private static BooleanValue hideDepleted;
 
-    public FTBChunksOptions() {
+    private FTBChunksOptions() {}
+
+    public static void initialize() {
         var group = CONFIG.addGroup("gtceu_prospecting");
-        final var oreLayer = group.addBoolean("ore_veins", false);
+        var oreLayer = group.addBoolean("ore_veins", false);
         layerOptions.put(oreLayer.key, oreLayer);
-        final var fluidLayer = group.addBoolean("bedrock_fluids", false);
+        var fluidLayer = group.addBoolean("bedrock_fluids", false);
         layerOptions.put(fluidLayer.key, fluidLayer);
         hideDepleted = group.addBoolean("hide_depleted", false);
     }
 
-    public boolean showLayer(String name) {
+    public static boolean showLayer(String name) {
         return layerOptions.get(name).get();
     }
 
-    public void toggleLayer(String name, boolean active) {
+    public static void toggleLayer(String name, boolean active) {
         layerOptions.get(name).set(active);
-        FTBChunksPlugin.getInstance().clientAPI.getWaypointManager().ifPresent(manager -> {
+        FTBChunksClientConfig.saveConfig();
+        FTBChunksAPI.clientApi().getWaypointManager().ifPresent(manager -> {
             manager.getAllWaypoints().forEach(waypoint -> {
                 if (waypoint.getName().equals(name)) {
                     waypoint.setHidden(!active);
@@ -37,7 +42,7 @@ public class FTBChunksOptions {
         });
     }
 
-    public boolean hideDepleted() {
+    public static boolean hideDepleted() {
         return hideDepleted.get();
     }
 }
