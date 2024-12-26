@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
@@ -27,14 +26,12 @@ import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
 
-import java.util.List;
 import java.util.function.Function;
 
 public class OreVeinIcon implements MapIcon {
 
     protected final GeneratedVeinMetadata veinMetadata;
     protected String name = null;
-    protected List<Component> tooltip = null;
 
     public OreVeinIcon(GeneratedVeinMetadata veinMetadata) {
         this.veinMetadata = veinMetadata;
