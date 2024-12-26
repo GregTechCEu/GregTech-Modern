@@ -19,6 +19,7 @@
         "rei.FluidEntryRendererMixin",
         "ftbchunks.RegionMapPanelMixin",
         "ftbchunks.FTBChunksClientConfigMixin",
+        "ftbchunks.LargeMapScreenMixin",
         "xaeroworldmap.GuiMapMixin",
         "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaerominimap.HighlighterRegistryMixin",
