@@ -82,6 +82,7 @@ public class OreVeinIcon implements MapIcon {
                                 waypointManager.addWaypointAt(veinMetadata.center(), getName())
                                         .setColor(getMaterial().getMaterialARGB())
                                         .setHidden(false);
+                                baseScreen.openGui();
                             }
                         }));
         return true;
