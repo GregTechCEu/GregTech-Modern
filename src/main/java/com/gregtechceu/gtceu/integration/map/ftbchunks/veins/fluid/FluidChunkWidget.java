@@ -18,29 +18,26 @@ import dev.ftb.mods.ftbchunks.client.map.WaypointImpl;
 import dev.ftb.mods.ftbchunks.client.map.WaypointType;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftblibrary.math.XZ;
 import dev.ftb.mods.ftblibrary.ui.Theme;
 import dev.ftb.mods.ftblibrary.ui.Widget;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
+import lombok.Getter;
 
 public class FluidChunkWidget extends Widget {
 
-    private final XZ chunkPos;
+    @Getter
+    private final ChunkPos chunkPos;
     private final ProspectorMode.FluidInfo fluidInfo;
 
     private String name;
 
-    public FluidChunkWidget(RegionMapPanel panel, XZ chunkPos,
+    public FluidChunkWidget(RegionMapPanel panel, ChunkPos chunkPos,
                             ProspectorMode.FluidInfo fluidInfo) {
         super(panel);
         setSize(FTBChunks.TILE_SIZE, FTBChunks.TILE_SIZE);
         this.chunkPos = chunkPos;
         this.fluidInfo = fluidInfo;
-    }
-
-    public ChunkPos getChunkPos() {
-        return new ChunkPos(chunkPos.x(), chunkPos.z());
     }
 
     public Vec3 getPos() {
