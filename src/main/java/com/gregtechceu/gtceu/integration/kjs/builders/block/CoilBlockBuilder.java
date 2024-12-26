@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.integration.kjs.builders.RendererBlockItemBuilder;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
-import dev.latvian.mods.kubejs.block.BlockItemBuilder;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
@@ -36,14 +33,6 @@ public class CoilBlockBuilder extends BlockBuilder {
     public CoilBlockBuilder coilMaterial(@NotNull Supplier<@Nullable Material> material) {
         this.material = material;
         return this;
-    }
-
-    @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {}
-
-    @Override
-    protected BlockItemBuilder getOrCreateItemBuilder() {
-        return itemBuilder == null ? (itemBuilder = new RendererBlockItemBuilder(id)) : itemBuilder;
     }
 
     @Override

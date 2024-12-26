@@ -33,8 +33,8 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
-    public TagPrefixBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public TagPrefixBuilder(ResourceLocation id) {
+        super(id);
         this.base = create(id.getPath());
     }
 

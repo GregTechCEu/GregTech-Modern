@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -450,7 +451,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(CONVEYOR_MODULE_EV, 4)
                 .inputItems(gear, Tungsten, 4)
                 .circuitMeta(2)
-                .outputItems(LARGE_MINER[EV])
+                .outputItems(GTMultiMachines.LARGE_MINER[EV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("iv_large_miner")
@@ -462,7 +463,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(CONVEYOR_MODULE_IV, 4)
                 .inputItems(gear, Iridium, 4)
                 .circuitMeta(2)
-                .outputItems(LARGE_MINER[IV])
+                .outputItems(GTMultiMachines.LARGE_MINER[IV])
                 .duration(400).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("luv_large_miner")
@@ -474,7 +475,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(CONVEYOR_MODULE_LuV, 4)
                 .inputItems(gear, Ruridit, 4)
                 .circuitMeta(2)
-                .outputItems(LARGE_MINER[LuV])
+                .outputItems(GTMultiMachines.LARGE_MINER[LuV])
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         // Multiblock Fluid Drills
@@ -487,7 +488,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_MV, 4)
                 .inputItems(gear, VanadiumSteel, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[MV])
+                .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[MV])
                 .duration(400).EUt(VA[MV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hv_fluid_drilling_rig")
@@ -498,7 +499,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_EV, 4)
                 .inputItems(gear, TungstenCarbide, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[HV])
+                .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[HV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("ev_fluid_drilling_rig")
@@ -509,7 +510,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ELECTRIC_PUMP_LuV, 4)
                 .inputItems(gear, Osmiridium, 4)
                 .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[EV])
+                .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[EV])
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         // Long Distance Pipes

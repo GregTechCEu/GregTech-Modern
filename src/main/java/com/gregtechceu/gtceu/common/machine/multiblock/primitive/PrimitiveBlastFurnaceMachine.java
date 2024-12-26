@@ -41,11 +41,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    private TickableSubscription onServerTick;
+    private TickableSubscription hurtSubscription;
 
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
-        this.onServerTick = subscribeServerTick(this::hurtEntities);
     }
 
     @Override
@@ -61,21 +60,21 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
-        this.onServerTick.unsubscribe();
+        unsubscribe(hurtSubscription);
     }
 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        this.onServerTick = subscribeServerTick(onServerTick, this::hurtEntities);
+        this.hurtSubscription = subscribeServerTick(this::hurtEntities);
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        unsubscribe(hurtSubscription);
     }
 
     @Override
@@ -90,10 +89,10 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
             var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
-            var sign = up == Direction.UP || up == Direction.EAST || up == Direction.SOUTH ? 1 : -1;
-            var shouldX = up == Direction.EAST || up == Direction.WEST;
-            var shouldY = up == Direction.UP || up == Direction.DOWN;
-            var shouldZ = up == Direction.NORTH || up == Direction.SOUTH;
+            var sign = up.getAxisDirection().getStep();
+            var shouldX = up.getAxis() == Direction.Axis.X;
+            var shouldY = up.getAxis() == Direction.Axis.Y;
+            var shouldZ = up.getAxis() == Direction.Axis.Z;
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
             if (getOffsetTimer() % 20 == 0) {
@@ -170,7 +169,6 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     private void hurtEntities() {
-        if (!isFormed) return;
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null,
                 new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));

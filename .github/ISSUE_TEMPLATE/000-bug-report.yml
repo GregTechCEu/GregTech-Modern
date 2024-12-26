@@ -22,36 +22,40 @@ body:
     id: gtceu-version
     attributes:
       label: GregTech CEu Version
-      description: The version of Gregtech CEu you were using when this bug was encountered. If you do not know where to find this, look for the mod jar file in the mods folder, or in the mods viewer in-game.
+      description: The version of GregTech CEu you were using when this bug was encountered. If you do not know where to find this, look for the mod jar file in the mods folder, or in the mods viewer in-game.
       placeholder: "Example: v2.3.4"
     validations:
       required: true
-  - type: input
+  - type: dropdown
     id: mc-version
     attributes:
       label: Minecraft Version
-      description: The version of Minecraft you were using when this bug was encountered. If you do not know where to find this, in the main menu at the bottom left.
-      placeholder: "Example: 1.20.1"
+      description: The version of Minecraft you were using when this bug was encountered. If you do not know where to find this, it is in the bottom left of the main menu. Any version not listed is not supported.
+      options:
+        - "1.20.1 Forge"
+        - "1.21.1 NeoForge"
     validations:
       required: true
   - type: dropdown
     id: recipe-viewer
     attributes:
       label: Recipe Viewer Installed
-      description: The recipe viewer installed. If you were not using addons, please leave this field blank.
+      description: The recipe viewer installed.
       options:
         - "JEI"
         - "REI"
         - "EMI"
-        - "No Recipe Viewer"
     validations:
       required: false
-  - type: input
+  - type: dropdown
     id: environment
     attributes:
       label: Environment
-      description: "How you were playing on the world. Typical answers include: Singleplayer, Open to LAN, Dedicated Server."
-      placeholder: "Example: Singleplayer"
+      description: How you were playing on the world. Hybrid servers are unsupported.
+      options:
+        - "Singleplayer"
+        - "Multiplayer - Open to LAN"
+        - "Multiplayer - Dedicated Server"
     validations:
       required: true
   - type: dropdown
@@ -69,8 +73,8 @@ body:
     id: other-mods
     attributes:
       label: Other Installed Mods
-      description: List all mods you have installed here, or the name of the modpack you're playing.
-      placeholder: "Example: ATM9, Embeddium, NuclearCraft Neoteric, AE2..."
+      description: Enter the name of the modpack you're playing, or list all mods you have installed here.
+      placeholder: "Example: Cosmic Frontiers, Monifactory, Embeddium, NuclearCraft Neoteric, AE2,..."
     validations:
       required: true
   - type: textarea

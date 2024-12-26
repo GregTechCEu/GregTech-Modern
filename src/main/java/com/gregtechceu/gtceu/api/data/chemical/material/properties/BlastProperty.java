@@ -136,13 +136,13 @@ public class BlastProperty implements IMaterialProperty {
 
         public Builder() {}
 
-        public Builder temp(int tempurature) {
-            this.temp = tempurature;
+        public Builder temp(int temperature) {
+            this.temp = temperature;
             return this;
         }
 
-        public Builder temp(int tempurature, GasTier gasTier) {
-            this.temp = tempurature;
+        public Builder temp(int temperature, GasTier gasTier) {
+            this.temp = temperature;
             this.gasTier = gasTier;
             return this;
         }

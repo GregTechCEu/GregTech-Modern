@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -31,6 +32,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 
@@ -159,23 +161,27 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     @SubscribeEvent
     public void onItemToss(@NotNull ItemTossEvent event) {
         if (event.getPlayer() == null) return;
-
-        Inventory inventory = event.getPlayer().getInventory();
-        // TODO work out curios compat
-        // if (Platform.isModLoaded(GTValues.MODID_CURIOS)) {
-        // inventory = BaublesModule.getBaublesWrappedInventory(event.getPlayer());
-        // }
-
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stackInSlot = inventory.getItem(i);
-            if (isMagnet(stackInSlot) && isActive(stackInSlot)) {
-                event.getEntity().setPickUpDelay(60);
-                return;
-            }
+        if (hasMagnet(event.getPlayer())) {
+            event.getEntity().setPickUpDelay(60);
         }
     }
 
-    private boolean isMagnet(@NotNull ItemStack stack) {
+    private boolean hasMagnet(@NotNull Player player) {
+        Inventory inventory = player.getInventory();
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack stackInSlot = inventory.getItem(i);
+            if (isMagnet(stackInSlot) && isActive(stackInSlot)) {
+                return true;
+            }
+        }
+
+        if (!GTCEu.isCuriosLoaded()) {
+            return false;
+        }
+        return CuriosUtils.hasMagnetCurios(player);
+    }
+
+    private static boolean isMagnet(@NotNull ItemStack stack) {
         if (stack.getItem() instanceof IComponentItem metaItem) {
             for (var behavior : metaItem.getComponents()) {
                 if (behavior instanceof ItemMagnetBehavior) {
@@ -199,5 +205,14 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                                 TooltipFlag isAdvanced) {
         lines.add(Component
                 .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+    }
+
+    private static class CuriosUtils {
+
+        public static boolean hasMagnetCurios(Player player) {
+            return CuriosApi.getCuriosInventory(player)
+                    .map(curios -> curios.findFirstCurio(i -> isMagnet(i) && isActive(i)).isPresent())
+                    .orElse(false);
+        }
     }
 }

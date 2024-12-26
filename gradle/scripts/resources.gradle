@@ -10,6 +10,9 @@ def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
 def mod_issue_tracker = getConfig("mod_issue_tracker")
 
+String suffix = System.getenv("VERSION_SUFFIX")
+String version_toml = "$version" + (suffix ? "-$suffix" : "")
+
 task printVersion {
     doLast {
         println mod_version
@@ -21,7 +24,7 @@ task printVersion {
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var forgeVers = forge.versions.forgeShortVersion.get().split("\\.")[0]
     var replaceProperties = [
-            version             : version,
+            version             : version_toml,
             mod_id              : mod_id,
             minecraft_version   : libs.versions.minecraft.get(),
             loader_version      : forgeVers,

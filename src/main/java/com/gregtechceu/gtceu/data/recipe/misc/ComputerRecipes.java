@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -280,7 +281,7 @@ public class ComputerRecipes {
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 8)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputFluids(PCBCoolant.getFluid(1000))
-                .outputItems(ACTIVE_TRANSFORMER)
+                .outputItems(GTMultiMachines.ACTIVE_TRANSFORMER)
                 .duration(300).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("laser_cable")

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -93,7 +93,8 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
             if (pipeNode.getFrameMaterial() != null) {
                 ResourceLocation rl = MaterialIconType.frameGt
                         .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
-                BlockState blockState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
+                        .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                         .getDefaultState();
                 var frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
                 for (Direction face : Direction.values()) {
