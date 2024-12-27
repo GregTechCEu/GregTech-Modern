@@ -28,7 +28,6 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
 import static net.minecraft.ChatFormatting.*;
-import static net.minecraft.ChatFormatting.BOLD;
 
 public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
@@ -101,13 +100,14 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
                         } else {
-
+                            int speed = tier - 14;
                             text = text.append(Component
-                                    .literal(RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" +
-                                            YELLOW + BOLD + "+" + RED + BOLD)
-                                    .append(Component.literal(FormattingUtil.formatNumbers(tier - 14))
-                                            .withStyle(
-                                                    style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)))));
+                                    .literal("MAX")
+                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(speed)))
+                                    .append(Component.literal("+")
+                                            .withStyle(style -> style.withColor(GTValues.VC[speed]))
+                                            .append(Component.literal(FormattingUtil.formatNumbers(tier - 14)))
+                                            .withStyle(style -> style.withColor(GTValues.VC[speed]))));
 
                         }
                         text = text.append(Component.literal(")").withStyle(ChatFormatting.GREEN));
