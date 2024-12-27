@@ -26,7 +26,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+public class    RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
         super(GTCEu.id("recipe_logic_provider"));
@@ -88,8 +88,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
-                        var tier = GTUtil.getTierByVoltage(EUt);
-                        if(tier <= GTValues.VNF.length) {
+                        var tier = GTUtil.getOCTierByVoltage(EUt);
+                        if(tier <  GTValues.TIER_COUNT) {
                             text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
                                     .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
                                             .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
