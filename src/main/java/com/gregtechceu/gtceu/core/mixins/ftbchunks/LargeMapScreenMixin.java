@@ -27,32 +27,31 @@ public abstract class LargeMapScreenMixin extends BaseScreen {
     @Unique
     private final List<Button> gtceu$injectedWidgets = new ArrayList<>();
 
-    @Inject(method = "addWidgets",
-            at = @At(value = "TAIL"))
+    @Inject(method = "addWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAddWidgets(CallbackInfo ci) {
         gtceu$injectedWidgets.clear();
-        for (ButtonState.Button button : ButtonState.getAllButtons()) {
-            Icon icon = switch (button.name) {
+        for (var button : ButtonState.getAllButtons()) {
+            var icon = switch (button.name) {
                 case "ore_veins" -> ItemIcon.getItemIcon(Items.RAW_IRON);
                 case "bedrock_fluids" -> ItemIcon.getItemIcon(Items.BUCKET);
                 default -> Icons.INFO;
             };
-            SimpleButton buttonWidget = new SimpleButton(this, Component.translatable("gtceu.button." + button.name),
+            var buttonWidget = new SimpleButton(this, Component.translatable("gtceu.button." + button.name),
                     icon, (b, m) -> {
                         ButtonState.toggleButton(button);
-                        this.refreshWidgets();
+                        refreshWidgets();
                     });
-            this.add(buttonWidget);
+            add(buttonWidget);
             gtceu$injectedWidgets.add(buttonWidget);
         }
     }
 
     @Inject(method = "alignWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAlignWidgets(CallbackInfo ci) {
-        int buttonCount = gtceu$injectedWidgets.size();
-        int startHeight = (this.height - buttonCount * 18) / 2;
+        var buttonCount = gtceu$injectedWidgets.size();
+        var startHeight = (height - buttonCount * 18) / 2;
         for (int i = 0; i < buttonCount; i++) {
-            Button buttonWidget = gtceu$injectedWidgets.get(i);
+            var buttonWidget = gtceu$injectedWidgets.get(i);
             buttonWidget.setPosAndSize(1, startHeight + i * 18, 16, 16);
         }
     }
