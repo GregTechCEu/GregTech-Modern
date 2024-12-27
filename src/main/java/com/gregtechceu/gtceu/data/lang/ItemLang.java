@@ -116,7 +116,6 @@ public class ItemLang {
         provider.add("item.gtceu.rotor_extruder_mold.tooltip", "§7Extruder Shape for making Rotors");
         provider.add("item.gtceu.empty_spray_can.tooltip", "§7Can be filled with sprays of various colors");
         provider.add("fluid_cell.empty", "Empty");
-        provider.add("MAX_OC_JADE_TOOLTIP", "MAX+%s");
         provider.add("item.gtceu.tool.matchbox.tooltip", "§7This is not a Car");
         provider.add("item.gtceu.tool.lighter.platinum.tooltip", "§7A known Prank Master is engraved on it");
         provider.add("item.gtceu.lv_battery_hull.tooltip", "§7An empty LV Battery Hull");
