@@ -511,8 +511,7 @@ public class MachineRecipeLoader {
                 .inputItems(plate, Iron, 2)
                 .outputItems(COVER_SHUTTER, 2)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_machine_controller")
@@ -521,8 +520,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_MACHINE_CONTROLLER)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_energy_detector")
@@ -532,8 +530,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ENERGY_DETECTOR)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_energy_detector")
@@ -542,8 +539,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ENERGY_DETECTOR_ADVANCED)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_activity_detector")
@@ -552,8 +548,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ACTIVITY_DETECTOR)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_activity_cover")
@@ -563,8 +558,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ACTIVITY_DETECTOR_ADVANCED)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_fluid_detector")
@@ -573,8 +567,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_FLUID_DETECTOR)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_item_detector")
@@ -583,8 +576,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ITEM_DETECTOR)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_fluid_detector")
@@ -593,8 +585,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_FLUID_DETECTOR_ADVANCED)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_item_detector")
@@ -603,8 +594,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ITEM_DETECTOR_ADVANCED)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_maintenance_detector")
@@ -613,8 +603,7 @@ public class MachineRecipeLoader {
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_MAINTENANCE_DETECTOR)
                 .EUt(16).duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_screen")
@@ -645,8 +634,7 @@ public class MachineRecipeLoader {
                 .inputFluids(Polyethylene, L * 2)
                 .outputItems(COVER_ENDER_FLUID_LINK)
                 .EUt(VA[HV]).duration(320)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
@@ -657,8 +645,7 @@ public class MachineRecipeLoader {
                 .outputItems(COVER_STORAGE)
                 .EUt(16)
                 .duration(100)
-                .addMaterialInfo(true)
-                .addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
@@ -705,35 +692,35 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
                 .inputItems(foil, Bronze, 8).inputFluids(TinAlloy, GTValues.L)
                 .outputItems(GTBlocks.COIL_CUPRONICKEL.asStack()).duration(200)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
                 .inputItems(foil, Aluminium, 8).inputFluids(Copper, GTValues.L)
                 .outputItems(GTBlocks.COIL_KANTHAL.asStack()).duration(300)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
                 .inputItems(foil, StainlessSteel, 8).inputFluids(Aluminium, GTValues.L)
                 .outputItems(GTBlocks.COIL_NICHROME.asStack()).duration(400)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
                 .inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome, GTValues.L)
                 .outputItems(GTBlocks.COIL_RTMALLOY.asStack()).duration(500)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
                 .inputItems(foil, TungstenCarbide, 8).inputFluids(Tungsten, GTValues.L)
                 .outputItems(GTBlocks.COIL_HSSG.asStack()).duration(600)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
                 .inputItems(foil, Osmium, 8).inputFluids(TungstenSteel, GTValues.L)
                 .outputItems(GTBlocks.COIL_NAQUADAH.asStack()).duration(700)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
                 .inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
                 .inputItems(foil, Naquadria, 8).inputFluids(Trinium, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRITANIUM.asStack()).duration(900)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6)
                 .inputItems(new ItemStack(Blocks.BRICKS)).circuitMeta(6)
@@ -780,12 +767,12 @@ public class MachineRecipeLoader {
                 .inputFluids(PolyvinylChloride, L * 2)
                 .outputItems(
                         GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(30).EUt(VA[HV]).addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .duration(30).EUt(VA[HV]).addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
                 .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV])
                 .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32)
@@ -804,19 +791,19 @@ public class MachineRecipeLoader {
                 .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(CustomTags.LuV_CIRCUITS, 4)
                 .inputItems(pipeSmallFluid, Naquadah, 4).inputItems(plate, Europium, 4)
                 .inputFluids(VanadiumGallium, GTValues.L * 4).outputItems(GTBlocks.FUSION_COIL.asStack())
-                .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true).addMaterialFluidInfo(true)
+                .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true, true)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_glass").EUt(VA[LuV])
                 .inputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack()).inputItems(plate, Naquadah, 4)
                 .inputItems(NEUTRON_REFLECTOR.asStack(4)).outputItems(GTBlocks.FUSION_GLASS.asStack(2))
                 .inputFluids(Polybenzimidazole, GTValues.L).duration(50).cleanroom(CleanroomType.CLEANROOM)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing").EUt(VA[LuV]).inputItems(GTBlocks.MACHINE_CASING_LuV.asStack())
                 .inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).inputItems(NEUTRON_REFLECTOR)
                 .inputItems(ELECTRIC_PUMP_LuV).inputItems(plate, TungstenSteel, 6)
                 .inputFluids(Polybenzimidazole, GTValues.L)
                 .outputItems(GTBlocks.FUSION_CASING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .addMaterialInfo(true).addMaterialFluidInfo(true)
+                .addMaterialInfo(true, true)
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing_mk2").EUt(VA[ZPM])
                 .inputItems(GTBlocks.MACHINE_CASING_ZPM.asStack()).inputItems(GTBlocks.FUSION_COIL.asStack())
@@ -824,14 +811,14 @@ public class MachineRecipeLoader {
                 .inputFluids(Polybenzimidazole, GTValues.L * 2)
                 .outputItems(GTBlocks.FUSION_CASING_MK2.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing_mk3").EUt(VA[UV])
                 .inputItems(GTBlocks.MACHINE_CASING_UV.asStack()).inputItems(GTBlocks.FUSION_COIL.asStack())
                 .inputItems(VOLTAGE_COIL_UV.asStack(2)).inputItems(FIELD_GENERATOR_ZPM).inputItems(plate, Americium, 6)
                 .inputFluids(Polybenzimidazole, GTValues.L * 4)
                 .outputItems(GTBlocks.FUSION_CASING_MK3.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6)
                 .inputItems(frameGt, BlueSteel, 1).circuitMeta(6)
@@ -858,11 +845,11 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Concrete, L)
                 .outputItems(GTBlocks.PLASTCRETE.asStack(2)).duration(200)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("cleanroom_glass").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Glass, L)
                 .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(2)).duration(200)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         // If these recipes are changed, change the values in MaterialInfoLoader.java
 

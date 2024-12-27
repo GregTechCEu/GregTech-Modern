@@ -105,10 +105,8 @@ public class GTRecipeBuilder {
     public int tierChanceBoost = 0;
     @Setter
     public boolean isFuel = false;
-    @Setter
-    private boolean addMaterialInfo = false;
-    @Setter
-    private boolean addMaterialFluidInfo = false;
+    private boolean itemMaterialInfo = false;
+    private boolean fluidMaterialInfo = false;
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -1229,6 +1227,17 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder addMaterialInfo(boolean item) {
+        this.itemMaterialInfo = item;
+        return this;
+    }
+
+    public GTRecipeBuilder addMaterialInfo(boolean item, boolean fluid) {
+        this.itemMaterialInfo = item;
+        this.fluidMaterialInfo = fluid;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
@@ -1336,7 +1345,7 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (addMaterialInfo) {
+        if (itemMaterialInfo) {
             addOutputMaterialInfo();
         }
         tempItemStacks = null;
@@ -1374,36 +1383,12 @@ public class GTRecipeBuilder {
                 matStacks.merge(input.material(), am, Long::sum);
             }
 
-            if (addMaterialFluidInfo) {
+            if (fluidMaterialInfo) {
                 var fluidInputs = input.get(FluidRecipeCapability.CAP);
                 for (var input : tempFluidStacks) {
                     long am = input.amount() / outputCount;
                     matStacks.merge(input.material(), am, Long::sum);
                 }
-                /*
-                 * for (int i = 0; i < fluidInputs.size(); i++) {
-                 * if (fluidInputs.get(i).content instanceof FluidIngredient fluidIngredient) {
-                 * MaterialStack matStack = null;
-                 * for (var value : fluidIngredient.values) {
-                 * var fluid = value.getFluids().toArray(Fluid[]::new);
-                 * if (fluid.length != 0 && fluid[0] != null) {
-                 * matStack = new MaterialStack(ChemicalHelper.getMaterial(fluid[0]), tempFluidStacks.get(i).amount());
-                 * }
-                 * 
-                 * if (matStack != null && matStack.material() != null) {
-                 * matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
-                 * break;
-                 * }
-                 * }
-                 * } else if (fluidInputs.get(i).content instanceof FluidStack fluidStack) {
-                 * MaterialStack matStack = new MaterialStack(ChemicalHelper.getMaterial(fluidStack.getFluid()),
-                 * tempFluidStacks.get(i).amount());
-                 * if (matStack.material() != null) {
-                 * matStacks.merge(matStack.material(), matStack.amount(), Long::sum);
-                 * }
-                 * }
-                 * }
-                 */
             }
 
             var matList = matStacks.reference2LongEntrySet().stream()

@@ -41,7 +41,7 @@ public class ComputerRecipes {
                 .inputFluids(Polybenzimidazole, L * 4)
                 .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
                 .duration(400).EUt(6000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)
@@ -114,7 +114,7 @@ public class ComputerRecipes {
                         .duration(2400)
                         .EUt(VA[EV]))
                 .duration(1200).EUt(6000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("research_station")
                 .inputItems(DATA_BANK)
@@ -133,7 +133,7 @@ public class ComputerRecipes {
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("object_holder")
                 .inputItems(ITEM_IMPORT_BUS[ZPM])
@@ -151,7 +151,7 @@ public class ComputerRecipes {
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("network_switch")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -170,7 +170,7 @@ public class ComputerRecipes {
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(1200).EUt(100000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("high_performance_computing_array")
                 .inputItems(DATA_BANK)
@@ -189,7 +189,7 @@ public class ComputerRecipes {
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_empty_component")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -263,7 +263,7 @@ public class ComputerRecipes {
                 .outputItems(DATA_HATCH_RECEIVER)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(200).EUt(VA[LuV])
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("data_transmitter_hatch")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -275,7 +275,7 @@ public class ComputerRecipes {
                 .outputItems(DATA_HATCH_TRANSMITTER)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(200).EUt(VA[LuV])
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_receiver_hatch")
                 .inputItems(DATA_HATCH_RECEIVER)
@@ -285,7 +285,7 @@ public class ComputerRecipes {
                 .outputItems(COMPUTATION_HATCH_RECEIVER)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(200).EUt(VA[LuV])
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_transmitter_hatch")
                 .inputItems(DATA_HATCH_TRANSMITTER)
@@ -295,7 +295,7 @@ public class ComputerRecipes {
                 .outputItems(COMPUTATION_HATCH_TRANSMITTER)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(200).EUt(VA[LuV])
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("active_transformer")
                 .inputItems(POWER_TRANSFORMER[LuV])

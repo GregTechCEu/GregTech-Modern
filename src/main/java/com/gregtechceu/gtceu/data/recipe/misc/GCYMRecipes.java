@@ -221,7 +221,7 @@ public class GCYMRecipes {
                 .inputFluids(HSLASteel.getFluid(L))
                 .outputItems(MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(1))
                 .duration(500).EUt(1920)
-                .addMaterialInfo(true).addMaterialFluidInfo(true).save(provider);
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("heat_vent")
                 .inputItems(ChemicalHelper.get(plate, TantalumCarbide, 3))
