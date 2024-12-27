@@ -71,10 +71,10 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @Nullable
     protected ISubscription exportItemSubs;
 
-    public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune) {
+    public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune, int energyPerTick) {
         super(holder, false, fortune, speed, maximumRadius);
         this.inventorySize = 4;
-        this.energyPerTick = 16;
+        this.energyPerTick = energyPerTick;
         this.importItems = createImportItemHandler();
         this.exportItems = createExportItemHandler();
     }
@@ -89,7 +89,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
             return new SteamMinerLogic(this, fortune, speed, maxRadius);
         }
         throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
+                "MinerMachine need args [fortune, speed, maximumRadius] for initialization");
     }
 
     @Override

@@ -45,6 +45,7 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
@@ -320,22 +321,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public DEFINITION register() {
         var definition = createDefinition();
 
-        var blockBuilder = registrate.block(name, properties -> {
-            RotationState.set(rotationState);
-            MachineDefinition.setBuilt(definition);
-            var b = blockFactory.apply(properties, definition);
-            RotationState.clear();
-            MachineDefinition.clearBuilt();
-            return b.self();
-        })
-                .color(() -> () -> IMachineBlock::colorTinted)
-                .initialProperties(() -> Blocks.DISPENSER)
-                .properties(BlockBehaviour.Properties::noLootTable)
-                .addLayer(() -> RenderType::cutoutMipped)
-                // .tag(GTToolType.WRENCH.harvestTag)
-                .blockstate(NonNullBiConsumer.noop())
-                .properties(blockProp)
-                .onRegister(b -> Arrays.stream(abilities).forEach(a -> a.register(tier, b)));
+        var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
             blockBuilder.lang(langValue);
             definition.setLangValue(langValue);
@@ -345,12 +331,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         }
         var block = blockBuilder.register();
 
-        var itemBuilder = registrate
-                .item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
-                .model(NonNullBiConsumer.noop())
-                .color(() -> () -> itemColor::apply)
-                .properties(itemProp);
+        var itemBuilder = ItemBuilderWrapper.makeItemBuilder(this, block);
         if (this.itemBuilder != null) {
             this.itemBuilder.accept(itemBuilder);
         }
@@ -406,5 +387,44 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
         return definition;
+    }
+
+    static class BlockBuilderWrapper {
+
+        public static <
+                DEFINITION extends MachineDefinition> BlockBuilder<Block, Registrate> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
+                                                                                                       DEFINITION definition) {
+            return builder.registrate.block(builder.name, properties -> {
+                RotationState.set(builder.rotationState);
+                MachineDefinition.setBuilt(definition);
+                var b = builder.blockFactory.apply(properties, definition);
+                RotationState.clear();
+                MachineDefinition.clearBuilt();
+                return b.self();
+            })
+                    .color(() -> () -> IMachineBlock::colorTinted)
+                    .initialProperties(() -> Blocks.DISPENSER)
+                    .properties(BlockBehaviour.Properties::noLootTable)
+                    .addLayer(() -> RenderType::cutoutMipped)
+                    // .tag(GTToolType.WRENCH.harvestTag)
+                    .blockstate(NonNullBiConsumer.noop())
+                    .properties(builder.blockProp)
+                    .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
+        }
+    }
+
+    static class ItemBuilderWrapper {
+
+        public static <
+                DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, Registrate> makeItemBuilder(MachineBuilder<DEFINITION> builder,
+                                                                                                               BlockEntry<Block> block) {
+            return builder.registrate
+                    .item(builder.name,
+                            properties -> builder.itemFactory.apply((IMachineBlock) block.get(), properties))
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
+                    .model(NonNullBiConsumer.noop())
+                    .color(() -> () -> builder.itemColor::apply)
+                    .properties(builder.itemProp);
+        }
     }
 }

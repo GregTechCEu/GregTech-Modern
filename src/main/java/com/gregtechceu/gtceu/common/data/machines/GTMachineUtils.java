@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
@@ -142,12 +141,11 @@ public class GTMachineUtils {
                     if (hasPollutionDebuff) {
                         builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                 .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
-                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+                                GTRecipeModifiers.OC_NON_PERFECT)
                                 .conditionalTooltip(defaultEnvironmentRequirement(),
                                         ConfigHolder.INSTANCE.gameplay.environmentalHazards);
                     } else {
-                        builder.recipeModifier(
-                                GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK));
+                        builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                     }
                     return builder
                             .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
