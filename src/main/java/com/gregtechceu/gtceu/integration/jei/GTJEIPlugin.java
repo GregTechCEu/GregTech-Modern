@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.jei.subtype.PotionFluidSubtypeInterpreter;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,7 +69,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (Platform.isDevEnv() || category.isXEIVisible()) {
+            if (category.shouldRegisterDisplays()) {
                 registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }

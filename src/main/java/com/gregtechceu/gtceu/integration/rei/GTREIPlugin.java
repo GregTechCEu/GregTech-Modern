@@ -18,8 +18,6 @@ import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockOreDisplayCategory
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.alchemy.Potion;
@@ -60,7 +58,7 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.add(new GTBedrockOreDisplayCategory());
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (Platform.isDevEnv() || category.isXEIVisible()) {
+            if (category.shouldRegisterDisplays()) {
                 registry.add(new GTRecipeREICategory(category));
             }
         }

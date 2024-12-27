@@ -50,7 +50,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
     public static void registerRecipes(IRecipeRegistration registration) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+            if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
             if (category == type.getCategory()) type.buildRepresentativeRecipes();
             var wrapped = type.getRecipesInCategory(category).stream()

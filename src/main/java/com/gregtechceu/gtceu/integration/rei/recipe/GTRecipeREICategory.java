@@ -46,7 +46,7 @@ public class GTRecipeREICategory extends ModularUIDisplayCategory<GTRecipeDispla
 
     public static void registerDisplays(DisplayRegistry registry) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+            if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
             if (category == type.getCategory()) type.buildRepresentativeRecipes();
             var identifier = CATEGORIES.apply(category);
