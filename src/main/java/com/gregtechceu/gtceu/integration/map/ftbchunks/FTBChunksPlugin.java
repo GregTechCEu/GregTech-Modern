@@ -10,7 +10,6 @@ public class FTBChunksPlugin {
     private FTBChunksPlugin() {}
 
     public static void addEventListeners() {
-        FTBChunksOptions.initialize();
         MapIconEvent.MINIMAP.register(FTBChunksPlugin::mapIconEventHandler);
         MapIconEvent.LARGE_MAP.register(FTBChunksPlugin::mapIconEventHandler);
     }

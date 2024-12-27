@@ -1,36 +1,32 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks;
 
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
-import dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig;
 import dev.ftb.mods.ftblibrary.snbt.config.BooleanValue;
+import dev.ftb.mods.ftblibrary.snbt.config.ConfigUtil;
+import dev.ftb.mods.ftblibrary.snbt.config.SNBTConfig;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig.CONFIG;
 
 public class FTBChunksOptions {
 
     private static final Map<String, BooleanValue> layerOptions = new HashMap<>();
 
-    private static BooleanValue hideDepleted;
+    private static final SNBTConfig CONFIG = SNBTConfig.create("gtceu");
+    private static final SNBTConfig LAYERS = CONFIG.addGroup("journeymap.options.layers");
+    private static final BooleanValue ORE_LAYER = LAYERS.addBoolean("ore_veins", false);
+    private static final BooleanValue FLUID_LAYER = LAYERS.addBoolean("bedrock_fluids", false);
+    private static final BooleanValue HIDE_DEPLETED = LAYERS.addBoolean("hide_depleted", false);
 
-    private static boolean initialized = false;
+    static {
+        layerOptions.put(ORE_LAYER.key, ORE_LAYER);
+        layerOptions.put(FLUID_LAYER.key, FLUID_LAYER);
+        layerOptions.put(HIDE_DEPLETED.key, HIDE_DEPLETED);
+
+        loadConfig();
+    }
 
     private FTBChunksOptions() {}
-
-    public static void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-        var group = CONFIG.addGroup("gtceu_prospecting");
-        var oreLayer = group.addBoolean("ore_veins", false);
-        layerOptions.put(oreLayer.key, oreLayer);
-        var fluidLayer = group.addBoolean("bedrock_fluids", false);
-        layerOptions.put(fluidLayer.key, fluidLayer);
-        hideDepleted = group.addBoolean("hide_depleted", false);
-    }
 
     public static boolean showLayer(String name) {
         return layerOptions.get(name).get();
@@ -38,7 +34,7 @@ public class FTBChunksOptions {
 
     public static void toggleLayer(String name, boolean active) {
         layerOptions.get(name).set(active);
-        FTBChunksClientConfig.saveConfig();
+        saveConfig();
         FTBChunksAPI.clientApi().getWaypointManager()
                 .ifPresent(manager -> manager.getAllWaypoints().forEach(waypoint -> {
                     if (waypoint.getName().equals(name)) {
@@ -48,6 +44,14 @@ public class FTBChunksOptions {
     }
 
     public static boolean hideDepleted() {
-        return hideDepleted.get();
+        return HIDE_DEPLETED.get();
+    }
+
+    public static void loadConfig() {
+        ConfigUtil.loadDefaulted(CONFIG, ConfigUtil.LOCAL_DIR.resolve("gtceu"), "gtceu", "client-config.snbt");
+    }
+
+    public static void saveConfig() {
+        CONFIG.save(ConfigUtil.LOCAL_DIR.resolve("gtceu").resolve("client-config.snbt"));
     }
 }
