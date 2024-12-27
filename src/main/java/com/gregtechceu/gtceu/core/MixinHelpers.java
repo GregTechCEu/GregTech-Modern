@@ -45,9 +45,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
-import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +129,7 @@ public class MixinHelpers {
             GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block.get());
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(),
-                                path -> new ArrayList<>())
+                        path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
             });
         } else if (registry == BuiltInRegistries.FLUID) {
@@ -146,7 +146,7 @@ public class MixinHelpers {
                             TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
                                     GTValues.CUSTOM_TAG_SOURCE);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
-                                            path -> new ArrayList<>())
+                                    path -> new ArrayList<>())
                                     .add(entry);
                             tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
                                     .add(entry);
@@ -158,7 +158,7 @@ public class MixinHelpers {
                     if (fluid != null) {
                         ResourceLocation moltenID = BuiltInRegistries.FLUID.getKey(fluid);
                         tagMap.computeIfAbsent(CustomTags.MOLTEN_FLUIDS.location(),
-                                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                                 .add(new TagLoader.EntryWithSource(TagEntry.element(moltenID),
                                         GTValues.CUSTOM_TAG_SOURCE));
                     }
@@ -174,7 +174,7 @@ public class MixinHelpers {
         if (!prefix.miningToolTag().isEmpty()) {
             map.forEach((material, block) -> {
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
-                                path -> new ArrayList<>())
+                        path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE));
 
@@ -306,5 +306,4 @@ public class MixinHelpers {
             }
         }
     }
-
 }

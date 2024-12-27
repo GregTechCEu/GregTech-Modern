@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.world.item.*;
 
 public class GTDyeableArmorItem extends GTArmorItem implements DyeableLeatherItem {
@@ -15,5 +17,4 @@ public class GTDyeableArmorItem extends GTArmorItem implements DyeableLeatherIte
             ArmorItemRenderer.create(this, type);
         }
     }
-
 }

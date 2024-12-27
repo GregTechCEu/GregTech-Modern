@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +26,6 @@ public class GTArmorItem extends ArmorItem {
 
     public final Material material;
     public final ArmorProperty armorProperty;
-
 
     public GTArmorItem(ArmorMaterial armorMaterial, ArmorItem.Type type, Properties properties,
                        Material material, ArmorProperty armorProperty) {

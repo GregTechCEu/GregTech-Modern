@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -16,7 +14,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -405,9 +402,7 @@ public class ElementMaterials {
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
                 .armorStats(ArmorProperty.Builder.of(16, new int[] { 2, 5, 6, 2 })
-                        .enchantability(9)
-                        .repairIngredient(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, Iron)))
-                        .build())
+                        .enchantability(9).build())
                 .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(V[MV], 2, 3)
                 .buildAndRegister();

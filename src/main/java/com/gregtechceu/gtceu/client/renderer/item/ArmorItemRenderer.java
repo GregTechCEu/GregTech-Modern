@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+
+import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;

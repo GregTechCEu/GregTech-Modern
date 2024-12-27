@@ -10,9 +10,9 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
+
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -164,5 +164,4 @@ public class GTMaterialItems {
                     .register());
         }
     }
-
 }

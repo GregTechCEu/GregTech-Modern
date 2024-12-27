@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -16,6 +14,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import com.google.common.base.Preconditions;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -82,8 +84,8 @@ public class ArmorProperty implements IMaterialProperty {
             this.material = properties.getMaterial();
         }
         if (this.repairIngredient == null && !noRepair) {
-            this.repairIngredient =
-                    SupplierMemoizer.memoize(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, material)));
+            this.repairIngredient = SupplierMemoizer
+                    .memoize(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, material)));
         }
     }
 
@@ -158,17 +160,19 @@ public class ArmorProperty implements IMaterialProperty {
 
     @FunctionalInterface
     public interface CustomTextureGetter {
+
         ResourceLocation getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean overlay);
     }
 
     public class ArmorMaterial implements net.minecraft.world.item.ArmorMaterial {
 
-        private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
-            map.put(ArmorItem.Type.BOOTS, 13);
-            map.put(ArmorItem.Type.LEGGINGS, 15);
-            map.put(ArmorItem.Type.CHESTPLATE, 16);
-            map.put(ArmorItem.Type.HELMET, 11);
-        });
+        private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util
+                .make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+                    map.put(ArmorItem.Type.BOOTS, 13);
+                    map.put(ArmorItem.Type.LEGGINGS, 15);
+                    map.put(ArmorItem.Type.CHESTPLATE, 16);
+                    map.put(ArmorItem.Type.HELMET, 11);
+                });
 
         @Override
         public int getDurabilityForType(ArmorItem.@NotNull Type type) {
@@ -216,5 +220,4 @@ public class ArmorProperty implements IMaterialProperty {
             return ArmorProperty.this;
         }
     }
-
 }

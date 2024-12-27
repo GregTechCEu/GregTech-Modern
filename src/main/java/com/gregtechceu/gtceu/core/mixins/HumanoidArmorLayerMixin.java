@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
-import com.llamalad7.mixinextras.sugar.Local;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -9,23 +9,26 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
+
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+/// Have to do the ModifyArg calls separately, thanks forge.
+/// see [Connector#383](https://github.com/Sinytra/Connector/discussions/383) for an explanation.
 @Mixin(HumanoidArmorLayer.class)
-public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends RenderLayer<T, M> {
+public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends HumanoidModel<T>,
+        A extends HumanoidModel<T>> extends RenderLayer<T, M> {
 
     public HumanoidArmorLayerMixin(RenderLayerParent<T, M> renderer) {
         super(renderer);
     }
 
-    /// Have to do the ModifyArg calls separately, thanks forge.
-    /// see [Connector#383](https://github.com/Sinytra/Connector/discussions/383) for an explanation.
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
-                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
-                                 "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/ResourceLocation;)V"),
+                        target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
+                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/ResourceLocation;)V"),
                index = 6)
     private float gtceu$modifyArmorTintR(float oldR, @Local ArmorItem armorItem) {
         if (armorItem instanceof GTArmorItem gtArmorItem) {
@@ -41,8 +44,6 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         return oldR;
     }
 
-    /// Have to do the ModifyArg calls separately, thanks forge.
-    /// see [Connector#383](https://github.com/Sinytra/Connector/discussions/383) for an explanation.
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
@@ -62,8 +63,6 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         return oldG;
     }
 
-    /// Have to do the ModifyArg calls separately, thanks forge.
-    /// see [Connector#383](https://github.com/Sinytra/Connector/discussions/383) for an explanation.
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
@@ -82,5 +81,4 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         }
         return oldB;
     }
-
 }
