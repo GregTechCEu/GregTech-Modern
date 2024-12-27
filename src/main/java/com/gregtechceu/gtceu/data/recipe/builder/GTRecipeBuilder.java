@@ -355,7 +355,7 @@ public class GTRecipeBuilder {
             return inputItems(machine);
         } else {
             GTCEu.LOGGER.error(
-                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition, id: {}",
+                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
                     id);
             return this;
         }
@@ -378,7 +378,7 @@ public class GTRecipeBuilder {
             return inputItems(machine, count);
         } else {
             GTCEu.LOGGER.error(
-                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition, id: {}",
+                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
                     id);
             return this;
         }
@@ -537,7 +537,7 @@ public class GTRecipeBuilder {
             return outputItems(machine);
         } else {
             GTCEu.LOGGER.error(
-                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition, id: {}",
+                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
                     id);
             return this;
         }
@@ -556,7 +556,7 @@ public class GTRecipeBuilder {
             return outputItems(machine, count);
         } else {
             GTCEu.LOGGER.error(
-                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, UnificationEntry, TagKey<Item>, MachineDefinition, id: {}",
+                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
                     id);
             return this;
         }

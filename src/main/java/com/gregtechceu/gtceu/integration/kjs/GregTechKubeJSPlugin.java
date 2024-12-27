@@ -239,7 +239,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
-        event.add("UnificationEntry", MaterialEntry.class);
         event.add("MaterialEntry", MaterialEntry.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);

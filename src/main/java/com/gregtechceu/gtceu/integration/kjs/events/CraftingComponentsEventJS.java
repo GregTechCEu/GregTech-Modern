@@ -54,11 +54,11 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         component.appendIngredients(newMap);
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, int tier, MaterialEntry item) {
+    public void modifyMaterialEntry(CraftingComponent.Component component, int tier, MaterialEntry item) {
         component.appendIngredients(Map.of(tier, item));
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, Map<Number, MaterialEntry> map) {
+    public void modifyMaterialEntry(CraftingComponent.Component component, Map<Number, MaterialEntry> map) {
         Map<Integer, Object> newMap = map.entrySet()
                 .stream()
                 .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
@@ -90,7 +90,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return new CraftingComponent.Component(newMap);
     }
 
-    public CraftingComponent.Component createUnificationEntry(Map<Number, MaterialEntry> map) {
+    public CraftingComponent.Component createMaterialEntry(Map<Number, MaterialEntry> map) {
         Map<Integer, Object> newMap = map.entrySet()
                 .stream()
                 .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))

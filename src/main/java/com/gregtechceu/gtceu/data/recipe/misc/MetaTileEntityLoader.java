@@ -1204,7 +1204,7 @@ public class MetaTileEntityLoader {
     // - Block
     // - ItemEntry<?> (like GTItems)
     // - CraftingComponent.Component
-    // - UnificationEntry
+    // - MaterialEntry
     // - TagKey<?>
     public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
                                              MachineDefinition[] machines, Object... recipe) {
