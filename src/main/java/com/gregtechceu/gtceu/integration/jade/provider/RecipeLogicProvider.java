@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,6 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
+
+import static net.minecraft.ChatFormatting.*;
+import static net.minecraft.ChatFormatting.BOLD;
 
 public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
@@ -82,27 +86,28 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 }
 
                 if (EUt > 0) {
-                    Component text;
+                    MutableComponent text;
 
                     if (isSteam) {
                         text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
                         var tier = GTUtil.getOCTierByVoltage(EUt);
-                        if (tier < GTValues.TIER_COUNT) {
-                            text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
-                                    .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
-                                            .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
-                                                    .append(Component.literal(GTValues.VNF[tier])
-                                                            .withStyle(style -> style.withColor(GTValues.VC[tier])))
-                                                    .append(Component.literal(")").withStyle(ChatFormatting.GREEN))));
-                        } else {
 
-                            text = Component
-                                    .translatable("MAX_OC_JADE_TOOLTIP", FormattingUtil.formatNumbers(tier - 14))
-                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)));
+                        text =  Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
+                                .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET).append(Component.literal(" (").withStyle(ChatFormatting.GREEN)));
+                        if (tier < GTValues.TIER_COUNT) {
+                           text = text.append( Component.literal(GTValues.VNF[tier])
+                                    .withStyle(style -> style.withColor(GTValues.VC[tier])));
+                        }
+                        else {
+
+                            text = text.append(Component.literal( RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD)
+                                    .append(Component.literal(FormattingUtil.formatNumbers(tier - 14))
+                                            .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)))));
 
                         }
+                        text = text.append(Component.literal(")").withStyle(ChatFormatting.GREEN));
                     }
 
                     if (isInput) {
