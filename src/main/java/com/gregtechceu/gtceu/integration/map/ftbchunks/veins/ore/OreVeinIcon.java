@@ -11,7 +11,10 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,14 +22,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
-import dev.ftb.mods.ftbchunks.client.map.MapDimension;
+import dev.ftb.mods.ftbchunks.api.client.waypoint.WaypointManager;
+import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
+import dev.ftb.mods.ftbchunks.client.map.MapManager;
 import dev.ftb.mods.ftbchunks.client.map.WaypointImpl;
 import dev.ftb.mods.ftbchunks.client.map.WaypointType;
+import dev.ftb.mods.ftblibrary.icon.Color4I;
+import dev.ftb.mods.ftblibrary.icon.Icons;
 import dev.ftb.mods.ftblibrary.ui.BaseScreen;
+import dev.ftb.mods.ftblibrary.ui.ContextMenuItem;
 import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class OreVeinIcon implements MapIcon {
@@ -71,22 +80,55 @@ public class OreVeinIcon implements MapIcon {
 
     @Override
     public boolean onMousePressed(BaseScreen baseScreen, MouseButton mouseButton) {
-        if (!isEnabled()) {
+        if (!isEnabled() || !(baseScreen instanceof LargeMapScreen largeMapScreen)) {
             return false;
         }
-        MapDimension.getCurrent()
-                .ifPresent(mapDimension -> FTBChunksAPI.clientApi()
-                        .getWaypointManager(mapDimension.dimension)
-                        .ifPresent(waypointManager -> {
-                            var waypoint = new WaypointImpl(WaypointType.DEFAULT, mapDimension, veinMetadata.center());
-                            if (!waypointManager.getAllWaypoints().contains(waypoint)) {
-                                waypointManager.addWaypointAt(veinMetadata.center(), getName())
-                                        .setColor(getMaterial().getMaterialARGB())
-                                        .setHidden(false);
-                                baseScreen.openGui();
-                            }
-                        }));
-        return true;
+        if (mouseButton.isLeft()) {
+            toggleWaypoint(largeMapScreen);
+            return true;
+        } else if (mouseButton.isRight()) {
+            openContextMenu(largeMapScreen);
+            return true;
+        }
+        return false;
+    }
+
+    private void openContextMenu(LargeMapScreen screen) {
+        var title = Component.literal(getName());
+        if (veinMetadata.depleted()) {
+            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+        }
+        var markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
+                Icons.REMOVE,
+                b -> veinMetadata.depleted(!veinMetadata.depleted()));
+        var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(Color4I.rgba(getMaterial().getMaterialARGB()));
+        var toggleWaypoint = new ContextMenuItem(Component.translatable("button.gtceu.toggle_waypoint.name"),
+                waypointIcon,
+                b -> toggleWaypoint(screen));
+        var contextMenu = List.of(
+                ContextMenuItem.title(title),
+                ContextMenuItem.SEPARATOR,
+                markDepleted,
+                toggleWaypoint);
+        screen.openContextMenu(contextMenu);
+    }
+
+    public void toggleWaypoint(LargeMapScreen screen) {
+        var dimension = screen.currentDimension();
+        var mapManager = MapManager.getInstance().orElse(null);
+        var waypointManager = FTBChunksAPI.clientApi().getWaypointManager(dimension)
+                .orElse(null);
+        if (mapManager == null || waypointManager == null) return;
+        var waypoint = new WaypointImpl(WaypointType.DEFAULT, mapManager.getDimension(dimension),
+                veinMetadata.center());
+        if (waypointManager.getAllWaypoints().contains(waypoint)) {
+            waypointManager.removeWaypoint(waypoint);
+        } else {
+            waypointManager.addWaypointAt(veinMetadata.center(), getName())
+                    .setColor(getMaterial().getMaterialARGB())
+                    .setHidden(false);
+        }
+        screen.refreshWidgets();
     }
 
     @Override
@@ -97,8 +139,9 @@ public class OreVeinIcon implements MapIcon {
 
         if (key.is(InputConstants.KEY_DELETE)) {
             veinMetadata.depleted(!veinMetadata.depleted());
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
