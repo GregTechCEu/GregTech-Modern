@@ -26,7 +26,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class    RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
         super(GTCEu.id("recipe_logic_provider"));
@@ -89,18 +89,18 @@ public class    RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic>
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
                         var tier = GTUtil.getOCTierByVoltage(EUt);
-                        if(tier <  GTValues.TIER_COUNT) {
+                        if (tier < GTValues.TIER_COUNT) {
                             text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
                                     .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
                                             .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
                                                     .append(Component.literal(GTValues.VNF[tier])
                                                             .withStyle(style -> style.withColor(GTValues.VC[tier])))
                                                     .append(Component.literal(")").withStyle(ChatFormatting.GREEN))));
-                        }
-                        else {
+                        } else {
 
-                            text = Component.translatable("MAX_OC_JADE_TOOLTIP", FormattingUtil.formatNumbers(tier - 14))
-                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier-14)));
+                            text = Component
+                                    .translatable("MAX_OC_JADE_TOOLTIP", FormattingUtil.formatNumbers(tier - 14))
+                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)));
 
                         }
                     }
