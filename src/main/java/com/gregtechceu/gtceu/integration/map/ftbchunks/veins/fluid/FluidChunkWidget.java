@@ -74,7 +74,7 @@ public class FluidChunkWidget extends Widget {
                                 waypointManager.addWaypointAt(pos, getName())
                                         .setColor(getColor())
                                         .setHidden(false);
-                                parent.openGui();
+                                parent.refreshWidgets();
                             }
                         }));
         return true;
