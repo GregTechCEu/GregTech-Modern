@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig;
 import dev.ftb.mods.ftblibrary.snbt.config.BooleanValue;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,10 +15,16 @@ public class FTBChunksOptions {
     private static final Map<String, BooleanValue> layerOptions = new HashMap<>();
 
     private static BooleanValue hideDepleted;
+    
+    private static boolean initialized = false;
 
     private FTBChunksOptions() {}
 
     public static void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
         var group = CONFIG.addGroup("gtceu_prospecting");
         var oreLayer = group.addBoolean("ore_veins", false);
         layerOptions.put(oreLayer.key, oreLayer);
