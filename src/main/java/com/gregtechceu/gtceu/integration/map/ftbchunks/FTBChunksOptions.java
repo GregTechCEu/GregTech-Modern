@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig;
 import dev.ftb.mods.ftblibrary.snbt.config.BooleanValue;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class FTBChunksOptions {
     private static final Map<String, BooleanValue> layerOptions = new HashMap<>();
 
     private static BooleanValue hideDepleted;
-    
+
     private static boolean initialized = false;
 
     private FTBChunksOptions() {}
@@ -40,13 +39,12 @@ public class FTBChunksOptions {
     public static void toggleLayer(String name, boolean active) {
         layerOptions.get(name).set(active);
         FTBChunksClientConfig.saveConfig();
-        FTBChunksAPI.clientApi().getWaypointManager().ifPresent(manager -> {
-            manager.getAllWaypoints().forEach(waypoint -> {
-                if (waypoint.getName().equals(name)) {
-                    waypoint.setHidden(!active);
-                }
-            });
-        });
+        FTBChunksAPI.clientApi().getWaypointManager()
+                .ifPresent(manager -> manager.getAllWaypoints().forEach(waypoint -> {
+                    if (waypoint.getName().equals(name)) {
+                        waypoint.setHidden(!active);
+                    }
+                }));
     }
 
     public static boolean hideDepleted() {
