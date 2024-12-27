@@ -87,6 +87,8 @@ public interface GTRecipeSchema {
         @Getter
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
+        public boolean itemMaterialInfo = false;
+        public boolean fluidMaterialInfo = false;
 
         @HideFromJS
         @Override
@@ -869,6 +871,17 @@ public interface GTRecipeSchema {
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item) {
+            this.itemMaterialInfo = item;
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item, boolean fluid) {
+            this.itemMaterialInfo = item;
+            this.fluidMaterialInfo = fluid;
             return this;
         }
 

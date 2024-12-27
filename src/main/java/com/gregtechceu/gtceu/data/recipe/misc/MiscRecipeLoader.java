@@ -226,8 +226,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 32)
                 .inputFluids(Titanium.getFluid(L * 10))
                 .outputItems(QUANTUM_HELMET)
-                .addMaterialInfo(true)
-                .fluidMaterialInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
@@ -242,8 +241,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 48)
                 .inputFluids(Titanium.getFluid(L * 16))
                 .outputItems(QUANTUM_CHESTPLATE)
-                .addMaterialInfo(true)
-                .fluidMaterialInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
@@ -258,8 +256,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 40)
                 .inputFluids(Titanium.getFluid(L * 14))
                 .outputItems(QUANTUM_LEGGINGS)
-                .addMaterialInfo(true)
-                .fluidMaterialInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
@@ -274,8 +271,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
                 .outputItems(QUANTUM_BOOTS)
-                .addMaterialInfo(true)
-                .fluidMaterialInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
@@ -292,8 +288,7 @@ public class MiscRecipeLoader {
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
                 .inputItems(screw, HSSS, 8)
                 .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
-                .addMaterialInfo(true)
-                .fluidMaterialInfo(true)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         // TODO Central monitor

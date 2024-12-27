@@ -515,6 +515,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
                     builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
                 }
+                builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
 
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
