@@ -94,17 +94,20 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     } else {
                         var tier = GTUtil.getOCTierByVoltage(EUt);
 
-                        text =  Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET).append(Component.literal(" (").withStyle(ChatFormatting.GREEN)));
+                        text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
+                                .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
+                                        .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)));
                         if (tier < GTValues.TIER_COUNT) {
-                           text = text.append( Component.literal(GTValues.VNF[tier])
+                            text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
-                        }
-                        else {
+                        } else {
 
-                            text = text.append(Component.literal( RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD)
+                            text = text.append(Component
+                                    .literal(RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" +
+                                            YELLOW + BOLD + "+" + RED + BOLD)
                                     .append(Component.literal(FormattingUtil.formatNumbers(tier - 14))
-                                            .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)))));
+                                            .withStyle(
+                                                    style -> style.withColor(TooltipHelper.rainbowColor(tier - 14)))));
 
                         }
                         text = text.append(Component.literal(")").withStyle(ChatFormatting.GREEN));
