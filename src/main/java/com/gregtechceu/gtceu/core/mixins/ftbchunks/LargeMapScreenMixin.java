@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
 import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
-import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.Icons;
 import dev.ftb.mods.ftblibrary.icon.ItemIcon;
 import dev.ftb.mods.ftblibrary.ui.BaseScreen;
