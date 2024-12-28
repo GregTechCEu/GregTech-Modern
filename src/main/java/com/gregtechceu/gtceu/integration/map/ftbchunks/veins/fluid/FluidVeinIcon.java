@@ -14,7 +14,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
-import dev.ftb.mods.ftbchunks.client.gui.MapIconWidget;
+import dev.ftb.mods.ftbchunks.client.FTBChunksClientConfig;
 import dev.ftb.mods.ftbchunks.client.map.MapDimension;
 import dev.ftb.mods.ftbchunks.client.map.WaypointImpl;
 import dev.ftb.mods.ftbchunks.client.map.WaypointType;
@@ -35,14 +35,11 @@ public class FluidVeinIcon implements MapIcon {
     private final ProspectorMode.FluidInfo fluidInfo;
     @Setter
     private int size;
-    @Setter
-    private MapIconWidget widget;
 
     public FluidVeinIcon(ChunkPos chunkPos, ProspectorMode.FluidInfo fluidInfo) {
         this.chunkPos = chunkPos;
         this.fluidInfo = fluidInfo;
         this.size = 1;
-        this.widget = null;
     }
 
     public boolean isEnabled() {
@@ -65,7 +62,7 @@ public class FluidVeinIcon implements MapIcon {
 
     @Override
     public double getIconScale(MapType mapType) {
-        return mapType.isMinimap() ? 1 : size;
+        return mapType.isMinimap() ? FTBChunksClientConfig.MINIMAP_SCALE.get() : size;
     }
 
     @Override
@@ -114,22 +111,23 @@ public class FluidVeinIcon implements MapIcon {
         return false;
     }
 
+    public Icon getIcon(int alpha, boolean mouseOver) {
+        var color = getColor();
+        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
+                .withColor(Color4I.rgba(color).withAlpha(alpha));
+        if (mouseOver) {
+            fluidIcon = fluidIcon.withBorder(Color4I.rgba(color), false);
+        }
+        return fluidIcon;
+    }
+
     @Override
     public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h, boolean outsideVisibleArea,
                      int iconAlpha) {
-        if (outsideVisibleArea || !isEnabled()) {
+        if (!mapType.isMinimap() || outsideVisibleArea || !isEnabled()) {
             return;
         }
 
-        var mouseOver = false;
-        if (widget != null) {
-            mouseOver = widget.isMouseOver();
-        }
-        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
-                .withColor(Color4I.rgba(getColor()).withAlphaf(mouseOver ? 0.9f : 0.8f));
-        if (mouseOver) {
-            fluidIcon = fluidIcon.withBorder(Color4I.rgba(getColor()), false);
-        }
-        fluidIcon.draw(graphics, x, y, w, h);
+        getIcon(200, false).draw(graphics, x, y, w, h);
     }
 }

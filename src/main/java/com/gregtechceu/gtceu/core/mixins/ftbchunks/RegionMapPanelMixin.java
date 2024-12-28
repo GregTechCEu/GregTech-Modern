@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins.ftbchunks;
 
+import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksRenderer;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinWidget;
 
 import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
 import dev.ftb.mods.ftbchunks.client.gui.MapIconWidget;
@@ -30,20 +33,36 @@ public abstract class RegionMapPanelMixin extends Panel {
         super(panel);
     }
 
+    @Inject(method = "addWidgets",
+            at = @At(value = "INVOKE", target = "Ldev/ftb/mods/ftbchunks/client/gui/RegionMapPanel;alignWidgets()V"))
+    private void gtceu$injectAddWidgets(CallbackInfo ci) {
+        if (FTBChunksOptions.showLayer("bedrock_fluids")) {
+            FTBChunksRenderer.fluidElements.row(largeMap.currentDimension()).forEach((pos, icon) -> {
+                var widget = new FluidVeinWidget((RegionMapPanel) (Object) this, icon);
+                add(widget);
+            });
+        }
+    }
+
     @Inject(method = "alignWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAlignWidgets(CallbackInfo ci) {
+        var regionSize = largeMap.getRegionTileSize();
+        var chunkSize = largeMap.getRegionTileSize() / 32;
         for (var widget : widgets) {
-            if (!(widget instanceof MapIconWidget w) || !(w.getMapIcon() instanceof FluidVeinIcon icon)) continue;
+            if (widget instanceof MapIconWidget w && w.getMapIcon() instanceof FluidVeinIcon icon) {
+                var chunkPos = icon.getChunkPos();
 
-            var regionSize = largeMap.getRegionTileSize();
-            var chunkSize = largeMap.getRegionTileSize() / 32;
-            var chunkPos = icon.getChunkPos();
+                var x = (chunkPos.getRegionX() - regionMinX) * regionSize + chunkPos.getRegionLocalX() * chunkSize;
+                var y = (chunkPos.getRegionZ() - regionMinZ) * regionSize + chunkPos.getRegionLocalZ() * chunkSize;
+                icon.setSize(chunkSize);
+                w.setPosAndSize(x, y, chunkSize, chunkSize);
+            } else if (widget instanceof FluidVeinWidget w) {
+                var chunkPos = w.getMapIcon().getChunkPos();
 
-            var x = (chunkPos.getRegionX() - regionMinX) * regionSize + chunkPos.getRegionLocalX() * chunkSize;
-            var y = (chunkPos.getRegionZ() - regionMinZ) * regionSize + chunkPos.getRegionLocalZ() * chunkSize;
-            icon.setWidget(w);
-            icon.setSize(chunkSize);
-            w.setPosAndSize(x, y, chunkSize, chunkSize);
+                var x = (chunkPos.getRegionX() - regionMinX) * regionSize + chunkPos.getRegionLocalX() * chunkSize;
+                var y = (chunkPos.getRegionZ() - regionMinZ) * regionSize + chunkPos.getRegionLocalZ() * chunkSize;
+                w.setPosAndSize(x, y, chunkSize, chunkSize);
+            }
         }
     }
 }
