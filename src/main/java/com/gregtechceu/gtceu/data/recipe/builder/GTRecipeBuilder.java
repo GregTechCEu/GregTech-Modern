@@ -1238,6 +1238,16 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder setTempItemMaterialStacks(List<MaterialStack> stacks) {
+        tempItemMaterialStacks = stacks;
+        return this;
+    }
+
+    public GTRecipeBuilder setTempFluidMaterialStacks(List<MaterialStack> stacks) {
+        tempFluidStacks = stacks;
+        return this;
+    }
+
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));

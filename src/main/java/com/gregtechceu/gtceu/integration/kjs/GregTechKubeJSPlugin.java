@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -515,6 +516,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
                     builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
                 }
+                builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
+                builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
+                gtRecipe.itemMaterialStacks = null;
+                gtRecipe.fluidMaterialStacks = null;
                 builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
 
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),

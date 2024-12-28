@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -388,7 +389,7 @@ public class GTRecipeComponents {
     }
 
     public static class FluidIngredientJS implements InputFluid, OutputFluid {
-
+        @Getter
         private final FluidIngredient ingredient;
 
         public FluidIngredientJS(FluidIngredient ingredient) {

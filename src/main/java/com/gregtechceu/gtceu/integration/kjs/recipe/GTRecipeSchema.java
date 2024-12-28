@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -54,6 +56,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -87,6 +90,9 @@ public interface GTRecipeSchema {
         @Getter
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
+
+        public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
+        public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
         public boolean itemMaterialInfo = false;
         public boolean fluidMaterialInfo = false;
 
@@ -229,11 +235,21 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
+            for(var stack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
+                if(matStack != null) {
+                    itemMaterialStacks.add(matStack.copy(matStack.amount() * stack.count));
+                }
+            }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(itemStack);
+                if(matStack != null) {
+                    itemMaterialStacks.add(matStack.copy(matStack.amount() * itemStack.getCount()));
+                }
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("Input items is empty, id: %s", id);
                 }
@@ -279,6 +295,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
+            itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 
@@ -637,6 +654,15 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            for(var fluidIng : inputs) {
+                for(var stack : fluidIng.getIngredient().getStacks()) {
+                    var matStack = ChemicalHelper.getMaterial(stack.getFluid());
+                    if(matStack != null) {
+                        fluidMaterialStacks.add(new MaterialStack(matStack,
+                                ((long) stack.getAmount() * GTValues.M) / GTValues.L));
+                    }
+                }
+            }
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 

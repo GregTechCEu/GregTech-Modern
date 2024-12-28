@@ -20,6 +20,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,6 +55,11 @@ public class ChemicalHelper {
             return getMaterialStack(item);
         } else if (object instanceof SizedIngredient sized) {
             return getMaterialStack(sized.getItems()[0]);
+        } else if (object instanceof Ingredient ing) {
+            for(var stack : ing.getItems()) {
+                var ms = getMaterialStack(stack);
+                if(ms != null) return ms;
+            }
         }
         return null;
     }
