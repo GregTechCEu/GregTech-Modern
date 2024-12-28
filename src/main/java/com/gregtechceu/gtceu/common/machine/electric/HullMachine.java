@@ -35,7 +35,7 @@ public class HullMachine extends TieredPartMachine {
 
     public HullMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
-        if (GTCEu.isAE2Loaded()) {
+        if (GTCEu.Mods.isAE2Loaded()) {
             this.gridNodeHost = new GridNodeHostTrait(this);
         } else {
             this.gridNodeHost = null;
@@ -52,7 +52,7 @@ public class HullMachine extends TieredPartMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity &&
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity &&
                 getLevel() instanceof ServerLevel level) {
             level.getServer().tell(new TickTask(0, connectedBlockEntity::init));
         }
@@ -61,7 +61,7 @@ public class HullMachine extends TieredPartMachine {
     @Override
     public void onUnload() {
         super.onUnload();
-        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
             connectedBlockEntity.getMainNode().destroy();
         }
     }
@@ -70,7 +70,7 @@ public class HullMachine extends TieredPartMachine {
     public void setFrontFacing(Direction facing) {
         super.setFrontFacing(facing);
         if (isFacingValid(facing)) {
-            if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
+            if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
                 connectedBlockEntity.init();
             }
         }
@@ -84,7 +84,7 @@ public class HullMachine extends TieredPartMachine {
     @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
             CompoundTag nbt = new CompoundTag();
             connectedBlockEntity.getMainNode().saveToNBT(nbt);
             tag.put("grid_node", nbt);
@@ -94,7 +94,7 @@ public class HullMachine extends TieredPartMachine {
     @Override
     public void loadCustomPersistedData(@NotNull CompoundTag tag) {
         super.loadCustomPersistedData(tag);
-        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
             connectedBlockEntity.getMainNode().loadFromNBT(tag.getCompound("grid_node"));
         }
     }

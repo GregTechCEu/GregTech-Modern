@@ -199,7 +199,7 @@ public class CommonProxy {
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
 
@@ -207,7 +207,7 @@ public class CommonProxy {
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
         ModLoader.get().postEvent(new PostMaterialEvent());
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSEventWrapper.materialModification();
         }
 

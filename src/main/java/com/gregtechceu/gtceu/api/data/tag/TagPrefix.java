@@ -75,7 +75,7 @@ public class TagPrefix {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.TAG_PREFIX.registryKey);
         }
     }

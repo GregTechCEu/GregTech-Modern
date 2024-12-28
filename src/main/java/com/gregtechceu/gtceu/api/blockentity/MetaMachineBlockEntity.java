@@ -272,7 +272,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         }
-        if (GTCEu.isAE2Loaded()) {
+        if (GTCEu.Mods.isAE2Loaded()) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));

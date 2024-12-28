@@ -168,7 +168,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @Nullable
     private static ItemStack getActioned(CustomItemStackHandler storage, int index, List<?> actions) {
-        if (!GTCEu.isKubeJSLoaded()) return null;
+        if (!GTCEu.Mods.isKubeJSLoaded()) return null;
         // noinspection unchecked
         var actioned = KJSCallWrapper.applyIngredientAction(storage, index, (List<IngredientAction>) actions);
         if (!actioned.isEmpty()) return actioned;

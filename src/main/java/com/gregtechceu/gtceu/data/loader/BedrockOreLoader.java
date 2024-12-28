@@ -53,7 +53,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         AddonFinder.getAddons().forEach(IGTAddon::registerBedrockOreVeins);
         ModLoader.get().postEvent(
                 new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent();
         }
 

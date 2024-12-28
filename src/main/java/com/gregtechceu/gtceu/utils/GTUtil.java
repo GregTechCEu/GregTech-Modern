@@ -429,7 +429,7 @@ public class GTUtil {
         }
 
         ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.isJAVDLoaded() &&
+        if (GTCEu.Mods.isJAVDLoaded() &&
                 world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
             return !world.isDay();
         } else return world.isDay();

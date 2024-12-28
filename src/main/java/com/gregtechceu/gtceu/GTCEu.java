@@ -162,54 +162,57 @@ public class GTCEu {
         return FMLPaths.GAMEDIR.get();
     }
 
-    public static boolean isJeiLoaded() {
-        return !(isEmiLoaded() || isReiLoaded()) && isModLoaded(GTValues.MODID_JEI);
-    }
+    public static class Mods {
 
-    public static boolean isReiLoaded() {
-        // todo: convert to base check after ui rework
-        return LDLib.isReiLoaded();
-    }
+        public static boolean isJeiLoaded() {
+            return !(isEmiLoaded() || isReiLoaded()) && isModLoaded(GTValues.MODID_JEI);
+        }
 
-    public static boolean isEmiLoaded() {
-        // todo: convert to base check after ui rework
-        return LDLib.isEmiLoaded();
-    }
+        public static boolean isReiLoaded() {
+            // todo: convert to base check after ui rework
+            return LDLib.isReiLoaded();
+        }
 
-    public static boolean isKubeJSLoaded() {
-        return isModLoaded(GTValues.MODID_KUBEJS);
-    }
+        public static boolean isEmiLoaded() {
+            // todo: convert to base check after ui rework
+            return LDLib.isEmiLoaded();
+        }
 
-    public static boolean isIrisOculusLoaded() {
-        return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
-    }
+        public static boolean isKubeJSLoaded() {
+            return isModLoaded(GTValues.MODID_KUBEJS);
+        }
 
-    public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-        return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                isModLoaded(GTValues.MODID_EMBEDDIUM);
-    }
+        public static boolean isIrisOculusLoaded() {
+            return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
+        }
 
-    public static boolean isAE2Loaded() {
-        return isModLoaded(GTValues.MODID_APPENG);
-    }
+        public static boolean isSodiumRubidiumEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_RUBIDIUM) ||
+                    isModLoaded(GTValues.MODID_EMBEDDIUM);
+        }
 
-    public static boolean isCuriosLoaded() {
-        return isModLoaded(GTValues.MODID_CURIOS);
-    }
+        public static boolean isAE2Loaded() {
+            return isModLoaded(GTValues.MODID_APPENG);
+        }
 
-    public static boolean isShimmerLoaded() {
-        return isModLoaded(GTValues.MODID_SHIMMER);
-    }
+        public static boolean isCuriosLoaded() {
+            return isModLoaded(GTValues.MODID_CURIOS);
+        }
 
-    public static boolean isJAVDLoaded() {
-        return isModLoaded(GTValues.MODID_JAVD);
-    }
+        public static boolean isShimmerLoaded() {
+            return isModLoaded(GTValues.MODID_SHIMMER);
+        }
 
-    public static boolean isFTBTeamsLoaded() {
-        return isModLoaded(GTValues.MODID_FTB_TEAMS);
-    }
+        public static boolean isJAVDLoaded() {
+            return isModLoaded(GTValues.MODID_JAVD);
+        }
 
-    public static boolean isArgonautsLoaded() {
-        return isModLoaded(GTValues.MODID_ARGONAUTS);
+        public static boolean isFTBTeamsLoaded() {
+            return isModLoaded(GTValues.MODID_FTB_TEAMS);
+        }
+
+        public static boolean isArgonautsLoaded() {
+            return isModLoaded(GTValues.MODID_ARGONAUTS);
+        }
     }
 }

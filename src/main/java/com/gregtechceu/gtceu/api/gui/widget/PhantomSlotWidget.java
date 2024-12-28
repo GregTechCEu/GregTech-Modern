@@ -126,13 +126,13 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<Target> getPhantomTargets(Object ingredient) {
-        if (GTCEu.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
+        if (GTCEu.Mods.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
             Item item = emiStack.getKeyOfType(Item.class);
             if (item != null) {
                 ingredient = new ItemStack(item, (int) emiStack.getAmount());
                 ((ItemStack) ingredient).setTag(emiStack.getNbt());
             }
-        } else if (GTCEu.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
+        } else if (GTCEu.Mods.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
             ingredient = jeiStack.getItemStack().orElse(null);
         }
         if (!(ingredient instanceof ItemStack)) {
@@ -150,13 +150,13 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
 
             @Override
             public void accept(@Nonnull Object ingredient) {
-                if (GTCEu.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
+                if (GTCEu.Mods.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
                     Item item = emiStack.getKeyOfType(Item.class);
                     if (item != null) {
                         ingredient = new ItemStack(item, (int) emiStack.getAmount());
                         ((ItemStack) ingredient).setTag(emiStack.getNbt());
                     }
-                } else if (GTCEu.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
+                } else if (GTCEu.Mods.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
                     ingredient = jeiStack.getItemStack().orElse(null);
                 }
                 if (slotReference != null && ingredient instanceof ItemStack stack) {

@@ -926,7 +926,7 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.craftingComponentModification();
         }
     }

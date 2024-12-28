@@ -233,7 +233,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
             var collected = AE2CallWrapper.collect(first, limit);
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {
