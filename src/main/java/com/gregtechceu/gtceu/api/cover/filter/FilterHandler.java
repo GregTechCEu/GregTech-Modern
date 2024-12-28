@@ -148,7 +148,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         if (!this.filterItem.isEmpty()) {
             this.filter = loadFilter(this.filterItem);
             filter.setOnUpdated(this.onFilterUpdated);
-            if (this.filter instanceof SmartItemFilter smart && container instanceof CoverBehavior cover &&
+            if (filter instanceof SmartItemFilter smart &&
+                    container instanceof CoverBehavior cover &&
                     cover.coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
                 if (machine != null) {

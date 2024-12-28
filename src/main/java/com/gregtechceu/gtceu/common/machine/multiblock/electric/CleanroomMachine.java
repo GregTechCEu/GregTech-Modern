@@ -30,6 +30,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -276,7 +278,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                @NotNull Direction direction) {
         var state = world.getBlockState(pos.move(direction));
-        return state == GTBlocks.PLASTCRETE.getDefaultState() || state == GTBlocks.CLEANROOM_GLASS.getDefaultState();
+        return state == getCasingState() || state == getGlassState();
     }
 
     /**
@@ -288,7 +290,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                 @NotNull Direction direction) {
         var state = world.getBlockState(pos.move(direction));
-        return state.is(CustomTags.CLEANROOM_FLOORS);
+        return state == getCasingState() || state == getGlassState() || state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
@@ -450,19 +452,21 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         };
     }
 
-    protected boolean isMachineBanned(MetaMachine metaTileEntity) {
+    protected boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (metaTileEntity instanceof ICleanroomProvider) return true;
-        if (metaTileEntity instanceof IMufflerMachine) return true;
-        if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
-        // todo: enable checks when these are added?
-        // if (metaTileEntity instanceof FuelMultiblockController) return true;
-        if (metaTileEntity instanceof LargeMinerMachine) return true;
-        if (metaTileEntity instanceof FluidDrillMachine) return true;
-        // if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
-        if (metaTileEntity instanceof CokeOvenMachine) return true;
-        if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;
-        return metaTileEntity instanceof PrimitivePumpMachine;
+        if (machine instanceof ICleanroomProvider) return true;
+        if (machine instanceof IMufflerMachine) return true;
+        if (machine instanceof SimpleGeneratorMachine) return true;
+        if (machine instanceof LargeCombustionEngineMachine) return true;
+        if (machine instanceof LargeTurbineMachine) return true;
+
+        if (machine instanceof LargeMinerMachine) return true;
+        if (machine instanceof FluidDrillMachine) return true;
+        if (machine instanceof BedrockOreMinerMachine) return true;
+
+        if (machine instanceof CokeOvenMachine) return true;
+        if (machine instanceof PrimitiveBlastFurnaceMachine) return true;
+        return machine instanceof PrimitivePumpMachine;
     }
 
     @Override

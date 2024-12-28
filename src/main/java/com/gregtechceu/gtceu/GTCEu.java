@@ -65,11 +65,6 @@ public class GTCEu {
         return new ResourceLocation(strings[0], strings[1]);
     }
 
-    @Deprecated(forRemoval = true, since = "1.0.21")
-    public static boolean isHighTier() {
-        return GTCEuAPI.isHighTier();
-    }
-
     public static RegistryAccess getFrozenRegistry() {
         // todo: see if this behaves correctly, the ldlib version just assigns it to a different var and returns it
         if (BLANK == null && isClientThread()) {

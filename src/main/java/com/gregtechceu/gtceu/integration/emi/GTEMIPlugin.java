@@ -56,7 +56,7 @@ public class GTEMIPlugin implements EmiPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addCategory(GTBedrockOreEmiCategory.CATEGORY);
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (GTCEu.isDev() || category.isXEIVisible()) {
+            if (category.shouldRegisterDisplays()) {
                 registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
         }

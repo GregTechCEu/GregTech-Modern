@@ -58,7 +58,7 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.add(new GTBedrockOreDisplayCategory());
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (GTCEu.isDev() || category.isXEIVisible()) {
+            if (category.shouldRegisterDisplays()) {
                 registry.add(new GTRecipeREICategory(category));
             }
         }

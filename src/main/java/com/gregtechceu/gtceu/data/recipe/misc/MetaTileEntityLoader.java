@@ -524,12 +524,19 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron), 'S',
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'P',
                 new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.TinAlloy));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner", GTMachines.STEAM_MINER.asStack(), "DSD",
-                "SMS", "GSG", 'M', GTBlocks.BRONZE_BRICKS_HULL.asStack(), 'S',
-                new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze), 'D',
-                new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond), 'G',
-                new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Bronze));
-
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner_bronze",
+                GTMachines.STEAM_MINER.first().asStack(),
+                "DSD", "SMS", "GSG",
+                'M', GTBlocks.BRONZE_BRICKS_HULL.asStack(),
+                'S', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze),
+                'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond),
+                'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Bronze));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner_steel",
+                GTMachines.STEAM_MINER.second().asStack(), "DSD", "SMS", "GSG",
+                'M', GTMachines.STEAM_MINER.first().asStack(),
+                'S', new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.TinAlloy),
+                'D', new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond),
+                'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Steel));
         // MULTI BLOCK CONTROLLERS
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_primitive_blast_furnace",
                 GTMultiMachines.PRIMITIVE_BLAST_FURNACE.asStack(), "hRS", "PBR", "dRS", 'R',
