@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidChunkWid
 
 import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
 import dev.ftb.mods.ftbchunks.client.gui.RegionMapPanel;
-import dev.ftb.mods.ftbchunks.client.map.MapManager;
 import dev.ftb.mods.ftblibrary.ui.Panel;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,15 +34,12 @@ public abstract class RegionMapPanelMixin extends Panel {
     @Inject(method = "addWidgets",
             at = @At(value = "INVOKE", target = "Ldev/ftb/mods/ftbchunks/client/gui/RegionMapPanel;alignWidgets()V"))
     private void gtceu$injectAddWidgets(CallbackInfo ci) {
-        if (!FTBChunksOptions.showLayer("bedrock_fluids") ||
-                MapManager.getInstance().isEmpty()) {
-            return;
+        if (FTBChunksOptions.showLayer("bedrock_fluids")) {
+            FTBChunksRenderer.fluidElements.row(largeMap.currentDimension()).forEach((pos, info) -> {
+                var widget = new FluidChunkWidget((RegionMapPanel) (Object) this, pos, info);
+                add(widget);
+            });
         }
-
-        FTBChunksRenderer.fluidElements.row(largeMap.currentDimension()).forEach((pos, info) -> {
-            var widget = new FluidChunkWidget((RegionMapPanel) (Object) this, pos, info);
-            add(widget);
-        });
     }
 
     @Inject(method = "alignWidgets",

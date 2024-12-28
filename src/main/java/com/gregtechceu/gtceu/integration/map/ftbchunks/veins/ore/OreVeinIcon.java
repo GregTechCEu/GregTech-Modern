@@ -44,6 +44,12 @@ public class OreVeinIcon implements MapIcon {
         this.veinMetadata = veinMetadata;
     }
 
+    @Override
+    public double getIconScale(MapType mapType) {
+        return mapType.isLargeMap() ? (double) ConfigHolder.INSTANCE.compat.minimap.oreIconSize / 8 :
+                MapIcon.super.getIconScale(mapType);
+    }
+
     public boolean isEnabled() {
         return FTBChunksOptions.showLayer("ore_veins") &&
                 !(veinMetadata.depleted() && FTBChunksOptions.hideDepleted());
