@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-@Mixin(value = WorldLoader.class, remap = false)
+@Mixin(value = WorldLoader.class)
 public class WorldLoaderMixin {
 
     @Inject(method = "load",
