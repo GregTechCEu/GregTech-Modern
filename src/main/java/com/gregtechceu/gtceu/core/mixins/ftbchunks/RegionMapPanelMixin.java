@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins.ftbchunks;
 
-import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
-import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksRenderer;
-import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidChunkWidget;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
 
 import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
+import dev.ftb.mods.ftbchunks.client.gui.MapIconWidget;
 import dev.ftb.mods.ftbchunks.client.gui.RegionMapPanel;
 import dev.ftb.mods.ftblibrary.ui.Panel;
 import org.spongepowered.asm.mixin.Final;
@@ -31,30 +30,19 @@ public abstract class RegionMapPanelMixin extends Panel {
         super(panel);
     }
 
-    @Inject(method = "addWidgets",
-            at = @At(value = "INVOKE", target = "Ldev/ftb/mods/ftbchunks/client/gui/RegionMapPanel;alignWidgets()V"))
-    private void gtceu$injectAddWidgets(CallbackInfo ci) {
-        if (FTBChunksOptions.showLayer("bedrock_fluids")) {
-            FTBChunksRenderer.fluidElements.row(largeMap.currentDimension()).forEach((pos, info) -> {
-                var widget = new FluidChunkWidget((RegionMapPanel) (Object) this, pos, info);
-                add(widget);
-            });
-        }
-    }
-
-    @Inject(method = "alignWidgets",
-            at = @At(value = "INVOKE",
-                     target = "Ldev/ftb/mods/ftblibrary/ui/Widget;setPosAndSize(IIII)Ldev/ftb/mods/ftblibrary/ui/Widget;"))
+    @Inject(method = "alignWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAlignWidgets(CallbackInfo ci) {
         for (var widget : widgets) {
-            if (!(widget instanceof FluidChunkWidget w)) continue;
+            if (!(widget instanceof MapIconWidget w) || !(w.getMapIcon() instanceof FluidVeinIcon icon)) continue;
 
-            int regionSize = largeMap.getRegionTileSize();
-            int chunkSize = largeMap.getRegionTileSize() / 32;
-            var chunkPos = w.getChunkPos();
+            var regionSize = largeMap.getRegionTileSize();
+            var chunkSize = largeMap.getRegionTileSize() / 32;
+            var chunkPos = icon.getChunkPos();
 
             var x = (chunkPos.getRegionX() - regionMinX) * regionSize + chunkPos.getRegionLocalX() * chunkSize;
             var y = (chunkPos.getRegionZ() - regionMinZ) * regionSize + chunkPos.getRegionLocalZ() * chunkSize;
+            icon.setWidget(w);
+            icon.setSize(chunkSize);
             w.setPosAndSize(x, y, chunkSize, chunkSize);
         }
     }

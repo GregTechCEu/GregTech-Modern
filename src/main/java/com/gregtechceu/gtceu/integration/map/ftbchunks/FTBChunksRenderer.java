@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
+import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.ore.OreVeinIcon;
 
 import net.minecraft.resources.ResourceKey;
@@ -20,7 +21,7 @@ import java.util.Map;
 public class FTBChunksRenderer extends GenericMapRenderer {
 
     public static final Table<ResourceKey<Level>, String, OreVeinIcon> oreElements = HashBasedTable.create();
-    public static final Table<ResourceKey<Level>, ChunkPos, ProspectorMode.FluidInfo> fluidElements = HashBasedTable
+    public static final Table<ResourceKey<Level>, ChunkPos, FluidVeinIcon> fluidElements = HashBasedTable
             .create();
 
     @Getter
@@ -29,7 +30,7 @@ public class FTBChunksRenderer extends GenericMapRenderer {
     @Override
     public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
-        fluidElements.put(dim, pos, fluid);
+        fluidElements.put(dim, pos, new FluidVeinIcon(pos, fluid));
         return true;
     }
 

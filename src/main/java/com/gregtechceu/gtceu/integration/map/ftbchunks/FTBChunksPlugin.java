@@ -21,5 +21,13 @@ public class FTBChunksPlugin {
                     .values()
                     .forEach(event::add));
         }
+        if (GroupingMapRenderer.getInstance().doShowLayer("bedrock_fluids")) {
+            MapManager.getInstance().ifPresent(manager -> {
+                FTBChunksRenderer.fluidElements
+                        .row(event.getDimension())
+                        .values()
+                        .forEach(event::add);
+            });
+        }
     }
 }
