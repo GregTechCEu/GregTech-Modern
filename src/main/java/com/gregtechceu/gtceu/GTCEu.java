@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +19,8 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import dev.emi.emi.config.EmiConfig;
+import me.shedaniel.rei.api.client.REIRuntime;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,13 +169,11 @@ public class GTCEu {
         }
 
         public static boolean isReiLoaded() {
-            // todo: convert to base check after ui rework
-            return LDLib.isReiLoaded();
+            return isModLoaded(GTValues.MODID_REI) && !(isClientSide() || REIRuntime.getInstance().isOverlayVisible());
         }
 
         public static boolean isEmiLoaded() {
-            // todo: convert to base check after ui rework
-            return LDLib.isEmiLoaded();
+            return isModLoaded(GTValues.MODID_EMI) && !(isClientSide() || EmiConfig.enabled);
         }
 
         public static boolean isKubeJSLoaded() {
