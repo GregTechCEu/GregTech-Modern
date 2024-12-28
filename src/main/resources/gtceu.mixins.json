@@ -17,10 +17,10 @@
         "MultiPlayerGameModeMixin",
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
-        "xaeroworldmap.GuiMapMixin",
-        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.GuiMapMixin",
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
@@ -60,6 +60,7 @@
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",
+        "WorldLoaderMixin",
         "ae2.GenericStackInvAccessor",
         "embeddium.BiomeColorCacheMixin",
         "embeddium.VanillaColorAdapterMixin",

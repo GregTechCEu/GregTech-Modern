@@ -21,6 +21,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ public class GTCEu {
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    private static RegistryAccess FROZEN = BLANK;
 
     public GTCEu() {
         GTCEu.init();
@@ -65,14 +67,23 @@ public class GTCEu {
         return new ResourceLocation(strings[0], strings[1]);
     }
 
+    /**
+     * You shouldn't call it, you should probably not even look at it just to be extra safe
+     * 
+     * @param registryAccess the new value to set to the frozen registry access
+     */
+    @ApiStatus.Internal
+    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
+        FROZEN = registryAccess;
+    }
+
     public static RegistryAccess getFrozenRegistry() {
-        // todo: see if this behaves correctly, the ldlib version just assigns it to a different var and returns it
-        if (BLANK == null && isClientThread()) {
+        if (FROZEN == BLANK && isClientThread()) {
             if (Minecraft.getInstance().getConnection() != null) {
                 return Minecraft.getInstance().getConnection().registryAccess();
             }
         }
-        return BLANK;
+        return FROZEN;
     }
 
     /**
