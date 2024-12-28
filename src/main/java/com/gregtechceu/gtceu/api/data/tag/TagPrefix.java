@@ -708,7 +708,7 @@ public class TagPrefix {
             .defaultTagPath("%s")
             .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
-            .unificationEnabled(true)
+            .unificationEnabled(false)
             .generateBlock(true) // generate a block but not really, for TagPrefix#setIgnoredBlock
             .generationCondition((material) -> false);
 
@@ -867,6 +867,7 @@ public class TagPrefix {
     private long materialAmount = -1;
 
     @Setter
+    @Getter
     private boolean unificationEnabled;
     @Setter
     private boolean generateItem;
