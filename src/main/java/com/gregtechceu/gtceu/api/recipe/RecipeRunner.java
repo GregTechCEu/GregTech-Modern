@@ -23,26 +23,14 @@ class RecipeRunner {
     record RecipeHandlingResult(@Nullable RecipeCapability<?> capability, @UnknownNullability List content,
                                 RecipeHelper.ActionResult result) {}
 
-    // --------------------------------------------------------------------------------------------------------
-
     private final GTRecipe recipe;
     private final IO io;
     private final boolean isTick;
-    private final IRecipeCapabilityHolder holder;
     private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Map<IO, List<RecipeHandlerList>> capabilityProxies;
     private final boolean simulated;
-
-    // These are only used to store mutable state during each invocation of handle()
-    private RecipeCapability<?> capability;
-    private Set<RecipeHandlerList> used;
     private Map<RecipeCapability<?>, List> recipeContents;
     private Map<RecipeCapability<?>, List> searchRecipeContents;
-    /*
-     * @Getter
-     * private Map<IO, > contentMatchList;
-     * private @UnknownNullability List searchingMatchList;
-     */
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -50,7 +38,6 @@ class RecipeRunner {
         this.recipe = recipe;
         this.io = io;
         this.isTick = isTick;
-        this.holder = holder;
         this.chanceCaches = chanceCaches;
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.recipeContents = new IdentityHashMap<>();
@@ -58,22 +45,15 @@ class RecipeRunner {
         this.simulated = simulated;
     }
 
+
     @Nullable
     public RecipeHandlingResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
-        initState();
-
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty())
             return new RecipeHandlingResult(null, null, RecipeHelper.ActionResult.PASS_NO_CONTENTS);
 
         return this.handleContents();
-    }
-
-    private void initState() {
-        used = new HashSet<>();
-        // contentMatchList = new ArrayList<>();
-        // searchingMatchList = simulated ? contentMatchList : new ArrayList<>();
     }
 
     /**
@@ -88,7 +68,9 @@ class RecipeRunner {
             }
             ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
             List<Content> chancedContents = new ArrayList<>();
+            // skip if empty
             if (entry.getValue().isEmpty()) continue;
+            // populate recipe content capability map
             this.recipeContents.putIfAbsent(cap, new ArrayList<>());
             for (Content cont : entry.getValue()) {
                 this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>()).add(cont.content);
@@ -103,6 +85,7 @@ class RecipeRunner {
                 }
             }
 
+            // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
                 int chanceTier = recipeTier + recipe.ocLevel;
@@ -115,10 +98,7 @@ class RecipeRunner {
                 }
             }
 
-            if (!recipeContents.get(cap).isEmpty()) {}
-            // recipeContents.put(cap, recipeContents.get(cap).stream().map(cap::copyContent).toList());
-            else
-                recipeContents.remove(cap);
+            if (recipeContents.get(cap).isEmpty()) recipeContents.remove(cap);
         }
     }
 
