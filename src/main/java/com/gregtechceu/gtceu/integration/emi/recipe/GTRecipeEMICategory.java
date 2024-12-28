@@ -32,7 +32,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static void registerDisplays(EmiRegistry registry) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+            if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
             if (category == type.getCategory()) type.buildRepresentativeRecipes();
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
