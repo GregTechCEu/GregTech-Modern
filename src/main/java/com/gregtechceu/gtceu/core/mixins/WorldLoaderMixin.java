@@ -20,12 +20,12 @@ public class WorldLoaderMixin {
     @Inject(method = "load",
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/RegistryAccess$Frozen;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-    private static <D, R> void ldlib$getRegistryAccess(WorldLoader.InitConfig initConfig,
-                                                       WorldLoader.WorldDataSupplier<D> loadContextSupplier,
-                                                       WorldLoader.ResultFactory<D, R> applierFactory,
-                                                       Executor prepareExecutor, Executor applyExecutor,
-                                                       CallbackInfoReturnable<CompletableFuture<R>> cir,
-                                                       @Local(ordinal = 2) RegistryAccess.Frozen frozen2) {
+    private static <D, R> void gtceu$injectLoad(WorldLoader.InitConfig initConfig,
+                                                WorldLoader.WorldDataSupplier<D> loadContextSupplier,
+                                                WorldLoader.ResultFactory<D, R> applierFactory,
+                                                Executor prepareExecutor, Executor applyExecutor,
+                                                CallbackInfoReturnable<CompletableFuture<R>> cir,
+                                                @Local(ordinal = 2) RegistryAccess.Frozen frozen2) {
         GTCEu.updateFrozenRegistry(frozen2);
     }
 }
