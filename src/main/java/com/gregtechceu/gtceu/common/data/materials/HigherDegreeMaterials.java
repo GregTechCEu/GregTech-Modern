@@ -43,8 +43,6 @@ public class HigherDegreeMaterials {
                 .components(RoseGold, 1, Brass, 1, Steel, 2, BlackSteel, 4)
                 .toolStats(ToolProperty.Builder.of(7.0F, 6.0F, 2560, 3)
                         .attackSpeed(0.1F).enchantability(21).build())
-                .armorStats(ArmorProperty.Builder.of(68, new int[] { 3, 8, 6, 3 })
-                        .enchantability(23).toughness(3.0f).knockbackResistance(0.1f).build())
                 .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
@@ -56,8 +54,6 @@ public class HigherDegreeMaterials {
                 .components(SterlingSilver, 1, BismuthBronze, 1, Steel, 2, BlackSteel, 4)
                 .toolStats(ToolProperty.Builder.of(15.0F, 6.0F, 1024, 3)
                         .attackSpeed(0.1F).enchantability(33).build())
-                .armorStats(ArmorProperty.Builder.of(63, new int[] { 3, 8, 6, 3 })
-                        .enchantability(23).toughness(3.0f).knockbackResistance(0.1f).build())
                 .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
@@ -126,8 +122,6 @@ public class HigherDegreeMaterials {
                 .components(HSSG, 6, Cobalt, 1, Manganese, 1, Silicon, 1)
                 .toolStats(ToolProperty.Builder.of(5.0F, 10.0F, 3072, 4)
                         .attackSpeed(0.3F).enchantability(33).build())
-                .armorStats(ArmorProperty.Builder.of(145, new int[] { 7, 13, 9, 7 })
-                        .enchantability(33).toughness(5.0f).knockbackResistance(0.3f).build())
                 .rotorStats(280, 140, 8.0f, 5120)
                 .blast(b -> b.temp(5000, GasTier.HIGH)
                         .blastStats(VA[GTValues.EV], 1400)

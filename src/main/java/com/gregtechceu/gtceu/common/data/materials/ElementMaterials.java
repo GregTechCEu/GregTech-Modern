@@ -38,8 +38,6 @@ public class ElementMaterials {
                 .element(GTElements.Al)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
-                .armorStats(ArmorProperty.Builder.of(29, new int[] { 3, 7, 6, 3 })
-                        .enchantability(10).build())
                 .rotorStats(100, 140, 2.0f, 128)
                 .cableProperties(V[EV], 1, 1)
                 .fluidPipeProperties(1166, 100, true)
@@ -401,8 +399,6 @@ public class ElementMaterials {
                 .element(GTElements.Fe)
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
-                .armorStats(ArmorProperty.Builder.of(16, new int[] { 2, 5, 6, 2 })
-                        .enchantability(9).build())
                 .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(V[MV], 2, 3)
                 .buildAndRegister();
@@ -998,8 +994,6 @@ public class ElementMaterials {
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
-                .armorStats(ArmorProperty.Builder.of(0, new int[] { 75, 200, 150, 75 })
-                        .enchantability(33).toughness(10.0f).knockbackResistance(1.0f).unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
                 .radioactiveHazard(10)
@@ -1024,8 +1018,6 @@ public class ElementMaterials {
                 .element(GTElements.Dr)
                 .toolStats(ToolProperty.Builder.of(14.0F, 12.0F, 8192, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
-                .armorStats(ArmorProperty.Builder.of(173, new int[] { 12, 24, 15, 12 })
-                        .enchantability(33).toughness(4.0f).knockbackResistance(0.5f).build())
                 .fluidPipeProperties(9625, 500, true, true, true, true)
                 .buildAndRegister();
 

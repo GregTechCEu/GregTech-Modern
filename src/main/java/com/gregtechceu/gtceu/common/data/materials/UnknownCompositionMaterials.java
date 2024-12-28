@@ -361,8 +361,6 @@ public class UnknownCompositionMaterials {
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
-                .armorStats(ArmorProperty.Builder.of(37, new int[] { 3, 8, 6, 3 })
-                        .enchantability(21).toughness(3.0f).knockbackResistance(0.1f).build())
                 .buildAndRegister();
 
         Glowstone = new Material.Builder(GTCEu.id("glowstone"))
