@@ -2,11 +2,8 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -15,20 +12,8 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
-import lombok.Setter;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
@@ -245,7 +230,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium));
 
-        CABLE_TIER_UP_DOUBLE = new CraftingComponent(new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy))
+        CABLE_TIER_UP_DOUBLE = new CraftingComponent(
+                new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold))
@@ -257,7 +243,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium));
 
-        CABLE_TIER_UP_QUAD = new CraftingComponent(new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy))
+        CABLE_TIER_UP_QUAD = new CraftingComponent(
+                new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold))
@@ -741,7 +728,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy))
                 .add(UHV, new UnificationEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy));
 
-        SMALL_SPRING_TRANSFORMER = new CraftingComponent(new UnificationEntry(TagPrefix.springSmall, GTMaterials.RedAlloy))
+        SMALL_SPRING_TRANSFORMER = new CraftingComponent(
+                new UnificationEntry(TagPrefix.springSmall, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.springSmall, GTMaterials.RedAlloy))
                 .add(LV, new UnificationEntry(TagPrefix.springSmall, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.springSmall, GTMaterials.Copper))
@@ -772,6 +760,7 @@ public class GTCraftingComponents {
     }
 
     private static final class KJSCallWrapper {
+
         private static void craftingComponentModification() {
             GTCEuStartupEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
         }
