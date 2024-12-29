@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksPlugin;
@@ -20,7 +21,6 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.client.model.BoatModel;
@@ -100,7 +100,8 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onClientSetup(FMLClientSetupEvent event) {
-        if (LDLib.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.chunksIntegration &&
+                Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
     }
