@@ -95,6 +95,7 @@ public interface GTRecipeSchema {
         public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
         public boolean itemMaterialInfo = false;
         public boolean fluidMaterialInfo = false;
+        public boolean removeMaterialInfo = false;
 
         @HideFromJS
         @Override
@@ -908,6 +909,11 @@ public interface GTRecipeSchema {
         public GTRecipeJS addMaterialInfo(boolean item, boolean fluid) {
             this.itemMaterialInfo = item;
             this.fluidMaterialInfo = fluid;
+            return this;
+        }
+
+        public GTRecipeJS removeMaterialInfo() {
+            this.removeMaterialInfo = true;
             return this;
         }
 

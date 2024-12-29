@@ -107,6 +107,7 @@ public class GTRecipeBuilder {
     public boolean isFuel = false;
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
+    private boolean removePreviousMatInfo = false;
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -1238,6 +1239,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder removeMaterialInfo() {
+        removePreviousMatInfo = true;
+        return this;
+    }
+
     public GTRecipeBuilder setTempItemMaterialStacks(List<MaterialStack> stacks) {
         tempItemMaterialStacks = stacks;
         return this;
@@ -1355,9 +1361,14 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (itemMaterialInfo) {
+        if (itemMaterialInfo || fluidMaterialInfo) {
             addOutputMaterialInfo();
         }
+
+        if(removePreviousMatInfo) {
+            removeExistingMaterialInfo();
+        }
+
         tempItemStacks = null;
         tempItemMaterialStacks = null;
         tempFluidStacks = null;
@@ -1393,36 +1404,59 @@ public class GTRecipeBuilder {
                 matStacks.merge(input.material(), am, Long::sum);
             }
 
-            if (fluidMaterialInfo) {
-                var fluidInputs = input.get(FluidRecipeCapability.CAP);
-                for (var input : tempFluidStacks) {
-                    long am = input.amount() / outputCount;
-                    matStacks.merge(input.material(), am, Long::sum);
-                }
+            for (var input : tempFluidStacks) {
+                long am = input.amount() / outputCount;
+                matStacks.merge(input.material(), am, Long::sum);
             }
-
-            var matList = matStacks.reference2LongEntrySet().stream()
-                    .map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
 
             if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
 
-            var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
             if (!matStacks.isEmpty()) {
-                if (existingItemInfo != null) {
-                    ItemMaterialData.clearMaterialInfo(out);
-                }
+                var matList = matStacks.reference2LongEntrySet().stream()
+                        .map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
+
                 ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matList));
             }
         }
     }
 
+    private void removeExistingMaterialInfo() {
+        var itemOutputs = output.get(ItemRecipeCapability.CAP);
+        if (itemOutputs.size() == 1) {
+            var currOutput = itemOutputs.get(0).content;
+            ItemLike out = null;
+            int outputCount = 0;
+
+            if (currOutput instanceof Item i) {
+                out = i;
+                outputCount = 1;
+            } else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
+                out = i;
+                outputCount = 1;
+            } else if (currOutput instanceof ItemStack stack) {
+                out = stack.getItem();
+                outputCount = stack.getCount();
+            } else if (currOutput instanceof SizedIngredient sized) {
+                out = sized.getItems()[0].getItem();
+                outputCount = sized.getItems()[0].getCount();
+            }
+
+            if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0)
+                ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.remove(new ItemStack(out, outputCount));
+
+            var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
+            if (existingItemInfo != null) {
+                ItemMaterialData.clearMaterialInfo(out);
+            }
+        }
+    }
+
     public GTRecipe buildRawRecipe() {
-        var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, List.of(), data, duration, isFuel, recipeCategory);
-        return recipe;
     }
 
     //////////////////////////////////////

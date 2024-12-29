@@ -58,6 +58,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyU
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
@@ -516,11 +517,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
                     builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
                 }
+
                 builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
                 builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
                 gtRecipe.itemMaterialStacks = null;
                 gtRecipe.fluidMaterialStacks = null;
+
                 builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
+                if(gtRecipe.removeMaterialInfo)
+                    builder.removeMaterialInfo();
 
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
@@ -528,6 +533,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         })));
 
         PowerlessJetpack.FUELS.clear();
+        // Must run recycling recipes very last
+        RecyclingRecipes.init(builtRecipe -> recipesByName.put(builtRecipe.getId(),
+                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+        ItemMaterialData.resolveItemMaterialInfos(builtRecipe -> recipesByName.put(builtRecipe.getId(),
+                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
