@@ -21,7 +21,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +60,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
+        return coverHolder.getFluidHandlerCap(attachedSide, false) != null;
     }
 
     public FluidFilter getFluidFilter() {

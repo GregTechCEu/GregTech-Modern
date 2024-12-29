@@ -270,6 +270,12 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     pipeTile.getPipeType().getClass() != this.getPipeType().getClass()) {
                 return;
             }
+
+            if (!connected) {
+                var cover = getCoverContainer().getCoverAtSide(side);
+                if (cover != null && cover.canPipePassThrough()) return;
+            }
+
             connections = withSideConnection(connections, side, connected);
 
             updateNetworkConnection(side, connected);
