@@ -524,7 +524,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 gtRecipe.fluidMaterialStacks = null;
 
                 builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
-                if(gtRecipe.removeMaterialInfo)
+                if (gtRecipe.removeMaterialInfo)
                     builder.removeMaterialInfo();
 
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),

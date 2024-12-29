@@ -1365,7 +1365,7 @@ public class GTRecipeBuilder {
             addOutputMaterialInfo();
         }
 
-        if(removePreviousMatInfo) {
+        if (removePreviousMatInfo) {
             removeExistingMaterialInfo();
         }
 

@@ -56,9 +56,9 @@ public class ChemicalHelper {
         } else if (object instanceof SizedIngredient sized) {
             return getMaterialStack(sized.getItems()[0]);
         } else if (object instanceof Ingredient ing) {
-            for(var stack : ing.getItems()) {
+            for (var stack : ing.getItems()) {
                 var ms = getMaterialStack(stack);
-                if(ms != null) return ms;
+                if (ms != null) return ms;
             }
         }
         return null;
