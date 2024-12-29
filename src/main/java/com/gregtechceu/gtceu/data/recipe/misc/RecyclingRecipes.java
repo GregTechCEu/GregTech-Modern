@@ -114,7 +114,7 @@ public class RecyclingRecipes {
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null && entry.tagPrefix.unificationEnabled()) {
+        if (entry != null && entry.material() != null && entry.tagPrefix().unificationEnabled()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
