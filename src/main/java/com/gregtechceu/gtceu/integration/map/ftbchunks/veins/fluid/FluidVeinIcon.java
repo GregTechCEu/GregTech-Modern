@@ -62,7 +62,7 @@ public class FluidVeinIcon implements MapIcon {
 
     @Override
     public double getIconScale(MapType mapType) {
-        return mapType.isMinimap() ? FTBChunksClientConfig.MINIMAP_SCALE.get() : size;
+        return mapType.isMinimap() ? FTBChunksClientConfig.MINIMAP_ZOOM.get() : size;
     }
 
     @Override
