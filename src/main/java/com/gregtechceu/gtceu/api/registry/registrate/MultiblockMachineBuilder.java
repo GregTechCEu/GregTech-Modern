@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -42,6 +43,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -377,6 +379,14 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public void generateLang(LangEventJS lang) {
+        super.generateLang(lang);
+        if (langValue() != null) {
+            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
+        }
+    }
+
+    @Override
     @HideFromJS
     public MultiblockMachineDefinition register() {
         var definition = (MultiblockMachineDefinition) super.register();
@@ -399,6 +409,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
-        return definition;
+        return value = definition;
     }
 }
