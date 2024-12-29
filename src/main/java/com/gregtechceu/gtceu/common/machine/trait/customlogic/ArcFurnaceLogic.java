@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
@@ -89,5 +93,34 @@ public class ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
         }
 
         return builder.buildRawRecipe();
+    }
+
+    @Override
+    public void buildRepresentativeRecipes() {
+        ItemStack stack = GTItems.TURBINE_ROTOR.asStack();
+        stack.setHoverName(Component.translatable("gtceu.auto_decomp.rotor"));
+        GTRecipe rotorRecipe;
+        GTRecipe pickaxeRecipe;
+        float durability = 0.69f;
+        // noinspection ConstantConditions
+        TurbineRotorBehaviour.getBehaviour(stack).setPartMaterial(stack, GTMaterials.Iron);
+        TurbineRotorBehaviour.getBehaviour(stack).setPartDamage(stack, 8928);
+        var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
+
+        rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
+                (float) (turbineBlade.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
+        rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
+
+        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();
+        stack.setHoverName(Component.translatable("gtceu.auto_decomp.tool"));
+        stack.setDamageValue(79);
+        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron,
+                (float) (GTToolType.PICKAXE.materialAmount / GTValues.M), durability,
+                GTValues.VH[GTValues.LV], 2);
+
+        pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
+        ARC_FURNACE_RECIPES.addToMainCategory(pickaxeRecipe);
+        ARC_FURNACE_RECIPES.addToMainCategory(rotorRecipe);
+        GTRecipeType.ICustomRecipeLogic.super.buildRepresentativeRecipes();
     }
 }

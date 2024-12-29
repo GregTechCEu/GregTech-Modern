@@ -415,6 +415,10 @@ public class MachineLang {
         provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");
         provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
 
+        // rotor/tool recipes
+        provider.add("gtceu.auto_decomp.rotor", "Turbine Rotor");
+        provider.add("gtceu.auto_decomp.tool", "Non-electric tool");
+
         // HPCA Components
         provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
         provider.add("gtceu.machine.hpca.heat_sink_component.tooltip", "Free cooling! Is anything free?");
