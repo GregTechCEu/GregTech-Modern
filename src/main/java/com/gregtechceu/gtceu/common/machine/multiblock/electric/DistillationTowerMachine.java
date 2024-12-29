@@ -269,6 +269,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                         lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                         lastRecipe.checkConditions(this).isSuccess()) {
                     setupRecipe(lastRecipe);
+                    if (isActive) consecutiveRecipes++;
                 } else {
                     if (suspendAfterFinish) {
                         setStatus(Status.SUSPEND);
@@ -276,6 +277,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     } else {
                         setStatus(Status.IDLE);
                     }
+                    consecutiveRecipes = 0;
                     progress = 0;
                     duration = 0;
                     isActive = false;

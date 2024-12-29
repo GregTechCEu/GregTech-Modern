@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
@@ -67,6 +68,11 @@ public class GTRecipeCategory {
 
     public void addRecipe(GTRecipe recipe) {
         recipeType.addToCategoryMap(this, recipe);
+    }
+
+    public boolean shouldRegisterDisplays() {
+        return (isXEIVisible || Platform.isDevEnv()) &&
+                this != GTRecipeTypes.FURNACE_RECIPES.getCategory();
     }
 
     @Override

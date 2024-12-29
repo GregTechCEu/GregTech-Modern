@@ -919,20 +919,23 @@ public class GTMultiMachines {
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"),
-            GTCEu.id("block/multiblock/generator/large_steam_turbine"));
+            GTCEu.id("block/multiblock/generator/large_steam_turbine"),
+            false);
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
             CASING_STAINLESS_TURBINE, CASING_STAINLESS_STEEL_GEARBOX,
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"),
-            GTCEu.id("block/multiblock/generator/large_gas_turbine"));
+            GTCEu.id("block/multiblock/generator/large_gas_turbine"),
+            true);
 
     public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine",
             IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
-            GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
+            GTCEu.id("block/multiblock/generator/large_plasma_turbine"),
+            false);
 
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE
             .multiblock("active_transformer", ActiveTransformerMachine::new)

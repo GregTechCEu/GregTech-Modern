@@ -578,6 +578,15 @@ public class GTMachineUtils {
                                                                    Supplier<? extends Block> gear,
                                                                    ResourceLocation casingTexture,
                                                                    ResourceLocation overlayModel) {
+        return registerLargeTurbine(name, tier, recipeType, casing, gear, casingTexture, overlayModel, true);
+    }
+
+    public static MultiblockMachineDefinition registerLargeTurbine(String name, int tier, GTRecipeType recipeType,
+                                                                   Supplier<? extends Block> casing,
+                                                                   Supplier<? extends Block> gear,
+                                                                   ResourceLocation casingTexture,
+                                                                   ResourceLocation overlayModel,
+                                                                   boolean needsMuffler) {
         return REGISTRATE.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
@@ -609,7 +618,7 @@ public class GTMachineUtils {
                                         .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
                         .where('H', blocks(casing.get())
                                 .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true, false)))
+                                .or(autoAbilities(true, needsMuffler, false)))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {

@@ -42,8 +42,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -672,12 +670,6 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
-
-    //////////////////////////////////////
-    // ****** Integration *******//
-    //////////////////////////////////////
-    @Nullable
-    public static GTRecipeType CREATE_MIXER_RECIPES;
 
     public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);

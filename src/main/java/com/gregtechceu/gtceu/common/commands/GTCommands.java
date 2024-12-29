@@ -94,7 +94,7 @@ public class GTCommands {
                                 .then(argument("vein",
                                         GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
                                         .executes(context -> GTCommands.placeVein(context,
-                                                context.getSource().getEntityOrException().blockPosition()))
+                                                BlockPos.containing(context.getSource().getPosition())))
                                         .then(argument("position", BlockPosArgument.blockPos())
                                                 .executes(context -> GTCommands.placeVein(context,
                                                         BlockPosArgument.getBlockPos(context, "position")))))));

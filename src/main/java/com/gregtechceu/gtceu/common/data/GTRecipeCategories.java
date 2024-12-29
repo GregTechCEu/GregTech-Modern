@@ -14,12 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTRecipeCategories {
 
-    // Alias for recipes that shouldn't be in the category registry
-    public static final GTRecipeCategory DUMMY = GTRecipeTypes.DUMMY_RECIPES.getCategory();
-    // Alias for recipes you don't want visible in XEI
-    public static final GTRecipeCategory HIDDEN = register("hidden", GTRecipeTypes.DUMMY_RECIPES)
-            .setXEIVisible(false);
-
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = register("arc_furnace_recycling",
             GTRecipeTypes.ARC_FURNACE_RECIPES)
             .setIcon(GuiTextures.ARC_FURNACE_RECYCLING_CATEGORY);
@@ -45,9 +39,6 @@ public class GTRecipeCategories {
     }
 
     public static void init() {
-        // Remove these categories, so they don't get registered in XEI at all, dev or not
-        GTRegistries.RECIPE_CATEGORIES.remove(DUMMY.registryKey);
-        GTRegistries.RECIPE_CATEGORIES.remove(GTRecipeTypes.FURNACE_RECIPES.getCategory().registryKey);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
         }
