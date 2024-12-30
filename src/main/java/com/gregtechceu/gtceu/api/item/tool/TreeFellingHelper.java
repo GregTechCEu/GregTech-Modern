@@ -29,8 +29,7 @@ public class TreeFellingHelper {
     private final Deque<BlockPos> orderedBlocks;
     private int tick;
 
-    public static final Set<TreeFellingHelper> helpers = new HashSet<>();
-    public static final Set<TreeFellingHelper> finished = new HashSet<>();
+    public static final Set<TreeFellingHelper> helpers = new ObjectOpenHashSet<>();
 
     private TreeFellingHelper(ServerPlayer player, ItemStack tool, Deque<BlockPos> orderedBlocks) {
         this.player = player;
@@ -85,12 +84,14 @@ public class TreeFellingHelper {
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER && !helpers.isEmpty()) {
-            for (var helper : helpers) {
+            var iterator = helpers.iterator();
+            while (iterator.hasNext()) {
+                var helper = iterator.next();
                 if (event.level == helper.player.level()) {
                     if (helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
                             !(hasBehaviorsTag(helper.player.getMainHandItem()) &&
                                     getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY))) {
-                        finished.add(helper);
+                        iterator.remove();
                         continue;
                     }
                     if (helper.tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0)
@@ -98,10 +99,6 @@ public class TreeFellingHelper {
                                 true);
                     helper.tick++;
                 }
-            }
-            if (!finished.isEmpty()) {
-                helpers.removeAll(finished);
-                finished.clear();
             }
         }
     }
