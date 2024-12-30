@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
