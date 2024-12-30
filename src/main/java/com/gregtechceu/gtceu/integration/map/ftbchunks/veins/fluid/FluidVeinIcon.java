@@ -11,6 +11,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
+import dev.ftb.mods.ftbchunks.FTBChunks;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
@@ -29,12 +30,14 @@ import lombok.Setter;
 
 public class FluidVeinIcon implements MapIcon {
 
+    public static double MAX_DISTANCE = FTBChunks.TILE_SIZE * FTBChunks.TILE_SIZE;
     @Getter
     private final ChunkPos chunkPos;
     @Getter
     private final ProspectorMode.FluidInfo fluidInfo;
     @Setter
     private int size;
+    private Icon icon;
 
     public FluidVeinIcon(ChunkPos chunkPos, ProspectorMode.FluidInfo fluidInfo) {
         this.chunkPos = chunkPos;
@@ -71,12 +74,17 @@ public class FluidVeinIcon implements MapIcon {
     }
 
     @Override
+    public boolean isVisible(MapType mapType, double distanceToPlayer, boolean outsideVisibleArea) {
+        return !outsideVisibleArea || distanceToPlayer <= MAX_DISTANCE;
+    }
+
+    @Override
     public Vec3 getPos(float v) {
         return getMiddleBlock().getCenter();
     }
 
     public BlockPos getMiddleBlock() {
-        return chunkPos.getMiddleBlockPosition(70);
+        return chunkPos.getBlockAt(7, 70, 7);
     }
 
     @Override
@@ -124,10 +132,12 @@ public class FluidVeinIcon implements MapIcon {
     @Override
     public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h, boolean outsideVisibleArea,
                      int iconAlpha) {
-        if (!mapType.isMinimap() || outsideVisibleArea || !isEnabled()) {
+        if (!mapType.isMinimap() || !isEnabled()) {
             return;
         }
-
-        getIcon(200, false).draw(graphics, x, y, w, h);
+        if (icon == null) {
+            icon = getIcon(200, false);
+        }
+        icon.draw(graphics, x, y, w, h);
     }
 }
