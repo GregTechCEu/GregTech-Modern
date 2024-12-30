@@ -605,4 +605,9 @@ public class ForgeCommonEventListener {
             });
         }
     }
+
+    @SubscribeEvent
+    public static void onAddReloadableServerResources(AddReloadListenerEvent event) {
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
+    }
 }

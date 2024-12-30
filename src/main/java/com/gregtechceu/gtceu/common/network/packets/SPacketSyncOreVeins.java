@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 
@@ -32,7 +33,7 @@ public class SPacketSyncOreVeins implements IPacket {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, GTCEu.getFrozenRegistry());
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         int size = veins.size();
         buf.writeVarInt(size);
         for (var entry : veins.entrySet()) {
@@ -45,7 +46,7 @@ public class SPacketSyncOreVeins implements IPacket {
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, GTCEu.getFrozenRegistry());
+        RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         Stream.generate(() -> {
             ResourceLocation id = buf.readResourceLocation();
             CompoundTag tag = buf.readAnySizeNbt();

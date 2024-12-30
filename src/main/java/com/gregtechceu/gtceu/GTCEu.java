@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.DistExecutor;
@@ -21,7 +19,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
 import me.shedaniel.rei.api.client.REIRuntime;
-import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +30,6 @@ public class GTCEu {
     public static final String MOD_ID = "gtceu";
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
-
-    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-    private static RegistryAccess FROZEN = BLANK;
 
     public GTCEu() {
         GTCEu.init();
@@ -65,25 +59,6 @@ public class GTCEu {
             }
         }
         return new ResourceLocation(strings[0], strings[1]);
-    }
-
-    /**
-     * You shouldn't call it, you should probably not even look at it just to be extra safe
-     * 
-     * @param registryAccess the new value to set to the frozen registry access
-     */
-    @ApiStatus.Internal
-    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
-        FROZEN = registryAccess;
-    }
-
-    public static RegistryAccess getFrozenRegistry() {
-        if (FROZEN == BLANK && isClientThread()) {
-            if (Minecraft.getInstance().getConnection() != null) {
-                return Minecraft.getInstance().getConnection().registryAccess();
-            }
-        }
-        return FROZEN;
     }
 
     /**
@@ -164,15 +139,16 @@ public class GTCEu {
 
     public static class Mods {
 
-        public static boolean isJeiLoaded() {
-            return !(isEmiLoaded() || isReiLoaded()) && isModLoaded(GTValues.MODID_JEI);
+        public static boolean isJEILoaded() {
+            return !(isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_REI)) &&
+                    isModLoaded(GTValues.MODID_JEI);
         }
 
-        public static boolean isReiLoaded() {
+        public static boolean isREILoaded() {
             return isModLoaded(GTValues.MODID_REI) && !(isClientSide() || REIRuntime.getInstance().isOverlayVisible());
         }
 
-        public static boolean isEmiLoaded() {
+        public static boolean isEMILoaded() {
             return isModLoaded(GTValues.MODID_EMI) && !(isClientSide() || EmiConfig.enabled);
         }
 

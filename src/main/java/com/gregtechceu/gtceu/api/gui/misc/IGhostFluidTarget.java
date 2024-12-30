@@ -62,17 +62,17 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
     }
 
     default Object convertIngredient(Object ingredient) {
-        if (GTCEu.Mods.isReiLoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+        if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
             ingredient = new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getTag());
         }
 
-        if (GTCEu.Mods.isEmiLoaded() && ingredient instanceof EmiStack fluidEmiStack) {
+        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack fluidEmiStack) {
             Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
             ingredient = fluid == null ? FluidStack.EMPTY :
                     new FluidStack(fluid, (int) fluidEmiStack.getAmount(), fluidEmiStack.getNbt());
         }
 
-        if (GTCEu.Mods.isJeiLoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
+        if (GTCEu.Mods.isJEILoaded() && ingredient instanceof net.minecraftforge.fluids.FluidStack fluidStack) {
             ingredient = new FluidStack(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getTag());
         }
         return ingredient;

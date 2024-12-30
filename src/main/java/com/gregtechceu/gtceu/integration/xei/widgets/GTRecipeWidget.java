@@ -233,7 +233,7 @@ public class GTRecipeWidget extends WidgetGroup {
             case IV -> 12;
             default -> 14;
         };
-        if (!GTCEu.Mods.isEmiLoaded()) {
+        if (!GTCEu.Mods.isEMILoaded()) {
             x -= 3;
         }
         return x;

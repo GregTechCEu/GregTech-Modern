@@ -60,7 +60,6 @@
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",
-        "WorldLoaderMixin",
         "ae2.GenericStackInvAccessor",
         "embeddium.BiomeColorCacheMixin",
         "embeddium.VanillaColorAdapterMixin",

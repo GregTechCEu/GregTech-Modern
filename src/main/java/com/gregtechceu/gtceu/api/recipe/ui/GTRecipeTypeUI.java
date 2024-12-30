@@ -238,25 +238,25 @@ public class GTRecipeTypeUI {
                 progress.add(dualProgressWidget);
             });
             // add recipe button
-            if (!isJEI && (GTCEu.Mods.isReiLoaded() || GTCEu.Mods.isJeiLoaded() || GTCEu.Mods.isEmiLoaded())) {
+            if (!isJEI && (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded())) {
                 for (Widget widget : progress) {
                     template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y,
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
-                                    if (GTCEu.Mods.isReiLoaded()) {
+                                    if (GTCEu.Mods.isREILoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
                                                 recipeType.getCategories().stream()
                                                         .filter(GTRecipeCategory::isXEIVisible)
                                                         .map(GTRecipeREICategory::machineCategory)
                                                         .collect(Collectors.toList()))
                                                 .open();
-                                    } else if (GTCEu.Mods.isJeiLoaded()) {
+                                    } else if (GTCEu.Mods.isJEILoaded()) {
                                         JEIPlugin.jeiRuntime.getRecipesGui().showTypes(
                                                 recipeType.getCategories().stream()
                                                         .filter(GTRecipeCategory::isXEIVisible)
                                                         .map(GTRecipeJEICategory::machineType)
                                                         .collect(Collectors.toList()));
-                                    } else if (GTCEu.Mods.isEmiLoaded()) {
+                                    } else if (GTCEu.Mods.isEMILoaded()) {
                                         EmiApi.displayRecipeCategory(
                                                 GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                     }
