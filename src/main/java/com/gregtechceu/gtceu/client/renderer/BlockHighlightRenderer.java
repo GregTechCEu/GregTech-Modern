@@ -65,44 +65,6 @@ public class BlockHighlightRenderer {
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
-            var block = level.getBlockState(blockPos);
-
-            if (block.getBlock() instanceof MaterialBlock) {
-                rColour = gColour = 0;
-                bColour = 0;
-                alpha = 0.55f;
-                Vec3 pos = camera.getPosition();
-                poseStack.pushPose();
-                poseStack.translate(-pos.x, -pos.y, -pos.z);
-                var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                RenderSystem.lineWidth(3);
-                RenderSystem.disableDepthTest();
-                RenderSystem.enableBlend();
-                var mat = poseStack.last().pose();
-                var box = new AABB(blockPos);
-                float minX = (float) box.minX, minY = (float) box.minY, minZ = (float) box.minZ,
-                        maxX = (float) box.maxX, maxY = (float) box.maxY, maxZ = (float) box.maxZ;
-                drawLine(mat, buffer, new Vector3f(minX, minY, minZ), new Vector3f(maxX, minY, minZ)); // bottom face
-                drawLine(mat, buffer, new Vector3f(maxX, minY, minZ), new Vector3f(maxX, minY, maxZ));
-                drawLine(mat, buffer, new Vector3f(maxX, minY, maxZ), new Vector3f(minX, minY, maxZ));
-                drawLine(mat, buffer, new Vector3f(minX, minY, maxZ), new Vector3f(minX, minY, minZ));
-
-                drawLine(mat, buffer, new Vector3f(minX, minY, minZ), new Vector3f(minX, maxY, minZ)); // posts
-                drawLine(mat, buffer, new Vector3f(maxX, minY, minZ), new Vector3f(maxX, maxY, minZ));
-                drawLine(mat, buffer, new Vector3f(maxX, minY, maxZ), new Vector3f(maxX, maxY, maxZ));
-                drawLine(mat, buffer, new Vector3f(minX, minY, maxZ), new Vector3f(minX, maxY, maxZ));
-
-                drawLine(mat, buffer, new Vector3f(minX, maxY, minZ), new Vector3f(maxX, maxY, minZ)); // posts
-                drawLine(mat, buffer, new Vector3f(maxX, maxY, minZ), new Vector3f(maxX, maxY, maxZ));
-                drawLine(mat, buffer, new Vector3f(maxX, maxY, maxZ), new Vector3f(minX, maxY, maxZ));
-                drawLine(mat, buffer, new Vector3f(minX, maxY, maxZ), new Vector3f(minX, maxY, minZ));
-
-                RenderSystem.disableBlend();
-                RenderSystem.enableDepthTest();
-                poseStack.popPose();
-                return;
-            }
-
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
                 IToolGridHighlight gridHighlight = null;
