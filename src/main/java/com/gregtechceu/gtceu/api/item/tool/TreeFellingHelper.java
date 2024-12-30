@@ -101,6 +101,7 @@ public class TreeFellingHelper {
             }
             if (!finished.isEmpty()) {
                 helpers.removeAll(finished);
+                finished.clear();
             }
         }
     }
