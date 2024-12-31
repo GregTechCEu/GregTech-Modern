@@ -14,10 +14,13 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -36,10 +39,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @DescSynced
     @RequireRerender
     protected final Set<BlockPos> controllerPositions;
+    protected final SortedSet<IMultiController> controllers;
 
     public MultiblockPartMachine(IMachineBlockEntity holder) {
         super(holder);
         this.controllerPositions = new HashSet<>();
+        this.controllers = new ReferenceLinkedOpenHashSet<>();
     }
 
     //////////////////////////////////////
@@ -62,14 +67,17 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     @Override
-    public List<IMultiController> getControllers() {
-        List<IMultiController> result = new ArrayList<>();
-        for (var blockPos : controllerPositions) {
-            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
-                result.add(controller);
+    public SortedSet<IMultiController> getControllers() {
+        // Necessary to rebuild the set of controllers on client-side
+        if (controllers.size() != controllerPositions.size()) {
+            controllers.clear();
+            for (var blockPos : controllerPositions) {
+                if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
+                    controllers.add(controller);
+                }
             }
         }
-        return result;
+        return Collections.unmodifiableSortedSet(controllers);
     }
 
     @Override
@@ -90,6 +98,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             }
         }
         controllerPositions.clear();
+        controllers.clear();
     }
 
     //////////////////////////////////////
@@ -99,10 +108,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @Override
     public void removedFromController(IMultiController controller) {
         controllerPositions.remove(controller.self().getPos());
+        controllers.remove(controller);
     }
 
     @Override
     public void addedToController(IMultiController controller) {
         controllerPositions.add(controller.self().getPos());
+        controllers.add(controller);
     }
 }

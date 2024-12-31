@@ -16,8 +16,6 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import java.util.Optional;
-
 public class ParallelProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Override
@@ -38,12 +36,8 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
             if (blockEntity.getMetaMachine() instanceof IParallelHatch parallelHatch) {
                 compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
             } else if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                Optional<IParallelHatch> parallelHatch = controller.getParts().stream()
-                        .filter(IParallelHatch.class::isInstance)
-                        .map(IParallelHatch.class::cast)
-                        .findAny();
-                parallelHatch.ifPresent(
-                        iParallelHatch -> compoundTag.putInt("parallel", iParallelHatch.getCurrentParallel()));
+                controller.getParallelHatch()
+                        .ifPresent(parallelHatch -> compoundTag.putInt("parallel", parallelHatch.getCurrentParallel()));
             }
         }
     }

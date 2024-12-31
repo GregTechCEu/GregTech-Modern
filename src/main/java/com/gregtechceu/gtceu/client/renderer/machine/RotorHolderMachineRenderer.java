@@ -51,7 +51,7 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                     modelState));
             if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
                 var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
-                if (!rotorHolderMachine.getControllers().isEmpty()) {
+                if (rotorHolderMachine.isFormed()) {
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING),
                             modelState, -101, 15, true, false));
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.SortedSet;
 
 /**
  * @author KilaBash
@@ -44,7 +45,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Get all attached controllers
      */
-    List<IMultiController> getControllers();
+    SortedSet<IMultiController> getControllers();
 
     /**
      * Called when it was removed from a multiblock.
