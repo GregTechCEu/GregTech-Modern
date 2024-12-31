@@ -9,10 +9,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -131,7 +131,6 @@ public class MixinHelpers {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     for (FluidStorageKey key : FluidStorageKey.allKeys()) {
-                        ResourceLocation fluidKeyTag = TagUtil.createFluidTag(key.getTagKey()).location();
                         Fluid fluid = property.getStorage().get(key);
                         if (fluid != null) {
                             ChemicalHelper.FLUID_MATERIAL.put(fluid, material);
@@ -140,10 +139,16 @@ public class MixinHelpers {
                             TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
                                     GTValues.CUSTOM_TAG_SOURCE);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
-                                    path -> new ArrayList<>())
+                                            path -> new ArrayList<>())
                                     .add(entry);
-                            tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
-                                    .add(entry);
+                            if (fluid instanceof GTFluid gtFluid) {
+                                tagMap.computeIfAbsent(gtFluid.getState().getTagKey().location(), path -> new ArrayList<>())
+                                        .add(entry);
+                            } else {
+                                ResourceLocation fluidKeyTag = key.getDefaultFluidState().getTagKey().location();
+                                tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
+                                        .add(entry);
+                            }
                         }
                     }
                 }
@@ -152,7 +157,7 @@ public class MixinHelpers {
                     if (fluid != null) {
                         ResourceLocation moltenID = BuiltInRegistries.FLUID.getKey(fluid);
                         tagMap.computeIfAbsent(CustomTags.MOLTEN_FLUIDS.location(),
-                                path -> new ArrayList<>())
+                                        path -> new ArrayList<>())
                                 .add(new TagLoader.EntryWithSource(TagEntry.element(moltenID),
                                         GTValues.CUSTOM_TAG_SOURCE));
                     }
@@ -168,7 +173,7 @@ public class MixinHelpers {
         if (!prefix.miningToolTag().isEmpty()) {
             map.forEach((material, block) -> {
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
-                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE));
 
@@ -179,10 +184,6 @@ public class MixinHelpers {
                 } else {
                     for (var tag : prefix.miningToolTag()) {
                         tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
-                    }
-                    if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
-                        tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(), path -> new ArrayList<>())
-                                .add(entry);
                     }
                 }
             });
