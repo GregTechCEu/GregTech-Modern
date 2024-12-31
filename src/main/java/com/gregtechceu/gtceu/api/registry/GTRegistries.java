@@ -66,10 +66,6 @@ public final class GTRegistries {
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
     public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(
             GTCEu.id("dimension_marker"));
-
-    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-    private static RegistryAccess FROZEN = BLANK;
-
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister
@@ -104,6 +100,9 @@ public final class GTRegistries {
         PLACEMENT_MODIFIER.register(eventBus);
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
+
+    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    private static RegistryAccess FROZEN = BLANK;
 
     /**
      * You shouldn't call it, you should probably not even look at it just to be extra safe
