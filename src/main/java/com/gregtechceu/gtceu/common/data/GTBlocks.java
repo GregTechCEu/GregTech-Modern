@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeT
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
@@ -76,10 +77,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -220,9 +218,9 @@ public class GTBlocks {
     // Multiblock Machine Casing Blocks
     public static final BlockEntry<Block> CASING_WOOD_WALL = createSidedCasingBlock("wood_wall",
             GTCEu.id("block/casings/wood_wall"));
-    public static final BlockEntry<Block> CASING_COKE_BRICKS = createCasingBlock("coke_oven_bricks",
+    public static final BlockEntry<Block> CASING_COKE_BRICKS = createBrickCasingBlock("coke_oven_bricks",
             GTCEu.id("block/casings/solid/machine_coke_bricks"));
-    public static final BlockEntry<Block> CASING_PRIMITIVE_BRICKS = createCasingBlock("firebricks",
+    public static final BlockEntry<Block> CASING_PRIMITIVE_BRICKS = createBrickCasingBlock("firebricks",
             GTCEu.id("block/casings/solid/machine_primitive_bricks"));
     public static final BlockEntry<Block> CASING_BRONZE_BRICKS = createCasingBlock("steam_machine_casing",
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
@@ -500,9 +498,32 @@ public class GTBlocks {
                 .register();
     }
 
+    private static BlockEntry<Block> createBrickCasingBlock(String name, ResourceLocation texture) {
+        // return createCasingBlock(name, GlassBlock::new, texture, () -> Blocks.GLASS, type);
+        NonNullFunction<BlockBehaviour.Properties, Block> supplier = Block::new;
+        return REGISTRATE.block(name, supplier)
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
+                .addLayer(() -> RenderType::cutoutMipped)
+                .blockstate(GTModels.cubeAllModel(name, texture))
+                .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(BlockItem::new)
+                .build()
+                .register();
+    }
+
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture,
                                                             Supplier<Supplier<RenderType>> type) {
-        return createCasingBlock(name, GlassBlock::new, texture, () -> Blocks.GLASS, type);
+        NonNullFunction<BlockBehaviour.Properties, Block> supplier = GlassBlock::new;
+        return REGISTRATE.block(name, supplier)
+                .initialProperties(() -> Blocks.GLASS)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
+                .addLayer(type)
+                .blockstate(GTModels.cubeAllModel(name, texture))
+                .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(BlockItem::new)
+                .build()
+                .register();
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
@@ -515,12 +536,16 @@ public class GTBlocks {
                                                       ResourceLocation texture,
                                                       NonNullSupplier<? extends Block> properties,
                                                       Supplier<Supplier<RenderType>> type) {
-        return REGISTRATE.block(name, blockSupplier)
+        var builder = REGISTRATE.block(name, blockSupplier)
                 .initialProperties(properties)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(type)
                 .blockstate(GTModels.cubeAllModel(name, texture))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+        return builder
                 .item(BlockItem::new)
                 .build()
                 .register();
@@ -528,15 +553,19 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
-        BlockEntry<Block> entry = REGISTRATE
+        var builder = REGISTRATE
                 .block("%s_machine_casing".formatted(tierName), Block::new)
                 .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createMachineCasingModel(tierName))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+
+        BlockEntry<Block> entry = builder.item(BlockItem::new)
                 .build()
                 .register();
         if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
@@ -547,14 +576,19 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createHermeticCasing(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
-        BlockEntry<Block> entry = REGISTRATE
+        var builder = REGISTRATE
                 .block("%s_hermetic_casing".formatted(tierName), Block::new)
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createHermeticCasingModel(tierName))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+
+        BlockEntry<Block> entry = builder
                 .item(BlockItem::new)
                 .build()
                 .register();
@@ -565,25 +599,33 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createSteamCasing(String name, String material) {
-        return REGISTRATE.block(name, Block::new)
+        var builder = REGISTRATE.block(name, Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createSteamCasingModel(name, material))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+
+        return builder.item(BlockItem::new)
                 .build()
                 .register();
     }
 
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
-        BlockEntry<CoilBlock> coilBlock = REGISTRATE
+        var builder = REGISTRATE
                 .block("%s_coil_block".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createCoilModel("%s_coil_block".formatted(coilType.getName()), coilType))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+
+        BlockEntry<CoilBlock> coilBlock = builder.item(BlockItem::new)
                 .build()
                 .register();
         GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
@@ -591,30 +633,39 @@ public class GTBlocks {
     }
 
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData) {
-        BlockEntry<BatteryBlock> batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
+        var builder = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
                 p -> new BatteryBlock(p, batteryData))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createBatteryBlockModel("%s_battery".formatted(batteryData.getBatteryName()),
                         batteryData))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+
+        BlockEntry<BatteryBlock> batteryBlock = builder.item(BlockItem::new)
                 .build()
                 .register();
+
         GTCEuAPI.PSS_BATTERIES.put(batteryData, batteryBlock);
         return batteryBlock;
     }
 
     private static BlockEntry<FusionCasingBlock> createFusionCasing(IFusionCasingType casingType) {
-        BlockEntry<FusionCasingBlock> casingBlock = REGISTRATE
+        var builder = REGISTRATE
                 .block(casingType.getSerializedName(), p -> new FusionCasingBlock(p, casingType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(5.0f, 10.0f).sound(SoundType.METAL))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createFusionCasingModel(casingType.getSerializedName(), casingType))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), CustomTags.TOOL_TIERS[casingType.getHarvestLevel()])
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()]);
+        }
+
+        BlockEntry<FusionCasingBlock> casingBlock = builder.item(BlockItem::new)
                 .build()
                 .register();
         ALL_FUSION_CASINGS.put(casingType, casingBlock);
@@ -622,13 +673,17 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
-        var filterBlock = REGISTRATE.block(filterType.getSerializedName(), Block::new)
+        var builder = REGISTRATE.block(filterType.getSerializedName(), Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
                         .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createCleanroomFilterModel(filterType.getSerializedName(), filterType))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), CustomTags.TOOL_TIERS[1])
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(CustomTags.TOOL_TIERS[1]);
+        }
+        var filterBlock = builder
                 .item(BlockItem::new)
                 .build()
                 .register();
@@ -637,26 +692,32 @@ public class GTBlocks {
     }
 
     protected static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
-        return REGISTRATE.block(name, ActiveBlock::new)
+        var builder = REGISTRATE.block(name, ActiveBlock::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createActiveModel(GTCEu.id(baseModelPath)))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+        return builder.item(BlockItem::new)
                 .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), GTCEu.id(baseModelPath)))
                 .build()
                 .register();
     }
 
     private static BlockEntry<ActiveBlock> createFireboxCasing(BoilerFireboxType type) {
-        BlockEntry<ActiveBlock> block = REGISTRATE
+        var builder = REGISTRATE
                 .block("%s_casing".formatted(type.name()), ActiveBlock::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(GTModels.createFireboxModel("%s_casing".formatted(type.name()), type))
-                .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
-                .item(BlockItem::new)
+                .tag(GTToolType.WRENCH.harvestTags.get(0));
+        if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+            builder.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        }
+        BlockEntry<ActiveBlock> block = builder.item(BlockItem::new)
                 .build()
                 .register();
         ALL_FIREBOXES.put(type, block);
