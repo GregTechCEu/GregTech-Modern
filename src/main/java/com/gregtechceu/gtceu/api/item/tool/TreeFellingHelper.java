@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class TreeFellingHelper {
     private final Deque<BlockPos> orderedBlocks;
     private int tick;
 
-    public static final Set<TreeFellingHelper> helpers = new ObjectOpenHashSet<>();
+    public static final List<TreeFellingHelper> helpers = ObjectArrayList.of();
 
     private TreeFellingHelper(ServerPlayer player, ItemStack tool, Deque<BlockPos> orderedBlocks) {
         this.player = player;
