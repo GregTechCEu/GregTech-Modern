@@ -131,7 +131,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     @Override
     public boolean hasRotor() {
-        return rotorColor != 0;
+        return inventory.getStackInSlot(0) != ItemStack.EMPTY;
     }
 
     protected void updateRotorSubscription() {
