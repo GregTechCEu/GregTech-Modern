@@ -10,9 +10,11 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.item.tool.behavior.*;
 
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -52,14 +54,14 @@ public class GTToolType {
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(TorchPlaceBehavior.INSTANCE))
             .toolClassNames("pickaxe")
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(TagUtil.createItemTag("shovels", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(
                     b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
             .constructor(GTShovelItem::create)
@@ -67,7 +69,7 @@ public class GTToolType {
             .build();
     public static final GTToolType AXE = GTToolType.builder("axe")
             .toolTag(TagUtil.createItemTag("axes", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_AXE)
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
                     .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE,
@@ -85,7 +87,7 @@ public class GTToolType {
 
     public static final GTToolType MINING_HAMMER = GTToolType.builder("mining_hammer")
             .toolTag(TagUtil.createItemTag("tools/mining_hammers", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
@@ -94,7 +96,7 @@ public class GTToolType {
             .build();
     public static final GTToolType SPADE = GTToolType.builder("spade")
             .toolTag(TagUtil.createItemTag("tools/spades", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
@@ -126,7 +128,7 @@ public class GTToolType {
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
             .toolTag(TagUtil.createItemTag("tools/hammers", false))
             .harvestTag(TagUtil.createBlockTag("mineable/hammer", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(new EntityDamageBehavior(2.0F, IronGolem.class)))
@@ -144,7 +146,7 @@ public class GTToolType {
     public static final GTToolType WRENCH = GTToolType.builder("wrench")
             .toolTag(TagUtil.createItemTag("tools/wrenches", false))
             .toolTag(TagUtil.createItemTag("tools/wrench", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
+            .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
@@ -184,7 +186,7 @@ public class GTToolType {
             .build();
     public static final GTToolType WIRE_CUTTER = GTToolType.builder("wire_cutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/wire_cutter", false))
+            .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
@@ -223,8 +225,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(3.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
@@ -239,8 +241,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 2)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(4.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV)
@@ -255,8 +257,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(2, 2, 4)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(5.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
@@ -271,8 +273,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(3, 3, 6)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(6.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_EV)
@@ -287,8 +289,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .toolTag(TagUtil.createItemTag("shovels", true))
             .toolTag(ItemTags.CLUSTER_MAX_HARVESTABLES)
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .harvestTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .toolStats(b -> b.blockBreaking().aoe(4, 4, 8)
                     .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(7.0F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
@@ -301,7 +303,7 @@ public class GTToolType {
             .idFormat("lv_%s_chainsaw")
             .toolTag(TagUtil.createItemTag("axes", true))
             .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
+            .harvestTag(BlockTags.MINEABLE_WITH_AXE)
             .toolStats(b -> b.blockBreaking()
                     .efficiencyMultiplier(2.0F)
                     .attackDamage(5.0F).attackSpeed(-3.2F)
@@ -361,7 +363,7 @@ public class GTToolType {
     public static final GTToolType WIRE_CUTTER_LV = GTToolType.builder("lv_wirecutter")
             .idFormat("lv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/wire_cutter", false))
+            .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
@@ -373,7 +375,7 @@ public class GTToolType {
     public static final GTToolType WIRE_CUTTER_HV = GTToolType.builder("hv_wirecutter")
             .idFormat("hv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/wire_cutter", false))
+            .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
@@ -385,7 +387,7 @@ public class GTToolType {
     public static final GTToolType WIRE_CUTTER_IV = GTToolType.builder("iv_wirecutter")
             .idFormat("iv_%s_wirecutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/wire_cutter", false))
+            .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
