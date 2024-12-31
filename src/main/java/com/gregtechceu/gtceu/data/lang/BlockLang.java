@@ -46,7 +46,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.inert_machine_casing", "Chemically Inert PTFE Machine Casing");
         replace(provider, "block.gtceu.sturdy_machine_casing", "Sturdy HSS-E Machine Casing");
         replace(provider, "block.gtceu.casing_grate", "Grate Machine Casing");
-        replace(provider, "block.gtceu.assembly_line_unit", "Assembly Line Casing");
+        replace(provider, "block.gtceu.assembly_line_unit", "Assembly Control Casing");
         replace(provider, "block.gtceu.ptfe_pipe_casing", "PTFE Pipe Casing");
         replace(provider, "block.gtceu.bronze_gearbox", "Bronze Gearbox Casing");
         replace(provider, "block.gtceu.steel_gearbox", "Steel Gearbox Casing");
