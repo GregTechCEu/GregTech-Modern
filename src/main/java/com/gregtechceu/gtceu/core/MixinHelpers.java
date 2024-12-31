@@ -103,20 +103,29 @@ public class MixinHelpers {
             });
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
-                tagMap.computeIfAbsent(GTToolType.WRENCH.harvestTags.get(0).location(), path -> new ArrayList<>())
+                tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(), path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
-                if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
-                    tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(), path -> new ArrayList<>())
-                            .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
-                }
             });
 
             GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block.get());
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(),
-                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
             });
+
+            // if config is NOT enabled, add the pickaxe/axe tags to the "configurable" mineability tags
+            if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+                var tagList = tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(),
+                                path -> new ArrayList<>());
+
+                tagList.add(new TagLoader.EntryWithSource(
+                        TagEntry.tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location()),
+                        GTValues.CUSTOM_TAG_SOURCE));
+                tagList.add(new TagLoader.EntryWithSource(
+                        TagEntry.tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER.location()),
+                        GTValues.CUSTOM_TAG_SOURCE));
+            }
         } else if (registry == BuiltInRegistries.FLUID) {
             for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                 if (material.hasProperty(PropertyKey.FLUID)) {

@@ -48,6 +48,12 @@ public class BlockTagLoader {
                 .add(TagEntry.element(GTMachines.WOODEN_DRUM.getId()))
                 .add(TagEntry.element(GTMachines.WOODEN_CRATE.getId()));
 
+        // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
+        provider.addTag(CustomTags.MINEABLE_WITH_WRENCH)
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH);
+        provider.addTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
+
         provider.addTag(CustomTags.CLEANROOM_FLOORS)
                 .addOptionalTag(new ResourceLocation("elevatorid:elevators"))
                 .addOptional(new ResourceLocation("enderio:travel_anchor"))
