@@ -220,7 +220,7 @@ public class StoneMachineRecipes {
                             .slab(Items.BRICK_SLAB)
                             .stair(Items.BRICK_STAIRS)
                             .wall(Items.BRICK_WALL)
-                            .material(GTMaterials.Brick)
+                            .material(GTMaterials.Brick, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "mud_brick")
@@ -238,7 +238,7 @@ public class StoneMachineRecipes {
                             .slab(Items.NETHER_BRICK_SLAB)
                             .stair(Items.NETHER_BRICK_STAIRS)
                             .wall(Items.NETHER_BRICK_WALL)
-                            .material(GTMaterials.Netherrack)
+                            .material(GTMaterials.Netherrack, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "red_nether_brick")
@@ -255,14 +255,14 @@ public class StoneMachineRecipes {
                             .chiselStone(Items.CHISELED_QUARTZ_BLOCK)
                             .slab(Items.QUARTZ_SLAB)
                             .stair(Items.QUARTZ_STAIRS)
-                            .material(GTMaterials.NetherQuartz)
+                            .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_quartz")
                             .stone(Items.SMOOTH_QUARTZ)
                             .slab(Items.SMOOTH_QUARTZ_SLAB)
                             .stair(Items.SMOOTH_QUARTZ_STAIRS)
-                            .material(GTMaterials.NetherQuartz)
+                            .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cut_copper")

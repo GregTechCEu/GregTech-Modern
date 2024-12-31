@@ -54,12 +54,12 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.SAND, 2))
+                .inputItems(new ItemStack(Blocks.SAND, 4))
                 .outputItems(new ItemStack(Blocks.SANDSTONE))
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("red_sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.RED_SAND), 2)
+                .inputItems(new ItemStack(Blocks.RED_SAND), 4)
                 .outputItems(new ItemStack(Blocks.RED_SANDSTONE))
                 .save(provider);
 
@@ -587,8 +587,8 @@ public class VanillaStandardRecipes {
                     .save(provider);
 
             CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_glass_to_pane").duration(20).EUt(VA[ULV])
-                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")))
-                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")))
+                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")), 3)
+                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 8)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
