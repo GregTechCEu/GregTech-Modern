@@ -27,11 +27,11 @@ public class GTRecipes {
             BlastProperty.GasTier.class);
 
     static {
-        EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(1000, GTMaterials.Nitrogen.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.MID, FluidIngredient.of(100, GTMaterials.Helium.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGH, FluidIngredient.of(50, GTMaterials.Argon.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHER, FluidIngredient.of(25, GTMaterials.Neon.getFluid()));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, FluidIngredient.of(10, GTMaterials.Krypton.getFluid()));
+        EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000));
+        EBF_GASES.put(BlastProperty.GasTier.MID, FluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100));
+        EBF_GASES.put(BlastProperty.GasTier.HIGH, FluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHER, FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25));
+        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
     }
 
     public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
