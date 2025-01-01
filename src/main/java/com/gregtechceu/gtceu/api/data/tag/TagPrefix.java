@@ -733,7 +733,8 @@ public class TagPrefix {
             .unificationEnabled(true);
     public static final TagPrefix pipeSmallFluid = new TagPrefix("pipeSmallFluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS).langValue("Small %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M).unificationEnabled(true);
+            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M)
+            .unificationEnabled(true);
     public static final TagPrefix pipeNormalFluid = new TagPrefix("pipeNormalFluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS).langValue("Normal %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
@@ -758,7 +759,8 @@ public class TagPrefix {
 
     public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Small %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M).unificationEnabled(true);
+            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M)
+            .unificationEnabled(true);
     public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
@@ -774,7 +776,8 @@ public class TagPrefix {
 
     public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Small Restrictive %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M).unificationEnabled(true);
+            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M)
+            .unificationEnabled(true);
     public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)

@@ -107,10 +107,10 @@ public class CustomTags {
     // Mineability tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
     public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");
-    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH =
-            TagUtil.createModBlockTag("mineable/pickaxe_or_wrench");
-    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER =
-            TagUtil.createModBlockTag("mineable/pickaxe_or_wire_cutter");
+    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH = TagUtil
+            .createModBlockTag("mineable/pickaxe_or_wrench");
+    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER = TagUtil
+            .createModBlockTag("mineable/pickaxe_or_wire_cutter");
 
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createBlockTag("needs_gold_tool");

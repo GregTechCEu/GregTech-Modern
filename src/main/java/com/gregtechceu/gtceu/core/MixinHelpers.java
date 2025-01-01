@@ -103,21 +103,22 @@ public class MixinHelpers {
             });
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
-                tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(), path -> new ArrayList<>())
+                tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(),
+                        path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
             });
 
             GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block.get());
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(),
-                                path -> new ArrayList<>())
+                        path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
             });
 
             // if config is NOT enabled, add the pickaxe/axe tags to the "configurable" mineability tags
             if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
                 var tagList = tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(),
-                                path -> new ArrayList<>());
+                        path -> new ArrayList<>());
 
                 tagList.add(new TagLoader.EntryWithSource(
                         TagEntry.tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location()),
@@ -139,10 +140,11 @@ public class MixinHelpers {
                             TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
                                     GTValues.CUSTOM_TAG_SOURCE);
                             tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
-                                            path -> new ArrayList<>())
+                                    path -> new ArrayList<>())
                                     .add(entry);
                             if (fluid instanceof GTFluid gtFluid) {
-                                tagMap.computeIfAbsent(gtFluid.getState().getTagKey().location(), path -> new ArrayList<>())
+                                tagMap.computeIfAbsent(gtFluid.getState().getTagKey().location(),
+                                        path -> new ArrayList<>())
                                         .add(entry);
                             } else {
                                 ResourceLocation fluidKeyTag = key.getDefaultFluidState().getTagKey().location();
@@ -157,7 +159,7 @@ public class MixinHelpers {
                     if (fluid != null) {
                         ResourceLocation moltenID = BuiltInRegistries.FLUID.getKey(fluid);
                         tagMap.computeIfAbsent(CustomTags.MOLTEN_FLUIDS.location(),
-                                        path -> new ArrayList<>())
+                                path -> new ArrayList<>())
                                 .add(new TagLoader.EntryWithSource(TagEntry.element(moltenID),
                                         GTValues.CUSTOM_TAG_SOURCE));
                     }
@@ -173,7 +175,7 @@ public class MixinHelpers {
         if (!prefix.miningToolTag().isEmpty()) {
             map.forEach((material, block) -> {
                 tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
-                                path -> new ArrayList<>())
+                        path -> new ArrayList<>())
                         .add(new TagLoader.EntryWithSource(TagEntry.element(block.getId()),
                                 GTValues.CUSTOM_TAG_SOURCE));
 

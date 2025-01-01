@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.fluids;
 
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import lombok.Getter;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public enum FluidState {
