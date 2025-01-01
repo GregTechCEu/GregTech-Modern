@@ -8,16 +8,17 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -38,13 +39,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @DescSynced
     @RequireRerender
-    protected final Set<BlockPos> controllerPositions;
-    protected final SortedSet<IMultiController> controllers;
+    @UpdateListener(methodName = "onControllersUpdated")
+    protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
+    protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
 
     public MultiblockPartMachine(IMachineBlockEntity holder) {
         super(holder);
-        this.controllerPositions = new HashSet<>();
-        this.controllers = new ReferenceLinkedOpenHashSet<>();
     }
 
     //////////////////////////////////////
@@ -66,35 +66,45 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         return !controllerPositions.isEmpty();
     }
 
+    // Not sure if necessary, but added to match the Controller class
+    @SuppressWarnings("unused")
+    public void onControllersUpdated(Set<BlockPos> newPositions, Set<BlockPos> old) {
+        controllers.clear();
+        for (BlockPos blockPos : newPositions) {
+            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
+                controllers.add(controller);
+            }
+        }
+    }
+
     @Override
     public SortedSet<IMultiController> getControllers() {
         // Necessary to rebuild the set of controllers on client-side
         if (controllers.size() != controllerPositions.size()) {
-            controllers.clear();
-            for (var blockPos : controllerPositions) {
-                if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
-                    controllers.add(controller);
-                }
-            }
+            onControllersUpdated(controllerPositions, Collections.emptySet());
         }
         return Collections.unmodifiableSortedSet(controllers);
     }
 
     @Override
     public List<IRecipeHandlerTrait> getRecipeHandlers() {
-        return traits.stream().filter(IRecipeHandlerTrait.class::isInstance).map(IRecipeHandlerTrait.class::cast)
+        return traits.stream()
+                .filter(IRecipeHandlerTrait.class::isInstance)
+                .map(IRecipeHandlerTrait.class::cast)
                 .toList();
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        var level = getLevel();
-        for (BlockPos pos : controllerPositions) {
-            if (level instanceof ServerLevel && level.isLoaded(pos) &&
-                    MetaMachine.getMachine(level, pos) instanceof IMultiController controller) {
-                removedFromController(controller);
-                controller.onPartUnload();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            // Need to copy if > 1 so that we can call removedFromController safely without CME
+            Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
+            for (IMultiController controller : toIter) {
+                if (serverLevel.isLoaded(controller.self().getPos())) {
+                    removedFromController(controller);
+                    controller.onPartUnload();
+                }
             }
         }
         controllerPositions.clear();
