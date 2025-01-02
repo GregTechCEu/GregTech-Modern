@@ -120,6 +120,9 @@ public class GTDynamicDataPack implements PackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
+        if (elements.length > 0 && elements[0].equals("pack.png")) {
+            return () -> GTCEu.class.getResourceAsStream("/icon.png");
+        }
         return null;
     }
 
