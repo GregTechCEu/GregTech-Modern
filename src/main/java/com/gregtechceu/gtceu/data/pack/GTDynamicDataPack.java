@@ -95,10 +95,11 @@ public class GTDynamicDataPack implements PackResources {
         try {
             Path file;
             if (subdir != null) {
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
+                // assume JSON
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
-                                                                                // if a full path is given.
+                // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
             }
             Files.createDirectories(file.getParent());
             try (OutputStream output = Files.newOutputStream(file)) {
@@ -122,6 +123,7 @@ public class GTDynamicDataPack implements PackResources {
         return null;
     }
 
+    @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
@@ -139,7 +141,8 @@ public class GTDynamicDataPack implements PackResources {
         if (packType == PackType.SERVER_DATA) {
             if (!path.endsWith("/")) path += "/";
             final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath))
+            DATA.keySet().stream().filter(Objects::nonNull)
+                    .filter(loc -> loc.getNamespace().equals(namespace) && loc.getPath().startsWith(finalPath))
                     .forEach((id) -> {
                         IoSupplier<InputStream> resource = this.getResource(packType, id);
                         if (resource != null) {
