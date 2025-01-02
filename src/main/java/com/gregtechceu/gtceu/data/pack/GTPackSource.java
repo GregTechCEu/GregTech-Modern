@@ -35,7 +35,6 @@ public class GTPackSource implements RepositorySource {
                                          PackType packType, Pack.Position defaultPosition, PackSource packSource) {
         Pack.Info info = Pack.readPackInfo(id, resources);
         return info != null ? Pack.create(id, title, required, resources,
-                info, packType, defaultPosition, true, packSource)
-                : null;
+                info, packType, defaultPosition, true, packSource) : null;
     }
 }
