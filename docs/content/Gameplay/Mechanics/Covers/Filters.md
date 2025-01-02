@@ -1,11 +1,17 @@
 # Filters
-Once a filter is placed on a machine or pipe end they gain 2 buttons inside of them, the filter insert/extract modes and Manual I/O modes.
 
+# Modes
+Once a filter is placed on a machine or pipe end they gain 2 buttons inside of them, the filter insert/extract modes and Manual I/O modes.
+## Insert/Extract
 Filter extract mode applies the filter to contents exiting the side, e.g. putting it on the end of a pipe facing into a chest, with whitelist enabled, it will only output the filter contents to the chest.
 
 Filter insert mode applies to contents entering a side, e.g. a pipe is placed on the side of a machine, the machine auto outputs to the pipe, and the pipe has a filter on the side of it which is touching the machine (filter is not on the machine), the filter will allow the machine to auto output into it if the filter contents match the machine auto output.
 
 If not caring for directional filtering and just want to block something through passing a point at all, use filter Insert/extract to apply to both directions.
+
+## Manual I/O modes
+placeholder (I don't know how they work)
+# Mechanics
 ## Item and Fluid filter
 These basic filters can store 9 slots worth of items or fluids to act as a filter for pipes, 
 Can be placed inside of logistics covers on machines or pipes, machine sides, or on pipes to filter.
