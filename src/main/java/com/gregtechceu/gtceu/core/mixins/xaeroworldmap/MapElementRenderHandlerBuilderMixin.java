@@ -16,7 +16,7 @@ public class MapElementRenderHandlerBuilderMixin {
 
     @ModifyVariable(method = "build", at = @At(value = "LOAD", ordinal = 3))
     private List<MapElementRenderer<?, ?, ?>> gtceu$addOreRenderer(List<MapElementRenderer<?, ?, ?>> value) {
-        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaeroxMapIntegration) {
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) {
             value.add(OreVeinElementRenderer.Builder.begin().build());
         }
         return value;

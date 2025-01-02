@@ -24,7 +24,7 @@ public abstract class WorldMapSessionMixin {
             locals = LocalCapture.CAPTURE_FAILSOFT)
     private void cadmus$registerHighlighters(ClientPacketListener connection, long biomeZoomSeed, CallbackInfo ci,
                                              @Local HighlighterRegistry highlightRegistry) {
-        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaeroxMapIntegration) return;
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) return;
         highlightRegistry.register(new FluidChunkHighlighter());
     }
 }

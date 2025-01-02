@@ -33,7 +33,7 @@ public class XaerosMapPlugin {
             dimHighlightHandler.requestRefresh();
         }
 
-        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaeroxMapIntegration &&
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration &&
                 Platform.isModLoaded(GTValues.MODID_XAEROS_WORLDMAP)) {
             WorldMapSession session = WorldMapSession.getCurrentSession();
             MapWorld world = session.getMapProcessor().getMapWorld();

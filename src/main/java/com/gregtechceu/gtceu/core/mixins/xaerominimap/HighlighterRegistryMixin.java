@@ -20,7 +20,7 @@ public abstract class HighlighterRegistryMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void gtceu$registerHighlighters(CallbackInfo ci) {
-        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaeroxMapIntegration) return;
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) return;
         this.register(new FluidChunkHighlighter());
     }
 }

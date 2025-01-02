@@ -272,7 +272,7 @@ public class ConfigHolder {
 
                 @Configurable
                 @Configurable.Comment({ "FTB Chunks integration enabled" })
-                public boolean chunksIntegration = false;
+                public boolean ftbChunksIntegration = false;
 
                 @Configurable
                 @Configurable.Comment({ "Journey Map integration enabled" })
@@ -280,7 +280,7 @@ public class ConfigHolder {
 
                 @Configurable
                 @Configurable.Comment({ "Xaerox's map integration enabled" })
-                public boolean xaeroxMapIntegration = true;
+                public boolean xaerosMapIntegration = true;
             }
 
             public enum Anchor {

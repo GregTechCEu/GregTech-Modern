@@ -33,10 +33,10 @@ public class GroupingMapRenderer extends GenericMapRenderer {
         if (toggle.journeyMapIntegration && Platform.isModLoaded(GTValues.MODID_JOURNEYMAP)) {
             renderers.put(GTValues.MODID_JOURNEYMAP, new JourneymapRenderer());
         }
-        if (toggle.xaeroxMapIntegration && Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
+        if (toggle.xaerosMapIntegration && Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
             renderers.put(GTValues.MODID_XAEROS_MINIMAP, new XaerosRenderer());
         }
-        if (toggle.chunksIntegration && Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
+        if (toggle.ftbChunksIntegration && Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             renderers.put(GTValues.MODID_FTB_CHUNKS, new FTBChunksRenderer());
         }
 

@@ -31,7 +31,7 @@ public abstract class LargeMapScreenMixin extends BaseScreen {
 
     @Inject(method = "addWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAddWidgets(CallbackInfo ci) {
-        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.chunksIntegration) return;
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration) return;
         gtceu$injectedWidgets.clear();
         var prefix = "gtceu.button.";
         for (var button : ButtonState.getAllButtons()) {
@@ -65,7 +65,7 @@ public abstract class LargeMapScreenMixin extends BaseScreen {
 
     @Inject(method = "alignWidgets", at = @At(value = "TAIL"))
     private void gtceu$injectAlignWidgets(CallbackInfo ci) {
-        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.chunksIntegration) return;
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration) return;
         var buttonCount = gtceu$injectedWidgets.size();
         var startHeight = (height - buttonCount * 18) / 2;
         for (int i = 0; i < buttonCount; i++) {

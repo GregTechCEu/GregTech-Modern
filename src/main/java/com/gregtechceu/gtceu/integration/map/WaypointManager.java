@@ -30,7 +30,7 @@ public class WaypointManager {
 
     public static void init() {
         var toggle = ConfigHolder.INSTANCE.compat.minimap.toggle;
-        if (toggle.xaeroxMapIntegration && Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
+        if (toggle.xaerosMapIntegration && Platform.isModLoaded(GTValues.MODID_XAEROS_MINIMAP)) {
             WaypointManager.registerWaypointHandler(new XaeroWaypointHandler());
             active = true;
         }
@@ -38,7 +38,7 @@ public class WaypointManager {
             WaypointManager.registerWaypointHandler(new JourneymapWaypointHandler());
             active = true;
         }
-        if (toggle.chunksIntegration && Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
+        if (toggle.ftbChunksIntegration && Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             WaypointManager.registerWaypointHandler(new FTBChunksWaypointHandler());
             active = true;
         }

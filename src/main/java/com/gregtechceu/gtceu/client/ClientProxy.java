@@ -100,7 +100,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onClientSetup(FMLClientSetupEvent event) {
-        if (ConfigHolder.INSTANCE.compat.minimap.toggle.chunksIntegration &&
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration &&
                 Platform.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
