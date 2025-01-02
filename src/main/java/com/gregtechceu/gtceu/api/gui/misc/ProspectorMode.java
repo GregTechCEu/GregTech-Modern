@@ -7,9 +7,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -172,6 +174,19 @@ public abstract class ProspectorMode<T> {
         @Setter
         private int left;
 
+        public void toBuffer(FriendlyByteBuf buf) {
+            buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid));
+            buf.writeInt(yield);
+            buf.writeInt(left);
+        }
+
+        public static FluidInfo fromBuffer(FriendlyByteBuf buf) {
+            var fluid = BuiltInRegistries.FLUID.get(buf.readResourceLocation());
+            var yield = buf.readInt();
+            var left = buf.readInt();
+            return new FluidInfo(fluid, yield, left);
+        }
+
         public static FluidInfo fromNbt(CompoundTag tag) {
             Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
             int left = tag.getInt("left");
@@ -186,6 +201,15 @@ public abstract class ProspectorMode<T> {
             tag.putInt("yield", yield);
             return tag;
         }
+
+        public static FluidInfo fromVeinWorldEntry(@NotNull FluidVeinWorldEntry savedData) {
+            if (savedData.getDefinition() == null) {
+                return null;
+            }
+            return new FluidInfo(savedData.getDefinition().getStoredFluid().get(),
+                    100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS,
+                    savedData.getFluidYield());
+        }
     }
 
     public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
@@ -196,11 +220,8 @@ public abstract class ProspectorMode<T> {
                 var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel)
                         .getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (fluidVein.getDefinition() != null) {
-                    var left = 100 * fluidVein.getOperationsRemaining() /
-                            BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     storage[0][0] = new FluidInfo[] {
-                            new FluidInfo(fluidVein.getDefinition().getStoredFluid().get(), left,
-                                    fluidVein.getFluidYield()),
+                            FluidInfo.fromVeinWorldEntry(fluidVein)
                     };
                 }
             }
@@ -278,6 +299,20 @@ public abstract class ProspectorMode<T> {
 
     public record OreInfo(Material material, int weight, int left, int yield) {
 
+        public void toBuffer(FriendlyByteBuf buf) {
+            buf.writeResourceLocation(material.getResourceLocation());
+            buf.writeInt(weight);
+            buf.writeInt(left);
+            buf.writeInt(yield);
+        }
+
+        public static OreInfo fromBuffer(FriendlyByteBuf buf) {
+            var material = MaterialRegistryManager.getInstance().getMaterial(buf.readResourceLocation().toString());
+            var weight = buf.readInt();
+            var left = buf.readInt();
+            var yield = buf.readInt();
+            return new OreInfo(material, weight, left, yield);
+        }
     }
 
     public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore",
