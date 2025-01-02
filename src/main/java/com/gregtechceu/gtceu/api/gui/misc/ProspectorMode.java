@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -174,24 +173,11 @@ public abstract class ProspectorMode<T> {
         @Setter
         private int left;
 
-        public void toBuffer(FriendlyByteBuf buf) {
-            buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid));
-            buf.writeInt(yield);
-            buf.writeInt(left);
-        }
-
-        public static FluidInfo fromBuffer(FriendlyByteBuf buf) {
-            var fluid = BuiltInRegistries.FLUID.get(buf.readResourceLocation());
-            var yield = buf.readInt();
-            var left = buf.readInt();
-            return new FluidInfo(fluid, yield, left);
-        }
-
         public static FluidInfo fromNbt(CompoundTag tag) {
             Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
             int left = tag.getInt("left");
             int yield = tag.getInt("yield");
-            return new FluidInfo(fluid, left, yield);
+            return new FluidInfo(fluid, yield, left);
         }
 
         public CompoundTag toNbt() {
@@ -207,8 +193,8 @@ public abstract class ProspectorMode<T> {
                 return null;
             }
             return new FluidInfo(savedData.getDefinition().getStoredFluid().get(),
-                    100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS,
-                    savedData.getFluidYield());
+                    savedData.getFluidYield(),
+                    100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
         }
     }
 
@@ -254,8 +240,8 @@ public abstract class ProspectorMode<T> {
         @Override
         public void serialize(FluidInfo item, FriendlyByteBuf buf) {
             buf.writeUtf(BuiltInRegistries.FLUID.getKey(item.fluid).toString());
-            buf.writeVarInt(item.left);
             buf.writeVarInt(item.yield);
+            buf.writeVarInt(item.left);
         }
 
         @Override
