@@ -29,12 +29,12 @@ public class SPacketProspectBedrockFluid extends SPacketProspect<ProspectorMode.
 
     @Override
     public void encodeData(FriendlyByteBuf buf, ProspectorMode.FluidInfo data) {
-        data.toBuffer(buf);
+        ProspectorMode.FLUID.serialize(data, buf);
     }
 
     @Override
     public ProspectorMode.FluidInfo decodeData(FriendlyByteBuf buf) {
-        return ProspectorMode.FluidInfo.fromBuffer(buf);
+        return ProspectorMode.FLUID.deserialize(buf);
     }
 
     @Override

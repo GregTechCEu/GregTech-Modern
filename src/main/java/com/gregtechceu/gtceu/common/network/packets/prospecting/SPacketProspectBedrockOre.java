@@ -14,12 +14,12 @@ public class SPacketProspectBedrockOre extends SPacketProspect<ProspectorMode.Or
 
     @Override
     public void encodeData(FriendlyByteBuf buf, ProspectorMode.OreInfo data) {
-        data.toBuffer(buf);
+        ProspectorMode.BEDROCK_ORE.serialize(data, buf);
     }
 
     @Override
     public ProspectorMode.OreInfo decodeData(FriendlyByteBuf buf) {
-        return ProspectorMode.OreInfo.fromBuffer(buf);
+        return ProspectorMode.BEDROCK_ORE.deserialize(buf);
     }
 
     @Override

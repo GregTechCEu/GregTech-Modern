@@ -299,20 +299,6 @@ public abstract class ProspectorMode<T> {
 
     public record OreInfo(Material material, int weight, int left, int yield) {
 
-        public void toBuffer(FriendlyByteBuf buf) {
-            buf.writeResourceLocation(material.getResourceLocation());
-            buf.writeInt(weight);
-            buf.writeInt(left);
-            buf.writeInt(yield);
-        }
-
-        public static OreInfo fromBuffer(FriendlyByteBuf buf) {
-            var material = MaterialRegistryManager.getInstance().getMaterial(buf.readResourceLocation().toString());
-            var weight = buf.readInt();
-            var left = buf.readInt();
-            var yield = buf.readInt();
-            return new OreInfo(material, weight, left, yield);
-        }
     }
 
     public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore",
