@@ -8,6 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class SPacketProspectBedrockOre extends SPacketProspect<ProspectorMode.OreInfo> {
 
+    public SPacketProspectBedrockOre() {
+        super();
+    }
+
     @Override
     public void encodeData(FriendlyByteBuf buf, ProspectorMode.OreInfo data) {
         data.toBuffer(buf);

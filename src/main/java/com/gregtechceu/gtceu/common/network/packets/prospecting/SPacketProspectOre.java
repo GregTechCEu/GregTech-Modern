@@ -13,6 +13,10 @@ import java.util.Collection;
 
 public class SPacketProspectOre extends SPacketProspect<GeneratedVeinMetadata> {
 
+    public SPacketProspectOre() {
+        super();
+    }
+
     public SPacketProspectOre(ResourceKey<Level> key, Collection<GeneratedVeinMetadata> veins) {
         super(key, veins.stream().map(GeneratedVeinMetadata::center).toList(), veins);
     }

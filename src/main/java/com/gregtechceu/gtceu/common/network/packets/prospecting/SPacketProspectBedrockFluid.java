@@ -14,6 +14,10 @@ import java.util.Collection;
 
 public class SPacketProspectBedrockFluid extends SPacketProspect<ProspectorMode.FluidInfo> {
 
+    public SPacketProspectBedrockFluid() {
+        super();
+    }
+
     public SPacketProspectBedrockFluid(ResourceKey<Level> key, Collection<BlockPos> positions,
                                        Collection<ProspectorMode.FluidInfo> prospected) {
         super(key, positions, prospected);
