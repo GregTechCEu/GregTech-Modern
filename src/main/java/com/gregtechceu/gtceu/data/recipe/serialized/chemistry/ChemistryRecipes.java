@@ -147,7 +147,7 @@ public class ChemistryRecipes {
 
         // 4 kelp -> 1 iodine
         CHEMICAL_RECIPES.recipeBuilder("iodine")
-                .inputItems(Items.KELP, 4)
+                .inputItems(Items.DRIED_KELP_BLOCK, 3)
                 .inputFluids(Hydrogen.getFluid(2000))
                 .inputFluids(HydrogenPeroxide.getFluid(1000))
                 .outputItems(dust, Iodine, 1)
