@@ -584,6 +584,15 @@ public class MetaTileEntityLoader {
                 'B',
                 new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel), 'C', CustomTags.EV_CIRCUITS,
                 'F', GTItems.ELECTRIC_PUMP_HV);
+        // TODO remove in 1.8.0
+        // noinspection removal
+        ChemicalHelper.registerMaterialInfo(GTMultiMachines.EVAPORATION_PLANT.getItem(),
+                VanillaRecipeHelper.getRecyclingIngredients(1, "CBC", "FMF", "CBC",
+                        'M', GTMachines.HULL[HV].asStack(),
+                        'B', new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal),
+                        'C', CustomTags.HV_CIRCUITS,
+                        'F', GTItems.ELECTRIC_PUMP_HV));
+
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cracking_unit", GTMultiMachines.CRACKER.asStack(), "CEC",
                 "PHP",
                 "CEC", 'C', GTBlocks.COIL_CUPRONICKEL.asStack(), 'E', GTItems.ELECTRIC_PUMP_HV.asStack(), 'P',

@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -496,6 +497,7 @@ public class GTMultiMachines {
 
     @SuppressWarnings("removal")
     @Deprecated(forRemoval = true, since = "1.7.0")
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.8.0")
     public static final MultiblockMachineDefinition EVAPORATION_PLANT = REGISTRATE
             .multiblock("evaporation_plant", WorkableElectricMultiblockMachine::new)
             .langValue("Evaporation Tower")

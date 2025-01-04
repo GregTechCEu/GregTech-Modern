@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -715,6 +716,14 @@ public class MachineRecipeLoader {
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).save(provider);
+        // TODO remove in 1.8.0
+        // noinspection removal
+        ChemicalHelper.registerMaterialInfo(GTBlocks.CASING_STAINLESS_EVAPORATION.asItem(),
+                new ItemMaterialInfo(
+                        new MaterialStack(StainlessSteel, M * 8), // stainless casing
+                        new MaterialStack(AnnealedCopper, M * 4), // double wire
+                        new MaterialStack(PolyvinylChloride, M * 2) // fluid
+                ));
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
                 .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)
