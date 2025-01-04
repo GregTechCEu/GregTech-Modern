@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -43,8 +44,11 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     boolean isFormed();
 
     /**
-     * Get all attached controllers
+     * Get this MultiPart's controllers
+     * 
+     * @return An Unmodifiable View of the part's controllers
      */
+    @UnmodifiableView
     SortedSet<IMultiController> getControllers();
 
     /**
