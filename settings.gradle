@@ -41,6 +41,7 @@ dependencyResolutionManagement {
         def journeyMapApiVersion = "2.0.0"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"
+        def ftbchunksForgeFile = "5956390"
         def argonautsForgeFile = "5263580"
         def resourcefulForgeFile = "5659871"
         def kffVersion = "4.11.0"
@@ -134,6 +135,9 @@ dependencyResolutionManagement {
 
             def ftblibrary = version("ftblibrary", ftblibraryForgeFile)
             library("ftblibrary", "curse.maven", "ftb-library-forge-404465").versionRef(ftblibrary)
+            
+            def ftbchunks = version("ftbchunks", ftbchunksForgeFile)
+            library("ftbchunks", "curse.maven", "ftb-chunks-forge-314906").versionRef(ftbchunks)
 
             def argonautslib = version("argonauts", argonautsForgeFile)
             library("argonauts", "curse.maven", "argonauts-845833").versionRef(argonautslib)

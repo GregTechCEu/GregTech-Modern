@@ -2,16 +2,21 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import xaero.map.WorldMap;
 import xaero.map.element.MapElementReader;
+import xaero.map.gui.CursorBox;
 import xaero.map.gui.IRightClickableElement;
 import xaero.map.gui.dropdown.rightclick.RightClickOption;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OreVeinElementReader extends
                                   MapElementReader<OreVeinElement, OreVeinElementContext, OreVeinElementRenderer> {
@@ -138,5 +143,13 @@ public class OreVeinElementReader extends
     @Override
     public int getRenderBoxBottom(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
         return this.getInteractionBoxBottom(element, context, partialTicks);
+    }
+
+    @Override
+    public CursorBox getTooltip(OreVeinElement element, OreVeinElementContext context, boolean overMenu) {
+        List<Component> components = OreRenderLayer.getTooltip(element.getName(), element.getVein());
+        // Xaeros requires spaces before/after newlines (see xaero.map.misc.TextSplitter)
+        String joined = components.stream().map(Component::getString).collect(Collectors.joining(" \n "));
+        return new CursorBox(joined);
     }
 }

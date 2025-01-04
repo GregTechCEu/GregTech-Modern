@@ -178,25 +178,25 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     floorLayer[i].append('A'); // floor edge
                     for (int k = 0; k < hDist - 1; k++) {
                         if ((i == 0 || i == lDist + rDist) && (j == 0 || j == fDist + bDist)) {
-                            wallLayers.get(k)[i].append('A');
+                            wallLayers.get(k)[j].append('A');
                         } else {
-                            wallLayers.get(k)[i].append('W'); // walls
+                            wallLayers.get(k)[j].append('W'); // walls
                         }
                     }
-                    ceilingLayer[i].append('A'); // ceiling edge
+                    ceilingLayer[j].append('A'); // ceiling edge
                 } else { // not edges
                     if (i == lDist && j == fDist) { // very center
-                        floorLayer[i].append('B');
+                        floorLayer[j].append('B');
                     } else {
-                        floorLayer[i].append('B'); // floor valid blocks
+                        floorLayer[j].append('B'); // floor valid blocks
                     }
                     for (int k = 0; k < hDist - 1; k++) {
-                        wallLayers.get(k)[i].append('L'); // log or air
+                        wallLayers.get(k)[j].append('L'); // log or air
                     }
                     if (i == lDist && j == fDist) { // very center
-                        ceilingLayer[i].append('S'); // controller
+                        ceilingLayer[j].append('S'); // controller
                     } else {
-                        ceilingLayer[i].append('W'); // grass top
+                        ceilingLayer[j].append('W'); // grass top
                     }
                 }
             }
