@@ -45,7 +45,9 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         super.generateLang(lang);
         for (int tier : tiers) {
             MachineDefinition def = value[tier];
-            lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
+            if (def.getLangValue() != null) {
+                lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
+            }
         }
     }
 

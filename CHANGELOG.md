@@ -1,5 +1,37 @@
 # ChangeLog
 
+## Version [v1.6.2](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.6.1-1.20.1...v1.6.2-1.20.1)
+### Added
+
+- Add High Pressure Variation of The Steam Miner Singleblock. by @Ghostipedia in [#2637](https://github.com/GregTechCEu/GregTech-Modern/pull/2637)
+- Add Production Efficiency Modifier by @krossgg in [#2621](https://github.com/GregTechCEu/GregTech-Modern/pull/2621)
+- Add multiblock constructors to KJS + lang by @krossgg in [#2667](https://github.com/GregTechCEu/GregTech-Modern/pull/2667)
+- Updates registrate dependency by @Spicierspace153 in [#2625](https://github.com/GregTechCEu/GregTech-Modern/pull/2625)
+
+### Fixed
+
+- Fix Distillation Tower machines crashing by @krossgg in [#2646](https://github.com/GregTechCEu/GregTech-Modern/pull/2646)
+- Fix Machine Recipe Modifiers by @krossgg in [#2647](https://github.com/GregTechCEu/GregTech-Modern/pull/2647)
+- Fix Smart Filter not saving mode by @krossgg in [#2648](https://github.com/GregTechCEu/GregTech-Modern/pull/2648)
+- Fix  builder overwriting values by @krossgg in [#2649](https://github.com/GregTechCEu/GregTech-Modern/pull/2649)
+- Add LEVEL state to PotionFluid by @loving2 in [#2650](https://github.com/GregTechCEu/GregTech-Modern/pull/2650)
+- Fix KJS replacement order & custom json recipes by @krossgg in [#2653](https://github.com/GregTechCEu/GregTech-Modern/pull/2653)
+- Fix Cleanroom floor check by @krossgg in [#2654](https://github.com/GregTechCEu/GregTech-Modern/pull/2654)
+- Fix Overclocking Logic not using correct tier for OCs by @Spicierspace153 in [#2661](https://github.com/GregTechCEu/GregTech-Modern/pull/2661)
+- Fix Steam and Plasma turbines requiring mufflers by @Luexa in [#2655](https://github.com/GregTechCEu/GregTech-Modern/pull/2655)
+- Fix oil spouts not updating the fluid on generation by @screret in [#2659](https://github.com/GregTechCEu/GregTech-Modern/pull/2659)
+- Fix furnace recipe serialization by @krossgg in [#2657](https://github.com/GregTechCEu/GregTech-Modern/pull/2657)
+- Fix MultiParts not calling  on unload by @krossgg in [#2663](https://github.com/GregTechCEu/GregTech-Modern/pull/2663)
+- Fix Stone Variant maceration having conflicting recipes by @YoungOnionMC in [#2664](https://github.com/GregTechCEu/GregTech-Modern/pull/2664)
+- Fix bucket being voided by TankWidget with not enough space by @Natanaelel in [#2643](https://github.com/GregTechCEu/GregTech-Modern/pull/2643)
+- Change pipes to force connections to covers by @krossgg in [#2666](https://github.com/GregTechCEu/GregTech-Modern/pull/2666)
+
+### Changed
+
+- Fix typo in temperature parameter of BlastProperty builder by @Luexa in [#2636](https://github.com/GregTechCEu/GregTech-Modern/pull/2636)
+- update ru_ru.json by @marisathewitch in [#2662](https://github.com/GregTechCEu/GregTech-Modern/pull/2662)
+
+ 
 ## Version [v1.6.1](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.6.0-1.20.1...v1.6.1-1.20.1)
 ### Added
 

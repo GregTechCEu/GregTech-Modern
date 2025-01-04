@@ -1268,6 +1268,8 @@ public class LangHandler {
         // gui
         provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
         provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
+        provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");

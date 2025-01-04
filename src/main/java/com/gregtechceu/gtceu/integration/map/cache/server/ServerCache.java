@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.SPacketOreProspect;
+import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
 import com.gregtechceu.gtceu.integration.map.cache.WorldCache;
@@ -80,7 +80,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketOreProspect(dim, foundVeins), player);
+        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
     public void prospectByOreMaterial(ResourceKey<Level> dim, Material material, BlockPos origin, ServerPlayer player,
@@ -93,7 +93,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketOreProspect(dim, foundVeins), player);
+        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
     public void prospectByDepositName(ResourceKey<Level> dim, String depositName, BlockPos origin, ServerPlayer player,
@@ -106,12 +106,12 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketOreProspect(dim, foundVeins), player);
+        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
     public void prospectAllInChunk(ResourceKey<Level> dim, ChunkPos pos, ServerPlayer player) {
         if (cache.containsKey(dim)) {
-            GTNetwork.NETWORK.sendToPlayer(new SPacketOreProspect(dim, cache.get(dim).getVeinsInChunk(pos)), player);
+            GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, cache.get(dim).getVeinsInChunk(pos)), player);
         }
     }
 
