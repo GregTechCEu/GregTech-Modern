@@ -56,8 +56,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -289,7 +291,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        Object2IntMap<ItemStack> ingredientStacks = getIngredientStacks(holder);
+        List<Object2IntMap<ItemStack>> ingredientStacks = getIngredientStacks(holder);
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -307,100 +309,162 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 ingredientCount = 1;
             }
             if (content.chance == 0) {
-                notConsumableMap.computeIfPresent(recipeIngredient, (k, v) -> v + ingredientCount);
-                notConsumableMap.putIfAbsent(recipeIngredient, ingredientCount);
+                notConsumableMap.mergeInt(recipeIngredient, ingredientCount, Integer::sum);
             } else {
-                countableMap.computeIfPresent(recipeIngredient, (k, v) -> v + ingredientCount);
-                countableMap.putIfAbsent(recipeIngredient, ingredientCount);
+                countableMap.mergeInt(recipeIngredient, ingredientCount, Integer::sum);
             }
         }
 
-        // Iterate through the recipe inputs, excluding the not consumable ingredients from the inventory map
-        for (Object2IntMap.Entry<Ingredient> recipeInputEntry : notConsumableMap.object2IntEntrySet()) {
-            int needed = recipeInputEntry.getIntValue();
-            int available = 0;
-            // For every stack in the ingredients gathered from the input bus.
-            for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
-                if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
-                    available = inventoryEntry.getIntValue();
-                    if (available > needed) {
-                        inventoryEntry.setValue(available - needed);
-                        needed -= available;
-                        break;
-                    } else {
-                        inventoryEntry.setValue(0);
-                        recipeInputEntry.setValue(needed - available);
-                        needed -= available;
+        // is this even possible
+        if(countableMap.isEmpty() && notConsumableMap.isEmpty()) return parallelAmount;
+
+        int maxMultiplier = 0;
+        // Check every inventory group
+        for (var inventory : ingredientStacks) {
+            // Check for enough NC in inventory group
+            boolean satisfied = true;
+            for (var ncEntry : notConsumableMap.object2IntEntrySet()) {
+                Ingredient ingredient = ncEntry.getKey();
+                int needed = ncEntry.getIntValue();
+                for (var stackEntry : inventory.object2IntEntrySet()) {
+                    if (ingredient.test(stackEntry.getKey())) {
+                        int count = stackEntry.getIntValue();
+                        if (count >= needed) {
+                            stackEntry.setValue(count - needed);
+                            needed = 0;
+                            break;
+                        }
+                        stackEntry.setValue(0);
+                        needed -= count;
                     }
                 }
-            }
-            // We need to check >= available here because of Non-Consumable inputs with stack size. If there is a NC
-            // input
-            // with size 2, and only 1 in the input, needed will be equal to available, but this situation should still
-            // fail
-            // as not all inputs are present
-            if (needed >= available) {
-                return 0;
-            }
-        }
-
-        // Return the maximum parallel limit here if there are only non-consumed inputs, which are all found in the
-        // input bus
-        // At this point, we would have already returned 0 if we were missing any non-consumable inputs, so we can omit
-        // that check
-        if (countableMap.isEmpty() && !notConsumableMap.isEmpty()) {
-            return parallelAmount;
-        }
-
-        // Iterate through the recipe inputs
-        for (Object2IntMap.Entry<Ingredient> recipeInputEntry : countableMap.object2IntEntrySet()) {
-            int needed = recipeInputEntry.getIntValue();
-            int available = 0;
-            // For every stack in the ingredients gathered from the input bus.
-            for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
-                if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
-                    available += inventoryEntry.getIntValue();
+                if (needed > 0) {
+                    satisfied = false;
                     break;
                 }
             }
-            if (available >= needed) {
-                int ratio = Math.min(parallelAmount, available / needed);
-                if (ratio < minMultiplier) {
-                    minMultiplier = ratio;
+            // Not enough NC -> skip this inventory
+            if (!satisfied) continue;
+            // Satisfied NC + no consumables -> early return
+            if (countableMap.isEmpty()) return parallelAmount;
+
+            int invMultiplier = Integer.MAX_VALUE;
+            // Loop over all consumables
+            for (var entry : countableMap.object2IntEntrySet()) {
+                Ingredient ingredient = entry.getKey();
+                final int needed = entry.getIntValue();
+                final int maxNeeded = needed * parallelAmount;
+                int available = 0;
+                // Search stacks in our inventory group, summing them up
+                for (var stackEntry : inventory.object2IntEntrySet()) {
+                    if (ingredient.test(stackEntry.getKey())) {
+                        available += stackEntry.getIntValue();
+                        // We can stop if we already have enough for max parallel
+                        if (available >= maxNeeded) break;
+                    }
                 }
-            } else {
-                return 0;
+                // ratio will equal 0 if available < needed
+                int ratio = Math.min(parallelAmount, available / needed);
+                invMultiplier = Math.min(invMultiplier, ratio);
             }
+            // We found an inventory group that can do max parallel -> early return
+            if (invMultiplier == parallelAmount) return parallelAmount;
+            maxMultiplier = Math.max(maxMultiplier, invMultiplier);
         }
-        return minMultiplier;
+        return maxMultiplier;
+
+//        // Iterate through the recipe inputs, excluding the not consumable ingredients from the inventory map
+//        for (Object2IntMap.Entry<Ingredient> recipeInputEntry : notConsumableMap.object2IntEntrySet()) {
+//            int needed = recipeInputEntry.getIntValue();
+//            int available = 0;
+//            // For every stack in the ingredients gathered from the input bus.
+//            for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
+//                if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
+//                    available = inventoryEntry.getIntValue();
+//                    if (available > needed) {
+//                        inventoryEntry.setValue(available - needed);
+//                        needed -= available;
+//                        break;
+//                    } else {
+//                        inventoryEntry.setValue(0);
+//                        recipeInputEntry.setValue(needed - available);
+//                        needed -= available;
+//                    }
+//                }
+//            }
+//            // We need to check >= available here because of Non-Consumable inputs with stack size. If there is a NC
+//            // input
+//            // with size 2, and only 1 in the input, needed will be equal to available, but this situation should still
+//            // fail
+//            // as not all inputs are present
+//            if (needed >= available) {
+//                return 0;
+//            }
+//        }
+//
+//        // Return the maximum parallel limit here if there are only non-consumed inputs, which are all found in the
+//        // input bus
+//        // At this point, we would have already returned 0 if we were missing any non-consumable inputs, so we can omit
+//        // that check
+//        if (countableMap.isEmpty() && !notConsumableMap.isEmpty()) {
+//            return parallelAmount;
+//        }
+//
+//        // Iterate through the recipe inputs
+//        for (Object2IntMap.Entry<Ingredient> recipeInputEntry : countableMap.object2IntEntrySet()) {
+//            int needed = recipeInputEntry.getIntValue();
+//            int available = 0;
+//            // For every stack in the ingredients gathered from the input bus.
+//            for (Object2IntMap.Entry<ItemStack> inventoryEntry : ingredientStacks.object2IntEntrySet()) {
+//                if (recipeInputEntry.getKey().test(inventoryEntry.getKey())) {
+//                    available += inventoryEntry.getIntValue();
+//                    break;
+//                }
+//            }
+//            if (available >= needed) {
+//                int ratio = Math.min(parallelAmount, available / needed);
+//                if (ratio < minMultiplier) {
+//                    minMultiplier = ratio;
+//                }
+//            } else {
+//                return 0;
+//            }
+//        }
+//        return minMultiplier;
     }
 
-    private Object2IntMap<ItemStack> getIngredientStacks(IRecipeCapabilityHolder holder) {
-        Object2IntMap<ItemStack> map = new Object2IntOpenCustomHashMap<>(
-                ItemStackHashStrategy.comparingAllButCount());
-        Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
+    private List<Object2IntMap<ItemStack>> getIngredientStacks(IRecipeCapabilityHolder holder) {
+        var handlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
 
-        var recipeHandlerList = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
+        List<Object2IntMap<ItemStack>> inventories = new ObjectArrayList<>();
+        Object2IntMap<ItemStack> combined = new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 
-        for (IRecipeHandler<?> container : recipeHandlerList) {
+        for (IRecipeHandler<?> handler : handlers) {
+            Stream<ItemStack> stackStream = handler.getContents()
+                    .stream()
+                    .filter(ItemStack.class::isInstance)
+                    .map(ItemStack.class::cast);
 
-            var itemMap = container.getContents().stream().filter(ItemStack.class::isInstance)
-                    .map(ItemStack.class::cast)
-                    .flatMap(con -> GTHashMaps.fromItemStackCollection(Collections.singleton(con)).object2IntEntrySet()
-                            .stream())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
-                            () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
-
-            if (container.isDistinct()) {
-                result.putAll(itemMap);
+            if(handler.isDistinct()) {
+                var map = stackStream.collect(Collectors.toMap(
+                        Function.identity(),
+                        ItemStack::getCount,
+                        Integer::sum,
+                        () -> GTHashMaps.createItemStackMap(false))
+                );
+                if(!map.isEmpty()) inventories.add(map);
             } else {
-                for (Object2IntMap.Entry<ItemStack> obj : itemMap.object2IntEntrySet()) {
-                    map.computeInt(obj.getKey(), (k, v) -> v == null ? obj.getIntValue() : v + obj.getIntValue());
-                }
+                stackStream.forEach(stack -> combined.mergeInt(stack, stack.getCount(), Integer::sum));
             }
         }
-        result.putAll(map);
-        return result;
+
+        if(!combined.isEmpty()) {
+//            for (var inventory : inventories) {
+//                combined.forEach((stack, count) -> inventory.mergeInt(stack, count, Integer::sum));
+//            }
+            inventories.add(combined);
+        }
+        return inventories;
     }
 
     @Override

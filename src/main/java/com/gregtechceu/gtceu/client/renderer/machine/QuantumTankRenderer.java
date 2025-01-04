@@ -180,9 +180,9 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             var amount = stored.isEmpty() ? "*" : FormattingUtil.formatNumberReadable(storedAmount, true);
             text = new TextTexture(amount).setDropShadow(false);
         }
-        text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
-                0, 0, 0, 24, 64, 28);
+//        text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+//                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
+//                0, 0, 0, 24, 64, 28);
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }
