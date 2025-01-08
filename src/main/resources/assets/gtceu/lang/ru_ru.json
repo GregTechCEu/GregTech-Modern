@@ -5523,5 +5523,14 @@
     "gtceu.forming_press.naming.press": "§oНеназванный пресс",
     "gtceu.forming_press.naming.to_name": "§oПредмет в название",
     "gtceu.rei.group.potion_fluids": "Жидкости зелий",
-    "material.gtceu.blackstone": "Чернит"
+    "material.gtceu.blackstone": "Чернит",
+    "gtceu.auto_decomp.tool": "Неэлектр. инструмент",
+    "config.gtceu.option.toggle": "toggle",
+    "config.gtceu.option.ftbChunksIntegration": "ftbChunksIntegration",
+    "config.gtceu.option.journeyMapIntegration": "journeyMapIntegration",
+    "config.gtceu.option.xaerosMapIntegration": "xaerosMapIntegration",
+    "gtceu.button.hide_depleted": "Скрыть истощенные жилы",
+    "gtceu.button.show_depleted": "Показать истощенные жилы",
+    "gtceu.auto_decomp.rotor": "Ротор турбины",
+    "gtceu.journeymap.options.layers.hide_depleted": "Скрыть истощенные жилы"
 }
