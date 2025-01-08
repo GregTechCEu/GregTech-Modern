@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
-import com.lowdragmc.lowdraglib.LDLib;
+import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -141,7 +141,7 @@ public class FluidHandlerList implements IFluidHandlerModifiable, INBTSerializab
             if (handler instanceof INBTSerializable<?> serializable) {
                 list.add(serializable.serializeNBT());
             } else {
-                LDLib.LOGGER.warn("[FluidHandlerList] internal tank doesn't support serialization");
+                GTCEu.LOGGER.warn("[FluidHandlerList] internal tank doesn't support serialization");
             }
         }
         tag.put("tanks", list);
@@ -156,7 +156,7 @@ public class FluidHandlerList implements IFluidHandlerModifiable, INBTSerializab
             if (handlers[i] instanceof INBTSerializable serializable) {
                 serializable.deserializeNBT(list.get(i));
             } else {
-                LDLib.LOGGER.warn("[FluidHandlerList] internal tank doesn't support serialization");
+                GTCEu.LOGGER.warn("[FluidHandlerList] internal tank doesn't support serialization");
             }
         }
     }

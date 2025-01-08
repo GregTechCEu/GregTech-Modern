@@ -15,10 +15,10 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import com.lowdragmc.lowdraglib.Platform;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +34,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * @author KilaBash
@@ -65,7 +66,6 @@ public final class GTRegistries {
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
     public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(
             GTCEu.id("dimension_marker"));
-
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister
@@ -101,7 +101,25 @@ public final class GTRegistries {
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 
+    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    private static RegistryAccess FROZEN = BLANK;
+
+    /**
+     * You shouldn't call it, you should probably not even look at it just to be extra safe
+     *
+     * @param registryAccess the new value to set to the frozen registry access
+     */
+    @ApiStatus.Internal
+    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
+        FROZEN = registryAccess;
+    }
+
     public static RegistryAccess builtinRegistry() {
-        return Platform.getFrozenRegistry();
+        if (FROZEN == BLANK && GTCEu.isClientThread()) {
+            if (Minecraft.getInstance().getConnection() != null) {
+                return Minecraft.getInstance().getConnection().registryAccess();
+            }
+        }
+        return FROZEN;
     }
 }

@@ -56,7 +56,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ORE_VEINS, GTOreDefinition.class));
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent();
         }
 

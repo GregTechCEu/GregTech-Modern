@@ -284,6 +284,7 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent

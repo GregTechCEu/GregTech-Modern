@@ -34,8 +34,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
-import com.lowdragmc.lowdraglib.LDLib;
-
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -76,7 +74,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.ITEM;
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.TOOL;
 import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
 import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -2655,7 +2654,7 @@ public class GTItems {
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
                                                                      Function<ItemStack, Float> property) {
         return item -> {
-            if (LDLib.isClient()) {
+            if (GTCEu.isClientSide()) {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
             }
         };
@@ -2665,7 +2664,7 @@ public class GTItems {
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
                                                                      Supplier<Supplier<ItemPropertyFunction>> property) {
         return item -> {
-            if (LDLib.isClient()) {
+            if (GTCEu.isClientSide()) {
                 ItemProperties.register(item, predicate, property.get().get());
             }
         };

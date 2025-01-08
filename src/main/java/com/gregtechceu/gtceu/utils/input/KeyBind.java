@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,7 +48,7 @@ public enum KeyBind {
 
     public static void init() {
         GTCEu.LOGGER.info("Registering KeyBinds");
-        if (Platform.isClient()) {
+        if (GTCEu.isClientSide()) {
             MinecraftForge.EVENT_BUS.register(KeyBind.class);
         }
     }
@@ -115,19 +113,19 @@ public enum KeyBind {
     // For Vanilla/Other Mod keybinds
     // Double Supplier to keep client classes from loading
     KeyBind(Supplier<Supplier<KeyMapping>> keybindingGetter) {
-        if (Platform.isClient()) {
+        if (GTCEu.isClientSide()) {
             this.keybindingGetter = keybindingGetter;
         }
     }
 
     KeyBind(String langKey, int button) {
-        if (Platform.isClient()) {
+        if (GTCEu.isClientSide()) {
             this.keybinding = new KeyMapping(langKey, button, GTCEu.NAME);
         }
     }
 
     KeyBind(String langKey, IKeyConflictContext ctx, int button) {
-        if (Platform.isClient()) {
+        if (GTCEu.isClientSide()) {
             this.keybinding = new KeyMapping(langKey, ctx, InputConstants.Type.KEYSYM, button, GTCEu.NAME);
         }
     }

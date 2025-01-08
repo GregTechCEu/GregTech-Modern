@@ -37,7 +37,11 @@ public class OreRenderLayer extends MapRenderLayer {
 
     public static List<Component> getTooltip(String name, GeneratedVeinMetadata vein) {
         final List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.literal(name));
+        var title = Component.literal(name);
+        if (vein.depleted()) {
+            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+        }
+        tooltip.add(title);
 
         for (var filler : vein.definition().veinGenerator().getAllEntries()) {
             filler.getKey().ifLeft(state -> {

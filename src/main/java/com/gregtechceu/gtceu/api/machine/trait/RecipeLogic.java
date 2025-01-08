@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -183,7 +183,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
      * it should be called on the server side restrictively.
      */
     public RecipeManager getRecipeManager() {
-        return Platform.getMinecraftServer().getRecipeManager();
+        return GTCEu.getMinecraftServer().getRecipeManager();
     }
 
     public void serverTick() {

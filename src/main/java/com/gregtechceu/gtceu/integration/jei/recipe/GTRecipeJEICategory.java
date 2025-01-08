@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.jei.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
@@ -66,7 +66,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
                     registration.addRecipeCatalyst(machine.asStack(), machineType(category));
                 }
             }
