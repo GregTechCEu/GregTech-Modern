@@ -583,7 +583,7 @@ public class StoneMachineRecipes {
                 if (ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) {
                     VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_polished_hammer",
                             new ItemStack(entry.chiselStone),
-                            "mSd", " S", " S",
+                            "mSd", " S ", " S ",
                             'S', entry.slab);
                 }
                 GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("form_" + entry.stoneName + "_slab_into_pillar")
