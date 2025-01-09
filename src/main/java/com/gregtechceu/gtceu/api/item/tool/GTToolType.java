@@ -61,7 +61,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("shovels", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(
-                    b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
+                    b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F)
+                            .behaviors(GrassPathBehavior.INSTANCE))
             .constructor(GTShovelItem::create)
             .toolClassNames("shovel")
             .build();
@@ -70,7 +71,8 @@ public class GTToolType {
             .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
-                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE,
+                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE,
+                            LogStripBehavior.INSTANCE,
                             ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
             .constructor(GTAxeItem::create)
             .toolClassNames("axe")
@@ -126,13 +128,12 @@ public class GTToolType {
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
             .toolTag(TagUtil.createItemTag("tools/hammers", false))
             .harvestTag(TagUtil.createBlockTag("mineable/hammer", false))
-            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", false))
             .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(new EntityDamageBehavior(2.0F, IronGolem.class)))
             .sound(GTSoundEntries.FORGE_HAMMER)
             .symbol('h')
-            .toolClasses(GTToolType.PICKAXE)
             .build();
     public static final GTToolType SOFT_MALLET = GTToolType.builder("mallet")
             .toolTag(TagUtil.createItemTag("tools/mallets", false))
@@ -147,7 +148,8 @@ public class GTToolType {
             .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                    .behaviors(BlockRotatingBehavior.INSTANCE,
+                            new EntityDamageBehavior(3.0F, IronGolem.class),
                             ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .symbol('w')
@@ -204,7 +206,8 @@ public class GTToolType {
                     .defaultEnchantment(Enchantments.MOB_LOOTING, 3))
             .constructor(GTSwordItem::create)
             .build();
-    // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
+    // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1,
+    // GTCEu.id("item/tools/handle_hammer"),
     // GTCEu.id("item/tools/hammer"));
     public static final GTToolType PLUNGER = GTToolType.builder("plunger")
             .toolTag(TagUtil.createItemTag("tools/plungers", false))
@@ -320,7 +323,8 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(2.0F)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                    .behaviors(BlockRotatingBehavior.INSTANCE,
+                            new EntityDamageBehavior(3.0F, IronGolem.class),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -335,7 +339,8 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(3.0F)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                    .behaviors(BlockRotatingBehavior.INSTANCE,
+                            new EntityDamageBehavior(3.0F, IronGolem.class),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -350,7 +355,8 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                    .behaviors(BlockRotatingBehavior.INSTANCE,
+                            new EntityDamageBehavior(3.0F, IronGolem.class),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -575,7 +581,8 @@ public class GTToolType {
             GTToolType existing = ToolHelper.getToolFromSymbol(this.symbol);
             if (existing != null) {
                 throw new IllegalArgumentException(
-                        String.format("Symbol %s has been taken by %s already!", symbol, existing));
+                        String.format("Symbol %s has been taken by %s already!", symbol,
+                                existing));
             }
             GTToolType supplied = get();
             ToolHelper.registerToolSymbol(this.symbol, supplied);

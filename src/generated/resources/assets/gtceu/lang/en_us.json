@@ -4439,7 +4439,7 @@
   "item.gtceu.tool.ev_drill": "%s Drill (EV)",
   "item.gtceu.tool.file": "%s File",
   "item.gtceu.tool.hammer": "%s Hammer",
-  "item.gtceu.tool.hammer.tooltip": "§8Crushes Blocks when harvesting them",
+  "item.gtceu.tool.hammer.tooltip": "§8Not useable for mining, great for crafting",
   "item.gtceu.tool.harvest_level.0": "§8Wood",
   "item.gtceu.tool.harvest_level.1": "§7Stone",
   "item.gtceu.tool.harvest_level.2": "§aIron",
