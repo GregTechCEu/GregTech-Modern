@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.item.armor;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-
 import com.gregtechceu.gtceu.common.data.GTItems;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
