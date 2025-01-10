@@ -145,11 +145,11 @@ public class GTCEu {
         }
 
         public static boolean isREILoaded() {
-            return isModLoaded(GTValues.MODID_REI) && !(isClientSide() || REIRuntime.getInstance().isOverlayVisible());
+            return isModLoaded(GTValues.MODID_REI) && (!isClientSide() || REIRuntime.getInstance().isOverlayVisible());
         }
 
         public static boolean isEMILoaded() {
-            return isModLoaded(GTValues.MODID_EMI) && !(isClientSide() || EmiConfig.enabled);
+            return isModLoaded(GTValues.MODID_EMI) && (!isClientSide() || EmiConfig.enabled);
         }
 
         public static boolean isKubeJSLoaded() {
