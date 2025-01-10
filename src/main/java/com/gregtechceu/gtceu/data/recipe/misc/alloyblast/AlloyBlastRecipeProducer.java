@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -25,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingotHot;
-import static com.gregtechceu.gtceu.common.data.GTRecipes.EBF_GASES;
 
 public class AlloyBlastRecipeProducer {
 
@@ -136,7 +136,7 @@ public class AlloyBlastRecipeProducer {
         // build the gas recipe if it exists
         if (property.getGasTier() != null) {
             GTRecipeBuilder builderGas = builder.copy(builder.id.getPath() + "_gas");
-            FluidIngredient gas = EBF_GASES.get(property.getGasTier()).copy();
+            FluidIngredient gas = CraftingComponent.EBF_GASES.get(property.getGasTier()).copy();
             gas.setAmount(gas.getAmount() * outputAmount);
             builderGas.circuitMeta(getGasCircuitNum(componentAmount))
                     .inputFluids(gas)

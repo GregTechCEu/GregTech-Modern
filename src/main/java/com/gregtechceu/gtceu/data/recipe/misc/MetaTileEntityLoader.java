@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -30,9 +29,9 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.HULL;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.PUMP;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
+import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.PUMP;
 
 public class MetaTileEntityLoader {
 
@@ -393,16 +392,16 @@ public class MetaTileEntityLoader {
                 "dwx", "hHc", "fsr", 'H', GTMachines.HULL[GTValues.LV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_configurable",
                 GTMachines.CONFIGURABLE_MAINTENANCE_HATCH.asStack(), "   ", "CMC", "VHV", 'C',
-                CIRCUIT.get(HV), 'M', GTMachines.MAINTENANCE_HATCH.asStack(), 'V', CONVEYOR.get(HV),
+                CIRCUIT.getIngredient(HV), 'M', GTMachines.MAINTENANCE_HATCH.asStack(), 'V', CONVEYOR.getIngredient(HV),
                 'H', GTMachines.HULL[HV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_automatic",
-                GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "CMC", 'C', CIRCUIT.get(HV), 'M',
-                GTMachines.MAINTENANCE_HATCH.asStack(), 'R', ROBOT_ARM.get(HV), 'H',
+                GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "CMC", 'C', CIRCUIT.getIngredient(HV), 'M',
+                GTMachines.MAINTENANCE_HATCH.asStack(), 'R', ROBOT_ARM.getIngredient(HV), 'H',
                 GTMachines.HULL[HV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_cleaning",
                 GTMachines.CLEANING_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "WCW", 'C',
-                CIRCUIT.get(GTValues.UV), 'M', GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), 'R',
-                ROBOT_ARM.get(GTValues.UV), 'H', GTMachines.HULL[GTValues.UV].asStack(), 'W',
+                CIRCUIT.getIngredient(GTValues.UV), 'M', GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), 'R',
+                ROBOT_ARM.getIngredient(GTValues.UV), 'H', GTMachines.HULL[GTValues.UV].asStack(), 'W',
                 new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate));
 
         // TODO Access Interface
@@ -910,8 +909,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(DRUM.get(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -929,8 +928,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_export_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(DRUM.get(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -948,8 +947,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("item_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(CRATE.get(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -967,8 +966,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("item_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(CRATE.get(tier))
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -988,8 +987,8 @@ public class MetaTileEntityLoader {
                         .recipeBuilder("dual_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
-                        .inputItems(PIPE_NONUPLE.get(tier))
-                        .inputItems(FRAME.get(tier), 3)
+                        .inputItems(PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems(FRAME.getIngredient(tier), 3)
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -1009,8 +1008,8 @@ public class MetaTileEntityLoader {
                         .recipeBuilder("dual_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
-                        .inputItems(PIPE_NONUPLE.get(tier))
-                        .inputItems(FRAME.get(tier), 3)
+                        .inputItems(PIPE_NONUPLE.getIngredient(tier))
+                        .inputItems(FRAME.getIngredient(tier), 3)
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -1183,7 +1182,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMultiMachines.CLEANROOM.asStack(), "FFF",
                 "RHR",
                 "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R',
-                new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.get(HV), 'M',
+                new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
         if (ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
@@ -1231,8 +1230,11 @@ public class MetaTileEntityLoader {
 
     private static Object[] prepareRecipe(int tier, Object... recipe) {
         for (int i = 3; i < recipe.length; i++) {
-            if (recipe[i] instanceof CraftingComponent) {
-                Object component = ((CraftingComponent) recipe[i]).get(tier);
+            if (recipe[i] instanceof Component) {
+                Object component = ((Component) recipe[i]).getIngredient(tier);
+                if (component == null) {
+                    return null;
+                }
                 recipe[i] = component;
             } else if (recipe[i] instanceof Item item) {
                 recipe[i] = new ItemStack(item);

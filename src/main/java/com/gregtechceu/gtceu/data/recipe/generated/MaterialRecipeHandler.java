@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -33,7 +34,6 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipes.EBF_GASES;
 
 public class MaterialRecipeHandler {
 
@@ -194,7 +194,7 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidIngredient gas = EBF_GASES.get(gasTier).copy();
+            FluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
