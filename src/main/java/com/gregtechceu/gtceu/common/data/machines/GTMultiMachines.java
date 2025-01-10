@@ -438,12 +438,16 @@ public class GTMultiMachines {
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
-                if (GTCEu.Mods.isAE2Loaded())
+                if (GTCEu.Mods.isAE2Loaded()) {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                }
                 exportPredicate.setMaxLayerLimited(1);
+                TraceabilityPredicate maint = autoAbilities(true, false, false)
+                        .setMaxGlobalLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("YSY", "YYY", "YYY")
-                        .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
+                        .aisle("ZZZ", "Z#Z", "ZZZ")
+                        .aisle("XXX", "X#X", "XXX").setRepeatable(0, 10)
                         .aisle("XXX", "XXX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
@@ -451,7 +455,10 @@ public class GTMultiMachines {
                                 .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                         .setMaxGlobalLimited(2))
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
-                                .or(autoAbilities(true, false, false)))
+                                .or(maint))
+                        .where('Z', blocks(CASING_STAINLESS_CLEAN.get())
+                                .or(exportPredicate)
+                                .or(maint))
                         .where('X', blocks(CASING_STAINLESS_CLEAN.get()).or(exportPredicate))
                         .where('#', Predicates.air())
                         .build();
