@@ -2024,6 +2024,7 @@
     "gtceu.multiblock.multiple_recipemaps_recipes.tooltip": "Режим машин: §e%s§r",
     "gtceu.multiblock.not_enough_energy": "ВНИМАНИЕ: Машине нужно больше энергии.",
     "gtceu.multiblock.parallel": "Выполняет до %d рецептов одновременно",
+    "gtceu.multiblock.parallel.exact": "Выполняет %d рецептов одновременно",
     "gtceu.multiblock.parallelizable.tooltip": "Можно распараллелить с Люком контроля Парралелей.",
     "gtceu.multiblock.pattern.clear_amount_1": "§6Спереди должно быть свободное пространство 1x1x1§r",
     "gtceu.multiblock.pattern.clear_amount_3": "§6Спереди должно быть свободное пространство 3x3x1§r",
