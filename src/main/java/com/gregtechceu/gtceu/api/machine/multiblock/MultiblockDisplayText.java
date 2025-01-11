@@ -402,6 +402,10 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addParallelsLine(int numParallels) {
+            return addParallelsLine(numParallels, false);
+        }
+
         /**
          * Adds a line indicating how many parallels this multi can potentially perform.
          * <br>
