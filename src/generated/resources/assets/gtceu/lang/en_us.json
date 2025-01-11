@@ -3271,6 +3271,7 @@
   "gtceu.multiblock.page_switcher.io.export": "§4Outputs",
   "gtceu.multiblock.page_switcher.io.import": "§2Inputs",
   "gtceu.multiblock.parallel": "Performing up to %d Recipes in Parallel",
+  "gtceu.multiblock.parallel.exact": "Performing %d Recipes in Parallel",
   "gtceu.multiblock.parallelizable.tooltip": "Can parallelize with Parallel Control Hatches.",
   "gtceu.multiblock.pattern.clear_amount_1": "§6Must have a clear 1x1x1 space in front§r",
   "gtceu.multiblock.pattern.clear_amount_3": "§6Must have a clear 3x3x1 space in front§r",
