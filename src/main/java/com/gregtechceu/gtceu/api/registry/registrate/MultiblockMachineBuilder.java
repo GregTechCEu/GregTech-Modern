@@ -369,6 +369,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder dampingWhenWaiting(boolean dampingWhenWaiting) {
+        return (MultiblockMachineBuilder) super.dampingWhenWaiting(dampingWhenWaiting);
+    }
+
+    @Override
     public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
         return (MultiblockMachineBuilder) super.editableUI(editableUI);
     }
