@@ -103,7 +103,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     }
 
     private Boolean shouldAutoIO() {
-        if (getControllers().isEmpty()) return false;
+        if (!isFormed()) return false;
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;
         if (getTargetTank() == null) return false;
