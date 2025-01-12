@@ -147,6 +147,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
         if (lDist < 1) lDist = MIN_RADIUS;
         if (rDist < 1) rDist = MIN_RADIUS;
+        if (fDist < 1) fDist = MIN_RADIUS;
+        if (bDist < 1) bDist = MIN_RADIUS;
         if (hDist < 2) hDist = MIN_RADIUS;
 
         if (this.getFrontFacing().getAxis() == Direction.Axis.X) {
@@ -175,7 +177,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         for (int i = 0; i < lDist + rDist + 1; i++) {
             for (int j = 0; j < fDist + bDist + 1; j++) {
                 if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
-                    floorLayer[i].append('A'); // floor edge
+                    floorLayer[j].append('A'); // floor edge
                     for (int k = 0; k < hDist - 1; k++) {
                         if ((i == 0 || i == lDist + rDist) && (j == 0 || j == fDist + bDist)) {
                             wallLayers.get(k)[j].append('A');
@@ -185,11 +187,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     }
                     ceilingLayer[j].append('A'); // ceiling edge
                 } else { // not edges
-                    if (i == lDist && j == fDist) { // very center
-                        floorLayer[j].append('B');
-                    } else {
-                        floorLayer[j].append('B'); // floor valid blocks
-                    }
+                    floorLayer[j].append('B');
                     for (int k = 0; k < hDist - 1; k++) {
                         wallLayers.get(k)[j].append('L'); // log or air
                     }

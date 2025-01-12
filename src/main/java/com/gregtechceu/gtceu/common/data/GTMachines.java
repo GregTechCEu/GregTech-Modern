@@ -131,8 +131,8 @@ public class GTMachines {
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_MINER = registerSteamMachines(
             "steam_miner",
-            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, 240, 6, 0, 32) :
-                    new SteamMinerMachine(holder, 320, 4, 0, 16),
+            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, true, 240, 6, 0, 32) :
+                    new SteamMinerMachine(holder, false, 320, 4, 0, 16),
             (isHP, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(DUMMY_RECIPES)
@@ -649,9 +649,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            tier == 0 ? new PartAbility[] { PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS } :
-                                    new PartAbility[] { PartAbility.IMPORT_ITEMS })
+                    .abilities(PartAbility.IMPORT_ITEMS)
                     .overlayTieredHullRenderer("item_bus.import")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
@@ -664,9 +662,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            tier == 0 ? new PartAbility[] { PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS } :
-                                    new PartAbility[] { PartAbility.EXPORT_ITEMS })
+                    .abilities(PartAbility.EXPORT_ITEMS)
                     .overlayTieredHullRenderer("item_bus.export")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
@@ -868,7 +864,10 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
-            .langValue("Input Bus (Steam)")
+            .langValue("Steam Input Bus")
+            .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                    Component.translatable("gtceu.machine.steam_bus.tooltip"),
+                    Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
             .register();
 
     public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE
@@ -876,7 +875,10 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
-            .langValue("Output Bus (Steam)")
+            .langValue("Steam Output Bus")
+            .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
+                    Component.translatable("gtceu.machine.steam_bus.tooltip"),
+                    Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
             .register();
 
     public static final MachineDefinition STEAM_HATCH = REGISTRATE
