@@ -110,10 +110,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Getter
     @Setter
     @Persisted
-    private int currentRadius;
+    protected int currentRadius;
     @Getter
     @Persisted
-    private boolean isDone;
+    protected boolean isDone;
     @Getter
     private boolean isInventoryFull;
     @Getter
@@ -465,7 +465,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      *
      * @return {@code true} if the coordinates are invalid, else false
      */
-    private boolean checkCoordinatesInvalid() {
+    protected boolean checkCoordinatesInvalid() {
         return x == Integer.MAX_VALUE && y == Integer.MAX_VALUE && z == Integer.MAX_VALUE;
     }
 
