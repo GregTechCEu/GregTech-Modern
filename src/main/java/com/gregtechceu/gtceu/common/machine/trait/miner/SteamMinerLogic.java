@@ -19,17 +19,8 @@ public class SteamMinerLogic extends MinerLogic {
 
     @Override
     protected boolean checkCanMine() {
-        if (!isDone && checkCoordinatesInvalid()) {
-            initPos(getMiningPos(), currentRadius);
-        }
-
         IExhaustVentMachine machine = (IExhaustVentMachine) this.machine;
-        if (machine.checkVenting()) {
-            if (machine.isVentingBlocked())
-                return false;
-        }
-
-        return super.checkCanMine();
+        return super.checkCanMine() && machine.checkVenting();
     }
 
     @Override

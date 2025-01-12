@@ -131,8 +131,8 @@ public class GTMachines {
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_MINER = registerSteamMachines(
             "steam_miner",
-            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, 240, 6, 0, 32) :
-                    new SteamMinerMachine(holder, 320, 4, 0, 16),
+            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, true, 240, 6, 0, 32) :
+                    new SteamMinerMachine(holder, false, 320, 4, 0, 16),
             (isHP, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(DUMMY_RECIPES)
