@@ -301,6 +301,7 @@ public class LangHandler {
         provider.add("metaarmor.tooltip.falldamage", "Nullifies Fall Damage");
         provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
         provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
+        provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
         provider.add("metaarmor.tooltip.breath", "Replenishes Underwater Breath Bar");
         provider.add("metaarmor.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
         provider.add("metaarmor.hud.status.enabled", "§aON");
