@@ -2224,12 +2224,13 @@ public class GTItems {
             .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
             .register();
 
-    public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
+    public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
         DyeColor[] colors = DyeColor.values();
         for (int i = 0; i < colors.length; i++) {
             var dyeColor = colors[i];
-            DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
+            DYE_ONLY_ITEMS[i] = REGISTRATE
+                    .item("chemical_%s_dye".formatted(dyeColor.getName()), (props) -> new DyeItem(dyeColor, props))
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
                     .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
                     .register();
