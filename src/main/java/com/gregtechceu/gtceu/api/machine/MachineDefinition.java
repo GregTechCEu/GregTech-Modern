@@ -91,7 +91,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
     @Getter
     @Setter
-    private boolean dampingWhenWaiting = true;
+    private boolean regressWhenWaiting = true;
 
     @Getter
     @Setter
