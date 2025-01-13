@@ -73,11 +73,11 @@ ServerEvents.recipes(event => {
 - Basic calls:
     - `.input()`:  
       The most basic input definition available. Takes two parameters: one RecipeCapability that defines what input type
-      this call is supposed to be (usually an item, a fluid or energy, but can also be, for example, Create Stress
-      Units), and an Object that defines the input itself. Available RecipeCapabilities can be found in the GTCEu Modern
-      GitHub or the mod's .JAR file, but the class containing all of GTCEu Modern's native RecipeCapabilities,
-      `GTRecipeCapabilites`, must be manually loaded in your scripts. This method is unwieldy to use in Javascript; it
-      is more user-friendly to use the ones below that clearly tell you what input type they call.
+      this call is supposed to be (usually an item, a fluid or energy), and an Object that defines the input itself.
+      Available RecipeCapabilities can be found in the GTCEu Modern GitHub or the mod's .JAR file, but the class containing
+      all of GTCEu Modern's native RecipeCapabilities, `GTRecipeCapabilites`, must be manually loaded in your scripts.
+      This method is unwieldy to use in Javascript; it is more user-friendly to use the ones below that clearly tell you
+      what input type they call.
     - `.output()`:  
       As above, but defines an output instead. Takes the exact same parameters. This method is likewise unwieldy to use;
       it is more user-friendly to use the ones below that clearly tell you what output type they call.
@@ -133,7 +133,7 @@ ServerEvents.recipes(event => {
 })
 ```
 
-1. Note due to a `JS Moment` you have to force `scannerResearch` to be interpreted by Rhino in a specific way.
+1. Note that due to the way JS integration works, you have to force `scannerResearch` to be interpreted in a specific way:
    Scanner Research accepts an `ItemStack` input in the `.researchStack()` object, and you can also define the `EUt` and
    `Duration` outside of the `.researchStack()` object.
 
