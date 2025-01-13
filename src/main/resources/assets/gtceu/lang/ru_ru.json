@@ -1473,7 +1473,7 @@
     "gtceu.bus.collapse_true": "Люк будет совмещать Предметы",
     "gtceu.cable.amperage": "Сила тока: §e%d",
     "gtceu.cable.loss_per_block": "Потеря за блок: §c%d§7 EU-Volt",
-    "gtceu.cable.superconductor": "§d%s Суперпроводник",
+    "gtceu.cable.superconductor": "§d%s Сверхпроводник",
     "gtceu.cable.voltage": "Напряжение: §a%d §a(%s§a)",
     "gtceu.canner": "Наполнитель",
     "gtceu.centrifuge": "Центрифуга",
