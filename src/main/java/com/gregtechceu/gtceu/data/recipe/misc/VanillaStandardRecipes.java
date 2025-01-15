@@ -931,6 +931,14 @@ public class VanillaStandardRecipes {
                 .circuitMeta(11)
                 .duration(100).EUt(4).save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                .inputItems(new ItemStack(Items.STRING))
+                .inputItems(rodLong, Wood)
+                .inputItems(ring, Iron)
+                .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                .circuitMeta(16)
+                .duration(100).EUt(4).save(provider);
+
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball").duration(128).EUt(4).notConsumable(SHAPE_MOLD_BALL)
                 .inputFluids(Water.getFluid(250)).outputItems(new ItemStack(Items.SNOWBALL)).save(provider);
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("snowball_distilled").duration(128).EUt(4)
