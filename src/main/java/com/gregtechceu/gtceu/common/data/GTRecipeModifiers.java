@@ -149,29 +149,50 @@ public class GTRecipeModifiers {
      * @return A {@link ModifierFunction} for the given Blast Furnace
      */
     public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        var oc = ebfOverclockOnly(machine,recipe);
+        var discount = ebfDiscount(machine,recipe);
+        return oc.compose(discount);
+    }
+
+    private static boolean ebfRecipeRequirementsMet(@NotNull GTRecipe recipe, int blastFurnaceTemperature,CoilWorkableElectricMultiblockMachine coilMachine){
+        int recipeTemp = recipe.data.getInt("ebf_temp");
+        return (recipe.data.contains("ebf_temp")
+                && recipeTemp <= blastFurnaceTemperature
+                && RecipeHelper.getRecipeEUtTier(recipe) <= coilMachine.getTier());
+    }
+    private static int getBlastFurnaceTemperature(CoilWorkableElectricMultiblockMachine coilMachine){
+        return coilMachine.getCoilType().getCoilTemperature() +
+                (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
+    }
+
+    public static @NotNull ModifierFunction ebfOverclockOnly(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-
-        int blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
-                (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
+        int blastFurnaceTemperature = getBlastFurnaceTemperature(coilMachine);
         int recipeTemp = recipe.data.getInt("ebf_temp");
-        if (!recipe.data.contains("ebf_temp") || recipeTemp > blastFurnaceTemperature) {
+        if (!ebfRecipeRequirementsMet(recipe,blastFurnaceTemperature,coilMachine)){
             return ModifierFunction.NULL;
         }
-
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-            return ModifierFunction.NULL;
-        }
-
-        var discount = ModifierFunction.builder()
-                .eutMultiplier(getCoilEUtDiscount(recipeTemp, blastFurnaceTemperature))
-                .build();
 
         OverclockingLogic logic = (p, v) -> OverclockingLogic.heatingCoilOC(p, v, recipeTemp, blastFurnaceTemperature);
-        var oc = logic.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
 
-        return oc.compose(discount);
+        return logic.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+    }
+
+    public static @NotNull ModifierFunction ebfDiscount(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        }
+        int blastFurnaceTemperature = getBlastFurnaceTemperature(coilMachine);
+        int recipeTemp = recipe.data.getInt("ebf_temp");
+        if (!ebfRecipeRequirementsMet(recipe,blastFurnaceTemperature,coilMachine)){
+            return ModifierFunction.NULL;
+        }
+
+        return ModifierFunction.builder()
+                .eutMultiplier(getCoilEUtDiscount(recipeTemp, blastFurnaceTemperature))
+                .build();
     }
 
     /**

@@ -833,8 +833,8 @@ public class GCYMMachines {
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
             .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers::ebfOverclock)
+            .recipeModifiers(GTRecipeModifiers::ebfDiscount,
+                    GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclockOnly)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
                 TraceabilityPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
