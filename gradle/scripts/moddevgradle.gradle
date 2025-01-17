@@ -1,12 +1,11 @@
-
 mixin {
     add sourceSets.main, "gtceu.refmap.json"
     config 'gtceu.mixins.json'
 }
 
-neoForge {
-    // Specify the version of NeoForge to use.
-    version = forge.versions.minecraftForge.get()
+legacyForge {
+    // Specify Forge version
+    version = libs.versions.minecraftForge.get()
 
     parchment {
         minecraftVersion = libs.versions.minecraft.get()
