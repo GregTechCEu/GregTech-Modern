@@ -13,8 +13,7 @@ Most other mods that use sneak wrenching to break their blocks will also let the
 - Sneak right clicking the face of a rotate-able block, such as most multiblock controllers, will rotate the controller allowing it to form the multiblock in a different direction, even vertically.
 
 # Pipes
-Right clicking on a fluid or item pipes side will open the connection for that side, this is needed as pipes do not attach unless placed on a storage or another pipe.
-
-Sneak right clicking a pipe side will add an arrow to the pipe, this arrow makes it impossible for fluids or items to travel back into it, it is heavily recommended to do this for all of your fluid pipes to prevent "sloshing" of fluids, where a fluid keeps going back and forth through the pipe and ruining throughput, as well as potentially costing performance loss. 
+- Right clicking on a fluid or item pipes side will open the connection for that side, this is needed as pipes do not attach unless placed on a storage or another pipe.
+- Sneak right clicking a pipe side will add an arrow to the pipe, this arrow makes it impossible for fluids or items to travel back into it, it is heavily recommended to do this for all of your fluid pipes to prevent "sloshing" of fluids, where a fluid keeps going back and forth through the pipe and ruining throughput, as well as potentially costing performance loss. 
 
 Currently the pipe arrows have a graphical issue where the large pipes do not fully show the arrow in some configurations, and the huge pipe only shows the arrow on the sides that are opened.
