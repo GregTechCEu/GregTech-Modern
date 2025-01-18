@@ -915,10 +915,10 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.stored", "§7Stored: %s §7EU");
         provider.add("gtceu.multiblock.power_substation.capacity", "§7Capacity: %s §7EU");
         provider.add("gtceu.multiblock.power_substation.passive_drain", "§7Passive Drain: %s §7EU/t");
-        provider.add("gtceu.multiblock.power_substation.average_in", "§7Avg. Input: %s §7EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_in", "§7Avg. Input: %s §7EU/t\n              %s A %s");
         provider.add("gtceu.multiblock.power_substation.average_in_hover",
                 "The average inserted EU into the Power Substation's internal energy bank");
-        provider.add("gtceu.multiblock.power_substation.average_out", "§7Avg. Output: %s §7EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_out", "§7Avg. Output: %s §7EU/t\n              %s A %s");
         provider.add("gtceu.multiblock.power_substation.average_out_hover",
                 "The average extracted EU out of the Power Substation's internal energy bank");
         provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -22,6 +23,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -233,16 +235,24 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         passiveDrainComponent.setStyle(STYLE_DARK_RED)));
 
                 var avgInComponent = Component.literal(FormattingUtil.formatNumbers(averageInLastSec));
+                var avgInVoltage = GTUtil.getFloorTierByVoltage(averageInLastSec);
+                var avgInAmperage = averageInLastSec / (double) GTValues.VEX[avgInVoltage];
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_in",
-                                avgInComponent.setStyle(STYLE_GREEN))
+                                avgInComponent.setStyle(STYLE_GREEN),
+                                Component.literal(FormattingUtil.DECIMAL_FORMAT_1F.format(avgInAmperage)),
+                                Component.literal(GTValues.VNF[avgInVoltage]))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_in_hover")))));
 
                 var avgOutComponent = Component.literal(FormattingUtil.formatNumbers(Math.abs(averageOutLastSec)));
+                var avgOutVoltage = GTUtil.getFloorTierByVoltage(averageOutLastSec);
+                var avgOutAmperage = averageOutLastSec / (double) GTValues.VEX[avgOutVoltage];
                 textList.add(Component
                         .translatable("gtceu.multiblock.power_substation.average_out",
-                                avgOutComponent.setStyle(STYLE_RED))
+                                avgOutComponent.setStyle(STYLE_RED),
+                                Component.literal(FormattingUtil.DECIMAL_FORMAT_1F.format(avgOutAmperage)),
+                                Component.literal(GTValues.VNF[avgOutVoltage]))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
 
