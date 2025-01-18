@@ -390,6 +390,9 @@ public class ConfigHolder {
             @Configurable.Comment({ "Make bedrock ore/fluid veins infinite?", "Default: false" })
             public boolean infiniteBedrockOresFluids = false;
             @Configurable
+            @Configurable.Comment({ "Generate ores indicators above ore veins", "Default: true" })
+            public boolean oreIndicators = true;
+            @Configurable
             @Configurable.Comment({
                     "Sets the maximum number of chunks that may be cached for ore vein generation.",
                     "Higher values may improve world generation performance, but at the cost of more RAM usage.",
