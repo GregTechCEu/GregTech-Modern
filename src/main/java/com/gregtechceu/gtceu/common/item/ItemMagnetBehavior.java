@@ -44,15 +44,13 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Triplet;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAddInformation, IItemUIFactory {
 
@@ -73,7 +71,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         var held = holder.getHeld();
         var tag = held.getOrCreateTag();
         var selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
-        Table<Filter, Widget, Widget> widgets = HashBasedTable.create(Filter.values().length, 1);
+        var widgets = new HashSet<Triplet<Filter, Widget, Widget>>();
         var stacks = new HashMap<Filter, ItemStack>();
         var ui = new ModularUI(176, 157, holder, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
@@ -91,7 +89,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             var visible = f == selected;
             description.setVisible(visible);
             config.setVisible(visible);
-            widgets.put(f, description, config);
+            widgets.add(new Triplet<>(f, description, config));
             ui.widget(description);
             ui.widget(config);
         }
@@ -102,12 +100,12 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         return ui;
     }
 
-    private void updateSelection(CompoundTag tag, Filter filter, Table<Filter, Widget, Widget> widgets) {
+    private void updateSelection(CompoundTag tag, Filter filter, Collection<Triplet<Filter, Widget, Widget>> widgets) {
         tag.putInt(FILTER_ORDINAL_TAG, filter.ordinal());
-        widgets.cellSet().forEach(cell -> {
-            var visible = cell.getRowKey() == filter;
-            cell.getColumnKey().setVisible(visible);
-            cell.getValue().setVisible(visible);
+        widgets.forEach(tri -> {
+            var visible = tri.getA() == filter;
+            tri.getB().setVisible(visible);
+            tri.getC().setVisible(visible);
         });
     }
 
