@@ -159,7 +159,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                     new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ())
                             .inflate(range, range, range));
 
-            var filter = Filter.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
+            ItemFilter filter = null;
             boolean didMoveEntity = false;
             for (ItemEntity itemEntity : items) {
                 if (itemEntity.isRemoved()) {
@@ -182,6 +182,10 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 }
 
                 if (!world.isClientSide) {
+                    if (filter == null) {
+                        filter = Filter.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
+                    }
+
                     if (!filter.test(itemEntity.getItem())) {
                         continue;
                     }
