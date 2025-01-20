@@ -193,12 +193,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-            if (isActive()) {
-                textList.add(Component.translatable("gtceu.multiblock.running"));
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.idling"));
-            }
-
             if (energyBank != null) {
                 BigInteger energyStored = energyBank.getStored();
                 BigInteger energyCapacity = energyBank.getCapacity();
