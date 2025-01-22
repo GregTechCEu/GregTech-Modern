@@ -22,6 +22,7 @@ tasks.register('printVersion') {
 // Create run-folders for non-client configs to avoid pollution of dev envs
 tasks.matching { it.name.startsWith('prepare') }.configureEach {
     doFirst {
+        mkdir('run')
         mkdir('run/server')
         mkdir('run/gametest')
         mkdir('run/data')

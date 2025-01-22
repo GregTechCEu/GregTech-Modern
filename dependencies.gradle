@@ -2,16 +2,13 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     // LDLib
-    modApi(forge.ldlib)
-    jarJar(forge.ldlib)
+    jarJar(modApi(forge.ldlib.get()))
 
     // Registrate
-    modApi(forge.registrate)
-    jarJar(forge.registrate)
+    jarJar(modApi(forge.registrate.get()))
 
     // Configuration
-    modApi(forge.configuration)
-    jarJar(forge.configuration)
+    jarJar(modApi(forge.configuration.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
@@ -73,7 +70,6 @@ dependencies {
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
-    // Non-transitive by default                        //
     //////////////////////////////////////////////////////
     modExtraRuntimeOnly(forge.javd)
     modExtraRuntimeOnly(forge.trenzalore)

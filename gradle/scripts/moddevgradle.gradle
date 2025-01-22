@@ -16,7 +16,7 @@ legacyForge {
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
     addModdingDependenciesTo(sourceSets.test)
-    addModdingDependenciesTo(sourceSets.extra)
+//    addModdingDependenciesTo(sourceSets.extra)
 
     mods {
         // define mod <-> source bindings

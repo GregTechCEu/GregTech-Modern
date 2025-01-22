@@ -1,19 +1,14 @@
+// Add main jar to variants - bug in MDG
 artifacts {
-    archives tasks.reobfJar
-    archives tasks.reobfSlimJar
-    archives tasks.sourcesJar
+    reobfApiElements(tasks.reobfJar)
+    reobfRuntimeElements(tasks.reobfJar)
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = project.maven_group
-            artifactId = project.archivesBaseName
-            version = project.version
-
+            artifactId = base.archivesName.get()
             from components.java
-
-            artifact sourcesJar
         }
     }
 
@@ -26,6 +21,11 @@ publishing {
                 username System.getenv("MAVEN_USER")
                 password System.getenv("MAVEN_PASSWORD")
             }
+        }
+
+        maven {
+            name = "test"
+            url = layout.buildDirectory.dir("maven-test/")
         }
     }
 }

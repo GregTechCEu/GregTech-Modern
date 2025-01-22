@@ -11,13 +11,14 @@ plugins {
     alias libs.plugins.lombok
 }
 
-group = maven_group
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
 
+group = maven_group
 // Formats the mod version to include the loader, Minecraft version, build number (if present), and '-SNAPSHOT-<timestamp>' if enabled.
 boolean isSnapshot = System.getenv("SNAPSHOT")
 version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
-
 boolean isCI = System.getenv("CI") != null
 
 sourceSets {
@@ -36,17 +37,8 @@ sourceSets {
 
     extra {
         compileClasspath += main.output
-        runtimeClasspath += main.output
+        runtimeClasspath += main.output + main.runtimeClasspath
     }
-}
-
-// Set up the test and extra configurations
-configurations {
-    testImplementation.extendsFrom(implementation)
-    testRuntimeOnly.extendsFrom(runtimeOnly)
-    extraImplementation.extendsFrom(implementation)
-    extraRuntimeOnly.extendsFrom(runtimeOnly).transitive(false)
-    extraRuntimeClasspath.transitive(false)
 }
 
 obfuscation {
@@ -62,8 +54,9 @@ apply from: "$rootDir/gradle/scripts/publishing.gradle"
 apply from: "$rootDir/gradle/scripts/spotless.gradle"
 
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:-unchecked,-deprecation,-removal"
 }
 
 machete {

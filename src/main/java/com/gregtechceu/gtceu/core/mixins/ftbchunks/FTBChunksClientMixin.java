@@ -40,6 +40,7 @@ public class FTBChunksClientMixin {
     @Unique
     private float gtceu$minimapRotation;
 
+    @SuppressWarnings("mapping")
     @Inject(method = "renderHud",
             at = @At(value = "INVOKE",
                      target = "Lcom/mojang/blaze3d/vertex/PoseStack;scale(FFF)V",
