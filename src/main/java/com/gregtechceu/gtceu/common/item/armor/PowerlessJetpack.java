@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +54,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     private ArmorUtils.ModularHUD HUD;
 
     public PowerlessJetpack() {
-        if (Platform.isClient())
+        if (GTCEu.isClientSide())
             HUD = new ArmorUtils.ModularHUD();
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -17,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -233,7 +233,7 @@ public class GTRecipeWidget extends WidgetGroup {
             case IV -> 12;
             default -> 14;
         };
-        if (!LDLib.isEmiLoaded()) {
+        if (!GTCEu.Mods.isEMILoaded()) {
             x -= 3;
         }
         return x;

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.map.xaeros;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-
-import com.lowdragmc.lowdraglib.Platform;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -32,7 +32,8 @@ public class XaerosMapPlugin {
             dimHighlightHandler.requestRefresh();
         }
 
-        if (Platform.isModLoaded(GTValues.MODID_XAEROS_WORLDMAP)) {
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration &&
+                GTCEu.isModLoaded(GTValues.MODID_XAEROS_WORLDMAP)) {
             WorldMapSession session = WorldMapSession.getCurrentSession();
             MapWorld world = session.getMapProcessor().getMapWorld();
             for (MapDimension mapDim : world.getDimensionsList()) {

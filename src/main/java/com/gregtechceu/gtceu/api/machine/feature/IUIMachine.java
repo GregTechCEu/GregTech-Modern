@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -41,7 +41,7 @@ public interface IUIMachine extends IUIHolder, IMachineFeature {
     @Override
     default boolean isRemote() {
         var level = self().getLevel();
-        return level == null ? LDLib.isRemote() : level.isClientSide;
+        return level == null ? GTCEu.isClientThread() : level.isClientSide;
     }
 
     @Override

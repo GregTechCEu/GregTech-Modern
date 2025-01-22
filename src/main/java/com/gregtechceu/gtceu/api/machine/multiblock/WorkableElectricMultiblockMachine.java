@@ -31,7 +31,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -84,19 +83,23 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        int numParallels = 0;
-        Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance)
-                .map(IParallelHatch.class::cast).findAny();
-        if (optional.isPresent()) {
-            IParallelHatch parallelHatch = optional.get();
-            numParallels = parallelHatch.getCurrentParallel();
+        int numParallels;
+        boolean exact = false;
+        if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
+            numParallels = recipeLogic.getLastRecipe().parallels;
+            exact = true;
+        } else {
+            numParallels = getParallelHatch()
+                    .map(IParallelHatch::getCurrentParallel)
+                    .orElse(0);
         }
+
         MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
-                .addParallelsLine(numParallels)
+                .addParallelsLine(numParallels, exact)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent())

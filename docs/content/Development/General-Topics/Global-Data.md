@@ -18,7 +18,7 @@ When doing so, you need to ensure that remote and serverside instances don't get
 To make working with this requirement easier, You can use `SideLocal<T>` to store your global data.
 It is similar to Java's `ThreadLocal`, but operates on the game's sides instead.
 
-If you are currently on the remote side (`LDLib.isRemote()` / on the client's `main` thread), it will return the
+If you are currently on the remote side (`GTCEuAPI.isClientThread()` / on the client's `main` thread), it will return the
 remote side's instance of your data. Otherwise, you will get the server side's instance.
 
 ??? example "Example Usage"

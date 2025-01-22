@@ -66,8 +66,8 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
     enum MachineOwnerType {
 
         PLAYER,
-        FTB(GTCEu::isFTBTeamsLoaded, "FTB Teams"),
-        ARGONAUTS(GTCEu::isArgonautsLoaded, "Argonauts Guild");
+        FTB(GTCEu.Mods::isFTBTeamsLoaded, "FTB Teams"),
+        ARGONAUTS(GTCEu.Mods::isArgonautsLoaded, "Argonauts Guild");
 
         public static final MachineOwnerType[] VALUES = values();
 

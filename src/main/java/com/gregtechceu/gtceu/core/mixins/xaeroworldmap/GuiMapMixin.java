@@ -33,6 +33,7 @@ public abstract class GuiMapMixin extends ScreenBase implements IRightClickableE
 
     @Inject(method = "init", at = @At("TAIL"), remap = true)
     private void gtceu$injectInitGui(CallbackInfo ci) {
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) return;
         int startX, startY, xOffset, yOffset;
 
         switch (ConfigHolder.INSTANCE.compat.minimap.direction) {

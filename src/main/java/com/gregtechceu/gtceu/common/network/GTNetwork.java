@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncHazardZoneStrength;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
+import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
+import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockOre;
+import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 
 import com.lowdragmc.lowdraglib.networking.INetworking;
 import com.lowdragmc.lowdraglib.networking.forge.LDLNetworkingImpl;
@@ -24,7 +27,9 @@ public class GTNetwork {
         NETWORK.registerS2C(SPacketRemoveHazardZone.class);
         NETWORK.registerS2C(SPacketSyncHazardZoneStrength.class);
         NETWORK.registerS2C(SPacketSyncLevelHazards.class);
-        NETWORK.registerS2C(SPacketOreProspect.class);
+        NETWORK.registerS2C(SPacketProspectOre.class);
+        NETWORK.registerS2C(SPacketProspectBedrockFluid.class);
+        NETWORK.registerS2C(SPacketProspectBedrockOre.class);
         NETWORK.registerS2C(SPacketSendWorldID.class);
 
         NETWORK.registerBoth(SCPacketShareProspection.class);

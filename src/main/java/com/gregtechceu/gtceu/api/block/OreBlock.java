@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +20,7 @@ public class OreBlock extends MaterialBlock {
 
     public OreBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
         super(properties, tagPrefix, material, false);
-        if (registerModel && Platform.isClient()) {
+        if (registerModel && GTCEu.isClientSide()) {
             OreBlockRenderer.create(this);
         }
     }

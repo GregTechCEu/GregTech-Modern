@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.WrapperConfigurator;
@@ -204,11 +204,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
                 }
             }
 
-            if (LDLib.isJeiLoaded() && !realStack.isEmpty()) {
+            if (GTCEu.Mods.isJEILoaded() && !realStack.isEmpty()) {
                 return JEICallWrapper.getJEIStackClickable(realStack, getPosition(), getSize());
-            } else if (LDLib.isReiLoaded()) {
+            } else if (GTCEu.Mods.isREILoaded()) {
                 return EntryStacks.of(realStack);
-            } else if (LDLib.isEmiLoaded()) {
+            } else if (GTCEu.Mods.isEMILoaded()) {
                 return EmiStack.of(realStack).setChance(getXEIChance());
             }
             return realStack;
@@ -230,11 +230,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             }
         }
 
-        if (LDLib.isJeiLoaded() && !realStack.isEmpty()) {
+        if (GTCEu.Mods.isJEILoaded() && !realStack.isEmpty()) {
             return List.of(JEICallWrapper.getJEIStackClickable(realStack, getPosition(), getSize()));
-        } else if (LDLib.isReiLoaded()) {
+        } else if (GTCEu.Mods.isREILoaded()) {
             return List.of(EntryStacks.of(realStack));
-        } else if (LDLib.isEmiLoaded()) {
+        } else if (GTCEu.Mods.isEMILoaded()) {
             return List.of(EmiStack.of(realStack).setChance(getXEIChance()));
         }
         return List.of(realStack);
@@ -242,11 +242,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private List<Object> getXEIIngredients(CycleItemStackHandler handler, int index) {
         var stackList = handler.getStackList(index);
-        if (LDLib.isJeiLoaded()) {
+        if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIIngredients(stackList, this::getRealStack);
-        } else if (LDLib.isReiLoaded()) {
+        } else if (GTCEu.Mods.isREILoaded()) {
             return REICallWrapper.getREIIngredients(stackList, this::getRealStack);
-        } else if (LDLib.isEmiLoaded()) {
+        } else if (GTCEu.Mods.isEMILoaded()) {
             return EMICallWrapper.getEMIIngredients(stackList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
@@ -254,11 +254,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private List<Object> getXEIIngredientsClickable(CycleItemStackHandler handler, int index) {
         var stackList = handler.getStackList(index);
-        if (LDLib.isJeiLoaded()) {
+        if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIIngredientsClickable(stackList, getPosition(), getSize(), this::getRealStack);
-        } else if (LDLib.isReiLoaded()) {
+        } else if (GTCEu.Mods.isREILoaded()) {
             return REICallWrapper.getREIIngredients(stackList, this::getRealStack);
-        } else if (LDLib.isEmiLoaded()) {
+        } else if (GTCEu.Mods.isEMILoaded()) {
             return EMICallWrapper.getEMIIngredients(stackList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
@@ -266,11 +266,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private List<Object> getXEIIngredients(CycleItemEntryHandler handler, int index) {
         ItemEntryList entryList = handler.getEntry(index);
-        if (LDLib.isJeiLoaded()) {
+        if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIIngredients(entryList, this::getRealStack);
-        } else if (LDLib.isReiLoaded()) {
+        } else if (GTCEu.Mods.isREILoaded()) {
             return REICallWrapper.getREIIngredients(entryList, this::getRealStack);
-        } else if (LDLib.isEmiLoaded()) {
+        } else if (GTCEu.Mods.isEMILoaded()) {
             return EMICallWrapper.getEMIIngredients(entryList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
@@ -278,11 +278,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private List<Object> getXEIIngredientsClickable(CycleItemEntryHandler handler, int index) {
         ItemEntryList entryList = handler.getEntry(index);
-        if (LDLib.isJeiLoaded()) {
+        if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIIngredientsClickable(entryList, getPosition(), getSize(), this::getRealStack);
-        } else if (LDLib.isReiLoaded()) {
+        } else if (GTCEu.Mods.isREILoaded()) {
             return REICallWrapper.getREIIngredients(entryList, this::getRealStack);
-        } else if (LDLib.isEmiLoaded()) {
+        } else if (GTCEu.Mods.isEMILoaded()) {
             return EMICallWrapper.getEMIIngredients(entryList, getXEIChance(), this::getRealStack);
         }
         return Collections.emptyList();
