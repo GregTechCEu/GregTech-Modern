@@ -556,7 +556,7 @@ public class MixerRecipes {
                 .inputItems(dust, Copper, 7)
                 .inputFluids(Oxygen.getFluid(14000))
                 .circuitMeta(4)
-                .outputItems(dust, IndiumTinBariumTitaniumCuprate, 16)
+                .outputItems(dust, IndiumTinBariumTitaniumCuprate, 30)
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("uranium_rhodium_dinaquadide").duration(150).EUt(VA[ZPM])
