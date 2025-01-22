@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -528,11 +527,11 @@ public class RecyclingRecipes {
                                     UnificationEntry entry) {
         int amount = originalStack.getCount();
         while (amount > 64) {
-            list.add(new Tuple<>(GTUtil.copy(64, originalStack),
+            list.add(new Tuple<>(originalStack.copyWithCount(64),
                     new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * 64)));
             amount -= 64;
         }
-        list.add(new Tuple<>(GTUtil.copy(amount, originalStack),
+        list.add(new Tuple<>(originalStack.copyWithCount(amount),
                 new MaterialStack(entry.material, entry.tagPrefix.getMaterialAmount(entry.material) * amount)));
     }
 

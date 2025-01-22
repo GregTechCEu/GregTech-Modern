@@ -109,10 +109,10 @@ public final class OreRecipeHandler {
                     .category(GTRecipeCategories.ORE_FORGING)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !ChemicalHelper.get(gem, material).isEmpty()) {
-                builder.outputItems(GTUtil.copy(property.getOreMultiplier() * oreTypeMultiplier,
-                        ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(ChemicalHelper.get(gem, material)
+                        .copyWithCount(property.getOreMultiplier() * oreTypeMultiplier));
             } else {
-                builder.outputItems(GTUtil.copy(property.getOreMultiplier() * oreTypeMultiplier, crushedStack));
+                builder.outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * oreTypeMultiplier));
             }
             builder.save(provider);
 
@@ -120,7 +120,7 @@ public final class OreRecipeHandler {
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]),
                             Ingredient.of(orePrefix.getItemParentTags()[0])))
-                    .outputItems(GTUtil.copy(property.getOreMultiplier() * 2 * oreTypeMultiplier, crushedStack))
+                    .outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * 2 * oreTypeMultiplier))
                     .chancedOutput(byproductStack, 1400, 850)
                     .EUt(2)
                     .category(GTRecipeCategories.ORE_CRUSHING)
@@ -187,17 +187,17 @@ public final class OreRecipeHandler {
                     .category(GTRecipeCategories.ORE_FORGING)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !ChemicalHelper.get(gem, material).isEmpty()) {
-                builder.outputItems(GTUtil.copy(property.getOreMultiplier(),
-                        ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(ChemicalHelper.get(gem, material, crushedStack.getCount())
+                        .copyWithCount(property.getOreMultiplier()));
             } else {
-                builder.outputItems(GTUtil.copy(property.getOreMultiplier(), crushedStack));
+                builder.outputItems(crushedStack.copyWithCount(property.getOreMultiplier()));
             }
             builder.save(provider);
 
             builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_raw_" + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(rawOre, material)
-                    .outputItems(GTUtil.copy(property.getOreMultiplier() * 2, crushedStack))
+                    .outputItems(crushedStack.copyWithCount(property.getOreMultiplier() * 2))
                     .chancedOutput(byproductStack, 1400, 850)
                     .EUt(2)
                     .category(GTRecipeCategories.ORE_CRUSHING)
@@ -226,7 +226,7 @@ public final class OreRecipeHandler {
                     ingotStack, xp);
         }
 
-        if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
+        if (!ConfigHolder.INSTANCE.recipes.disableManualCompression && !rawOre.isIgnored(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, "compress_" + material.getName() + "_to_ore_block",
                     ChemicalHelper.get(rawOreBlock, material),
                     "BBB", "BBB", "BBB",

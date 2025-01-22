@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.Util;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -47,14 +48,14 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
  */
 public final class WireRecipeHandler {
 
-    private static final Reference2IntMap<TagPrefix> INSULATION_AMOUNT = new Reference2IntOpenHashMap<>();
-    static {
-        INSULATION_AMOUNT.put(cableGtSingle, 1);
-        INSULATION_AMOUNT.put(cableGtDouble, 1);
-        INSULATION_AMOUNT.put(cableGtQuadruple, 2);
-        INSULATION_AMOUNT.put(cableGtOctal, 3);
-        INSULATION_AMOUNT.put(cableGtHex, 5);
-    }
+    private static final Reference2IntMap<TagPrefix> INSULATION_AMOUNT = Util.make(new Reference2IntOpenHashMap<>(),
+            map -> {
+                map.put(cableGtSingle, 1);
+                map.put(cableGtDouble, 1);
+                map.put(cableGtQuadruple, 2);
+                map.put(cableGtOctal, 3);
+                map.put(cableGtHex, 5);
+            });
 
     private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 

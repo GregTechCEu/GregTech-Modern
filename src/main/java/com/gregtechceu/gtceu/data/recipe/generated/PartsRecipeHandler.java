@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -76,7 +75,7 @@ public final class PartsRecipeHandler {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_bolt")
                     .inputItems(ingot, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                    .outputItems(GTUtil.copy(8, boltStack))
+                    .outputItems(boltStack.copyWithCount(8))
                     .duration(15)
                     .EUt(VA[MV])
                     .save(provider);
@@ -85,7 +84,7 @@ public final class PartsRecipeHandler {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_bolt")
                         .inputItems(dust, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                        .outputItems(GTUtil.copy(8, boltStack))
+                        .outputItems(boltStack.copyWithCount(8))
                         .duration(15)
                         .EUt(VA[MV])
                         .save(provider);
@@ -185,14 +184,14 @@ public final class PartsRecipeHandler {
         if (material.hasProperty(PropertyKey.WIRE)) {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_to_fine_wire")
                     .inputItems(wireGtSingle, material)
-                    .outputItems(GTUtil.copy(4, fineWireStack))
+                    .outputItems(fineWireStack.copyWithCount(4))
                     .duration((int) material.getMass() * 3 / 2)
                     .EUt(VA[ULV])
                     .save(provider);
         } else {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "ingot_to_fine_wire")
                     .inputItems(ingot, material)
-                    .outputItems(GTUtil.copy(8, fineWireStack))
+                    .outputItems(fineWireStack.copyWithCount(8))
                     .duration((int) material.getMass() * 3)
                     .EUt(VA[ULV])
                     .save(provider);
@@ -554,13 +553,13 @@ public final class PartsRecipeHandler {
                     material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
             CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_rod_to_bolt")
                     .inputItems(rod, material)
-                    .outputItems(GTUtil.copy(4, boltStack))
+                    .outputItems(boltStack.copyWithCount(4))
                     .duration((int) Math.max(material.getMass() * 2L, 1L))
                     .EUt(4)
                     .save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("bolt_saw_%s", material.getName()),
-                    GTUtil.copy(2, boltStack),
+                    boltStack.copyWithCount(2),
                     "s ", " X",
                     'X', new UnificationEntry(rod, material));
         }
@@ -583,12 +582,12 @@ public final class PartsRecipeHandler {
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_long_rod_to_rod")
                 .inputItems(rodLong, material)
-                .outputItems(GTUtil.copy(2, stickStack))
+                .outputItems(stickStack.copyWithCount(2))
                 .duration((int) Math.max(material.getMass(), 1L)).EUt(4)
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_%s", material.getName()),
-                GTUtil.copy(2, stickStack),
+                stickStack.copyWithCount(2),
                 "s", "X", 'X', new UnificationEntry(rodLong, material));
 
         if (material.hasProperty(PropertyKey.GEM)) {
@@ -601,7 +600,7 @@ public final class PartsRecipeHandler {
 
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("stick_long_gem_exquisite_%s", material.getName()),
-                    GTUtil.copy(2, stickStack),
+                    stickStack.copyWithCount(2),
                     "sf", "G ",
                     'G', new UnificationEntry(gemExquisite, material));
 

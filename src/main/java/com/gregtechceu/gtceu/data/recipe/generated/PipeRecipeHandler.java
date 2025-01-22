@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -85,7 +84,7 @@ public final class PipeRecipeHandler {
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe")
                 .inputItems(ingot, material, 1)
                 .notConsumable(GTItems.SHAPE_EXTRUDER_PIPE_TINY)
-                .outputItems(GTUtil.copy(2, pipeStack))
+                .outputItems(pipeStack.copyWithCount(2))
                 .duration((int) (material.getMass()))
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
@@ -94,13 +93,13 @@ public final class PipeRecipeHandler {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_tiny_pipe_dust")
                     .inputItems(dust, material, 1)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_PIPE_TINY)
-                    .outputItems(GTUtil.copy(2, pipeStack))
+                    .outputItems(pipeStack.copyWithCount(2))
                     .duration((int) (material.getMass()))
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_%s_pipe", material.getName()),
-                    GTUtil.copy(2, pipeStack), " s ", "hXw",
+                    pipeStack.copyWithCount(2), " s ", "hXw",
                     'X', new UnificationEntry(plate, material));
         }
     }
@@ -262,7 +261,7 @@ public final class PipeRecipeHandler {
                 'X', smallPipe);
 
         PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_quadruple_pipe")
-                .inputItems(GTUtil.copy(4, smallPipe))
+                .inputItems(smallPipe.copyWithCount(4))
                 .circuitMeta(4)
                 .outputItems(quadPipe)
                 .duration(30)
@@ -288,7 +287,7 @@ public final class PipeRecipeHandler {
                 'X', smallPipe);
 
         PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_nonuple_pipe")
-                .inputItems(GTUtil.copy(9, smallPipe))
+                .inputItems(smallPipe.copyWithCount(9))
                 .circuitMeta(9)
                 .outputItems(nonuplePipe)
                 .duration(40)

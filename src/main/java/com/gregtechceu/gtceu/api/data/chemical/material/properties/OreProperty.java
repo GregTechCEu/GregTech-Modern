@@ -148,7 +148,7 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to add as byproducts
      */
-    public void addOreByProducts(@NotNull Material @NotNull... materials) {
+    public void addOreByProducts(@NotNull Material... materials) {
         this.oreByProducts.addAll(Arrays.asList(materials));
     }
 

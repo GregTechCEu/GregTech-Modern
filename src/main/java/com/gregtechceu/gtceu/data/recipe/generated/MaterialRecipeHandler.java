@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.util.Mth;
@@ -93,29 +92,29 @@ public final class MaterialRecipeHandler {
 
             if (!material.hasFlag(EXPLOSIVE) && !material.hasFlag(FLAMMABLE)) {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
-                        .inputItems(GTUtil.copy(4, dustStack))
-                        .outputItems(GTUtil.copy(3, gemStack))
+                        .inputItems(dustStack.copyWithCount(4))
+                        .outputItems(gemStack.copyWithCount(3))
                         .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                         .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
-                        .inputItems(GTUtil.copy(4, dustStack))
-                        .outputItems(GTUtil.copy(3, gemStack))
+                        .inputItems(dustStack.copyWithCount(4))
+                        .outputItems(gemStack.copyWithCount(3))
                         .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                         .explosivesAmount(4)
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
-                        .inputItems(GTUtil.copy(4, dustStack))
-                        .outputItems(GTUtil.copy(3, gemStack))
+                        .inputItems(dustStack.copyWithCount(4))
+                        .outputItems(gemStack.copyWithCount(3))
                         .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                         .explosivesType(GTItems.DYNAMITE.asStack(2))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
-                        .inputItems(GTUtil.copy(4, dustStack))
-                        .outputItems(GTUtil.copy(3, gemStack))
+                        .inputItems(dustStack.copyWithCount(4))
+                        .outputItems(gemStack.copyWithCount(3))
                         .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                         .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
                         .save(provider);
@@ -264,7 +263,7 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
-                GTUtil.copy(4, smallDustStack), " X ", "   ", "   ", 'X', new UnificationEntry(dust, material));
+                smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new UnificationEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material.getName()),
                 dustStack, "XX", "XX", 'X', new UnificationEntry(dustSmall, material));
 
@@ -277,7 +276,7 @@ public final class MaterialRecipeHandler {
         PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_small_dust")
                 .inputItems(dust, material)
                 .circuitMeta(2)
-                .outputItems(GTUtil.copy(4, smallDustStack))
+                .outputItems(smallDustStack.copyWithCount(4))
                 .save(provider);
     }
 
@@ -295,7 +294,7 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
-                GTUtil.copy(9, tinyDustStack), "X  ", "   ", "   ", 'X', new UnificationEntry(dust, material));
+                tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new UnificationEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material.getName()),
                 dustStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(dustTiny, material));
 
@@ -308,7 +307,7 @@ public final class MaterialRecipeHandler {
         PACKER_RECIPES.recipeBuilder("unpackage_" + material.getName() + "_tiny_dust")
                 .inputItems(dust, material)
                 .circuitMeta(1)
-                .outputItems(GTUtil.copy(9, tinyDustStack))
+                .outputItems(tinyDustStack.copyWithCount(9))
                 .save(provider);
     }
 
@@ -404,7 +403,7 @@ public final class MaterialRecipeHandler {
 
                     FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_to_plate")
                             .inputItems(ingot, material, 3)
-                            .outputItems(GTUtil.copy(2, plateStack))
+                            .outputItems(plateStack.copyWithCount(2))
                             .EUt(16).duration((int) material.getMass())
                             .save(provider);
 
@@ -509,7 +508,7 @@ public final class MaterialRecipeHandler {
                 if (!ingot.isIgnored(material)) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
                             String.format("nugget_disassembling_%s", material.getName()),
-                            GTUtil.copy(9, nuggetStack), new UnificationEntry(ingot, material));
+                            nuggetStack.copyWithCount(9), new UnificationEntry(ingot, material));
                 }
                 if (!nugget.isIgnored(material)) {
                     VanillaRecipeHelper.addShapedRecipe(provider,
@@ -550,7 +549,7 @@ public final class MaterialRecipeHandler {
                 if (!gem.isIgnored(material)) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
                             String.format("nugget_disassembling_%s", material.getName()),
-                            GTUtil.copy(9, nuggetStack), new UnificationEntry(gem, material));
+                            nuggetStack.copyWithCount(9), new UnificationEntry(gem, material));
                 }
                 if (!nugget.isIgnored(material)) {
                     VanillaRecipeHelper.addShapedRecipe(provider,
@@ -614,7 +613,7 @@ public final class MaterialRecipeHandler {
             if (!plateStack.isEmpty()) {
                 CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_block_to_plate")
                         .inputItems(block, material)
-                        .outputItems(GTUtil.copy((int) (materialAmount / M), plateStack))
+                        .outputItems(plateStack.copyWithCount((int) (materialAmount / M)))
                         .duration((int) (material.getMass() * 8L)).EUt(VA[LV])
                         .save(provider);
             }
@@ -647,7 +646,7 @@ public final class MaterialRecipeHandler {
 
                 VanillaRecipeHelper.addShapelessRecipe(provider,
                         String.format("block_decompress_%s", material.getName()),
-                        GTUtil.copy(size, ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material)),
+                        ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material).copyWithCount(size),
                         new UnificationEntry(block, material));
             }
 

@@ -227,28 +227,6 @@ public class GTUtil {
         return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
-    @Deprecated
-    public static ItemStack copy(ItemStack... stacks) {
-        for (ItemStack stack : stacks)
-            if (!stack.isEmpty()) return stack.copy();
-        return ItemStack.EMPTY;
-    }
-
-    /**
-     * Copies the ItemStack with new stack size.
-     *
-     * @param stack item stack for copying
-     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if the stack is empty
-     */
-    public static @NotNull ItemStack copy(int newCount, @NotNull ItemStack stack) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack copy = stack.copy();
-        copy.setCount(newCount);
-        return copy;
-    }
-
     /**
      * Copies first non-empty ItemStack from stacks.
      *
@@ -256,7 +234,7 @@ public class GTUtil {
      * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
      * @throws IllegalArgumentException if {@code stacks} is empty
      */
-    public static @NotNull ItemStack copyFirst(@NotNull ItemStack @NotNull... stacks) {
+    public static @NotNull ItemStack copyFirst(@NotNull ItemStack... stacks) {
         if (stacks.length == 0) {
             throw new IllegalArgumentException("Empty ItemStack candidates");
         }
@@ -275,15 +253,13 @@ public class GTUtil {
      * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
      * @throws IllegalArgumentException if {@code stacks} is empty
      */
-    public static @NotNull ItemStack copyFirst(int newCount, @NotNull ItemStack @NotNull... stacks) {
+    public static @NotNull ItemStack copyFirst(int newCount, @NotNull ItemStack... stacks) {
         if (stacks.length == 0) {
             throw new IllegalArgumentException("Empty ItemStack candidates");
         }
         for (ItemStack stack : stacks) {
             if (!stack.isEmpty()) {
-                ItemStack copy = stack.copy();
-                copy.setCount(newCount);
-                return copy;
+                return stack.copyWithCount(newCount);
             }
         }
         return ItemStack.EMPTY;
