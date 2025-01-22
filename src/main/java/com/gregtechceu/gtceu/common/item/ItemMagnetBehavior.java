@@ -175,7 +175,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             }
         }
 
-        if (!GTCEu.isCuriosLoaded()) {
+        if (!GTCEu.Mods.isCuriosLoaded()) {
             return false;
         }
         return CuriosUtils.hasMagnetCurios(player);

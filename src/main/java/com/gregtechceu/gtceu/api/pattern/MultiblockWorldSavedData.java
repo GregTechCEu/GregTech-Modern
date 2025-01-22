@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -114,7 +112,7 @@ public class MultiblockWorldSavedData extends SavedData {
 
     private void searchingTask() {
         try {
-            if (Platform.isServerNotSafe()) return;
+            if (!GTCEu.canGetServerLevel()) return;
             IN_SERVICE.set(true);
             for (var controller : controllers) {
                 try {
@@ -132,7 +130,7 @@ public class MultiblockWorldSavedData extends SavedData {
     }
 
     public static boolean isThreadService() {
-        return IN_SERVICE.get() && !Platform.isServerNotSafe();
+        return IN_SERVICE.get() && GTCEu.canGetServerLevel();
     }
 
     public void releaseExecutorService() {

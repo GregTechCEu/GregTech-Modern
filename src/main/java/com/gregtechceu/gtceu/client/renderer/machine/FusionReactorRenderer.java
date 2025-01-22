@@ -33,7 +33,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-            if (GTCEu.isShimmerLoaded()) {
+            if (GTCEu.Mods.isShimmerLoaded()) {
                 PoseStack finalStack = RenderUtils.copyPoseStack(stack);
                 BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
             } else {

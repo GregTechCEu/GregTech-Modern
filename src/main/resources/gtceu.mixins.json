@@ -15,12 +15,15 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
+        "ftbchunks.LargeMapScreenMixin",
+        "ftbchunks.RegionMapPanelMixin",
+        "ftbchunks.FTBChunksClientMixin",
         "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
-        "xaeroworldmap.GuiMapMixin",
-        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
+        "xaeroworldmap.GuiMapMixin",
+        "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [

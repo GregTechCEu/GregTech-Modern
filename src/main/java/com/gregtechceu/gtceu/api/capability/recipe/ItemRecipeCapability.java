@@ -502,7 +502,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                             }
                             CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
                             slot.setHandlerSlot(handler, 0);
-                            slot.setIngredientIO(IngredientIO.INPUT);
+                            slot.setIngredientIO(IngredientIO.CATALYST);
                             slot.setCanTakeItems(false);
                             slot.setCanPutItems(false);
                         }

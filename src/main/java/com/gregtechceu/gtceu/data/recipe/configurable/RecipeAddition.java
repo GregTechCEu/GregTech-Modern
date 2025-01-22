@@ -1252,6 +1252,14 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "glass_pane", new ItemStack(Blocks.GLASS_PANE, 2), "sG", 'G',
                 new ItemStack(Blocks.GLASS));
 
+        for (DyeColor color : DyeColor.values()) {
+            String dyeName = color.getName();
+            VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
+                    new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 2),
+                    "sG",
+                    'G', BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")));
+        }
+
         ALLOY_SMELTER_RECIPES.recipeBuilder("tinted_glass")
                 .inputItems(new ItemStack(Blocks.GLASS))
                 .inputItems(new ItemStack(Items.AMETHYST_SHARD, 4))

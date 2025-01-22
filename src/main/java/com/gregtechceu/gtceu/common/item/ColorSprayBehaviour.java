@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -92,7 +90,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
-            if (color.ordinal() > 15 && Platform.isModLoaded(GTValues.MODID_TINTED)) {
+            if (color.ordinal() > 15 && GTCEu.isModLoaded(GTValues.MODID_TINTED)) {
                 glassBuilder.put(color,
                         BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
                 glassPaneBuilder.put(color,
@@ -217,10 +215,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
     private static boolean paintPaintable(IPaintable paintable, DyeColor color) {
         if (color == null) {
-            if (paintable.getDefaultPaintingColor() == paintable.getPaintingColor()) {
+            if (paintable.getPaintingColor() == -1) {
                 return false;
             }
-            paintable.setPaintingColor(paintable.getDefaultPaintingColor());
+            paintable.setPaintingColor(-1);
         } else if (paintable.getPaintingColor() != color.getTextColor()) {
             paintable.setPaintingColor(color.getTextColor());
         } else {
@@ -235,7 +233,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
+        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isAE2Cable(first)) {
             var collected = AE2CallWrapper.collect(first, limit);
             var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
             for (var c : collected) {

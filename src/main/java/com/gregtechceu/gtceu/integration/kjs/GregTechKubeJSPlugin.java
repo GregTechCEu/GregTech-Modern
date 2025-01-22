@@ -62,6 +62,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
@@ -267,6 +268,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTMedicalConditions", GTMedicalConditions.class);
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);
+        event.add("MachineConstructors", MachineConstructors.class);
+        event.add("MachineModifiers", MachineModifiers.class);
         event.add("ModifierFunction", ModifierFunction.class);
         event.add("RecipeCapability", RecipeCapability.class);
         event.add("ChanceLogic", ChanceLogic.class);
@@ -293,10 +296,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOres.class);
-        event.add("GTRecipeModifiers", GTRecipeModifiers.class);
-        event.add("OverclockingLogic", OverclockingLogic.class);
-        event.add("ModifierFunction", ModifierFunction.class);
-        event.add("MachineModifiers", MachineModifiers.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
         // MaterialColor stuff, for TagPrefix
     }

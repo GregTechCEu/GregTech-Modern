@@ -186,6 +186,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     public void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side) {
+        var previousCover = getCoverAtSide(side);
         switch (side) {
             case UP -> up = coverBehavior;
             case SOUTH -> south = coverBehavior;
@@ -196,6 +197,11 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
         }
         if (coverBehavior != null) {
             coverBehavior.getSyncStorage().markAllDirty();
+            if (coverBehavior.canPipePassThrough()) {
+                pipeTile.setConnection(side, true, false);
+            }
+        } else if (previousCover != null && previousCover.canPipePassThrough()) {
+            pipeTile.setConnection(side, false, false);
         }
     }
 

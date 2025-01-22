@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -14,7 +15,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -76,6 +76,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @DescSynced
     protected GTRecipe lastRecipe;
+    @Getter
+    @Persisted
+    @DescSynced
+    protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
     /**
      * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
      * which can be found
@@ -140,6 +144,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
+        consecutiveRecipes = 0;
         progress = 0;
         duration = 0;
         isActive = false;
@@ -175,7 +180,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
      * it should be called on the server side restrictively.
      */
     public RecipeManager getRecipeManager() {
-        return Platform.getMinecraftServer().getRecipeManager();
+        return GTCEu.getMinecraftServer().getRecipeManager();
     }
 
     public void serverTick() {
@@ -350,6 +355,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void setupRecipe(GTRecipe recipe) {
         if (!machine.beforeWorking(recipe)) {
             setStatus(Status.IDLE);
+            consecutiveRecipes = 0;
             progress = 0;
             duration = 0;
             isActive = false;
@@ -361,7 +367,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
-
             recipeDirty = false;
             lastRecipe = recipe;
             setStatus(Status.WORKING);
@@ -451,6 +456,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
+            consecutiveRecipes++;
             RecipeHelper.postWorking(this.machine, lastRecipe);
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
@@ -476,6 +482,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 } else {
                     setStatus(Status.IDLE);
                 }
+                consecutiveRecipes = 0;
                 progress = 0;
                 duration = 0;
                 isActive = false;

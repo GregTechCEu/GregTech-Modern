@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import java.util.*;
 
 public class MaterialProperties {
@@ -74,7 +72,7 @@ public class MaterialProperties {
 
         if (propertyMap.keySet().stream().noneMatch(baseTypes::contains)) {
             if (propertyMap.isEmpty()) {
-                if (Platform.isDevEnv()) {
+                if (GTCEu.isDev()) {
                     GTCEu.LOGGER.debug("Creating empty placeholder Material {}", material);
                 }
                 propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());

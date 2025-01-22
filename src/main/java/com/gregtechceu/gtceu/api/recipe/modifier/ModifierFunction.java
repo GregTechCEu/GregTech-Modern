@@ -34,8 +34,14 @@ import java.util.Map;
 @FunctionalInterface
 public interface ModifierFunction {
 
-    ModifierFunction NULL = r -> null;
-    ModifierFunction IDENTITY = r -> r;
+    /**
+     * Use this static to denote that the recipe should be cancelled
+     */
+    ModifierFunction NULL = recipe -> null;
+    /**
+     * Use this static to denote that the recipe doesn't get modified
+     */
+    ModifierFunction IDENTITY = recipe -> recipe;
 
     /**
      * Applies this modifier to the passed recipe
@@ -54,7 +60,7 @@ public interface ModifierFunction {
      * @return The composed function of {@code this.apply(before.apply(recipe))}
      */
     default ModifierFunction compose(@NotNull ModifierFunction before) {
-        return r -> applySafe(before.apply(r));
+        return recipe -> applySafe(before.apply(recipe));
     }
 
     /**
@@ -64,7 +70,7 @@ public interface ModifierFunction {
      * @return The composed function of {@code after.apply(this.apply(recipe))}
      */
     default ModifierFunction andThen(@NotNull ModifierFunction after) {
-        return r -> after.applySafe(apply(r));
+        return recipe -> after.applySafe(apply(recipe));
     }
 
     private GTRecipe applySafe(@Nullable GTRecipe recipe) {
@@ -151,10 +157,10 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
                         recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-                copied.parallels *= parallels;
-                copied.ocLevel += addOCs;
+                copied.parallels = recipe.parallels * parallels;
+                copied.ocLevel = recipe.ocLevel + addOCs;
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                    copied.duration = (int) Math.max(1, (copied.duration * (1f - 0.025f * addOCs)));
+                    copied.duration = (int) Math.max(1, (recipe.duration * (1f - 0.025f * addOCs)));
                 } else {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));
                 }
@@ -167,8 +173,8 @@ public interface ModifierFunction {
             };
         }
 
-        private Map<RecipeCapability<?>, List<Content>> applyAllButEU(ContentModifier cm,
-                                                                      Map<RecipeCapability<?>, List<Content>> contents) {
+        private static Map<RecipeCapability<?>, List<Content>> applyAllButEU(ContentModifier cm,
+                                                                             Map<RecipeCapability<?>, List<Content>> contents) {
             Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
             for (var entry : contents.entrySet()) {
                 var cap = entry.getKey();

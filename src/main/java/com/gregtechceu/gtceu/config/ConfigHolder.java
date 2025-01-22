@@ -212,11 +212,15 @@ public class ConfigHolder {
         public static class MinimapCompatConfig {
 
             @Configurable
+            @Configurable.Comment({
+                    "Toggle specific map mod integration on/off (need to restart for this to take effect)" })
+            public Toggle toggle = new Toggle();
+
+            @Configurable
             @Configurable.Comment({ "The radius, in blocks, that picking up a surface rock will search for veins in.",
                     "-1 to disable.", "Default: 24" })
             @Configurable.Range(min = 1)
             public int surfaceRockProspectRange = 24;
-
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that clicking an ore block will search for veins in.",
                     "-1 to disable", "Default: 24" })
@@ -263,6 +267,21 @@ public class ConfigHolder {
                     "Whether to put buttons on a separate toolbar on the right instead of the map type toolbar in JourneyMap.",
                     "Default: true" })
             public boolean rightToolbar = true;
+
+            public static class Toggle {
+
+                @Configurable
+                @Configurable.Comment({ "FTB Chunks integration enabled" })
+                public boolean ftbChunksIntegration = false;
+
+                @Configurable
+                @Configurable.Comment({ "Journey Map integration enabled" })
+                public boolean journeyMapIntegration = true;
+
+                @Configurable
+                @Configurable.Comment({ "Xaerox's map integration enabled" })
+                public boolean xaerosMapIntegration = true;
+            }
 
             public enum Anchor {
 
