@@ -25,7 +25,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     protected TagFluidFilter() {}
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new), 
+        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new),
                 filter -> itemStack.setTag(filter.saveFilter()));
     }
 

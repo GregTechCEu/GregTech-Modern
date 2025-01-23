@@ -24,7 +24,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     protected TagItemFilter() {}
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new), 
+        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new),
                 filter -> itemStack.setTag(filter.saveFilter()));
     }
 
