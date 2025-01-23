@@ -40,8 +40,13 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
 
     protected TagFilter() {}
 
+    @Override
+    public boolean isBlank() {
+        return oreDictFilterExpression.isBlank();
+    }
+
     public CompoundTag saveFilter() {
-        if (oreDictFilterExpression.isBlank()) {
+        if (isBlank()) {
             return null;
         }
         var tag = new CompoundTag();

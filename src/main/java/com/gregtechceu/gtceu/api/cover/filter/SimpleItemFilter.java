@@ -72,8 +72,13 @@ public class SimpleItemFilter implements ItemFilter {
         };
     }
 
+    @Override
+    public boolean isBlank() {
+        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty);
+    }
+
     public CompoundTag saveFilter() {
-        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty)) {
+        if (isBlank()) {
             return null;
         }
         var tag = new CompoundTag();

@@ -73,8 +73,13 @@ public class SimpleFluidFilter implements FluidFilter {
         };
     }
 
+    @Override
+    public boolean isBlank() {
+        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty);
+    }
+
     public CompoundTag saveFilter() {
-        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty)) {
+        if (isBlank()) {
             return null;
         }
         var tag = new CompoundTag();
