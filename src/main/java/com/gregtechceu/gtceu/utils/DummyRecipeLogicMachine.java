@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,16 @@ public class DummyRecipeLogicMachine extends WorkableTieredMachine implements IR
 
     public void reinitializeCapabilities(Map<IO, List<RecipeHandlerList>> caps) {
         this.capabilitiesProxy.clear();
+        this.capabilitiesFlat.clear();
 
         this.capabilitiesProxy.putAll(caps);
+    }
+
+    public void reinitializeHandlers(Collection<RecipeHandlerList> handlers) {
+        this.capabilitiesProxy.clear();
+        this.capabilitiesFlat.clear();
+        for (RecipeHandlerList handlerList : handlers) {
+            this.addHandlerList(handlerList);
+        }
     }
 }

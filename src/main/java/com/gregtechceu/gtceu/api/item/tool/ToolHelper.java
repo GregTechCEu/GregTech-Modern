@@ -415,15 +415,16 @@ public class ToolHelper {
                 Map<IO, List<RecipeHandlerList>> caps = new IdentityHashMap<>();
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
                         GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction, caps);
-                caps.computeIfAbsent(IO.IN, i -> new ArrayList())
-                        .add(RecipeHandlerList.of(IO.IN, new InfiniteEnergyContainer(be.getMetaMachine(),
-                                GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
-                caps.computeIfAbsent(IO.IN, i -> new ArrayList())
-                        .add(RecipeHandlerList.of(IO.IN, new NotifiableItemStackHandler(be.getMetaMachine(), 1,
-                                IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
-                caps.computeIfAbsent(IO.IN, i -> new ArrayList()).add(
-                        RecipeHandlerList.of(IO.IN, new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
-                be.getMetaMachine().reinitializeCapabilities(caps);
+                RecipeHandlerList dummyInputs = new RecipeHandlerList(IO.IN);
+                dummyInputs.addHandlers(
+                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
+                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
+                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
+
+                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
+                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
                         r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());

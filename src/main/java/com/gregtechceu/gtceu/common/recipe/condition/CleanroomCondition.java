@@ -54,7 +54,7 @@ public class CleanroomCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+    public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         if (!ConfigHolder.INSTANCE.machines.enableCleanroom) return true;
         MetaMachine machine = recipeLogic.getMachine();
         if (machine instanceof ICleanroomReceiver receiver && this.cleanroom != null) {

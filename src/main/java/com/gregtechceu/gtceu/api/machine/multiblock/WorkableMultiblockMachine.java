@@ -27,7 +27,6 @@ import net.minecraft.core.BlockPos;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -83,8 +82,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.capabilitiesProxy = new Object2ObjectOpenHashMap<>();
-        this.capabilitiesFlat = new Object2ObjectOpenHashMap<>();
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
     }
 
@@ -129,34 +128,22 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             var handlerList = part.getRecipeHandlers();
             if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO()) continue;
 
-            capabilitiesProxy.computeIfAbsent(handlerList.getHandlerIO(), i -> new ArrayList<>()).add(handlerList);
-            var inner = capabilitiesFlat.computeIfAbsent(handlerList.getHandlerIO(),
-                    i -> new Object2ObjectOpenHashMap<>());
-            for (var cap : handlerList.handlerMap.entrySet()) {
-                inner.computeIfAbsent(cap.getKey(), i -> new ArrayList<>()).addAll(cap.getValue());
-            }
+            this.addHandlerList(handlerList);
             traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
         }
 
         // attach self traits
-        Map<IO, List<IRecipeHandlerTrait<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
-
+        Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
         for (MachineTrait trait : getTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-                capabilitiesFlat.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new IdentityHashMap<>())
-                        .computeIfAbsent(handlerTrait.getCapability(), i -> new ArrayList<>()).add(handlerTrait);
             }
         }
 
         for (var entry : ioTraits.entrySet()) {
             RecipeHandlerList handlerList = new RecipeHandlerList(entry.getKey());
-            handlerList.addHandler(entry.getValue().toArray(new IRecipeHandler[0]));
-            capabilitiesProxy.computeIfAbsent(entry.getKey(), i -> new ArrayList<>()).add(handlerList);
-            var inner = capabilitiesFlat.computeIfAbsent(entry.getKey(), i -> new Object2ObjectOpenHashMap<>());
-            for (var cap : handlerList.handlerMap.entrySet()) {
-                inner.computeIfAbsent(cap.getKey(), i -> new ArrayList<>()).addAll(cap.getValue());
-            }
+            handlerList.addHandlers(entry.getValue());
+            this.addHandlerList(handlerList);
             traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
         }
         // schedule recipe logic

@@ -12,11 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -256,8 +255,8 @@ public class RecipeHelper {
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
         var match = matchRecipe(holder, recipe);
-        if (!match.isSuccess())
-            return match;
+        if (!match.isSuccess()) return match;
+
         return matchTickRecipe(holder, recipe);
     }
 
@@ -272,7 +271,7 @@ public class RecipeHelper {
     }
 
     public static void handlePre(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        (io == io.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
+        (io == IO.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
             var capFlatMap = holder.getCapabilitiesFlat(io, capability);
             if (!capFlatMap.isEmpty()) {
                 for (IRecipeHandler<?> capabilityProxy : capFlatMap) {
@@ -287,7 +286,7 @@ public class RecipeHelper {
     }
 
     public static void handlePost(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        (io == io.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
+        (io == IO.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
             var capFlatMap = holder.getCapabilitiesFlat(io, capability);
             if (!capFlatMap.isEmpty()) {
                 for (IRecipeHandler<?> capabilityProxy : capFlatMap) {
@@ -308,29 +307,31 @@ public class RecipeHelper {
      * @param recipeLogic the logic to test against the conditions
      * @return the list of failed conditions, or success if all conditions are satisfied
      */
-    public static List<ActionResult> checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        if (recipe.conditions.isEmpty()) return List.of(ActionResult.SUCCESS);
-        Map<RecipeConditionType<?>, List<RecipeCondition>> or = new HashMap<>();
-        List<ActionResult> failures = new ArrayList<>();
+    public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        if (recipe.conditions.isEmpty()) return ActionResult.SUCCESS;
+        Map<RecipeConditionType<?>, List<RecipeCondition>> or = new Reference2ObjectArrayMap<>();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
-            } else if (condition.test(recipe, recipeLogic) == condition.isReverse()) {
-                failures.add(ActionResult
-                        .fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails").append(": ")
-                                .append(condition.getTooltips())));
+            } else if (!condition.check(recipe, recipeLogic)) {
+                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails")
+                        .append(": ")
+                        .append(condition.getTooltips()));
             }
         }
 
         for (List<RecipeCondition> conditions : or.values()) {
-            if (conditions.stream()
-                    .allMatch(condition -> condition.test(recipe, recipeLogic) == condition.isReverse())) {
-                failures.add(ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails")));
+            boolean passed = conditions.isEmpty();
+            for (RecipeCondition condition : conditions) {
+                passed = condition.check(recipe, recipeLogic);
+                if (passed) break;
+            }
+
+            if (!passed) {
+                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails"));
             }
         }
-        if (!failures.isEmpty())
-            return failures;
-        return List.of(ActionResult.SUCCESS);
+        return ActionResult.SUCCESS;
     }
 
     /**
@@ -478,30 +479,5 @@ public class RecipeHelper {
             }
         }
         return ActionResult.SUCCESS;
-    }
-
-    /**
-     * @param isSuccess is action success
-     * @param reason    if fail, fail reason
-     */
-    public record ActionResult(boolean isSuccess, @Nullable Supplier<Component> reason) {
-
-        public final static ActionResult SUCCESS = new ActionResult(true, null);
-        public final static ActionResult FAIL_NO_REASON = new ActionResult(false, null);
-        public final static ActionResult PASS_NO_CONTENTS = new ActionResult(true,
-                () -> Component.translatable("gtceu.recipe_logic.no_contents"));
-        public final static ActionResult FAIL_NO_CAPABILITIES = new ActionResult(false,
-                () -> Component.translatable("gtceu.recipe_logic.no_capabilities"));
-
-        public static ActionResult fail(@Nullable Supplier<Component> component) {
-            return new ActionResult(false, component);
-        }
-
-        public Component getReason() {
-            if (reason() == null) {
-                return Component.empty();
-            }
-            return reason().get();
-        }
     }
 }

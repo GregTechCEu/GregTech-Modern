@@ -58,10 +58,9 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> prepareRecipeFind(@NotNull IRecipeCapabilityHolder holder) {
         // First, check if items and fluids are valid.
         int totalSize = 0;
-        List<RecipeHandlerList> recipeList = new ArrayList<>(
-                holder.getCapabilitiesProxy().getOrDefault(IO.IN, new ArrayList<>()));
+        List<RecipeHandlerList> handlers = holder.getCapabilitiesProxy().getOrDefault(IO.IN, new ArrayList<>());
 
-        for (var handler : recipeList) {
+        for (var handler : handlers) {
             for (var entries : handler.handlerMap.entrySet()) {
                 int size = 0;
                 if (!entries.getKey().isRecipeSearchFilter()) {
@@ -431,28 +430,27 @@ public class GTRecipeLookup {
      */
     @NotNull
     protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
-        var recipeList = r.getCapabilitiesProxy().get(IO.IN).stream().toList();
+        var handlerLists = r.getCapabilitiesProxy().getOrDefault(IO.IN, Collections.emptyList());
         int size = 0;
-        for (var handler : recipeList) {
+        for (var handler : handlerLists) {
             for (var entry : handler.handlerMap.entrySet()) {
                 size += entry.getValue().size();
             }
         }
 
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
-        r.getCapabilitiesProxy().get(IO.IN).forEach(v -> v.handlerMap.forEach((cap, handlers) -> {
-            if (cap.isRecipeSearchFilter() && !handlers.isEmpty()) {
-                for (IRecipeHandler<?> handler : handlers) {
-                    if (handler.isProxy()) {
-                        continue;
-                    }
+        for (var handlerList : handlerLists) {
+            handlerList.handlerMap.forEach((cap, handlers) -> {
+                if (!cap.isRecipeSearchFilter() || handlers.isEmpty()) return;
+                for (var handler : handlers) {
+                    if (handler.isProxy()) continue;
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
                         list.add(cap.convertToMapIngredient(content));
                     }
                 }
-            }
-        }));
+            });
+        }
         return list;
     }
 

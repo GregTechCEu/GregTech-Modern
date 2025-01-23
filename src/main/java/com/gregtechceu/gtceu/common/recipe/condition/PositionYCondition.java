@@ -65,7 +65,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+    public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         int y = recipeLogic.machine.self().getPos().getY();
         return y >= this.min && y <= this.max;
     }

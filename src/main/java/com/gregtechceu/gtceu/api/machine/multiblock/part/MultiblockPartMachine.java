@@ -23,7 +23,6 @@ import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -95,14 +94,16 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     public RecipeHandlerList getRecipeHandlers() {
         if (handlerList == null) {
-            var a = traits.stream().filter(IRecipeHandlerTrait.class::isInstance).map(IRecipeHandlerTrait.class::cast)
+            var a = traits.stream()
+                    .filter(IRecipeHandlerTrait.class::isInstance)
+                    .map(IRecipeHandlerTrait.class::cast)
                     .toList();
             if (a.isEmpty()) {
                 handlerList = new RecipeHandlerList(IO.NONE);
                 return handlerList;
             }
             handlerList = new RecipeHandlerList(a.get(0).getHandlerIO());
-            handlerList.addHandler(a.toArray(new IRecipeHandler[0]));
+            handlerList.addHandlers(a.toArray(new IRecipeHandler[0]));
         }
         return handlerList;
     }

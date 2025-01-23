@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -87,8 +86,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
-        this.capabilitiesProxy = new Object2ObjectOpenHashMap<>();
-        this.capabilitiesFlat = new Object2ObjectOpenHashMap<>();
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = createRecipeLogic(args);
         this.importItems = createImportItemHandler(args);
@@ -165,20 +164,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public void onLoad() {
         super.onLoad();
         // attach self traits
-        Map<IO, List<IRecipeHandlerTrait<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
+        Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
 
         for (MachineTrait trait : getTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-                capabilitiesFlat.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new IdentityHashMap<>())
-                        .computeIfAbsent(handlerTrait.getCapability(), i -> new ArrayList<>()).add(handlerTrait);
             }
         }
 
         for (var entry : ioTraits.entrySet()) {
             RecipeHandlerList handlerList = new RecipeHandlerList(entry.getKey());
-            handlerList.addHandler(entry.getValue().toArray(new IRecipeHandler[0]));
-            capabilitiesProxy.computeIfAbsent(entry.getKey(), i -> new ArrayList<>()).add(handlerList);
+            handlerList.addHandlers(entry.getValue());
+            this.addHandlerList(handlerList);
             traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
         }
     }

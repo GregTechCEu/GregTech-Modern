@@ -25,6 +25,7 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
     @Getter
     private final MachineDefinition definition;
 
+    // TODO: Fix the proxy parameter
     public DummyMachineBlockEntity(int tier, GTRecipeType type, Int2IntFunction tankScalingFunction,
                                    Map<IO, List<RecipeHandlerList>> capabilitiesProxy,
                                    Object... args) {

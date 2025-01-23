@@ -42,7 +42,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -144,8 +143,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.isDone = false;
         this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
-        this.capabilitiesProxy = new Object2ObjectOpenHashMap<>();
-        this.capabilitiesFlat = new Object2ObjectOpenHashMap<>();
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
@@ -155,16 +154,11 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         RecipeHandlerList inHandlers = new RecipeHandlerList(IO.IN);
         RecipeHandlerList outHandlers = new RecipeHandlerList(IO.OUT);
 
-        inHandlers.addHandler(inputItemHandler, inputEnergyHandler);
-        outHandlers.addHandler(outputItemHandler);
+        inHandlers.addHandlers(inputItemHandler, inputEnergyHandler);
+        outHandlers.addHandlers(outputItemHandler);
 
-        this.capabilitiesProxy.put(IO.IN, List.of(inHandlers));
-        this.capabilitiesProxy.put(IO.OUT, List.of(outHandlers));
-        var inMap = this.capabilitiesFlat.computeIfAbsent(IO.IN, k -> new Object2ObjectOpenHashMap<>());
-        var outMap = this.capabilitiesFlat.computeIfAbsent(IO.OUT, k -> new Object2ObjectOpenHashMap<>());
-        inMap.put(ItemRecipeCapability.CAP, List.of(inputItemHandler));
-        inMap.put(EURecipeCapability.CAP, List.of(inputEnergyHandler));
-        outMap.put(ItemRecipeCapability.CAP, List.of(outputItemHandler));
+        addHandlerList(inHandlers);
+        addHandlerList(outHandlers);
     }
 
     @Override

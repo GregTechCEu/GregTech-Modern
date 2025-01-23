@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -181,118 +181,21 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        @Nullable
-        public Iterator<GTRecipe> searchRecipe() {
-            var recipeType = machine.getRecipeType();
-            if (recipeType == GTRecipeTypes.DISTILLERY_RECIPES) return super.searchRecipe();
+        protected ActionResult matchRecipe(GTRecipe recipe) {
+            var match = matchDTRecipe(recipe);
+            if (!match.isSuccess()) return match;
 
-            // Do recipe searching ourselves, so we can match the outputs how we want
-            IRecipeCapabilityHolder holder = this.machine;
-            if (!holder.hasCapabilityProxies()) return null;
-            var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe ->
-
-                    this.matchDTRecipe(recipe, holder).isSuccess() &&
-                    RecipeHelper.matchTickRecipe(holder, recipe).isSuccess());
-
-            boolean any = false;
-            while (iterator.hasNext()) {
-                GTRecipe recipe = iterator.next();
-                if (recipe == null) continue;
-                any = true;
-                break;
-            }
-
-            if (any) {
-                iterator.reset();
-                return iterator;
-            }
-
-            for (GTRecipeType.ICustomRecipeLogic logic : recipeType.getCustomRecipeLogicRunners()) {
-                GTRecipe recipe = logic.createCustomRecipe(holder);
-                if (recipe != null) return Collections.singleton(recipe).iterator();
-            }
-            return Collections.emptyIterator();
+            return RecipeHelper.matchTickRecipe(this.machine, recipe);
         }
 
         @Override
-        public void findAndHandleRecipe() {
-            lastFailedMatches = null;
-            if (!recipeDirty && lastRecipe != null &&
-                    matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                    RecipeHelper.matchTickRecipe(this.machine, lastRecipe).isSuccess() &&
-                    RecipeHelper.checkConditions(lastRecipe, this).size() == 1 &&
-                    RecipeHelper.checkConditions(lastRecipe, this).get(0).isSuccess()) {
-                var recipe = lastRecipe;
-                lastRecipe = null;
-                lastOriginRecipe = null;
-                setupRecipe(recipe);
-            } else {
-                workingRecipe = null;
-                lastRecipe = null;
-                lastOriginRecipe = null;
-                handleSearchingRecipes(searchRecipe());
-            }
+        protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
+            workingRecipe = null;
+            super.handleSearchingRecipes(matches);
         }
 
-        @Override
-        public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-            var matchCopy = match.copy();
-            var modified = machine.fullModifyRecipe(matchCopy);
-            if (modified != null) {
-                var conditions = RecipeHelper.checkConditions(modified, this);
-                if (conditions.size() == 1 && conditions.get(0).isSuccess() &&
-                        matchDTRecipe(modified, machine).isSuccess() &&
-                        RecipeHelper.matchTickRecipe(machine, modified).isSuccess()) {
-                    setupRecipe(modified);
-                }
-                if (lastRecipe != null && getStatus() == Status.WORKING) {
-                    lastOriginRecipe = match;
-                    lastFailedMatches = null;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public void onRecipeFinish() {
-            machine.afterWorking();
-            if (lastRecipe != null) {
-                RecipeHelper.postWorking(machine, lastRecipe);
-                handleRecipeIO(lastRecipe, IO.OUT);
-                if (machine.alwaysTryModifyRecipe()) {
-                    if (lastOriginRecipe != null) {
-                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
-                        if (modified == null) markLastRecipeDirty();
-                        else lastRecipe = modified;
-                    } else {
-                        markLastRecipeDirty();
-                    }
-                }
-                var conditions = RecipeHelper.checkConditions(lastRecipe, this);
-                if (!recipeDirty && !suspendAfterFinish &&
-                        matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                        RecipeHelper.matchTickRecipe(this.machine, lastRecipe).isSuccess() &&
-                        conditions.size() == 1 && conditions.get(0).isSuccess()) {
-                    setupRecipe(lastRecipe);
-                    if (isActive) consecutiveRecipes++;
-                } else {
-                    if (suspendAfterFinish) {
-                        setStatus(Status.SUSPEND);
-                        suspendAfterFinish = false;
-                    } else {
-                        setStatus(Status.IDLE);
-                    }
-                    consecutiveRecipes = 0;
-                    progress = 0;
-                    duration = 0;
-                    isActive = false;
-                }
-            }
-        }
-
-        private RecipeHelper.ActionResult matchDTRecipe(GTRecipe recipe, IRecipeCapabilityHolder holder) {
-            var result = RecipeHelper.handleRecipe(IO.IN, holder, recipe, recipe.inputs,
+        private ActionResult matchDTRecipe(GTRecipe recipe) {
+            var result = RecipeHelper.handleRecipe(IO.IN, machine, recipe, recipe.inputs,
                     Collections.emptyMap(), false, false);
             if (!result.isSuccess()) return result;
 
@@ -304,13 +207,13 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             }
 
             if (!applyFluidOutputs(recipe, FluidAction.SIMULATE)) {
-                return RecipeHelper.ActionResult
+                return ActionResult
                         .fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
                                 .append(": ")
                                 .append(FluidRecipeCapability.CAP.getName()));
             }
 
-            return RecipeHelper.ActionResult.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
         private void updateWorkingRecipe(GTRecipe recipe) {
@@ -330,7 +233,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        protected RecipeHelper.ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io != IO.OUT) {
                 var handleIO = super.handleRecipeIO(recipe, io);
                 if (handleIO.isSuccess()) {
@@ -340,15 +243,19 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 }
                 return handleIO;
             }
+
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
                 RecipeHelper.handleRecipe(io, this.machine, recipe, out, chanceCaches, false, false);
             }
+
             if (applyFluidOutputs(recipe, FluidAction.EXECUTE)) {
-                return RecipeHelper.ActionResult.SUCCESS;
+                workingRecipe = null;
+                return ActionResult.SUCCESS;
             }
-            return RecipeHelper.ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
+
+            return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
                     .append(": ")
                     .append(FluidRecipeCapability.CAP.getName()));
         }

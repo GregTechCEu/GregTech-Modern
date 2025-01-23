@@ -89,8 +89,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.capabilitiesProxy = new Object2ObjectOpenHashMap<>();
-        this.capabilitiesFlat = new Object2ObjectOpenHashMap<>();
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
     }
@@ -107,20 +107,18 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public void onLoad() {
         super.onLoad();
         // attach self traits
-        Map<IO, List<IRecipeHandlerTrait<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
+        Map<IO, List<IRecipeHandler<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
 
         for (MachineTrait trait : getTraits()) {
             if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
                 ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-                capabilitiesFlat.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new IdentityHashMap<>())
-                        .computeIfAbsent(handlerTrait.getCapability(), i -> new ArrayList<>()).add(handlerTrait);
             }
         }
 
         for (var entry : ioTraits.entrySet()) {
             RecipeHandlerList handlerList = new RecipeHandlerList(entry.getKey());
-            handlerList.addHandler(entry.getValue().toArray(new IRecipeHandler[0]));
-            capabilitiesProxy.computeIfAbsent(entry.getKey(), i -> new ArrayList<>()).add(handlerList);
+            handlerList.addHandlers(entry.getValue());
+            this.addHandlerList(handlerList);
             traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
         }
     }
