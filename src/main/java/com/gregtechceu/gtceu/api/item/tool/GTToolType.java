@@ -391,7 +391,7 @@ public class GTToolType {
             .build();
 
     public static final GTToolType WIRE_CUTTER_LV = GTToolType.builder("lv_wirecutter")
-            .idFormat("lv_%s_wirecutter")
+            .idFormat("lv_%s_wire_cutter")
             .toolTag(CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
@@ -403,7 +403,7 @@ public class GTToolType {
             .build();
 
     public static final GTToolType WIRE_CUTTER_HV = GTToolType.builder("hv_wirecutter")
-            .idFormat("hv_%s_wirecutter")
+            .idFormat("hv_%s_wire_cutter")
             .toolTag(CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
@@ -415,7 +415,7 @@ public class GTToolType {
             .build();
 
     public static final GTToolType WIRE_CUTTER_IV = GTToolType.builder("iv_wirecutter")
-            .idFormat("iv_%s_wirecutter")
+            .idFormat("iv_%s_wire_cutter")
             .toolTag(CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
