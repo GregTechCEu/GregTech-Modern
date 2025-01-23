@@ -23,10 +23,13 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     protected TagItemFilter() {}
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+        return loadFilter(itemStack.getTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
     private static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
+        if (tag == null) {
+            tag = new CompoundTag();
+        }
         var handler = new TagItemFilter();
         handler.itemWriter = itemWriter;
         handler.oreDictFilterExpression = tag.getString("oreDict");

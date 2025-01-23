@@ -24,10 +24,13 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     protected TagFluidFilter() {}
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+        return loadFilter(itemStack.getTag(), filter -> itemStack.setTag(filter.saveFilter()));
     }
 
     private static TagFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
+        if (tag == null) {
+            tag = new CompoundTag();
+        }
         var handler = new TagFluidFilter();
         handler.itemWriter = itemWriter;
         handler.oreDictFilterExpression = tag.getString("oreDict");
