@@ -156,7 +156,7 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
-                        recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
+                        recipe.data, recipe.duration, recipe.recipeCategory);
                 copied.parallels = recipe.parallels * parallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {

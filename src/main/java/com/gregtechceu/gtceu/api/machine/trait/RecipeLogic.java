@@ -96,12 +96,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter
     @Persisted
     protected int duration;
-    @Getter
-    @Persisted
-    protected int fuelTime;
-    @Getter
-    @Persisted
-    protected int fuelMaxTime;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -148,7 +142,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         progress = 0;
         duration = 0;
         isActive = false;
-        fuelTime = 0;
         lastFailedMatches = null;
         if (status != Status.SUSPEND)
             status = Status.IDLE;
@@ -162,7 +155,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public void updateTickSubscription() {
-        if ((isSuspend() && fuelTime == 0) || !machine.isRecipeLogicAvailable()) {
+        if (isSuspend() || !machine.isRecipeLogicAvailable()) {
             if (subscription != null) {
                 subscription.unsubscribe();
                 subscription = null;
@@ -203,24 +196,20 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 }
             }
         }
-        if (fuelTime > 0) {
-            fuelTime--;
-        } else {
-            boolean unsubscribe = false;
-            if (isSuspend()) {
-                unsubscribe = true;
-            } else if (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty &&
-                    lastFailedMatches == null) {
-                        // machine isn't working enabled
-                        // or
-                        // there is no available recipes, so it will wait for notification.
-                        unsubscribe = true;
-                    }
+        boolean unsubscribe = false;
+        if (isSuspend()) {
+            unsubscribe = true;
+        } else if (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty &&
+                lastFailedMatches == null) {
+                    // machine isn't working enabled
+                    // or
+                    // there is no available recipes, so it will wait for notification.
+                    unsubscribe = true;
+                }
 
-            if (unsubscribe && subscription != null) {
-                subscription.unsubscribe();
-                subscription = null;
-            }
+        if (unsubscribe && subscription != null) {
+            subscription.unsubscribe();
+            subscription = null;
         }
     }
 

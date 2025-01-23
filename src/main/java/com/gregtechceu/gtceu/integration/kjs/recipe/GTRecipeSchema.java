@@ -78,8 +78,6 @@ public interface GTRecipeSchema {
         public int maxChance = ChanceLogic.getMaxChancedValue();
         @Setter
         public int tierChanceBoost = 0;
-        @Setter
-        public boolean isFuel = false;
         @Getter
         private ResourceLocation idWithoutType;
         @Setter
@@ -969,7 +967,6 @@ public interface GTRecipeSchema {
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
             .defaultOptional();
-    RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false);
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs").defaultOptional();
@@ -989,8 +986,7 @@ public interface GTRecipeSchema {
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS,
             ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS,
-            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS,
-            IS_FUEL, CATEGORY)
+            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS, CATEGORY)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
             .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);
 }

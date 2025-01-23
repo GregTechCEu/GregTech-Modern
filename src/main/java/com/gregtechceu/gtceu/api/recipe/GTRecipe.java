@@ -57,8 +57,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public int parallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
-    @Getter
-    public boolean isFuel;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -73,11 +71,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    boolean isFuel,
                     @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, isFuel, recipeCategory);
+                conditions, ingredientActions, data, duration, recipeCategory);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -94,7 +91,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    boolean isFuel,
                     @NotNull GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
@@ -113,7 +109,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
-        this.isFuel = isFuel;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
     }
 
@@ -132,7 +127,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, isFuel, recipeCategory);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }

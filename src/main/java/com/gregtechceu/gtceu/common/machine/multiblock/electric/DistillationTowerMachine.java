@@ -189,7 +189,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             // Do recipe searching ourselves, so we can match the outputs how we want
             IRecipeCapabilityHolder holder = this.machine;
             if (!holder.hasCapabilityProxies()) return null;
-            var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
+            var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe ->
 
                     this.matchDTRecipe(recipe, holder).isSuccess() &&
                     RecipeHelper.matchTickRecipe(holder, recipe).isSuccess());

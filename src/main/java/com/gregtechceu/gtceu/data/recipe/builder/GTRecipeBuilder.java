@@ -94,8 +94,6 @@ public class GTRecipeBuilder {
     public int maxChance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int tierChanceBoost = 0;
-    @Setter
-    public boolean isFuel = false;
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -123,7 +121,6 @@ public class GTRecipeBuilder {
         this.conditions.addAll(toCopy.conditions);
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
-        this.isFuel = toCopy.isFuel;
         this.recipeCategory = toCopy.recipeCategory;
     }
 
@@ -154,7 +151,6 @@ public class GTRecipeBuilder {
         copy.duration = this.duration;
         copy.chance = this.chance;
         copy.perTick = this.perTick;
-        copy.isFuel = this.isFuel;
         copy.recipeCategory = this.recipeCategory;
         copy.onSave = this.onSave;
         return copy;
@@ -1162,9 +1158,6 @@ public class GTRecipeBuilder {
             }
             json.add("recipeConditions", array);
         }
-        if (isFuel) {
-            json.addProperty("isFuel", true);
-        }
     }
 
     public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
@@ -1246,11 +1239,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRawRecipe() {
-        var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel, recipeCategory);
-        return recipe;
+                conditions, List.of(), data, duration, recipeCategory);
     }
 
     //////////////////////////////////////

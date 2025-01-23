@@ -139,7 +139,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             IRecipeCapabilityHolder holder = this.machine;
             if (!holder.hasCapabilityProxies()) return null;
             var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
-                if (recipe.isFuel) return false;
                 if (!holder.hasCapabilityProxies()) return false;
                 var result = RecipeHelper.handleRecipe(IO.IN, holder, recipe, recipe.inputs, Collections.emptyMap(),
                         false, false);
