@@ -33,15 +33,13 @@ public class MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var itemInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        ArrayList::new)
+        var inputHandlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP)
                 .stream()
                 .filter(IItemHandlerModifiable.class::isInstance)
                 .map(IItemHandlerModifiable.class::cast)
                 .toArray(IItemHandlerModifiable[]::new);
 
-        var inputs = new CombinedInvWrapper(itemInputs);
+        var inputs = new CombinedInvWrapper(inputHandlers);
         var stack = inputs.getStackInSlot(0);
 
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);

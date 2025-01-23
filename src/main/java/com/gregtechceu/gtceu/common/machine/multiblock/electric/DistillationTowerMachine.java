@@ -97,29 +97,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
                 var part = parts.get(outputIndex);
                 if (part.self().getPos().getY() == y) {
-                    part.getRecipeHandlers().handlerMap.forEach((cap, handler) -> {
-                        if (handler instanceof IFluidHandler fluidHandler) {
-                            fluidOutputs.add(fluidHandler);
-                            if (firstValid == null) {
-                                firstValid = fluidHandler;
-                            }
-                        } else {
-                            fluidOutputs.add(VoidFluidHandler.INSTANCE);
-                        }
-                    });
-
-                    /*
-                     * part.getRecipeHandlers().stream()
-                     * .filter(IFluidHandler.class::isInstance)
-                     * .findFirst()
-                     * .ifPresentOrElse(h -> {
-                     * fluidOutputs.add((IFluidHandler) h);
-                     * if (firstValid == null) firstValid = (IFluidHandler) h;
-                     * },
-                     * () -> fluidOutputs.add(VoidFluidHandler.INSTANCE));
-                     */
-
-                    var handler = part.getRecipeHandlers().stream()
+                    var handler = part.getRecipeHandlers().getCapability(FluidRecipeCapability.CAP)
+                            .stream()
                             .filter(IFluidHandler.class::isInstance)
                             .findFirst()
                             .map(IFluidHandler.class::cast)
