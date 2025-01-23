@@ -74,6 +74,9 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     public CompoundTag saveFilter() {
+        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty)) {
+            return null;
+        }
         var tag = new CompoundTag();
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);

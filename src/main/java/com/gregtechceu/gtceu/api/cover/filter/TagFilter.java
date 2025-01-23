@@ -41,6 +41,9 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     protected TagFilter() {}
 
     public CompoundTag saveFilter() {
+        if (oreDictFilterExpression.isBlank()) {
+            return null;
+        }
         var tag = new CompoundTag();
         tag.putString("oreDict", oreDictFilterExpression);
         return tag;

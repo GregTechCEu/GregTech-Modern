@@ -73,6 +73,9 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     public CompoundTag saveFilter() {
+        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty)) {
+            return null;
+        }
         var tag = new CompoundTag();
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);
