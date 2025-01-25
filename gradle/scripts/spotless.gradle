@@ -9,7 +9,7 @@ spotless {
         target '.gitignore'
 
         trimTrailingWhitespace()
-        indentWithSpaces(4)
+        leadingTabsToSpaces()
         endWithNewline()
     }
     java {
