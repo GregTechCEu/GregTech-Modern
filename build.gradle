@@ -32,7 +32,7 @@ sourceSets {
             srcDirs += 'src/test/java'
         }
         compileClasspath += main.output
-        runtimeClasspath += main.output
+        runtimeClasspath += main.output + main.runtimeClasspath
     }
 
     extra {
@@ -66,4 +66,6 @@ machete {
     keepOriginal = false
 }
 
-lombok.version = '1.18.36'
+lombok {
+    version = "1.18.36"
+}
