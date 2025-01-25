@@ -1,5 +1,6 @@
 mixin {
-    add sourceSets.main, "gtceu.refmap.json"
+    var refmap = add sourceSets.main, "gtceu.refmap.json"
+    slimJar.from refmap
     config 'gtceu.mixins.json'
 }
 
