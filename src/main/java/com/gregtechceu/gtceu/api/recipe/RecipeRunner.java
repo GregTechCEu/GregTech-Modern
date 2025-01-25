@@ -118,7 +118,10 @@ class RecipeRunner {
             return new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
 
         var handlers = capabilityProxies.get(capIO);
-        handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
+        // Only sort for non-tick outputs
+        if (!isTick && capIO == IO.OUT) {
+            handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
+        }
         List<RecipeHandlerList> distinct = new ArrayList<>();
         List<RecipeHandlerList> indistinct = new ArrayList<>();
         for (var handler : handlers) {

@@ -12,7 +12,12 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class RecipeHandlerList {
 
@@ -50,7 +55,7 @@ public class RecipeHandlerList {
         addHandlers(Arrays.asList(handlers));
     }
 
-    public void addHandlers(Collection<IRecipeHandler<?>> handlers) {
+    public void addHandlers(List<IRecipeHandler<?>> handlers) {
         for (var handler : handlers) {
             handlerMap.computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
             priority += handler.getPriority();
@@ -100,7 +105,7 @@ public class RecipeHandlerList {
     public Map<RecipeCapability<?>, List> handleRecipe(IO io, GTRecipe recipe, Map<RecipeCapability<?>, List> contents,
                                                        boolean simulate) {
         if (handlerMap.isEmpty()) return contents;
-        var copy = new IdentityHashMap<>(contents);
+        var copy = new Reference2ObjectOpenHashMap<>(contents);
         var it = copy.entrySet().iterator();
         while (it.hasNext()) {
             var entry = it.next();
