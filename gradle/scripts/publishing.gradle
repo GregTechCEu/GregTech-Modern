@@ -10,10 +10,10 @@ publishing {
     repositories {
         // Add repositories to publish to here.
         maven {
-            url "https://maven.gtceu.com"
+            url = "https://maven.gtceu.com"
             credentials {
-                username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }
