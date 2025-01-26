@@ -21,6 +21,8 @@ import java.util.Map;
 
 public class RecipeHandlerList {
 
+    public static RecipeHandlerList NO_DATA = new RecipeHandlerList(IO.NONE);
+
     public static final Comparator<RecipeHandlerList> COMPARATOR = (h1, h2) -> {
         int cmp = Long.compare(h1.getPriority(), h2.getPriority());
         if (cmp != 0) return cmp;

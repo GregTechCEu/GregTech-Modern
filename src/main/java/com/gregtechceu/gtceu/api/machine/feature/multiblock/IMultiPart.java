@@ -64,6 +64,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Get all available traits for recipe logic.
      */
+    @Nullable
     RecipeHandlerList getRecipeHandlers();
 
     /**

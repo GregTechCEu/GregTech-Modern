@@ -28,6 +28,7 @@ public interface IRecipeCapabilityHolder {
     }
 
     default void addHandlerList(RecipeHandlerList handler) {
+        if (handler == RecipeHandlerList.NO_DATA) return;
         IO io = handler.getHandlerIO();
         getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handler);
         var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>());

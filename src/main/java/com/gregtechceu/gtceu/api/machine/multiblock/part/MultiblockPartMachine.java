@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -20,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
@@ -92,6 +92,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         return Collections.unmodifiableSortedSet(controllers);
     }
 
+    @Nullable
     public RecipeHandlerList getRecipeHandlers() {
         if (handlerList == null) {
             var a = traits.stream()
@@ -99,7 +100,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                     .map(IRecipeHandlerTrait.class::cast)
                     .toList();
             if (a.isEmpty()) {
-                handlerList = new RecipeHandlerList(IO.NONE);
+                handlerList = RecipeHandlerList.NO_DATA;
                 return handlerList;
             }
             handlerList = new RecipeHandlerList(a.get(0).getHandlerIO());
