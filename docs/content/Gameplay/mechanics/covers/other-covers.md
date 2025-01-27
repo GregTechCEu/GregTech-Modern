@@ -15,14 +15,20 @@ NYI, Does not do anything.
 
 ## Infinite Water Cover
 
-placeholder
+- While attached to a fluid storing block, will constantly supply a slot with water
+- Can be placed on machines, input hatches, storage buffers, not pipes
+- Supplies 16 buckets (16,000mB) of water every second (says 800mB/t but it only adds every 20t)
 
 ## Shutter
 
-placeholder
+placeholder, machine controllers too buggy to doc this fully rn
 
 ## Storage Cover
 
-- Can be placed on machines to add a storage with 18 slots
+Placed as a cover, allows opening for 18 storage slots
+
+- Cover can be placed on any full block cover holder, e.g. machines, fluid hatches, multiblock controllers, energy hatches, input or output busses
 - Can be opened like any other cover, or from a button in the interface which is added with the cover
+- Slots can only store one item per, regardless of items max stack size
+- Useful for storing extruder and casting molds, or non consumable catalysts
 

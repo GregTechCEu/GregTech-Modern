@@ -8,26 +8,24 @@ title: Custom Machines
 
 ## Creating Custom Steam Machine
 
-```js title="test_steam_machine.js"
 GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-    event.create('example_steam_machine_recipes')
-        .setEUIO('in')
-        .setMaxIOSize(6, 1, 0, 0) // (1)
-        .setSlotOverlay(false, false, GuiTextures.COMPRESSOR_OVERLAY)
-        .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, FillDirection.LEFT_TO_RIGHT)
-        .setSound(GTSoundEntries.MIXER)
+    event.create('example_steam_machine_recipes')
+        .setEUIO('in')
+        .setMaxIOSize(6, 1, 0, 0) // (1)
+        .setSlotOverlay(false, false, GuiTextures.COMPRESSOR_OVERLAY)
+        .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, FillDirection.LEFT_TO_RIGHT)
+        .setSound(GTSoundEntries.MIXER)
 })
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-	    event.create('example_steam_singleblock', 'steam') // (2)
-	        .hasHighPressure(true) // (3)
-	        .definition((hp, builder) => (
-	            builder
-	                .recipeType("example_steam_machine_recipes") // (4)
-	                .workableSteamHullRenderer(hp, 'gtceu:block/machines/mixer') // (5)
-	        ))
+    event.create('example_steam_singleblock', 'steam') // (2)
+        .hasHighPressure(true) // (3)
+        .definition((hp, builder) => (
+            builder
+                .recipeType("example_steam_machine_recipes") // (4)
+                .workableSteamHullRenderer(hp, 'gtceu:block/machines/mixer') // (5)
+        ))
 })
-```
 
 1. (item in, item out, fluid in, fluid out) You *cannot* use fluid slots on steam machines currently due to steam tank issues
 2. Machine ID, Machine Type ('steam' for a steam singeblock)
@@ -62,24 +60,24 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 ```js title="test_generator.js"
 GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-    event.create('coal_burner_recipe_type')
-        .setEUIO('out')
-        .setMaxIOSize(1, 0, 0, 0)
-        .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, FillDirection.LEFT_TO_RIGHT)
-        .setSound(GTSoundEntries.ARC)
-        .setMaxTooltips(6)
+    event.create('coal_burner_recipe_type')
+        .setEUIO('out')
+        .setMaxIOSize(1, 0, 0, 0)
+        .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, FillDirection.LEFT_TO_RIGHT)
+        .setSound(GTSoundEntries.ARC)
+        .setMaxTooltips(6)
 })
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-	event.create('coal_burner', 'generator') // (1)
-        .tiers(GTValues.ULV) // (2)
-        .definition((tier, builder) => (
-            builder
-                .langValue("Shoddy Coal Burning Generator") // (3)
-                .recipeType('coal_burner_recipe_type') // (4)
-                .recipeModifier(MachineModifiers.SIMPLE_GENERATOR) // (5)
-                .simpleGeneratorMachineRenderer('gtceu:block/generators/combustion') // (6)
-        ))
+    event.create('coal_burner', 'generator') // (1)
+        .tiers(GTValues.ULV) // (2)
+        .definition((tier, builder) => (
+            builder
+                .langValue("Shoddy Coal Burning Generator") // (3)
+                .recipeType('coal_burner_recipe_type') // (4)
+                .recipeModifier(MachineModifiers.SIMPLE_GENERATOR) // (5)
+                .simpleGeneratorMachineRenderer('gtceu:block/generators/combustion') // (6)
+        ))
 })
 ```
 1. Machine ID, Machine Type(Simple Singleblock)
@@ -165,3 +163,4 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
         )
 })
 ```
+
