@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.GTValues;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
@@ -239,6 +241,12 @@ public class FormattingUtil {
 
     public static Component formatPercentage2Places(String langKey, float percentage) {
         return Component.translatable(langKey, formatNumber2Places(percentage)).withStyle(YELLOW);
+    }
+
+    public static String formatVoltageByTier(long voltage) {
+        var voltageTier = GTUtil.getFloorTierByVoltage(voltage);
+        var amperage = voltage / (double) GTValues.VEX[voltageTier];
+        return FormattingUtil.DECIMAL_FORMAT_1F.format(amperage) + " A " + GTValues.VNF[voltageTier];
     }
 
     public static void combineComponents(MutableComponent c1, Component c2) {
