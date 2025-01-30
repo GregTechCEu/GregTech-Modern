@@ -443,14 +443,14 @@ public class WoodMachineRecipes {
         LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_log")
                 .inputItems(entry.log)
                 .outputItems(entry.strippedLog)
-                .outputItems(dustSmall, Wood, 2)
+                .outputItems(dust, Wood, 1)
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
         // strip wood
         LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_wood")
                 .inputItems(entry.wood)
                 .outputItems(entry.strippedWood)
-                .outputItems(dustSmall, Wood, 2)
+                .outputItems(dust, Wood, 1)
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
         
