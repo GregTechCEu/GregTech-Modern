@@ -18,7 +18,7 @@ public class BreadthFirstBlockSearch {
 
     public static Set<BlockPos> search(Predicate<BlockPos> value, BlockPos start, int limit) {
         Set<BlockPos> alreadyVisited = new HashSet<>();
-        Set<BlockPos> valid = new HashSet<>();
+        Set<BlockPos> valid = new LinkedHashSet<>();
         int iteration = 0;
 
         Queue<BlockPos> queue = new ArrayDeque<>();
@@ -58,7 +58,7 @@ public class BreadthFirstBlockSearch {
         var level = start.getLevel();
         if (level == null) return Set.of();
 
-        var passed = new HashSet<T>();
+        var passed = new LinkedHashSet<T>();
         var queue = new ObjectArrayFIFOQueue<Triple<T, T, Direction>>(16);
         queue.enqueue(new ImmutableTriple<>(null, start, null));
 
@@ -87,7 +87,7 @@ public class BreadthFirstBlockSearch {
 
     public static Set<BlockPos> conditionalBlockPosSearch(BlockPos start, BiPredicate<BlockPos, BlockPos> condition,
                                                           int blockLimit, int iterationLimit) {
-        var passed = new HashSet<BlockPos>();
+        var passed = new LinkedHashSet<BlockPos>();
         var queue = new ObjectArrayFIFOQueue<Tuple<BlockPos, BlockPos>>(16);
         queue.enqueue(new Tuple<>(null, start));
 

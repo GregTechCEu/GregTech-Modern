@@ -29,7 +29,7 @@ dependencyResolutionManagement {
 
         // Forge
         def forgeVersion = "47.1.47"
-        def registrateForgeVersion = "MC1.20-1.3.3"
+        def registrateForgeVersion = "MC1.20-1.3.11"
         def topForgeVersion = "1.20.1-10.0.1-3"
         def jadeForgeVersion = "11.6.3"
         def curiosForgeVersion = "5.9.1"
@@ -38,9 +38,10 @@ dependencyResolutionManagement {
         def xaerosWorldMapVersion = "5658224"
         def xaerosMinimapVersion = "5773012"
         def journeyMapVersion = "5789363"
-        def journeyMapApiVersion = "2.0.0"
+        def journeyMapApiVersion = "1.20-1.9"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"
+        def ftbchunksForgeFile = "5956390"
         def argonautsForgeFile = "5263580"
         def resourcefulForgeFile = "5659871"
         def kffVersion = "4.11.0"
@@ -120,8 +121,8 @@ dependencyResolutionManagement {
             def xaerosMiniMap = version("xaerosMinimap", xaerosMinimapVersion)
             library("xaerosminimap", "curse.maven", "xaeros-minimap-263420").versionRef(xaerosMiniMap)
 
-            def journeyMapApi = version("journeyMapApi", journeyMapApiVersion + "-" + minecraftVersion + "-SNAPSHOT")
-            library("journeymap-api", "info.journeymap", "journeymap-api-forge").versionRef(journeyMapApi)
+            def journeyMapApi = version("journeyMapApi", journeyMapApiVersion + "-SNAPSHOT")
+            library("journeymap-api", "info.journeymap", "journeymap-api").versionRef(journeyMapApi)
 
             def journeyMap = version("journeyMap", journeyMapVersion)
             library("journeymap-forge", "curse.maven", "journeymap-32274").versionRef(journeyMap)
@@ -134,6 +135,9 @@ dependencyResolutionManagement {
 
             def ftblibrary = version("ftblibrary", ftblibraryForgeFile)
             library("ftblibrary", "curse.maven", "ftb-library-forge-404465").versionRef(ftblibrary)
+            
+            def ftbchunks = version("ftbchunks", ftbchunksForgeFile)
+            library("ftbchunks", "curse.maven", "ftb-chunks-forge-314906").versionRef(ftbchunks)
 
             def argonautslib = version("argonauts", argonautsForgeFile)
             library("argonauts", "curse.maven", "argonauts-845833").versionRef(argonautslib)

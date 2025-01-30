@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.lowdragmc.lowdraglib.LDLib;
+import com.gregtechceu.gtceu.GTCEu;
+
 import com.lowdragmc.lowdraglib.gui.editor.annotation.ConfigSetter;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -125,13 +126,13 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
     @Override
     @OnlyIn(Dist.CLIENT)
     public List<Target> getPhantomTargets(Object ingredient) {
-        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
+        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
             Item item = emiStack.getKeyOfType(Item.class);
             if (item != null) {
                 ingredient = new ItemStack(item, (int) emiStack.getAmount());
                 ((ItemStack) ingredient).setTag(emiStack.getNbt());
             }
-        } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
+        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
             ingredient = jeiStack.getItemStack().orElse(null);
         }
         if (!(ingredient instanceof ItemStack)) {
@@ -149,13 +150,13 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
 
             @Override
             public void accept(@Nonnull Object ingredient) {
-                if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack emiStack) {
+                if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
                     Item item = emiStack.getKeyOfType(Item.class);
                     if (item != null) {
                         ingredient = new ItemStack(item, (int) emiStack.getAmount());
                         ((ItemStack) ingredient).setTag(emiStack.getNbt());
                     }
-                } else if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
+                } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
                     ingredient = jeiStack.getItemStack().orElse(null);
                 }
                 if (slotReference != null && ingredient instanceof ItemStack stack) {

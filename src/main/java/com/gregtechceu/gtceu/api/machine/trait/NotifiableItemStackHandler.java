@@ -26,7 +26,9 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -166,7 +168,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @Nullable
     private static ItemStack getActioned(CustomItemStackHandler storage, int index, List<?> actions) {
-        if (!GTCEu.isKubeJSLoaded()) return null;
+        if (!GTCEu.Mods.isKubeJSLoaded()) return null;
         // noinspection unchecked
         var actioned = KJSCallWrapper.applyIngredientAction(storage, index, (List<IngredientAction>) actions);
         if (!actioned.isEmpty()) return actioned;

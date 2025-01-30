@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.xaerominimap;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore.OreVeinElementRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -37,6 +38,7 @@ public abstract class MinimapFBORendererMixin extends MinimapRenderer {
     @Inject(method = "loadFrameBuffer",
             at = @At(value = "INVOKE", target = "Lxaero/common/mods/SupportMods;worldmap()Z"))
     private void gtceu$injectProspectionMarkers(MinimapProcessor minimapProcessor, CallbackInfo ci) {
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) return;
         this.gtceu$oreVeinElementRenderer = OreVeinElementRenderer.Builder.begin().build();
         minimapElementMapRendererHandler.add(this.gtceu$oreVeinElementRenderer);
         this.minimap.getOverMapRendererHandler().add(this.gtceu$oreVeinElementRenderer);

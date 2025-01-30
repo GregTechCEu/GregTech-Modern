@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.xaeroworldmap;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore.OreVeinElementRenderer;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +16,9 @@ public class MapElementRenderHandlerBuilderMixin {
 
     @ModifyVariable(method = "build", at = @At(value = "LOAD", ordinal = 3))
     private List<MapElementRenderer<?, ?, ?>> gtceu$addOreRenderer(List<MapElementRenderer<?, ?, ?>> value) {
-        value.add(OreVeinElementRenderer.Builder.begin().build());
+        if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) {
+            value.add(OreVeinElementRenderer.Builder.begin().build());
+        }
         return value;
     }
 }

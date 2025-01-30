@@ -44,6 +44,7 @@ public abstract class FullscreenMixin extends JmUI implements IFullscreen {
                      shift = At.Shift.AFTER),
             remap = false)
     private void gtceu$injectInitButtons(CallbackInfo ci) {
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.journeyMapIntegration) return;
         final Theme theme = ThemeLoader.getCurrentTheme();
         gtceu$buttons = new LinkedHashMap<>();
 
@@ -79,6 +80,7 @@ public abstract class FullscreenMixin extends JmUI implements IFullscreen {
 
     @Inject(method = "layoutButtons", at = @At("TAIL"), remap = false)
     private void gtceu$injectLayoutButtons(CallbackInfo ci) {
+        if (!ConfigHolder.INSTANCE.compat.minimap.toggle.journeyMapIntegration) return;
         for (String buttonName : gtceu$buttons.keySet()) {
             gtceu$buttons.get(buttonName).setToggled(ButtonState.isEnabled(buttonName), false);
         }

@@ -112,6 +112,8 @@ public class GTValues {
 
     public static final String MODID_TOP = "theoneprobe",
             MODID_JEI = "jei",
+            MODID_REI = "roughlyenoughitems",
+            MODID_EMI = "emi",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
             MODID_IRIS = "iris",

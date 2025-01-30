@@ -90,6 +90,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @Persisted
+    @DescSynced
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;

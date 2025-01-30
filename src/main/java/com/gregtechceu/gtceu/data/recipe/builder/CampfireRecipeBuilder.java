@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -101,7 +101,7 @@ public class CampfireRecipeBuilder {
         }
 
         if (output.isEmpty()) {
-            LDLib.LOGGER.error("shapeless recipe {} output is empty", id);
+            GTCEu.LOGGER.error("shapeless recipe {} output is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         } else {
             JsonObject result = new JsonObject();

@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.multiblock.*;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -16,7 +18,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.machine.electric.*;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
@@ -41,16 +42,13 @@ import net.minecraftforge.fml.ModLoader;
 import com.google.common.math.IntMath;
 import it.unimi.dsi.fastutil.Pair;
 
-import java.util.*;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
-import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.IN;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.OUT;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
@@ -131,21 +129,25 @@ public class GTMachines {
             "alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines(
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
-    public static final MachineDefinition STEAM_MINER = REGISTRATE
-            .machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
-            .rotationState(RotationState.NON_Y_AXIS)
-            .langValue("Steam Miner")
-            .recipeType(DUMMY_RECIPES)
-            .tier(0)
-            .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", 16)
-                    .append(ChatFormatting.GRAY + ", ")
-                    .append(Component.translatable("gtceu.machine.miner.per_block", 320 / 20)))
-            .tooltipBuilder((item, tooltip) -> {
-                int maxArea = IMiner.getWorkingArea(4);
-                tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
-            })
-            .renderer(() -> new SteamMinerRenderer(false, GTCEu.id("block/machines/steam_miner")))
-            .register();
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_MINER = registerSteamMachines(
+            "steam_miner",
+            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, true, 240, 6, 0, 32) :
+                    new SteamMinerMachine(holder, false, 320, 4, 0, 16),
+            (isHP, builder) -> builder
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(DUMMY_RECIPES)
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
+                            .append(ChatFormatting.GRAY + ", ")
+                            .append(Component.translatable("gtceu.machine.miner.per_block",
+                                    isHP ? 240 / 20 : 280 / 20)))
+                    .tooltipBuilder((item, tooltip) -> {
+                        int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
+                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
+                    })
+                    .renderer(() -> new SteamMinerRenderer(isHP,
+                            isHP ? GTCEu.id("block/machines/high_pressure_steam_miner") :
+                                    GTCEu.id("block/machines/steam_miner")))
+                    .register());
 
     //////////////////////////////////////
     // *** SimpleTieredMachine ***//
@@ -394,7 +396,8 @@ public class GTMachines {
             LV, MV, HV, EV);
 
     public static final MachineDefinition[] MINER = registerTieredMachines("miner",
-            (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
+            (holder, tier) -> new MinerMachine(holder, tier, ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2),
+                    tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
@@ -404,7 +407,7 @@ public class GTMachines {
                     .tooltipBuilder((stack, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
                         long energyPerTick = GTValues.V[tier - 1];
-                        int tickSpeed = 320 / (tier * 2);
+                        int tickSpeed = ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2);
                         tooltip.add(Component.translatable("gtceu.machine.miner.tooltip", maxArea, maxArea));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.uses_per_tick", energyPerTick)
                                 .append(Component.literal(", ").withStyle(ChatFormatting.GRAY))
@@ -647,9 +650,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            tier == 0 ? new PartAbility[] { PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS } :
-                                    new PartAbility[] { PartAbility.IMPORT_ITEMS })
+                    .abilities(PartAbility.IMPORT_ITEMS)
                     .overlayTieredHullRenderer("item_bus.import")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
@@ -662,9 +663,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
-                    .abilities(
-                            tier == 0 ? new PartAbility[] { PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS } :
-                                    new PartAbility[] { PartAbility.EXPORT_ITEMS })
+                    .abilities(PartAbility.EXPORT_ITEMS)
                     .overlayTieredHullRenderer("item_bus.export")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
@@ -866,7 +865,10 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
-            .langValue("Input Bus (Steam)")
+            .langValue("Steam Input Bus")
+            .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                    Component.translatable("gtceu.machine.steam_bus.tooltip"),
+                    Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
             .register();
 
     public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE
@@ -874,7 +876,10 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
-            .langValue("Output Bus (Steam)")
+            .langValue("Steam Output Bus")
+            .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
+                    Component.translatable("gtceu.machine.steam_bus.tooltip"),
+                    Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
             .register();
 
     public static final MachineDefinition STEAM_HATCH = REGISTRATE
@@ -1072,11 +1077,12 @@ public class GTMachines {
         GTMultiMachines.init();
         GCYMMachines.init();
         GTResearchMachines.init();
-        if (GTCEu.isAE2Loaded()) {
+
+        if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
         }
 
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));

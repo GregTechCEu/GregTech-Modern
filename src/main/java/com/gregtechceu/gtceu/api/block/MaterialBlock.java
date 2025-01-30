@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -9,8 +10,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
@@ -71,7 +70,7 @@ public class MaterialBlock extends AppearanceBlock {
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        if (registerModel && Platform.isClient()) {
+        if (registerModel && GTCEu.isClientSide()) {
             MaterialBlockRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
         }
     }
