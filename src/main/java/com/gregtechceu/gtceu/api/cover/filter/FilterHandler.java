@@ -117,7 +117,13 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     private CustomItemStackHandler getFilterSlot() {
         if (this.filterSlot == null) {
-            this.filterSlot = new CustomItemStackHandler(this.filterItem);
+            this.filterSlot = new CustomItemStackHandler(this.filterItem) {
+
+                @Override
+                public int getSlotLimit(int slot) {
+                    return 1;
+                }
+            };
 
             this.filterSlot.setFilter(this::canInsertFilterItem);
         }

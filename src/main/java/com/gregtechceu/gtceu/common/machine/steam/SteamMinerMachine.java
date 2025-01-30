@@ -112,6 +112,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     public void onMachineRemoved() {
+        getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
     }
 

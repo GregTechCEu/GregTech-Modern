@@ -38,7 +38,7 @@ dependencyResolutionManagement {
         def xaerosWorldMapVersion = "5658224"
         def xaerosMinimapVersion = "5773012"
         def journeyMapVersion = "5789363"
-        def journeyMapApiVersion = "2.0.0"
+        def journeyMapApiVersion = "1.20-1.9"
         def ftbteamsForgeFile = "5267190"
         def ftblibraryForgeFile = "5567591"
         def ftbchunksForgeFile = "5956390"
@@ -121,8 +121,8 @@ dependencyResolutionManagement {
             def xaerosMiniMap = version("xaerosMinimap", xaerosMinimapVersion)
             library("xaerosminimap", "curse.maven", "xaeros-minimap-263420").versionRef(xaerosMiniMap)
 
-            def journeyMapApi = version("journeyMapApi", journeyMapApiVersion + "-" + minecraftVersion + "-SNAPSHOT")
-            library("journeymap-api", "info.journeymap", "journeymap-api-forge").versionRef(journeyMapApi)
+            def journeyMapApi = version("journeyMapApi", journeyMapApiVersion + "-SNAPSHOT")
+            library("journeymap-api", "info.journeymap", "journeymap-api").versionRef(journeyMapApi)
 
             def journeyMap = version("journeyMap", journeyMapVersion)
             library("journeymap-forge", "curse.maven", "journeymap-32274").versionRef(journeyMap)
