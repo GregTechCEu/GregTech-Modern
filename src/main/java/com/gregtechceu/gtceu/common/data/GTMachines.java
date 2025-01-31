@@ -396,7 +396,8 @@ public class GTMachines {
             LV, MV, HV, EV);
 
     public static final MachineDefinition[] MINER = registerTieredMachines("miner",
-            (holder, tier) -> new MinerMachine(holder, tier, 320 / (tier * 2), tier * 8, tier),
+            (holder, tier) -> new MinerMachine(holder, tier, ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2),
+                    tier * 8, tier),
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
@@ -406,7 +407,7 @@ public class GTMachines {
                     .tooltipBuilder((stack, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
                         long energyPerTick = GTValues.V[tier - 1];
-                        int tickSpeed = 320 / (tier * 2);
+                        int tickSpeed = ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2);
                         tooltip.add(Component.translatable("gtceu.machine.miner.tooltip", maxArea, maxArea));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.uses_per_tick", energyPerTick)
                                 .append(Component.literal(", ").withStyle(ChatFormatting.GRAY))

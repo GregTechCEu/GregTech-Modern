@@ -48,7 +48,7 @@ public class ParallelProvider implements IProbeInfoProvider {
                             .orElse(0);
                 }
             }
-            if (parallel > 0) {
+            if (parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";

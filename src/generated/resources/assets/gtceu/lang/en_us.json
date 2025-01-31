@@ -1812,6 +1812,7 @@
   "config.gtceu.option.oreGenerationChunkCacheSize": "oreGenerationChunkCacheSize",
   "config.gtceu.option.oreIconSize": "oreIconSize",
   "config.gtceu.option.oreIndicatorChunkCacheSize": "oreIndicatorChunkCacheSize",
+  "config.gtceu.option.oreIndicators": "oreIndicators",
   "config.gtceu.option.oreNamePrefix": "oreNamePrefix",
   "config.gtceu.option.oreScaleStop": "oreScaleStop",
   "config.gtceu.option.oreVeinGridSize": "oreVeinGridSize",

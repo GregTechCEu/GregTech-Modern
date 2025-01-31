@@ -6,7 +6,7 @@
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
     "client": [
-        "BlockColorsMixin",
+        "BiomeColorsMixin",
         "BlockModelMixin",
         "ClientLevelAccessor",
         "GuiGraphicsAccessor",
@@ -64,8 +64,6 @@
         "TagManagerMixin",
         "TagValueAccessor",
         "ae2.GenericStackInvAccessor",
-        "embeddium.BiomeColorCacheMixin",
-        "embeddium.VanillaColorAdapterMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
         "ldlib.SyncUtilsMixin",
