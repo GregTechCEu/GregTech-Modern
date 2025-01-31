@@ -390,6 +390,9 @@ public class ConfigHolder {
             @Configurable.Comment({ "Make bedrock ore/fluid veins infinite?", "Default: false" })
             public boolean infiniteBedrockOresFluids = false;
             @Configurable
+            @Configurable.Comment({ "Generate ores indicators above ore veins", "Default: true" })
+            public boolean oreIndicators = true;
+            @Configurable
             @Configurable.Comment({
                     "Sets the maximum number of chunks that may be cached for ore vein generation.",
                     "Higher values may improve world generation performance, but at the cost of more RAM usage.",
@@ -488,12 +491,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether the machine's circuit slot need to be inserted a real circuit." })
         public boolean ghostCircuit = true;
         @Configurable
-        @Configurable.Comment({ "Wether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)",
+        @Configurable.Comment({ "Whether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)",
                 "Default: false" })
         public boolean doBedrockOres = false;
         @Configurable
         @Configurable.Comment({ "What Kind of material should the bedrock ore miner output?", "Default: \"raw\"" })
         public String bedrockOreDropTagPrefix = "raw";
+        @Configurable
+        @Configurable.Range(min = 120, max = 800)
+        @Configurable.Comment({ "The base amount of ticks per block for electric singleblock ore miners",
+                "Default: 320" })
+        public int minerSpeed = 320;
         @Configurable
         @Configurable.Comment({ "Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false" })
