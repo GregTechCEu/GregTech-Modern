@@ -453,7 +453,7 @@ public class WoodMachineRecipes {
                 .outputItems(dust, Wood, 1)
                 .duration(160).EUt(VA[ULV])
                 .save(provider);
-        
+
         // lathe stripped log
         LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_log")
                 .inputItems(entry.strippedLog)
@@ -463,11 +463,11 @@ public class WoodMachineRecipes {
                 .save(provider);
         // lathe stripped wood
         LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_wood")
-            .inputItems(entry.strippedWood)
-            .outputItems(rodLong, Wood, 4)
-            .outputItems(dust, Wood, 1)
-            .duration(160).EUt(VA[ULV])
-            .save(provider);
+                .inputItems(entry.strippedWood)
+                .outputItems(rodLong, Wood, 4)
+                .outputItems(dust, Wood, 1)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
 
         if (entry.generateLogToPlankRecipe) {
             if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
