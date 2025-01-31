@@ -125,11 +125,14 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
 
-            var handlerList = part.getRecipeHandlers();
-            if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO()) continue;
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
+                    continue;
 
-            this.addHandlerList(handlerList);
-            traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
+                this.addHandlerList(handlerList);
+                traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
+            }
         }
 
         // attach self traits

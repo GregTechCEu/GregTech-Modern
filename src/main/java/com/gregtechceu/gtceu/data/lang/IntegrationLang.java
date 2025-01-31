@@ -87,6 +87,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
         provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("gtceu.top.buffer_not_bound", "Buffer Not Currently Bound");
         provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
         provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 

@@ -155,7 +155,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         RecipeHandlerList outHandlers = new RecipeHandlerList(IO.OUT);
 
         inHandlers.addHandlers(inputItemHandler, inputEnergyHandler);
-        outHandlers.addHandlers(outputItemHandler);
+        outHandlers.addHandler(outputItemHandler);
 
         addHandlerList(inHandlers);
         addHandlerList(outHandlers);

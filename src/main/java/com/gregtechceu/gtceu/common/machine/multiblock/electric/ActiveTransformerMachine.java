@@ -89,21 +89,24 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         for (IMultiPart part : getPrioritySortedParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
-            var handlerList = part.getRecipeHandlers();
-            if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO()) continue;
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
+                    continue;
 
-            var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
-                    .filter(v -> v instanceof IEnergyContainer)
-                    .map(v -> (IEnergyContainer) v)
-                    .toList();
+                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(v -> v instanceof IEnergyContainer)
+                        .map(v -> (IEnergyContainer) v)
+                        .toList();
 
-            if (handlerList.getHandlerIO() == IO.IN) {
-                powerInput.addAll(containers);
-            } else if (handlerList.getHandlerIO() == IO.OUT) {
-                powerOutput.addAll(containers);
+                if (handlerList.getHandlerIO() == IO.IN) {
+                    powerInput.addAll(containers);
+                } else if (handlerList.getHandlerIO() == IO.OUT) {
+                    powerOutput.addAll(containers);
+                }
+
+                traitSubscriptions.addAll(handlerList.addChangeListeners(converterSubscription::updateSubscription));
             }
-
-            traitSubscriptions.addAll(handlerList.addChangeListeners(converterSubscription::updateSubscription));
         }
 
         // Invalidate the structure if there is not at least one output and one input

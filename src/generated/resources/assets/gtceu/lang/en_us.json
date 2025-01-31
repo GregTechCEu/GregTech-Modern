@@ -3515,6 +3515,7 @@
   "gtceu.top.allow_output_input": "Allow Input",
   "gtceu.top.auto_output": "Auto Output",
   "gtceu.top.buffer_bound_pos": "Bound To - X: %s, Y: %s, Z: %s",
+  "gtceu.top.buffer_not_bound": "Buffer Not Currently Bound",
   "gtceu.top.cable_amperage": "Amperage: ",
   "gtceu.top.cable_voltage": "Voltage: ",
   "gtceu.top.convert_eu": "Converting §eEU§r -> §cFE§r",

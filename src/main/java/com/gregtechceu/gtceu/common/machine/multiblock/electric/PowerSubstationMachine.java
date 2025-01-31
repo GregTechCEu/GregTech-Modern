@@ -101,21 +101,24 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
-            var handlerList = part.getRecipeHandlers();
-            if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO()) continue;
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
+                    continue;
 
-            var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
-                    .filter(v -> v instanceof IEnergyContainer)
-                    .map(v -> (IEnergyContainer) v)
-                    .toList();
+                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(v -> v instanceof IEnergyContainer)
+                        .map(v -> (IEnergyContainer) v)
+                        .toList();
 
-            if (handlerList.getHandlerIO() == IO.IN) {
-                inputs.addAll(containers);
-            } else if (handlerList.getHandlerIO() == IO.OUT) {
-                outputs.addAll(containers);
+                if (handlerList.getHandlerIO() == IO.IN) {
+                    inputs.addAll(containers);
+                } else if (handlerList.getHandlerIO() == IO.OUT) {
+                    outputs.addAll(containers);
+                }
+
+                traitSubscriptions.addAll(handlerList.addChangeListeners(tickSubscription::updateSubscription));
             }
-
-            traitSubscriptions.addAll(handlerList.addChangeListeners(tickSubscription::updateSubscription));
         }
         this.inputHatches = new EnergyContainerList(inputs);
         this.outputHatches = new EnergyContainerList(outputs);

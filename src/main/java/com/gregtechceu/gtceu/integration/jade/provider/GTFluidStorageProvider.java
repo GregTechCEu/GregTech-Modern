@@ -2,8 +2,11 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -25,11 +28,12 @@ import snownee.jade.api.view.IServerExtensionProvider;
 import snownee.jade.api.view.ViewGroup;
 import snownee.jade.util.FluidTextHelper;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Custom FluidView info provider for any machines that require it
- * Currently: Quantum Tanks
+ * Currently: Quantum Tanks, Pattern Buffer Proxies
  * Defaults to Jade's normal FluidView provider
  */
 public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachineBlockEntity, CompoundTag>,
@@ -50,10 +54,12 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
     @Override
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(ServerPlayer serverPlayer, ServerLevel serverLevel,
                                                             MetaMachineBlockEntity mmbe, boolean b) {
-        if (mmbe.getMetaMachine() instanceof QuantumTankMachine qtm) {
+        MetaMachine machine = mmbe.getMetaMachine();
+        if (machine instanceof QuantumTankMachine qtm) {
             CompoundTag tag = new CompoundTag();
             tag.putBoolean("special", true);
             FluidStack stored = qtm.getStored();
+            if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
             tag.putString("fluid", BuiltInRegistries.FLUID.getKey(stored.getFluid()).toString());
             long amount = qtm.getStoredAmount();
             if (qtm instanceof CreativeTankMachine ctm) {
@@ -63,6 +69,12 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
             tag.putLong("capacity", qtm.getMaxAmount());
             if (stored.hasTag()) tag.put("tag", stored.getTag());
             return List.of(new ViewGroup<>(List.of(tag)));
+        } else if (machine instanceof MEPatternBufferPartMachine buffer && !buffer.isFormed()) {
+            return Collections.emptyList();
+        } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
+            var buffer = proxy.getBuffer();
+            if (buffer == null) return Collections.emptyList();
+            return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, buffer.holder, b);
         }
 
         return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, mmbe, b);

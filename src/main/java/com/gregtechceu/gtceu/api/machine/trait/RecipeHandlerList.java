@@ -31,13 +31,13 @@ public class RecipeHandlerList {
         return Boolean.compare(b1, b2);
     };
 
-    public final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> handlerMap = new Reference2ObjectOpenHashMap<>();
+    @Getter
+    private final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> handlerMap = new Reference2ObjectOpenHashMap<>();
     private final List<IRecipeHandler<?>> allHandlers = new ObjectArrayList<>();
     private final IO io;
     @Setter
     @Getter
     private boolean isDistinct = false;
-    private long priority = 0;
 
     public RecipeHandlerList(IO io) {
         this.io = io;
@@ -45,12 +45,16 @@ public class RecipeHandlerList {
 
     public static RecipeHandlerList of(IO io, IRecipeHandler<?> handler) {
         RecipeHandlerList rhl = new RecipeHandlerList(io);
-        rhl.addHandlers(handler);
+        rhl.addHandler(handler);
         return rhl;
     }
 
     public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
-        return handlerMap.getOrDefault(cap, Collections.emptyList());
+        return getHandlerMap().getOrDefault(cap, Collections.emptyList());
+    }
+
+    public void addHandler(IRecipeHandler<?> handler) {
+        addHandlers(List.of(handler));
     }
 
     public void addHandlers(IRecipeHandler<?>... handlers) {
@@ -59,21 +63,20 @@ public class RecipeHandlerList {
 
     public void addHandlers(List<IRecipeHandler<?>> handlers) {
         for (var handler : handlers) {
-            handlerMap.computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
-            priority += handler.getPriority();
+            getHandlerMap().computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
+            allHandlers.add(handler);
         }
-        allHandlers.addAll(handlers);
-        sort();
+        if (io == IO.OUT) sort();
     }
 
-    public void sort() {
-        for (var list : handlerMap.values()) {
+    private void sort() {
+        for (var list : getHandlerMap().values()) {
             list.sort(IRecipeHandler.ENTRY_COMPARATOR);
         }
     }
 
     public boolean hasCapability(RecipeCapability<?> cap) {
-        return handlerMap.containsKey(cap);
+        return getHandlerMap().containsKey(cap);
     }
 
     public IO getHandlerIO() {
@@ -94,11 +97,9 @@ public class RecipeHandlerList {
 
     public List<ISubscription> addChangeListeners(Runnable listener) {
         List<ISubscription> ret = new ArrayList<>();
-        for (var handlerList : handlerMap.values()) {
-            for (var handler : handlerList) {
-                if (handler instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                    ret.add(handlerTrait.addChangedListener(listener));
-                }
+        for (var handler : allHandlers) {
+            if (handler instanceof IRecipeHandlerTrait<?> trait) {
+                ret.add(trait.addChangedListener(listener));
             }
         }
         return ret;
@@ -106,12 +107,12 @@ public class RecipeHandlerList {
 
     public Map<RecipeCapability<?>, List> handleRecipe(IO io, GTRecipe recipe, Map<RecipeCapability<?>, List> contents,
                                                        boolean simulate) {
-        if (handlerMap.isEmpty()) return contents;
+        if (getHandlerMap().isEmpty()) return contents;
         var copy = new Reference2ObjectOpenHashMap<>(contents);
         var it = copy.entrySet().iterator();
         while (it.hasNext()) {
             var entry = it.next();
-            var handlerList = handlerMap.get(entry.getKey());
+            var handlerList = getHandlerMap().get(entry.getKey());
             if (handlerList == null)
                 continue;
             for (var handler : handlerList) {

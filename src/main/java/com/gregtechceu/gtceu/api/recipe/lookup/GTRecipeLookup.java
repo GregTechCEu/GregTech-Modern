@@ -61,7 +61,7 @@ public class GTRecipeLookup {
         List<RecipeHandlerList> handlers = holder.getCapabilitiesProxy().getOrDefault(IO.IN, new ArrayList<>());
 
         for (var handler : handlers) {
-            for (var entries : handler.handlerMap.entrySet()) {
+            for (var entries : handler.getHandlerMap().entrySet()) {
                 int size = 0;
                 if (!entries.getKey().isRecipeSearchFilter()) {
                     continue;
@@ -433,14 +433,14 @@ public class GTRecipeLookup {
         var handlerLists = r.getCapabilitiesProxy().getOrDefault(IO.IN, Collections.emptyList());
         int size = 0;
         for (var handler : handlerLists) {
-            for (var entry : handler.handlerMap.entrySet()) {
+            for (var entry : handler.getHandlerMap().entrySet()) {
                 size += entry.getValue().size();
             }
         }
 
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
         for (var handlerList : handlerLists) {
-            handlerList.handlerMap.forEach((cap, handlers) -> {
+            handlerList.getHandlerMap().forEach((cap, handlers) -> {
                 if (!cap.isRecipeSearchFilter() || handlers.isEmpty()) return;
                 for (var handler : handlers) {
                     if (handler.isProxy()) continue;

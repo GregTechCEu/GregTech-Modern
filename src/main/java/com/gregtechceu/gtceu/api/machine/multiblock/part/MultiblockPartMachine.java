@@ -19,10 +19,10 @@ import net.minecraft.server.level.ServerLevel;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -92,8 +92,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         return Collections.unmodifiableSortedSet(controllers);
     }
 
-    @Nullable
-    public RecipeHandlerList getRecipeHandlers() {
+    public List<RecipeHandlerList> getRecipeHandlers() {
         if (handlerList == null) {
             var a = traits.stream()
                     .filter(IRecipeHandlerTrait.class::isInstance)
@@ -101,12 +100,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                     .toList();
             if (a.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
-                return handlerList;
+            } else {
+                handlerList = new RecipeHandlerList(a.get(0).getHandlerIO());
+                handlerList.addHandlers(a.toArray(new IRecipeHandler[0]));
             }
-            handlerList = new RecipeHandlerList(a.get(0).getHandlerIO());
-            handlerList.addHandlers(a.toArray(new IRecipeHandler[0]));
         }
-        return handlerList;
+        return List.of(handlerList);
     }
 
     @Override

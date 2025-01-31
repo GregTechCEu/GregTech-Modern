@@ -32,7 +32,7 @@ public interface IRecipeCapabilityHolder {
         IO io = handler.getHandlerIO();
         getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handler);
         var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>());
-        for (var entry : handler.handlerMap.entrySet()) {
+        for (var entry : handler.getHandlerMap().entrySet()) {
             inner.computeIfAbsent(entry.getKey(), c -> new ArrayList<>()).addAll(entry.getValue());
         }
     }

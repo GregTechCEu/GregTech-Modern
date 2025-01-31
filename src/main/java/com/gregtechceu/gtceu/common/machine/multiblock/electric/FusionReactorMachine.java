@@ -111,13 +111,16 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
-            var handlerList = part.getRecipeHandlers();
-            if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO()) continue;
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
+                    continue;
 
-            handlerList.getCapability(EURecipeCapability.CAP).stream()
-                    .filter(v -> v instanceof IEnergyContainer)
-                    .forEach(v -> energyContainers.add((IEnergyContainer) v));
-            traitSubscriptions.addAll(handlerList.addChangeListeners(this::updatePreHeatSubscription));
+                handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(v -> v instanceof IEnergyContainer)
+                        .forEach(v -> energyContainers.add((IEnergyContainer) v));
+                traitSubscriptions.addAll(handlerList.addChangeListeners(this::updatePreHeatSubscription));
+            }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         energyContainer.resetBasicInfo(calculateEnergyStorageFactor(getTier(), energyContainers.size()), 0, 0, 0, 0);
@@ -204,13 +207,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public boolean alwaysTryModifyRecipe() {
-        return true;
-    }
-
-    @Override
     public boolean onWorking() {
         GTRecipe recipe = recipeLogic.getLastRecipe();
+        assert recipe != null;
         if (recipe.data.contains("eu_to_start")) {
             long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
             // if the remaining energy needed is more than stored, do not run
