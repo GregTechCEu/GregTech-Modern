@@ -888,7 +888,7 @@ public class MachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "basic_tape", BASIC_TAPE.asStack(),
                 " P ", "PSP", " P ", 'P', new UnificationEntry(plate, Paper), 'S', STICKY_RESIN.asItem());
-        ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(plate, Paper, 2).inputItems(STICKY_RESIN)
+        ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(plate, Paper, 2).inputFluids(Glue.getFluid(100))
                 .outputItems(BASIC_TAPE, 2)
                 .duration(100).save(provider);
 
