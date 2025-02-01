@@ -130,6 +130,19 @@ public class CustomTags {
     public static final TagKey<Item> WRENCHES = TagUtil.createItemTag("tools/wrenches");
     public static final TagKey<Item> WRENCH = TagUtil.createItemTag("tools/wrench"); // Compat with other mods
 
+    // Tool Crafting Tags
+    public static final TagKey<Item> CRAFTING_SAWS = TagUtil.createModItemTag("tools/crafting_saws");
+    public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("tools/crafting_hammers");
+    public static final TagKey<Item> CRAFTING_MALLETS = TagUtil.createModItemTag("tools/crafting_mallets");
+    public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("tools/crafting_wrenches");
+    public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("tools/crafting_files");
+    public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("tools/crafting_crowbars");
+    public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("tools/crafting_screwdrivers");
+    public static final TagKey<Item> CRAFTING_MORTARS = TagUtil.createModItemTag("tools/crafting_mortars");
+    public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
+    public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("tools/crafting_knives");
+
+
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
             NEEDS_WOOD_TOOL,
@@ -166,4 +179,5 @@ public class CustomTags {
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
+
 }
