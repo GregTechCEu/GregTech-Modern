@@ -41,13 +41,27 @@ public abstract class ConfigWidget extends WidgetGroup {
         this.amountSetWidget.getAmountText().setVisible(false);
     }
 
-    public void enableAmount(int slotIndex) {
+    @OnlyIn(Dist.CLIENT)
+    public void enableAmountClient(int slotIndex) {
+        this.amountSetWidget.setSlotIndexClient(slotIndex);
+        this.amountSetWidget.setVisible(true);
+        this.amountSetWidget.getAmountText().setVisible(true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void disableAmountClient() {
+        this.amountSetWidget.setSlotIndexClient(-1);
+        this.amountSetWidget.setVisible(false);
+        this.amountSetWidget.getAmountText().setVisible(false);
+    }
+
+    public void enableAmount(int slotIndex){
         this.amountSetWidget.setSlotIndex(slotIndex);
         this.amountSetWidget.setVisible(true);
         this.amountSetWidget.getAmountText().setVisible(true);
     }
 
-    public void disableAmount() {
+    public void disableAmount(){
         this.amountSetWidget.setSlotIndex(-1);
         this.amountSetWidget.setVisible(false);
         this.amountSetWidget.getAmountText().setVisible(false);
@@ -66,7 +80,7 @@ public abstract class ConfigWidget extends WidgetGroup {
                 slot.setSelect(false);
             }
         }
-        this.disableAmount();
+        this.disableAmountClient();
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
