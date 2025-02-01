@@ -55,13 +55,13 @@ public abstract class ConfigWidget extends WidgetGroup {
         this.amountSetWidget.getAmountText().setVisible(false);
     }
 
-    public void enableAmount(int slotIndex){
+    public void enableAmount(int slotIndex) {
         this.amountSetWidget.setSlotIndex(slotIndex);
         this.amountSetWidget.setVisible(true);
         this.amountSetWidget.getAmountText().setVisible(true);
     }
 
-    public void disableAmount(){
+    public void disableAmount() {
         this.amountSetWidget.setSlotIndex(-1);
         this.amountSetWidget.setVisible(false);
         this.amountSetWidget.getAmountText().setVisible(false);

@@ -47,7 +47,7 @@ public class AmountSetWidget extends Widget {
         writeClientAction(0, buf -> buf.writeVarInt(this.index));
     }
 
-    public void setSlotIndex(int slotIndex){
+    public void setSlotIndex(int slotIndex) {
         this.index = slotIndex;
     }
 
