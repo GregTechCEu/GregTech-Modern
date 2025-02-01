@@ -1797,6 +1797,7 @@
   "config.gtceu.option.machines": "machines",
   "config.gtceu.option.machinesEmissiveTextures": "machinesEmissiveTextures",
   "config.gtceu.option.meHatchEnergyUsage": "meHatchEnergyUsage",
+  "config.gtceu.option.minerSpeed": "minerSpeed",
   "config.gtceu.option.minimap": "minimap",
   "config.gtceu.option.nanoSaber": "nanoSaber",
   "config.gtceu.option.nanoSaberBaseDamage": "nanoSaberBaseDamage",

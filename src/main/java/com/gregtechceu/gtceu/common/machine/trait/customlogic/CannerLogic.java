@@ -10,69 +10,57 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.minecraftforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.Nullable;
+
+import static net.minecraftforge.fluids.capability.IFluidHandler.*;
 
 public class CannerLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var itemInputs = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
-                .filter(IItemHandlerModifiable.class::isInstance)
-                .map(IItemHandlerModifiable.class::cast)
-                .toArray(IItemHandlerModifiable[]::new);
-
-        var fluidInputs = holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).stream()
-                .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
-                .toArray(IFluidHandler[]::new);
-
-        var inputs = new CombinedInvWrapper(itemInputs);
-        for (int i = 0; i < inputs.getSlots(); i++) {
-            ItemStack item = inputs.getStackInSlot(i);
-            if (!item.isEmpty()) {
-                ItemStack inputStack = item.copy();
-                inputStack.setCount(1);
-
-                ItemStack fluidHandlerStack = inputStack.copy();
-                IFluidHandlerItem fluidHandlerItem = fluidHandlerStack
-                        .getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
-                if (fluidHandlerItem == null)
-                    continue;
-
-                FluidStack fluid = fluidHandlerItem.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+        // TODO: Make this respect distinctness while searching
+        var itemInputs = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
+        var fluidInputs = holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
+        for (var itemInput : itemInputs) {
+            for (var obj : itemInput.getContents()) {
+                if (!(obj instanceof ItemStack stack)) continue;
+                if (stack.isEmpty()) continue;
+                var singleStack = stack.copyWithCount(1);
+                var copy = stack.copyWithCount(1);
+                var fluidHandler = FluidUtil.getFluidHandler(copy).resolve().orElse(null);
+                if (fluidHandler == null) continue;
+                // Try to drain first
+                var fluid = fluidHandler.drain(Integer.MAX_VALUE, FluidAction.EXECUTE);
                 if (!fluid.isEmpty()) {
-                    return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))
-                            .inputItems(inputStack)
-                            .outputItems(fluidHandlerItem.getContainer())
-                            .outputFluids(new FluidStack(fluid.getFluid(),
-                                    fluid.getAmount(), fluid.getTag()))
-                            .duration(Math.max(16, fluid.getAmount() / 64)).EUt(4)
+                    return GTRecipeTypes.CANNER_RECIPES
+                            .recipeBuilder("drain_" + GTStringUtils.itemStackToString(singleStack))
+                            .inputItems(singleStack)
+                            .outputItems(fluidHandler.getContainer())
+                            .outputFluids(fluid)
+                            .duration(Math.max(16, fluid.getAmount() / 64))
+                            .EUt(4)
                             .buildRawRecipe();
                 }
-
-                // nothing drained so try filling
-                for (IFluidHandler fluidInput : fluidInputs) {
-                    var fluidStack1 = fluidInput.getFluidInTank(0);
-                    if (fluidStack1.isEmpty()) {
-                        continue;
-                    }
-                    fluidStack1 = fluidStack1.copy();
-                    fluidStack1.setAmount(
-                            fluidHandlerItem.fill(new FluidStack(fluidStack1.getFluid(), fluidStack1.getAmount()),
-                                    IFluidHandler.FluidAction.EXECUTE));
-                    if (fluidStack1.getAmount() > 0) {
-                        return GTRecipeTypes.CANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(item))
-                                .inputItems(inputStack)
-                                .inputFluids(fluidStack1)
-                                .outputItems(fluidHandlerItem.getContainer())
-                                .duration(Math.max(16, fluid.getAmount() / 64)).EUt(4)
-                                .buildRawRecipe();
+                // Nothing to drain, so try to fill
+                for (var fluidInput : fluidInputs) {
+                    for (var obj2 : fluidInput.getContents()) {
+                        if (!(obj2 instanceof FluidStack fluidStack)) continue;
+                        if (fluidStack.isEmpty()) continue;
+                        var filled = fluidHandler.fill(fluidStack, FluidAction.EXECUTE);
+                        if (filled > 0) {
+                            var copyFluid = new FluidStack(fluidStack, filled);
+                            return GTRecipeTypes.CANNER_RECIPES
+                                    .recipeBuilder("fill_" + GTStringUtils.itemStackToString(singleStack))
+                                    .inputItems(singleStack)
+                                    .inputFluids(copyFluid)
+                                    .outputItems(fluidHandler.getContainer())
+                                    .duration(Math.max(16, filled / 64))
+                                    .EUt(4)
+                                    .buildRawRecipe();
+                        }
                     }
                 }
             }

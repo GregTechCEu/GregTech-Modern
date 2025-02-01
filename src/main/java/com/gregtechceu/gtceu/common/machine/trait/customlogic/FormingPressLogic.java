@@ -2,16 +2,15 @@ package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,62 +18,98 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
 
+    // Data class so that item data can be kept between searches
+    private static class RecipeData {
+
+        public ItemStack mold = ItemStack.EMPTY;
+        public ItemStack item = ItemStack.EMPTY;
+
+        public boolean found() {
+            return !mold.isEmpty() && !item.isEmpty();
+        }
+
+        public void clear() {
+            mold = ItemStack.EMPTY;
+            item = ItemStack.EMPTY;
+        }
+
+        public boolean isEmpty() {
+            return mold.isEmpty() && item.isEmpty();
+        }
+    }
+
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var handlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
-                .filter(NotifiableItemStackHandler.class::isInstance)
-                .map(NotifiableItemStackHandler.class::cast)
-                .filter(i -> i.getSlots() > 1)
-                .collect(Collectors.groupingBy(NotifiableRecipeHandlerTrait::isDistinct));
+        var handlerLists = holder.getCapabilitiesForIO(IO.IN).stream()
+                .filter(rhl -> rhl.hasCapability(ItemRecipeCapability.CAP))
+                .collect(Collectors.groupingBy(RecipeHandlerList::isDistinct));
 
-        if (handlers.isEmpty()) return null;
+        if (handlerLists.isEmpty()) return null;
+
+        RecipeData data = new RecipeData();
 
         // Distinct first, reset our stacks for every inventory
-        for (var handler : handlers.getOrDefault(true, Collections.emptyList())) {
-            ItemStack mold = ItemStack.EMPTY;
-            ItemStack item = ItemStack.EMPTY;
-            GTRecipe recipe = findRecipe(mold, item, handler);
+        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+            data.clear();
+            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
             if (recipe != null) return recipe;
         }
 
+        data.clear();
         // Non-distinct, return as soon as we find valid items
-        ItemStack mold = ItemStack.EMPTY;
-        ItemStack item = ItemStack.EMPTY;
-        for (var handler : handlers.getOrDefault(false, Collections.emptyList())) {
-            GTRecipe recipe = findRecipe(mold, item, handler);
+        for (var handlerList : handlerLists.getOrDefault(false, Collections.emptyList())) {
+            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+            if (recipe != null) return recipe;
+        }
+
+        if (data.isEmpty()) return null;
+
+        // If we found one of the two, search for the other in the distinct handlers.
+        ItemStack existingMold = data.mold;
+        ItemStack existingItem = data.item;
+        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+            data.mold = existingMold;
+            data.item = existingItem;
+            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
             if (recipe != null) return recipe;
         }
 
         return null;
     }
 
-    private @Nullable GTRecipe findRecipe(ItemStack mold, ItemStack item, NotifiableItemStackHandler handler) {
-        for (int i = 0; i < handler.getSlots(); ++i) {
-            if (!mold.isEmpty() && !item.isEmpty()) break;
-            var input = handler.getStackInSlot(i);
-            if (mold.isEmpty() && input.is(GTItems.SHAPE_MOLD_NAME.asItem())) {
-                if (input.hasTag() && input.getTag().contains(ItemStack.TAG_DISPLAY, Tag.TAG_COMPOUND)) {
-                    mold = input;
+    private @Nullable GTRecipe search(final RecipeData data, List<IRecipeHandler<?>> recipeHandlers) {
+        for (var rh : recipeHandlers) {
+            for (var obj : rh.getContents()) {
+                if (!(obj instanceof ItemStack stack)) continue;
+                if (stack.isEmpty()) continue;
+                // Skip programmed circuits to avoid using circuit inventory - TODO: Think of better way to skip it
+                if (GTItems.PROGRAMMED_CIRCUIT.isIn(stack)) continue;
+                if (data.mold.isEmpty() && GTItems.SHAPE_MOLD_NAME.isIn(stack) && stack.hasCustomHoverName()) {
+                    data.mold = stack;
+                } else if (data.item.isEmpty()) {
+                    data.item = stack;
                 }
-            } else if (item.isEmpty()) {
-                item = input;
+                if (data.found()) break;
             }
+            if (data.found()) break;
         }
 
-        if (!mold.isEmpty() && !item.isEmpty()) {
-            ItemStack output = item.copyWithCount(1);
-            output.setHoverName(mold.getHoverName());
+        if (data.found()) {
+            ItemStack output = data.item.copyWithCount(1);
+            output.setHoverName(data.mold.getHoverName());
             return GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(output))
-                    .notConsumable(mold)
-                    .inputItems(item.copyWithCount(1))
+                    .notConsumable(data.mold)
+                    .inputItems(data.item.copyWithCount(1))
                     .outputItems(output)
                     .duration(40).EUt(4)
                     .buildRawRecipe();
         }
+
         return null;
     }
 

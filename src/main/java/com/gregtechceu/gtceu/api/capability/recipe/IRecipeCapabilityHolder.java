@@ -21,6 +21,10 @@ public interface IRecipeCapabilityHolder {
 
     Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> getCapabilitiesFlat();
 
+    default List<RecipeHandlerList> getCapabilitiesForIO(IO io) {
+        return getCapabilitiesProxy().getOrDefault(io, Collections.emptyList());
+    }
+
     default List<IRecipeHandler<?>> getCapabilitiesFlat(IO io, RecipeCapability<?> cap) {
         return getCapabilitiesFlat()
                 .getOrDefault(io, Collections.emptyMap())

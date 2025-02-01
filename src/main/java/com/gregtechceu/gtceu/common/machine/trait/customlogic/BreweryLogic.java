@@ -38,6 +38,7 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+        // TODO: Make this use generic IRecipeHandlers and not Item/FluidHandlers - i.e. pattern buffer
         var itemInputs = Objects
                 .requireNonNullElseGet(holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP),
                         ArrayList::new)
