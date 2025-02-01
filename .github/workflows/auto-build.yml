@@ -17,6 +17,7 @@ jobs:
       MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
       SNAPSHOT: true
+      CI: true
     permissions:
       contents: write
     steps:
