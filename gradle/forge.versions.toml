@@ -1,0 +1,99 @@
+[versions]
+ldlib = "1.0.33.b"
+registrate = "MC1.20-1.3.11"
+configuration = "2.2.0"
+mixinExtras = "0.2.0"
+
+jei = "15.20.0.105"
+rei = "12.1.785"
+emi = "1.1.13+1.20.1"
+ae2 = "15.0.18"
+kubejs = "2001.6.4-build.120"
+rhino = "2001.2.3-build.6"
+architectury = "9.2.14"
+clothconfig = "11.1.136"
+theoneprobe = "1.20.1-10.0.1-3"
+curios = "5.9.1+1.20.1"
+kotlinforforge = "4.11.0"
+shimmer = "1.20.1-0.2.4"
+journeyMapApi = "1.20-1.9-SNAPSHOT"
+ftblibrary = "2001.2.4"
+ftbteams = "2001.3.0"
+ftbchunks = "2001.3.4"
+
+## modrinth maven ##
+jade = "11.6.3"
+embeddium = "0.3.19+mc1.20.1"
+oculus = "1.20.1-1.7.0"
+
+## cursemaven ##
+worldStripper = "4578579"
+javd = "4803995"
+trenzalore = "4848244"
+xaerosWorldMap = "5658224"
+xaerosMinimap = "5773012"
+journeyMap = "5789363"
+resourcefullib = "5659871"
+argonauts = "5263580"
+ae2wtlib = "5217955"
+spark = "4738952"
+observable = "5643037"
+ftblibrary-cm = "5567591"
+ftbteams-cm = "5267190"
+ftbchunks-cm = "5956390"
+
+
+[libraries]
+ldlib               = { module = "com.lowdragmc.ldlib:ldlib-forge-1.20.1", version.ref = "ldlib" }
+registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
+configuration       = { module = "dev.toma.configuration:configuration-forge-1.20.1", version.ref = "configuration" }
+mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
+mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
+
+jei-common-api      = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
+jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
+jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
+rei-plugin          = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin-forge", version.ref = "rei" }
+rei-api             = { module = "me.shedaniel:RoughlyEnoughItems-api-forge", version.ref = "rei" }
+rei-forge           = { module = "me.shedaniel:RoughlyEnoughItems-forge", version.ref = "rei" }
+emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
+
+ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
+kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = "kubejs" }
+rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }
+architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
+clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
+theoneprobe         = { module = "mcjty.theoneprobe:theoneprobe", version.ref = "theoneprobe" }
+curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
+journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref = "journeyMapApi" }
+shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
+ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
+ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
+ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = "ftbchunks" }
+jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
+embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
+oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
+
+worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
+javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
+trenzalore          = { module = "curse.maven:trenzalore-870210", version.ref = "trenzalore" }
+xaerosworldmap      = { module = "curse.maven:xaeros-world-map-317780", version.ref = "xaerosWorldMap" }
+xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.ref = "xaerosMinimap" }
+journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
+resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
+argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }
+ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
+spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
+observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
+## cursemaven as a backup ##
+ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
+ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
+ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
+
+[bundles]
+jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
+rei = ["rei-plugin", "rei-forge"]
+rei-runtime = ["rei-forge", "architectury", "clothconfig"]
+kjs = ["kubejs", "rhino", "architectury"]
+

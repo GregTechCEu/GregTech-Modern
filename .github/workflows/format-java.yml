@@ -29,6 +29,8 @@ jobs:
             code:
               - 'src/main/java/**'
               - 'src/test/**'
+      - run: git fetch origin 1.20.1
+        if: steps.filter.outputs.code == 'true'
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
