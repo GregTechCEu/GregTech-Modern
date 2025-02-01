@@ -328,6 +328,7 @@ public class GCYMRecipes {
         MIXER_RECIPES.recipeBuilder("titanium_carbide")
                 .inputItems(dust, Titanium)
                 .inputItems(dust, Carbon)
+                .circuitMeta(3)
                 .outputItems(dust, TitaniumCarbide, 2)
                 .duration(160).EUt(VA[EV])
                 .save(provider);

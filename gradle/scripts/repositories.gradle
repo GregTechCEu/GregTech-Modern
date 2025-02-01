@@ -1,60 +1,68 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
-    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
-    maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    } // Curse Forge File
-    maven {
-        name = "Jared's maven"
+
+    maven { // KubeJS and Rhino
+        name = "Saps.dev Maven"
+        url = "https://maven.saps.dev/minecraft"
+    }
+
+    maven { // JEI
+        name = "Jared's Maven"
         url = "https://maven.blamejared.com/"
-    } // JEI
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
+    }
+
+    maven { // JEI mirror, AE2
         name = "ModMaven"
         url = "https://modmaven.dev"
-    } // JEI mirror, AE2
-    maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
-    maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
-    maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
-    maven { // Flywheel
-        url = "https://maven.tterrag.com/"
-        content {
-            // need to be specific here due to version overlaps
-            includeGroup("com.jozufozu.flywheel")
-            includeGroup("com.tterrag.registrate")
-            includeGroup("com.simibubi.create")
+    }
+
+    maven { // LDLib, Shimmer
+        name = "FirstDarkDev Maven"
+        url = "https://maven.firstdarkdev.xyz/snapshots"
+    }
+
+    exclusiveContent { // FTB mods
+        forRepository { maven { url = "https://maven.ftb.dev/releases" } }
+        filter { includeGroup("dev.ftb.mods") }
+    }
+    exclusiveContent { // TOP
+        forRepository { maven { url = "https://maven.k-4u.nl" } }
+        filter { includeGroup('mcjty.theoneprobe') }
+    }
+    exclusiveContent { // JourneyMap API
+        forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }
+        filter { includeGroup("info.journeymap") }
+    }
+    exclusiveContent { // Modrinth Maven
+        forRepository { maven { url = "https://api.modrinth.com/maven" } }
+        filter { includeGroup("maven.modrinth") }
+    }
+    exclusiveContent { // Curseforge Maven
+        forRepository { maven { url = "https://cursemaven.com" } }
+        filter { includeGroup("curse.maven") }
+    }
+    exclusiveContent { // terraformers - EMI
+        forRepository { maven { url = "https://maven.terraformersmc.com/releases/" } }
+        filter { includeGroup("dev.emi") }
+    }
+    exclusiveContent { // shedaniel - REI, architectury, cloth-config
+        forRepository { maven { url = "https://maven.shedaniel.me/" } }
+        filter {
+            includeGroupAndSubgroups("me.shedaniel")
+            includeGroup("dev.architectury")
         }
     }
-    maven { url = "https://maven.theillusivec4.top/" } // Curios
-    maven { // TOP
-        url "https://maven.k-4u.nl"
+    exclusiveContent { // tterrag - registrate
+        forRepository { maven { url = "https://maven.tterrag.com/" } }
+        filter { includeGroup("com.tterrag.registrate") }
     }
-    maven {
-        // saps.dev Maven (KubeJS and Rhino)
-        url = "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-        }
+    exclusiveContent { // Curios
+        forRepository { maven { url = "https://maven.theillusivec4.top/" } }
+        filter { includeGroup('top.theillusivec4.curios')}
     }
-    // JourneyMap API releases are here
-    maven {
-        name = "JourneyMap (Public)"
-        url = "https://jm.gserv.me/repository/maven-public/"
+    exclusiveContent { // KotlinForForge
+        forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
+        filter { includeGroup("thedarkcolour") }
     }
-    maven {
-        name = "Kotlin for Forge"
-        url = "https://thedarkcolour.github.io/KotlinForForge/"
-        content {
-            includeGroup "thedarkcolour"
-        }
-    }
-    maven { url "https://maven.architectury.dev/" }
-    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
-    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
 }
