@@ -392,7 +392,6 @@ public class GTToolType {
             .toolTag(CustomTags.WRENCHES)
             .toolTag(CustomTags.WRENCH)
             .harvestTag(CustomTags.MINEABLE_WITH_WRENCH)
-
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
@@ -409,7 +408,6 @@ public class GTToolType {
             .toolTag(CustomTags.CRAFTING_WIRE_CUTTERS)
             .toolTag(CustomTags.WIRE_CUTTERS)
             .harvestTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
-
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
