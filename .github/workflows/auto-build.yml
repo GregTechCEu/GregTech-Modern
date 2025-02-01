@@ -30,6 +30,7 @@ jobs:
       - name: Version Suffix
         id: suffix
         run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
+      - run: git fetch origin 1.20.1
       - name: Build
         run: ./gradlew build --build-cache
       - name: Publish to Maven
