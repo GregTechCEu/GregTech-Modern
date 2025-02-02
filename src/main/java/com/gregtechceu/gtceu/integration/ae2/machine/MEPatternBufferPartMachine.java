@@ -76,7 +76,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -145,7 +148,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
-    // protected final MEPatternBufferRecipeHandler recipeHandler = new MEPatternBufferRecipeHandler(this);
     @Getter
     protected final InternalSlotRecipeHandler ISRHL;
 

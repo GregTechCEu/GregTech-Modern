@@ -215,10 +215,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        var match = RecipeHelper.matchRecipe(this.machine, recipe);
+        var match = RecipeHelper.matchRecipe(machine, recipe);
         if (!match.isSuccess()) return match;
 
-        var matchTick = RecipeHelper.matchTickRecipe(this.machine, recipe);
+        var matchTick = RecipeHelper.matchTickRecipe(machine, recipe);
         if (!matchTick.isSuccess()) return matchTick;
 
         return ActionResult.SUCCESS;
@@ -327,16 +327,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public ActionResult handleTickRecipe(GTRecipe recipe) {
-        if (recipe.hasTick()) {
-            var result = RecipeHelper.matchTickRecipe(this.machine, recipe);
-            if (result.isSuccess()) {
-                handleTickRecipeIO(recipe, IO.IN);
-                handleTickRecipeIO(recipe, IO.OUT);
-            } else {
-                return result;
-            }
+        if (!recipe.hasTick()) return ActionResult.SUCCESS;
+        var result = RecipeHelper.matchTickRecipe(machine, recipe);
+        if (result.isSuccess()) {
+            handleTickRecipeIO(recipe, IO.IN);
+            handleTickRecipeIO(recipe, IO.OUT);
         }
-        return ActionResult.SUCCESS;
+        return result;
     }
 
     public void setupRecipe(GTRecipe recipe) {
@@ -348,7 +345,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             isActive = false;
             return;
         }
-        RecipeHelper.preWorking(this.machine, recipe);
+        RecipeHelper.preWorking(machine, recipe);
         var handledIO = handleRecipeIO(recipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
@@ -439,7 +436,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         machine.afterWorking();
         if (lastRecipe != null) {
             consecutiveRecipes++;
-            RecipeHelper.postWorking(this.machine, lastRecipe);
+            RecipeHelper.postWorking(machine, lastRecipe);
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
@@ -472,11 +469,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(this.machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(this.machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
     }
 
     /**
@@ -485,7 +482,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void interruptRecipe() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.postWorking(this.machine, lastRecipe);
+            RecipeHelper.postWorking(machine, lastRecipe);
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
@@ -494,7 +491,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public void inValid() {
         if (lastRecipe != null && isWorking()) {
-            RecipeHelper.postWorking(this.machine, lastRecipe);
+            RecipeHelper.postWorking(machine, lastRecipe);
         }
     }
 

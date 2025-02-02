@@ -28,14 +28,16 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        if (recipe == null) return false;
         if (ConfigHolder.INSTANCE.machines.orderedAssemblyLineItems) {
-
-            var recipeInputs = recipe.inputs.get(ItemRecipeCapability.CAP);
+            var recipeInputs = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
             var itemInputInventory = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
                     .filter(handler -> !handler.isProxy())
-                    .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
-                            .map(ItemStack.class::cast).toList())
-                    .filter(container -> !container.isEmpty())
+                    .map(container -> container.getContents().stream()
+                            .filter(ItemStack.class::isInstance)
+                            .map(ItemStack.class::cast)
+                            .toList())
+                    .filter(list -> !list.isEmpty())
                     .toList();
 
             if (itemInputInventory.size() < recipeInputs.size()) return false;
@@ -51,9 +53,11 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids) {
                 recipeInputs = recipe.inputs.get(FluidRecipeCapability.CAP);
                 var itemFluidInventory = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).stream()
-                        .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance)
-                                .map(FluidStack.class::cast).toList())
-                        .filter(container -> !container.isEmpty())
+                        .map(container -> container.getContents().stream()
+                                .filter(FluidStack.class::isInstance)
+                                .map(FluidStack.class::cast)
+                                .toList())
+                        .filter(list -> !list.isEmpty())
                         .toList();
 
                 if (itemFluidInventory.size() < recipeInputs.size()) return false;

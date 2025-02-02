@@ -127,9 +127,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
-                    continue;
-
+                if (!handlerList.isValid(io)) continue;
                 this.addHandlerList(handlerList);
                 traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
             }

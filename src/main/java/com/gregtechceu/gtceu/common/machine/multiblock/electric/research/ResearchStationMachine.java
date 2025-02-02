@@ -145,6 +145,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         public boolean checkMatchedRecipeAvailable(GTRecipe match) {
             var modified = machine.fullModifyRecipe(match);
             if (modified != null) {
+                // What is the point of this
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
                         !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                     return true;

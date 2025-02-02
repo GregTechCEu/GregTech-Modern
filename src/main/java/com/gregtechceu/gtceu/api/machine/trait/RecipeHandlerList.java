@@ -79,6 +79,11 @@ public class RecipeHandlerList {
         return getHandlerMap().getOrDefault(cap, Collections.emptyList());
     }
 
+    public boolean isValid(IO extIO) {
+        if (this == NO_DATA) return false;
+        return (extIO == IO.BOTH || io == IO.BOTH || extIO == io);
+    }
+
     public IO getHandlerIO() {
         return io;
     }
@@ -98,6 +103,16 @@ public class RecipeHandlerList {
     public List<ISubscription> addChangeListeners(Runnable listener) {
         List<ISubscription> ret = new ArrayList<>();
         for (var handler : allHandlers) {
+            if (handler instanceof IRecipeHandlerTrait<?> trait) {
+                ret.add(trait.addChangedListener(listener));
+            }
+        }
+        return ret;
+    }
+
+    public List<ISubscription> addChangeListeners(Runnable listener, RecipeCapability<?> cap) {
+        List<ISubscription> ret = new ArrayList<>();
+        for (var handler : getCapability(cap)) {
             if (handler instanceof IRecipeHandlerTrait<?> trait) {
                 ret.add(trait.addChangedListener(listener));
             }

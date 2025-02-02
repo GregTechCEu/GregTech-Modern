@@ -103,12 +103,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             }
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
-                    continue;
+                if (!handlerList.isValid(io)) continue;
 
                 var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
-                        .filter(v -> v instanceof IEnergyContainer)
-                        .map(v -> (IEnergyContainer) v)
+                        .filter(IEnergyContainer.class::isInstance)
+                        .map(IEnergyContainer.class::cast)
                         .toList();
 
                 if (handlerList.getHandlerIO() == IO.IN) {
@@ -117,7 +116,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     outputs.addAll(containers);
                 }
 
-                traitSubscriptions.addAll(handlerList.addChangeListeners(tickSubscription::updateSubscription));
+                traitSubscriptions.addAll(
+                        handlerList.addChangeListeners(tickSubscription::updateSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputHatches = new EnergyContainerList(inputs);

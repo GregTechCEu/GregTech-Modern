@@ -113,13 +113,14 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (io != IO.BOTH && handlerList.getHandlerIO() != IO.BOTH && io != handlerList.getHandlerIO())
-                    continue;
+                if (!handlerList.isValid(io)) continue;
 
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
-                        .filter(v -> v instanceof IEnergyContainer)
-                        .forEach(v -> energyContainers.add((IEnergyContainer) v));
-                traitSubscriptions.addAll(handlerList.addChangeListeners(this::updatePreHeatSubscription));
+                        .filter(IEnergyContainer.class::isInstance)
+                        .map(IEnergyContainer.class::cast)
+                        .forEach(energyContainers::add);
+                traitSubscriptions.addAll(
+                        handlerList.addChangeListeners(this::updatePreHeatSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);

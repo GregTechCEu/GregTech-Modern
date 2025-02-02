@@ -412,9 +412,9 @@ public class ToolHelper {
                 // Stack lists can be immutable going into Recipe#matches barring no rewrites
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                Map<IO, List<RecipeHandlerList>> caps = new IdentityHashMap<>();
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction, caps);
+                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
+                        Collections.emptyList());
                 RecipeHandlerList dummyInputs = new RecipeHandlerList(IO.IN);
                 dummyInputs.addHandlers(
                         new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],

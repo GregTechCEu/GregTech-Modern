@@ -69,13 +69,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                     itr.remove();
                     this.addHandlerList(
                             RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(tank, getConversionRate())));
-                    /*
-                     * if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
-                     * capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
-                     * }
-                     * capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP)
-                     * .add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE));
-                     */
                     return;
                 }
             }

@@ -58,7 +58,7 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> prepareRecipeFind(@NotNull IRecipeCapabilityHolder holder) {
         // First, check if items and fluids are valid.
         int totalSize = 0;
-        List<RecipeHandlerList> handlers = holder.getCapabilitiesProxy().getOrDefault(IO.IN, new ArrayList<>());
+        List<RecipeHandlerList> handlers = holder.getCapabilitiesForIO(IO.IN);
 
         for (var handler : handlers) {
             for (var entries : handler.getHandlerMap().entrySet()) {
@@ -430,26 +430,18 @@ public class GTRecipeLookup {
      */
     @NotNull
     protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
-        var handlerLists = r.getCapabilitiesProxy().getOrDefault(IO.IN, Collections.emptyList());
-        int size = 0;
-        for (var handler : handlerLists) {
-            for (var entry : handler.getHandlerMap().entrySet()) {
-                size += entry.getValue().size();
-            }
-        }
-
+        var handlerMap = r.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
+        int size = handlerMap.values().size();
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
-        for (var handlerList : handlerLists) {
-            handlerList.getHandlerMap().forEach((cap, handlers) -> {
-                if (!cap.isRecipeSearchFilter() || handlers.isEmpty()) return;
-                for (var handler : handlers) {
-                    if (handler.isProxy()) continue;
-                    List<Object> compressed = cap.compressIngredients(handler.getContents());
-                    for (Object content : compressed) {
-                        list.add(cap.convertToMapIngredient(content));
-                    }
-                }
-            });
+        for (var entry : handlerMap.entrySet()) {
+            var cap = entry.getKey();
+            var handlers = entry.getValue();
+            if (!cap.isRecipeSearchFilter()) continue;
+            for (var handler : handlers) {
+                if (handler.isProxy()) continue;
+                var compressed = cap.compressIngredients(handler.getContents());
+                list.addAll(cap.convertCompressedIngredients(compressed));
+            }
         }
         return list;
     }

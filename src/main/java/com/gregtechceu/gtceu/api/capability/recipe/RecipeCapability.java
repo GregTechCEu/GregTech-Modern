@@ -21,6 +21,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -118,6 +119,14 @@ public abstract class RecipeCapability<T> {
 
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
+    }
+
+    public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
+        List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
+        for (var ingredient : ingredients) {
+            ret.add(convertToMapIngredient(ingredient));
+        }
+        return ret;
     }
 
     /**
