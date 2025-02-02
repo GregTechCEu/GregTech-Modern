@@ -195,14 +195,14 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(IO.IN, machine, recipe, recipe.inputs,
+            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
                     Collections.emptyMap(), false, false);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(IO.OUT, machine, recipe, out, Collections.emptyMap(), false, true);
+                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, Collections.emptyMap(), false, true);
                 if (!result.isSuccess()) return result;
             }
 
@@ -247,7 +247,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(io, this.machine, recipe, out, chanceCaches, false, false);
+                RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
             }
 
             if (applyFluidOutputs(recipe, FluidAction.EXECUTE)) {

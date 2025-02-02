@@ -49,10 +49,6 @@ public class RecipeHandlerList {
         return rhl;
     }
 
-    public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
-        return getHandlerMap().getOrDefault(cap, Collections.emptyList());
-    }
-
     public void addHandler(IRecipeHandler<?> handler) {
         addHandlers(List.of(handler));
     }
@@ -77,6 +73,10 @@ public class RecipeHandlerList {
 
     public boolean hasCapability(RecipeCapability<?> cap) {
         return getHandlerMap().containsKey(cap);
+    }
+
+    public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
+        return getHandlerMap().getOrDefault(cap, Collections.emptyList());
     }
 
     public IO getHandlerIO() {
@@ -113,8 +113,7 @@ public class RecipeHandlerList {
         while (it.hasNext()) {
             var entry = it.next();
             var handlerList = getHandlerMap().get(entry.getKey());
-            if (handlerList == null)
-                continue;
+            if (handlerList == null) continue;
             for (var handler : handlerList) {
                 var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
                 if (left == null) {

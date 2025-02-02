@@ -64,15 +64,12 @@ public class GTCommands {
                                 .executes(context -> {
                                     for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()
                                             .getRecipes()) {
-                                        if (recipe instanceof GTRecipe gtRecipe) {
-                                            var recipeValid = RecipeHelper.checkRecipeValidity(gtRecipe).stream()
-                                                    .filter(v -> !v.isSuccess()).findAny();
-                                            if (recipeValid.isPresent()) {
-                                                context.getSource().sendSuccess(
-                                                        () -> Component
-                                                                .literal("Recipe %s is invalid".formatted(gtRecipe.id)),
-                                                        false);
-                                            }
+                                        if (recipe instanceof GTRecipe gtRecipe &&
+                                                !RecipeHelper.checkRecipeValidity(gtRecipe).isSuccess()) {
+                                            context.getSource().sendSuccess(
+                                                    () -> Component
+                                                            .literal("Recipe %s is invalid".formatted(gtRecipe.id)),
+                                                    false);
                                         }
                                     }
                                     return 1;

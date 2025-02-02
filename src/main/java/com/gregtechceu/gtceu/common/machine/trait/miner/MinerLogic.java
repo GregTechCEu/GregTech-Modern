@@ -363,7 +363,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
             var eut = RecipeHelper.getInputEUt(match);
             if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
-                if (RecipeHelper.handleRecipeIO(IO.OUT, this, match, this.chanceCaches).isSuccess()) {
+                if (RecipeHelper.handleRecipeIO(this, match, IO.OUT, this.chanceCaches).isSuccess()) {
                     blockDrops.clear();
                     var result = new ArrayList<ItemStack>();
                     for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {

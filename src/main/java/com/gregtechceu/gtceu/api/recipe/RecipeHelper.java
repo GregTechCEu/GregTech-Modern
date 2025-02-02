@@ -191,28 +191,28 @@ public class RecipeHelper {
         if (!holder.hasCapabilityProxies())
             return ActionResult.FAIL_NO_CAPABILITIES;
 
-        var result = handleRecipe(IO.IN, holder, recipe, tick ? recipe.tickInputs : recipe.inputs,
+        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs,
                 Collections.emptyMap(), tick, true);
         if (!result.isSuccess()) return result;
 
-        result = handleRecipe(IO.OUT, holder, recipe, tick ? recipe.tickOutputs : recipe.outputs,
+        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs,
                 Collections.emptyMap(), tick, true);
         return result;
     }
 
-    public static ActionResult handleRecipeIO(IO io, IRecipeCapabilityHolder holder, GTRecipe recipe,
+    public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                               Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH)
             return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(io, holder, recipe, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
                 false);
     }
 
-    public static ActionResult handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder, GTRecipe recipe,
+    public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                                   Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH)
             return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(io, holder, recipe, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
                 true, false);
     }
 
@@ -223,13 +223,14 @@ public class RecipeHelper {
      * @param simulated checks that the recipe ingredients are in the holder if true,
      *                  process the recipe contents if false
      */
-    public static ActionResult handleRecipe(IO io, IRecipeCapabilityHolder holder, GTRecipe recipe,
+    public static ActionResult handleRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                             Map<RecipeCapability<?>, List<Content>> contents,
                                             Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                                             boolean isTick, boolean simulated) {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var handle = runner.handle(contents);
 
+        // TODO: make this actually log error on failed non-simulate
         if (handle == null || handle.content() != null) {
             String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
             return ActionResult.fail(() -> Component.translatable(key)
@@ -432,27 +433,18 @@ public class RecipeHelper {
         return outputs;
     }
 
-    public static List<ActionResult> checkRecipeValidity(GTRecipe recipe) {
-        List<ActionResult> results = new ArrayList<>();
+    public static ActionResult checkRecipeValidity(GTRecipe recipe) {
         var result = checkItemValid(recipe.inputs, "input");
-        if (result != ActionResult.SUCCESS) {
-            results.add(result);
-        }
+        if (!result.isSuccess()) return result;
+
         result = checkItemValid(recipe.outputs, "output");
-        if (result != ActionResult.SUCCESS) {
-            results.add(result);
-        }
+        if (!result.isSuccess()) return result;
+
         result = checkItemValid(recipe.tickInputs, "tickInput");
-        if (result != ActionResult.SUCCESS) {
-            results.add(result);
-        }
+        if (!result.isSuccess()) return result;
+
         result = checkItemValid(recipe.outputs, "tickOutput");
-        if (result != ActionResult.SUCCESS) {
-            results.add(result);
-        }
-        if (!results.isEmpty())
-            return results;
-        return List.of(ActionResult.SUCCESS);
+        return result;
     }
 
     private static ActionResult checkItemValid(Map<RecipeCapability<?>, List<Content>> contents, String name) {

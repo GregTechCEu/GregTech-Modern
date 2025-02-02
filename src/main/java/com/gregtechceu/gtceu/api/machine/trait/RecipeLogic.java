@@ -472,11 +472,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(io, this.machine, recipe, this.chanceCaches);
+        return RecipeHelper.handleRecipeIO(this.machine, recipe, io, this.chanceCaches);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(io, this.machine, recipe, this.chanceCaches);
+        return RecipeHelper.handleTickRecipeIO(this.machine, recipe, io, this.chanceCaches);
     }
 
     /**

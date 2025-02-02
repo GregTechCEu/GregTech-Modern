@@ -22,7 +22,10 @@ import java.util.*;
 class RecipeRunner {
 
     record RecipeHandlingResult(@Nullable RecipeCapability<?> capability, @UnknownNullability List content,
-                                ActionResult result) {}
+                                ActionResult result) {
+
+        public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
+    }
 
     private final GTRecipe recipe;
     private final IO io;
@@ -31,7 +34,7 @@ class RecipeRunner {
     private final Map<IO, List<RecipeHandlerList>> capabilityProxies;
     private final boolean simulated;
     private Map<RecipeCapability<?>, List> recipeContents;
-    private Map<RecipeCapability<?>, List> searchRecipeContents;
+    private final Map<RecipeCapability<?>, List> searchRecipeContents;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -61,6 +64,8 @@ class RecipeRunner {
      */
     private void fillContentMatchList(Map<RecipeCapability<?>, List<Content>> entries) {
         ChanceBoostFunction function = recipe.getType().getChanceFunction();
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) {
@@ -71,15 +76,16 @@ class RecipeRunner {
             // skip if empty
             if (entry.getValue().isEmpty()) continue;
             // populate recipe content capability map
-            this.recipeContents.putIfAbsent(cap, new ArrayList<>());
+            var contentList = this.recipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
+            var searchContentList = this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             for (Content cont : entry.getValue()) {
-                this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>()).add(cont.content);
+                searchContentList.add(cont.content);
 
                 // When simulating the recipe handling (used for recipe matching), chanced contents are ignored.
                 if (simulated) continue;
 
                 if (cont.chance >= cont.maxChance) {
-                    this.recipeContents.get(cap).add(cont.content);
+                    contentList.add(cont.content);
                 } else {
                     chancedContents.add(cont);
                 }
@@ -87,24 +93,22 @@ class RecipeRunner {
 
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
                 var cache = this.chanceCaches.get(cap);
                 chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
                         recipe.parallels);
 
                 for (Content cont : chancedContents) {
-                    this.recipeContents.get(cap).add(cont.content);
+                    contentList.add(cont.content);
                 }
             }
 
-            if (recipeContents.get(cap).isEmpty()) recipeContents.remove(cap);
+            if (contentList.isEmpty()) recipeContents.remove(cap);
         }
     }
 
     private RecipeHandlingResult handleContents() {
         if (recipeContents.isEmpty()) {
-            return new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
+            return RecipeHandlingResult.SUCCESS;
         }
         var result = handleContentsInternal(io);
         if (!result.result.isSuccess()) {
@@ -114,8 +118,9 @@ class RecipeRunner {
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
-        if (!capabilityProxies.containsKey(capIO))
-            return new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
+        if (!capabilityProxies.containsKey(capIO)) {
+            return new RecipeHandlingResult(null, null, ActionResult.FAIL_NO_REASON);
+        }
 
         var handlers = capabilityProxies.get(capIO);
         // Only sort for non-tick outputs
@@ -130,44 +135,28 @@ class RecipeRunner {
         }
 
         // handle distinct first
-        boolean handled = false;
         for (var handler : distinct) {
             var res = handler.handleRecipe(io, recipe, searchRecipeContents, true);
             if (res.isEmpty()) {
                 if (!simulated) {
                     handler.handleRecipe(io, recipe, recipeContents, false);
                 }
-                handled = true;
-                break;
+                return RecipeHandlingResult.SUCCESS;
             }
         }
 
-        if (!handled) {
-            for (var handler : indistinct) {
-                if (!recipeContents.isEmpty()) {
-                    recipeContents = handler.handleRecipe(io, recipe, recipeContents, simulated);
-                }
-                if (recipeContents.isEmpty()) {
-                    handled = true;
-                    break;
-                }
+        for (var handler : indistinct) {
+            recipeContents = handler.handleRecipe(io, recipe, recipeContents, simulated);
+            if (recipeContents.isEmpty()) {
+                return RecipeHandlingResult.SUCCESS;
             }
         }
 
-        if (!handled) {
-            for (var handler : distinct) {
-                if (!recipeContents.isEmpty()) {
-                    var res = handler.handleRecipe(io, recipe, recipeContents, simulated);
-                    if (res.isEmpty()) {
-                        handled = true;
-                        break;
-                    }
-                }
+        for (var handler : distinct) {
+            var res = handler.handleRecipe(io, recipe, recipeContents, simulated);
+            if (res.isEmpty()) {
+                return RecipeHandlingResult.SUCCESS;
             }
-        }
-
-        if (handled) {
-            return new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
         }
 
         for (var entry : recipeContents.entrySet()) {
