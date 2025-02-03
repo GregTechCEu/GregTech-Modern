@@ -28,6 +28,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -98,28 +99,28 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
             return InteractionResult.PASS;
         } else {
             Player player = context.getPlayer();
-            BlockState blockstate1 = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
-            BlockState blockstate2 = null;
-            if (blockstate1 != null && level.isEmptyBlock(blockpos.above())) {
+            BlockState modifiedState = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+            BlockState resultState = null;
+            if (modifiedState != null && level.isEmptyBlock(blockpos.above())) {
                 level.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-                blockstate2 = blockstate1;
+                resultState = modifiedState;
             } else if (blockstate.getBlock() instanceof CampfireBlock &&
-                    (Boolean) blockstate.getValue(CampfireBlock.LIT)) {
+                    blockstate.getValue(CampfireBlock.LIT)) {
                         if (!level.isClientSide()) {
-                            level.levelEvent((Player) null, 1009, blockpos, 0);
+                            level.levelEvent(null, 1009, blockpos, 0);
                         }
 
                         CampfireBlock.dowse(context.getPlayer(), level, blockpos, blockstate);
-                        blockstate2 = (BlockState) blockstate.setValue(CampfireBlock.LIT, false);
+                        resultState = blockstate.setValue(CampfireBlock.LIT, false);
                     }
 
-            if (blockstate2 != null) {
+            if (resultState != null) {
                 if (!level.isClientSide) {
-                    level.setBlock(blockpos, blockstate2, 11);
-                    level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, blockstate2));
+                    level.setBlock(blockpos, resultState, Block.UPDATE_ALL_IMMEDIATE);
+                    level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, resultState));
                     if (player != null) {
                         context.getItemInHand().hurtAndBreak(1, player,
-                                (p_43122_) -> p_43122_.broadcastBreakEvent(context.getHand()));
+                                (breaker) -> breaker.broadcastBreakEvent(context.getHand()));
                     }
                 }
 
