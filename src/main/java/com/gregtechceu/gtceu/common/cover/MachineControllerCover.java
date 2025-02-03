@@ -201,6 +201,9 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
+        if (controllerMode != null && getControllable(controllerMode.side) == null) {
+            setControllerMode(null);
+        }
         WidgetGroup group = new WidgetGroup(0, 0, 176, 75);
 
         group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
