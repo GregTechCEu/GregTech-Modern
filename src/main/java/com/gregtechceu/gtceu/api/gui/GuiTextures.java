@@ -192,7 +192,7 @@ public class GuiTextures {
     public static final ResourceTexture MAINTENANCE_ICON = new ResourceTexture(
             "gtceu:textures/block/overlay/machine/overlay_maintenance.png");
     public static final ResourceTexture STORAGE_ICON = new ResourceTexture(
-            "gtceu:textures/block/overlay/machine/overlay_maintenance.png");
+            "gtceu:textures/block/overlay/machine/overlay_storage.png");
     public static final ResourceTexture BUTTON_MINER_MODES = new ResourceTexture(
             "gtceu:textures/gui/widget/button_miner_modes.png");
 
