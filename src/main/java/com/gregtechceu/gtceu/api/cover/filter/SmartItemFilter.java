@@ -50,7 +50,15 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
+    public boolean isBlank() {
+        return filterMode.ordinal() == 0;
+    }
+
+    @Override
     public CompoundTag saveFilter() {
+        if (isBlank()) {
+            return null;
+        }
         var tag = new CompoundTag();
         tag.putInt("filterMode", filterMode.ordinal());
         return tag;
