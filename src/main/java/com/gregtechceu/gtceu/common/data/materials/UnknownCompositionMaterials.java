@@ -47,7 +47,7 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Creosote = new Material.Builder(GTCEu.id("creosote"))
-                .liquid(new FluidBuilder().customStill().burnTime(6400)).color(0x804000)
+                .liquid(new FluidBuilder().block().customStill().burnTime(6400)).color(0x804000)
                 .flags(STICKY).buildAndRegister();
 
         Diesel = new Material.Builder(GTCEu.id("diesel"))
@@ -262,7 +262,7 @@ public class UnknownCompositionMaterials {
                 .color(0xAD5203).flags(FLAMMABLE).buildAndRegister();
 
         LPG = new Material.Builder(GTCEu.id("lpg"))
-                .liquid(new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().block().customStill())
                 .color(0xFCFCAC).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
 
         RawGrowthMedium = new Material.Builder(GTCEu.id("raw_growth_medium"))
