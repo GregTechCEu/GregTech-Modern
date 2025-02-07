@@ -2871,7 +2871,7 @@
   "gtceu.machine.maintenance_hatch_full_auto.tooltip": "For automatically maintaining Multiblocks",
   "gtceu.machine.maintenance_hatch_tape_slot.tooltip": "Insert Tape to prevent problems",
   "gtceu.machine.maintenance_hatch_tool_slot.tooltip": "Click slot with empty hand when required tools are in inventory to solve problems",
-  "gtceu.machine.me.copy_paste.tooltip": "Left-click with Data Stick to copy settings, right-click to apply",
+  "gtceu.machine.me.copy_paste.tooltip": "Sneak right-click with Data Stick to copy settings, right-click to apply",
   "gtceu.machine.me.export.tooltip": "Has infinite capacity before connecting to ME network.",
   "gtceu.machine.me.fluid_export.tooltip": "Stores fluids directly into an ME network.",
   "gtceu.machine.me.fluid_import.data_stick.name": "§oME Input Hatch Configuration Data",
