@@ -743,13 +743,13 @@
     "block.gtceu.steam_casing_steel": "Стальной корпус",
     "block.gtceu.steam_casing_steel.tooltip": "§7Для улучшенных паровых машин",
     "block.gtceu.steam_grinder": "Паровой измельчитель",
-    "block.gtceu.steam_input_bus": "Входной предметный люк (Пар)",
+    "block.gtceu.steam_input_bus": "Паровой входной предметный люк",
     "block.gtceu.steam_input_hatch": "Входной жидкостный люк (Пар)",
     "block.gtceu.steam_large_turbine": "Большая паровая турбина",
     "block.gtceu.steam_liquid_boiler.bronze": "Маленький жидкостный паровой котел",
     "block.gtceu.steam_machine_casing": "Бронзовый корпус",
     "block.gtceu.steam_miner": "Паровой шахтер",
-    "block.gtceu.steam_output_bus": "Выходной предметный люк (пар",
+    "block.gtceu.steam_output_bus": "Паровой выходной предметный люк",
     "block.gtceu.steam_oven": "Паровая мультиплавильня",
     "block.gtceu.steam_solid_boiler.bronze": "Маленький угольный паровой котел",
     "block.gtceu.steel_brick_casing": "Кирпичный корпус из кованого железа",
@@ -5533,5 +5533,7 @@
     "gtceu.button.hide_depleted": "Скрыть истощенные жилы",
     "gtceu.button.show_depleted": "Показать истощенные жилы",
     "gtceu.auto_decomp.rotor": "Ротор турбины",
-    "gtceu.journeymap.options.layers.hide_depleted": "Скрыть истощенные жилы"
+    "gtceu.journeymap.options.layers.hide_depleted": "Скрыть истощенные жилы",
+    "config.gtceu.option.oreIndicators": "oreIndicators",
+    "metaarmor.tooltip.freezing": "Предотвращает замораживание"
 }
