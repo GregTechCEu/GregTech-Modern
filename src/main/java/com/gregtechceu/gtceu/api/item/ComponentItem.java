@@ -383,7 +383,7 @@ public class ComponentItem extends Item
 
     @Override
     @Deprecated
-    @SuppressWarnings("deprecation") // Used by Botania
+    @SuppressWarnings("deprecation")
     public @Nullable FoodProperties getFoodProperties() {
         // Fake item stack is ok for now, since we do not yet have foods which generate stats from NBT
         return getFoodProperties(new ItemStack(this), null);
