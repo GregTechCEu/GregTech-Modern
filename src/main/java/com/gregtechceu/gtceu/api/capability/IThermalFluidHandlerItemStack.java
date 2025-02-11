@@ -40,6 +40,7 @@ public interface IThermalFluidHandlerItemStack {
 
             FluidState fluidState = attributedFluid.getState();
             if (fluidState == FluidState.PLASMA && !isPlasmaProof()) return false;
+            if (fluidState == FluidState.GAS && !isGasProof()) return false;
         }
 
         int temperature = fluidType.getTemperature(stack);
@@ -60,6 +61,7 @@ public interface IThermalFluidHandlerItemStack {
      *
      * @return true if this fluid container allows gases, otherwise false
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isGasProof();
 
     /**
