@@ -8,20 +8,26 @@ import com.gregtechceu.gtceu.client.util.BloomUtils;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 
-import com.lowdragmc.lowdraglib.utils.ColorUtils;
-import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import static net.minecraft.util.FastColor.ARGB32.*;
+
 public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
+
+    public static final float FADEOUT = 60;
+
+    protected float delta = 0;
+    protected int lastColor = -1;
 
     public FusionReactorRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
         super(baseCasing, workableModel);
@@ -33,6 +39,9 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
+            if (machine.getColor() == -1 && delta < 0) {
+                return;
+            }
             if (GTCEu.Mods.isShimmerLoaded()) {
                 PoseStack finalStack = RenderUtils.copyPoseStack(stack);
                 BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
@@ -46,24 +55,31 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
     private void renderLightRing(FusionReactorMachine machine, float partialTicks, PoseStack stack,
                                  MultiBufferSource buffer) {
         var color = machine.getColor();
-        if (color == -1) return;
-        int ringColor = ColorUtils.blendColor(color, -1, Eases.EaseQuadIn.getInterpolation(
-                Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25));
+        var alpha = 1f;
+        if (color != -1) {
+            lastColor = color;
+            delta = FADEOUT;
+        } else {
+            alpha = delta / FADEOUT;
+            lastColor = color(Mth.floor(alpha * 255), red(lastColor), green(lastColor), blue(lastColor));
+            delta -= Minecraft.getInstance().getDeltaFrameTime();
+        }
+
+        final var lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
         var front = machine.getFrontFacing();
         var upwards = machine.getUpwardsFacing();
         var flipped = machine.isFlipped();
-        Direction relativeBack = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
-        Direction.Axis axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
-        float a = ColorUtils.alpha(ringColor);
-        float r = ColorUtils.red(ringColor);
-        float g = ColorUtils.green(ringColor);
-        float b = ColorUtils.blue(ringColor);
+        var back = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
+        var axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
+        var r = Mth.lerp(lerpFactor, red(lastColor), 255) / 255f;
+        var g = Mth.lerp(lerpFactor, green(lastColor), 255) / 255f;
+        var b = Mth.lerp(lerpFactor, blue(lastColor), 255) / 255f;
         RenderBufferHelper.renderRing(stack, buffer.getBuffer(GTRenderTypes.getLightRing()),
-                relativeBack.getStepX() * 7 + 0.5F,
-                relativeBack.getStepY() * 7 + 0.5F,
-                relativeBack.getStepZ() * 7 + 0.5F,
+                back.getStepX() * 7 + 0.5F,
+                back.getStepY() * 7 + 0.5F,
+                back.getStepZ() * 7 + 0.5F,
                 6, 0.2F, 10, 20,
-                r, g, b, a, axis);
+                r, g, b, alpha, axis);
     }
 
     @Override
