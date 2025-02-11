@@ -158,7 +158,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     protected void transferEnergyTick() {
         if (!getLevel().isClientSide) {
             if (getOffsetTimer() % 20 == 0) {
-                // active here is just used for rendering
                 averageInLastSec = netInLastSec / 20;
                 averageOutLastSec = netOutLastSec / 20;
                 netInLastSec = 0;
