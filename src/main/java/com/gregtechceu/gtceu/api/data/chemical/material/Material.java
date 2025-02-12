@@ -522,18 +522,13 @@ public class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
-    /**
-     * @since GTCEu 2.0.0
-     */
     @RemapPrefixForJS("kjs$")
-    @Accessors(fluent = true)
     public static class Builder extends BuilderBase<Material> {
 
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
 
-        @Setter
         private String formula = null;
 
         /*
@@ -1016,6 +1011,11 @@ public class Material implements Comparable<Material> {
 
         public Builder element(Element element) {
             this.materialInfo.element = element;
+            return this;
+        }
+
+        public Builder formula(String formula) {
+            this.formula = formula;
             return this;
         }
 
