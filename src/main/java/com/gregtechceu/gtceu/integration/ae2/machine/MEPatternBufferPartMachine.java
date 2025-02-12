@@ -514,7 +514,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
 
                 for (FluidStack stack : fluidInventory) {
-                    if (stack == null || stack.isEmpty()) continue;
+                    if (stack == null) continue;
+
+                    if(stack.isEmpty()) {
+                        fluidInventory.remove(stack);
+                        continue;
+                    }
 
                     int inserted = GTMath.saturatedCast(StorageHelper.poweredInsert(
                             energy,
