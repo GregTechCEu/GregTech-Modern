@@ -246,7 +246,7 @@ public class CraftingRecipeLoader {
                 .inputItems(dust, Sugar)
                 .inputFluids(Milk.getFluid(500))
                 .outputItems(COIN_CHOCOLATE)
-                .duration(600).EUt(15)
+                .duration(60).EUt(15)
                 .save(provider);
         VanillaRecipeHelper.addShapelessRecipe(provider, "credit_copper", CREDIT_COPPER.asStack(8),
                 CREDIT_CUPRONICKEL.asStack());
