@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.info;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 
 import net.minecraft.client.Minecraft;
@@ -127,7 +126,7 @@ public record MaterialIconType(String name) {
     }
 
     public static void init() {
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_TYPE.registryKey);
         }
     }
@@ -158,7 +157,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
-        if (!Platform.isClient() || Minecraft.getInstance() == null ||
+        if (!GTCEu.isClientSide() || Minecraft.getInstance() == null ||
                 Minecraft.getInstance().getResourceManager() == null)
             return null; // check minecraft for null for CI environments
         if (!iconSet.isRootIconset) {
@@ -197,7 +196,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null &&
+        if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu
@@ -224,7 +223,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null &&
+        if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu
@@ -263,7 +262,7 @@ public record MaterialIconType(String name) {
 
         MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
-        if (!iconSet.isRootIconset && Platform.isClient() && Minecraft.getInstance() != null &&
+        if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (!iconSet.isRootIconset) {
                 ResourceLocation location = GTCEu

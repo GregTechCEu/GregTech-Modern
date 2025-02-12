@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -49,11 +50,13 @@ public class RecipeAddition {
 
     private static void steelSteamMultiblocks(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.INSTANCE.machines.steelSteamMultiblocks) {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMultiMachines.STEAM_OVEN.asStack(),
+                    "CGC",
                     "FMF", "CGC", 'F', GTBlocks.FIREBOX_STEEL.asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack(),
                     'M', GTMachines.STEAM_FURNACE.right().asStack(), 'G',
                     new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.asStack(),
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder",
+                    GTMultiMachines.STEAM_GRINDER.asStack(),
                     "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F',
                     GTMachines.STEAM_MACERATOR.right().asStack(), 'C', GTBlocks.CASING_STEEL_SOLID.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB",
@@ -67,11 +70,13 @@ public class RecipeAddition {
                     GTMachines.STEAM_EXPORT_BUS.asStack(), "H", "C", 'H', GTBlocks.STEEL_HULL.asStack(), 'C',
                     Tags.Items.CHESTS_WOODEN);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMachines.STEAM_OVEN.asStack(), "CGC",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven", GTMultiMachines.STEAM_OVEN.asStack(),
+                    "CGC",
                     "FMF", "CGC", 'F', GTBlocks.FIREBOX_BRONZE.asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack(),
                     'M', GTMachines.STEAM_FURNACE.left().asStack(), 'G',
                     new UnificationEntry(TagPrefix.gear, GTMaterials.Invar));
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder", GTMachines.STEAM_GRINDER.asStack(),
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder",
+                    GTMultiMachines.STEAM_GRINDER.asStack(),
                     "CGC", "CFC", "CGC", 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Potin), 'F',
                     GTMachines.STEAM_MACERATOR.left().asStack(), 'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch", GTMachines.STEAM_HATCH.asStack(), "BPB",
@@ -1247,6 +1252,14 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "glass_pane", new ItemStack(Blocks.GLASS_PANE, 2), "sG", 'G',
                 new ItemStack(Blocks.GLASS));
 
+        for (DyeColor color : DyeColor.values()) {
+            String dyeName = color.getName();
+            VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
+                    new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 2),
+                    "sG",
+                    'G', BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")));
+        }
+
         ALLOY_SMELTER_RECIPES.recipeBuilder("tinted_glass")
                 .inputItems(new ItemStack(Blocks.GLASS))
                 .inputItems(new ItemStack(Items.AMETHYST_SHARD, 4))
@@ -1263,7 +1276,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
                 " r ", "SSS", " B ",
                 'S', new UnificationEntry(TagPrefix.dust, GTMaterials.Paper),
-                'B', new ItemStack(Items.WATER_BUCKET));
+                'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));
     }
 
     private static void hardAdvancedIronRecipes(Consumer<FinishedRecipe> provider) {

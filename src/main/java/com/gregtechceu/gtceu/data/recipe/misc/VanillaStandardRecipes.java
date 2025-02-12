@@ -54,12 +54,12 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.SAND, 2))
+                .inputItems(new ItemStack(Blocks.SAND, 4))
                 .outputItems(new ItemStack(Blocks.SANDSTONE))
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("red_sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.RED_SAND), 2)
+                .inputItems(new ItemStack(Blocks.RED_SAND), 4)
                 .outputItems(new ItemStack(Blocks.RED_SANDSTONE))
                 .save(provider);
 
@@ -208,7 +208,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         ARC_FURNACE_RECIPES.recipeBuilder("glass_from_sand").duration(20).EUt(VA[LV])
-                .inputItems(new ItemStack(Blocks.SAND))
+                .inputItems(ItemTags.SMELTS_TO_GLASS)
                 .outputItems(new ItemStack(Blocks.GLASS, 2))
                 .save(provider);
 
@@ -587,8 +587,8 @@ public class VanillaStandardRecipes {
                     .save(provider);
 
             CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_glass_to_pane").duration(20).EUt(VA[ULV])
-                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")))
-                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")))
+                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")), 3)
+                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 8)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
@@ -871,6 +871,23 @@ public class VanillaStandardRecipes {
      * Adds polished stone variant autoclave recipes
      */
     private static void miscRecipes(Consumer<FinishedRecipe> provider) {
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING))
+                    .inputItems(rodLong, Wood, 2)
+                    .inputItems(ring, Iron)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        } else {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING, 2))
+                    .inputItems(rod, Wood, 3)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        }
+
         ASSEMBLER_RECIPES.recipeBuilder("book_from_leather")
                 .inputItems(new ItemStack(Items.PAPER, 3))
                 .inputItems(new ItemStack(Items.LEATHER))

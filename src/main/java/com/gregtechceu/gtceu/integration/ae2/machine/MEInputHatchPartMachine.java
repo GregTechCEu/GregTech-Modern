@@ -146,7 +146,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     ////////////////////////////////
 
     @Override
-    public final boolean onDataStickLeftClick(Player player, ItemStack dataStick) {
+    public final InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         if (!isRemote()) {
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputHatch", writeConfigToTag());
@@ -154,11 +154,11 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             dataStick.setHoverName(Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public final InteractionResult onDataStickRightClick(Player player, ItemStack dataStick) {
+    public final InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
         CompoundTag tag = dataStick.getTag();
         if (tag == null || !tag.contains("MEInputHatch")) {
             return InteractionResult.PASS;

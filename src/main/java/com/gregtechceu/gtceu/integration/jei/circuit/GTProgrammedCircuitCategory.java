@@ -35,7 +35,7 @@ public class GTProgrammedCircuitCategory extends
 
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.programmed_circuit_page");
+        return Component.translatable("gtceu.jei.programmed_circuit");
     }
 
     @Override

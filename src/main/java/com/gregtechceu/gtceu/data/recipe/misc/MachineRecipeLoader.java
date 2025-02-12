@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -1428,7 +1429,7 @@ public class MachineRecipeLoader {
             }
         }
 
-        for (int tier : MULTI_HATCH_TIERS) {
+        for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
             var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
@@ -1455,7 +1456,7 @@ public class MachineRecipeLoader {
                     'B', importHatch9x.asStack());
         }
 
-        for (int tier : DUAL_HATCH_TIERS) {
+        for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase();
 
             var inputBuffer = DUAL_IMPORT_HATCH[tier];
@@ -1485,7 +1486,7 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_input_to_output", STEAM_IMPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_EXPORT_BUS.asStack());
 
-        if (GTCEu.isAE2Loaded()) {
+        if (GTCEu.Mods.isAE2Loaded()) {
             VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input",
                     GTAEMachines.FLUID_IMPORT_HATCH_ME.asStack(), "d", "B", 'B',
                     GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack());

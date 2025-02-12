@@ -108,7 +108,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
      */
     default boolean dampingWhenWaiting() {
-        return true;
+        return self().getDefinition().isRegressWhenWaiting();
     }
 
     /**

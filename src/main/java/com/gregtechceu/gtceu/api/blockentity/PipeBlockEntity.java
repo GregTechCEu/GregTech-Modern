@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -270,6 +270,12 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     pipeTile.getPipeType().getClass() != this.getPipeType().getClass()) {
                 return;
             }
+
+            if (!connected) {
+                var cover = getCoverContainer().getCoverAtSide(side);
+                if (cover != null && cover.canPipePassThrough()) return;
+            }
+
             connections = withSideConnection(connections, side, connected);
 
             updateNetworkConnection(side, connected);
@@ -412,7 +418,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             } else {
                 if (frameMaterial != null) {
                     Block.popResource(getLevel(), getPipePos(),
-                            GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = null;
                     playerIn.swing(hand);
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);

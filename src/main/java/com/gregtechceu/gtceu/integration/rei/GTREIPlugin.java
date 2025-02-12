@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -16,8 +17,6 @@ import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCatego
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockOreDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTOreVeinDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeREICategory;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -59,7 +58,7 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.add(new GTBedrockOreDisplayCategory());
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (Platform.isDevEnv() || category.isXEIVisible()) {
+            if (category.shouldRegisterDisplays()) {
                 registry.add(new GTRecipeREICategory(category));
             }
         }
@@ -74,7 +73,7 @@ public class GTREIPlugin implements REIClientPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreDisplayCategory.registerWorkstations(registry);
         registry.addWorkstations(GTRecipeREICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
-                EntryStacks.of(GTMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+                EntryStacks.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
     }
 
     @Override
@@ -100,7 +99,7 @@ public class GTREIPlugin implements REIClientPlugin {
             // EntryIngredients.ofItemStacks(GTItems.TOOL_ITEMS.column(toolType).values().stream().filter(Objects::nonNull).map(ItemProviderEntry::get).map(IGTTool::get).collect(Collectors.toSet()))
         }
 
-        for (var cell : GTBlocks.MATERIAL_BLOCKS.columnMap().entrySet()) {
+        for (var cell : GTMaterialBlocks.MATERIAL_BLOCKS.columnMap().entrySet()) {
             var value = cell.getValue();
             if (value.size() <= 1) continue;
 
@@ -134,6 +133,7 @@ public class GTREIPlugin implements REIClientPlugin {
     @Override
     public void registerItemComparators(ItemComparatorRegistry registry) {
         registry.registerNbt(GTItems.PROGRAMMED_CIRCUIT.asItem());
+        registry.registerNbt(GTItems.TURBINE_ROTOR.asItem());
     }
 
     @Override
