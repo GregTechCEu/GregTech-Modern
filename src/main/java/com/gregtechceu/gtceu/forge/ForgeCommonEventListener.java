@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -29,12 +30,12 @@ import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
@@ -63,6 +64,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -85,6 +89,10 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
@@ -110,8 +118,8 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-        if (event.getObject().getItem() instanceof IComponentItem componentItem) {
-            final ItemStack itemStack = event.getObject();
+        final ItemStack itemStack = event.getObject();
+        if (itemStack.getItem() instanceof IComponentItem componentItem) {
             event.addCapability(GTCEu.id("capability"), new ICapabilityProvider() {
 
                 @NotNull
@@ -120,9 +128,7 @@ public class ForgeCommonEventListener {
                     return componentItem.getCapability(itemStack, cap);
                 }
             });
-        }
-        if (event.getObject().getItem() instanceof DrumMachineItem drumMachineItem) {
-            final ItemStack itemStack = event.getObject();
+        } else if (itemStack.getItem() instanceof DrumMachineItem drumMachineItem) {
             event.addCapability(GTCEu.id("fluid"), new ICapabilityProvider() {
 
                 @Override
@@ -131,6 +137,55 @@ public class ForgeCommonEventListener {
                     return drumMachineItem.getCapability(itemStack, capability);
                 }
             });
+        } else if (itemStack.getItem() instanceof PotionItem) {
+            LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> {
+                var fluidHandler = new FluidHandlerItemStack.SwapEmpty(itemStack, new ItemStack(Items.GLASS_BOTTLE),
+                        PotionFluidHelper.BOTTLE_AMOUNT) {
+
+                    @Override
+                    protected void setFluid(FluidStack fluid) {
+                        // do nada
+                    }
+
+                    @Override
+                    public @NotNull FluidStack getFluid() {
+                        return PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT);
+                    }
+                };
+                fluidHandler.fill(PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT),
+                        IFluidHandler.FluidAction.EXECUTE);
+                return fluidHandler;
+            });
+            event.addCapability(GTCEu.id("potion_item_handler"), new ICapabilityProvider() {
+
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap,
+                                                                  @Nullable Direction side) {
+                    return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, handler);
+                }
+            });
+        } else if (itemStack.is(Items.GLASS_BOTTLE)) {
+            LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> new FilteredFluidHandlerItemStack(itemStack,
+                    250, s -> s.getFluid().is(CustomTags.POTION_FLUIDS)) {
+
+                @Override
+                protected void setFluid(FluidStack fluid) {
+                    super.setFluid(fluid);
+                    if (!fluid.isEmpty()) {
+                        container = PotionUtils.setPotion(new ItemStack(Items.POTION),
+                                PotionUtils.getPotion(fluid.getTag()));
+                    }
+                }
+            });
+            event.addCapability(GTCEu.id("bottle_item_handler"), new ICapabilityProvider() {
+
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap,
+                                                                  @Nullable Direction side) {
+                    return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, handler);
+                }
+            });
+
         }
     }
 
@@ -222,7 +277,7 @@ public class ForgeCommonEventListener {
     public static void onBreakEvent(BlockEvent.BreakEvent event) {
         var machine = MetaMachine.getMachine(event.getLevel(), event.getPos());
         if (machine != null) {
-            if (!MetaMachineBlock.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
+            if (!IMachineOwner.canBreakOwnerMachine(event.getPlayer(), machine.holder)) {
                 event.setCanceled(true);
             }
         }
@@ -240,6 +295,7 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent
@@ -433,10 +489,21 @@ public class ForgeCommonEventListener {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
             }
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getBlock());
+            }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
+            }
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getItem());
+            }
+        });
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getBlockEntityType());
             }
         });
 
@@ -525,7 +592,7 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                    BlockEntry<? extends MaterialBlock> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
                             GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.get());
@@ -535,12 +602,12 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                    BlockEntry<? extends MaterialBlock> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
                             GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends TagPrefixItem> item = GTItems.MATERIAL_ITEMS.get(prefix,
+                        ItemEntry<? extends TagPrefixItem> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
                                 GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                         if (item != null && item.isPresent()) {
                             mapping.remap(item.asItem());

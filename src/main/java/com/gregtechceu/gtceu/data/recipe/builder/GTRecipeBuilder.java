@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
@@ -905,13 +904,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
-                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
+                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()),
+                input.getAmount(), input.getTag()));
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> FluidIngredient.of(
                 TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath()),
-                fluid.getAmount())).toArray(FluidIngredient[]::new));
+                fluid.getAmount(), fluid.getTag())).toArray(FluidIngredient[]::new));
     }
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
@@ -929,14 +929,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputFluids(FluidIngredient... outputs) {
         return output(FluidRecipeCapability.CAP, outputs);
-    }
-
-    public GTRecipeBuilder inputStress(float stress) {
-        return input(StressRecipeCapability.CAP, stress);
-    }
-
-    public GTRecipeBuilder outputStress(float stress) {
-        return output(StressRecipeCapability.CAP, stress);
     }
 
     //////////////////////////////////////
@@ -1054,14 +1046,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder posY(int min, int max) {
         return posY(min, max, false);
-    }
-
-    public GTRecipeBuilder rpm(float rpm, boolean reverse) {
-        return addCondition(new RPMCondition(rpm).setReverse(reverse));
-    }
-
-    public GTRecipeBuilder rpm(float rpm) {
-        return rpm(rpm, false);
     }
 
     public GTRecipeBuilder environmentalHazard(MedicalCondition condition, boolean reverse) {
@@ -1267,12 +1251,11 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
-    // Hide raw recipes
     public GTRecipe buildRawRecipe() {
         var recipe = new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel, GTRecipeCategories.DUMMY);
+                conditions, List.of(), data, duration, isFuel, recipeCategory);
         return recipe;
     }
 

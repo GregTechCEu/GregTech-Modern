@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -23,7 +24,8 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     protected TagItemFilter() {}
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new),
+                filter -> itemStack.setTag(filter.saveFilter()));
     }
 
     private static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
@@ -43,7 +45,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
 
     @Override
     public boolean test(ItemStack itemStack) {
-        if (oreDictFilterExpression.isEmpty()) return true;
+        if (oreDictFilterExpression.isEmpty()) return false;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
         if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);

@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
@@ -469,11 +467,11 @@ public class GTRecipeLookup {
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
             FluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
-            PowerlessJetpack.FUELS.put(fluid, recipe.duration);
+            PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
         }
         List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
         if (recurseIngredientTreeAdd(recipe, items, lookup, 0, 0)) {
-            recipeType.addToCategoryMap(recipe.recipeCategory, recipe);
+            recipe.recipeCategory.addRecipe(recipe);
             return true;
         }
         return false;
@@ -515,7 +513,7 @@ public class GTRecipeLookup {
                         // handle the existing branch
                         if (v.left().isEmpty() || v.left().get() != recipe) {
                             // the recipe already there was not the one being added, so there is a conflict
-                            if (ConfigHolder.INSTANCE.dev.debug || Platform.isDevEnv()) {
+                            if (ConfigHolder.INSTANCE.dev.debug || GTCEu.isDev()) {
                                 GTCEu.LOGGER.warn(
                                         "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
                                         BuiltInRegistries.RECIPE_TYPE.getKey(this.recipeType));

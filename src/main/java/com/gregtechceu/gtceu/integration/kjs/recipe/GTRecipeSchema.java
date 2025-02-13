@@ -55,6 +55,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -641,14 +642,6 @@ public interface GTRecipeSchema {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTRecipeJS inputStress(float stress) {
-            return input(StressRecipeCapability.CAP, stress);
-        }
-
-        public GTRecipeJS outputStress(float stress) {
-            return output(StressRecipeCapability.CAP, stress);
-        }
-
         //////////////////////////////////////
         // ********** DATA ***********//
         //////////////////////////////////////
@@ -788,14 +781,6 @@ public interface GTRecipeSchema {
             return posY(min, max, false);
         }
 
-        public GTRecipeJS rpm(float rpm, boolean reverse) {
-            return addCondition(new RPMCondition(rpm).setReverse(reverse));
-        }
-
-        public GTRecipeJS rpm(float rpm) {
-            return rpm(rpm, false);
-        }
-
         public GTRecipeJS environmentalHazard(MedicalCondition condition, boolean reverse) {
             return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
         }
@@ -890,6 +875,18 @@ public interface GTRecipeSchema {
         /*
          * KubeJS overrides
          */
+
+        @Override
+        public ResourceLocation getOrCreateId() {
+            if (id == null) {
+                String prefix = type.id.getNamespace() + ":";
+                String path = "%s/%s".formatted(type.id.getPath(), "kjs_custom");
+                id = type.event.takeId(this, prefix, path);
+                String pathWithoutType = StringUtils.substringAfter(id.getPath(), '/');
+                idWithoutType = new ResourceLocation(id.getNamespace(), pathWithoutType);
+            }
+            return id;
+        }
 
         @Override
         public @Nullable Recipe<?> createRecipe() {

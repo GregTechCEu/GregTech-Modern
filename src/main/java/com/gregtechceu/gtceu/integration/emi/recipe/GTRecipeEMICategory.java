@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.emi.IGui2Renderable;
 
 import net.minecraft.Util;
@@ -18,7 +18,6 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
@@ -33,11 +32,11 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static void registerDisplays(EmiRegistry registry) {
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
-            if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+            if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
+            if (category == type.getCategory()) type.buildRepresentativeRecipes();
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
-            var recipes = type.getRecipesInCategory(category).stream();
-            Stream.concat(recipes, type.getRepresentativeRecipes().stream())
+            type.getRecipesInCategory(category).stream()
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
         }
@@ -49,7 +48,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
                     registry.addWorkstation(machineCategory(category), EmiStack.of(machine.asStack()));
                 }
             }

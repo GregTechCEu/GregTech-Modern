@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.category;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -62,6 +63,15 @@ public class GTRecipeCategory {
             else icon = new ItemStackTexture(Items.BARRIER);
         }
         return icon;
+    }
+
+    public void addRecipe(GTRecipe recipe) {
+        recipeType.addToCategoryMap(this, recipe);
+    }
+
+    public boolean shouldRegisterDisplays() {
+        return (isXEIVisible || GTCEu.isDev()) &&
+                this != GTRecipeTypes.FURNACE_RECIPES.getCategory();
     }
 
     @Override

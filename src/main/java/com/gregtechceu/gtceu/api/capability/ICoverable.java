@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -169,7 +168,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
     }
 
     default VoxelShape[] addCoverCollisionBoundingBox() {

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.test;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.test.api.machine.trait.ParallelLogicTest;
 import com.gregtechceu.gtceu.test.api.machine.trait.RecipeLogicTest;
 
 import net.minecraft.gametest.framework.GameTest;
@@ -20,7 +19,6 @@ public class GTGameTests {
 
     private static final Class<?>[] testHolders = {
             RecipeLogicTest.class,
-            ParallelLogicTest.class
     };
 
     @GameTestGenerator

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -138,6 +140,15 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * Get all parts
      */
     List<IMultiPart> getParts();
+
+    /**
+     * The instance of {@link IParallelHatch} attached to this Controller.
+     * <p>
+     * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
+     * 
+     * @return an {@link Optional} of the attached IParallelHatch, empty if one is not attached
+     */
+    Optional<IParallelHatch> getParallelHatch();
 
     /**
      * Called from part, when part is invalid due to chunk unload or broken.

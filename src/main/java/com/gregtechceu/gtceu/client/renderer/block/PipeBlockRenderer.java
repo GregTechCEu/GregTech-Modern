@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -49,7 +49,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     public PipeBlockRenderer(PipeModel pipeModel) {
         this.pipeModel = pipeModel;
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }
@@ -93,7 +93,8 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
             if (pipeNode.getFrameMaterial() != null) {
                 ResourceLocation rl = MaterialIconType.frameGt
                         .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
-                BlockState blockState = GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
+                        .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                         .getDefaultState();
                 var frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
                 for (Direction face : Direction.values()) {

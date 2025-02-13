@@ -15,8 +15,8 @@ import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public record CapabilityMapComponent(boolean isOutput) implements RecipeComponent<CapabilityMap> {
@@ -77,7 +77,7 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
                         GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {
                     RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
                     var pair = GTRecipeComponents.VALID_CAPS.get(cap);
-                    Set<Content> result = new HashSet<>();
+                    Set<Content> result = new ObjectLinkedOpenHashSet<>();
                     JsonArray value = GsonHelper.getAsJsonArray(json, key, new JsonArray());
                     for (int i = 0; i < value.size(); ++i) {
                         result.add((isOutput ? pair.getSecond() : pair.getFirst()).read(recipe, value.get(i)));

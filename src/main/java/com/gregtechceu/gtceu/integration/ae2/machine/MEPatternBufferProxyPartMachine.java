@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
@@ -20,10 +21,13 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -37,7 +41,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine implements IMachineLife {
+public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
+                                             implements IMachineLife, IDataStickInteractable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEPatternBufferProxyPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -137,5 +142,18 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
         if (MetaMachine.getMachine(getLevel(), this.bufferPos) instanceof MEPatternBufferPartMachine machine) {
             machine.removeProxy(this);
         }
+    }
+
+    @Override
+    public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
+        if (dataStick.hasTag()) {
+            if (dataStick.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY)) {
+                var posArray = dataStick.getOrCreateTag().getIntArray("pos");
+                var bufferPos = new BlockPos(posArray[0], posArray[1], posArray[2]);
+                setBuffer(bufferPos);
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.PASS;
     }
 }

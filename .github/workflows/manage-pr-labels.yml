@@ -3,19 +3,16 @@ name: Pull Request Labels
 
 # Checks for label once PR has been reviewed or label is applied
 on:
-  pull_request_review:
-    types: [submitted]
   pull_request:
-    types: [labeled]
+    types: [opened, labeled, unlabeled]
 
 concurrency:
   group: pr-labels-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
-  Labels:
-    name: On Approval
-    if: github.event_name == 'pull_request' || github.event.review.state == 'approved'
+  labels:
+    name: Label Check
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read # needed to utilize required-labels

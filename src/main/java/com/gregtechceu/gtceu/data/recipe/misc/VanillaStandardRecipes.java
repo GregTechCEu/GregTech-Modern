@@ -53,14 +53,13 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.STONE))
                 .save(provider);
 
-        // todo autogenerate 2x2 recipes?
         COMPRESSOR_RECIPES.recipeBuilder("sandstone").duration(300).EUt(2)
                 .inputItems(new ItemStack(Blocks.SAND, 4))
                 .outputItems(new ItemStack(Blocks.SANDSTONE))
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("red_sandstone").duration(300).EUt(2)
-                .inputItems(new ItemStack(Blocks.RED_SAND))
+                .inputItems(new ItemStack(Blocks.RED_SAND), 4)
                 .outputItems(new ItemStack(Blocks.RED_SANDSTONE))
                 .save(provider);
 
@@ -209,7 +208,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         ARC_FURNACE_RECIPES.recipeBuilder("glass_from_sand").duration(20).EUt(VA[LV])
-                .inputItems(new ItemStack(Blocks.SAND))
+                .inputItems(ItemTags.SMELTS_TO_GLASS)
                 .outputItems(new ItemStack(Blocks.GLASS, 2))
                 .save(provider);
 
@@ -270,23 +269,6 @@ public class VanillaStandardRecipes {
      * Adds smashing related recipes for vanilla blocks and items
      */
     private static void smashingRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "cobblestone_hammer", new ItemStack(Blocks.COBBLESTONE), "h", "C",
-                'C', new ItemStack(Blocks.STONE));
-        VanillaRecipeHelper.addShapedRecipe(provider, "cobbled_deepslate_hammer",
-                new ItemStack(Blocks.COBBLED_DEEPSLATE), "h", "C", 'C', new ItemStack(Blocks.DEEPSLATE));
-
-        FORGE_HAMMER_RECIPES.recipeBuilder("stone_to_cobblestone")
-                .inputItems(new ItemStack(Blocks.STONE))
-                .outputItems(new ItemStack(Blocks.COBBLESTONE))
-                .EUt(16).duration(10)
-                .save(provider);
-
-        FORGE_HAMMER_RECIPES.recipeBuilder("deepslate_to_cobbled_deepslate")
-                .inputItems(new ItemStack(Blocks.DEEPSLATE))
-                .outputItems(new ItemStack(Blocks.COBBLED_DEEPSLATE))
-                .EUt(16).duration(10)
-                .save(provider);
-
         FORGE_HAMMER_RECIPES.recipeBuilder("cobblestone_to_gravel")
                 .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
                 .outputItems(new ItemStack(Blocks.GRAVEL))
@@ -335,11 +317,6 @@ public class VanillaStandardRecipes {
         FORGE_HAMMER_RECIPES.recipeBuilder("chiseled_red_sandstone_to_red_sand")
                 .inputItems(new ItemStack(Blocks.CHISELED_RED_SANDSTONE))
                 .outputItems(new ItemStack(Blocks.RED_SAND))
-                .EUt(2).duration(400).save(provider);
-
-        FORGE_HAMMER_RECIPES.recipeBuilder("cracked_stone_bricks")
-                .inputItems(new ItemStack(Blocks.STONE_BRICKS))
-                .outputItems(new ItemStack(Blocks.CRACKED_STONE_BRICKS))
                 .EUt(2).duration(400).save(provider);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "clay_block_to_dust", ChemicalHelper.get(dust, Clay), 'm',
@@ -415,13 +392,6 @@ public class VanillaStandardRecipes {
                 .inputItems(ItemTags.PLANKS)
                 .outputItems(new ItemStack(Items.STICK, 2))
                 .duration(10).EUt(VA[ULV])
-                .save(provider);
-
-        LATHE_RECIPES.recipeBuilder("lathe_logs")
-                .inputItems(ItemTags.LOGS)
-                .outputItems(rodLong, Wood, 4)
-                .outputItems(dust, Wood, 2)
-                .duration(160).EUt(VA[ULV])
                 .save(provider);
 
         LATHE_RECIPES.recipeBuilder("lathe_saplings")
@@ -610,8 +580,8 @@ public class VanillaStandardRecipes {
                     .save(provider);
 
             CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_glass_to_pane").duration(20).EUt(VA[ULV])
-                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")))
-                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")))
+                    .inputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")), 3)
+                    .outputItems(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 8)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
@@ -864,7 +834,7 @@ public class VanillaStandardRecipes {
                 .circuitMeta(7)
                 .duration(700).EUt(4).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("iron_nars")
+        ASSEMBLER_RECIPES.recipeBuilder("iron_bars")
                 .inputItems(rod, Iron, 3)
                 .outputItems(new ItemStack(Blocks.IRON_BARS, 4))
                 .circuitMeta(3)
@@ -894,6 +864,23 @@ public class VanillaStandardRecipes {
      * Adds polished stone variant autoclave recipes
      */
     private static void miscRecipes(Consumer<FinishedRecipe> provider) {
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING))
+                    .inputItems(rodLong, Wood, 2)
+                    .inputItems(ring, Iron)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        } else {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING, 2))
+                    .inputItems(rod, Wood, 3)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        }
+
         ASSEMBLER_RECIPES.recipeBuilder("book_from_leather")
                 .inputItems(new ItemStack(Items.PAPER, 3))
                 .inputItems(new ItemStack(Items.LEATHER))
@@ -982,27 +969,31 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.WHITE_WOOL))
                 .duration(100).EUt(4).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone_from_vine")
+        MIXER_RECIPES.recipeBuilder("mossy_cobblestone_from_vine")
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputItems(new ItemStack(Blocks.VINE))
+                .inputFluids(Water.getFluid(250))
                 .outputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE))
                 .duration(40).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_cobblestone_from_moss_block")
+        MIXER_RECIPES.recipeBuilder("mossy_cobblestone_from_moss_block")
                 .inputItems(new ItemStack(Blocks.COBBLESTONE))
                 .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
+                .inputFluids(Water.getFluid(250))
                 .outputItems(new ItemStack(Blocks.MOSSY_COBBLESTONE))
                 .duration(40).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_stone_bricks_from_vine")
+        MIXER_RECIPES.recipeBuilder("mossy_stone_bricks_from_vine")
                 .inputItems(new ItemStack(Blocks.STONE_BRICKS))
                 .inputItems(new ItemStack(Blocks.VINE))
+                .inputFluids(Water.getFluid(250))
                 .outputItems(new ItemStack(Blocks.MOSSY_STONE_BRICKS))
                 .duration(40).EUt(1).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mossy_stone_bricks_from_moss_block")
+        MIXER_RECIPES.recipeBuilder("mossy_stone_bricks_from_moss_block")
                 .inputItems(new ItemStack(Blocks.STONE_BRICKS))
                 .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
+                .inputFluids(Water.getFluid(250))
                 .outputItems(new ItemStack(Blocks.MOSSY_STONE_BRICKS))
                 .duration(40).EUt(1).save(provider);
 
@@ -1027,9 +1018,9 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.POPPED_CHORUS_FRUIT)).inputItems(new ItemStack(Items.BLAZE_ROD))
                 .outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV])
+        ASSEMBLER_RECIPES.recipeBuilder("shulker_box").duration(100).EUt(VA[ULV])
                 .inputItems(Tags.Items.CHESTS_WOODEN).inputItems(new ItemStack(Items.SHULKER_SHELL, 2))
-                .outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
+                .outputItems(new ItemStack(Blocks.SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL)
                 .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
@@ -1194,6 +1185,34 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.NAUTILUS_SHELL, 8))
                 .outputItems(new ItemStack(Blocks.CONDUIT))
                 .duration(200).EUt(16).save(provider);
+
+        ALLOY_SMELTER_RECIPES.recipeBuilder("granite")
+                .inputItems(new ItemStack(Items.DIORITE))
+                .inputItems(new ItemStack(Items.QUARTZ))
+                .outputItems(new ItemStack(Items.GRANITE))
+                .duration(80).EUt(4).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("diorite")
+                .inputItems(new ItemStack(Items.COBBLESTONE, 2))
+                .inputItems(new ItemStack(Items.QUARTZ, 2))
+                .outputItems(new ItemStack(Items.DIORITE, 2))
+                .duration(80).EUt(4).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("andesite")
+                .inputItems(new ItemStack(Items.DIORITE))
+                .inputItems(new ItemStack(Items.COBBLESTONE))
+                .outputItems(new ItemStack(Items.ANDESITE, 2))
+                .duration(80).EUt(4).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("assemble_block_of_quartz_into_quartz_pillar")
+                .inputItems(new ItemStack(Items.QUARTZ_BLOCK))
+                .circuitMeta(5)
+                .outputItems(new ItemStack(Items.QUARTZ_PILLAR))
+                .duration(80).EUt(1).save(provider);
+
+        MIXER_RECIPES.recipeBuilder("packed_mud")
+                .inputItems(new ItemStack(Items.MUD))
+                .inputItems(new ItemStack(Items.WHEAT))
+                .outputItems(new ItemStack(Items.PACKED_MUD))
+                .duration(80).EUt(4).save(provider);
     }
 
     /**
@@ -1346,7 +1365,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("dark_prismarine")
-                .inputItems(new ItemStack(Items.PRISMARINE_SHARD, 8))
+                .inputItems(new ItemStack(Items.PRISMARINE_SHARD, 4))
                 .inputFluids(DyeBlack.getFluid(L))
                 .outputItems(new ItemStack(Blocks.DARK_PRISMARINE))
                 .duration(20).EUt(VA[ULV]).save(provider);

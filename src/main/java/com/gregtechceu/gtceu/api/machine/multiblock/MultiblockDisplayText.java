@@ -344,7 +344,9 @@ public class MultiblockDisplayText {
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
                 for (var item : itemOutputs) {
-                    var stack = (ItemRecipeCapability.CAP.of(item.content).getItems()[0]);
+                    var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                    if (stacks.length == 0) continue;
+                    var stack = stacks[0];
                     int count = stack.getCount();
                     double countD = count;
                     if (item.chance < item.maxChance) {
@@ -363,7 +365,9 @@ public class MultiblockDisplayText {
                     }
                 }
                 for (var fluid : fluidOutputs) {
-                    var stack = (FluidRecipeCapability.CAP.of(fluid.content).getStacks()[0]);
+                    var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                    if (stacks.length == 0) continue;
+                    var stack = stacks[0];
                     int amount = stack.getAmount();
                     double amountD = amount;
                     if (fluid.chance < fluid.maxChance) {
@@ -398,21 +402,24 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addParallelsLine(int numParallels) {
+            return addParallelsLine(numParallels, false);
+        }
+
         /**
          * Adds a line indicating how many parallels this multi can potentially perform.
          * <br>
          * Added if structure is formed and the number of parallels is greater than one.
          */
-        public Builder addParallelsLine(int numParallels) {
+        public Builder addParallelsLine(int numParallels, boolean exact) {
             if (!isStructureFormed)
                 return this;
             if (numParallels > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(numParallels))
                         .withStyle(ChatFormatting.DARK_PURPLE);
-
-                textList.add(Component.translatable(
-                        "gtceu.multiblock.parallel",
-                        parallels)
+                String key = "gtceu.multiblock.parallel";
+                if (exact) key += ".exact";
+                textList.add(Component.translatable(key, parallels)
                         .withStyle(ChatFormatting.GRAY));
             }
             return this;

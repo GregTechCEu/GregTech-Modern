@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -41,6 +43,8 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,10 +72,14 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
-    /** Whether this multi can be rotated or face upwards. */
+    /**
+     * Whether this multi can be rotated or face upwards.
+     */
     @Setter
     private boolean allowExtendedFacing = true;
-    /** Set this to false only if your multiblock is set up such that it could have a wall-shared controller. */
+    /**
+     * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
+     */
     @Setter
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
@@ -120,6 +128,16 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return this;
+    }
+
+    @Override
+    public MultiblockMachineBuilder definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
+        return (MultiblockMachineBuilder) super.definition(definition);
+    }
+
+    @Override
+    public MultiblockMachineBuilder machine(Function<IMachineBlockEntity, MetaMachine> machine) {
+        return (MultiblockMachineBuilder) super.machine(machine);
     }
 
     @Override
@@ -351,6 +369,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder regressWhenWaiting(boolean dampingWhenWaiting) {
+        return (MultiblockMachineBuilder) super.regressWhenWaiting(dampingWhenWaiting);
+    }
+
+    @Override
     public MultiblockMachineBuilder editableUI(@Nullable EditableMachineUI editableUI) {
         return (MultiblockMachineBuilder) super.editableUI(editableUI);
     }
@@ -361,6 +384,15 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public void generateLang(LangEventJS lang) {
+        super.generateLang(lang);
+        if (langValue() != null) {
+            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
+        }
+    }
+
+    @Override
+    @HideFromJS
     public MultiblockMachineDefinition register() {
         var definition = (MultiblockMachineDefinition) super.register();
         definition.setGenerator(generator);
@@ -382,6 +414,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
-        return definition;
+        return value = definition;
     }
 }

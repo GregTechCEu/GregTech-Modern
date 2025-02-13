@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-
-import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +27,7 @@ public class EnergyNetWalker extends PipeNetWalker<CableBlockEntity, WirePropert
             walker.traversePipeNet();
             return walker.routes;
         } catch (Exception e) {
-            LDLib.LOGGER.error("error while create net data for energynet", e);
+            GTCEu.LOGGER.error("error while create net data for energynet", e);
         }
         return null;
     }

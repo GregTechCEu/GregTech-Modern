@@ -331,15 +331,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return GTRecipeSerializer.SERIALIZER.fromJson(id, builder.build().serializeRecipe());
     }
 
-    public @NotNull List<GTRecipe> getRepresentativeRecipes() {
-        List<GTRecipe> recipes = new ArrayList<>();
+    public void buildRepresentativeRecipes() {
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
-            List<GTRecipe> logicRecipes = logic.getRepresentativeRecipes();
-            if (logicRecipes != null && !logicRecipes.isEmpty()) {
-                recipes.addAll(logicRecipes);
-            }
+            logic.buildRepresentativeRecipes();
         }
-        return recipes;
+    }
+
+    public void addToMainCategory(GTRecipe recipe) {
+        addToCategoryMap(category, recipe);
     }
 
     public void addToCategoryMap(GTRecipeCategory category, GTRecipe recipe) {
@@ -357,19 +356,17 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public interface ICustomRecipeLogic {
 
         /**
-         * @return A custom recipe to run given the current Scanner's inputs. Will be called only if a registered
+         * @return A custom recipe to run given the current holder's inputs. Will be called only if a registered
          *         recipe is not found to run. Return null if no recipe should be run by your logic.
          */
         @Nullable
         GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder);
 
         /**
-         * @return A list of Recipes that are never registered, but are added to JEI to demonstrate the custom logic.
-         *         Not required, can return empty or null to not add any.
+         * Build all representative recipes in this method, then add them to the appropriate recipe category.
+         * These are added to XEI to demonstrate the custom logic.
+         * Not required, can NOOP if unneeded.
          */
-        @Nullable
-        default List<GTRecipe> getRepresentativeRecipes() {
-            return null;
-        }
+        default void buildRepresentativeRecipes() {}
     }
 }

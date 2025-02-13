@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -41,6 +38,12 @@ public class RecipeHelper {
                 .sum();
     }
 
+    public static long getRealEUt(@NotNull GTRecipe recipe) {
+        long EUt = getInputEUt(recipe);
+        if (EUt > 0) return EUt;
+        return -getOutputEUt(recipe);
+    }
+
     public static void setInputEUt(GTRecipe recipe, long eut) {
         recipe.getTickInputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
     }
@@ -64,53 +67,6 @@ public class RecipeHelper {
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
-    }
-
-    /**
-     * Calculates the overclocked Recipe's final duration and EU/t
-     *
-     * @param recipe the recipe to run
-     * @return a new recipe
-     */
-    public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage,
-                                          @NotNull OCParams params, @NotNull OCResult result) {
-        long EUt = getInputEUt(recipe);
-        if (EUt > 0) {
-            performOverclocking(logic, recipe, EUt, maxOverclockVoltage, params, result);
-        }
-        EUt = getOutputEUt(recipe);
-        if (EUt > 0) {
-            performOverclocking(logic, recipe, -EUt, maxOverclockVoltage, params, result);
-        }
-        return recipe;
-    }
-
-    /**
-     * Determines the maximum number of overclocks that can be performed for a recipe.
-     * Then performs overclocking on the Recipe.
-     *
-     * @param recipe the recipe to overclock
-     */
-    public static void performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt,
-                                           long maxOverclockVoltage,
-                                           @NotNull OCParams params, @NotNull OCResult result) {
-        int recipeTier = GTUtil.getTierByVoltage(Math.abs(EUt));
-        int maximumTier = logic.getOverclockForTier(maxOverclockVoltage);
-        // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
-        // and the maximum tier that the machine can overclock to.
-        int numberOfOCs = maximumTier - recipeTier;
-        if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
-
-        // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
-
-        params.initialize(EUt, recipe.duration, numberOfOCs);
-        if (params.getOcAmount() <= 0) {
-            // number of OCs is <=0, so do not overclock
-            result.init(params.getEut(), params.getDuration(), numberOfOCs);
-        } else {
-            logic.getLogic().runOverclockingLogic(params, result, maxOverclockVoltage);
-        }
-        params.reset();
     }
 
     public static <T> List<T> getInputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {

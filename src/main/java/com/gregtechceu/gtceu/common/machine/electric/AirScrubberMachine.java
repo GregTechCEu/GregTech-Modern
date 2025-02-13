@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.GTValues.VHA;
@@ -33,14 +35,14 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
 
     public static final float MIN_CLEANING_PER_OPERATION = 10;
 
-    private final float cleaningPerOperation;
+    private float cleaningPerOperation;
 
     @Getter
     private float removedLastSecond;
 
     public AirScrubberMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier, GTMachines.largeTankSizeFunction, args);
-        this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * tier;
+        super(holder, tier, GTMachineUtils.largeTankSizeFunction, args);
+        this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION;
     }
 
     @Override
@@ -61,12 +63,25 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     }
 
     @Override
-    public boolean onWorking() {
-        if (!super.onWorking()) {
-            return false;
-        }
-        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+    public boolean isRecipeLogicAvailable() {
+        // Don't run recipes if hazards are off
+        return ConfigHolder.INSTANCE.gameplay.environmentalHazards;
+    }
+
+    @Override
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        if (super.beforeWorking(recipe) && recipe != null) {
+            // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
+            this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1);
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onWorking() {
+        if (!super.onWorking() || !ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            return false;
         }
 
         if (getOffsetTimer() % 20 == 0) {

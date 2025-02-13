@@ -49,6 +49,8 @@ public class IntegrationLang {
         LangHandler.replace(provider, "gtceu.jei.ore_vein.pitchblende_vein_end", "End Pitchblende Vein");
         LangHandler.replace(provider, "gtceu.jei.ore_vein.redstone_vein_ow", "Redstone Vein");
         LangHandler.replace(provider, "gtceu.jei.ore_vein.redstone_vein_nether", "Nether Redstone Vein");
+      
+        provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
     /** Jade, TheOneProbe, WTHIT */
@@ -119,5 +121,7 @@ public class IntegrationLang {
 
         provider.add("gtceu.journeymap.options.layers", "Prospection layers");
         provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
+        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
     }
 }

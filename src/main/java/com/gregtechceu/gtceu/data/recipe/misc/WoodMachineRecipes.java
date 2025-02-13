@@ -389,7 +389,7 @@ public class WoodMachineRecipes {
             }
             if (entry.addFenceGatesUnificationInfo) {
                 ChemicalHelper.registerMaterialInfo(entry.fenceGate,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, M * 3)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material, M * 2)));
             }
         }
 
@@ -399,7 +399,7 @@ public class WoodMachineRecipes {
             }
             if (entry.addStairsUnificationInfo) {
                 ChemicalHelper.registerMaterialInfo(entry.stairs,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, (3 * M) / 2)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material, (3 * M) / 4)));
             }
         }
 
@@ -420,7 +420,7 @@ public class WoodMachineRecipes {
 
         if (entry.pressurePlate != null && entry.addPressurePlatesUnificationInfo) {
             ChemicalHelper.registerMaterialInfo(entry.pressurePlate,
-                    new ItemMaterialInfo(new MaterialStack(entry.material, M)));
+                    new ItemMaterialInfo(new MaterialStack(entry.material, M / 4)));
         }
     }
 
@@ -438,6 +438,36 @@ public class WoodMachineRecipes {
         if (entry.planks == null) {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
+
+        // strip log
+        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_log")
+                .inputItems(entry.log)
+                .outputItems(entry.strippedLog)
+                .outputItems(dust, Wood, 1)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
+        // strip wood
+        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_wood")
+                .inputItems(entry.wood)
+                .outputItems(entry.strippedWood)
+                .outputItems(dust, Wood, 1)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
+
+        // lathe stripped log
+        LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_log")
+                .inputItems(entry.strippedLog)
+                .outputItems(rodLong, Wood, 4)
+                .outputItems(dust, Wood, 1)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
+        // lathe stripped wood
+        LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_wood")
+                .inputItems(entry.strippedWood)
+                .outputItems(rodLong, Wood, 4)
+                .outputItems(dust, Wood, 1)
+                .duration(160).EUt(VA[ULV])
+                .save(provider);
 
         if (entry.generateLogToPlankRecipe) {
             if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -39,7 +40,7 @@ public class MiscRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
                 "PWP", "SLS", "PPP", 'P', new UnificationEntry(plate, Steel), 'W',
                 new UnificationEntry(wireGtSingle, Copper), 'S', new UnificationEntry(screw, RedAlloy), 'L',
-                ELECTRONIC_CIRCUIT_LV);
+                CustomTags.LV_CIRCUITS);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
                 new UnificationEntry(dust, Copper),
@@ -389,11 +390,13 @@ public class MiscRecipeLoader {
             EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputFluids(Glass.getFluid(108))
+                    .category(GTRecipeCategories.EXTRACTOR_RECYCLING)
                     .save(provider);
 
             MACERATOR_RECIPES.recipeBuilder("macerate_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputItems(dustSmall, Glass, 3)
+                    .category(GTRecipeCategories.MACERATOR_RECYCLING)
                     .save(provider);
         }
 
@@ -518,7 +521,7 @@ public class MiscRecipeLoader {
                     "MMM", "SES", " D ",
                     'E', Items.EGG,
                     'S', Items.SUGAR,
-                    'M', Items.MILK_BUCKET,
+                    'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
                     'D', DOUGH);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
@@ -555,7 +558,7 @@ public class MiscRecipeLoader {
                     "BBB", "SMS", "DDD",
                     'B', Items.SWEET_BERRIES,
                     'S', Items.SUGAR,
-                    'M', Items.MILK_BUCKET,
+                    'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
                     'D', DOUGH);
         }
 
