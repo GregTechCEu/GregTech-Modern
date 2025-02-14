@@ -439,7 +439,7 @@ public class WoodMachineRecipes {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
-        if(entry.strippedLog != null) {
+        if (entry.strippedLog != null) {
             // strip log
             LATHE_RECIPES.recipeBuilder("strip_" + name + "_log")
                     .inputItems(entry.log)
@@ -457,7 +457,7 @@ public class WoodMachineRecipes {
                     .save(provider);
         }
 
-        if(entry.strippedWood != null) {
+        if (entry.strippedWood != null) {
             // strip wood
             LATHE_RECIPES.recipeBuilder("strip_" + name + "_wood")
                     .inputItems(entry.wood)
@@ -465,7 +465,6 @@ public class WoodMachineRecipes {
                     .outputItems(dust, Wood, 1)
                     .duration(160).EUt(VA[ULV])
                     .save(provider);
-
 
             // lathe stripped wood
             LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_wood")
