@@ -439,35 +439,41 @@ public class WoodMachineRecipes {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
         }
 
-        // strip log
-        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_log")
-                .inputItems(entry.log)
-                .outputItems(entry.strippedLog)
-                .outputItems(dust, Wood, 1)
-                .duration(160).EUt(VA[ULV])
-                .save(provider);
-        // strip wood
-        LATHE_RECIPES.recipeBuilder("strip_" + entry.woodName + "_wood")
-                .inputItems(entry.wood)
-                .outputItems(entry.strippedWood)
-                .outputItems(dust, Wood, 1)
-                .duration(160).EUt(VA[ULV])
-                .save(provider);
+        if (entry.strippedLog != null) {
+            // strip log
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_log")
+                    .inputItems(entry.log)
+                    .outputItems(entry.strippedLog)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
 
-        // lathe stripped log
-        LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_log")
-                .inputItems(entry.strippedLog)
-                .outputItems(rodLong, Wood, 4)
-                .outputItems(dust, Wood, 1)
-                .duration(160).EUt(VA[ULV])
-                .save(provider);
-        // lathe stripped wood
-        LATHE_RECIPES.recipeBuilder("lathe_stripped_" + entry.woodName + "_wood")
-                .inputItems(entry.strippedWood)
-                .outputItems(rodLong, Wood, 4)
-                .outputItems(dust, Wood, 1)
-                .duration(160).EUt(VA[ULV])
-                .save(provider);
+            // lathe stripped log
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_log")
+                    .inputItems(entry.strippedLog)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+        }
+
+        if (entry.strippedWood != null) {
+            // strip wood
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_wood")
+                    .inputItems(entry.wood)
+                    .outputItems(entry.strippedWood)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+
+            // lathe stripped wood
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_wood")
+                    .inputItems(entry.strippedWood)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+        }
 
         if (entry.generateLogToPlankRecipe) {
             if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
