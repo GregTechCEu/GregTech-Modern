@@ -160,8 +160,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
                 true);
 
-        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
     }
 
     @Override
