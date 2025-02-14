@@ -42,9 +42,9 @@ public class ActiveBlockBuilder extends BlockBuilder {
         return this;
     }
 
-    public ActiveBlockBuilder bloom(String texture) {
-        textures.addProperty("base", texture);
-        textures.addProperty("bloom", texture + "_bloom");
+    public ActiveBlockBuilder bloom(String base) {
+        textures.addProperty("base", base);
+        textures.addProperty("bloom", base + "_bloom");
         type = Type.BLOOM;
         return this;
     }
