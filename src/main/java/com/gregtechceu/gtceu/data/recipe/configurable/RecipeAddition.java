@@ -1276,7 +1276,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
                 " r ", "SSS", " B ",
                 'S', new UnificationEntry(TagPrefix.dust, GTMaterials.Paper),
-                'B', new ItemStack(Items.WATER_BUCKET));
+                'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));
     }
 
     private static void hardAdvancedIronRecipes(Consumer<FinishedRecipe> provider) {

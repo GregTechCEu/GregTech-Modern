@@ -382,6 +382,14 @@ public class ComponentItem extends Item
     }
 
     @Override
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public @Nullable FoodProperties getFoodProperties() {
+        // Fake item stack is ok for now, since we do not yet have foods which generate stats from NBT
+        return getFoodProperties(new ItemStack(this), null);
+    }
+
+    @Override
     public boolean isEdible() {
         for (IItemComponent component : components) {
             if (component instanceof IEdibleItem foodBehavior) {

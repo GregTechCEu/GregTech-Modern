@@ -301,6 +301,7 @@ public class LangHandler {
         provider.add("metaarmor.tooltip.falldamage", "Nullifies Fall Damage");
         provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
         provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
+        provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
         provider.add("metaarmor.tooltip.breath", "Replenishes Underwater Breath Bar");
         provider.add("metaarmor.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
         provider.add("metaarmor.hud.status.enabled", "§aON");
@@ -440,6 +441,7 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_north", "Control Cover (North)");
         provider.add("cover.machine_controller.mode.cover_east", "Control Cover (East)");
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
+        provider.add("cover.machine_controller.mode.null", "Control Nothing");
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
@@ -1142,6 +1144,7 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
+        provider.add("gtceu.multiblock.parallel.exact", "Performing %d Recipes in Parallel");
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");

@@ -351,6 +351,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
         } else if (type == ArmorItem.Type.CHESTPLATE) {
             lines.add(Component.translatable("metaarmor.tooltip.burning"));
+            lines.add(Component.translatable("metaarmor.tooltip.freezing"));
         } else if (type == ArmorItem.Type.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {

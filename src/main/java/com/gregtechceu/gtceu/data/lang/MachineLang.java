@@ -789,7 +789,7 @@ public class MachineLang {
         provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
                 "Auto-Pull Disabled");
         provider.add("gtceu.machine.me.copy_paste.tooltip",
-                "Left-click with Data Stick to copy settings, right-click to apply");
+                "Sneak right-click with Data Stick to copy settings, right-click to apply");
         provider.add("gtceu.machine.me.import_copy_settings",
                 "Saved settings to Data Stick");
         provider.add("gtceu.machine.me.import_paste_settings",

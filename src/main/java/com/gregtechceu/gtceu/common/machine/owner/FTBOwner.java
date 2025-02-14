@@ -61,6 +61,16 @@ public final class FTBOwner implements IMachineOwner {
     }
 
     @Override
+    public UUID getUUID() {
+        return team.getId();
+    }
+
+    @Override
+    public String getName() {
+        return team.getName().getString();
+    }
+
+    @Override
     public void displayInfo(List<Component> compList) {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         compList.add(Component.translatable("behavior.portable_scanner.team_name", team.getName()));

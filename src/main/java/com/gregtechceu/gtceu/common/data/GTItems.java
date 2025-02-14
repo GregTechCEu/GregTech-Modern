@@ -41,6 +41,7 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -2224,12 +2225,13 @@ public class GTItems {
             .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
             .register();
 
-    public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
+    public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
         DyeColor[] colors = DyeColor.values();
         for (int i = 0; i < colors.length; i++) {
             var dyeColor = colors[i];
-            DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
+            DYE_ONLY_ITEMS[i] = REGISTRATE
+                    .item("chemical_%s_dye".formatted(dyeColor.getName()), (props) -> new DyeItem(dyeColor, props))
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
                     .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
                     .register();
@@ -2440,6 +2442,7 @@ public class GTItems {
             .lang("QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .tag(Tags.Items.ARMORS_CHESTPLATES)
+            .tag(ItemTags.FREEZE_IMMUNE_WEARABLES)
             .tag(CustomTags.PPE_ARMOR)
             .register();
     public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE
@@ -2537,6 +2540,7 @@ public class GTItems {
             .lang("Advanced QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.EPIC))
             .tag(Tags.Items.ARMORS_CHESTPLATES)
+            .tag(ItemTags.FREEZE_IMMUNE_WEARABLES)
             .tag(CustomTags.PPE_ARMOR)
             .register();
 

@@ -146,6 +146,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+    @Getter
+    @Setter
+    private boolean regressWhenWaiting = true;
 
     @Setter
     private Supplier<BlockState> appearance;
@@ -365,6 +368,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setOnWorking(this.onWorking);
         definition.setOnWaiting(this.onWaiting);
         definition.setAfterWorking(this.afterWorking);
+        definition.setRegressWhenWaiting(this.regressWhenWaiting);
 
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
