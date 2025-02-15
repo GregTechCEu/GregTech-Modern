@@ -5535,5 +5535,6 @@
     "gtceu.auto_decomp.rotor": "Ротор турбины",
     "gtceu.journeymap.options.layers.hide_depleted": "Скрыть истощенные жилы",
     "config.gtceu.option.oreIndicators": "oreIndicators",
-    "metaarmor.tooltip.freezing": "Предотвращает замораживание"
+    "metaarmor.tooltip.freezing": "Предотвращает замораживание",
+    "config.gtceu.option.minerSpeed": "minerSpeed"
 }
