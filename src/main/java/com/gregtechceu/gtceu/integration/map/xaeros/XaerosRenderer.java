@@ -50,4 +50,10 @@ public class XaerosRenderer extends GenericMapRenderer {
     public void setLayerActive(String name, boolean active) {
         XaerosMapPlugin.toggleOption(name, active);
     }
+
+    @Override
+    public void clear() {
+        oreElements.clear();
+        fluidElements.clear();
+    }
 }
