@@ -5340,7 +5340,7 @@
     "gtceu.key.enable_jetpack": "Включить Реактивный ранец",
     "gtceu.machine.dual_hatch.export.tooltip": "Предметный и Жидкостный вывод для Многоблочных структур",
     "gtceu.machine.dual_hatch.import.tooltip": "Предметный и Жидкостный ввод для Многоблочных структур",
-    "gtceu.machine.me.copy_paste.tooltip": "ЛКМ с Флешкой для копирования, ПКМ для применения",
+    "gtceu.machine.me.copy_paste.tooltip": "Shift + ПКМ с Флешкой для копирования, ПКМ для применения",
     "gtceu.machine.me.fluid_import.data_stick.name": "§oНастройки ME жидкостного люка",
     "gtceu.machine.me.import_copy_settings": "Настройки сохранены в Флешку",
     "gtceu.machine.me.import_paste_settings": "Настройки из Флешки применены",
@@ -5536,5 +5536,6 @@
     "gtceu.journeymap.options.layers.hide_depleted": "Скрыть истощенные жилы",
     "config.gtceu.option.oreIndicators": "oreIndicators",
     "metaarmor.tooltip.freezing": "Предотвращает замораживание",
-    "config.gtceu.option.minerSpeed": "minerSpeed"
+    "config.gtceu.option.minerSpeed": "minerSpeed",
+    "cover.machine_controller.mode.null": "Ничем не управлять"
 }
