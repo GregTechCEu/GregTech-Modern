@@ -5418,6 +5418,8 @@
   "recipe.capability.item.name": "Item",
   "recipe.condition.adjacent_block.tooltip": "Blocks around",
   "recipe.condition.biome.tooltip": "Biome: %s",
+  "recipe.condition.daytime.day.tooltip": "Requires day time to work",
+  "recipe.condition.daytime.night.tooltip": "Requires night time to work",
   "recipe.condition.dimension.tooltip": "Dimension: %s",
   "recipe.condition.dimension_marker.tooltip": "Dimension:",
   "recipe.condition.eu_to_start.tooltip": "EU to Start: %d%s",

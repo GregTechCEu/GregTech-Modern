@@ -5418,6 +5418,8 @@
   "recipe.capability.item.name": "ɯǝʇI",
   "recipe.condition.adjacent_block.tooltip": "punoɹɐ sʞɔoןᗺ",
   "recipe.condition.biome.tooltip": "%s :ǝɯoıᗺ",
+  "recipe.condition.daytime.day.tooltip": "ʞɹoʍ oʇ ǝɯıʇ ʎɐp sǝɹınbǝᴚ",
+  "recipe.condition.daytime.night.tooltip": "ʞɹoʍ oʇ ǝɯıʇ ʇɥbıu sǝɹınbǝᴚ",
   "recipe.condition.dimension.tooltip": "%s :uoısuǝɯıᗡ",
   "recipe.condition.dimension_marker.tooltip": ":uoısuǝɯıᗡ",
   "recipe.condition.eu_to_start.tooltip": "%d%s :ʇɹɐʇS oʇ ∩Ǝ",
