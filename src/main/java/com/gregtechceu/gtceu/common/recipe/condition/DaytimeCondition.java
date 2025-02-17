@@ -24,19 +24,13 @@ public class DaytimeCondition extends RecipeCondition {
 
     public static final Codec<DaytimeCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
                     .apply(instance, DaytimeCondition::new));
 
     public final static DaytimeCondition INSTANCE = new DaytimeCondition();
     private float level;
 
-    public DaytimeCondition(boolean isReverse, float level) {
+    public DaytimeCondition(boolean isReverse) {
         super(isReverse);
-        this.level = level;
-    }
-
-    public DaytimeCondition(float level) {
-        this.level = level;
     }
 
     @Override
