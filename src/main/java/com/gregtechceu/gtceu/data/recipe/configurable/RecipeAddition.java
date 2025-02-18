@@ -474,8 +474,21 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Blocks.CALIBRATED_SCULK_SENSOR))
                     .duration(200).EUt(16).save(provider);
 
-            ASSEMBLER_RECIPES.recipeBuilder("target").duration(100).EUt(16).inputItems(Items.REDSTONE, 4)
-                    .inputItems(Items.HAY_BLOCK).outputItems(new ItemStack(Blocks.TARGET)).save(provider);
+            VanillaRecipeHelper.addShapedRecipe(provider, "target", new ItemStack(Items.TARGET), "RBR",
+                    "PHP", "RPR",
+                    'R', new UnificationEntry(dust, Redstone),
+                    'P', new ItemStack(Items.PAPER),
+                    'H', new ItemStack(Items.HAY_BLOCK),
+                    'B', ItemTags.WOODEN_BUTTONS); // wooden buttons because ONLY WOODEN BUTTONS CAN BE TRIGGERED WITH
+                                                   // PROJECTILES. NO STONE!!
+
+            ASSEMBLER_RECIPES.recipeBuilder("target")
+                    .inputItems(dust, Redstone, 4)
+                    .inputItems(ItemTags.WOODEN_BUTTONS)
+                    .inputItems(new ItemStack(Items.PAPER), 3)
+                    .inputItems(new ItemStack(Items.HAY_BLOCK))
+                    .outputItems(new ItemStack(Items.TARGET))
+                    .duration(200).EUt(120).save(provider);
 
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "piston_bronze", new ItemStack(Blocks.PISTON, 1), "WWW",
@@ -1132,12 +1145,6 @@ public class RecipeAddition {
                     .inputItems(plate, Glowstone, 3)
                     .outputItems(new ItemStack(Items.RESPAWN_ANCHOR))
                     .duration(200).EUt(120).save(provider);
-
-            // TODO target block recipe, havent a clue what to put here
-            // VanillaRecipeHelper.addShapedRecipe(provider, "target", new ItemStack(Items.TARGET), "CCC",
-            // "GGG", "CCC",
-            // 'L', new ItemStack(Items.CRYING_OBSIDIAN),
-            // 'G', new UnificationEntry(plate, Glowstone));
 
             for (DyeColor color : DyeColor.values()) {
                 addBedRecipe(provider, color);
