@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
@@ -75,10 +76,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -258,6 +256,18 @@ public class ForgeCommonEventListener {
                 continue;
             }
             tracker.progressRelatedCondition(material);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
+        if (event.getEntity() instanceof Player player) {
+            ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (helmet.is(GTItems.QUANTUM_HELMET.asItem()) &&
+                    helmet.getItem() instanceof ArmorComponentItem helmetComponent &&
+                    helmetComponent.getArmorLogic() instanceof QuarkTechSuite quarkHelmet) {
+                quarkHelmet.removeNegativeEffects(GTCapabilityHelper.getElectricItem(helmet), event);
+            }
         }
     }
 
