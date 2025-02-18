@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 
 public class CraftingRecipeLoader {
 
@@ -240,14 +239,6 @@ public class CraftingRecipeLoader {
                 new MaterialEntry(dust, Cocoa), new MaterialEntry(foil, Gold),
                 new FluidContainerIngredient(Milk.getFluidTag(), 1000),
                 new MaterialEntry(dust, Sugar));
-        ASSEMBLER_RECIPES.recipeBuilder("chocolate_coin")
-                .inputItems(dust, Cocoa)
-                .inputItems(foil, Gold)
-                .inputItems(dust, Sugar)
-                .inputFluids(Milk.getFluid(500))
-                .outputItems(COIN_CHOCOLATE)
-                .duration(60).EUt(15)
-                .save(provider);
         VanillaRecipeHelper.addShapelessRecipe(provider, "credit_copper", CREDIT_COPPER.asStack(8),
                 CREDIT_CUPRONICKEL.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "credit_cupronickel_alt", CREDIT_CUPRONICKEL.asStack(),
