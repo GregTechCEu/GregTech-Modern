@@ -49,14 +49,13 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.GTValues.IV;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Aluminium;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
@@ -439,12 +438,16 @@ public class GTMultiMachines {
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
-                if (GTCEu.isAE2Loaded())
+                if (GTCEu.Mods.isAE2Loaded()) {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                }
                 exportPredicate.setMaxLayerLimited(1);
+                TraceabilityPredicate maint = autoAbilities(true, false, false)
+                        .setMaxGlobalLimited(1);
                 return FactoryBlockPattern.start(RIGHT, BACK, UP)
                         .aisle("YSY", "YYY", "YYY")
-                        .aisle("XXX", "X#X", "XXX").setRepeatable(1, 11)
+                        .aisle("ZZZ", "Z#Z", "ZZZ")
+                        .aisle("XXX", "X#X", "XXX").setRepeatable(0, 10)
                         .aisle("XXX", "XXX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('Y', blocks(CASING_STAINLESS_CLEAN.get())
@@ -452,7 +455,10 @@ public class GTMultiMachines {
                                 .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                         .setMaxGlobalLimited(2))
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
-                                .or(autoAbilities(true, false, false)))
+                                .or(maint))
+                        .where('Z', blocks(CASING_STAINLESS_CLEAN.get())
+                                .or(exportPredicate)
+                                .or(maint))
                         .where('X', blocks(CASING_STAINLESS_CLEAN.get()).or(exportPredicate))
                         .where('#', Predicates.air())
                         .build();
@@ -835,7 +841,7 @@ public class GTMultiMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
                     // tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
-                    if (GTCEu.isAE2Loaded()) {
+                    if (GTCEu.Mods.isAE2Loaded()) {
                         tooltip.add(
                                 Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
                                         "gtceu.machine.cleanroom.tooltip.ae2.no_channels" :

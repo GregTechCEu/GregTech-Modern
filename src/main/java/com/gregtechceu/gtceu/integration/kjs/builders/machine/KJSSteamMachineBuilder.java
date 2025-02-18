@@ -62,7 +62,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        lang.add(value.getDescriptionId(), value.getLangValue());
+        lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
         if (hp != null) {
             lang.add(GTCEu.MOD_ID, hp.getDescriptionId(), hp.getLangValue());
         }

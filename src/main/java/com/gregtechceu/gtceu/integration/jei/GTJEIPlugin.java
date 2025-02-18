@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.jei.subtype.PotionFluidSubtypeInterpreter;
 
-import com.lowdragmc.lowdraglib.LDLib;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +56,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(@NotNull IRecipeCategoryRegistration registry) {
-        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
+        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
@@ -78,7 +76,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
-        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
+        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
         GTRecipeJEICategory.registerRecipeCatalysts(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
@@ -93,7 +91,7 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
+        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeJEICategory.registerRecipes(registration);
@@ -109,13 +107,14 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerIngredients(@NotNull IModIngredientRegistration registry) {
-        if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
+        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
         GTCEu.LOGGER.info("JEI register ingredients");
     }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.useNbtForSubtypes(GTItems.PROGRAMMED_CIRCUIT.asItem());
+        registration.useNbtForSubtypes(GTItems.TURBINE_ROTOR.asItem());
     }
 
     @Override

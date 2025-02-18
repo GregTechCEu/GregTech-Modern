@@ -333,24 +333,24 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         for (int i = 0; i < lDist + rDist + 1; i++) {
             for (int j = 0; j < fDist + bDist + 1; j++) {
                 if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
-                    floorLayer[i].append('A'); // floor edge
+                    floorLayer[j].append('A'); // floor edge
                     for (int k = 0; k < hDist - 1; k++) {
-                        wallLayers.get(k)[i].append('W'); // walls
+                        wallLayers.get(k)[j].append('W'); // walls
                     }
-                    ceilingLayer[i].append('D'); // ceiling edge
+                    ceilingLayer[j].append('D'); // ceiling edge
                 } else { // not edges
                     if (i == lDist && j == fDist) { // very center
-                        floorLayer[i].append('K');
+                        floorLayer[j].append('K');
                     } else {
-                        floorLayer[i].append('E'); // floor valid blocks
+                        floorLayer[j].append('E'); // floor valid blocks
                     }
                     for (int k = 0; k < hDist - 1; k++) {
-                        wallLayers.get(k)[i].append(' ');
+                        wallLayers.get(k)[j].append(' ');
                     }
                     if (i == lDist && j == fDist) { // very center
-                        ceilingLayer[i].append('C'); // controller
+                        ceilingLayer[j].append('C'); // controller
                     } else {
-                        ceilingLayer[i].append('F'); // filter
+                        ceilingLayer[j].append('F'); // filter
                     }
                 }
             }
@@ -390,7 +390,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .where('K', wallPredicate // very center floor, needed for height check
                         .or(getValidFloorBlocks()))
                 .where('W', wallPredicate.or(basePredicate)// walls
-                        .or(doorPredicate().setMaxGlobalLimited(4)))
+                        .or(doorPredicate().setMaxGlobalLimited(8)))
                 .where('A', wallPredicate.or(basePredicate)) // floor edges
                 .build();
     }

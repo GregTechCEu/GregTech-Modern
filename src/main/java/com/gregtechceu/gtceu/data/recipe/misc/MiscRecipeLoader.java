@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -528,7 +529,7 @@ public class MiscRecipeLoader {
                     "MMM", "SES", " D ",
                     'E', Items.EGG,
                     'S', Items.SUGAR,
-                    'M', Items.MILK_BUCKET,
+                    'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
                     'D', DOUGH);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
@@ -565,7 +566,7 @@ public class MiscRecipeLoader {
                     "BBB", "SMS", "DDD",
                     'B', Items.SWEET_BERRIES,
                     'S', Items.SUGAR,
-                    'M', Items.MILK_BUCKET,
+                    'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
                     'D', DOUGH);
         }
 

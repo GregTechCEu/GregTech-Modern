@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -26,7 +27,6 @@ import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -155,7 +155,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public boolean isRemote() {
-        return getLevel() == null ? LDLib.isRemote() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
     }
 
     public void notifyBlockUpdate() {
@@ -518,7 +518,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH)) return true;
-        if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
         if (toolTypes.contains(GTToolType.SCREWDRIVER) &&
                 (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid))
             return true;
@@ -531,6 +530,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                     Direction side) {
+        var cover = coverContainer.getCoverAtSide(side);
+        if (cover != null) {
+            var tips = cover.sideTips(player, pos, state, toolTypes, side);
+            if (tips != null) return tips;
+        }
+
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (player.isShiftKeyDown()) {
                 if (isFacingValid(side)) {
@@ -539,16 +544,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (this instanceof IControllable controllable) {
-                return controllable.isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+                return controllable.isWorkingEnabled() ? GuiTextures.TOOL_START : GuiTextures.TOOL_PAUSE;
             }
         } else if (toolTypes.contains(GTToolType.HARD_HAMMER)) {
             if (this instanceof IMufflableMachine mufflableMachine) {
                 return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
             }
-        }
-        var cover = coverContainer.getCoverAtSide(side);
-        if (cover != null) {
-            return cover.sideTips(player, pos, state, toolTypes, side);
         }
         return null;
     }

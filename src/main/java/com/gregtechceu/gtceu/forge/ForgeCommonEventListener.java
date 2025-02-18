@@ -143,7 +143,18 @@ public class ForgeCommonEventListener {
         } else if (itemStack.getItem() instanceof PotionItem) {
             LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> {
                 var fluidHandler = new FluidHandlerItemStack.SwapEmpty(itemStack, new ItemStack(Items.GLASS_BOTTLE),
-                        PotionFluidHelper.BOTTLE_AMOUNT);
+                        PotionFluidHelper.BOTTLE_AMOUNT) {
+
+                    @Override
+                    protected void setFluid(FluidStack fluid) {
+                        // do nada
+                    }
+
+                    @Override
+                    public @NotNull FluidStack getFluid() {
+                        return PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT);
+                    }
+                };
                 fluidHandler.fill(PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT),
                         IFluidHandler.FluidAction.EXECUTE);
                 return fluidHandler;
@@ -301,6 +312,7 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent

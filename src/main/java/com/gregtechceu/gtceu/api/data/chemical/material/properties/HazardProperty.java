@@ -120,7 +120,7 @@ public class HazardProperty implements IMaterialProperty {
                     correctArmorItems.add(equipmentType);
                 }
             }
-            if (!GTCEu.isCuriosLoaded() || this.curioSlots.isEmpty()) {
+            if (!GTCEu.Mods.isCuriosLoaded() || this.curioSlots.isEmpty()) {
                 return correctArmorItems.containsAll(equipmentTypes);
             }
             Set<String> correctCurios = new HashSet<>();
@@ -153,7 +153,7 @@ public class HazardProperty implements IMaterialProperty {
                         armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
                 }
-                if (GTCEu.isCuriosLoaded()) {
+                if (GTCEu.Mods.isCuriosLoaded()) {
                     ICuriosItemHandler curiosInventory = CuriosApi.getCuriosInventory(player)
                             .resolve()
                             .orElse(null);

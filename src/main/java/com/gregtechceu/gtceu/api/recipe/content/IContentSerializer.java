@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
@@ -20,12 +20,12 @@ import com.mojang.serialization.JsonOps;
 public interface IContentSerializer<T> {
 
     default void toNetwork(FriendlyByteBuf buf, T content) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, Platform.getFrozenRegistry());
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         buf.writeUtf(codec().encodeStart(ops, content).getOrThrow(false, GTCEu.LOGGER::error).toString());
     }
 
     default T fromNetwork(FriendlyByteBuf buf) {
-        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, Platform.getFrozenRegistry());
+        RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         return codec().parse(ops, LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class)).getOrThrow(false,
                 GTCEu.LOGGER::error);
     }

@@ -220,7 +220,7 @@ public class StoneMachineRecipes {
                             .slab(Items.BRICK_SLAB)
                             .stair(Items.BRICK_STAIRS)
                             .wall(Items.BRICK_WALL)
-                            .material(GTMaterials.Brick)
+                            .material(GTMaterials.Brick, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "mud_brick")
@@ -238,7 +238,7 @@ public class StoneMachineRecipes {
                             .slab(Items.NETHER_BRICK_SLAB)
                             .stair(Items.NETHER_BRICK_STAIRS)
                             .wall(Items.NETHER_BRICK_WALL)
-                            .material(GTMaterials.Netherrack)
+                            .material(GTMaterials.Netherrack, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "red_nether_brick")
@@ -253,16 +253,16 @@ public class StoneMachineRecipes {
                             .stone(Items.QUARTZ_BLOCK)
                             .polishedStone(Items.QUARTZ_BRICKS)
                             .chiselStone(Items.CHISELED_QUARTZ_BLOCK)
-                            .slab(Items.QUARTZ_SLAB)
+                            // .slab(Items.QUARTZ_SLAB) TODO: Fix plate conflict
                             .stair(Items.QUARTZ_STAIRS)
-                            .material(GTMaterials.NetherQuartz)
+                            .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_quartz")
                             .stone(Items.SMOOTH_QUARTZ)
                             .slab(Items.SMOOTH_QUARTZ_SLAB)
                             .stair(Items.SMOOTH_QUARTZ_STAIRS)
-                            .material(GTMaterials.NetherQuartz)
+                            .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
                             .registerAllUnificationInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cut_copper")
@@ -583,7 +583,7 @@ public class StoneMachineRecipes {
                 if (ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) {
                     VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_polished_hammer",
                             new ItemStack(entry.chiselStone),
-                            "mSd", " S", " S",
+                            "mSd", " S ", " S ",
                             'S', entry.slab);
                 }
                 GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("form_" + entry.stoneName + "_slab_into_pillar")

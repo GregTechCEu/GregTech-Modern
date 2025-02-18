@@ -212,11 +212,15 @@ public class ConfigHolder {
         public static class MinimapCompatConfig {
 
             @Configurable
+            @Configurable.Comment({
+                    "Toggle specific map mod integration on/off (need to restart for this to take effect)" })
+            public Toggle toggle = new Toggle();
+
+            @Configurable
             @Configurable.Comment({ "The radius, in blocks, that picking up a surface rock will search for veins in.",
                     "-1 to disable.", "Default: 24" })
             @Configurable.Range(min = 1)
             public int surfaceRockProspectRange = 24;
-
             @Configurable
             @Configurable.Comment({ "The radius, in blocks, that clicking an ore block will search for veins in.",
                     "-1 to disable", "Default: 24" })
@@ -263,6 +267,21 @@ public class ConfigHolder {
                     "Whether to put buttons on a separate toolbar on the right instead of the map type toolbar in JourneyMap.",
                     "Default: true" })
             public boolean rightToolbar = true;
+
+            public static class Toggle {
+
+                @Configurable
+                @Configurable.Comment({ "FTB Chunks integration enabled" })
+                public boolean ftbChunksIntegration = false;
+
+                @Configurable
+                @Configurable.Comment({ "Journey Map integration enabled" })
+                public boolean journeyMapIntegration = true;
+
+                @Configurable
+                @Configurable.Comment({ "Xaerox's map integration enabled" })
+                public boolean xaerosMapIntegration = true;
+            }
 
             public enum Anchor {
 
@@ -371,6 +390,9 @@ public class ConfigHolder {
             @Configurable.Comment({ "Make bedrock ore/fluid veins infinite?", "Default: false" })
             public boolean infiniteBedrockOresFluids = false;
             @Configurable
+            @Configurable.Comment({ "Generate ores indicators above ore veins", "Default: true" })
+            public boolean oreIndicators = true;
+            @Configurable
             @Configurable.Comment({
                     "Sets the maximum number of chunks that may be cached for ore vein generation.",
                     "Higher values may improve world generation performance, but at the cost of more RAM usage.",
@@ -469,12 +491,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether the machine's circuit slot need to be inserted a real circuit." })
         public boolean ghostCircuit = true;
         @Configurable
-        @Configurable.Comment({ "Wether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)",
+        @Configurable.Comment({ "Whether to add a \"Bedrock Ore Miner\" (also enables bedrock ore generation)",
                 "Default: false" })
         public boolean doBedrockOres = false;
         @Configurable
         @Configurable.Comment({ "What Kind of material should the bedrock ore miner output?", "Default: \"raw\"" })
         public String bedrockOreDropTagPrefix = "raw";
+        @Configurable
+        @Configurable.Range(min = 120, max = 800)
+        @Configurable.Comment({ "The base amount of ticks per block for electric singleblock ore miners",
+                "Default: 320" })
+        public int minerSpeed = 320;
         @Configurable
         @Configurable.Comment({ "Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false" })

@@ -27,10 +27,12 @@ public final class WoodTypeEntry {
     public final String woodName;
     @NotNull
     public final TagKey<Item> logTag;
+    // 4 sided bark
     @Nullable
     public final Item log;
     @Nullable
     public final Item strippedLog;
+    // 6 sided bark
     @Nullable
     public final Item wood;
     @Nullable

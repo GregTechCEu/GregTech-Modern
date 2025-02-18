@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.common.data.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -21,7 +22,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -52,7 +55,12 @@ public class TooltipsHandler {
                         .withStyle(ChatFormatting.YELLOW));
         }
         if (stack.getItem() instanceof BucketItem bucket) {
-            appendFluidTooltips(new FluidStack(bucket.getFluid(), FluidType.BUCKET_VOLUME), tooltips::add, flag);
+            var fluid = bucket.getFluid();
+            if (!(fluid instanceof EmptyFluid)) {
+                appendFluidTooltips(new FluidStack(fluid, FluidType.BUCKET_VOLUME), tooltips::add, flag);
+            }
+        } else if (stack.getItem() instanceof MilkBucketItem) {
+            appendFluidTooltips(GTMaterials.Milk.getFluid(FluidType.BUCKET_VOLUME), tooltips::add, flag);
         }
 
         // Block/Item custom tooltips

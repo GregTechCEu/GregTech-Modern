@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
@@ -63,7 +61,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
         potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
         potionRemovalCost.put(MobEffects.UNLUCK, 5000);
-        if (Platform.isClient() && this.shouldDrawHUD()) {
+        if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
             HUD = new ArmorUtils.ModularHUD();
         }
     }
@@ -353,6 +351,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
         } else if (type == ArmorItem.Type.CHESTPLATE) {
             lines.add(Component.translatable("metaarmor.tooltip.burning"));
+            lines.add(Component.translatable("metaarmor.tooltip.freezing"));
         } else if (type == ArmorItem.Type.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
