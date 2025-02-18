@@ -57,9 +57,11 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     default boolean checkPatternWithLock() {
         var lock = getPatternLock();
         lock.lock();
-        var result = checkPattern();
-        lock.unlock();
-        return result;
+        try {
+            return checkPattern();
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -70,9 +72,11 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     default boolean checkPatternWithTryLock() {
         var lock = getPatternLock();
         if (lock.tryLock()) {
-            var result = checkPattern();
-            lock.unlock();
-            return result;
+            try {
+                return checkPattern();
+            } finally {
+                lock.unlock();
+            }
         } else {
             return false;
         }
