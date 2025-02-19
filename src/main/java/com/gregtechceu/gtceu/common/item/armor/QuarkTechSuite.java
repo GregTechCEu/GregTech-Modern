@@ -31,20 +31,19 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
-    protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
+    public static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
     private float charge = 0.0F;
     private static final byte RUNNING_TIMER = 10; // .5 seconds
     private static final byte JUMPING_TIMER = 10; // .5 seconds
@@ -88,6 +87,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
             ret = supplyAir(item, player) || supplyFood(item, player);
+
+            removeNegativeEffects(item, player);
 
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
@@ -248,14 +249,16 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         return false;
     }
 
-    public void removeNegativeEffects(@NotNull IElectricItem item, MobEffectEvent.Applicable event) {
-        MobEffectInstance effect = event.getEffectInstance();
-        Integer cost = potionRemovalCost.get(effect.getEffect());
-        if (cost != null) {
-            cost = cost * (effect.getAmplifier() + 1);
-            if (item.canUse(cost)) {
-                item.discharge(cost, item.getTier(), true, false, false);
-                event.setResult(Event.Result.DENY);
+    public static void removeNegativeEffects(@NotNull IElectricItem item, Player player) {
+        for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects())) {
+            MobEffect potion = effect.getEffect();
+            Integer cost = potionRemovalCost.get(potion);
+            if (cost != null) {
+                cost = cost * (effect.getAmplifier() + 1);
+                if (item.canUse(cost)) {
+                    item.discharge(cost, item.getTier(), true, false, false);
+                    player.removeEffect(potion);
+                }
             }
         }
     }

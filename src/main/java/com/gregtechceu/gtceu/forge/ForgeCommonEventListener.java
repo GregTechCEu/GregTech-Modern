@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -59,6 +60,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -85,6 +87,7 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -262,11 +265,18 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
         if (event.getEntity() instanceof Player player) {
-            ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-            if (helmet.is(GTItems.QUANTUM_HELMET.asItem()) &&
-                    helmet.getItem() instanceof ArmorComponentItem helmetComponent &&
-                    helmetComponent.getArmorLogic() instanceof QuarkTechSuite quarkHelmet) {
-                quarkHelmet.removeNegativeEffects(GTCapabilityHelper.getElectricItem(helmet), event);
+            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
+                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+                MobEffectInstance effect = event.getEffectInstance();
+                Integer cost = QuarkTechSuite.potionRemovalCost.get(effect.getEffect());
+                if (cost != null) {
+                    cost = cost * (effect.getAmplifier() + 1);
+                    if (helmet.canUse(cost)) {
+                        helmet.discharge(cost, helmet.getTier(), true, false, false);
+                        event.setResult(Event.Result.DENY);
+                    }
+                }
             }
         }
     }
