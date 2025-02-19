@@ -284,6 +284,11 @@ public class BatteryRecipes {
                 .inputFluids(RedSteel.getFluid(L / 2))
                 .outputItems(ENERGIUM_CRYSTAL)
                 .duration(150).EUt(192).save(provider);
+        
+        MACERATOR_RECIPES.recipeBuilder("recycle_energy_crystal")
+                .inputItems(ENERGIUM_CRYSTAL)
+                .outputItems(ENERGIUM_DUST, 9)
+	            .duration(500).EUt(VA[ULV]).save(provider);
 
         // Lapotron Crystal
         MIXER_RECIPES.recipeBuilder("lapotron_dust")
@@ -316,6 +321,11 @@ public class BatteryRecipes {
                 .inputFluids(BlueSteel.getFluid(L / 2))
                 .outputItems(gem, Lapotron)
                 .duration(150).EUt(192).save(provider);
+	    
+	    MACERATOR_RECIPES.recipeBuilder("recycle_lapotron_crystal")
+		        .inputItems(LAPOTRON_CRYSTAL)
+		        .outputItems(dust, Lapotron, 15)
+		        .duration(1000).EUt(VA[ULV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("lapotron_crystal")
                 .inputItems(gem, Lapotron)
