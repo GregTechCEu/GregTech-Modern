@@ -3,10 +3,13 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -15,494 +18,21 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
 public class MaterialInfoLoader {
 
     public static void init() {
-        /*
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_CUPRONICKEL.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Cupronickel, M * 8), // double wire
-         * new MaterialStack(GTMaterials.Bronze, M * 2), // foil
-         * new MaterialStack(GTMaterials.TinAlloy, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Kanthal, M * 8), // double wire
-         * new MaterialStack(GTMaterials.Aluminium, M * 2), // foil
-         * new MaterialStack(GTMaterials.Copper, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NICHROME.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Nichrome, M * 8), // double wire
-         * new MaterialStack(GTMaterials.StainlessSteel, M * 2), // foil
-         * new MaterialStack(GTMaterials.Aluminium, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_RTMALLOY.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.RTMAlloy, M * 8), // double wire
-         * new MaterialStack(GTMaterials.VanadiumSteel, M * 2), // foil
-         * new MaterialStack(GTMaterials.Nichrome, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_HSSG.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.HSSG, M * 8), // double wire
-         * new MaterialStack(GTMaterials.TungstenCarbide, M * 2), // foil
-         * new MaterialStack(GTMaterials.Tungsten, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_NAQUADAH.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Naquadah, M * 8), // double wire
-         * new MaterialStack(GTMaterials.Osmium, M * 2), // foil
-         * new MaterialStack(GTMaterials.TungstenSteel, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRINIUM.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Trinium, M * 8), // double wire
-         * new MaterialStack(GTMaterials.NaquadahEnriched, M * 2), // foil
-         * new MaterialStack(GTMaterials.Naquadah, M)) // ingot
-         * );
-         * ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_TRITANIUM.get(),
-         * new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, M * 8), // double wire
-         * new MaterialStack(GTMaterials.Naquadria, M * 2), // foil
-         * new MaterialStack(GTMaterials.Trinium, M)) // ingot
-         * );
-         */
-
-        /*
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[0].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.WroughtIron, M * 8), // plate
-         * new MaterialStack(GTMaterials.RedAlloy, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[1].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Steel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Tin, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[2].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Aluminium, M * 8), // plate
-         * new MaterialStack(GTMaterials.Copper, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[3].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Gold, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[4].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-         * new MaterialStack(GTMaterials.Aluminium, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[5].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Platinum, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[6].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.RhodiumPlatedPalladium, M * 8), // plate
-         * new MaterialStack(GTMaterials.NiobiumTitanium, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[7].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.NaquadahAlloy, M * 8), // plate
-         * new MaterialStack(GTMaterials.VanadiumGallium, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[8].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Darmstadtium, M * 8), // plate
-         * new MaterialStack(GTMaterials.YttriumBariumCuprate, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.HULL[9].getBlock(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Neutronium, M * 8), // plate
-         * new MaterialStack(GTMaterials.Europium, M), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 2))); // plate
-         */
-
-        /*
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[3].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Gold, M * 2), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-         * new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
-         * ));
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[4].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-         * new MaterialStack(GTMaterials.Aluminium, M * 2), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-         * new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-         * ));
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_INPUT_HATCH[5].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Tungsten, M * 2), // single cable
-         * new MaterialStack(GTMaterials.Rubber, M * 4), // plate
-         * new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-         * ));
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[3].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.StainlessSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Gold, 3 * M), // single cable + spring
-         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-         * new MaterialStack(GTMaterials.BlackSteel, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.SteelMagnetic, M / 2) // rod
-         * ));
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[4].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.Titanium, M * 8), // plate
-         * new MaterialStack(GTMaterials.Aluminium, 3 * M), // single cable + spring
-         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-         * new MaterialStack(GTMaterials.TungstenSteel, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-         * ));
-         * 
-         * ItemMaterialData.registerMaterialInfo(GTMachines.ENERGY_OUTPUT_HATCH[5].getItem(), new ItemMaterialInfo(
-         * new MaterialStack(GTMaterials.TungstenSteel, M * 8), // plate
-         * new MaterialStack(GTMaterials.Tungsten, 3 * M), // single cable + spring
-         * new MaterialStack(GTMaterials.Rubber, M * 2), // plate
-         * new MaterialStack(GTMaterials.Iridium, M * 2), // fine wire
-         * new MaterialStack(GTMaterials.NeodymiumMagnetic, M / 2) // rod
-         * ));
-         */
-
-        ItemMaterialData.registerMaterialInfo(GTBlocks.PLASTCRETE.get(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Steel, M), // frame / 2
-                new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
-                new MaterialStack(GTMaterials.Concrete, M / 2) // 1 block / 2
-        ));
-
-        ItemMaterialData.registerMaterialInfo(GTBlocks.CLEANROOM_GLASS.get(), new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Steel, M), // frame / 2
-                new MaterialStack(GTMaterials.Polyethylene, M * 3), // 6 sheets / 2
-                new MaterialStack(GTMaterials.Glass, M / 2) // 1 block / 2
-        ));
-
         ItemMaterialData.registerMaterialInfo(Blocks.TERRACOTTA,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.WHITE_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.ORANGE_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MAGENTA_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIGHT_BLUE_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.YELLOW_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIME_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PINK_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.GRAY_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIGHT_GRAY_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CYAN_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PURPLE_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BLUE_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BROWN_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.GREEN_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.RED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BLACK_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.WHITE_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.ORANGE_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MAGENTA_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.YELLOW_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIME_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PINK_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.GRAY_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CYAN_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PURPLE_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BLUE_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BROWN_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.GREEN_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.RED_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BLACK_GLAZED_TERRACOTTA,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
-
-        ItemMaterialData.registerMaterialInfo(GTBlocks.CASING_PRIMITIVE_BRICKS.get(),
-                ConfigHolder.INSTANCE.recipes.harderBrickRecipes ?
-                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 6),
-                                new MaterialStack(GTMaterials.Gypsum, M * 2)) :
-                        new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, M * 4)));
-
-        if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
-            ItemMaterialData.registerMaterialInfo(Items.ACACIA_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.BIRCH_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.JUNGLE_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.OAK_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.SPRUCE_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.DARK_OAK_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.MANGROVE_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.CRIMSON_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.WARPED_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.BAMBOO_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-            ItemMaterialData.registerMaterialInfo(Items.CHERRY_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 2), new MaterialStack(GTMaterials.Iron, M / 9))); // screw
-        } else {
-            ItemMaterialData.registerMaterialInfo(Items.ACACIA_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.BIRCH_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.JUNGLE_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.OAK_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.SPRUCE_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.DARK_OAK_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.MANGROVE_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.CRIMSON_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.WARPED_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.BAMBOO_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-            ItemMaterialData.registerMaterialInfo(Items.CHERRY_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
+        for (DyeColor color : DyeColor.values()) {
+            String dye = color.getName();
+            ItemMaterialData.registerMaterialInfo(
+                    new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dye + "_terracotta"))).getItem(),
+                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+            ItemMaterialData.registerMaterialInfo(
+                    new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dye + "_glazed_terracotta")))
+                            .getItem(),
+                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
         }
-
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_PLANKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
-
-        if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
-            ItemMaterialData.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Iron, M * 4 + (M * 3 / 16)), // 4 iron plates + 1 iron bars
-                    new MaterialStack(GTMaterials.Steel, M / 9))); // tiny steel dust
-        } else {
-            ItemMaterialData.registerMaterialInfo(Items.IRON_DOOR,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
-        }
-
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_FENCE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
-
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_FENCE_GATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3))); // dust
-
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_MOSAIC_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, (3 * M) / 2))); // dust small
-
-        ItemMaterialData.registerMaterialInfo(Items.OAK_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.BIRCH_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.SPRUCE_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.JUNGLE_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.DARK_OAK_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.ACACIA_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.MANGROVE_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.BAMBOO_RAFT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.CHERRY_BOAT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 5)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.SANDSTONE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.RED_SANDSTONE_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_BRICK_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ItemMaterialData.registerMaterialInfo(Blocks.QUARTZ_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 4))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.BRICK_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 4))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.NETHER_BRICK_STAIRS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 4))); // dust
-
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SANDSTONE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.RED_SANDSTONE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.COBBLESTONE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BRICK_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_BRICK_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.NETHER_BRICK_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.QUARTZ_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SMOOTH_QUARTZ_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 2)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_MOSAIC_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_SLAB,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 2)));
 
         ItemMaterialData.registerMaterialInfo(Blocks.LEVER, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Stone, M / 9), new MaterialStack(GTMaterials.Wood, 1814400L)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.OAK_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BIRCH_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.SPRUCE_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.JUNGLE_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.DARK_OAK_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.ACACIA_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MANGROVE_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CRIMSON_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.WARPED_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BAMBOO_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CHERRY_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 9)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_BUTTON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 9)));
+                new MaterialStack(GTMaterials.Stone, M / 9), new MaterialStack(GTMaterials.Wood, M / 2)));
         ItemMaterialData.registerMaterialInfo(Blocks.REDSTONE_TORCH, new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Wood, M / 2), new MaterialStack(GTMaterials.Redstone, M)));
 
@@ -546,10 +76,6 @@ public class MaterialInfoLoader {
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Water, M)));
 
         ItemMaterialData.registerMaterialInfo(Blocks.ICE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PACKED_ICE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M * 9)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BLUE_ICE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M * 81)));
 
         ItemMaterialData.registerMaterialInfo(Items.BOOK,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Paper, M * 3)));
@@ -557,12 +83,6 @@ public class MaterialInfoLoader {
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Paper, M * 3)));
         ItemMaterialData.registerMaterialInfo(Items.ENCHANTED_BOOK,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Paper, M * 3)));
-        ItemMaterialData.registerMaterialInfo(Blocks.BOOKSHELF, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Paper, M * 9), new MaterialStack(GTMaterials.Wood, M * 6)));
-        ItemMaterialData.registerMaterialInfo(Items.ENCHANTED_GOLDEN_APPLE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 72))); // block
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_APPLE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 8))); // ingot
 
         ItemMaterialData.registerMaterialInfo(Items.MINECART,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
@@ -575,232 +95,39 @@ public class MaterialInfoLoader {
         ItemMaterialData.registerMaterialInfo(Items.HOPPER_MINECART, new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Iron, M * 10), new MaterialStack(GTMaterials.Wood, M * 8)));
 
-        ItemMaterialData.registerMaterialInfo(Items.CAULDRON,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 7)));
-        ItemMaterialData.registerMaterialInfo(Blocks.IRON_BARS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 3 / 16))); // todo is this accurate
-        ItemMaterialData.registerMaterialInfo(Blocks.IRON_TRAPDOOR,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Items.BUCKET,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 3)));
-
         ItemMaterialData.registerMaterialInfo(Blocks.ANVIL,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 31)));
         ItemMaterialData.registerMaterialInfo(Blocks.CHIPPED_ANVIL,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 22)));
         ItemMaterialData.registerMaterialInfo(Blocks.DAMAGED_ANVIL,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 13)));
-        ItemMaterialData.registerMaterialInfo(Blocks.HOPPER, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M * 5), new MaterialStack(GTMaterials.Wood, M * 8)));
 
-        ItemMaterialData.registerMaterialInfo(Items.GLASS_BOTTLE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, M)));
-        // ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STAINED_GLASS, 1, W), new ItemMaterialInfo(new
-        // MaterialStack(GTMaterials.Glass, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.GLASS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, M)));
-        // ChemicalHelper.registerMaterialInfo(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, W), new ItemMaterialInfo(new
-        // MaterialStack(GTMaterials.Glass, M / 3))); // dust tiny
-        ItemMaterialData.registerMaterialInfo(Blocks.GLASS_PANE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, M / 3))); // dust tiny
-
-        ItemMaterialData.registerMaterialInfo(Items.FLOWER_POT,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 3)));
-        ItemMaterialData.registerMaterialInfo(Items.PAINTING,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Items.ITEM_FRAME,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.COBBLESTONE_WALL,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M)));
-        ItemMaterialData.registerMaterialInfo(Items.END_CRYSTAL, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Glass, M * 7), new MaterialStack(GTMaterials.EnderEye, M)));
-
-        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
-            ItemMaterialData.registerMaterialInfo(Items.CLOCK,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, (13 * M) / 8), // M + ring + 3 * bolt
-                            new MaterialStack(GTMaterials.Redstone, M)));
-
-            ItemMaterialData.registerMaterialInfo(Items.COMPASS, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Iron, (4 * M) / 3), // M + 3*screw
-                    new MaterialStack(GTMaterials.RedAlloy, M / 8), // bolt
-                    new MaterialStack(GTMaterials.Zinc, M / 4))); // ring
-        } else {
-            ItemMaterialData.registerMaterialInfo(Items.CLOCK, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Gold, M * 4), new MaterialStack(GTMaterials.Redstone, M)));
-            ItemMaterialData.registerMaterialInfo(Items.COMPASS, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Redstone, M)));
-        }
-
-        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
-            ItemMaterialData.registerMaterialInfo(Blocks.BEACON, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.NetherStar, (7 * M) / 4), // M + lens
-                    new MaterialStack(GTMaterials.Obsidian, M * 3),
-                    new MaterialStack(GTMaterials.Glass, M * 4)));
-
-            ItemMaterialData.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Diamond, M * 4),
-                    new MaterialStack(GTMaterials.Obsidian, M * 3),
-                    new MaterialStack(GTMaterials.Paper, M * 9)));
-
-            ItemMaterialData.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 8), // chest
-                    new MaterialStack(GTMaterials.Obsidian, M * 9 * 6), // 6 dense plates
-                    new MaterialStack(GTMaterials.EnderEye, M)));
-        } else {
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             ItemMaterialData.registerMaterialInfo(Blocks.BEACON,
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherStar, M),
                             new MaterialStack(GTMaterials.Obsidian, M * 3),
                             new MaterialStack(GTMaterials.Glass, M * 5)));
-            ItemMaterialData.registerMaterialInfo(Blocks.ENCHANTING_TABLE,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 2),
-                            new MaterialStack(GTMaterials.Obsidian, M * 4),
-                            new MaterialStack(GTMaterials.Paper, M * 3)));
-            ItemMaterialData.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));
         }
-
-        ItemMaterialData.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));
-
-        ItemMaterialData.registerMaterialInfo(Blocks.FURNACE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Blocks.STONE_BRICKS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.COBBLESTONE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M)));
-        ItemMaterialData.registerMaterialInfo(Blocks.MOSSY_COBBLESTONE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M)));
         ItemMaterialData.registerMaterialInfo(Blocks.LADDER,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
-        ItemMaterialData.registerMaterialInfo(Items.BOWL,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M / 4)));
-        // ChemicalHelper.registerMaterialInfo(new ItemStack(Items.SIGN, 1, W), new ItemMaterialInfo(new
-        // MaterialStack(GTMaterials.Wood, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.CHEST,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Blocks.TRAPPED_CHEST, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.Iron, M / 2))); // ring
-
-        if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
-            ItemMaterialData.registerMaterialInfo(Blocks.NOTE_BLOCK, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.RedAlloy, M / 2))); // rod
-            ItemMaterialData.registerMaterialInfo(Blocks.JUKEBOX, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Diamond, M / 8), // bolt
-                    new MaterialStack(GTMaterials.Iron, (17 * M) / 4), // gear + ring
-                    new MaterialStack(GTMaterials.RedAlloy, M)));
-        } else {
+        if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             ItemMaterialData.registerMaterialInfo(Blocks.NOTE_BLOCK, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.Redstone, M)));
             ItemMaterialData.registerMaterialInfo(Blocks.JUKEBOX, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Wood, M * 8), new MaterialStack(GTMaterials.Diamond, M)));
-        }
-        ItemMaterialData.registerMaterialInfo(Blocks.REDSTONE_LAMP, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Glowstone, M * 4), new MaterialStack(GTMaterials.Redstone, M * 4))); // dust
-        ItemMaterialData.registerMaterialInfo(Blocks.CRAFTING_TABLE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Blocks.PISTON, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
-        ItemMaterialData.registerMaterialInfo(Blocks.STICKY_PISTON, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
-        if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) {
-            ItemMaterialData.registerMaterialInfo(Blocks.DISPENSER,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 2),
-                            new MaterialStack(GTMaterials.RedAlloy, M / 2),
-                            new MaterialStack(GTMaterials.Iron, M * 4 + M / 4)));
-            ItemMaterialData.registerMaterialInfo(Blocks.DROPPER,
-                    new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M * 2),
-                            new MaterialStack(GTMaterials.RedAlloy, M / 2),
-                            new MaterialStack(GTMaterials.Iron, M * 2 + M * 3 / 4)));
-        } else {
+            ItemMaterialData.registerMaterialInfo(Blocks.REDSTONE_LAMP, new ItemMaterialInfo(
+                    new MaterialStack(GTMaterials.Glowstone, M * 4), new MaterialStack(GTMaterials.Redstone, M * 4))); // dust
             ItemMaterialData.registerMaterialInfo(Blocks.DISPENSER, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.Redstone, M)));
             ItemMaterialData.registerMaterialInfo(Blocks.DROPPER, new ItemMaterialInfo(
                     new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.Redstone, M)));
         }
 
-        ItemMaterialData.registerMaterialInfo(Items.IRON_HELMET,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_CHESTPLATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_LEGGINGS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 7)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_BOOTS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_HORSE_ARMOR,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_SHOVEL, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_PICKAXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_AXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_SWORD, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.IRON_HOE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Iron, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_HELMET,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_CHESTPLATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_LEGGINGS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 7)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_BOOTS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_HORSE_ARMOR,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_SHOVEL, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Gold, M), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_PICKAXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Gold, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_AXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Gold, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_SWORD, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Gold, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.GOLDEN_HOE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Gold, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_HELMET,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 5)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_CHESTPLATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_LEGGINGS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 7)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_BOOTS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 4)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_HORSE_ARMOR,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 8)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_SHOVEL, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Diamond, M), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_PICKAXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Diamond, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_AXE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Diamond, M * 3), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_SWORD, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Diamond, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.DIAMOND_HOE, new ItemMaterialInfo(
-                new MaterialStack(GTMaterials.Diamond, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
-
-        ItemMaterialData.registerMaterialInfo(Items.CHAINMAIL_HELMET,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5 / 4)));
-        ItemMaterialData.registerMaterialInfo(Items.CHAINMAIL_CHESTPLATE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
-        ItemMaterialData.registerMaterialInfo(Items.CHAINMAIL_LEGGINGS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 7 / 4)));
-        ItemMaterialData.registerMaterialInfo(Items.CHAINMAIL_BOOTS,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M)));
-
-        ItemMaterialData.registerMaterialInfo(Items.WOODEN_SHOVEL,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M + M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.WOODEN_PICKAXE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3 + M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.WOODEN_AXE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 3 + M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.WOODEN_HOE,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2 + M / 2)));
-        ItemMaterialData.registerMaterialInfo(Items.WOODEN_SWORD,
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M * 2 + M / 4)));
+        ItemMaterialData.registerMaterialInfo(Blocks.PISTON, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
+        ItemMaterialData.registerMaterialInfo(Blocks.STICKY_PISTON, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Stone, M * 4), new MaterialStack(GTMaterials.Wood, M * 3)));
 
         ItemMaterialData.registerMaterialInfo(Items.STONE_SHOVEL, new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Stone, M), new MaterialStack(GTMaterials.Wood, M / 2)));

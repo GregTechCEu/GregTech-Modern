@@ -454,14 +454,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
-        var matStack = ItemMaterialData.getMaterialInfo(input);
-        if (matStack != null) {
-            tempItemMaterialStacks.addAll(matStack.getMaterials());
-        } else {
-            if (chance == maxChance) {
-                tempItemStacks.add(new ItemStack(input.get()));
-            }
-        }
         return inputItems(input.get());
     }
 
@@ -474,13 +466,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input) {
-        if (input.material() == null) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
-        } else {
-            tempItemMaterialStacks
-                    .add(new MaterialStack(input.material(), input.tagPrefix().getMaterialAmount(input.material())));
-            tempItemMaterialStacks.addAll(input.tagPrefix().secondaryMaterials());
-        }
         return inputItems(input.tagPrefix(), input.material(), 1);
     }
 
@@ -971,9 +956,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(@NotNull Material material, int amount) {
-        if (chance == maxChance) {
-            tempFluidStacks.add(new MaterialStack(material, amount * GTValues.M / GTValues.L));
-        }
         return inputFluids(material.getFluid(amount));
     }
 

@@ -599,8 +599,8 @@ public final class WoodTypeEntry {
          *
          * @return this
          */
-        public Builder registerAllUnificationInfo() {
-            return registerUnificationInfo(true, true, true, true, true, true, true, true, true, true);
+        public Builder registerAllMaterialInfo() {
+            return registerMaterialInfo(true, true, true, true, true, true, true, true, true, true);
         }
 
         /**
@@ -651,9 +651,9 @@ public final class WoodTypeEntry {
          * @param pressurePlate whether to add unification info for pressure plates
          * @return this
          */
-        public Builder registerUnificationInfo(boolean planks, boolean door, boolean slab, boolean fence,
-                                               boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat,
-                                               boolean button, boolean pressurePlate) {
+        public Builder registerMaterialInfo(boolean planks, boolean door, boolean slab, boolean fence,
+                                            boolean fenceGate, boolean stairs, boolean boat, boolean chestBoat,
+                                            boolean button, boolean pressurePlate) {
             this.addPlanksMaterialInfo = planks;
             this.addDoorsMaterialInfo = door;
             this.addSlabsMaterialInfo = slab;

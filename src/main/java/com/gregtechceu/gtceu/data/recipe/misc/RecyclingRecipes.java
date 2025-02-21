@@ -46,7 +46,7 @@ public class RecyclingRecipes {
     // TODO - Work on durations and EUt's
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        for (Entry<ItemStack, ItemMaterialInfo> entry : ChemicalHelper.getAllItemInfos()) {
+        for (var entry : ChemicalHelper.getAllItemInfos().entrySet()) {
             ItemStack itemStack = entry.getKey();
             ItemMaterialInfo materialInfo = entry.getValue();
             ArrayList<MaterialStack> materialStacks = new ArrayList<>(materialInfo.getMaterials());
@@ -228,9 +228,6 @@ public class RecyclingRecipes {
         if (itemMs != null) {
             ItemStack outputStack = ChemicalHelper.getIngotOrDust(itemMs);
             if (!outputStack.isEmpty()) extractorBuilder.outputItems(outputStack);
-            // TagPrefix outputPrefix = itemMs.material().hasProperty(PropertyKey.INGOT) ? TagPrefix.ingot :
-            // TagPrefix.dust;
-            // extractorBuilder.outputItems(outputPrefix, itemMs.material(), (int) (itemMs.amount() / M));
         }
 
         extractorBuilder.save(provider);

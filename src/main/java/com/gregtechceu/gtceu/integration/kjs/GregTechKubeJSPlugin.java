@@ -347,9 +347,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof MaterialEntry entry) return entry;
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
-                if (values.length == 1) {
-                    return new MaterialEntry(TagPrefix.get(values[0]));
-                }
                 if (values.length >= 2) {
                     return new MaterialEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
                 }

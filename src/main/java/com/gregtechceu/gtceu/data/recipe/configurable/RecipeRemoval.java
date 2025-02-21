@@ -196,7 +196,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
         registry.accept(new ResourceLocation("minecraft:beacon"));
         registry.accept(new ResourceLocation("minecraft:respawn_anchor"));
-        registry.accept(new ResourceLocation("minecraft:lodestone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_bookshelf"));
         registry.accept(new ResourceLocation("minecraft:brewing_stand"));
         registry.accept(new ResourceLocation("minecraft:enchanting_table"));

@@ -86,7 +86,7 @@ public class GTRecipes {
         RecipeAddition.init(consumer);
 
         // Must run recycling recipes very last
-        if (!GTCEu.isKubeJSLoaded()) {
+        if (!GTCEu.Mods.isKubeJSLoaded()) {
             RecyclingRecipes.init(consumer);
             ItemMaterialData.resolveItemMaterialInfos(consumer);
         }

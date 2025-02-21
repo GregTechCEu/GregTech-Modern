@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ItemMaterialInfo {
 
-    private Reference2LongLinkedOpenHashMap<Material> materials = new Reference2LongLinkedOpenHashMap<>();
-    private List<MaterialStack> sortedMaterials = new ArrayList<>();
+    private final Reference2LongLinkedOpenHashMap<Material> materials = new Reference2LongLinkedOpenHashMap<>();
+    private final List<MaterialStack> sortedMaterials = new ArrayList<>();
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
         for (var mat : materialStacks) {

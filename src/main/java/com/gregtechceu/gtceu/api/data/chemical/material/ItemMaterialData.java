@@ -136,8 +136,10 @@ public class ItemMaterialData {
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
         }
-        for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
-            TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
+        if (materialEntry.material() != null) {
+            for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
+                TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
+            }
         }
     }
 
@@ -173,7 +175,7 @@ public class ItemMaterialData {
             });
         }
         GTMaterialItems.toUnify.forEach(ItemMaterialData::registerMaterialInfoItems);
-        WoodMachineRecipes.registerUnificationInfo();
+        WoodMachineRecipes.registerMaterialInfo();
         // resolveFluidMaterialInfos(context);
     }
 

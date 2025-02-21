@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.configurable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
@@ -116,7 +117,7 @@ public class RecipeAddition {
                     'L', new MaterialEntry(dust, Clay),
                     'B', new ItemStack(Items.BUCKET));
 
-            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "casing_primitive_bricks",
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, true, "casing_primitive_bricks",
                     GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
                     "BGB", "BCB", "BGB",
                     'B', GTItems.FIRECLAY_BRICK.asStack(),
@@ -128,7 +129,7 @@ public class RecipeAddition {
             VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(),
                     new ItemStack(Items.BRICK), 0.3f);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_primitive_bricks",
                     GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
                     "XX", "XX",
                     'X', GTItems.FIRECLAY_BRICK);
@@ -220,6 +221,7 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.rod, GTMaterials.RedAlloy)
                     .inputItems(new ItemStack(Items.STRING))
                     .outputItems(new ItemStack(Blocks.DISPENSER))
+                    .addMaterialInfo(true)
                     .save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "sticky_piston", new ItemStack(Blocks.STICKY_PISTON), "h",
@@ -375,19 +377,22 @@ public class RecipeAddition {
                     .outputItems(new ItemStack(Blocks.DAYLIGHT_DETECTOR))
                     .duration(200).EUt(16).save(provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "redstone_lamp", new ItemStack(Blocks.REDSTONE_LAMP), "PPP",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "redstone_lamp", new ItemStack(Blocks.REDSTONE_LAMP),
+                    "PPP",
                     "PGP", "PRP",
                     'P', new ItemStack(Blocks.GLASS_PANE),
                     'G', new ItemStack(Blocks.GLOWSTONE),
                     'R', new MaterialEntry(TagPrefix.rod, GTMaterials.RedAlloy));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "tripwire_hook", new ItemStack(Blocks.TRIPWIRE_HOOK), "IRI",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "tripwire_hook", new ItemStack(Blocks.TRIPWIRE_HOOK),
+                    "IRI",
                     "SRS", " S ",
                     'I', new MaterialEntry(TagPrefix.ring, GTMaterials.Iron),
                     'R', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood),
                     'S', new ItemStack(Items.STRING));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "dropper", new ItemStack(Blocks.DROPPER), "CRC", "STS", "GAG",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "dropper", new ItemStack(Blocks.DROPPER), "CRC", "STS",
+                    "GAG",
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
                     'R', new MaterialEntry(TagPrefix.ring, GTMaterials.Iron),
                     'S', new MaterialEntry(TagPrefix.springSmall, GTMaterials.Iron),
@@ -395,7 +400,8 @@ public class RecipeAddition {
                     'G', new MaterialEntry(TagPrefix.gearSmall, GTMaterials.Iron),
                     'A', new MaterialEntry(TagPrefix.rod, GTMaterials.RedAlloy));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "observer", new ItemStack(Blocks.OBSERVER), "RCR", "CQC",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "observer", new ItemStack(Blocks.OBSERVER), "RCR",
+                    "CQC",
                     "GSG",
                     'R', new MaterialEntry(TagPrefix.ring, GTMaterials.Iron),
                     'C', ItemTags.STONE_CRAFTING_MATERIALS,
@@ -633,7 +639,8 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.bolt, GTMaterials.IronMagnetic)
                     .inputItems(TagPrefix.screw, GTMaterials.Iron, 2)
                     .outputItems(new ItemStack(Items.COMPASS))
-                    .duration(100).EUt(16).save(provider);
+                    .duration(100).EUt(16)
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "fishing_rod", new ItemStack(Items.FISHING_ROD), "  S", " SL",
                     "SxR",
@@ -655,7 +662,8 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.screw, GTMaterials.Gold)
                     .inputItems(new ItemStack(Items.COMPARATOR))
                     .outputItems(new ItemStack(Items.CLOCK))
-                    .duration(100).EUt(16).save(provider);
+                    .duration(100).EUt(16)
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "shears", new ItemStack(Items.SHEARS), "PSP", "hRf", "TdT",
                     'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Iron),
@@ -686,13 +694,15 @@ public class RecipeAddition {
                     .inputItems(plate, Iron, 4)
                     .circuitMeta(1)
                     .outputItems(new ItemStack(Items.COMPASS))
-                    .duration(100).EUt(4).save(provider);
+                    .duration(100).EUt(4)
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("clock")
                     .inputItems(dust, Redstone)
                     .inputItems(plate, Gold, 4)
                     .outputItems(new ItemStack(Items.CLOCK))
-                    .duration(100).EUt(4).save(provider);
+                    .duration(100).EUt(4)
+                    .addMaterialInfo(true).save(provider);
         }
     }
 
@@ -733,7 +743,8 @@ public class RecipeAddition {
      */
     private static void hardMiscRecipes(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "beacon", new ItemStack(Blocks.BEACON), "GLG", "GSG", "OOO",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "beacon", new ItemStack(Blocks.BEACON), "GLG", "GSG",
+                    "OOO",
                     'G', new ItemStack(Blocks.GLASS),
                     'L', new MaterialEntry(TagPrefix.lens, GTMaterials.NetherStar),
                     'S', new ItemStack(Items.NETHER_STAR),
@@ -758,7 +769,8 @@ public class RecipeAddition {
                     'S', new MaterialEntry(TagPrefix.screw, GTMaterials.Aluminium),
                     'C', new ItemStack(Items.CAULDRON));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "enchanting_table", new ItemStack(Blocks.ENCHANTING_TABLE),
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "enchanting_table",
+                    new ItemStack(Blocks.ENCHANTING_TABLE),
                     "DCD", "PBP", "DPD",
                     'D', new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond),
                     'C', new ItemStack(Blocks.RED_CARPET),
@@ -779,7 +791,8 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.plate, GTMaterials.Wood, 4)
                     .inputItems(new ItemStack(Blocks.NOTE_BLOCK, 2))
                     .outputItems(new ItemStack(Blocks.JUKEBOX))
-                    .duration(100).EUt(16).save(provider);
+                    .duration(100).EUt(16)
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "note_block", new ItemStack(Blocks.NOTE_BLOCK), "PPP", "BGB",
                     "PRP",
@@ -794,7 +807,8 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.rod, GTMaterials.RedAlloy)
                     .inputItems(new ItemStack(Blocks.IRON_BARS, 2))
                     .outputItems(new ItemStack(Blocks.NOTE_BLOCK))
-                    .duration(100).EUt(16).save(provider);
+                    .duration(100).EUt(16)
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "furnace", new ItemStack(Blocks.FURNACE), "CCC", "FFF", "CCC",
                     'F', new ItemStack(Items.FLINT),
@@ -805,7 +819,8 @@ public class RecipeAddition {
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 8)
                     .inputItems(new ItemStack(Items.FLINT))
                     .outputItems(new ItemStack(Blocks.FURNACE))
-                    .duration(100).EUt(VA[ULV]).save(provider);
+                    .duration(100).EUt(VA[ULV])
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "crafting_table", new ItemStack(Blocks.CRAFTING_TABLE), "FF",
                     "WW",
@@ -816,6 +831,7 @@ public class RecipeAddition {
                     .inputItems(ItemTags.LOGS)
                     .inputItems(new ItemStack(Items.FLINT))
                     .outputItems(new ItemStack(Blocks.CRAFTING_TABLE))
+                    .addMaterialInfo(true)
                     .save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lead", new ItemStack(Items.LEAD), "SSS", "SBS", "SSS",
@@ -861,7 +877,8 @@ public class RecipeAddition {
                     .outputItems(Items.ARMOR_STAND)
                     .duration(100).EUt(VA[ULV]).save(provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "trapped_chest", new ItemStack(Blocks.TRAPPED_CHEST), " H ",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "trapped_chest", new ItemStack(Blocks.TRAPPED_CHEST),
+                    " H ",
                     "SCS", " d ",
                     'H', new ItemStack(Blocks.TRIPWIRE_HOOK),
                     'S', new MaterialEntry(TagPrefix.screw, GTMaterials.Iron),
@@ -872,7 +889,8 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.plateDense, GTMaterials.Obsidian, 6)
                     .inputItems(TagPrefix.plate, GTMaterials.EnderEye)
                     .outputItems(Blocks.ENDER_CHEST.asItem())
-                    .duration(200).EUt(VA[MV]).save(provider);
+                    .duration(200).EUt(VA[MV])
+                    .addMaterialInfo(true).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lantern", new ItemStack(Blocks.LANTERN), "hRf",
                     "RFR", " R ",
@@ -1160,10 +1178,12 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("crafting_table").duration(80).EUt(6).circuitMeta(4)
                     .inputItems(ItemTags.PLANKS, 4).outputItems(new ItemStack(Blocks.CRAFTING_TABLE)).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("furnace").circuitMeta(8).inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 8)
-                    .outputItems(new ItemStack(Blocks.FURNACE)).duration(100).EUt(VA[ULV]).save(provider);
+                    .outputItems(new ItemStack(Blocks.FURNACE)).duration(100).EUt(VA[ULV])
+                    .addMaterialInfo(true).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("enchanting_table").inputItems(new ItemStack(Blocks.OBSIDIAN, 4))
                     .inputItems(gem, Diamond, 2).inputItems(new ItemStack(Items.BOOK))
-                    .outputItems(new ItemStack(Blocks.ENCHANTING_TABLE)).duration(100).EUt(VA[ULV]).save(provider);
+                    .outputItems(new ItemStack(Blocks.ENCHANTING_TABLE)).duration(100).EUt(VA[ULV])
+                    .addMaterialInfo(true).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("dispenser").duration(100).EUt(VA[LV]).circuitMeta(1)
                     .inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 7).inputItems(new ItemStack(Items.BOW))
                     .inputItems(dust, Redstone).outputItems(new ItemStack(Blocks.DISPENSER)).save(provider);
@@ -1303,7 +1323,8 @@ public class RecipeAddition {
                 .inputItems(new ItemStack(Blocks.IRON_BARS))
                 .inputFluids(GTMaterials.Steel.getFluid(L / 9))
                 .outputItems(new ItemStack(Items.IRON_DOOR))
-                .duration(400).EUt(VA[ULV]).save(provider);
+                .duration(400).EUt(VA[ULV])
+                .addMaterialInfo(true).save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "anvil", new ItemStack(Blocks.ANVIL), "BBB", "SBS", "PBP",
                 'B', new MaterialEntry(TagPrefix.block, GTMaterials.Iron),
@@ -1327,7 +1348,8 @@ public class RecipeAddition {
     }
 
     private static void flintAndSteelRequireSteel(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "flint_and_steel", new ItemStack(Items.FLINT_AND_STEEL), "G", "F",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "flint_and_steel", new ItemStack(Items.FLINT_AND_STEEL),
+                "G", "F",
                 "S",
                 'G', new MaterialEntry(TagPrefix.gearSmall, GTMaterials.Steel),
                 'F', new ItemStack(Items.FLINT),
@@ -1336,66 +1358,66 @@ public class RecipeAddition {
 
     private static void createShovelRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                            Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "hPf", " S ", " S ",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "hPf", " S ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createPickaxeRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                             Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PII", "hSf", " S ",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PII", "hSf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createAxeRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                         Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PIf", "PS ", "hS ",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "PS ", "hS ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createSwordRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                           Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, " P ", "hPf", " S ",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, " P ", "hPf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createHoeRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                         Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PIf", "hS ", " S ",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "hS ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createHelmetRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                            Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PPP", "PhP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createChestplateRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                                Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PhP", "PPP", "PPP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PhP", "PPP", "PPP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createLeggingsRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                              Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PPP", "PhP", "P P",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP", "P P",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createBootsRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output,
                                           Material material) {
-        VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "P P", "PhP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "P P", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 }

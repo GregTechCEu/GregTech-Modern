@@ -1206,7 +1206,7 @@ public class MetaTileEntityLoader {
     // - CraftingComponent.Component
     // - MaterialEntry
     // - TagKey<?>
-    public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              MachineDefinition[] machines, Object... recipe) {
         for (MachineDefinition machine : machines) {
 
@@ -1217,7 +1217,7 @@ public class MetaTileEntityLoader {
                 if (prepRecipe == null) {
                     return;
                 }
-                VanillaRecipeHelper.addShapedRecipe(provider, withUnificationData, machine.getName(), machine.asStack(),
+                VanillaRecipeHelper.addShapedRecipe(provider, setMaterialInfoData, machine.getName(), machine.asStack(),
                         prepRecipe);
             }
         }

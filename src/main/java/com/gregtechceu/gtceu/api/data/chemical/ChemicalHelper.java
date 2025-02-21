@@ -71,12 +71,10 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static MaterialStack getMaterialStack(MaterialEntry entry) {
-        if (entry != null) {
-            Material entryMaterial = entry.material();
-            if (entryMaterial != null) {
-                return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
-            }
+    public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
+        Material entryMaterial = entry.material();
+        if (entryMaterial != null) {
+            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         return null;
     }
@@ -185,9 +183,9 @@ public class ChemicalHelper {
     public static MaterialEntry getMaterialEntry(ItemLike itemLike) {
         // asItem is a bit slow, avoid calling it multiple times
         var itemKey = itemLike.asItem();
-        var unifyingEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
+        var materialEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
 
-        if (unifyingEntry == null) {
+        if (materialEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             ItemMaterialData.ITEM_MATERIAL_ENTRY.removeIf(entry -> {
@@ -196,19 +194,19 @@ public class ChemicalHelper {
             });
 
             // guess an entry based on the item's tags if none are pre-registered.
-            unifyingEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
+            materialEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
-                    MaterialEntry materialEntry = getMaterialEntry(itemTag);
+                    MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (materialEntry != null &&
-                            Arrays.stream(materialEntry.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
-                        return materialEntry;
+                    if (materialEntry1 != null &&
+                            Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
+                        return materialEntry1;
                     }
                 }
                 return null;
             });
         }
-        return unifyingEntry;
+        return materialEntry;
     }
 
     public static MaterialEntry getMaterialEntry(TagKey<Item> tag) {
@@ -232,6 +230,7 @@ public class ChemicalHelper {
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
+        if (materialEntry.material() == null) return new ArrayList<>();
         return ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             var items = new ArrayList<Supplier<? extends ItemLike>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {
@@ -264,7 +263,9 @@ public class ChemicalHelper {
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
+        if (materialEntry.material() == null) return new ArrayList<>();
         return ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
+
             var blocks = new ArrayList<Supplier<? extends Block>>();
             for (TagKey<Block> tag : Arrays.stream(getTags(materialEntry.tagPrefix(), materialEntry.material()))
                     .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
@@ -308,10 +309,12 @@ public class ChemicalHelper {
         return orePrefix.getItemTags(material);
     }
 
-    public static List<Map.Entry<ItemStack, ItemMaterialInfo>> getAllItemInfos() {
-        return ItemMaterialData.ITEM_MATERIAL_INFO.entrySet().stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(new ItemStack(entry.getKey().asItem()), entry.getValue()))
-                .collect(Collectors.toList());
+    public static Map<ItemStack, ItemMaterialInfo> getAllItemInfos() {
+        Map<ItemStack, ItemMaterialInfo> f = new HashMap<>();
+        for (var entry : ItemMaterialData.ITEM_MATERIAL_INFO.entrySet()) {
+            f.put(new ItemStack(entry.getKey().asItem()), entry.getValue());
+        }
+        return f;
     }
 
     public static Optional<TagPrefix> getOrePrefix(BlockState state) {

@@ -588,13 +588,15 @@ public class ReactorRecipes {
                 .inputItems(Items.APPLE)
                 .inputItems(ingot, Gold, 8)
                 .outputItems(Items.GOLDEN_APPLE)
-                .duration(50).EUt(VA[LV]).save(provider);
+                .duration(50).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("notch_apple")
                 .inputItems(Items.APPLE)
                 .inputItems(block, Gold, 8)
                 .outputItems(Items.ENCHANTED_GOLDEN_APPLE)
-                .duration(50).EUt(VA[LV]).save(provider);
+                .duration(50).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("magma_cream")
                 .inputItems(Items.BLAZE_POWDER)

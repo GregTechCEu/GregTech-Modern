@@ -97,12 +97,14 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Blocks.ICE, 9))
                 .outputItems(new ItemStack(Blocks.PACKED_ICE))
                 .duration(300).EUt(2)
+                .addMaterialInfo(true)
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("blue_ice")
                 .inputItems(new ItemStack(Blocks.PACKED_ICE, 9))
                 .outputItems(new ItemStack(Blocks.BLUE_ICE))
                 .duration(300).EUt(2)
+                .addMaterialInfo(true)
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("ice_from_dust")
@@ -216,12 +218,14 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BLOCK)
                 .outputItems(new ItemStack(Blocks.GLASS))
+                .addMaterialInfo(true)
                 .save(provider);
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("glass_bottle").duration(64).EUt(4)
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BOTTLE)
                 .outputItems(new ItemStack(Items.GLASS_BOTTLE))
+                .addMaterialInfo(true)
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("glass_bottle").duration(32).EUt(16)
@@ -248,20 +252,10 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.GLASS, 1))
                 .save(provider);
 
-        // for (int i = 0; i < 16; i++) {
-
-        // ModHandler.addShapedRecipe("stained_glass_pane_" + i, new ItemStack(Blocks.STAINED_GLASS_PANE, 2, i), "sG",
-        // 'G', new ItemStack(Blocks.STAINED_GLASS, 1, i));
-
-        // CUTTER_RECIPES.recipeBuilder().duration(50).EUt(VA[ULV])
-        // .inputItems(new ItemStack(Blocks.STAINED_GLASS, 3, i))
-        // .outputItems(new ItemStack(Blocks.STAINED_GLASS_PANE, 8, i))
-        // .save(provider);
-        // }
-
         CUTTER_RECIPES.recipeBuilder("cut_glass_block_to_plate").duration(50).EUt(VA[ULV])
                 .inputItems(new ItemStack(Blocks.GLASS, 3))
                 .outputItems(new ItemStack(Blocks.GLASS_PANE, 8))
+                .addMaterialInfo(true)
                 .save(provider);
     }
 
@@ -406,6 +400,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.BOWL))
                 .outputItems(dustSmall, Wood)
                 .duration(50).EUt(VA[ULV])
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("bookshelf")
@@ -413,12 +408,14 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.BOOK, 3))
                 .outputItems(new ItemStack(Blocks.BOOKSHELF))
                 .duration(100).EUt(4)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("chest")
                 .inputItems(ItemTags.PLANKS, 8)
                 .outputItems(new ItemStack(Blocks.CHEST))
                 .duration(100).EUt(4).circuitMeta(8)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("torch_coal")
@@ -777,6 +774,7 @@ public class VanillaStandardRecipes {
                 .inputItems(plate, Iron, 3)
                 .outputItems(new ItemStack(Items.BUCKET))
                 .duration(100).EUt(4)
+                .addMaterialInfo(true)
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "leather_horse_armor", new ItemStack(Items.LEATHER_HORSE_ARMOR),
@@ -788,7 +786,8 @@ public class VanillaStandardRecipes {
                 'L', new ItemStack(Items.LEATHER_LEGGINGS),
                 'S', new MaterialEntry(screw, Iron));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "iron_horse_armor", new ItemStack(Items.IRON_HORSE_ARMOR), "hdH",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "iron_horse_armor", new ItemStack(Items.IRON_HORSE_ARMOR),
+                "hdH",
                 "PCP", "LSL",
                 'H', new ItemStack(Items.IRON_HELMET),
                 'P', new MaterialEntry(plate, Iron),
@@ -796,7 +795,8 @@ public class VanillaStandardRecipes {
                 'L', new ItemStack(Items.IRON_LEGGINGS),
                 'S', new MaterialEntry(screw, Iron));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "golden_horse_armor", new ItemStack(Items.GOLDEN_HORSE_ARMOR),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "golden_horse_armor",
+                new ItemStack(Items.GOLDEN_HORSE_ARMOR),
                 "hdH", "PCP", "LSL",
                 'H', new ItemStack(Items.GOLDEN_HELMET),
                 'P', new MaterialEntry(plate, Gold),
@@ -804,7 +804,8 @@ public class VanillaStandardRecipes {
                 'L', new ItemStack(Items.GOLDEN_LEGGINGS),
                 'S', new MaterialEntry(screw, Gold));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "diamond_horse_armor", new ItemStack(Items.DIAMOND_HORSE_ARMOR),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "diamond_horse_armor",
+                new ItemStack(Items.DIAMOND_HORSE_ARMOR),
                 "hdH", "PCP", "LSL",
                 'H', new ItemStack(Items.DIAMOND_HELMET),
                 'P', new MaterialEntry(plate, Diamond),
@@ -812,19 +813,23 @@ public class VanillaStandardRecipes {
                 'L', new ItemStack(Items.DIAMOND_LEGGINGS),
                 'S', new MaterialEntry(bolt, Diamond));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_helmet", new ItemStack(Items.CHAINMAIL_HELMET), "PPP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "chainmail_helmet", new ItemStack(Items.CHAINMAIL_HELMET),
+                "PPP",
                 "PhP",
                 'P', Items.CHAIN);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_chestplate", new ItemStack(Items.CHAINMAIL_CHESTPLATE),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "chainmail_chestplate",
+                new ItemStack(Items.CHAINMAIL_CHESTPLATE),
                 "PhP", "PPP", "PPP",
                 'P', Items.CHAIN);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_leggings", new ItemStack(Items.CHAINMAIL_LEGGINGS),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "chainmail_leggings",
+                new ItemStack(Items.CHAINMAIL_LEGGINGS),
                 "PPP", "PhP", "P P",
                 'P', Items.CHAIN);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "chainmail_boots", new ItemStack(Items.CHAINMAIL_BOOTS), "P P",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "chainmail_boots", new ItemStack(Items.CHAINMAIL_BOOTS),
+                "P P",
                 "PhP",
                 'P', Items.CHAIN);
 
@@ -832,26 +837,30 @@ public class VanillaStandardRecipes {
                 .inputItems(plate, Iron, 7)
                 .outputItems(new ItemStack(Items.CAULDRON, 1))
                 .circuitMeta(7)
-                .duration(700).EUt(4).save(provider);
+                .duration(700).EUt(4)
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("iron_bars")
                 .inputItems(rod, Iron, 3)
                 .outputItems(new ItemStack(Blocks.IRON_BARS, 4))
                 .circuitMeta(3)
-                .duration(300).EUt(4).save(provider);
+                .duration(300).EUt(4)
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("iron_trapdoor")
                 .inputItems(plate, Iron, 4)
                 .circuitMeta(4)
                 .outputItems(new ItemStack(Blocks.IRON_TRAPDOOR))
-                .duration(100).EUt(16).save(provider);
+                .duration(100).EUt(16)
+                .addMaterialInfo(true).save(provider);
 
         if (!ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
             ASSEMBLER_RECIPES.recipeBuilder("iron_door")
                     .inputItems(TagPrefix.plate, GTMaterials.Iron, 6)
                     .circuitMeta(6)
                     .outputItems(new ItemStack(Items.IRON_DOOR, 3))
-                    .duration(100).EUt(16).save(provider);
+                    .duration(100).EUt(16)
+                    .addMaterialInfo(true).save(provider);
         }
     }
 
@@ -1023,16 +1032,21 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL)
-                .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
+                .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING))
+                .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER))
-                .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
+                .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME))
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3))
-                .outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
+                .outputItems(new ItemStack(Items.FLOWER_POT))
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("end_crystal").duration(30).EUt(16).inputItems(new ItemStack(Items.GHAST_TEAR))
-                .inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Items.END_CRYSTAL))
-                .inputFluids(Glass.getFluid(L * 7)).save(provider);
+                .inputItems(new ItemStack(Items.ENDER_EYE))
+                .inputFluids(Glass.getFluid(L * 7))
+                .outputItems(new ItemStack(Items.END_CRYSTAL))
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("rail")
                 .inputItems(rod, Iron, 12)
@@ -1150,7 +1164,8 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4)
                 .inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE))
-                .outputItems(new ItemStack(Blocks.ENDER_CHEST)).save(provider);
+                .outputItems(new ItemStack(Blocks.ENDER_CHEST))
+                .addMaterialInfo(!ConfigHolder.INSTANCE.recipes.hardMiscRecipes).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("armor_stand").duration(30).EUt(VA[ULV])
                 .inputItems(new ItemStack(Blocks.SMOOTH_STONE_SLAB, 1)).inputItems(new ItemStack(Items.STICK, 6))
                 .outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);

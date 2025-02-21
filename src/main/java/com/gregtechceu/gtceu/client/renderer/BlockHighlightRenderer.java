@@ -365,9 +365,12 @@ public class BlockHighlightRenderer {
     private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
         var normal = new Vector3f(from).sub(to);
 
-        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, alpha)
-                .normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, alpha)
+        buffer.vertex(mat, from.x, from.y, from.z)
+                .color(rColour, gColour, bColour, alpha)
+                .normal(normal.x, normal.y, normal.z)
+                .endVertex();
+        buffer.vertex(mat, to.x, to.y, to.z)
+                .color(rColour, gColour, bColour, alpha)
                 .normal(normal.x, normal.y, normal.z)
                 .endVertex();
     }

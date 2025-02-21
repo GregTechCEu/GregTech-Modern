@@ -194,21 +194,33 @@ public class VanillaRecipeHelper {
         addStrictShapedRecipe(provider, regName, result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
         addShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
         addShapedRecipe(provider, false, regName, result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, false, regName, result, recipe);
@@ -235,9 +247,10 @@ public class VanillaRecipeHelper {
      * <li>{@code 'x'} - {@code craftingToolWireCutter}</li>
      * </ul>
      *
-     * @param regName the registry name for the recipe
-     * @param result  the output for the recipe
-     * @param recipe  the contents of the recipe
+     * @param setMaterialInfoData whether to add material decomposition information to the recipe output
+     * @param regName             the registry name for the recipe
+     * @param result              the output for the recipe
+     * @param recipe              the contents of the recipe
      */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
@@ -300,17 +313,26 @@ public class VanillaRecipeHelper {
         }
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull String regName, @NotNull ItemStack result, @NotNull Object... recipe) {
         addShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
         addShapedRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                              @NotNull Object... recipe) {
@@ -322,7 +344,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull ResourceLocation regName,
                                                      @NotNull Ingredient chargeIngredient, @NotNull ItemStack result,
@@ -376,20 +398,20 @@ public class VanillaRecipeHelper {
         }
         builder.save(provider);
 
-        if (withUnificationData) {
+        if (setMaterialInfoData) {
             ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull String regName, @NotNull Ingredient chargeIngredient,
                                                      @NotNull ItemStack result, @NotNull Object... recipe) {
-        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge,
+        addShapedEnergyTransferRecipe(provider, setMaterialInfoData, overrideCharge, transferMaxCharge,
                 GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean isStrict,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
@@ -447,22 +469,22 @@ public class VanillaRecipeHelper {
 
         builder.save(provider);
 
-        if (withUnificationData) {
+        if (setMaterialInfoData) {
             ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      @NotNull String regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
-        addShapedFluidContainerRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
+        addShapedFluidContainerRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
 
                                                      @NotNull Object... recipe) {
-        addShapedFluidContainerRecipe(provider, withUnificationData, false, regName, result, recipe);
+        addShapedFluidContainerRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
     }
 
     public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,

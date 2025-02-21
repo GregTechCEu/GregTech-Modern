@@ -33,7 +33,6 @@ import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class OreVeinIcon implements MapIcon {
 
@@ -63,12 +62,14 @@ public class OreVeinIcon implements MapIcon {
         Material firstMaterial = null;
         if (!veinMetadata.definition().indicatorGenerators().isEmpty()) {
             var blockOrMaterial = veinMetadata.definition().indicatorGenerators().get(0).block();
-            firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
-                    state -> {
-                        var matStack = ChemicalHelper.getMaterial(state.getBlock());
-                        return matStack == null ? null : matStack.material();
-                    },
-                    Function.identity());
+            if (blockOrMaterial == null) {
+                return null;
+            } else if (blockOrMaterial.left().isPresent()) {
+                var entry = ChemicalHelper.getMaterialEntry(blockOrMaterial.left().get().getBlock());
+                firstMaterial = entry == null ? null : entry.material();
+            } else if (blockOrMaterial.right().isPresent()) {
+                firstMaterial = blockOrMaterial.right().get();
+            }
         }
         if (firstMaterial == null) {
             firstMaterial = veinMetadata.definition().veinGenerator().getAllMaterials().get(0);
