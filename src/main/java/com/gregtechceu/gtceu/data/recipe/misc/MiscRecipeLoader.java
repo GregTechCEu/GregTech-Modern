@@ -59,19 +59,7 @@ public class MiscRecipeLoader {
                 .inputItems(new ItemStack(Items.SPIDER_EYE))
                 .outputItems(new ItemStack(Items.FERMENTED_SPIDER_EYE))
                 .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("ftbq_test_completed").duration(100).EUt(VA[ULV])
-                .inputItems(new ItemStack(Blocks.DIRT))
-                .outputItems(new ItemStack(Items.DIAMOND))
-                .ftbquest("4691F34DE87331BE")
-                .save(provider);
-
-        MIXER_RECIPES.recipeBuilder("ftbq_test_not_completed").duration(100).EUt(VA[ULV])
-                .inputItems(new ItemStack(Blocks.SCAFFOLDING))
-                .outputItems(new ItemStack(Items.GOLD_INGOT))
-                .ftbquest("4691F34DE87331BE", true)
-                .save(provider);
-
+        
         MIXER_RECIPES.recipeBuilder("fermented_spider_eye_red").duration(100).EUt(VA[ULV])
                 .inputItems(dust, Sugar)
                 .inputItems(new ItemStack(Blocks.RED_MUSHROOM))
