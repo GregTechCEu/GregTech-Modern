@@ -7,22 +7,19 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+
+import net.minecraft.network.chat.Component;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ftb.mods.ftbquests.FTBQuestsAPIImpl;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import dev.ftb.mods.ftbquests.quest.QuestObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
-import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
 import dev.ftb.mods.ftbteams.api.Team;
 import lombok.NoArgsConstructor;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HexFormat;
-import java.util.Objects;
 
 @NoArgsConstructor
 public class FTBQuestCondition extends RecipeCondition {
@@ -35,7 +32,6 @@ public class FTBQuestCondition extends RecipeCondition {
     public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
 
     private String questId;
-
 
     public FTBQuestCondition(String questId, boolean isReverse) {
         super(isReverse);
