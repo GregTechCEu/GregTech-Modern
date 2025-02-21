@@ -30,7 +30,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     @Persisted
     @Getter
-    private int currentParallel;
+    private int currentParallel = 1;
 
     public ParallelHatchPartMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
