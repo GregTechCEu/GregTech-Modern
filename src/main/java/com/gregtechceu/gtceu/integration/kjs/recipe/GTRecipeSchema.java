@@ -798,7 +798,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS ftbquest(String questId, boolean isReverse) {
-            return addCondition(new FTBQuestCondition(questId, isReverse));
+            return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
         }
 
         public GTRecipeJS ftbquest(String questId) {
