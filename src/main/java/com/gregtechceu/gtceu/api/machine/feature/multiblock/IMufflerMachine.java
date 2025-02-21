@@ -16,8 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
-import lombok.val;
-
 import java.util.List;
 
 public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter {
@@ -85,7 +83,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     @Override
     default boolean afterWorking(IWorkableMultiController controller) {
         spreadEnvironmentalHazard();
-        val supplier = controller.self().getDefinition().getRecoveryItems();
+        var supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());
         }

@@ -43,4 +43,6 @@ public abstract class GenericMapRenderer {
     public abstract boolean doShowLayer(String name);
 
     public abstract void setLayerActive(String name, boolean active);
+
+    public abstract void clear();
 }

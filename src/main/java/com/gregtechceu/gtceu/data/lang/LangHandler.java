@@ -61,6 +61,8 @@ public class LangHandler {
         provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
+        provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
+        provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
@@ -441,6 +443,7 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_north", "Control Cover (North)");
         provider.add("cover.machine_controller.mode.cover_east", "Control Cover (East)");
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
+        provider.add("cover.machine_controller.mode.null", "Control Nothing");
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");

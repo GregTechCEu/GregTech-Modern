@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class UnknownCompositionMaterials {
@@ -542,6 +543,7 @@ public class UnknownCompositionMaterials {
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(NO_UNIFICATION)
+                .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
 
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))

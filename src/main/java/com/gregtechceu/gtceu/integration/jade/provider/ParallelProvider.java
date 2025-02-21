@@ -24,7 +24,7 @@ public class ParallelProvider implements IBlockComponentProvider, IServerDataPro
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("parallel")) {
             int parallel = blockAccessor.getServerData().getInt("parallel");
-            if (parallel > 0) {
+            if (parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";
