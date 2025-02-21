@@ -194,6 +194,7 @@ public class ToolEventHandlers {
 
     public static Collection<ItemEntity> onPlayerKilledEntity(ItemStack tool, Player player,
                                                               Collection<ItemEntity> drops) {
+        if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
         CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
 
         if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {

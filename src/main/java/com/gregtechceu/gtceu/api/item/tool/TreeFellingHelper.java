@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class TreeFellingHelper {
     private final Deque<BlockPos> orderedBlocks;
     private int tick;
 
-    public static Set<TreeFellingHelper> helpers = new HashSet<>();
+    public static final List<TreeFellingHelper> helpers = ObjectArrayList.of();
 
     private TreeFellingHelper(ServerPlayer player, ItemStack tool, Deque<BlockPos> orderedBlocks) {
         this.player = player;
@@ -83,12 +84,15 @@ public class TreeFellingHelper {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-            for (var helper : helpers) {
+        if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER && !helpers.isEmpty()) {
+            var iterator = helpers.iterator();
+            while (iterator.hasNext()) {
+                var helper = iterator.next();
                 if (event.level == helper.player.level()) {
                     if (helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
                             !(hasBehaviorsTag(helper.player.getMainHandItem()) &&
                                     getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY))) {
+                        iterator.remove();
                         continue;
                     }
                     if (helper.tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0)

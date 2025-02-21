@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -57,7 +58,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
         super.generateLang(lang);
         for (int tier : tiers) {
             MachineDefinition def = value[tier];
-            lang.add(def.getDescriptionId(), def.getLangValue());
+            lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
         }
     }
 

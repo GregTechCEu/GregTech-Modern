@@ -152,6 +152,7 @@ public class LargeMinerLogic extends MinerLogic {
                                        LootParams.Builder builder) {
         if (!super.doPostProcessing(blockDrops, blockState, builder) && getDropCountMultiplier() > 0) {
             for (ItemStack drop : blockDrops) {
+                if (drop.is(blockState.getBlock().asItem())) continue;
                 drop.setCount(drop.getCount() * getDropCountMultiplier());
             }
         }

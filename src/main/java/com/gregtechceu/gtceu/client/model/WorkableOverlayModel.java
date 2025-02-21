@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 
@@ -126,7 +126,7 @@ public class WorkableOverlayModel {
 
     public WorkableOverlayModel(ResourceLocation location) {
         this.location = location;
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             this.sprites = new EnumMap<>(OverlayFace.class);
         }
     }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
-import com.lowdragmc.lowdraglib.LDLib;
+import com.gregtechceu.gtceu.GTCEu;
+
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 
@@ -52,7 +53,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
     }
 
     default Object convertIngredient(Object ingredient) {
-        if (LDLib.isEmiLoaded() && ingredient instanceof EmiStack itemEmiStack) {
+        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack itemEmiStack) {
             Item item = itemEmiStack.getKeyOfType(Item.class);
             ItemStack itemStack = item == null ? ItemStack.EMPTY : new ItemStack(item, (int) itemEmiStack.getAmount());
             if (!itemStack.isEmpty()) {
@@ -61,7 +62,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
             ingredient = itemStack;
         }
 
-        if (LDLib.isJeiLoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
+        if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
             return itemJeiStack.getItemStack().orElse(ItemStack.EMPTY);
         }
         return ingredient;

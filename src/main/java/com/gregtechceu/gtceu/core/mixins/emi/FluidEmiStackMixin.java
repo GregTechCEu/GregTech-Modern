@@ -37,7 +37,7 @@ public class FluidEmiStackMixin {
             remap = false,
             require = 0)
     private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir,
-                                       @Local List<ClientTooltipComponent> list) {
+                                       @Local(ordinal = 0) List<ClientTooltipComponent> list) {
         TooltipsHandler.appendFluidTooltips(new FluidStack(this.fluid,
                 Math.max(GTMath.saturatedCast(((EmiStack) (Object) this).getAmount()), 1),
                 nbt),

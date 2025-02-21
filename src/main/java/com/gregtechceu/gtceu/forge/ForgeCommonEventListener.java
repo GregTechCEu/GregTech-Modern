@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -35,6 +36,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
@@ -58,6 +60,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -75,10 +78,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -87,6 +87,7 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -140,7 +141,18 @@ public class ForgeCommonEventListener {
         } else if (itemStack.getItem() instanceof PotionItem) {
             LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> {
                 var fluidHandler = new FluidHandlerItemStack.SwapEmpty(itemStack, new ItemStack(Items.GLASS_BOTTLE),
-                        PotionFluidHelper.BOTTLE_AMOUNT);
+                        PotionFluidHelper.BOTTLE_AMOUNT) {
+
+                    @Override
+                    protected void setFluid(FluidStack fluid) {
+                        // do nada
+                    }
+
+                    @Override
+                    public @NotNull FluidStack getFluid() {
+                        return PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT);
+                    }
+                };
                 fluidHandler.fill(PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT),
                         IFluidHandler.FluidAction.EXECUTE);
                 return fluidHandler;
@@ -251,6 +263,25 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
+        if (event.getEntity() instanceof Player player) {
+            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
+                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+                MobEffectInstance effect = event.getEffectInstance();
+                Integer cost = QuarkTechSuite.potionRemovalCost.get(effect.getEffect());
+                if (cost != null) {
+                    cost = cost * (effect.getAmplifier() + 1);
+                    if (helmet.canUse(cost)) {
+                        helmet.discharge(cost, helmet.getTier(), true, false, false);
+                        event.setResult(Event.Result.DENY);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
         if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
@@ -284,6 +315,7 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent
@@ -477,10 +509,21 @@ public class ForgeCommonEventListener {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
             }
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getBlock());
+            }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
+            }
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getItem());
+            }
+        });
+        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
+            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
+                mapping.remap(GTMachines.STEAM_MINER.first().getBlockEntityType());
             }
         });
 

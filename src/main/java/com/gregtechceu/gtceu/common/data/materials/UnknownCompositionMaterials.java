@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class UnknownCompositionMaterials {
@@ -357,7 +358,10 @@ public class UnknownCompositionMaterials {
                 .fluid().color(0xFF4000).buildAndRegister();
 
         Netherite = new Material.Builder(GTCEu.id("netherite"))
-                .ingot().color(0x005073).buildAndRegister();
+                .ingot().color(0x4b4042).secondaryColor(0x474447)
+                .toolStats(ToolProperty.Builder.of(10.0F, 14.0F, 900, 4)
+                        .enchantability(21).build())
+                .buildAndRegister();
 
         Glowstone = new Material.Builder(GTCEu.id("glowstone"))
                 .dust(1)
@@ -539,6 +543,7 @@ public class UnknownCompositionMaterials {
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(NO_UNIFICATION)
+                .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
 
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))
