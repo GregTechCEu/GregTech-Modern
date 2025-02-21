@@ -36,6 +36,7 @@ sourceSets {
     }
 
     extra {
+        compileClasspath += main.output
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 }
