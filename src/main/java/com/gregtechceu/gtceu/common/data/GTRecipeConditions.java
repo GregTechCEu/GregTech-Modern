@@ -48,6 +48,8 @@ public final class GTRecipeConditions {
                     new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
+    public static final RecipeConditionType<FTBQuestCondition> FTB_QUEST = GTRegistries.RECIPE_CONDITIONS
+            .register("ftb_quest", new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
 
     public static void init() {
         // noinspection unchecked

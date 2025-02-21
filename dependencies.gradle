@@ -48,6 +48,7 @@ dependencies {
     // Teams
     modCompileOnly(forge.ftblibrary)
     modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftbquests)
     modCompileOnly(forge.resourcefullib)
     modCompileOnly(forge.argonauts)
 
@@ -80,6 +81,7 @@ dependencies {
 
     modExtraRuntimeOnly(forge.ftblibrary)
     modExtraRuntimeOnly(forge.ftbteams)
+    modExtraRuntimeOnly(forge.ftbquests)
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
