@@ -365,14 +365,13 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     public ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate,
                                         int allowed, boolean ignoreLimit) {
         int rate;
-        boolean isStackSpecific = false;
         rate = arm.getFilterHandler().getFilter().testItemCount(stack);
         int count;
         switch (arm.getTransferMode()) {
             case TRANSFER_ANY:
                 return insert(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                count = rate - countStack(handler, stack, arm, isStackSpecific);
+                count = rate - countStack(handler, stack, arm);
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insert(handler, stack, simulate, count, ignoreLimit);
@@ -393,14 +392,13 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return stack;
     }
 
-    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm, boolean isStackSpecific) {
+    private static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
-            if (isStackSpecific ? ItemStackHashStrategy.comparingAllButCount().equals(stack, slot) :
-                    arm.getFilterHandler().getFilter().test(slot)) {
+            if (ItemStackHashStrategy.comparingAllButCount().equals(stack, slot) && arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }
         }
