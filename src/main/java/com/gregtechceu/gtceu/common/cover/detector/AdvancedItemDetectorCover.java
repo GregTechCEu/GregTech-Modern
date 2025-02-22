@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -50,12 +49,13 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
     private static final int DEFAULT_MAX = 512;
     @Persisted
     @Getter
-    @Setter
-    private int outputAmount;
-    @Persisted
-    @Getter
     private int minValue, maxValue;
 
+    @Persisted
+    @DescSynced
+    @Getter
+    @Setter
+    private boolean isLatched;
     @Persisted
     @DescSynced
     @Getter
@@ -96,9 +96,13 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
                 storedItems += handler.getStackInSlot(i).getCount();
         }
 
-        setRedstoneSignalOutput(
-                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(storedItems, maxValue, minValue,
-                        isInverted(), this.outputAmount));
+        if (isLatched) {
+            setRedstoneSignalOutput(RedstoneUtil.computeLatchedRedstoneBetweenValues(storedItems, maxValue, minValue,
+                    isInverted(), redstoneSignalOutput));
+        } else {
+            setRedstoneSignalOutput(
+                    RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
+        }
     }
 
     public void setMinValue(int minValue) {
@@ -130,15 +134,15 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(
                 9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
+                .isMultiLang()
+                .setTooltipText("cover.advanced_item_detector.invert"));
 
-            @Override
-            public void updateScreen() {
-                super.updateScreen();
-                setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_item_detector.invert." + (isPressed ? "enabled" : "disabled"))));
-            }
-        });
+        group.addWidget(new ToggleButtonWidget(31, 21, 18, 18,
+                GuiTextures.BUTTON_LOCK, this::isLatched, this::setLatched)
+                .setShouldUseBaseBackground()
+                .isMultiLang()
+                .setTooltipText("cover.advanced_detector.latch"));
 
         // Item Filter UI:
         group.addWidget(filterHandler.createFilterSlotUI(148, 100));

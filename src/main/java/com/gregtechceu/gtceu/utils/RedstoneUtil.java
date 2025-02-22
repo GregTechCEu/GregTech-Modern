@@ -54,11 +54,11 @@ public class RedstoneUtil {
      * @param current    value to be compared
      * @param max        the max that value can be
      * @param isInverted whether to invert the logic of this method
-     * @return value 0 to 15
+     * @return value 0 to 15; A value of <em>at least</em> 1 is returned if current > 0
      * @throws ArithmeticException when max is 0
      */
     public static int computeRedstoneValue(long current, long max, boolean isInverted) throws ArithmeticException {
-        int outputAmount = (int) (15 * current / max);
+        int outputAmount = (int) (14f * current / max) + (current > 0 ? 1 : 0);
 
         if (isInverted) {
             outputAmount = 15 - outputAmount;
