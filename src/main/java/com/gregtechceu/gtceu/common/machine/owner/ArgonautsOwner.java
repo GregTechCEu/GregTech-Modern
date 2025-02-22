@@ -19,6 +19,7 @@ public final class ArgonautsOwner implements IMachineOwner {
     private Guild guild;
     @Getter
     private UUID playerUUID;
+    @Getter
     private MinecraftServer server;
 
     public ArgonautsOwner() {}

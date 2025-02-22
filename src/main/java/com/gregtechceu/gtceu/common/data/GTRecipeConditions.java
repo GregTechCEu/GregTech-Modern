@@ -49,6 +49,9 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
 
+    public static final RecipeConditionType<GameStageCondition> GAMESTAGE = GTRegistries.RECIPE_CONDITIONS
+            .register("gamestage", new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+
     public static void init() {
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,

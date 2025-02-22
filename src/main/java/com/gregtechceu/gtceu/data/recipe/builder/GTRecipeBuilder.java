@@ -1064,6 +1064,14 @@ public class GTRecipeBuilder {
         return daytime(false);
     }
 
+    public GTRecipeBuilder gameStage(String stageName) {
+        return addCondition(new GameStageCondition(stageName));
+    }
+
+    public GTRecipeBuilder gameStage(String stageName, boolean isReverse) {
+        return addCondition(new GameStageCondition(stageName, isReverse));
+    }
+
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {

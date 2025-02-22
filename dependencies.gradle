@@ -58,6 +58,9 @@ dependencies {
     modCompileOnly(forge.journeymap.api)
     modCompileOnly(forge.journeymap.forge)
 
+    // GameStages
+    modCompileOnly(forge.gamestages)
+
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)
@@ -85,6 +88,9 @@ dependencies {
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
 //    modExtraRuntimeOnly(forge.journeymap.forge)
 //    modExtraRuntimeOnly(forge.ftbchunks)
+
+    modExtraRuntimeOnly(forge.gamestages)
+    modExtraRuntimeOnly(forge.bookshelf)
 
     modExtraRuntimeOnly(forge.spark)
     modExtraRuntimeOnly(forge.observable)
