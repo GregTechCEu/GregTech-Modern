@@ -50,7 +50,7 @@ public final class GTRecipeConditions {
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
 
     public static final RecipeConditionType<GameStageCondition> GAMESTAGE = GTRegistries.RECIPE_CONDITIONS
-            .register("gamestage", new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+            .register("game_stage", new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
 
     public static void init() {
         // noinspection unchecked

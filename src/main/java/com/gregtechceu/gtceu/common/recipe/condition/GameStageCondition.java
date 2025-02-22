@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -8,20 +7,29 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+
+import net.darkhax.gamestages.GameStageHelper;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import earth.terrarium.argonauts.api.guild.Guild;
 import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import lombok.NoArgsConstructor;
-import net.darkhax.gamestages.GameStageHelper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 public class GameStageCondition extends RecipeCondition {
+
     public static final Codec<GameStageCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
                     .and(Codec.STRING.fieldOf("stageName").forGetter(val -> val.stageName))
@@ -29,16 +37,16 @@ public class GameStageCondition extends RecipeCondition {
 
     private String stageName;
 
+    private static Set<String> stageNames = new HashSet<>();
+
     public final static GameStageCondition INSTANCE = new GameStageCondition();
 
     public GameStageCondition(String stageName, boolean isReverse) {
         super(isReverse);
-        if(!GameStageHelper.isStageKnown(stageName)) {
-            GTCEu.LOGGER.error("Game Stage id: {} is not known to GameStages!", stageName);
+        if (!GameStageHelper.isStageKnown(stageName)) {
+            stageNames.add(stageName);
         }
-        else {
-            this.stageName = stageName;
-        }
+        this.stageName = stageName;
     }
 
     public GameStageCondition(String stageName) {
@@ -56,39 +64,38 @@ public class GameStageCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        if(isReverse) return Component.translatable("recipe.condition.gamestage.unlocked_stage", stageName);
-        return Component.translatable("recipe.condition.gamestage.locked_stage", stageName);
+        if (isReverse) return Component.translatable("recipe.condition.gamestage.locked_stage", stageName);
+        return Component.translatable("recipe.condition.gamestage.unlocked_stage", stageName);
     }
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
-        if(owner.type() == IMachineOwner.MachineOwnerType.PLAYER) {
+        if (owner.type() == IMachineOwner.MachineOwnerType.PLAYER) {
             var uuid = owner.getUUID();
             Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-            return GameStageHelper.hasStage(player, stageName);
-        }
-        else if(owner.type() == IMachineOwner.MachineOwnerType.FTB) {
+            return stageNames.contains(this.stageName) && GameStageHelper.hasStage(player, stageName);
+        } else if (owner.type() == IMachineOwner.MachineOwnerType.FTB) {
             boolean hasStage = false;
-            for(var teamUUID : FTBTeamsAPI.api().getManager().getKnownPlayerTeams().entrySet()) {
-                for(var player : teamUUID.getValue().getMembers()) {
+            for (var teamUUID : FTBTeamsAPI.api().getManager().getKnownPlayerTeams().entrySet()) {
+                for (var player : teamUUID.getValue().getMembers()) {
                     Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
-                    hasStage |= GameStageHelper.hasStage(p, stageName);
+                    if (p != null) hasStage |= GameStageHelper.hasStage(p, stageName);
                 }
             }
-            return hasStage;
-        }
-        else if(owner.type() == IMachineOwner.MachineOwnerType.ARGONAUTS) {
-            var argoOwner = (ArgonautsOwner)owner;
+            return stageNames.contains(this.stageName) && hasStage;
+        } else if (owner.type() == IMachineOwner.MachineOwnerType.ARGONAUTS) {
+            var argoOwner = (ArgonautsOwner) owner;
             boolean hasStage = false;
             Guild g = GuildHandler.read(argoOwner.getServer()).get(argoOwner.getServer(), argoOwner.getPlayerUUID());
-            if(g != null) {
-                for(var member : g.members()) {
-                    Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(member.profile().getId());
-                    hasStage |= GameStageHelper.hasStage(p, stageName);
+            if (g != null) {
+                for (var member : g.members()) {
+                    Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+                            .getPlayer(member.profile().getId());
+                    if (p != null) hasStage |= GameStageHelper.hasStage(p, stageName);
                 }
             }
-            return hasStage;
+            return stageNames.contains(this.stageName) && hasStage;
         }
         return false;
     }
@@ -96,5 +103,32 @@ public class GameStageCondition extends RecipeCondition {
     @Override
     public RecipeCondition createTemplate() {
         return new GameStageCondition();
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        var obj = super.serialize();
+        obj.addProperty("stageName", stageName);
+        return obj;
+    }
+
+    @Override
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
+        super.deserialize(config);
+        stageName = GsonHelper.getAsString(config, "stageName");
+        return this;
+    }
+
+    @Override
+    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+        super.fromNetwork(buf);
+        stageName = buf.readUtf();
+        return this;
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buf) {
+        super.toNetwork(buf);
+        buf.writeUtf(stageName);
     }
 }
