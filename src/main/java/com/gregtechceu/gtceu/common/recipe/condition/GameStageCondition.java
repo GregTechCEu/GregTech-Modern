@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
+import earth.terrarium.argonauts.api.client.guild.GuildClientApi;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -87,7 +88,7 @@ public class GameStageCondition extends RecipeCondition {
         } else if (owner.type() == IMachineOwner.MachineOwnerType.ARGONAUTS) {
             var argoOwner = (ArgonautsOwner) owner;
             boolean hasStage = false;
-            Guild g = GuildHandler.read(argoOwner.getServer()).get(argoOwner.getServer(), argoOwner.getPlayerUUID());
+            Guild g = GuildClientApi.API.get(argoOwner.getUUID());
             if (g != null) {
                 for (var member : g.members()) {
                     Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList()
