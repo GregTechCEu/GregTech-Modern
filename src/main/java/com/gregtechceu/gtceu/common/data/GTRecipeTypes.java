@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -664,9 +663,8 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                    FormattingUtil.formatNumberReadable2F(data.getLong("eu_to_start"), false),
-                    FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
+            .setMaxTooltips(4)
+            .setUiBuilder(FusionReactorMachine::addEUToStartLabel);
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);

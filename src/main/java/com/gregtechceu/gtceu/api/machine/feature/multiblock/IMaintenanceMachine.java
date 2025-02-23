@@ -171,22 +171,22 @@ public interface IMaintenanceMachine extends IMultiPart {
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 
                 if ((getMaintenanceProblems() & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench"));
 
                 if (((getMaintenanceProblems() >> 1) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver"));
 
                 if (((getMaintenanceProblems() >> 2) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet"));
 
                 if (((getMaintenanceProblems() >> 3) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer"));
 
                 if (((getMaintenanceProblems() >> 4) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter"));
 
                 if (((getMaintenanceProblems() >> 5) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar"));
 
                 return tooltips;
             }, this::hasMaintenanceProblems, () -> null));

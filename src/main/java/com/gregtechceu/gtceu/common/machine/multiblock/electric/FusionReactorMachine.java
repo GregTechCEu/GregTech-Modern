@@ -21,23 +21,32 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -57,6 +66,13 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
             PERFECT_HALF_VOLTAGE_FACTOR, false);
 
+    // Max EU -> Tier map, used to find minimum tier needed for X EU to start
+    private static final TreeMap<Long, Integer> FUSION_ENERGY = new TreeMap<>();
+    // Tier -> Suffix map, i.e. LuV -> MKI
+    private static final Int2ObjectMap<String> FUSION_NAMES = new Int2ObjectOpenHashMap<>(4);
+    // Minimum registered fusion reactor tier
+    private static int MINIMUM_TIER = MAX;
+
     @Getter
     private final int tier;
     @Nullable
@@ -70,7 +86,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
-    private static final TreeMap<Long, Pair<Integer, String>> registeredFusionTiers = new TreeMap<>();
 
     public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
@@ -190,21 +205,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
     }
 
-    public static String getFusionTier(long eu) {
-        Map.Entry<Long, Pair<Integer, String>> mapEntry = registeredFusionTiers.ceilingEntry(eu);
-
-        if (mapEntry == null) {
-            throw new IllegalArgumentException("Value is above registered maximum EU values");
-        }
-
-        return String.format(" %s", mapEntry.getValue().getRight());
-    }
-
-    public static void registerFusionTier(int tier, @NotNull String name) {
-        long maxEU = calculateEnergyStorageFactor(tier, 16);
-        registeredFusionTiers.put(maxEU, Pair.of(tier, name));
-    }
-
     @Override
     public boolean alwaysTryModifyRecipe() {
         return true;
@@ -281,7 +281,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
-
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
@@ -292,9 +291,28 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
     }
 
+    public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
+        long euToStart = recipe.data.getLong("eu_to_start");
+        if (euToStart <= 0) return;
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int fusionTier = FUSION_ENERGY.ceilingEntry(euToStart).getValue();
+        int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
+        group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
+                LocalizationUtils.format("gtceu.recipe.eu_to_start",
+                        FormattingUtil.formatNumberReadable2F(euToStart, false),
+                        FUSION_NAMES.get(tier))));
+    }
+
     //////////////////////////////////////
     // ******** MISC *********//
     //////////////////////////////////////
+    public static void registerFusionTier(int tier, @NotNull String name) {
+        long maxEU = calculateEnergyStorageFactor(tier, 16);
+        FUSION_ENERGY.put(maxEU, tier);
+        FUSION_NAMES.put(tier, name);
+        MINIMUM_TIER = Math.min(tier, MINIMUM_TIER);
+    }
+
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {
         return energyInputAmount * (long) Math.pow(2, tier - LuV) * 10000000L;
     }

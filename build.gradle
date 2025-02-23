@@ -36,6 +36,7 @@ sourceSets {
     }
 
     extra {
+        compileClasspath += main.output
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 }
@@ -64,7 +65,7 @@ machete {
     enabled = isCI
     // Only optimize reobf jars
     ignoredTasks.addAll("jar", "slimJar")
-    additionalTasks.addAll("reobfJar", "reobjSlimJar")
+    additionalTasks.addAll("reobfJar", "reobfSlimJar")
 }
 
 lombok {
