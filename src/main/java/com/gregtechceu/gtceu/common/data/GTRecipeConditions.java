@@ -49,7 +49,8 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
     public static final RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST = GTRegistries.RECIPE_CONDITIONS
-            .register("heracles_quest", new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
+            .register("heracles_quest",
+                    new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
 
     public static void init() {
         // noinspection unchecked
