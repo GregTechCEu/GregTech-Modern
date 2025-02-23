@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectO
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
 import com.gregtechceu.gtceu.integration.map.cache.WorldCache;
+import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -80,6 +81,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
+        GTClientCache.instance.notifyNewVeins(foundVeins.size());
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
@@ -113,6 +115,7 @@ public class ServerCache extends WorldCache {
         if (cache.containsKey(dim)) {
             GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, cache.get(dim).getVeinsInChunk(pos)), player);
         }
+        GTClientCache.instance.notifyNewVeins(cache.get(dim).getVeinsInChunk(pos).size());
     }
 
     public void removeAllInChunk(ResourceKey<Level> dim, ChunkPos pos) {
