@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -37,6 +38,7 @@ import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
+import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -264,6 +266,14 @@ public class CommonProxy {
         } else if (event.getPackType() == PackType.SERVER_DATA) {
             // Clear old data
             GTDynamicDataPack.clearServer();
+
+            long startTime = System.currentTimeMillis();
+            ItemMaterialData.reinitializeMaterialData(GTRecipes.RECIPE_CONTEXT);
+            GTRecipes.recipeRemoval();
+            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
+            // Initialize dungeon loot additions
+            DungeonLootLoader.init();
+            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
                     event.getPackType(),

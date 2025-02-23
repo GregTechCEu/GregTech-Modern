@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -46,8 +45,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
-import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -295,20 +292,6 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        // moved here so that we can get tag info for decomp recipes
-        {
-            GTRecipes.RECIPE_CONTEXT = event.getConditionContext();
-            // Register recipes & unification data again
-            long startTime = System.currentTimeMillis();
-            ItemMaterialData.reinitializeMaterialData(GTRecipes.RECIPE_CONTEXT);
-            GTRecipes.recipeRemoval();
-            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-            // Initialize dungeon loot additions
-            DungeonLootLoader.init();
-            GTRecipes.RECIPE_CONTEXT = null;
-            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
-        }
-
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());

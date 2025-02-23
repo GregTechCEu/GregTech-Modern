@@ -2,16 +2,16 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public record MaterialEntry(@NotNull TagPrefix tagPrefix, @Nullable Material material) {
+public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
 
     public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, null);
+        this(tagPrefix, GTMaterials.NULL);
     }
 
     @Override
@@ -28,18 +28,14 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @Nullable Material mat
     @Override
     public int hashCode() {
         int result = tagPrefix.hashCode();
-        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + material.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        if (tagPrefix == TagPrefix.nullPrefix && material == null) {
-            return "Empty MaterialEntry";
-        } else if (tagPrefix == TagPrefix.nullPrefix) {
+        if (tagPrefix == TagPrefix.nullPrefix) {
             return material.getResourceLocation().toString();
-        } else if (material == null) {
-            return tagPrefix.name;
         }
         var tags = tagPrefix.getItemTags(material);
         if (tags.length == 0) {
@@ -48,5 +44,5 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @Nullable Material mat
         return tags[0].location().toString();
     }
 
-    public static final MaterialEntry NullEntry = new MaterialEntry(TagPrefix.nullPrefix, null);
+    public static final MaterialEntry NullEntry = new MaterialEntry(TagPrefix.nullPrefix, GTMaterials.NULL);
 }
