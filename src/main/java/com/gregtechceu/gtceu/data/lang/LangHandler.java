@@ -63,6 +63,8 @@ public class LangHandler {
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
         provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
         provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe.condition.quest.completed.tooltip", "Requires %s completed");
+        provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");

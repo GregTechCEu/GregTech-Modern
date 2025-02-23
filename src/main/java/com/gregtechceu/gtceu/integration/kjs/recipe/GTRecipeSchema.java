@@ -797,6 +797,18 @@ public interface GTRecipeSchema {
             return daytime(false);
         }
 
+        public GTRecipeJS heraclesQuest(String questId, boolean isReverse) {
+            if (questId.isEmpty()) {
+                GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
+                return null;
+            }
+            return addCondition(new HeraclesQuestCondition(questId).setReverse(isReverse));
+        }
+
+        public GTRecipeJS heraclesQuest(String questId) {
+            return heraclesQuest(questId, false);
+        }
+
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {

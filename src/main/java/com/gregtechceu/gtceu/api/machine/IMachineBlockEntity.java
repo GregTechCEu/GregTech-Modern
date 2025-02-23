@@ -12,8 +12,11 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.event.server.ServerLifecycleEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * A simple compound Interface for all my TileEntities.
@@ -93,5 +96,9 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
 
     default IMachineOwner getOwner() {
         return null;
+    }
+
+    default ServerPlayer getPlayer() {
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.getOwner().getUUID());
     }
 }
