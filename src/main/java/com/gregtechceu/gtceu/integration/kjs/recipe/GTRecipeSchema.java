@@ -39,6 +39,7 @@ import net.minecraft.world.item.crafting.Recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -798,6 +799,12 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
+            if (questId.isEmpty()) {
+                GTCEu.LOGGER.error("Quest ID cannot be empty", new IllegalArgumentException());
+            }
+            if (QuestObjectBase.parseCodeString(questId) == 0L) {
+                GTCEu.LOGGER.error("Quest not found", new IllegalArgumentException());
+            }
             return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
         }
 

@@ -46,6 +46,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -1065,6 +1066,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder ftbQuest(String questId, boolean isReverse) {
+        if (questId.isEmpty()) {
+            GTCEu.LOGGER.error("Quest ID cannot be empty", new IllegalArgumentException());
+        }
+        if (QuestObjectBase.parseCodeString(questId) == 0L) {
+            GTCEu.LOGGER.error("Quest not found", new IllegalArgumentException());
+        }
         return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
     }
 
