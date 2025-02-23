@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -8,8 +7,11 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.GsonHelper;
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ftb.mods.ftbquests.FTBQuestsAPIImpl;
@@ -20,6 +22,8 @@ import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
 import dev.ftb.mods.ftbteams.api.Team;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 @NoArgsConstructor
 public class FTBQuestCondition extends RecipeCondition {
@@ -33,22 +37,13 @@ public class FTBQuestCondition extends RecipeCondition {
 
     private String questId;
 
-    public FTBQuestCondition(String questId, boolean isReverse) {
-        super(isReverse);
-        this.questId = questId;
-    }
-
-    public FTBQuestCondition(boolean isReverse, String questId) {
-        super(isReverse);
-        this.questId = questId;
-    }
-
     public FTBQuestCondition(String questId) {
         this.questId = questId;
     };
 
-    public FTBQuestCondition(boolean isReverse) {
+    public FTBQuestCondition(boolean isReverse, String questId) {
         super(isReverse);
+        this.questId = questId;
     }
 
     @Override
@@ -58,10 +53,14 @@ public class FTBQuestCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
+        BaseQuestFile questFile = FTBQuestsAPIImpl.INSTANCE.getQuestFile(false);
+        long parsedQuestId = QuestObjectBase.parseCodeString(questId);
+        Component questTitle = Objects.requireNonNull(questFile.get(parsedQuestId)).getTitle();
+
         if (isReverse) {
-            return Component.translatable("recipe.condition.ftb_quest.not_completed.tooltip");
+            return Component.translatable("recipe.condition.ftb_quest.not_completed.tooltip", questTitle);
         } else {
-            return Component.translatable("recipe.condition.ftb_quest.completed.tooltip");
+            return Component.translatable("recipe.condition.ftb_quest.completed.tooltip", questTitle);
         }
     }
 
@@ -73,13 +72,38 @@ public class FTBQuestCondition extends RecipeCondition {
         long parsedQuestId = QuestObjectBase.parseCodeString(questId);
         QuestObject quest = questFile.get(parsedQuestId);
 
-        GTCEu.LOGGER.info("Quest ID: {}", parsedQuestId);
-
         return questFile.getOrCreateTeamData(team).isCompleted(quest);
     }
 
     @Override
     public RecipeCondition createTemplate() {
         return new FTBQuestCondition();
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        var obj = super.serialize();
+        obj.addProperty("questId", questId);
+        return obj;
+    }
+
+    @Override
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
+        super.deserialize(config);
+        questId = GsonHelper.getAsString(config, "questId");
+        return this;
+    }
+
+    @Override
+    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+        super.fromNetwork(buf);
+        questId = buf.readUtf();
+        return this;
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buf) {
+        super.toNetwork(buf);
+        buf.writeUtf(questId);
     }
 }

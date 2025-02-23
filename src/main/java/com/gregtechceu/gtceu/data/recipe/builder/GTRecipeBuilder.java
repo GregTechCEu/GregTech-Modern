@@ -1064,12 +1064,12 @@ public class GTRecipeBuilder {
         return daytime(false);
     }
 
-    public GTRecipeBuilder ftbquest(String questId, boolean isReverse) {
+    public GTRecipeBuilder ftbQuest(String questId, boolean isReverse) {
         return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
     }
 
-    public GTRecipeBuilder ftbquest(String questId) {
-        return ftbquest(questId, false);
+    public GTRecipeBuilder ftbQuest(String questId) {
+        return ftbQuest(questId, false);
     }
 
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

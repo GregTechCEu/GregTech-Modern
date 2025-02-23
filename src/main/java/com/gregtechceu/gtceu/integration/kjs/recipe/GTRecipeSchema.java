@@ -797,12 +797,12 @@ public interface GTRecipeSchema {
             return daytime(false);
         }
 
-        public GTRecipeJS ftbquest(String questId, boolean isReverse) {
+        public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
             return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
         }
 
-        public GTRecipeJS ftbquest(String questId) {
-            return ftbquest(questId, false);
+        public GTRecipeJS ftbQuest(String questId) {
+            return ftbQuest(questId, false);
         }
 
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
