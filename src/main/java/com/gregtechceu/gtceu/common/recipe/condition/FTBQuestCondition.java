@@ -58,9 +58,9 @@ public class FTBQuestCondition extends RecipeCondition {
         Component questTitle = Objects.requireNonNull(questFile.get(parsedQuestId)).getTitle();
 
         if (isReverse) {
-            return Component.translatable("recipe.condition.ftb_quest.not_completed.tooltip", questTitle);
+            return Component.translatable("recipe.condition.quest.not_completed.tooltip", questTitle);
         } else {
-            return Component.translatable("recipe.condition.ftb_quest.completed.tooltip", questTitle);
+            return Component.translatable("recipe.condition.quest.completed.tooltip", questTitle);
         }
     }
 
