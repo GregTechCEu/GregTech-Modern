@@ -84,7 +84,7 @@ xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.re
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }
-heracles            = { module = "curse.maven:heracles-845831", version.ref = "heracles"}
+heracles            = { module = "curse.maven:heracles-845831", version.ref = "heracles" }
 ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
