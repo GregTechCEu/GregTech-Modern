@@ -72,7 +72,7 @@ journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref =
 shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
-ftbquests           = { module = "dev.ftb.mods:ftb-quests-forge", version.ref = "ftbquests"}
+ftbquests           = { module = "dev.ftb.mods:ftb-quests-forge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = "ftbchunks" }
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
@@ -92,7 +92,7 @@ observable          = { module = "curse.maven:observable-509575", version.ref = 
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
-ftbquests-cm         = { module = "curse.maven:ftb-teams-forge-289412", version.ref = "ftbteams-cm" }
+ftbquests-cm         = { module = "curse.maven:ftb-quests-forge-289412", version.ref = "ftbquests-cm" }
 ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]
