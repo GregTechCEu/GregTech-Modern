@@ -15,8 +15,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 public class GTClientCache extends WorldCache implements IClientCache {
 
@@ -24,9 +26,20 @@ public class GTClientCache extends WorldCache implements IClientCache {
 
     private final FluidCache fluids = new FluidCache();
 
-    public void notifyNewVeins(int amount) {
+    public void notifyNewVeins(List<GeneratedVeinMetadata> veins) {
+        int amount = veins.size();
+
         if (amount <= 0) return;
-        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("message.gtceu.new_veins", amount));
+        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.amount", amount));
+
+        for (GeneratedVeinMetadata vein : veins) {
+            if (Minecraft.getInstance().player != null) {
+                String oreVeinId = vein.id().toString();
+                String oreVeinJeiId = oreVeinId.replace("gtceu:", "gtceu.jei.ore_vein.");
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.name",
+                        Component.translatable(oreVeinJeiId)));
+            }
+        }
     }
 
     public void addFluid(ResourceKey<Level> dim, int chunkX, int chunkZ, ProspectorMode.FluidInfo fluid) {
