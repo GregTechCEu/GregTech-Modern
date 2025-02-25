@@ -371,8 +371,11 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             case TRANSFER_ANY:
                 return insert(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                boolean isSupportAmounts = !arm.getFilterHandler().getFilter().supportsAmounts();
-                count = rate - countStack(handler, stack, arm, isSupportAmounts);
+                if (arm.getFilterHandler().getFilter().supportsAmounts()) {
+                    count = rate - countStack(handler, stack, arm);
+                } else {
+                    count = rate;
+                }
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insert(handler, stack, simulate, count, ignoreLimit);
@@ -393,10 +396,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return stack;
     }
 
-    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm, boolean isSupportAmounts) {
-        if (!isSupportAmounts) {
-            return 0;
-        }
+    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
         for (int i = 0; i < handler.getSlots(); i++) {
