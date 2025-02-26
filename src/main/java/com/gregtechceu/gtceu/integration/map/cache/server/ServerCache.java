@@ -81,7 +81,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTClientCache.instance.notifyNewVeins(foundVeins.size());
+        GTClientCache.instance.notifyNewVeins(foundVeins);
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
@@ -115,7 +115,7 @@ public class ServerCache extends WorldCache {
         if (cache.containsKey(dim)) {
             GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, cache.get(dim).getVeinsInChunk(pos)), player);
         }
-        GTClientCache.instance.notifyNewVeins(cache.get(dim).getVeinsInChunk(pos).size());
+        GTClientCache.instance.notifyNewVeins(cache.get(dim).getVeinsInChunk(pos));
     }
 
     public void removeAllInChunk(ResourceKey<Level> dim, ChunkPos pos) {
