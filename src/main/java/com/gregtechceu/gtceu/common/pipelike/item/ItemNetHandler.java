@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -11,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -399,11 +400,22 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
+        ItemFilter filter = arm.getFilterHandler().getFilter();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
-            if (ItemStackHashStrategy.comparingAllButCount().equals(stack, slot) &&
-                    arm.getFilterHandler().getFilter().test(slot)) {
+            boolean ignoreNBT;
+            if (filter instanceof SimpleItemFilter) {
+                ignoreNBT = ((SimpleItemFilter) filter).isIgnoreNbt();
+            } else {
+                ignoreNBT = false;
+            }
+            if (ignoreNBT && !ItemStack.isSameItemSameTags(stack, slot)) {
+                continue;
+            } else if (!ItemHandlerHelper.canItemStacksStack(stack, slot)) {
+                continue;
+            }
+            if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }
         }
