@@ -5316,7 +5316,7 @@
   "material.gtceu.zincite": "Zincite",
   "material.gtceu.zirconium": "Zirconium",
   "message.gtceu.new_veins.amount": "Prospected %d new veins!",
-  "message.gtceu.new_veins.name": "Prospected %s vein!",
+  "message.gtceu.new_veins.name": "Prospected %s at %s!",
   "metaarmor.energy_share.disable": "Energy Supply: Gadgets charging disabled",
   "metaarmor.energy_share.enable": "Energy Supply: Gadgets charging enabled",
   "metaarmor.energy_share.error": "Energy Supply: §cNot enough power for gadgets charging!",

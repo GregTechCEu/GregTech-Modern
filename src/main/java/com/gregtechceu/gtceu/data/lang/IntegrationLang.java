@@ -106,7 +106,7 @@ public class IntegrationLang {
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
 
         provider.add("message.gtceu.new_veins.amount", "Prospected %d new veins!");
-        provider.add("message.gtceu.new_veins.name", "Prospected %s vein!");
+        provider.add("message.gtceu.new_veins.name", "Prospected %s at %s!");
         provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
         provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
 
