@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.cache.client;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
@@ -11,13 +12,17 @@ import com.gregtechceu.gtceu.integration.map.cache.fluid.FluidCache;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
+import java.util.List;
 
 public class GTClientCache extends WorldCache implements IClientCache {
 
@@ -25,21 +30,18 @@ public class GTClientCache extends WorldCache implements IClientCache {
 
     private final FluidCache fluids = new FluidCache();
 
-    public void notifyNewVeins(Collection<GeneratedVeinMetadata> veins) {
-        if (veins.isEmpty()) {
-            return;
-        }
+    public void notifyNewVeins(List<GeneratedVeinMetadata> veins) {
+        if (veins.isEmpty()) return;
 
-        var player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
+        LocalPlayer player = Minecraft.getInstance().player;
 
-        player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.amount", veins.size()));
+        if (player == null) return;
 
         veins.forEach(vein -> {
-            var name = OreRenderLayer.getName(vein);
+            var veinId = vein.id().toString();
+            var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
+
             if (material != null) {
                 var center = vein.center();
                 name.setStyle(name.getStyle().withColor(material.getMaterialRGB()).withHoverEvent(new HoverEvent(
