@@ -83,7 +83,7 @@ dependencies {
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
-    modExtraRuntimeOnly(forge.journeymap.forge)
+//    modExtraRuntimeOnly(forge.journeymap.forge)
 //    modExtraRuntimeOnly(forge.ftbchunks)
 
     modExtraRuntimeOnly(forge.spark)
