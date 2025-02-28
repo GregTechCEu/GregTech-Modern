@@ -113,7 +113,6 @@ public class UnknownCompositionMaterials {
 
         SulfuricLightFuel = new Material.Builder(GTCEu.id("sulfuric_light_fuel"))
                 .liquid(new FluidBuilder()
-                        .temperature(775)
                         .customStill())
                 .flags(FLAMMABLE).buildAndRegister();
 
