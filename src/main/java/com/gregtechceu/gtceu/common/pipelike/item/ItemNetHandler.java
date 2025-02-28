@@ -401,20 +401,12 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (arm == null) return 0;
         int count = 0;
         ItemFilter filter = arm.getFilterHandler().getFilter();
+        boolean ignoreNBT = filter instanceof SimpleItemFilter simple && simple.isIgnoreNbt();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
-            boolean ignoreNBT;
-            if (filter instanceof SimpleItemFilter) {
-                ignoreNBT = ((SimpleItemFilter) filter).isIgnoreNbt();
-            } else {
-                ignoreNBT = false;
-            }
-            if (ignoreNBT && !ItemStack.isSameItemSameTags(stack, slot)) {
-                continue;
-            } else if (!ItemHandlerHelper.canItemStacksStack(stack, slot)) {
-                continue;
-            }
+            if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
+            else if (!ItemStack.isSameItemSameTags(stack, slot)) continue;
             if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }
