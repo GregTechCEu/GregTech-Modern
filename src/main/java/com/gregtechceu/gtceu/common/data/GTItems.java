@@ -2167,7 +2167,7 @@ public class GTItems {
             .model((ctx, prov) -> {
                 var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/nano_saber/normal"));
                 prov.getBuilder("item/nano_saber/active")
-                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                        .parent(new ModelFile.UncheckedModelFile("item/handheld"))
                         .texture("layer0", prov.modLoc("item/nano_saber/active"));
 
                 rootModel.override().predicate(NanoSaberBehavior.OVERRIDE_KEY_LOCATION, 1.0f)
