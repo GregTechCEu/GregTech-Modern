@@ -34,6 +34,7 @@ import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenCustomHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -46,20 +47,20 @@ import java.util.function.Supplier;
 public class ItemMaterialData {
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
-    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new ConcurrentHashMap<>();
+    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
     public static final Set<Map.Entry<Supplier<? extends ItemLike>, MaterialEntry>> ITEM_MATERIAL_ENTRY = ConcurrentHashMap
             .newKeySet();
-    public static final Map<ItemLike, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new ConcurrentHashMap<>();
+    public static final Map<ItemLike, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
-    public static final Map<Fluid, Material> FLUID_MATERIAL = new ConcurrentHashMap<>();
+    public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<MaterialEntry, ArrayList<Supplier<? extends ItemLike>>> MATERIAL_ENTRY_ITEM_MAP = new ConcurrentHashMap<>();
-    public static final Map<MaterialEntry, ArrayList<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new ConcurrentHashMap<>();
+    public static final Map<MaterialEntry, ArrayList<Supplier<? extends ItemLike>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
+    public static final Map<MaterialEntry, ArrayList<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new Object2ObjectOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new ConcurrentHashMap<>();
+    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectOpenHashMap<>();
 
     public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ReferenceOpenCustomHashMap<>(
             ItemStackHashStrategy.comparingAllButCount());

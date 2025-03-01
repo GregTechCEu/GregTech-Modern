@@ -494,7 +494,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "target", new ItemStack(Items.TARGET), "RBR",
                     "PHP", "RPR",
-                    'R', new UnificationEntry(dust, Redstone),
+                    'R', new MaterialEntry(dust, Redstone),
                     'P', new ItemStack(Items.PAPER),
                     'H', new ItemStack(Items.HAY_BLOCK),
                     'B', ItemTags.WOODEN_BUTTONS); // wooden buttons because ONLY WOODEN BUTTONS CAN BE TRIGGERED WITH
