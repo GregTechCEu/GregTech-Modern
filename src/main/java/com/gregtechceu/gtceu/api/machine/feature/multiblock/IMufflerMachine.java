@@ -62,7 +62,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
         self().getLevel().addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, 
                 xPos + GTValues.RNG.nextFloat() * 0.5F,
                 yPos + GTValues.RNG.nextFloat() * 0.5F, 
-                Pos + GTValues.RNG.nextFloat() * 0.5F, 
+                zPos + GTValues.RNG.nextFloat() * 0.5F, 
                 xSpd, 
                 ySpd, 
                 zSpd);
