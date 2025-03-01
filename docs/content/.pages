@@ -2,4 +2,5 @@ nav:
   - 'Home': 'index.md'
   - 'Gameplay'
   - 'Modpack Authors': Modpacks
-  - 'Developers': 'Development'
+  - 'Addon Authors' : Addons
+  - 'Developers': 'Development' 
