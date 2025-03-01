@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -9,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOwner {
@@ -47,11 +50,29 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
 
     boolean isPlayerFriendly(Player player);
 
+    static boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
+    }
+
+    static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        if (machine.getOwner() == null) return true;
+        return machine.getOwner().isPlayerInTeam(player);
+    }
+
+    UUID getUUID();
+
+    String getName();
+
     enum MachineOwnerType {
 
         PLAYER,
-        FTB(GTCEu::isFTBTeamsLoaded, "FTB Teams"),
-        ARGONAUTS(GTCEu::isArgonautsLoaded, "Argonauts Guild");
+        FTB(GTCEu.Mods::isFTBTeamsLoaded, "FTB Teams"),
+        ARGONAUTS(GTCEu.Mods::isArgonautsLoaded, "Argonauts Guild");
 
         public static final MachineOwnerType[] VALUES = values();
 

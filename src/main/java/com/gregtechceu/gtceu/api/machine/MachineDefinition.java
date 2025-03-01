@@ -45,6 +45,10 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Getter
     private final ResourceLocation id;
+    // This is only stored here for KJS use.
+    @Getter
+    @Setter
+    private String langValue;
     @Setter
     private Supplier<? extends Block> blockSupplier;
     @Setter
@@ -85,6 +89,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+    @Getter
+    @Setter
+    private boolean regressWhenWaiting = true;
 
     @Getter
     @Setter

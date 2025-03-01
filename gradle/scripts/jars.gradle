@@ -9,20 +9,28 @@ obfuscation {
     }
 }
 
-tasks.register('sourcesJar', Jar) {
-    from delombok.outputs.files
-    dependsOn delombok
-    archiveClassifier = "sources"
+// Add slim and sources jar to components.java
+java {
+    artifacts.archives(reobfSlimJar)
+    withSourcesJar()
+}
+
+// Use delombok'd files for sources
+sourcesJar {
+    exclude {
+        sourceSets.main.allSource.contains it.file
+    }
+    from delombok
 }
 
 jar.archiveClassifier = "dev"
-reobfJar.archiveClassifier = ""
 
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"
 }
 
 afterEvaluate {
+    reobfJar.archiveClassifier = ""
     tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
         destinationDirectory = file('build/libs/')
         manifest.attributes([

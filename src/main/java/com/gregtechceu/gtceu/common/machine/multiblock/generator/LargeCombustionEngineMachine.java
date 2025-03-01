@@ -15,10 +15,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -102,10 +102,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     @Override
     public long getOverclockVoltage() {
-        if (isOxygenBoosted)
-            return GTValues.V[tier] * 2;
-        else
-            return GTValues.V[tier];
+        if (isOxygenBoosted) return GTValues.V[tier] * 2;
+        else return GTValues.V[tier];
     }
 
     protected GTRecipe getLubricantRecipe() {
@@ -116,35 +114,45 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe();
     }
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof LargeCombustionEngineMachine engineMachine) {
-            var EUt = RecipeHelper.getOutputEUt(recipe);
-            // has lubricant
-            if (EUt > 0 && engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess() &&
-                    !engineMachine.isIntakesObstructed()) {
-                var maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
-                var parallelResult = GTRecipeModifiers.accurateParallel(engineMachine, recipe, maxParallel, false);
-                long eut;
-                if (engineMachine.isOxygenBoosted) { // boost production
-                    eut = (long) (EUt * parallelResult.getSecond() * (engineMachine.isExtreme() ? 2 : 1.5));
-                } else {
-                    eut = EUt * parallelResult.getSecond();
-                }
+    /**
+     * @return EUt multiplier that should be applied to the engine's output
+     */
+    protected double getProductionBoost() {
+        if (!isOxygenBoosted) return 1;
+        return isExtreme() ? 2.0 : 1.5;
+    }
 
-                recipe = new GTRecipe(recipe.recipeType, recipe.id,
-                        recipe.copyContents(recipe.inputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                        recipe.copyContents(recipe.outputs, ContentModifier.multiplier(parallelResult.getSecond())),
-                        recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
-                        recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
-                        recipe.ingredientActions, recipe.data, recipe.duration, recipe.isFuel, recipe.recipeCategory);
-
-                result.init(-eut, recipe.duration, 1, params.getOcAmount());
-                return recipe;
-            }
+    /**
+     * Recipe Modifier for <b>Combustion Engine Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if the machine's intakes are obstructed or if it doesn't have lubricant<br>
+     * Recipe is parallelized up to {@code desiredEUt / recipeEUt} times.
+     * EUt is further multiplied by the production boost of the engine.
+     * 
+     * @param machine a {@link LargeCombustionEngineMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Combustion Engine
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
+            return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
-        return null;
+        long EUt = RecipeHelper.getOutputEUt(recipe);
+        // has lubricant
+        if (EUt > 0 && !engineMachine.isIntakesObstructed() &&
+                engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess()) {
+            int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
+            int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
+            double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
+
+            return ModifierFunction.builder()
+                    .inputModifier(ContentModifier.multiplier(actualParallel))
+                    .outputModifier(ContentModifier.multiplier(actualParallel))
+                    .eutMultiplier(eutMultiplier)
+                    .parallels(actualParallel)
+                    .build();
+        }
+        return ModifierFunction.NULL;
     }
 
     @Override

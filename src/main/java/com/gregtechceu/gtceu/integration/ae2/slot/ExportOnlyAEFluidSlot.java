@@ -80,7 +80,7 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidHan
 
     @Override
     public FluidStack getFluidInTank(int tank) {
-        return null;
+        return getFluid();
     }
 
     @Override

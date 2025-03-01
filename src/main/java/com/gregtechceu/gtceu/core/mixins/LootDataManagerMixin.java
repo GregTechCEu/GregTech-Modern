@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.MixinHelpers;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootDataManager;
@@ -22,7 +21,7 @@ public abstract class LootDataManagerMixin {
     @Inject(method = "apply",
             at = @At(value = "HEAD"))
     public void gtceu$injectLootTables(Map<LootDataType<?>, Map<ResourceLocation, ?>> allElements, CallbackInfo ci) {
-        if (Platform.isDatagen()) return;
+        if (GTCEu.isDataGen()) return;
 
         Map<ResourceLocation, LootTable> lootTables = (Map<ResourceLocation, LootTable>) allElements
                 .get(LootDataType.TABLE);

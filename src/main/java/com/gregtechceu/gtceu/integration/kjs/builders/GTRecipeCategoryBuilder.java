@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -12,29 +14,30 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import dev.latvian.mods.kubejs.client.LangEventJS;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Accessors(chain = true, fluent = true)
 public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
-    public transient String name;
-    public transient GTRecipeType recipeType;
+    private final transient String name;
+    @Setter
+    private transient GTRecipeType recipeType;
+    @Setter
     private transient IGuiTexture icon;
+    @Setter
     private transient boolean isXEIVisible;
+    @Setter
+    private transient String langValue;
 
-    public GTRecipeCategoryBuilder(ResourceLocation id, Object... args) {
+    public GTRecipeCategoryBuilder(ResourceLocation id) {
         super(id);
         name = id.getPath();
         recipeType = null;
         icon = null;
         isXEIVisible = true;
-    }
-
-    public GTRecipeCategoryBuilder recipeType(GTRecipeType recipeType) {
-        this.recipeType = recipeType;
-        return this;
-    }
-
-    public GTRecipeCategoryBuilder setIcon(IGuiTexture guiTexture) {
-        this.icon = guiTexture;
-        return this;
+        langValue = null;
     }
 
     public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
@@ -47,9 +50,11 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         return this;
     }
 
-    public GTRecipeCategoryBuilder isXEIVisible(boolean flag) {
-        this.isXEIVisible = flag;
-        return this;
+    @Override
+    public void generateLang(LangEventJS lang) {
+        super.generateLang(lang);
+        if (langValue != null) lang.add(value.getLanguageKey(), langValue);
+        else lang.add(GTCEu.MOD_ID, value.getLanguageKey(), FormattingUtil.toEnglishName(value.name));
     }
 
     @Override

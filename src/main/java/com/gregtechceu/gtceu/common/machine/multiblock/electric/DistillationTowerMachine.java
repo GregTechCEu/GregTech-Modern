@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -76,16 +77,18 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         getDefinition().setPartSorter(Comparator.comparingInt(p -> p.self().getPos().getY()));
         getDefinition().setAllowExtendedFacing(false);
         super.onStructureFormed();
-        var parts = getParts().stream()
+        final int startY = getPos().getY() + yOffset;
+        List<IMultiPart> parts = getParts().stream()
                 .filter(part -> PartAbility.EXPORT_FLUIDS.isApplicable(part.self().getBlockState().getBlock()))
+                .filter(part -> part.self().getPos().getY() >= startY)
                 .toList();
 
         if (!parts.isEmpty()) {
-            // Loop from controller y + offset -> highest output hatch
-            int y = getPos().getY() + yOffset;
+            // Loop from controller y + offset -> the highest output hatch
             int maxY = parts.get(parts.size() - 1).self().getPos().getY();
-            fluidOutputs = new ObjectArrayList<>(maxY - y);
-            for (int outputIndex = 0; y <= maxY; ++y) {
+            fluidOutputs = new ObjectArrayList<>(maxY - startY);
+            int outputIndex = 0;
+            for (int y = startY; y <= maxY; ++y) {
                 if (parts.size() <= outputIndex) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                     continue;
@@ -93,14 +96,12 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
                 var part = parts.get(outputIndex);
                 if (part.self().getPos().getY() == y) {
-                    part.getRecipeHandlers().stream()
+                    var handler = part.getRecipeHandlers().stream()
                             .filter(IFluidHandler.class::isInstance)
                             .findFirst()
-                            .ifPresentOrElse(h -> {
-                                fluidOutputs.add((IFluidHandler) h);
-                                if (firstValid == null) firstValid = (IFluidHandler) h;
-                            },
-                                    () -> fluidOutputs.add(VoidFluidHandler.INSTANCE));
+                            .map(IFluidHandler.class::cast)
+                            .orElse(VoidFluidHandler.INSTANCE);
+                    addOutput(handler);
                     outputIndex++;
                 } else if (part.self().getPos().getY() > y) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
@@ -113,6 +114,11 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 }
             }
         } else onStructureInvalid();
+    }
+
+    private void addOutput(IFluidHandler handler) {
+        fluidOutputs.add(handler);
+        if (firstValid == null && handler != VoidFluidHandler.INSTANCE) firstValid = handler;
     }
 
     @Override
@@ -178,7 +184,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var recipeType = machine.getRecipeType();
             if (recipeType == GTRecipeTypes.DISTILLERY_RECIPES) return super.searchRecipe();
 
-            // Do recipe searching ourselves so we can match the outputs how we want
+            // Do recipe searching ourselves, so we can match the outputs how we want
             IRecipeCapabilityHolder holder = this.machine;
             if (!holder.hasProxies()) return null;
             var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
@@ -226,7 +232,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         @Override
         public boolean checkMatchedRecipeAvailable(GTRecipe match) {
             var matchCopy = match.copy();
-            var modified = machine.fullModifyRecipe(matchCopy, ocParams, ocResult);
+            var modified = machine.fullModifyRecipe(matchCopy);
             if (modified != null) {
                 if (modified.checkConditions(this).isSuccess() &&
                         matchDTRecipe(modified, machine).isSuccess() &&
@@ -250,7 +256,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 handleRecipeIO(lastRecipe, IO.OUT);
                 if (machine.alwaysTryModifyRecipe()) {
                     if (lastOriginRecipe != null) {
-                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), ocParams, ocResult);
+                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
                         if (modified == null) markLastRecipeDirty();
                         else lastRecipe = modified;
                     } else {
@@ -263,6 +269,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                         lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
                         lastRecipe.checkConditions(this).isSuccess()) {
                     setupRecipe(lastRecipe);
+                    if (isActive) consecutiveRecipes++;
                 } else {
                     if (suspendAfterFinish) {
                         setStatus(Status.SUSPEND);
@@ -270,6 +277,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     } else {
                         setStatus(Status.IDLE);
                     }
+                    consecutiveRecipes = 0;
                     progress = 0;
                     duration = 0;
                     isActive = false;

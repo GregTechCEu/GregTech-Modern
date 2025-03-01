@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -176,7 +177,7 @@ public abstract class ProspectorMode<T> {
             Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
             int left = tag.getInt("left");
             int yield = tag.getInt("yield");
-            return new FluidInfo(fluid, left, yield);
+            return new FluidInfo(fluid, yield, left);
         }
 
         public CompoundTag toNbt() {
@@ -185,6 +186,15 @@ public abstract class ProspectorMode<T> {
             tag.putInt("left", left);
             tag.putInt("yield", yield);
             return tag;
+        }
+
+        public static FluidInfo fromVeinWorldEntry(@NotNull FluidVeinWorldEntry savedData) {
+            if (savedData.getDefinition() == null) {
+                return null;
+            }
+            return new FluidInfo(savedData.getDefinition().getStoredFluid().get(),
+                    savedData.getFluidYield(),
+                    100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
         }
     }
 
@@ -196,11 +206,8 @@ public abstract class ProspectorMode<T> {
                 var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel)
                         .getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (fluidVein.getDefinition() != null) {
-                    var left = 100 * fluidVein.getOperationsRemaining() /
-                            BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     storage[0][0] = new FluidInfo[] {
-                            new FluidInfo(fluidVein.getDefinition().getStoredFluid().get(), left,
-                                    fluidVein.getFluidYield()),
+                            FluidInfo.fromVeinWorldEntry(fluidVein)
                     };
                 }
             }
@@ -233,8 +240,8 @@ public abstract class ProspectorMode<T> {
         @Override
         public void serialize(FluidInfo item, FriendlyByteBuf buf) {
             buf.writeUtf(BuiltInRegistries.FLUID.getKey(item.fluid).toString());
-            buf.writeVarInt(item.left);
             buf.writeVarInt(item.yield);
+            buf.writeVarInt(item.left);
         }
 
         @Override

@@ -1,25 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class RecipeModifierList implements RecipeModifier {
+/**
+ * Represents a list of RecipeModifiers that should be applied in order
+ */
+public final class RecipeModifierList implements RecipeModifier {
 
     private final RecipeModifier[] modifiers;
 
@@ -27,39 +17,27 @@ public class RecipeModifierList implements RecipeModifier {
         this.modifiers = modifiers;
     }
 
-    @Nullable
+    /**
+     * Builds the final ModifierFunction by applying each RecipeModifier in order
+     * <p>
+     * The RecipeModifierList will build modifiers by keeping tracking of the recipe as each modifier is applied
+     * </p>
+     * 
+     * @param machine the machine which is requesting the modifier
+     * @param recipe  the recipe - will not be mutated
+     * @return Fully composed ModifierFunction of all desired RecipeModifiers
+     */
     @Override
-    public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                          @NotNull OCResult result) {
-        GTRecipe modifiedRecipe = recipe;
+    @Contract(pure = true)
+    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        ModifierFunction result = ModifierFunction.IDENTITY;
+        var runningRecipe = recipe;
         for (RecipeModifier modifier : modifiers) {
-            if (modifiedRecipe != null) {
-                modifiedRecipe = modifier.apply(machine, modifiedRecipe, params, result);
-            }
+            var func = modifier.getModifier(machine, runningRecipe);
+            runningRecipe = func.apply(runningRecipe);
+            if (runningRecipe == null) return ModifierFunction.NULL;
+            result = func.compose(result);
         }
-
-        if (modifiedRecipe != null && result.getDuration() != 0) {
-            if (modifiedRecipe.data.getBoolean("duration_is_total_cwu")) {
-                modifiedRecipe.duration = (int) (modifiedRecipe.duration * (1.f - .025f * result.getOcLevel()));
-            } else {
-                modifiedRecipe.duration = result.getDuration();
-            }
-            if (result.getEut() > 0) {
-                modifiedRecipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(result.getEut(),
-                        ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
-            } else if (result.getEut() < 0) {
-                modifiedRecipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(-result.getEut(),
-                        ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null)));
-            }
-
-            if (result.getParallel() > 1) {
-                modifiedRecipe = ParallelLogic.applyParallel(machine, modifiedRecipe, result.getParallel(), false)
-                        .getFirst();
-            }
-            modifiedRecipe.ocLevel = result.getOcLevel();
-        }
-        result.reset();
-
-        return modifiedRecipe;
+        return result;
     }
 }

@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -35,7 +35,6 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.Tables;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -89,7 +88,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super.onLoad();
         // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
-                List.of(new SteamEnergyRecipeHandler(steamTank, 1d)));
+                List.of(new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
     }
 
     @Override
@@ -122,30 +121,36 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         this.needsVenting = false;
     }
 
+    public double getConversionRate() {
+        return isHighPressure() ? 2.0 : 1.0;
+    }
+
     //////////////////////////////////////
     // ****** Recipe Logic ******//
     //////////////////////////////////////
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof SimpleSteamMachine steamMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
-                return null;
-            }
-
-            var modified = recipe.copy();
-            modified.conditions.add(VentCondition.INSTANCE);
-
-            if (steamMachine.isHighPressure) {
-                result.init(RecipeHelper.getInputEUt(recipe) * 2L, modified.duration, params.getOcAmount());
-            } else {
-                result.init(RecipeHelper.getInputEUt(recipe), modified.duration * 2, params.getOcAmount());
-            }
-
-            return modified;
+    /**
+     * Recipe Modifier for <b>Simple Steam Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is rejected if tier is greater than LV or if machine cannot vent.<br>
+     * Duration is multiplied by {@code 2} if the machine is low pressure
+     * </p>
+     * 
+     * @param machine a {@link SimpleSteamMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Machine
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SimpleSteamMachine steamMachine)) {
+            return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        return null;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
+            return ModifierFunction.NULL;
+        }
+
+        var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
+        if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
+        return builder.build();
     }
 
     @Override

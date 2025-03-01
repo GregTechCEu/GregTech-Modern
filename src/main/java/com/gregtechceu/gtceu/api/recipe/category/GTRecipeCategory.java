@@ -69,6 +69,11 @@ public class GTRecipeCategory {
         recipeType.addToCategoryMap(this, recipe);
     }
 
+    public boolean shouldRegisterDisplays() {
+        return (isXEIVisible || GTCEu.isDev()) &&
+                this != GTRecipeTypes.FURNACE_RECIPES.getCategory();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

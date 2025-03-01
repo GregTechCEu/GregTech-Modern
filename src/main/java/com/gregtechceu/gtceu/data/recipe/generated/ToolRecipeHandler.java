@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -380,7 +381,7 @@ public class ToolRecipeHandler {
             int tier = toolType.electricTier;
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
-            ItemStack tool = GTItems.TOOL_ITEMS.get(material, toolType).get().get(0, powerUnit.getMaxCharge());
+            ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(material, toolType).get().get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
                     String.format("%s_%s", material.getName(), toolType.name),

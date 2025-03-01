@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
@@ -515,7 +513,7 @@ public class GTRecipeLookup {
                         // handle the existing branch
                         if (v.left().isEmpty() || v.left().get() != recipe) {
                             // the recipe already there was not the one being added, so there is a conflict
-                            if (ConfigHolder.INSTANCE.dev.debug || Platform.isDevEnv()) {
+                            if (ConfigHolder.INSTANCE.dev.debug || GTCEu.isDev()) {
                                 GTCEu.LOGGER.warn(
                                         "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
                                         BuiltInRegistries.RECIPE_TYPE.getKey(this.recipeType));

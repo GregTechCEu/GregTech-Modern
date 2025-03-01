@@ -30,6 +30,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -276,7 +278,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                @NotNull Direction direction) {
         var state = world.getBlockState(pos.move(direction));
-        return state == GTBlocks.PLASTCRETE.getDefaultState() || state == GTBlocks.CLEANROOM_GLASS.getDefaultState();
+        return state == getCasingState() || state == getGlassState();
     }
 
     /**
@@ -288,7 +290,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
                                 @NotNull Direction direction) {
         var state = world.getBlockState(pos.move(direction));
-        return state.is(CustomTags.CLEANROOM_FLOORS);
+        return state == getCasingState() || state == getGlassState() || state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
     @NotNull
@@ -331,24 +333,24 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         for (int i = 0; i < lDist + rDist + 1; i++) {
             for (int j = 0; j < fDist + bDist + 1; j++) {
                 if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
-                    floorLayer[i].append('A'); // floor edge
+                    floorLayer[j].append('A'); // floor edge
                     for (int k = 0; k < hDist - 1; k++) {
-                        wallLayers.get(k)[i].append('W'); // walls
+                        wallLayers.get(k)[j].append('W'); // walls
                     }
-                    ceilingLayer[i].append('D'); // ceiling edge
+                    ceilingLayer[j].append('D'); // ceiling edge
                 } else { // not edges
                     if (i == lDist && j == fDist) { // very center
-                        floorLayer[i].append('K');
+                        floorLayer[j].append('K');
                     } else {
-                        floorLayer[i].append('E'); // floor valid blocks
+                        floorLayer[j].append('E'); // floor valid blocks
                     }
                     for (int k = 0; k < hDist - 1; k++) {
-                        wallLayers.get(k)[i].append(' ');
+                        wallLayers.get(k)[j].append(' ');
                     }
                     if (i == lDist && j == fDist) { // very center
-                        ceilingLayer[i].append('C'); // controller
+                        ceilingLayer[j].append('C'); // controller
                     } else {
-                        ceilingLayer[i].append('F'); // filter
+                        ceilingLayer[j].append('F'); // filter
                     }
                 }
             }
@@ -388,7 +390,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .where('K', wallPredicate // very center floor, needed for height check
                         .or(getValidFloorBlocks()))
                 .where('W', wallPredicate.or(basePredicate)// walls
-                        .or(doorPredicate().setMaxGlobalLimited(4)))
+                        .or(doorPredicate().setMaxGlobalLimited(8)))
                 .where('A', wallPredicate.or(basePredicate)) // floor edges
                 .build();
     }
@@ -450,19 +452,21 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         };
     }
 
-    protected boolean isMachineBanned(MetaMachine metaTileEntity) {
+    protected boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (metaTileEntity instanceof ICleanroomProvider) return true;
-        if (metaTileEntity instanceof IMufflerMachine) return true;
-        if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
-        // todo: enable checks when these are added?
-        // if (metaTileEntity instanceof FuelMultiblockController) return true;
-        if (metaTileEntity instanceof LargeMinerMachine) return true;
-        if (metaTileEntity instanceof FluidDrillMachine) return true;
-        // if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
-        if (metaTileEntity instanceof CokeOvenMachine) return true;
-        if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;
-        return metaTileEntity instanceof PrimitivePumpMachine;
+        if (machine instanceof ICleanroomProvider) return true;
+        if (machine instanceof IMufflerMachine) return true;
+        if (machine instanceof SimpleGeneratorMachine) return true;
+        if (machine instanceof LargeCombustionEngineMachine) return true;
+        if (machine instanceof LargeTurbineMachine) return true;
+
+        if (machine instanceof LargeMinerMachine) return true;
+        if (machine instanceof FluidDrillMachine) return true;
+        if (machine instanceof BedrockOreMinerMachine) return true;
+
+        if (machine instanceof CokeOvenMachine) return true;
+        if (machine instanceof PrimitiveBlastFurnaceMachine) return true;
+        return machine instanceof PrimitivePumpMachine;
     }
 
     @Override

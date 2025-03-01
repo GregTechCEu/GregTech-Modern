@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -47,16 +46,8 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<EnvironmentalHazardCondition> ENVIRONMENTAL_HAZARD = GTRegistries.RECIPE_CONDITIONS
             .register("environmental_hazard",
                     new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
-    public static final RecipeConditionType<RPMCondition> RPM;
-
-    static {
-        if (GTCEu.isCreateLoaded()) {
-            RPM = GTRegistries.RECIPE_CONDITIONS.register("rpm",
-                    new RecipeConditionType<>(RPMCondition::new, RPMCondition.CODEC));
-        } else {
-            RPM = null;
-        }
-    }
+    public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
+            .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
 
     public static void init() {
         // noinspection unchecked

@@ -177,6 +177,7 @@ public class GTMaterials {
         rock.setIgnored(Endstone, Blocks.END_STONE);
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
+        rock.setIgnored(Blackstone, Blocks.BLACKSTONE);
         block.setIgnored(Sculk, Blocks.SCULK);
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
@@ -223,9 +224,6 @@ public class GTMaterials {
         plateDouble.setIgnored(TreatedWood);
         plate.setIgnored(BorosilicateGlass);
         foil.setIgnored(BorosilicateGlass);
-
-        dustSmall.setIgnored(Lapotron);
-        dustTiny.setIgnored(Lapotron);
 
         dye.setIgnored(DyeBlack, Items.BLACK_DYE);
         dye.setIgnored(DyeRed, Items.RED_DYE);
@@ -911,6 +909,7 @@ public class GTMaterials {
     public static Material Marble;
     public static Material Deepslate;
     public static Material GraniteRed;
+    public static Material Blackstone;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;
     public static Material Pollucite;

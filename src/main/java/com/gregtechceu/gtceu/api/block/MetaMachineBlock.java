@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -26,7 +26,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -321,24 +323,10 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (result != InteractionResult.PASS) return result;
         }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-                canOpenOwnerMachine(player, machine.getHolder())) {
+                IMachineOwner.canOpenOwnerMachine(player, machine.getHolder())) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
-    }
-
-    public boolean canOpenOwnerMachine(Player player, IMachineBlockEntity machine) {
-        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
-        if (machine.getOwner() == null) return true;
-        return machine.getOwner().isPlayerInTeam(player) || machine.getOwner().isPlayerFriendly(player);
-    }
-
-    public static boolean canBreakOwnerMachine(Player player, IMachineBlockEntity machine) {
-        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
-        if (machine.getOwner() == null) return true;
-        return machine.getOwner().isPlayerInTeam(player);
     }
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
@@ -381,5 +369,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+    }
+
+    @Override
+    public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type,
+                                EntityType<?> entityType) {
+        return false;
     }
 }
