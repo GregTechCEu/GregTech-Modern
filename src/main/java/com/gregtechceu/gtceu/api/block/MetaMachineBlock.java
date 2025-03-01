@@ -26,7 +26,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -367,5 +369,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+    }
+
+    @Override
+    public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type,
+                                EntityType<?> entityType) {
+        return false;
     }
 }

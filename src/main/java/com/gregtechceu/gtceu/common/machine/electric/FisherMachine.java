@@ -134,6 +134,8 @@ public class FisherMachine extends TieredEnergyMachine
 
     @Getter
     @Setter
+    @Persisted
+    @DescSynced
     protected boolean junkEnabled = true;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {

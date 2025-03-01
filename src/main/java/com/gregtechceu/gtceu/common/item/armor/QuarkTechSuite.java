@@ -43,7 +43,7 @@ import java.util.Map;
 
 public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
-    protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
+    public static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
     private float charge = 0.0F;
     private static final byte RUNNING_TIMER = 10; // .5 seconds
     private static final byte JUMPING_TIMER = 10; // .5 seconds
@@ -249,7 +249,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         return false;
     }
 
-    public void removeNegativeEffects(@NotNull IElectricItem item, Player player) {
+    public static void removeNegativeEffects(@NotNull IElectricItem item, Player player) {
         for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects())) {
             MobEffect potion = effect.getEffect();
             Integer cost = potionRemovalCost.get(potion);

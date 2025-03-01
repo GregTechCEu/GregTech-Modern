@@ -145,11 +145,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     public BlockPattern getPattern() {
         updateDimensions();
 
-        if (lDist < 1) lDist = MIN_RADIUS;
-        if (rDist < 1) rDist = MIN_RADIUS;
-        if (fDist < 1) fDist = MIN_RADIUS;
-        if (bDist < 1) bDist = MIN_RADIUS;
-        if (hDist < 2) hDist = MIN_RADIUS;
+        if (lDist < MIN_RADIUS) lDist = MIN_RADIUS;
+        if (rDist < MIN_RADIUS) rDist = MIN_RADIUS;
+        if (fDist < MIN_RADIUS) fDist = MIN_RADIUS;
+        if (bDist < MIN_RADIUS) bDist = MIN_RADIUS;
+        if (hDist < MIN_DEPTH) hDist = MIN_DEPTH;
 
         if (this.getFrontFacing().getAxis() == Direction.Axis.X) {
             int tmp = lDist;
