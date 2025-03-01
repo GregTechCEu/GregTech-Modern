@@ -805,5 +805,18 @@ public class MaterialInfoLoader {
                 new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.Wood, M / 2)));
         ChemicalHelper.registerMaterialInfo(Items.STONE_SWORD, new ItemMaterialInfo(
                 new MaterialStack(GTMaterials.Stone, M * 2), new MaterialStack(GTMaterials.Wood, M / 4)));
+
+        ChemicalHelper.registerMaterialInfo(Items.WEATHERED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+        ChemicalHelper.registerMaterialInfo(Items.EXPOSED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+        ChemicalHelper.registerMaterialInfo(Items.OXIDIZED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+        ChemicalHelper.registerMaterialInfo(Items.WAXED_WEATHERED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+        ChemicalHelper.registerMaterialInfo(Items.WAXED_EXPOSED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
+        ChemicalHelper.registerMaterialInfo(Items.WAXED_OXIDIZED_COPPER,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Copper, M * 9)));
     }
 }
