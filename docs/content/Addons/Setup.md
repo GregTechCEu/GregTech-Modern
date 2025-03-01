@@ -2,7 +2,7 @@
 
 ## Before we begin
 
-To reiterate, **you need to know Java** before making an addon. If you don't know already know it, a good starting point would be [MOOC](https://java-programming.mooc.fi/) or [W3Schools](https://www.w3schools.com/java/)
+To reiterate for a third and final time, **you need to know Java** before making an addon. If you don't know already know it, take a few hours to learn it and come back.
 
 While not required, knowing how to use GitHub will be useful too, especially if you intend to collaborate with other people during the development process.
 
@@ -12,27 +12,32 @@ Ready? Let's begin!
 
 First, clone or download a ZIP of the [addon template](https://github.com/JuiceyBeans/GregTech-Addon-Template). This comes prepackaged with all the required dependencies, and starter classes
 
-If you're more experienced with Java, you can setup your mod from scratch too! Note that you will need to declare the following mods as dependencies in your project:
+If you're more experienced with Java, you can setup your mod from scratch too! 
 
-- GTCEu Modern
-- LDLib
-- Registrate
-- KubeJS
-- Rhino
+!!! note "Required dependencies if you're not using the template"
+    You will need to declare the following mods as dependencies in your project:
 
-Optional, but useful dependencies:
+    - GTCEu Modern
+    - LDLib
+    - Registrate
+    - KubeJS
+    - Rhino
 
-- Just Enough Items
-- EMI
-- Configuration (by Toma)
+    Optional, but useful dependencies:
+
+    - Just Enough Items
+    - EMI
+    - Configuration (by Toma)
 
 Open the cloned repo/unzipped folder into your IDE of choice (IntelliJ IDEA is highly recommended!) 
-Installing the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) for IntelliJ is optional, but recommended.
+Installing the [Minecraft Development plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development) is optional, but recommended.
 
 ### Quick changes
 
 Your mod folder should look like this once its imported:
 ![image](./assets/addon_hierachy.png)
+
+The only folder we need to concern ourselves with here us `src`
 
 You will need to refactor a couple of things to your own namespace real quick!
 
@@ -45,6 +50,7 @@ You will need to refactor a couple of things to your own namespace real quick!
 This is your mod's main class, and where you'll add listeners for your event bus and a couple of other things. Your materials, recipe types, machines, etc. are called and registered here.
 
 ### The GTAddon class
+
 This is where your stuff that extends IGTAddon is registered (remember to link to GH for that). You can override methods here to register custom recipes elements, machine covers, tag prefixes, recipe capabilities, ore and fluid veins, vein generators, etc., as well as specify if your mod requires higher tier content (UV and above tiers, disabled by default)
 
 This class needs to implement IGTAddon, and is required to have the following methods:
