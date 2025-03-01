@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOwner {
@@ -63,11 +64,15 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
         return machine.getOwner().isPlayerInTeam(player);
     }
 
+    UUID getUUID();
+
+    String getName();
+
     enum MachineOwnerType {
 
         PLAYER,
-        FTB(GTCEu::isFTBTeamsLoaded, "FTB Teams"),
-        ARGONAUTS(GTCEu::isArgonautsLoaded, "Argonauts Guild");
+        FTB(GTCEu.Mods::isFTBTeamsLoaded, "FTB Teams"),
+        ARGONAUTS(GTCEu.Mods::isArgonautsLoaded, "Argonauts Guild");
 
         public static final MachineOwnerType[] VALUES = values();
 

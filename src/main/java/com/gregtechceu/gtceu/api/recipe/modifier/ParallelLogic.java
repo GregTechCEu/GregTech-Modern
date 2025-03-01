@@ -8,10 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -49,13 +45,13 @@ public class ParallelLogic {
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
     public static int limitByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit) {
-        IntSet multipliers = new IntOpenHashSet();
+        int minimum = Integer.MAX_VALUE;
 
         // non-tick inputs.
         for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             if (cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelLimit));
+                minimum = Math.min(minimum, cap.getMaxParallelRatio(holder, recipe, parallelLimit));
             }
         }
 
@@ -63,14 +59,11 @@ public class ParallelLogic {
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelLimit));
+                minimum = Math.min(minimum, cap.getMaxParallelRatio(holder, recipe, parallelLimit));
             }
         }
-        if (multipliers.intStream().allMatch(value -> value == Integer.MAX_VALUE)) {
-            return 0;
-        }
-        // Find the maximum number of recipes that can be performed from all available inputs
-        return multipliers.intStream().min().orElse(0);
+        if (minimum == Integer.MAX_VALUE) return 0;
+        return minimum;
     }
 
     /**
@@ -82,77 +75,36 @@ public class ParallelLogic {
      */
     public static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
                                            Predicate<RecipeCapability<?>> canVoid) {
-        Object2IntMap<RecipeCapability<?>> modifiedParallelAmounts = new Object2IntOpenHashMap<>();
-        boolean canVoidAll = true;
+        int minimum = parallelLimit;
         for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
-            modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
-            if (!canVoid.test(cap)) {
-                canVoidAll = false;
-            }
-        }
-        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
-            modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
-            if (!canVoid.test(cap)) {
-                canVoidAll = false;
-            }
-        }
-        // If we are voiding everything, return the maximum number of parallels that can be performed from
-        // the inputs
-        if (canVoidAll) {
-            return parallelLimit;
-        }
-
-        for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
-            if (!cap.doMatchInRecipe()) {
+            if (canVoid.test(cap) || !cap.doMatchInRecipe()) {
                 continue;
             }
             // Check both normal item outputs and chanced item outputs
             if (!recipe.getOutputContents(cap).isEmpty()) {
-                boolean voiding = canVoid.test(cap);
-                // If we are voiding items, reset the item limit to the maximum number of parallels
-                if (voiding) {
-                    modifiedParallelAmounts.put(cap, parallelLimit);
-                } else {
-                    modifiedParallelAmounts.put(cap, cap.limitParallel(recipe, holder, parallelLimit));
-                }
-
+                int limit = cap.limitParallel(recipe, holder, parallelLimit);
                 // If we are not voiding, and cannot fit any items, return 0
-                if (modifiedParallelAmounts.getInt(cap) == 0 && !voiding) {
+                if (limit == 0) {
                     return 0;
                 }
+                minimum = Math.min(minimum, limit);
             }
         }
         for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
-            if (!cap.doMatchInRecipe()) {
+            if (canVoid.test(cap) || !cap.doMatchInRecipe()) {
                 continue;
             }
             // Check both normal item outputs and chanced item outputs
             if (!recipe.getTickOutputContents(cap).isEmpty()) {
-                boolean voiding = canVoid.test(cap);
-                // If we are voiding items, reset the item limit to the maximum number of parallels
-                if (voiding) {
-                    if (modifiedParallelAmounts.containsKey(cap)) {
-                        modifiedParallelAmounts.put(cap, Math.min(modifiedParallelAmounts.getInt(cap), parallelLimit));
-                    } else {
-                        modifiedParallelAmounts.put(cap, parallelLimit);
-                    }
-                } else {
-                    if (modifiedParallelAmounts.containsKey(cap)) {
-                        modifiedParallelAmounts.put(cap, Math.min(modifiedParallelAmounts.getInt(cap),
-                                cap.limitParallel(recipe, holder, parallelLimit)));
-                    } else {
-                        modifiedParallelAmounts.put(cap, cap.limitParallel(recipe, holder, parallelLimit));
-                    }
-                }
-
+                int limit = cap.limitParallel(recipe, holder, parallelLimit);
                 // If we are not voiding, and cannot fit any items, return 0
-                if (modifiedParallelAmounts.getInt(cap) == 0 && !voiding) {
+                if (limit == 0) {
                     return 0;
                 }
+                minimum = Math.min(minimum, limit);
             }
         }
-
-        return modifiedParallelAmounts.values().intStream().min().orElse(0);
+        return minimum;
     }
 
     /**

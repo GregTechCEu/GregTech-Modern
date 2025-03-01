@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.networking.IHandlerContext;
 import com.lowdragmc.lowdraglib.networking.IPacket;
 
@@ -80,7 +80,7 @@ public class SCPacketShareProspection implements IPacket {
                     isDimCache, dimension,
                     data, first);
             GTNetwork.NETWORK.sendToPlayer(newPacket,
-                    Platform.getMinecraftServer().getPlayerList().getPlayer(receiver));
+                    GTCEu.getMinecraftServer().getPlayerList().getPlayer(receiver));
         }
     }
 }

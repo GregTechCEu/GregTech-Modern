@@ -133,6 +133,7 @@ public class GTREIPlugin implements REIClientPlugin {
     @Override
     public void registerItemComparators(ItemComparatorRegistry registry) {
         registry.registerNbt(GTItems.PROGRAMMED_CIRCUIT.asItem());
+        registry.registerNbt(GTItems.TURBINE_ROTOR.asItem());
     }
 
     @Override

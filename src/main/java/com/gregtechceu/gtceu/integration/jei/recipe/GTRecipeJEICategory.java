@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.jei.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.jei.IGui2IDrawable;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 
@@ -25,12 +26,13 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Function;
 
-public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper> {
+public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipe> {
 
-    public static final Function<GTRecipeCategory, RecipeType<GTRecipeWrapper>> TYPES = Util
-            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipeWrapper.class));
+    public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
+            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
 
     private final GTRecipeCategory category;
     @Getter
@@ -40,6 +42,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
     public GTRecipeJEICategory(IJeiHelpers helpers,
                                @NotNull GTRecipeCategory category) {
+        super(GTRecipeWrapper::new);
         this.category = category;
         var recipeType = category.getRecipeType();
         IGuiHelper guiHelper = helpers.getGuiHelper();
@@ -53,9 +56,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             if (!category.shouldRegisterDisplays()) continue;
             var type = category.getRecipeType();
             if (category == type.getCategory()) type.buildRepresentativeRecipes();
-            var wrapped = type.getRecipesInCategory(category).stream()
-                    .map(GTRecipeWrapper::new)
-                    .toList();
+            var wrapped = List.copyOf(type.getRecipesInCategory(category));
             registration.addRecipes(TYPES.apply(category), wrapped);
         }
     }
@@ -66,7 +67,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
             for (GTRecipeType type : machine.getRecipeTypes()) {
                 if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !Platform.isDevEnv()) continue;
+                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
                     registration.addRecipeCatalyst(machine.asStack(), machineType(category));
                 }
             }
@@ -80,7 +81,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
 
     @Override
     @NotNull
-    public RecipeType<GTRecipeWrapper> getRecipeType() {
+    public RecipeType<GTRecipe> getRecipeType() {
         return TYPES.apply(category);
     }
 
@@ -91,7 +92,7 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipeWrapper
     }
 
     @Override
-    public @Nullable ResourceLocation getRegistryName(@NotNull GTRecipeWrapper wrapper) {
-        return wrapper.recipe.id;
+    public @Nullable ResourceLocation getRegistryName(@NotNull GTRecipe recipe) {
+        return recipe.id;
     }
 }

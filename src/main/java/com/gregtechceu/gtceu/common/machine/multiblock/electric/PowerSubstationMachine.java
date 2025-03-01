@@ -566,6 +566,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
     }
 
+    @Getter
     public static class BatteryMatchWrapper {
 
         private final IBatteryData partType;

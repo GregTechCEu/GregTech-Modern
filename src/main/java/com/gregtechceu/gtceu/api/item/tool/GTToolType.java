@@ -50,6 +50,7 @@ public class GTToolType {
             .toolStats(b -> b.attacking().attackDamage(3.0F).attackSpeed(-2.4F))
             .constructor(GTSwordItem::create)
             .toolClassNames("sword")
+            .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(TagUtil.createItemTag("pickaxes", true))
@@ -58,6 +59,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(TorchPlaceBehavior.INSTANCE))
             .toolClassNames("pickaxe")
+            .materialAmount(3 * GTValues.M)
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(TagUtil.createItemTag("shovels", true))
@@ -66,6 +68,7 @@ public class GTToolType {
                     b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
             .constructor(GTShovelItem::create)
             .toolClassNames("shovel")
+            .materialAmount(GTValues.M)
             .build();
     public static final GTToolType AXE = GTToolType.builder("axe")
             .toolTag(TagUtil.createItemTag("axes", true))
@@ -76,6 +79,7 @@ public class GTToolType {
                             ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
             .constructor(GTAxeItem::create)
             .toolClassNames("axe")
+            .materialAmount(3 * GTValues.M)
             .build();
     public static final GTToolType HOE = GTToolType.builder("hoe")
             .toolTag(TagUtil.createItemTag("hoes", true))
@@ -83,6 +87,7 @@ public class GTToolType {
             .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F).behaviors(HoeGroundBehavior.INSTANCE))
             .constructor(GTHoeItem::create)
             .toolClassNames("hoe")
+            .materialAmount(2 * GTValues.M)
             .build();
 
     public static final GTToolType MINING_HAMMER = GTToolType.builder("mining_hammer")
@@ -93,6 +98,7 @@ public class GTToolType {
                     .durabilityMultiplier(3.0F)
                     .behaviors(TorchPlaceBehavior.INSTANCE))
             .toolClasses(GTToolType.PICKAXE)
+            .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType SPADE = GTToolType.builder("spade")
             .toolTag(TagUtil.createItemTag("tools/spades", false))
@@ -102,6 +108,7 @@ public class GTToolType {
                     .durabilityMultiplier(3.0F)
                     .behaviors(GrassPathBehavior.INSTANCE))
             .toolClasses(GTToolType.SHOVEL)
+            .materialAmount(3 * GTValues.M)
             .build();
     public static final GTToolType SCYTHE = GTToolType.builder("scythe")
             .toolTag(TagUtil.createItemTag("tools/scythes", false))
@@ -114,6 +121,7 @@ public class GTToolType {
             .constructor(GTHoeItem::create)
             .toolClassNames("scythe")
             .toolClasses(GTToolType.HOE)
+            .materialAmount(3 * GTValues.M)
             .build();
 
     public static final GTToolType SAW = GTToolType.builder("saw")
@@ -124,6 +132,7 @@ public class GTToolType {
                     .behaviors(HarvestIceBehavior.INSTANCE))
             .sound(GTSoundEntries.SAW_TOOL)
             .symbol('s')
+            .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
             .toolTag(TagUtil.createItemTag("tools/hammers", false))
@@ -135,6 +144,7 @@ public class GTToolType {
             .sound(GTSoundEntries.FORGE_HAMMER)
             .symbol('h')
             .toolClasses(GTToolType.PICKAXE)
+            .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType SOFT_MALLET = GTToolType.builder("mallet")
             .toolTag(TagUtil.createItemTag("tools/mallets", false))
@@ -142,6 +152,7 @@ public class GTToolType {
                     .behaviors(ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.SOFT_MALLET_TOOL)
             .symbol('r')
+            .materialAmount(6 * GTValues.M)
             .build();
     public static final GTToolType WRENCH = GTToolType.builder("wrench")
             .toolTag(TagUtil.createItemTag("tools/wrenches", false))
@@ -153,6 +164,7 @@ public class GTToolType {
                             ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .symbol('w')
+            .materialAmount(4 * GTValues.M)
             .build();
     public static final GTToolType FILE = GTToolType.builder("file")
             .toolTag(TagUtil.createItemTag("tools/files", false))
@@ -160,6 +172,7 @@ public class GTToolType {
                     .cannotAttack().attackSpeed(-2.4F))
             .sound(GTSoundEntries.FILE_TOOL)
             .symbol('f')
+            .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType CROWBAR = GTToolType.builder("crowbar")
             .toolTag(TagUtil.createItemTag("tools/crowbars", false))
@@ -169,6 +182,7 @@ public class GTToolType {
                     .sneakBypassUse().behaviors(RotateRailBehavior.INSTANCE))
             .sound(new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS), true)
             .symbol('c')
+            .materialAmount(3 * GTValues.M / 2)
             .build();
     public static final GTToolType SCREWDRIVER = GTToolType.builder("screwdriver")
             .toolTag(TagUtil.createItemTag("tools/screwdrivers", false))
@@ -177,12 +191,14 @@ public class GTToolType {
                     .behaviors(new EntityDamageBehavior(3.0F, Spider.class)))
             .sound(GTSoundEntries.SCREWDRIVER_TOOL)
             .symbol('d')
+            .materialAmount(GTValues.M)
             .build();
     public static final GTToolType MORTAR = GTToolType.builder("mortar")
             .toolTag(TagUtil.createItemTag("tools/mortars", false))
             .toolStats(b -> b.crafting().damagePerCraftingAction(2).cannotAttack().attackSpeed(-2.4F))
             .sound(GTSoundEntries.MORTAR_TOOL)
             .symbol('m')
+            .materialAmount(2 * GTValues.M)
             .build();
     public static final GTToolType WIRE_CUTTER = GTToolType.builder("wire_cutter")
             .toolTag(TagUtil.createItemTag("tools/wire_cutters", false))
@@ -191,6 +207,7 @@ public class GTToolType {
                     .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
             .sound(GTSoundEntries.WIRECUTTER_TOOL, true)
             .symbol('x')
+            .materialAmount(4 * GTValues.M) // 3 plates + 2 rods
             .build();
     public static final GTToolType KNIFE = GTToolType.builder("knife")
             .toolTag(TagUtil.createItemTag("tools/knives", false))
@@ -199,12 +216,14 @@ public class GTToolType {
             .constructor(GTSwordItem::create)
             .symbol('k')
             .toolClasses(GTToolType.SWORD)
+            .materialAmount(GTValues.M)
             .build();
     public static final GTToolType BUTCHERY_KNIFE = GTToolType.builder("butchery_knife")
             .toolTag(TagUtil.createItemTag("tools/butchery_knives", false))
             .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F)
                     .defaultEnchantment(Enchantments.MOB_LOOTING, 3))
             .constructor(GTSwordItem::create)
+            .materialAmount(4 * GTValues.M)
             .build();
     // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
     // GTCEu.id("item/tools/hammer"));
@@ -428,7 +447,7 @@ public class GTToolType {
     public final SoundEntry soundEntry;
     public final boolean playSoundOnBlockDestroy;
     public final Character symbol;
-
+    public final long materialAmount;
     public final IGTToolDefinition toolDefinition;
     public final ToolConstructor constructor;
     public final int electricTier;
@@ -436,7 +455,8 @@ public class GTToolType {
     public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses,
                       IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags,
                       List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames,
-                      @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier) {
+                      @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier,
+                      long materialAmount) {
         this.name = name;
         this.idFormat = idFormat;
         this.symbol = symbol;
@@ -451,6 +471,7 @@ public class GTToolType {
         this.soundEntry = soundEntry;
         this.playSoundOnBlockDestroy = playSoundOnBlockDestroy;
         this.electricTier = electricTier;
+        this.materialAmount = materialAmount;
 
         types.put(name, this);
     }
@@ -489,6 +510,8 @@ public class GTToolType {
         private Set<GTToolType> toolClasses = new HashSet<>();
         @Setter
         private IGTToolDefinition toolStats;
+        @Setter
+        private long materialAmount;
         @Setter
         private int tier = -1;
         @Setter
@@ -564,7 +587,8 @@ public class GTToolType {
                     toolClassNames,
                     sound,
                     playSoundOnBlockDestroy,
-                    tier);
+                    tier,
+                    materialAmount);
         }
 
         public GTToolType build() {

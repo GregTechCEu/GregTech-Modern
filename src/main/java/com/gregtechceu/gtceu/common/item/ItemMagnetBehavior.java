@@ -4,10 +4,24 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
+import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.common.data.GTItems;
+
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,13 +44,18 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Triplet;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.List;
+import java.util.*;
 
-public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAddInformation {
+public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAddInformation, IItemUIFactory {
+
+    public static final String FILTER_TAG = "MagnetFilter";
+    public static final String FILTER_ORDINAL_TAG = "FilterOrdinal";
 
     private final int range;
     private final long energyDraw;
@@ -48,11 +67,56 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
+    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+        var held = holder.getHeld();
+        var tag = held.getOrCreateTag();
+        var selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
+        var widgets = new HashSet<Triplet<Filter, Widget, Widget>>();
+        var stacks = new HashMap<Filter, ItemStack>();
+        var ui = new ModularUI(176, 157, holder, entityPlayer)
+                .background(GuiTextures.BACKGROUND)
+                .widget(new EnumSelectorWidget<>(146, 5, 20, 20,
+                        Filter.values(), selected, (val) -> updateSelection(tag, val, widgets)))
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 75, true));
+        for (var f : Filter.values()) {
+            var stack = f.getFilter(held);
+            stack.setTag(tag.getCompound(FILTER_TAG).copy());
+            stacks.put(f, stack);
+            var description = new LabelWidget(5, 5, stack.getDescriptionId());
+            var config = ItemFilter
+                    .loadFilter(stack)
+                    .openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15);
+            var visible = f == selected;
+            description.setVisible(visible);
+            config.setVisible(visible);
+            widgets.add(new Triplet<>(f, description, config));
+            ui.widget(description);
+            ui.widget(config);
+        }
+        ui.registerCloseListener(() -> {
+            var selection = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
+            tag.put(FILTER_TAG, stacks.get(selection).getOrCreateTag());
+        });
+        return ui;
+    }
+
+    private void updateSelection(CompoundTag tag, Filter filter, Collection<Triplet<Filter, Widget, Widget>> widgets) {
+        tag.putInt(FILTER_ORDINAL_TAG, filter.ordinal());
+        widgets.forEach(tri -> {
+            var visible = tri.getA() == filter;
+            tri.getB().setVisible(visible);
+            tri.getC().setVisible(visible);
+        });
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level world, @NotNull Player player,
                                                   InteractionHand hand) {
         if (!player.level().isClientSide && player.isShiftKeyDown()) {
             player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
                     "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+        } else {
+            IItemUIFactory.super.use(item, world, player, hand);
         }
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
@@ -93,6 +157,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                     new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ())
                             .inflate(range, range, range));
 
+            ItemFilter filter = null;
             boolean didMoveEntity = false;
             for (ItemEntity itemEntity : items) {
                 if (itemEntity.isRemoved()) {
@@ -115,6 +180,14 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 }
 
                 if (!world.isClientSide) {
+                    if (filter == null) {
+                        filter = Filter.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
+                    }
+
+                    if (!filter.test(itemEntity.getItem())) {
+                        continue;
+                    }
+
                     if (itemEntity.hasPickUpDelay()) {
                         itemEntity.setNoPickUpDelay();
                     }
@@ -175,7 +248,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             }
         }
 
-        if (!GTCEu.isCuriosLoaded()) {
+        if (!GTCEu.Mods.isCuriosLoaded()) {
             return false;
         }
         return CuriosUtils.hasMagnetCurios(player);
@@ -213,6 +286,46 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             return CuriosApi.getCuriosInventory(player)
                     .map(curios -> curios.findFirstCurio(i -> isMagnet(i) && isActive(i)).isPresent())
                     .orElse(false);
+        }
+    }
+
+    public enum Filter implements EnumSelectorWidget.SelectableEnum {
+
+        SIMPLE(GTItems.ITEM_FILTER, "item_filter"),
+        TAG(GTItems.TAG_FILTER, "item_tag_filter");
+
+        public final ItemEntry<ComponentItem> item;
+        public final String texture;
+
+        Filter(ItemEntry<ComponentItem> item, String texture) {
+            this.item = item;
+            this.texture = texture;
+        }
+
+        public ItemStack getFilter(ItemStack magnet) {
+            var tag = magnet.getOrCreateTag();
+            var mockStack = new ItemStack(item);
+            mockStack.setTag(tag.getCompound(FILTER_TAG));
+            return mockStack;
+        }
+
+        public ItemFilter loadFilter(ItemStack magnet) {
+            var stack = getFilter(magnet);
+            return ItemFilter.loadFilter(stack);
+        }
+
+        public static Filter get(int ordinal) {
+            return Filter.values()[ordinal];
+        }
+
+        @Override
+        public @NotNull String getTooltip() {
+            return item.asItem().getDescriptionId();
+        }
+
+        @Override
+        public @NotNull IGuiTexture getIcon() {
+            return new ResourceTexture("gtceu:textures/item/" + texture + ".png");
         }
     }
 }

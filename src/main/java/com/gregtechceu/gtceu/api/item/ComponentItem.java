@@ -382,6 +382,18 @@ public class ComponentItem extends Item
     }
 
     @Override
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public @Nullable FoodProperties getFoodProperties() {
+        // If item has `foodProperties` from super, return it.
+        if (super.isEdible()) return super.getFoodProperties();
+        // If item has `IEdibleItem` components, return food stats from default stack
+        if (isEdible()) return getFoodProperties(this.getDefaultInstance(), null);
+        // Not edible, so null.
+        return null;
+    }
+
+    @Override
     public boolean isEdible() {
         for (IItemComponent component : components) {
             if (component instanceof IEdibleItem foodBehavior) {

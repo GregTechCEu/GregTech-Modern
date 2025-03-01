@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -133,7 +133,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
     private IGuiTexture getButtonTexture(String prefix, int buttonWidth) {
         var texture = new TextTexture(prefix + "1");
 
-        if (!LDLib.isRemote()) {
+        if (!GTCEu.isClientThread()) {
             return texture;
         }
 

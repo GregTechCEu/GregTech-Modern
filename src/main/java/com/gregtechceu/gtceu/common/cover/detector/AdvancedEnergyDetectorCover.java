@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -157,7 +157,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     private void initializeMinMaxInputs(boolean wasPercent) {
-        if (LDLib.isRemote() || minValueInput == null || maxValueInput == null)
+        if (GTCEu.isClientThread() || minValueInput == null || maxValueInput == null)
             return;
 
         long energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValue();

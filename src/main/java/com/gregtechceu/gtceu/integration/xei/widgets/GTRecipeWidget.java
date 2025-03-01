@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.xei.widgets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -14,10 +15,11 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -233,7 +235,7 @@ public class GTRecipeWidget extends WidgetGroup {
             case IV -> 12;
             default -> 14;
         };
-        if (!LDLib.isEmiLoaded()) {
+        if (!GTCEu.Mods.isEMILoaded()) {
             x -= 3;
         }
         return x;
@@ -250,6 +252,9 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (isShiftClick) {
             oc = OverclockingLogic.PERFECT_OVERCLOCK;
+        }
+        if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+            oc = FusionReactorMachine.FUSION_OC;
         }
         setRecipeTextWidget(oc);
         setRecipeWidget();
