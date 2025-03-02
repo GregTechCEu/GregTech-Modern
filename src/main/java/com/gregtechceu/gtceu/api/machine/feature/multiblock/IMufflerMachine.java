@@ -59,7 +59,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
             xSpd = facing.getStepX() * (0.1F + 0.2F * GTValues.RNG.nextFloat());
             zSpd = facing.getStepZ() * (0.1F + 0.2F * GTValues.RNG.nextFloat());
         }
-        self().getLevel().addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, 
+        self().getLevel().addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                 xPos + GTValues.RNG.nextFloat() * 0.5F,
                 yPos + GTValues.RNG.nextFloat() * 0.5F,
                 zPos + GTValues.RNG.nextFloat() * 0.5F,
