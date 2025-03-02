@@ -73,3 +73,35 @@ public String addonModId() { // (3)
 1. Register your mod's GTRegistrate. This is how you'll register GT materials, machines, etc.
 2. Loads your addon's custom GT content after GT itself has loaded, to prevent problems
 3. Sets up the mod ID for your addon content. Make sure this is the same as your mod id in your Main class
+
+### Registering your content
+
+Most content in your addon (including recipes, machines, recipe types, items, etc.) will need to be called in your Main class or your GTAddon class at the appropriate listener or override. This is usually done by calling an empty `init()` method from the required class.
+
+??? example
+    ```java title="CustomMaterials.java"
+    public class CustomMaterials() {
+
+        [...]
+
+        public void init() {
+
+        }
+    }
+    ```
+    ```java title="ExampleMod.java"
+    public ExampleMod() {
+        [...]
+
+        modEventBus.addListener(this::addMaterials);
+    }
+
+    [...]
+
+    private void addMaterials(MaterialEvent event) {
+        CustomMaterials.init();
+    }
+    ```
+    
+!!! note
+    `init()` does NOT need to be empty, or even called `init()`. As long as any method from the appropriate class is called in the appropriate method or registered in the appropriate event bus listener, it will register your contet.
