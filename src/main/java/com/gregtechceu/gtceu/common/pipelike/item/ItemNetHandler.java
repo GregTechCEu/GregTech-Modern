@@ -365,8 +365,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
     public ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate,
                                         int allowed, boolean ignoreLimit) {
-        int rate;
-        rate = arm.getFilterHandler().getFilter().testItemCount(stack);
+        int rate = arm.getFilterHandler().getFilter().testItemCount(stack);
         int count;
         switch (arm.getTransferMode()) {
             case TRANSFER_ANY:
