@@ -188,10 +188,9 @@ public class ChemicalHelper {
         if (materialEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
-            ItemMaterialData.ITEM_MATERIAL_ENTRY.removeIf(entry -> {
-                ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getKey().get().asItem(), entry.getValue());
-                return true;
-            });
+            ItemMaterialData.ITEM_MATERIAL_ENTRY.forEach(
+                    (entry, value) -> ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.get().asItem(), value));
+            ItemMaterialData.ITEM_MATERIAL_ENTRY.clear();
 
             // guess an entry based on the item's tags if none are pre-registered.
             materialEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {

@@ -40,7 +40,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -49,8 +48,7 @@ public class ItemMaterialData {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Set<Map.Entry<Supplier<? extends ItemLike>, MaterialEntry>> ITEM_MATERIAL_ENTRY = ConcurrentHashMap
-            .newKeySet();
+    public static final Map<Supplier<? extends ItemLike>, MaterialEntry> ITEM_MATERIAL_ENTRY = new Object2ObjectOpenHashMap<>();
     public static final Map<ItemLike, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
@@ -116,7 +114,7 @@ public class ItemMaterialData {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                 .addAll(Arrays.asList(items));
         for (Supplier<? extends ItemLike> item : items) {
-            ITEM_MATERIAL_ENTRY.add(Map.entry(item, materialEntry));
+            ITEM_MATERIAL_ENTRY.put(item, materialEntry);
             if (item instanceof Block block) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(() -> block);
