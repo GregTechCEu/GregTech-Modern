@@ -1599,7 +1599,7 @@ public class GTItems {
             .register();
     public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item("ram_chip", Item::new).lang("RAM Chip")
             .register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item("ilc_chip", Item::new).lang("IC Chip")
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item("ilc_chip", Item::new).lang("ILC Chip")
             .register();
     public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("nano_cpu_chip", Item::new)
             .lang("Nano CPU Chip").register();
