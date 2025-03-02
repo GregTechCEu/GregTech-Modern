@@ -136,6 +136,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 
     public void setRedstoneSignalOutput(int redstoneSignalOutput) {
+        if (this.redstoneSignalOutput == redstoneSignalOutput) return;
         this.redstoneSignalOutput = redstoneSignalOutput;
         coverHolder.notifyBlockUpdate();
         coverHolder.markDirty();

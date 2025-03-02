@@ -1056,6 +1056,14 @@ public class GTRecipeBuilder {
         return environmentalHazard(condition, false);
     }
 
+    public GTRecipeBuilder daytime(boolean isNight) {
+        return addCondition(new DaytimeCondition().setReverse(isNight));
+    }
+
+    public GTRecipeBuilder daytime() {
+        return daytime(false);
+    }
+
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {

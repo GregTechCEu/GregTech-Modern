@@ -211,7 +211,7 @@ public class HigherDegreeMaterials {
         RadAway = new Material.Builder(GTCEu.id("rad_away"))
                 .dust()
                 .color(0xe3a1d7).secondaryColor(0x9845a3).iconSet(ROUGH)
-                .flags(DECOMPOSITION_BY_CENTRIFUGING)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(PotassiumIodide, 5, PrussianBlue, 3, DiethylenetriaminepentaaceticAcid, 5)
                 .buildAndRegister();
 
