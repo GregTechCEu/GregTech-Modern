@@ -401,16 +401,15 @@ public class GTItems {
                     ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, true),
                     new ItemFluidContainer()))
             .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL =
-            createFluidCell(GTMaterials.Steel, 8, 4, 64);
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM =
-            createFluidCell(GTMaterials.Aluminium, 32, 4, 64);
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL =
-            createFluidCell(GTMaterials.StainlessSteel, 64, 6, 64);
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM =
-            createFluidCell(GTMaterials.Titanium, 128, 6, 64);
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL =
-            createFluidCell(GTMaterials.TungstenSteel, 512, 8, 32);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = createFluidCell(GTMaterials.Steel, 8, 4, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = createFluidCell(GTMaterials.Aluminium, 32, 4,
+            64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = createFluidCell(
+            GTMaterials.StainlessSteel, 64, 6, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = createFluidCell(GTMaterials.Titanium, 128, 6,
+            64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = createFluidCell(GTMaterials.TungstenSteel,
+            512, 8, 32);
 
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::create)
             .lang("%s Glass Vial")
@@ -427,6 +426,7 @@ public class GTItems {
     private static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
         String name = "%s " + mat.getLocalizedName() + " Cell";
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
+        if (prop == null) prop = GTMaterials.Wood.getProperty(PropertyKey.FLUID_PIPE);
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
                 .lang(name)
