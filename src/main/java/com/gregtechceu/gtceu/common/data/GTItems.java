@@ -424,19 +424,17 @@ public class GTItems {
             .register();
 
     public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
-        String name = "%s " + mat.getLocalizedName() + " Cell";
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         if (prop == null) prop = GTMaterials.Wood.getProperty(PropertyKey.FLUID_PIPE);
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
-                .lang(name)
+                .lang("%s " + mat.getLocalizedName() + " Cell")
                 .color(() -> GTItems::cellColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))
                 .onRegister(attach(cellName(),
                         ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity,
-                                prop.getMaxFluidTemperature(),
-                                prop.isGasProof(), prop.isAcidProof(), prop.isCryoProof(), prop.isPlasmaProof(), true),
+                                prop, true),
                         new ItemFluidContainer()))
                 .onRegister(
                         materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
