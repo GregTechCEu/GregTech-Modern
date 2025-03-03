@@ -401,69 +401,17 @@ public class GTItems {
                     ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, true),
                     new ItemFluidContainer()))
             .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE
-            .item("steel_fluid_cell", ComponentItem::create)
-            .lang("%s Steel Cell")
-            .color(() -> GTItems::cellColor)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 8,
-                            GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false,
-                            false, false, true),
-                    new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE
-            .item("aluminium_fluid_cell", ComponentItem::create)
-            .lang("%s Aluminium Cell")
-            .color(() -> GTItems::cellColor)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 32,
-                            GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
-                            false, false, false, true),
-                    new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4))))
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE
-            .item("stainless_steel_fluid_cell", ComponentItem::create)
-            .lang("%s Stainless Steel Cell")
-            .color(() -> GTItems::cellColor)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 64,
-                            GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
-                            true, false, false, false, true),
-                    new ItemFluidContainer()))
-            .onRegister(
-                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6))))
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE
-            .item("titanium_fluid_cell", ComponentItem::create)
-            .lang("%s Titanium Cell")
-            .color(() -> GTItems::cellColor)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 128,
-                            GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
-                            false, false, false, true),
-                    new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6))))
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE
-            .item("tungstensteel_fluid_cell", ComponentItem::create)
-            .lang("%s Tungstensteel Cell")
-            .color(() -> GTItems::cellColor)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .properties(p -> p.stacksTo(32))
-            .onRegister(attach(cellName(),
-                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 512,
-                            GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
-                            true, false, false, false, true),
-                    new ItemFluidContainer()))
-            .onRegister(
-                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8))))
-            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL =
+            createFluidCell(GTMaterials.Steel, 8, 4, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM =
+            createFluidCell(GTMaterials.Aluminium, 32, 4, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL =
+            createFluidCell(GTMaterials.StainlessSteel, 64, 6, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM =
+            createFluidCell(GTMaterials.Titanium, 128, 6, 64);
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL =
+            createFluidCell(GTMaterials.TungstenSteel, 512, 8, 32);
+
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::create)
             .lang("%s Glass Vial")
             .color(() -> GTItems::cellColor)
@@ -475,6 +423,25 @@ public class GTItems {
                             new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4))))
             .register();
+
+    private static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
+        String name = "%s " + mat.getLocalizedName() + " Cell";
+        var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
+        return REGISTRATE
+                .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
+                .lang(name)
+                .color(() -> GTItems::cellColor)
+                .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                .properties(p -> p.stacksTo(stackSize))
+                .onRegister(attach(cellName(),
+                        ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity,
+                                prop.getMaxFluidTemperature(),
+                                prop.isGasProof(), prop.isAcidProof(), prop.isCryoProof(), prop.isPlasmaProof(), true),
+                        new ItemFluidContainer()))
+                .onRegister(
+                        materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
+                .register();
+    }
 
     public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
             .lang("Matches")
