@@ -423,7 +423,7 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4))))
             .register();
 
-    private static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
+    public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
         String name = "%s " + mat.getLocalizedName() + " Cell";
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         if (prop == null) prop = GTMaterials.Wood.getProperty(PropertyKey.FLUID_PIPE);
