@@ -14,7 +14,7 @@ import net.minecraft.util.GsonHelper;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.ftb.mods.ftbquests.FTBQuestsAPIImpl;
+import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import dev.ftb.mods.ftbquests.quest.QuestObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
@@ -53,7 +53,7 @@ public class FTBQuestCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        BaseQuestFile questFile = FTBQuestsAPIImpl.INSTANCE.getQuestFile(false);
+        BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
         long parsedQuestId = QuestObjectBase.parseCodeString(questId);
         Component questTitle = Objects.requireNonNull(questFile.get(parsedQuestId)).getTitle();
 
@@ -68,7 +68,7 @@ public class FTBQuestCondition extends RecipeCondition {
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
         Team team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(owner.getUUID()).orElse(null);
-        BaseQuestFile questFile = FTBQuestsAPIImpl.INSTANCE.getQuestFile(false);
+        BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
         long parsedQuestId = QuestObjectBase.parseCodeString(questId);
         QuestObject quest = questFile.get(parsedQuestId);
 
