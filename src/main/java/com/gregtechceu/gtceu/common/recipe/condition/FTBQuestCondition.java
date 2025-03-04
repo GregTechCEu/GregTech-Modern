@@ -18,8 +18,10 @@ import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.BaseQuestFile;
 import dev.ftb.mods.ftbquests.quest.QuestObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
-import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
+import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import dev.ftb.mods.ftbteams.api.Team;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,20 +32,26 @@ public class FTBQuestCondition extends RecipeCondition {
 
     public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.STRING.fieldOf("questId").forGetter(val -> val.questId))
+                    .and(Codec.STRING.fieldOf("questId").forGetter(val -> Long.toString(val.parsedQuestId)))
                     .apply(instance, FTBQuestCondition::new));
 
     public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
 
-    private String questId;
+    private long parsedQuestId;
+
+    private static final Long2ObjectMap<QuestObject> QUEST_CACHE = new Long2ObjectOpenHashMap<>();
 
     public FTBQuestCondition(String questId) {
-        this.questId = questId;
+        this.parsedQuestId = QuestObjectBase.parseCodeString(questId);
     };
 
     public FTBQuestCondition(boolean isReverse, String questId) {
         super(isReverse);
-        this.questId = questId;
+        this.parsedQuestId = QuestObjectBase.parseCodeString(questId);
+    }
+
+    private QuestObject getQuest() {
+        return QUEST_CACHE.computeIfAbsent(parsedQuestId, id -> FTBQuestsAPI.api().getQuestFile(false).get(id));
     }
 
     @Override
@@ -54,7 +62,6 @@ public class FTBQuestCondition extends RecipeCondition {
     @Override
     public Component getTooltips() {
         BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
-        long parsedQuestId = QuestObjectBase.parseCodeString(questId);
         Component questTitle = Objects.requireNonNull(questFile.get(parsedQuestId)).getTitle();
 
         if (isReverse) {
@@ -67,12 +74,10 @@ public class FTBQuestCondition extends RecipeCondition {
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
-        Team team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamForPlayerID(owner.getUUID()).orElse(null);
+        Team team = FTBTeamsAPI.api().getManager().getTeamForPlayerID(owner.getUUID()).orElse(null);
         BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
-        long parsedQuestId = QuestObjectBase.parseCodeString(questId);
-        QuestObject quest = questFile.get(parsedQuestId);
 
-        return questFile.getOrCreateTeamData(team).isCompleted(quest);
+        return questFile.getOrCreateTeamData(team).isCompleted(getQuest());
     }
 
     @Override
@@ -83,27 +88,27 @@ public class FTBQuestCondition extends RecipeCondition {
     @Override
     public @NotNull JsonObject serialize() {
         var obj = super.serialize();
-        obj.addProperty("questId", questId);
+        obj.addProperty("questId", Long.toString(parsedQuestId));
         return obj;
     }
 
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        questId = GsonHelper.getAsString(config, "questId");
+        parsedQuestId = QuestObjectBase.parseCodeString(GsonHelper.getAsString(config, "questId"));
         return this;
     }
 
     @Override
     public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        questId = buf.readUtf();
+        parsedQuestId = QuestObject.parseCodeString(buf.readUtf());
         return this;
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buf) {
         super.toNetwork(buf);
-        buf.writeUtf(questId);
+        buf.writeUtf(Long.toString(parsedQuestId));
     }
 }
