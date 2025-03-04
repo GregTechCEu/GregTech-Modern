@@ -234,7 +234,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("Input items is empty, id: %s", id);
+                    throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
                 }
             }
             return input(ItemRecipeCapability.CAP,
@@ -800,12 +800,10 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
             if (questId.isEmpty()) {
-                GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
-                return null;
+                throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe {}", this.id));
             }
             if (QuestObjectBase.parseCodeString(questId) == 0L) {
-                GTCEu.LOGGER.error("Quest {} not found for recipe {}", questId, this.id);
-                return null;
+                throw new RecipeExceptionJS(String.format("Quest {} not found for recipe {}", questId, this.id));
             }
             return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
         }
