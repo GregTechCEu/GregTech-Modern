@@ -59,7 +59,7 @@ public class MiscRecipeLoader {
                 .inputItems(new ItemStack(Items.SPIDER_EYE))
                 .outputItems(new ItemStack(Items.FERMENTED_SPIDER_EYE))
                 .save(provider);
-        
+
         MIXER_RECIPES.recipeBuilder("fermented_spider_eye_red").duration(100).EUt(VA[ULV])
                 .inputItems(dust, Sugar)
                 .inputItems(new ItemStack(Blocks.RED_MUSHROOM))
