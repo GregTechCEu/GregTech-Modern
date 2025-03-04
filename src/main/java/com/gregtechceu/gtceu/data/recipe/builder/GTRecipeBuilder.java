@@ -1068,11 +1068,11 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder ftbQuest(String questId, boolean isReverse) {
         if (questId.isEmpty()) {
             GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
-            return null;
+            return this;
         }
         if (QuestObjectBase.parseCodeString(questId) == 0L) {
             GTCEu.LOGGER.error("Quest {} not found for recipe {}", questId, this.id);
-            return null;
+            return this;
         }
         return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
     }
