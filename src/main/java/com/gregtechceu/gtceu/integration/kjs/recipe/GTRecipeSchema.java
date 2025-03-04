@@ -799,8 +799,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS heraclesQuest(String questId, boolean isReverse) {
             if (questId.isEmpty()) {
-                GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
-                return null;
+                throw new RecipeExceptionJS (String.format("Quest ID cannot be empty for recipe {}", this.id));
             }
             return addCondition(new HeraclesQuestCondition(questId).setReverse(isReverse));
         }

@@ -1067,7 +1067,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
         if (questId.isEmpty()) {
             GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
-            return null;
+            return this;
         }
         return addCondition(new HeraclesQuestCondition(questId).setReverse(isReverse));
     }
