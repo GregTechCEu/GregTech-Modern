@@ -49,6 +49,8 @@ public final class ToolRecipeHandler {
             GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
     };
 
+    private ToolRecipeHandler() {}
+
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         ToolProperty property = material.getProperty(PropertyKey.TOOL);
         if (property == null) {
