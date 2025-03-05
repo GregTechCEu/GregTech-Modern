@@ -36,10 +36,6 @@ public class GameStageCondition extends RecipeCondition {
 
     public final static GameStageCondition INSTANCE = new GameStageCondition();
 
-    public GameStageCondition(String stageName, boolean isReverse) {
-        this(isReverse, stageName);
-    }
-
     public GameStageCondition(String stageName) {
         this(false, stageName);
     }

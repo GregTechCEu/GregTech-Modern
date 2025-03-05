@@ -798,11 +798,19 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS gameStage(String stageName) {
+            if (!GTCEu.Mods.isGameStagesLoaded()) {
+                GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
+                return this;
+            }
             return addCondition(new GameStageCondition(stageName));
         }
 
         public GTRecipeJS gameStage(String stageName, boolean isReverse) {
-            return addCondition(new GameStageCondition(stageName, isReverse));
+            if (!GTCEu.Mods.isGameStagesLoaded()) {
+                GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
+                return this;
+            }
+            return addCondition(new GameStageCondition(isReverse, stageName));
         }
 
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

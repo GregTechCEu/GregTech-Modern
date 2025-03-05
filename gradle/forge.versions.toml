@@ -89,7 +89,7 @@ ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "a
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
 gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
-bookshelf          = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
+bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }

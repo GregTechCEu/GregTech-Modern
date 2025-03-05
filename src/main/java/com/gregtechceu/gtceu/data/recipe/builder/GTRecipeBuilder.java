@@ -1065,13 +1065,19 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder gameStage(String stageName) {
-        if (!GTCEu.Mods.isGameStagesLoaded()) return this;
+        if (!GTCEu.Mods.isGameStagesLoaded()) {
+            GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
+            return this;
+        }
         return addCondition(new GameStageCondition(stageName));
     }
 
     public GTRecipeBuilder gameStage(String stageName, boolean isReverse) {
-        if (!GTCEu.Mods.isGameStagesLoaded()) return this;
-        return addCondition(new GameStageCondition(stageName, isReverse));
+        if (!GTCEu.Mods.isGameStagesLoaded()) {
+            GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
+            return this;
+        }
+        return addCondition(new GameStageCondition(isReverse, stageName));
     }
 
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
