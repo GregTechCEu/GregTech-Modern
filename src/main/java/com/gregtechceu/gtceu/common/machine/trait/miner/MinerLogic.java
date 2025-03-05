@@ -118,7 +118,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Getter
     private final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
-    protected Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     private final ItemRecipeHandler inputItemHandler, outputItemHandler;
     private final IgnoreEnergyRecipeHandler inputEnergyHandler;
     @Setter

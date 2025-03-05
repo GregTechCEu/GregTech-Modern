@@ -233,7 +233,7 @@ public class RecipeHelper {
         // TODO: make this actually log error on failed non-simulate
         if (handle == null || handle.content() != null) {
             String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
-            return ActionResult.fail(() -> Component.translatable(key)
+            return ActionResult.fail(Component.translatable(key)
                     .append(": ").append(handle.capability().getName()));
         }
         return handle.result();
@@ -315,7 +315,7 @@ public class RecipeHelper {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
             } else if (!condition.check(recipe, recipeLogic)) {
-                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails")
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
                         .append(": ")
                         .append(condition.getTooltips()));
             }
@@ -329,7 +329,7 @@ public class RecipeHelper {
             }
 
             if (!passed) {
-                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails"));
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails"));
             }
         }
         return ActionResult.SUCCESS;
@@ -452,9 +452,9 @@ public class RecipeHelper {
             var items = ItemRecipeCapability.CAP.of(content.content).getItems();
             if (items.length == 0) {
                 return ActionResult
-                        .fail(() -> Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
+                        .fail(Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
             } else if (Arrays.stream(items).anyMatch(ItemStack::isEmpty)) {
-                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.invalid_stack"));
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.invalid_stack"));
             }
         }
         return ActionResult.SUCCESS;
@@ -465,9 +465,9 @@ public class RecipeHelper {
             var fluids = FluidRecipeCapability.CAP.of(content.content).getStacks();
             if (fluids.length == 0) {
                 return ActionResult
-                        .fail(() -> Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
+                        .fail(Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
             } else if (Arrays.stream(fluids).anyMatch(FluidStack::isEmpty)) {
-                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.invalid_stack"));
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.invalid_stack"));
             }
         }
         return ActionResult.SUCCESS;
