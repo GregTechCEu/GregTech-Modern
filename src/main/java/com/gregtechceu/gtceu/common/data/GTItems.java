@@ -428,7 +428,7 @@ public class GTItems {
         if (prop == null) prop = GTMaterials.Wood.getProperty(PropertyKey.FLUID_PIPE);
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
-                .lang("%s " + mat.getLocalizedName() + " Cell")
+                .lang("%s " + toEnglishName(mat.getName()) + " Cell")
                 .color(() -> GTItems::cellColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))
