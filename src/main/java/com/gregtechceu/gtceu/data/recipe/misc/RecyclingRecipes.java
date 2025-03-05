@@ -114,7 +114,7 @@ public class RecyclingRecipes {
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null && entry.tagPrefix().unificationEnabled()) {
+        if (entry != null && entry.material() != GTMaterials.NULL && entry.tagPrefix().unificationEnabled()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
@@ -151,14 +151,14 @@ public class RecyclingRecipes {
                                                    @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null) {
+        if (entry != null && entry.material() != GTMaterials.NULL) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-            if (ms == null || ms.material() == null) {
+            if (ms == null || ms.material() == GTMaterials.NULL) {
                 return;
             }
             Material m = ms.material();
@@ -237,7 +237,7 @@ public class RecyclingRecipes {
                                              List<MaterialStack> materials, @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null) {
+        if (entry != null && entry.material() != GTMaterials.NULL) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 

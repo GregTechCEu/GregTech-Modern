@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.gregtechceu.gtceu.common.data.GTRecipes;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -285,14 +283,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public Collection<Fluid> getFluids() {
             ArrayList<Fluid> list = Lists.newArrayList();
-            if (GTRecipes.RECIPE_CONTEXT != null) {
-                for (Holder<Fluid> holder : GTRecipes.RECIPE_CONTEXT.getTag(this.tag)) {
-                    list.add(holder.value());
-                }
-            } else {
-                for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
-                    list.add(holder.value());
-                }
+            for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
+                list.add(holder.value());
             }
             return list;
         }

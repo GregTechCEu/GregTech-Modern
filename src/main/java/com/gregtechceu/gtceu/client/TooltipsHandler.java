@@ -48,7 +48,7 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
-        if (materialEntry != null && materialEntry.material() != null) {
+        if (materialEntry != null && materialEntry.material() != GTMaterials.NULL) {
             if (materialEntry.material().getChemicalFormula() != null &&
                     !materialEntry.material().getChemicalFormula().isEmpty())
                 tooltips.add(1, Component.literal(materialEntry.material().getChemicalFormula())

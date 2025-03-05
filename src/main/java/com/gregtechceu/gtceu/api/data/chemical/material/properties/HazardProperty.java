@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -192,7 +193,7 @@ public class HazardProperty implements IMaterialProperty {
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
             MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (entry != null && entry.material() != null) {
+            if (entry != null && entry.material() != GTMaterials.NULL) {
                 material = entry.material();
                 prefix = entry.tagPrefix();
             }

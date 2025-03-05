@@ -1,23 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTRecipes;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -26,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
@@ -129,16 +120,11 @@ public class SizedIngredient extends Ingredient {
             return intProviderIngredient.getItems();
         }
         if (changed || itemStacks == null) {
-            Ingredient.Value[] values = ((IngredientAccessor) inner).getValues();
-            if (values.length > 0 && values[0] instanceof Ingredient.TagValue tagValue) {
-                itemStacks = getTagValueItems(tagValue);
-            } else {
-                itemStacks = Arrays.stream(inner.getItems()).map(i -> {
-                    ItemStack ic = i.copy();
-                    ic.setCount(amount);
-                    return ic;
-                }).toArray(ItemStack[]::new);
-            }
+            itemStacks = Arrays.stream(inner.getItems()).map(i -> {
+                ItemStack ic = i.copy();
+                ic.setCount(amount);
+                return ic;
+            }).toArray(ItemStack[]::new);
             changed = false;
         }
         return itemStacks;
@@ -164,26 +150,6 @@ public class SizedIngredient extends Ingredient {
         int result = amount;
         result = 31 * result + Arrays.hashCode(itemStacks);
         return result;
-    }
-
-    public ItemStack[] getTagValueItems(Ingredient.TagValue tagValue) {
-        TagKey<Item> tag = ((TagValueAccessor) tagValue).getTag();
-        List<ItemStack> list = Lists.newArrayList();
-
-        if (GTRecipes.RECIPE_CONTEXT != null) {
-            for (Holder<Item> holder : GTRecipes.RECIPE_CONTEXT.getTag(tag)) {
-                list.add(new ItemStack(holder));
-            }
-        } else {
-            for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                list.add(new ItemStack(holder));
-            }
-        }
-
-        if (list.isEmpty()) {
-            list.add(new ItemStack(Blocks.BARRIER).setHoverName(Component.literal("Empty Tag: " + tag.location())));
-        }
-        return list.toArray(ItemStack[]::new);
     }
 
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {

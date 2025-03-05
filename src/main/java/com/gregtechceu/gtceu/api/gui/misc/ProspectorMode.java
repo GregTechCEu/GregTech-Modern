@@ -72,8 +72,8 @@ public abstract class ProspectorMode<T> {
                             var itemName = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
                                 var entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
-                                if (entry != null && entry.material() != null) {
-                                    name = "material_" + entry.material().toString();
+                                if (entry != null && entry.material() != GTMaterials.NULL) {
+                                    name = "material_" + entry.material();
                                 }
                                 return name;
                             });

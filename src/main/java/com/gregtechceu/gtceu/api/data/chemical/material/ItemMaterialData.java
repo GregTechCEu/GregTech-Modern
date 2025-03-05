@@ -1,24 +1,19 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -27,15 +22,13 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenCustomHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,20 +53,11 @@ public class ItemMaterialData {
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectOpenHashMap<>();
 
-    public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ReferenceOpenCustomHashMap<>(
+    public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ObjectOpenCustomHashMap<>(
             ItemStackHashStrategy.comparingAllButCount());
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);
-    }
-
-    public static ItemMaterialInfo getMaterialInfo(Object item) {
-        if (item instanceof ItemLike itemLike) {
-            return getMaterialInfo(itemLike);
-        } else if (item instanceof ItemStack stack) {
-            return getMaterialInfo(stack.getItem());
-        }
-        return null;
     }
 
     public static ItemMaterialInfo getMaterialInfo(ItemLike item) {
@@ -135,7 +119,7 @@ public class ItemMaterialData {
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
         }
-        if (materialEntry.material() != null) {
+        if (materialEntry.material() != GTMaterials.NULL) {
             for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
                 TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
             }
@@ -156,8 +140,7 @@ public class ItemMaterialData {
         }
     }
 
-    @ApiStatus.Internal
-    public static void reinitializeMaterialData(ICondition.IContext context) {
+    public static void reinitializeMaterialData() {
         // Clear old data
         MATERIAL_ENTRY_ITEM_MAP.clear();
         MATERIAL_ENTRY_BLOCK_MAP.clear();
@@ -175,7 +158,6 @@ public class ItemMaterialData {
         }
         GTMaterialItems.toUnify.forEach(ItemMaterialData::registerMaterialInfoItems);
         WoodMachineRecipes.registerMaterialInfo();
-        // resolveFluidMaterialInfos(context);
     }
 
     @ApiStatus.Internal
@@ -200,29 +182,5 @@ public class ItemMaterialData {
                     ITEM_MATERIAL_INFO.get(entry.getKey().getItem()).getMaterials(), false, null);
         }
         UNRESOLVED_ITEM_MATERIAL_INFO.clear();
-    }
-
-    @ApiStatus.Internal
-    public static void resolveFluidMaterialInfos(ICondition.IContext context) {
-        if (context == null) {
-            return;
-        }
-
-        var allFluidTags = context.getAllTags(Registries.FLUID);
-        for (final Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (material.hasProperty(PropertyKey.FLUID)) {
-                FluidProperty property = material.getProperty(PropertyKey.FLUID);
-                FluidStorageKey.allKeys().stream()
-                        .map(property::get)
-                        .filter(Objects::nonNull)
-                        .map(f -> Pair.of(f,
-                                new ResourceLocation("forge", BuiltInRegistries.FLUID.getKey(f).getPath())))
-                        .filter(pair -> allFluidTags.containsKey(pair.getSecond()))
-                        .forEach(pair -> {
-                            allFluidTags.remove(pair.getSecond());
-                            ItemMaterialData.FLUID_MATERIAL.put(pair.getFirst(), material);
-                        });
-            }
-        }
     }
 }

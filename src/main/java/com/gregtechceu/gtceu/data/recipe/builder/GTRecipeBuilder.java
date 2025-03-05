@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
@@ -470,7 +471,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
-        if (input.material() == null) {
+        if (input.material() == GTMaterials.NULL) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         }
         return inputItems(input.tagPrefix(), input.material(), count);
@@ -604,14 +605,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry) {
-        if (entry.material() == null) {
+        if (entry.material() == GTMaterials.NULL) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
         return outputItems(entry.tagPrefix(), entry.material());
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry, int count) {
-        if (entry.material() == null) {
+        if (entry.material() == GTMaterials.NULL) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
         return outputItems(entry.tagPrefix(), entry.material(), count);

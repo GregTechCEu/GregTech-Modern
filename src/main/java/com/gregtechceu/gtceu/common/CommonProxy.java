@@ -268,7 +268,7 @@ public class CommonProxy {
             GTDynamicDataPack.clearServer();
 
             long startTime = System.currentTimeMillis();
-            ItemMaterialData.reinitializeMaterialData(GTRecipes.RECIPE_CONTEXT);
+            ItemMaterialData.reinitializeMaterialData();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions

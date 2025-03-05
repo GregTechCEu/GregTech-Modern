@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.M;
+import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
 /**
  * @author KilaBash
@@ -73,7 +74,7 @@ public class ChemicalHelper {
     @Nullable
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
         Material entryMaterial = entry.material();
-        if (entryMaterial != null) {
+        if (entryMaterial != GTMaterials.NULL) {
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         return null;
@@ -84,11 +85,11 @@ public class ChemicalHelper {
         var entry = getMaterialEntry(itemLike);
         if (entry != null) {
             Material entryMaterial = entry.material();
-            if (entryMaterial != null) {
+            if (entryMaterial != GTMaterials.NULL) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
             }
         }
-        ItemMaterialInfo info = ItemMaterialData.ITEM_MATERIAL_INFO.get(itemLike);
+        ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
         if (info == null)
             return null;
         if (info.getMaterial() == null) {
@@ -100,7 +101,7 @@ public class ChemicalHelper {
 
     @Nullable
     public static Material getMaterial(Fluid fluid) {
-        if (ItemMaterialData.FLUID_MATERIAL.isEmpty()) {
+        if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
             for (final Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
@@ -112,12 +113,12 @@ public class ChemicalHelper {
                             .filter(pair -> allFluidTags.contains(pair.getSecond()))
                             .forEach(pair -> {
                                 allFluidTags.remove(pair.getSecond());
-                                ItemMaterialData.FLUID_MATERIAL.put(pair.getFirst(), material);
+                                FLUID_MATERIAL.put(pair.getFirst(), material);
                             });
                 }
             }
         }
-        return ItemMaterialData.FLUID_MATERIAL.get(fluid);
+        return FLUID_MATERIAL.get(fluid);
     }
 
     @Nullable
@@ -183,17 +184,17 @@ public class ChemicalHelper {
     public static MaterialEntry getMaterialEntry(ItemLike itemLike) {
         // asItem is a bit slow, avoid calling it multiple times
         var itemKey = itemLike.asItem();
-        var materialEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
+        var materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
 
         if (materialEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
-            ItemMaterialData.ITEM_MATERIAL_ENTRY.forEach(
-                    (entry, value) -> ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.get().asItem(), value));
-            ItemMaterialData.ITEM_MATERIAL_ENTRY.clear();
+            ITEM_MATERIAL_ENTRY.forEach(
+                    (entry, value) -> ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.get().asItem(), value));
+            ITEM_MATERIAL_ENTRY.clear();
 
             // guess an entry based on the item's tags if none are pre-registered.
-            materialEntry = ItemMaterialData.ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
+            materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
@@ -209,7 +210,7 @@ public class ChemicalHelper {
     }
 
     public static MaterialEntry getMaterialEntry(TagKey<Item> tag) {
-        if (ItemMaterialData.TAG_MATERIAL_ENTRY.isEmpty()) {
+        if (TAG_MATERIAL_ENTRY.isEmpty()) {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
@@ -220,17 +221,17 @@ public class ChemicalHelper {
                             .forEach(tagKey -> {
                                 // remove the tag so that the next iteration is faster.
                                 allItemTags.remove(tagKey);
-                                ItemMaterialData.TAG_MATERIAL_ENTRY.put(tagKey, new MaterialEntry(prefix, material));
+                                TAG_MATERIAL_ENTRY.put(tagKey, new MaterialEntry(prefix, material));
                             });
                 }
             }
         }
-        return ItemMaterialData.TAG_MATERIAL_ENTRY.get(tag);
+        return TAG_MATERIAL_ENTRY.get(tag);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-        if (materialEntry.material() == null) return new ArrayList<>();
-        return ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
+        if (materialEntry.material() == GTMaterials.NULL) return new ArrayList<>();
+        return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             var items = new ArrayList<Supplier<? extends ItemLike>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
@@ -262,13 +263,13 @@ public class ChemicalHelper {
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
-        if (materialEntry.material() == null) return new ArrayList<>();
-        return ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
+        if (materialEntry.material() == GTMaterials.NULL) return new ArrayList<>();
+        return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
 
             var blocks = new ArrayList<Supplier<? extends Block>>();
-            for (TagKey<Block> tag : Arrays.stream(getTags(materialEntry.tagPrefix(), materialEntry.material()))
-                    .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
-                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
+            for (var tag : getTags(materialEntry.tagPrefix(), entry.material())) {
+                var blockTag = TagKey.create(Registries.BLOCK, tag.location());
+                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(blockTag)) {
                     blocks.add(itemHolder::value);
                 }
             }
@@ -310,14 +311,14 @@ public class ChemicalHelper {
 
     public static Map<ItemStack, ItemMaterialInfo> getAllItemInfos() {
         Map<ItemStack, ItemMaterialInfo> f = new HashMap<>();
-        for (var entry : ItemMaterialData.ITEM_MATERIAL_INFO.entrySet()) {
+        for (var entry : ITEM_MATERIAL_INFO.entrySet()) {
             f.put(new ItemStack(entry.getKey().asItem()), entry.getValue());
         }
         return f;
     }
 
     public static Optional<TagPrefix> getOrePrefix(BlockState state) {
-        return ItemMaterialData.ORES_INVERSE.entrySet().stream().filter(entry -> entry.getKey().get().equals(state))
+        return ORES_INVERSE.entrySet().stream().filter(entry -> entry.getKey().get().equals(state))
                 .map(Map.Entry::getValue).findFirst();
     }
 }

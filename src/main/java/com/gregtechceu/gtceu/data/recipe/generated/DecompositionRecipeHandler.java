@@ -43,7 +43,7 @@ public class DecompositionRecipeHandler {
 
         List<ItemStack> outputs = new ArrayList<>();
         List<FluidStack> fluidOutputs = new ArrayList<>();
-        int totalInputAmount = 0;
+        long totalInputAmount = 0;
 
         // compute outputs
         for (MaterialStack component : material.getMaterialComponents()) {
@@ -58,14 +58,14 @@ public class DecompositionRecipeHandler {
         // only reduce items
         if (decomposePrefix != null) {
             // calculate lowest common denominator
-            List<Integer> materialAmounts = new ArrayList<>();
+            List<Long> materialAmounts = new ArrayList<>();
             materialAmounts.add(totalInputAmount);
-            outputs.forEach(itemStack -> materialAmounts.add(itemStack.getCount()));
-            fluidOutputs.forEach(fluidStack -> materialAmounts.add(fluidStack.getAmount() / 1000));
+            outputs.forEach(itemStack -> materialAmounts.add((long) itemStack.getCount()));
+            fluidOutputs.forEach(fluidStack -> materialAmounts.add((long) fluidStack.getAmount() / 1000L));
 
             int highestDivisor = 1;
 
-            int smallestMaterialAmount = getSmallestMaterialAmount(materialAmounts);
+            long smallestMaterialAmount = getSmallestMaterialAmount(materialAmounts);
             for (int i = 2; i <= smallestMaterialAmount; i++) {
                 if (isEveryMaterialReducible(i, materialAmounts))
                     highestDivisor = i;
@@ -99,7 +99,7 @@ public class DecompositionRecipeHandler {
         GTRecipeBuilder builder;
         if (material.hasFlag(DECOMPOSITION_BY_ELECTROLYZING)) {
             builder = ELECTROLYZER_RECIPES.recipeBuilder("decomposition_electrolyzing", material.getName())
-                    .duration(((int) material.getProtons() * totalInputAmount * 2))
+                    .duration(((int) material.getProtons() * (int) totalInputAmount * 2))
                     .EUt(material.getMaterialComponents().size() <= 2 ? VA[LV] : 2L * VA[LV]);
         } else {
             builder = CENTRIFUGE_RECIPES.recipeBuilder("decomposition_centrifuging_", material.getName())
@@ -111,7 +111,7 @@ public class DecompositionRecipeHandler {
 
         // finish builder
         if (decomposePrefix != null) {
-            builder.inputItems(decomposePrefix, material, totalInputAmount);
+            builder.inputItems(decomposePrefix, material, (int) totalInputAmount);
         } else {
             builder.inputFluids(material.getFluid(1000));
         }
@@ -120,15 +120,15 @@ public class DecompositionRecipeHandler {
         builder.save(provider);
     }
 
-    private static boolean isEveryMaterialReducible(int divisor, List<Integer> materialAmounts) {
-        for (int amount : materialAmounts) {
+    private static boolean isEveryMaterialReducible(int divisor, List<Long> materialAmounts) {
+        for (long amount : materialAmounts) {
             if (amount % divisor != 0)
                 return false;
         }
         return true;
     }
 
-    private static int getSmallestMaterialAmount(List<Integer> materialAmounts) {
-        return materialAmounts.stream().min(Integer::compare).orElse(0);
+    private static long getSmallestMaterialAmount(List<Long> materialAmounts) {
+        return materialAmounts.stream().min(Long::compare).orElse(0L);
     }
 }

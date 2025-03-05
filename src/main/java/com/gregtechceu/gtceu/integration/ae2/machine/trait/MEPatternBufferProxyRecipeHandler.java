@@ -60,7 +60,7 @@ public class MEPatternBufferProxyRecipeHandler<T> extends NotifiableRecipeHandle
 
     @Override
     public double getTotalContentAmount() {
-        double amount = 0.;
+        double amount = 0;
         for (NotifiableRecipeHandlerTrait<T> handlerTrait : handlers) {
             amount += handlerTrait.getTotalContentAmount();
         }

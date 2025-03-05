@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
@@ -21,8 +20,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
-
-    public static ICondition.IContext RECIPE_CONTEXT = null;
 
     public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
