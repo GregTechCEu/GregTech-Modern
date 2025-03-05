@@ -6,27 +6,23 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
+import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
-import earth.terrarium.argonauts.api.client.guild.GuildClientApi;
-import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
+import earth.terrarium.argonauts.api.client.guild.GuildClientApi;
 import earth.terrarium.argonauts.api.guild.Guild;
-import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 public class GameStageCondition extends RecipeCondition {
@@ -38,24 +34,19 @@ public class GameStageCondition extends RecipeCondition {
 
     private String stageName;
 
-    private static Set<String> stageNames = new HashSet<>();
-
     public final static GameStageCondition INSTANCE = new GameStageCondition();
 
     public GameStageCondition(String stageName, boolean isReverse) {
-        super(isReverse);
-        if (!GameStageHelper.isStageKnown(stageName)) {
-            stageNames.add(stageName);
-        }
-        this.stageName = stageName;
+        this(isReverse, stageName);
     }
 
     public GameStageCondition(String stageName) {
-        this(stageName, false);
+        this(false, stageName);
     }
 
     public GameStageCondition(boolean isReverse, String stageName) {
-        this(stageName, isReverse);
+        super(isReverse);
+        this.stageName = stageName;
     }
 
     @Override
@@ -72,31 +63,32 @@ public class GameStageCondition extends RecipeCondition {
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
-        if (owner.type() == IMachineOwner.MachineOwnerType.PLAYER) {
+        if (owner instanceof PlayerOwner) {
             var uuid = owner.getUUID();
-            Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(uuid);
-            return stageNames.contains(this.stageName) && GameStageHelper.hasStage(player, stageName);
-        } else if (owner.type() == IMachineOwner.MachineOwnerType.FTB) {
-            boolean hasStage = false;
+            var playerData = GameStageSaveHandler.getPlayerData(uuid);
+            if (playerData != null)
+                return playerData.hasStage(stageName);
+        } else if (owner instanceof FTBOwner) {
             for (var teamUUID : FTBTeamsAPI.api().getManager().getKnownPlayerTeams().entrySet()) {
                 for (var player : teamUUID.getValue().getMembers()) {
-                    Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
-                    if (p != null) hasStage |= GameStageHelper.hasStage(p, stageName);
+                    var playerData = GameStageSaveHandler.getPlayerData(player);
+                    if (playerData != null && playerData.hasStage(stageName)) {
+                        return true;
+                    }
                 }
             }
-            return stageNames.contains(this.stageName) && hasStage;
-        } else if (owner.type() == IMachineOwner.MachineOwnerType.ARGONAUTS) {
-            var argoOwner = (ArgonautsOwner) owner;
-            boolean hasStage = false;
+            return false;
+        } else if (owner instanceof ArgonautsOwner argoOwner) {
             Guild g = GuildClientApi.API.get(argoOwner.getUUID());
             if (g != null) {
                 for (var member : g.members()) {
-                    Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList()
-                            .getPlayer(member.profile().getId());
-                    if (p != null) hasStage |= GameStageHelper.hasStage(p, stageName);
+                    var playerData = GameStageSaveHandler.getPlayerData(member.profile().getId());
+                    if (playerData != null && playerData.hasStage(stageName)) {
+                        return true;
+                    }
                 }
             }
-            return stageNames.contains(this.stageName) && hasStage;
+            return false;
         }
         return false;
     }

@@ -1065,10 +1065,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder gameStage(String stageName) {
+        if (!GTCEu.Mods.isGameStagesLoaded()) return this;
         return addCondition(new GameStageCondition(stageName));
     }
 
     public GTRecipeBuilder gameStage(String stageName, boolean isReverse) {
+        if (!GTCEu.Mods.isGameStagesLoaded()) return this;
         return addCondition(new GameStageCondition(stageName, isReverse));
     }
 

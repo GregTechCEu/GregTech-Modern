@@ -131,7 +131,8 @@ public class GTValues {
             MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
-            MODID_ARGONAUTS = "argonauts";
+            MODID_ARGONAUTS = "argonauts",
+            MODID_GAMESTAGES = "gamestages";
 
     /**
      * Spray painting compat modids
