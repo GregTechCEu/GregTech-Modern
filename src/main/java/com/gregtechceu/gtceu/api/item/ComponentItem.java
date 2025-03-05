@@ -245,7 +245,7 @@ public class ComponentItem extends Item
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 // this will cancel the left click animation
-                return true;
+                return interactionItem.onEntitySwing(stack, entity);
             }
         }
         // normal behavior
