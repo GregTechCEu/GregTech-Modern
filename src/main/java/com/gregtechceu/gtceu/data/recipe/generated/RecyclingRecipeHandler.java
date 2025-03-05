@@ -27,7 +27,7 @@ public final class RecyclingRecipeHandler {
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         // registers universal maceration recipes for specified ore prefixes
         for (TagPrefix prefix : TagPrefix.values()) {
-            if (prefix.doesGenerateRecycling()) {
+            if (prefix.generateRecycling()) {
                 processCrushing(provider, prefix, material);
             }
         }
