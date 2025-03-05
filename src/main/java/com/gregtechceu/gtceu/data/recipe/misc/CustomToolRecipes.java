@@ -31,7 +31,6 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -67,7 +66,7 @@ public final class CustomToolRecipes {
         baseMaterials.put(GTValues.EV, GTMaterials.Titanium);
         baseMaterials.put(GTValues.IV, GTMaterials.TungstenSteel);
 
-        batteryItems.put(GTValues.ULV, Collections.singletonList(GTItems.BATTERY_ULV_TANTALUM));
+        batteryItems.put(GTValues.ULV, List.of(GTItems.BATTERY_ULV_TANTALUM));
         batteryItems.put(GTValues.LV,
                 ImmutableList.of(GTItems.BATTERY_LV_LITHIUM, GTItems.BATTERY_LV_CADMIUM, GTItems.BATTERY_LV_SODIUM));
         batteryItems.put(GTValues.MV,

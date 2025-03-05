@@ -74,6 +74,7 @@ public class Material implements Comparable<Material> {
      * @see MaterialFlags
      */
     @NotNull
+    @Getter
     private final MaterialFlags flags;
 
     /**

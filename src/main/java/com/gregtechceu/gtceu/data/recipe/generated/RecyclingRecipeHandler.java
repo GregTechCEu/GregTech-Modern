@@ -9,27 +9,32 @@ import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public final class RecyclingRecipeHandler {
 
-    private static final List<Object> CRUSHING_PREFIXES = Arrays.asList(
-            ingot, gem, rod, plate, ring, rodLong, foil, bolt, screw,
-            nugget, gearSmall, gear, frameGt, plateDense, spring, springSmall,
-            block, wireFine, rotor, lens, turbineBlade, round, plateDouble, dust,
-            (Predicate<TagPrefix>) prefix -> prefix.name().startsWith("toolHead"),
-            (Predicate<TagPrefix>) prefix -> prefix.name().contains("Gem"),
-            (Predicate<TagPrefix>) prefix -> prefix.name().startsWith("cableGt"),
-            (Predicate<TagPrefix>) prefix -> prefix.name().startsWith("wireGt"),
-            (Predicate<TagPrefix>) prefix -> prefix.name().startsWith("pipe"));
+    private static final ReferenceOpenHashSet<TagPrefix> CRUSHING_PREFIXES = ReferenceOpenHashSet.of(
+            nugget, ingot, block, rod, rodLong, plate, plateDouble, plateDense,
+            ring, foil, bolt, screw,
+            gearSmall, gear, frameGt, springSmall, spring,
+            rotor, lens, turbineBlade, round, dust,
+            toolHeadBuzzSaw, toolHeadScrewdriver, toolHeadDrill, toolHeadChainsaw,
+            toolHeadWrench, toolHeadWireCutter,
+            gem, gemChipped, gemFlawed, gemFlawless, gemExquisite,
+            cableGtHex, cableGtOctal, cableGtQuadruple, cableGtDouble, cableGtSingle,
+            wireGtHex, wireGtOctal, wireGtQuadruple, wireGtDouble, wireGtSingle, wireFine,
+            pipeTinyFluid, pipeSmallFluid, pipeNormalFluid, pipeLargeFluid, pipeHugeFluid,
+            pipeQuadrupleFluid, pipeNonupleFluid,
+            pipeSmallItem, pipeNormalItem, pipeLargeItem, pipeHugeItem,
+            pipeSmallRestrictive, pipeNormalRestrictive, pipeLargeRestrictive, pipeHugeRestrictive);
 
     private static final List<TagPrefix> IGNORE_ARC_SMELTING = Arrays.asList(ingot, gem, nugget);
 
@@ -38,15 +43,7 @@ public final class RecyclingRecipeHandler {
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         // registers universal maceration recipes for specified ore prefixes
         for (TagPrefix prefix : TagPrefix.values()) {
-            if (CRUSHING_PREFIXES.stream().anyMatch(object -> {
-                if (object instanceof TagPrefix) {
-                    return object == prefix;
-                }
-                if (object instanceof Predicate) {
-                    return ((Predicate<TagPrefix>) object).test(prefix);
-                }
-                return false;
-            })) {
+            if (CRUSHING_PREFIXES.contains(prefix)) {
                 processCrushing(provider, prefix, material);
             }
         }

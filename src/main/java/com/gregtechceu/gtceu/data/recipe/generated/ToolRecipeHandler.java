@@ -38,7 +38,10 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public final class ToolRecipeHandler {
 
-    public static final Int2ReferenceMap<ItemEntry<? extends Item>> powerUnitItems = new Int2ReferenceArrayMap<>();
+    public static final Int2ReferenceMap<ItemEntry<? extends Item>> powerUnitItems = new Int2ReferenceArrayMap<>(
+            GTValues.tiersBetween(GTValues.LV, GTValues.IV),
+            new ItemEntry[] { GTItems.POWER_UNIT_LV, GTItems.POWER_UNIT_MV, GTItems.POWER_UNIT_HV,
+                    GTItems.POWER_UNIT_EV, GTItems.POWER_UNIT_IV });
 
     public static final Material[] softMaterials = new Material[] {
             GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,

@@ -58,30 +58,26 @@ public final class WireCombiningHandler {
         if (!material.hasProperty(PropertyKey.WIRE)) {
             return;
         }
-
+        var wireStack = new UnificationEntry(prefix, material);
         if (index < WIRE_DOUBLING_ORDER.length - 1) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_doubling", material.getName(), prefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[index + 1], material),
-                    new UnificationEntry(prefix, material),
-                    new UnificationEntry(prefix, material));
+                    wireStack, wireStack);
         }
 
         if (index > 0) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_splitting", material.getName(), prefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[index - 1], material, 2),
-                    new UnificationEntry(prefix, material));
+                    wireStack);
         }
 
         if (index < WIRE_DOUBLING_ORDER.length - 2) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_quadrupling", material.getName(), prefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[index + 2], material),
-                    new UnificationEntry(prefix, material),
-                    new UnificationEntry(prefix, material),
-                    new UnificationEntry(prefix, material),
-                    new UnificationEntry(prefix, material));
+                    wireStack, wireStack, wireStack, wireStack);
         }
     }
 
