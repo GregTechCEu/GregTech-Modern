@@ -43,9 +43,9 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
             return;
         }
 
-        float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.25F;
-        float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
-        float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.25F;
+        float xPos = facing.getStepX() + pos.getX() + 0.25F;
+        float yPos = facing.getStepY() + pos.getY() + 0.25F;
+        float zPos = facing.getStepZ() + pos.getZ() + 0.25F;
 
         float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
         float xSpd;
@@ -53,13 +53,13 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
 
         if (facing.getStepY() == -1) {
             float temp = GTValues.RNG.nextFloat() * 2 * (float) Math.PI;
-            xSpd = (float) Math.sin(temp) * 0.1F;
-            zSpd = (float) Math.cos(temp) * 0.1F;
+            xSpd = (float) Math.sin(temp) * 0.08F;
+            zSpd = (float) Math.cos(temp) * 0.08F;
         } else {
             xSpd = facing.getStepX() * (0.1F + 0.2F * GTValues.RNG.nextFloat());
             zSpd = facing.getStepZ() * (0.1F + 0.2F * GTValues.RNG.nextFloat());
         }
-        self().getLevel().addParticle(ParticleTypes.LARGE_SMOKE,
+        self().getLevel().addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                 xPos + GTValues.RNG.nextFloat() * 0.5F,
                 yPos + GTValues.RNG.nextFloat() * 0.5F,
                 zPos + GTValues.RNG.nextFloat() * 0.5F,

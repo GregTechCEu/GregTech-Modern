@@ -788,10 +788,12 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Concrete.getFluid(L))
-                .outputItems(GTBlocks.PLASTCRETE.asStack(2)).duration(200).save(provider);
+                .outputItems(GTBlocks.PLASTCRETE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft)).duration(200)
+                .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("cleanroom_glass").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Glass.getFluid(L))
-                .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(2)).duration(200).save(provider);
+                .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(200).save(provider);
 
         // If these recipes are changed, change the values in MaterialInfoLoader.java
 
