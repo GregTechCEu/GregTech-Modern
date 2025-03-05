@@ -45,15 +45,6 @@ public class MaterialFlag {
         return thisAndDependencies;
     }
 
-    public Set<PropertyKey<?>> getAllRequiredProperties() {
-        Set<PropertyKey<?>> thisAndDeps = new HashSet<>(requiredProperties);
-        thisAndDeps.addAll(requiredFlags.stream()
-                .map(MaterialFlag::getAllRequiredProperties)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet()));
-        return thisAndDeps;
-    }
-
     @Override
     public String toString() {
         return this.name;
