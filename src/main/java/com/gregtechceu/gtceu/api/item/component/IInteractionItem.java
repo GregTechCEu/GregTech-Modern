@@ -63,9 +63,7 @@ public interface IInteractionItem extends IItemComponent {
         return false;
     }
 
-
-    default boolean onEntitySwing(ItemStack stack, LivingEntity entity)
-    {
+    default boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return false;
     }
 }

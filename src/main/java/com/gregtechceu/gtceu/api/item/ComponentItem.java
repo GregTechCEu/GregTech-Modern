@@ -241,14 +241,14 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public boolean onEntitySwing (ItemStack stack, LivingEntity entity){
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
-                //this will cancel the left click animation
+                // this will cancel the left click animation
                 return true;
             }
         }
-        //normal behavior
+        // normal behavior
         return super.onEntitySwing(stack, entity);
     }
 
