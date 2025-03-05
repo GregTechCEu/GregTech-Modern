@@ -49,16 +49,6 @@ public final class ToolRecipeHandler {
             GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
     };
 
-    private ToolRecipeHandler() {}
-
-    public static void setup() {
-        powerUnitItems.put(GTValues.LV, GTItems.POWER_UNIT_LV);
-        powerUnitItems.put(GTValues.MV, GTItems.POWER_UNIT_MV);
-        powerUnitItems.put(GTValues.HV, GTItems.POWER_UNIT_HV);
-        powerUnitItems.put(GTValues.EV, GTItems.POWER_UNIT_EV);
-        powerUnitItems.put(GTValues.IV, GTItems.POWER_UNIT_IV);
-    }
-
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         ToolProperty property = material.getProperty(PropertyKey.TOOL);
         if (property == null) {
