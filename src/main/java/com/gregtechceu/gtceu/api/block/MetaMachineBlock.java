@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -318,7 +318,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (result != InteractionResult.PASS) return result;
         }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-                IMachineOwner.canOpenOwnerMachine(player, machine)) {
+                MachineOwner.canOpenOwnerMachine(player, machine)) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;

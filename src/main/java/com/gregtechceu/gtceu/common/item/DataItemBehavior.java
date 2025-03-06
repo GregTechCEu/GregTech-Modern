@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.ChatFormatting;
@@ -83,7 +83,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
             var machine = blockEntity.getMetaMachine();
-            if (!IMachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
+            if (!MachineOwner.canOpenOwnerMachine(context.getPlayer(), machine)) {
                 return InteractionResult.FAIL;
             }
             if (machine instanceof IDataStickInteractable interactable) {

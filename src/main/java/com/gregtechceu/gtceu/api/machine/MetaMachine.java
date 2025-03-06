@@ -26,7 +26,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -665,12 +665,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     // ****** Ownership ********//
     //////////////////////////////////////
 
-    public @Nullable IMachineOwner getOwner() {
-        return IMachineOwner.getOwner(ownerUUID);
+    public @Nullable MachineOwner getOwner() {
+        return MachineOwner.getOwner(ownerUUID);
     }
 
     public @Nullable PlayerOwner getPlayerOwner() {
-        return IMachineOwner.getPlayerOwner(ownerUUID);
+        return MachineOwner.getPlayerOwner(ownerUUID);
     }
 
     //////////////////////////////////////

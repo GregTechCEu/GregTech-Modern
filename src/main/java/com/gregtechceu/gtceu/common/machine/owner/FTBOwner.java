@@ -12,9 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
-public final class FTBOwner implements IMachineOwner {
+public class FTBOwner extends MachineOwner {
 
     @Getter
     private UUID playerUUID;

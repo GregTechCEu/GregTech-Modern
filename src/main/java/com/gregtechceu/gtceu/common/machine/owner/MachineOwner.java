@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
+public abstract class MachineOwner {
 
 public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOwner {
 

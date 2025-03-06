@@ -17,9 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
-@NoArgsConstructor
-@AllArgsConstructor
-public final class ArgonautsOwner implements IMachineOwner {
+public class ArgonautsOwner extends MachineOwner {
 
     @Getter
     private UUID playerUUID;
