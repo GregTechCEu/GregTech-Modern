@@ -14,6 +14,7 @@ public class IntegrationLang {
         initRecipeViewerLang(provider);
         initWailaLikeLang(provider);
         initMinimapLang(provider);
+        initOwnershipLang(provider);
     }
 
     /** JEI, REI, EMI */
@@ -113,5 +114,11 @@ public class IntegrationLang {
         provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
         provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
         provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
+    }
+
+    private static void initOwnershipLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.ownership.name.player", "Player");
+        provider.add("gtceu.ownership.name.ftb", "FTB Teams");
+        provider.add("gtceu.ownership.name.argonauts", "Argonauts Guild");
     }
 }

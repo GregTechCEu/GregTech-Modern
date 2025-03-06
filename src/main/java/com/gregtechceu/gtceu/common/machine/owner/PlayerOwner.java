@@ -3,15 +3,16 @@ package com.gregtechceu.gtceu.common.machine.owner;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.UsernameCache;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.UUID;
 
 public class PlayerOwner extends MachineOwner {
 
-    private UUID playerUUID;
+    private static final Component displayName = Component.translatable("gtceu.ownership.name.player");
+
+    public PlayerOwner(UUID playerUUID) {
+        super(playerUUID);
+    }
 
     @Override
     public boolean isPlayerInTeam(UUID playerUUID) {
@@ -34,26 +35,18 @@ public class PlayerOwner extends MachineOwner {
     }
 
     @Override
-    public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
-        IMachineOwner.displayPlayerInfo(compList, playerUUID);
+    public Component getTypeDisplayName() {
+        return displayName;
     }
 
     @Override
-    public MachineOwnerType type() {
-        return MachineOwnerType.PLAYER;
+    public void displayInfo(List<Component> compList) {
+        super.displayInfo(compList);
+        MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof PlayerOwner that)) return false;
-
-        return playerUUID.equals(that.playerUUID);
-    }
-
-    @Override
-    public int hashCode() {
-        return playerUUID.hashCode();
+        return object instanceof PlayerOwner && super.equals(object);
     }
 }

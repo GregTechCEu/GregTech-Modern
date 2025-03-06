@@ -8,30 +8,97 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.BooleanSupplier;
+import java.util.*;
+import java.util.function.Function;
+
 public abstract class MachineOwner {
 
-public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOwner {
+    private static Function<UUID, MachineOwner> machineOwnerGenerator;
+    public static UUID EMPTY = new UUID(0, 0);
+    protected static Map<UUID, MachineOwner> MACHINE_OWNERS = new Object2ObjectOpenHashMap<>();
+    protected static Map<UUID, PlayerOwner> PLAYER_OWNERS = new Object2ObjectOpenHashMap<>();
 
-    UUID EMPTY = new UUID(0, 0);
-    Map<UUID, IMachineOwner> MACHINE_OWNERS = new Object2ObjectOpenHashMap<>();
-    Map<UUID, PlayerOwner> PLAYER_OWNERS = new Object2ObjectOpenHashMap<>();
+    @Getter
+    protected final @NotNull UUID playerUUID;
 
-    MachineOwnerType type();
+    protected MachineOwner(UUID playerUUID) {
+        this.playerUUID = playerUUID == null ? EMPTY : playerUUID;
+    }
 
-    void displayInfo(List<Component> compList);
+    public abstract UUID getUUID();
 
-    static void displayPlayerInfo(List<Component> compList, UUID playerUUID) {
+    public abstract String getName();
+
+    public abstract Component getTypeDisplayName();
+
+    public static void init() {
+        var event = new RegisterOwnerTypeEvent();
+        if (GTCEu.Mods.isFTBTeamsLoaded()) {
+            event.register(0, FTBOwner::new);
+        } else if (GTCEu.Mods.isArgonautsLoaded()) {
+            event.register(0, ArgonautsOwner::new);
+        } else {
+            event.register(0, PlayerOwner::new);
+        }
+        ModLoader.get().postEvent(event);
+        machineOwnerGenerator = event.ownershipProvider;
+    }
+
+    public void displayInfo(List<Component> compList) {
+        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
+    }
+
+    public boolean isPlayerInTeam(Player player) {
+        return isPlayerInTeam(player.getUUID());
+    }
+
+    public abstract boolean isPlayerInTeam(UUID playerUUID);
+
+    public boolean isPlayerFriendly(Player player) {
+        return isPlayerFriendly(player.getUUID());
+    }
+
+    public abstract boolean isPlayerFriendly(UUID playerUUID);
+
+    public static @Nullable MachineOwner getOwner(UUID playerUUID) {
+        if (playerUUID == null) {
+            return null;
+        }
+        return MACHINE_OWNERS.computeIfAbsent(playerUUID, MachineOwner.machineOwnerGenerator);
+    }
+
+    public static @Nullable PlayerOwner getPlayerOwner(UUID playerUUID) {
+        if (playerUUID == null) {
+            return null;
+        }
+        return PLAYER_OWNERS.computeIfAbsent(playerUUID, PlayerOwner::new);
+    }
+
+    public static boolean canOpenOwnerMachine(Player player, MetaMachine machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        var owner = machine.getOwner();
+        if (owner == null) return true;
+        return owner.isPlayerInTeam(player) || owner.isPlayerFriendly(player);
+    }
+
+    public static boolean canBreakOwnerMachine(Player player, MetaMachine machine) {
+        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
+        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
+        var owner = machine.getOwner();
+        if (owner == null) return true;
+        return owner.isPlayerInTeam(player);
+    }
+
+    public static void displayPlayerInfo(List<Component> compList, UUID playerUUID) {
         final var playerName = UsernameCache.getLastKnownUsername(playerUUID);
         var online = "gtceu.tooltip.status.trinary.";
         if (GTCEu.isClientThread()) {
@@ -48,96 +115,16 @@ public sealed interface IMachineOwner permits PlayerOwner, ArgonautsOwner, FTBOw
                 playerName, Component.translatable(online)));
     }
 
-    static @Nullable IMachineOwner getOwner(UUID playerUUID) {
-        if (playerUUID == null) {
-            return null;
-        }
-        return MACHINE_OWNERS.computeIfAbsent(playerUUID, IMachineOwner::makeOwner);
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof MachineOwner that)) return false;
+
+        return playerUUID.equals(that.playerUUID);
     }
 
-    /**
-     * Do not use this method, use the caching {@link #getOwner(UUID)} or {@link #getPlayerOwner(UUID)} instead
-     * 
-     * @param playerUUID the uuid of the player who owns the machine
-     * @return ownership object
-     */
-    @ApiStatus.Internal
-    private static IMachineOwner makeOwner(UUID playerUUID) {
-        IMachineOwner owner;
-        if (IMachineOwner.MachineOwnerType.FTB.isAvailable()) {
-            owner = new FTBOwner(playerUUID);
-        } else if (IMachineOwner.MachineOwnerType.ARGONAUTS.isAvailable()) {
-            owner = new ArgonautsOwner(playerUUID);
-        } else {
-            owner = getPlayerOwner(playerUUID);
-        }
-        return owner;
-    }
-
-    static @Nullable PlayerOwner getPlayerOwner(UUID playerUUID) {
-        if (playerUUID == null) {
-            return null;
-        }
-        return PLAYER_OWNERS.computeIfAbsent(playerUUID, PlayerOwner::new);
-    }
-
-    default boolean isPlayerInTeam(Player player) {
-        return isPlayerInTeam(player.getUUID());
-    }
-
-    boolean isPlayerInTeam(UUID playerUUID);
-
-    default boolean isPlayerFriendly(Player player) {
-        return isPlayerFriendly(player.getUUID());
-    }
-
-    boolean isPlayerFriendly(UUID playerUUID);
-
-    static boolean canOpenOwnerMachine(Player player, MetaMachine machine) {
-        if (!ConfigHolder.INSTANCE.machines.onlyOwnerGUI) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
-        var owner = machine.getOwner();
-        if (owner == null) return true;
-        return owner.isPlayerInTeam(player) || owner.isPlayerFriendly(player);
-    }
-
-    static boolean canBreakOwnerMachine(Player player, MetaMachine machine) {
-        if (!ConfigHolder.INSTANCE.machines.onlyOwnerBreak) return true;
-        if (player.hasPermissions(ConfigHolder.INSTANCE.machines.ownerOPBypass)) return true;
-        var owner = machine.getOwner();
-        if (owner == null) return true;
-        return owner.isPlayerInTeam(player);
-    }
-
-    UUID getUUID();
-
-    String getName();
-
-    enum MachineOwnerType {
-
-        PLAYER(() -> true, "Player"),
-        FTB(GTCEu.Mods::isFTBTeamsLoaded, "FTB Teams"),
-        ARGONAUTS(GTCEu.Mods::isArgonautsLoaded, "Argonauts Guild");
-
-        public static final MachineOwnerType[] VALUES = values();
-
-        private BooleanSupplier availabilitySupplier;
-        private boolean available;
-
-        @Getter
-        private final String name;
-
-        MachineOwnerType(BooleanSupplier availabilitySupplier, String name) {
-            this.availabilitySupplier = availabilitySupplier;
-            this.name = name;
-        }
-
-        public boolean isAvailable() {
-            if (availabilitySupplier != null) {
-                this.available = availabilitySupplier.getAsBoolean();
-                this.availabilitySupplier = null;
-            }
-            return available;
-        }
+    @Override
+    public int hashCode() {
+        return playerUUID.hashCode();
     }
 }

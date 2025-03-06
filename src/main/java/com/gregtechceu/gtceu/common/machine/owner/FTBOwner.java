@@ -4,9 +4,6 @@ import net.minecraft.network.chat.Component;
 
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import dev.ftb.mods.ftbteams.api.Team;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,8 +11,11 @@ import java.util.UUID;
 
 public class FTBOwner extends MachineOwner {
 
-    @Getter
-    private UUID playerUUID;
+    private static final Component displayName = Component.translatable("gtceu.ownership.name.ftb");
+
+    public FTBOwner(UUID playerUUID) {
+        super(playerUUID);
+    }
 
     public @Nullable Team getPlayerTeam(UUID playerUUID) {
         if (FTBTeamsAPI.api().isManagerLoaded()) {
@@ -73,27 +73,19 @@ public class FTBOwner extends MachineOwner {
     }
 
     @Override
-    public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
-        compList.add(Component.translatable("behavior.portable_scanner.team_name", getName()));
-        IMachineOwner.displayPlayerInfo(compList, playerUUID);
+    public Component getTypeDisplayName() {
+        return displayName;
     }
 
     @Override
-    public MachineOwnerType type() {
-        return MachineOwnerType.FTB;
+    public void displayInfo(List<Component> compList) {
+        super.displayInfo(compList);
+        compList.add(Component.translatable("behavior.portable_scanner.team_name", getName()));
+        MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof FTBOwner that)) return false;
-
-        return playerUUID.equals(that.playerUUID);
-    }
-
-    @Override
-    public int hashCode() {
-        return playerUUID.hashCode();
+        return object instanceof FTBOwner && super.equals(object);
     }
 }
