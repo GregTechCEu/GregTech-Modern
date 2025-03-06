@@ -97,7 +97,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
                 writeClientAction(REMOVE_ID, buf -> {});
 
                 if (!parentWidget.isStocking()) {
-                    this.parentWidget.disableAmount();
+                    this.parentWidget.disableAmountClient();
                 }
             } else if (button == 0) {
                 // Left click to set/select
@@ -108,7 +108,7 @@ public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhost
                 }
 
                 if (!parentWidget.isStocking()) {
-                    this.parentWidget.enableAmount(this.index);
+                    this.parentWidget.enableAmountClient(this.index);
                     this.select = true;
                 }
             }
