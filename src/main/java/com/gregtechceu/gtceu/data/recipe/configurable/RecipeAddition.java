@@ -543,7 +543,7 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("light_weighted_pressure_plate")
                     .inputItems(plate, Gold, 2)
                     .outputItems(new ItemStack(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE))
-                    .circuitMeta(2).duration(100).EUt(4).save(provider);
+                    .circuitMeta(3).duration(100).EUt(4).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("heavy_weighted_pressure_plate")
                     .inputItems(plate, Iron, 2)
