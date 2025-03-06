@@ -99,7 +99,7 @@ legacyForge {
             // "REGISTRYDUMP": For getting the contents of all registries.
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             // Enable assertions for our classes in dev environment
-            jvmArgument('-ea:com.gregtechceu.gtceu')
+            jvmArgument('-ea:com.gregtechceu.gtceu...')
 
             // Recommended logging level for the console
             // You can set various levels here.

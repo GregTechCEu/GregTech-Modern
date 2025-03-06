@@ -124,7 +124,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             if (currentTemperature < 100) {
                 steamGenerated = 0;
                 for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, true);
                     this.hasNoWater = !(drainWater == null || drainWater.isEmpty() ||
                             drainWater.get(0).getAmount() > 0);
                     if (!this.hasNoWater) {
@@ -133,7 +133,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 }
             } else {
                 for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater == null || drainWater.isEmpty()) {
                         break;
                     }
