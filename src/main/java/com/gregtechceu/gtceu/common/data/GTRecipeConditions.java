@@ -46,6 +46,8 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<EnvironmentalHazardCondition> ENVIRONMENTAL_HAZARD = GTRegistries.RECIPE_CONDITIONS
             .register("environmental_hazard",
                     new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
+    public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
+            .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
 
     public static void init() {
         // noinspection unchecked

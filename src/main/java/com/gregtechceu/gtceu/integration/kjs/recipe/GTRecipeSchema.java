@@ -789,6 +789,14 @@ public interface GTRecipeSchema {
             return environmentalHazard(condition, false);
         }
 
+        public GTRecipeJS daytime(boolean isNight) {
+            return addCondition(new DaytimeCondition().setReverse(isNight));
+        }
+
+        public GTRecipeJS daytime() {
+            return daytime(false);
+        }
+
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {

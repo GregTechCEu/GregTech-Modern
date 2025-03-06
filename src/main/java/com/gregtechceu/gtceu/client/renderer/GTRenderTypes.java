@@ -16,6 +16,7 @@ public class GTRenderTypes extends RenderType {
             RenderType.CompositeState.builder()
                     .setCullState(NO_CULL)
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
