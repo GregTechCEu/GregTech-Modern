@@ -62,4 +62,8 @@ public interface IInteractionItem extends IItemComponent {
     default boolean sneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return false;
     }
+
+    default boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        return false;
+    }
 }

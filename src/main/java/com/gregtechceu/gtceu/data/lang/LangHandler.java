@@ -455,6 +455,15 @@ public class LangHandler {
         provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
         provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
 
+        var detectorLatchDescription = """
+                Change the redstone behavior of this Cover.
+                §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
+                §eLatched§7 - output 15 until above max, then output 0 until below min""";
+        multilineLang(provider, "cover.advanced_detector.latch.enabled",
+                "Behavior: Latched\n\n" + detectorLatchDescription);
+        multilineLang(provider, "cover.advanced_detector.latch.disabled",
+                "Behavior: Continuous\n\n" + detectorLatchDescription);
+
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
         provider.add("cover.advanced_energy_detector.min", "Min");
         provider.add("cover.advanced_energy_detector.max", "Max");
