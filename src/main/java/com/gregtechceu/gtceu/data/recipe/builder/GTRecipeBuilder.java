@@ -1230,7 +1230,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder removeMaterialInfo() {
+    public GTRecipeBuilder removePreviousMaterialInfo() {
         removePreviousMatInfo = true;
         return this;
     }
@@ -1352,12 +1352,12 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (itemMaterialInfo || fluidMaterialInfo) {
-            addOutputMaterialInfo();
-        }
-
         if (removePreviousMatInfo) {
             removeExistingMaterialInfo();
+        }
+
+        if (itemMaterialInfo || fluidMaterialInfo) {
+            addOutputMaterialInfo();
         }
 
         tempItemStacks = null;

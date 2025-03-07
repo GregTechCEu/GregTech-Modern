@@ -919,7 +919,7 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS removeMaterialInfo() {
+        public GTRecipeJS removePreviousMaterialInfo() {
             this.removeMaterialInfo = true;
             return this;
         }

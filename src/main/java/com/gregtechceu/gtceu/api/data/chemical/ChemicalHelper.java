@@ -183,7 +183,7 @@ public class ChemicalHelper {
         var itemKey = itemLike.asItem();
         var materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
 
-        if (materialEntry == MaterialEntry.NULL_ENTRY) {
+        if (materialEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             ITEM_MATERIAL_ENTRY.forEach(

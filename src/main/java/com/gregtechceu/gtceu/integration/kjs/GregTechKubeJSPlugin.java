@@ -523,7 +523,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
                 builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
                 if (gtRecipe.removeMaterialInfo)
-                    builder.removeMaterialInfo();
+                    builder.removePreviousMaterialInfo();
 
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
