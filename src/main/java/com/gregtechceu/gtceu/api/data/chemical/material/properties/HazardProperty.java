@@ -58,10 +58,10 @@ public class HazardProperty implements IMaterialProperty {
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
 
         public static final HazardTrigger INHALATION = new HazardTrigger("inhalation", ProtectionType.MASK,
-                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
+                TagPrefix.DUST, TagPrefix.DUST_SMALL, TagPrefix.DUST_TINY, TagPrefix.DUST_PURE, TagPrefix.DUST_IMPURE);
         public static final HazardTrigger ANY = new HazardTrigger("any", ProtectionType.FULL);
         public static final HazardTrigger SKIN_CONTACT = new HazardTrigger("skin_contact", ProtectionType.HANDS,
-                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
+                TagPrefix.DUST, TagPrefix.DUST_SMALL, TagPrefix.DUST_TINY);
         public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
 
         public HazardTrigger {
@@ -193,7 +193,7 @@ public class HazardProperty implements IMaterialProperty {
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
             MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (entry != null && entry.material() != GTMaterials.NULL) {
+            if (entry != MaterialEntry.NULL_ENTRY && entry.material() != GTMaterials.NULL) {
                 material = entry.material();
                 prefix = entry.tagPrefix();
             }

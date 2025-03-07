@@ -542,7 +542,7 @@ public class UnknownCompositionMaterials {
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(NO_UNIFICATION)
-                .ignoredTagPrefixes(dustTiny, dustSmall)
+                .ignoredTagPrefixes(DUST_TINY, DUST_SMALL)
                 .buildAndRegister();
 
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))

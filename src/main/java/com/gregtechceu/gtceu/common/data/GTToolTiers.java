@@ -25,13 +25,13 @@ public class GTToolTiers {
         var neutronium = GTCEu.id("neutronium");
         DURANIUM = TierSortingRegistry.registerTier(
                 new ForgeTier(5, 8193, 14.0F, 12.0F, 33, CustomTags.NEEDS_DURANIUM_TOOL,
-                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium))),
+                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.INGOT, GTMaterials.Duranium))),
                 duranium,
                 List.of(netherite),
                 List.of(neutronium));
         NEUTRONIUM = TierSortingRegistry.registerTier(
                 new ForgeTier(6, 65536, 180.0F, 100.0F, 33, CustomTags.NEEDS_NEUTRONIUM_TOOL,
-                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium))),
+                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.INGOT, GTMaterials.Neutronium))),
                 neutronium,
                 List.of(duranium),
                 List.of());

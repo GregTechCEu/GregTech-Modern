@@ -221,7 +221,7 @@ public class GTOreVeinWidget extends WidgetGroup {
                 .flatMap(entry -> entry.getKey().map(state -> Stream.of(state.getBlock().asItem().getDefaultInstance()),
                         material -> {
                             Set<ItemStack> ores = new HashSet<>();
-                            ores.add(ChemicalHelper.get(TagPrefix.rawOre, material));
+                            ores.add(ChemicalHelper.get(TagPrefix.RAW_ORE, material));
                             for (TagPrefix prefix : TagPrefix.ORES.keySet()) {
                                 ores.add(ChemicalHelper.get(prefix, material));
                             }
@@ -233,13 +233,13 @@ public class GTOreVeinWidget extends WidgetGroup {
     public static List<ItemStack> getRawMaterialList(GTOreDefinition oreDefinition) {
         return oreDefinition.veinGenerator().getAllEntries().stream()
                 .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(),
-                        material -> ChemicalHelper.get(TagPrefix.rawOre, material)))
+                        material -> ChemicalHelper.get(TagPrefix.RAW_ORE, material)))
                 .toList();
     }
 
     public static List<ItemStack> getRawMaterialList(BedrockOreDefinition bedrockOreDefinition) {
         return bedrockOreDefinition.materials().stream()
-                .map(entry -> ChemicalHelper.get(TagPrefix.rawOre, entry.getFirst()))
+                .map(entry -> ChemicalHelper.get(TagPrefix.RAW_ORE, entry.getFirst()))
                 .toList();
     }
 

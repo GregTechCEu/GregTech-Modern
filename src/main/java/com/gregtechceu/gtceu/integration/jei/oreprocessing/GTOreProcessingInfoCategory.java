@@ -19,7 +19,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.rawOre;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.RAW_ORE;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
@@ -33,7 +33,7 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
     public GTOreProcessingInfoCategory(IJeiHelpers helpers) {
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.background = guiHelper.createBlankDrawable(186, 174);
-        this.icon = helpers.getGuiHelper().createDrawableItemStack(ChemicalHelper.get(rawOre, Iron));
+        this.icon = helpers.getGuiHelper().createDrawableItemStack(ChemicalHelper.get(RAW_ORE, Iron));
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {

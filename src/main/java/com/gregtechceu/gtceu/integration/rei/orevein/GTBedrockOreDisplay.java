@@ -28,7 +28,7 @@ public class GTBedrockOreDisplay extends ModularDisplay<WidgetGroup> {
     public List<EntryIngredient> getOutputEntries() {
         List<EntryIngredient> outputs = new ArrayList<>();
         for (Material material : bedrockOre.getAllMaterials()) {
-            outputs.add(EntryIngredients.of(ChemicalHelper.get(TagPrefix.rawOre, material)));
+            outputs.add(EntryIngredients.of(ChemicalHelper.get(TagPrefix.RAW_ORE, material)));
         }
         return outputs;
     }

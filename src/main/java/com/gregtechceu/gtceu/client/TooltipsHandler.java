@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -48,7 +49,7 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
-        if (materialEntry != null && materialEntry.material() != GTMaterials.NULL) {
+        if (materialEntry != MaterialEntry.NULL_ENTRY && materialEntry.material() != GTMaterials.NULL) {
             if (materialEntry.material().getChemicalFormula() != null &&
                     !materialEntry.material().getChemicalFormula().isEmpty())
                 tooltips.add(1, Component.literal(materialEntry.material().getChemicalFormula())

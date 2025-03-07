@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
 
-    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.nullPrefix, GTMaterials.NULL);
+    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
 
     public MaterialEntry(TagPrefix tagPrefix) {
         this(tagPrefix, GTMaterials.NULL);
@@ -16,7 +16,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
 
     @Override
     public String toString() {
-        if (tagPrefix == TagPrefix.nullPrefix) {
+        if (tagPrefix.isEmpty()) {
             return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);

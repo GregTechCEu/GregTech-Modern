@@ -427,7 +427,7 @@ public class StoneMachineRecipes {
     public static void registerStoneMaterialInfo(@NotNull StoneTypeEntry entry) {
         if (entry.material != null && entry.stone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.stone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.BLOCK, entry.material, entry.stone);
             }
             if (entry.addStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stone,
@@ -437,7 +437,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.polishedStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.polishedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.BLOCK, entry.material, entry.polishedStone);
             }
             if (entry.addPolishedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.polishedStone,
@@ -447,7 +447,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.smeltStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.smeltStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.BLOCK, entry.material, entry.smeltStone);
             }
             if (entry.addSmeltStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.smeltStone,
@@ -457,7 +457,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.chiselStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.chiselStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.BLOCK, entry.material, entry.chiselStone);
             }
             if (entry.addChiselStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.chiselStone,
@@ -467,7 +467,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.crackedStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.crackedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.BLOCK, entry.material, entry.crackedStone);
             }
             if (entry.addCrackedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.crackedStone,
@@ -477,7 +477,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.slab != null) {
             if (entry.addSlabOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.slab, entry.material, entry.slab);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.SLAB, entry.material, entry.slab);
             }
             if (entry.addSlabMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
@@ -487,7 +487,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.stair != null) {
             if (entry.addStairOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.stairs, entry.material, entry.stair);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.STAIRS, entry.material, entry.stair);
             }
             if (entry.addStairMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stair,
@@ -497,7 +497,7 @@ public class StoneMachineRecipes {
 
         if (entry.material != null && entry.wall != null) {
             if (entry.addWallOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(TagPrefix.fence, entry.material, entry.wall);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.FENCE, entry.material, entry.wall);
             }
             if (entry.addWallMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.wall,
@@ -624,12 +624,12 @@ public class StoneMachineRecipes {
             if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes && entry.slab != null) {
                 VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_pressure_plate",
                         new ItemStack(entry.pressurePlate, 2), "ShS", "LCL", "SdS",
-                        'S', new MaterialEntry(TagPrefix.screw, GTMaterials.Iron),
+                        'S', new MaterialEntry(TagPrefix.SCREW, GTMaterials.Iron),
                         'L', entry.slab,
-                        'C', new MaterialEntry(TagPrefix.spring, GTMaterials.Iron));
+                        'C', new MaterialEntry(TagPrefix.SPRING, GTMaterials.Iron));
 
                 ASSEMBLER_RECIPES.recipeBuilder(entry.stoneName + "_pressure_plate")
-                        .inputItems(TagPrefix.spring, GTMaterials.Iron)
+                        .inputItems(TagPrefix.SPRING, GTMaterials.Iron)
                         .inputItems(entry.stone, 2)
                         .outputItems(entry.pressurePlate, 2)
                         .duration(100)

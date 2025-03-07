@@ -116,7 +116,7 @@ public class GTMaterialBlocks {
             final TagPrefix.OreType oreType = ore.getValue();
             var entry = registrate
                     .block("%s%s_ore".formatted(
-                            oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "",
+                            oreTag != TagPrefix.ORE ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "",
                             material.getName()),
                             properties -> new OreBlock(properties, oreTag, material, true))
                     .initialProperties(() -> {

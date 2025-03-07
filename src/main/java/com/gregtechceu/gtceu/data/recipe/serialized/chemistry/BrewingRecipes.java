@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
 import static com.gregtechceu.gtceu.common.data.GTItems.BIO_CHAFF;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.BREWING_RECIPES;
@@ -19,19 +19,19 @@ public class BrewingRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         for (Material material : new Material[] { Talc, Soapstone, Redstone }) {
             BREWING_RECIPES.recipeBuilder("lubricant_from_oil_and_" + material.getName())
-                    .inputItems(dust, material)
+                    .inputItems(DUST, material)
                     .inputFluids(Oil.getFluid(1000))
                     .outputFluids(Lubricant.getFluid(1000))
                     .duration(128).EUt(4).save(provider);
 
             BREWING_RECIPES.recipeBuilder("lubricant_from_creosote_and_" + material.getName())
-                    .inputItems(dust, material)
+                    .inputItems(DUST, material)
                     .inputFluids(Creosote.getFluid(1000))
                     .outputFluids(Lubricant.getFluid(1000))
                     .duration(128).EUt(4).save(provider);
 
             BREWING_RECIPES.recipeBuilder("lubricant_from_seed_oil_and_" + material.getName())
-                    .inputItems(dust, material)
+                    .inputItems(DUST, material)
                     .inputFluids(SeedOil.getFluid(1000))
                     .outputFluids(Lubricant.getFluid(1000))
                     .duration(128).EUt(4).save(provider);

@@ -16,13 +16,13 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
 
-    TINY("tiny", 0.25f, 1, pipeTinyFluid),
-    SMALL("small", 0.375f, 2, pipeSmallFluid),
-    NORMAL("normal", 0.5f, 6, pipeNormalFluid),
-    LARGE("large", 0.75f, 12, pipeLargeFluid),
-    HUGE("huge", 0.875f, 24, pipeHugeFluid),
-    QUADRUPLE("quadruple", 0.95f, 2, pipeQuadrupleFluid, 4),
-    NONUPLE("nonuple", 0.95f, 2, pipeNonupleFluid, 9);
+    TINY("tiny", 0.25f, 1, PIPE_TINY_FLUID),
+    SMALL("small", 0.375f, 2, PIPE_SMALL_FLUID),
+    NORMAL("normal", 0.5f, 6, PIPE_NORMAL_FLUID),
+    LARGE("large", 0.75f, 12, PIPE_LARGE_FLUID),
+    HUGE("huge", 0.875f, 24, PIPE_HUGE_FLUID),
+    QUADRUPLE("quadruple", 0.95f, 2, PIPE_QUADRUPLE_FLUID, 4),
+    NONUPLE("nonuple", 0.95f, 2, PIPE_NONUPLE_FLUID, 9);
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("fluid");
 

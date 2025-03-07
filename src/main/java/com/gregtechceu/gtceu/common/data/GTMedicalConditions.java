@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class GTMedicalConditions {
@@ -32,7 +32,7 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.RANDOM_DAMAGE),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 0.5f))
             .setRecipeModifier(builder -> builder
-                    .outputItems(dust, DarkAsh, 4));
+                    .outputItems(DUST, DarkAsh, 4));
     public static final MedicalCondition NAUSEA = new MedicalCondition("nausea", 0x1D4A00, 600,
             MedicalCondition.IdleProgressionType.HEAL, 5, false,
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA))
@@ -56,7 +56,7 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.HUNGER, .2f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, .2f))
             .setRecipeModifier(builder -> builder
-                    .outputItems(dust, Asbestos, 4));
+                    .outputItems(DUST, Asbestos, 4));
     public static final MedicalCondition ARSENICOSIS = new MedicalCondition("arsenicosis", 0xbd4b15, 1000,
             MedicalCondition.IdleProgressionType.HEAL, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.WITHER),
@@ -66,13 +66,13 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.HUNGER, 2, .2f),
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA, .1f))
             .setRecipeModifier(builder -> builder
-                    .outputItems(dust, Arsenic, 4));
+                    .outputItems(DUST, Arsenic, 4));
     public static final MedicalCondition SILICOSIS = new MedicalCondition("silicosis", 0x5d6c91, 15000,
             MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.HEALTH_DEBUFF, 4, .75f),
             new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, .6f))
             .setRecipeModifier(builder -> builder
-                    .outputItems(dust, SiliconDioxide, 4));
+                    .outputItems(DUST, SiliconDioxide, 4));
     public static final MedicalCondition BERYLLIOSIS = new MedicalCondition("berylliosis", 0x0c6539, 10000,
             MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.WITHER),
@@ -80,7 +80,7 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, .5f),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, .4f))
             .setRecipeModifier(builder -> builder
-                    .outputItems(dust, Beryllium, 4));
+                    .outputItems(DUST, Beryllium, 4));
     public static final MedicalCondition METHANOL_POISONING = new MedicalCondition("methanol_poisoning", 0xaa8800, 500,
             MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.POISONING),

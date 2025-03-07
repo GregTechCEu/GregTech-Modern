@@ -5,7 +5,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -13,7 +13,7 @@ public class NuclearRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("uranium_hexafluoride").duration(200).EUt(VA[LV])
-                .inputItems(dust, Uraninite, 3)
+                .inputItems(DUST, Uraninite, 3)
                 .inputFluids(HydrofluoricAcid.getFluid(4000))
                 .inputFluids(Fluorine.getFluid(2000))
                 .outputFluids(UraniumHexafluoride.getFluid(1000))
@@ -28,13 +28,13 @@ public class NuclearRecipes {
 
         ELECTROLYZER_RECIPES.recipeBuilder("enriched_uranium_hexafluoride_separation").duration(160).EUt(VA[MV])
                 .inputFluids(EnrichedUraniumHexafluoride.getFluid(1000))
-                .outputItems(dust, Uranium235)
+                .outputItems(DUST, Uranium235)
                 .outputFluids(Fluorine.getFluid(6000))
                 .save(provider);
 
         ELECTROLYZER_RECIPES.recipeBuilder("depleted_uranium_hexafluoride_separation").duration(160).EUt(VA[MV])
                 .inputFluids(DepletedUraniumHexafluoride.getFluid(1000))
-                .outputItems(dust, Uranium238)
+                .outputItems(DUST, Uranium238)
                 .outputFluids(Fluorine.getFluid(6000))
                 .save(provider);
     }

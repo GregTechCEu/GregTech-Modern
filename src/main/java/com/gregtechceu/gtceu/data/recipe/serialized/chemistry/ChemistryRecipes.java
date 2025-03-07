@@ -9,8 +9,8 @@ import net.minecraft.world.item.Items;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingot;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.INGOT;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
@@ -80,9 +80,9 @@ public class ChemistryRecipes {
                 .duration(240).EUt(VA[EV]).save(provider);
 
         BLAST_RECIPES.recipeBuilder("nickel_zinc_ferrite")
-                .inputItems(dust, FerriteMixture)
+                .inputItems(DUST, FerriteMixture)
                 .inputFluids(Oxygen.getFluid(2000))
-                .outputItems(ingot, NickelZincFerrite)
+                .outputItems(INGOT, NickelZincFerrite)
                 .blastFurnaceTemp(1500)
                 .duration(400).EUt(VA[MV]).save(provider);
 
@@ -92,7 +92,7 @@ public class ChemistryRecipes {
                 .duration(150).EUt(2).save(provider);
 
         WIREMILL_RECIPES.recipeBuilder("string_from_polycaprolactam")
-                .inputItems(ingot, Polycaprolactam)
+                .inputItems(INGOT, Polycaprolactam)
                 .outputItems(Items.STRING, 32)
                 .duration(80).EUt(48).save(provider);
 
@@ -116,33 +116,33 @@ public class ChemistryRecipes {
 
         // CaCO3 + 2NaCl -> Na2CO3 + CaCl2
         BLAST_RECIPES.recipeBuilder("soda_ash_from_calcite")
-                .inputItems(dust, Calcite, 5)
-                .inputItems(dust, Salt, 4)
-                .outputItems(dust, SodaAsh, 6)
-                .outputItems(dust, CalciumChloride, 3)
+                .inputItems(DUST, Calcite, 5)
+                .inputItems(DUST, Salt, 4)
+                .outputItems(DUST, SodaAsh, 6)
+                .outputItems(DUST, CalciumChloride, 3)
                 .duration(120).EUt(VA[MV]).blastFurnaceTemp(1500)
                 .save(provider);
 
         // 2NaOH + CO2 -> Na2CO3 + H20
         CHEMICAL_RECIPES.recipeBuilder("soda_ash_from_carbon_dioxide")
-                .inputItems(dust, SodiumHydroxide, 6)
+                .inputItems(DUST, SodiumHydroxide, 6)
                 .inputFluids(CarbonDioxide.getFluid(1000))
-                .outputItems(dust, SodaAsh, 6)
+                .outputItems(DUST, SodaAsh, 6)
                 .outputFluids(Water.getFluid(1000))
                 .duration(80).EUt(VA[HV])
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_carbon").circuitMeta(1)
-                .inputItems(dust, Carbon)
+                .inputItems(DUST, Carbon)
                 .inputFluids(Nitrogen.getFluid(2000))
-                .outputItems(dust, ActivatedCarbon)
+                .outputItems(DUST, ActivatedCarbon)
                 .duration(320).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("activated_carbon_from_charcoal").circuitMeta(1)
-                .inputItems(dust, Charcoal)
+                .inputItems(DUST, Charcoal)
                 .inputFluids(Nitrogen.getFluid(2000))
-                .outputItems(dust, ActivatedCarbon)
+                .outputItems(DUST, ActivatedCarbon)
                 .duration(640).EUt(64)
                 .save(provider);
     }

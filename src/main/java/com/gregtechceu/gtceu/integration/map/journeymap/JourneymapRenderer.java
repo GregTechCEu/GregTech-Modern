@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -153,20 +154,20 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     private static NativeImage createOreImage(GeneratedVeinMetadata vein) {
-        Material firstMaterial = null;
+        Material firstMaterial = GTMaterials.NULL;
         if (!vein.definition().indicatorGenerators().isEmpty()) {
             var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
-                        return matStack == null ? null : matStack.material();
+                        return matStack.material();
                     },
                     Function.identity());
         }
-        if (firstMaterial == null && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
+        if (firstMaterial == GTMaterials.NULL && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         }
-        if (firstMaterial == null) {
+        if (firstMaterial == GTMaterials.NULL || firstMaterial == null) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;

@@ -131,7 +131,7 @@ public class GTItems {
             .lang("Chocolate Coin")
             .properties(p -> p.rarity(Rarity.EPIC))
             .onRegister(attach(new FoodStats(GTFoods.CHOCOLATE, false,
-                    () -> ChemicalHelper.get(TagPrefix.foil, GTMaterials.Gold))))
+                    () -> ChemicalHelper.get(TagPrefix.FOIL, GTMaterials.Gold))))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
             .register();
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
@@ -1529,7 +1529,7 @@ public class GTItems {
             if (color != MarkerMaterials.Color.White) {
                 GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
                         .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
-                        .transform(unificationItem(TagPrefix.lens, color))
+                        .transform(unificationItem(TagPrefix.LENS, color))
                         .register());
             }
         }

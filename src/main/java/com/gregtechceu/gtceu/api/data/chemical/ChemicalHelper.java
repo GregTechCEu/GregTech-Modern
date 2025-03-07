@@ -44,7 +44,6 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.
  */
 public class ChemicalHelper {
 
-    @Nullable
     public static MaterialStack getMaterialStack(Object object) {
         if (object instanceof MaterialStack materialStack) {
             return materialStack;
@@ -59,31 +58,28 @@ public class ChemicalHelper {
         } else if (object instanceof Ingredient ing) {
             for (var stack : ing.getItems()) {
                 var ms = getMaterialStack(stack);
-                if (ms != null) return ms;
+                if (ms != MaterialStack.EMPTY) return ms;
             }
         }
-        return null;
+        return MaterialStack.EMPTY;
     }
 
-    @Nullable
     public static MaterialStack getMaterialStack(ItemStack itemStack) {
-        if (itemStack.isEmpty()) return null;
+        if (itemStack.isEmpty()) return MaterialStack.EMPTY;
         return getMaterialStack(itemStack.getItem());
     }
 
-    @Nullable
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
         Material entryMaterial = entry.material();
         if (entryMaterial != GTMaterials.NULL) {
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
-        return null;
+        return MaterialStack.EMPTY;
     }
 
-    @Nullable
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
         var entry = getMaterialEntry(itemLike);
-        if (entry != null) {
+        if (entry != MaterialEntry.NULL_ENTRY) {
             Material entryMaterial = entry.material();
             if (entryMaterial != GTMaterials.NULL) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
@@ -91,15 +87,14 @@ public class ChemicalHelper {
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
         if (info == null)
-            return null;
-        if (info.getMaterial() == null) {
+            return MaterialStack.EMPTY;
+        if (info.getMaterial().isEmpty()) {
             GTCEu.LOGGER.error("ItemMaterialInfo for {} is empty!", itemLike);
-            return null;
+            return MaterialStack.EMPTY;
         }
         return info.getMaterial().copy();
     }
 
-    @Nullable
     public static Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
@@ -118,26 +113,29 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.get(fluid);
+        var mat = FLUID_MATERIAL.get(fluid);
+        if (mat == null) {
+            return GTMaterials.NULL;
+        }
+        return mat;
     }
 
-    @Nullable
     public static TagPrefix getPrefix(ItemLike itemLike) {
-        if (itemLike == null) return null;
+        if (itemLike == null) return TagPrefix.NULL_PREFIX;
         MaterialEntry entry = getMaterialEntry(itemLike);
-        if (entry != null) return entry.tagPrefix();
-        return null;
+        if (entry != MaterialEntry.NULL_ENTRY) return entry.tagPrefix();
+        return TagPrefix.NULL_PREFIX;
     }
 
     public static ItemStack getDust(Material material, long materialAmount) {
         if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0)
             return ItemStack.EMPTY;
         if (materialAmount % M == 0 || materialAmount >= M * 16)
-            return get(TagPrefix.dust, material, (int) (materialAmount / M));
+            return get(TagPrefix.DUST, material, (int) (materialAmount / M));
         else if ((materialAmount * 4) % M == 0 || materialAmount >= M * 8)
-            return get(TagPrefix.dustSmall, material, (int) ((materialAmount * 4) / M));
+            return get(TagPrefix.DUST_SMALL, material, (int) ((materialAmount * 4) / M));
         else if ((materialAmount * 9) >= M)
-            return get(TagPrefix.dustTiny, material, (int) ((materialAmount * 9) / M));
+            return get(TagPrefix.DUST_TINY, material, (int) ((materialAmount * 9) / M));
         return ItemStack.EMPTY;
     }
 
@@ -149,11 +147,11 @@ public class ChemicalHelper {
         if (!material.hasProperty(PropertyKey.INGOT) || materialAmount <= 0)
             return ItemStack.EMPTY;
         if (materialAmount % (M * 9) == 0)
-            return get(TagPrefix.block, material, (int) (materialAmount / (M * 9)));
+            return get(TagPrefix.BLOCK, material, (int) (materialAmount / (M * 9)));
         if (materialAmount % M == 0 || materialAmount >= M * 16)
-            return get(TagPrefix.ingot, material, (int) (materialAmount / M));
+            return get(TagPrefix.INGOT, material, (int) (materialAmount / M));
         else if ((materialAmount * 9) >= M)
-            return get(TagPrefix.nugget, material, (int) ((materialAmount * 9) / M));
+            return get(TagPrefix.NUGGET, material, (int) ((materialAmount * 9) / M));
         return ItemStack.EMPTY;
     }
 
@@ -173,20 +171,19 @@ public class ChemicalHelper {
 
     public static ItemStack getGem(MaterialStack materialStack) {
         if (materialStack.material().hasProperty(PropertyKey.GEM) &&
-                !TagPrefix.gem.isIgnored(materialStack.material()) &&
-                materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
-            return get(TagPrefix.gem, materialStack.material(), (int) (materialStack.amount() / M));
+                !TagPrefix.GEM.isIgnored(materialStack.material()) &&
+                materialStack.amount() == TagPrefix.GEM.getMaterialAmount(materialStack.material())) {
+            return get(TagPrefix.GEM, materialStack.material(), (int) (materialStack.amount() / M));
         }
         return getDust(materialStack);
     }
 
-    @Nullable
     public static MaterialEntry getMaterialEntry(ItemLike itemLike) {
         // asItem is a bit slow, avoid calling it multiple times
         var itemKey = itemLike.asItem();
         var materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
 
-        if (materialEntry == null) {
+        if (materialEntry == MaterialEntry.NULL_ENTRY) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             ITEM_MATERIAL_ENTRY.forEach(
@@ -198,14 +195,15 @@ public class ChemicalHelper {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (materialEntry1 != null &&
+                    if (materialEntry1 != MaterialEntry.NULL_ENTRY &&
                             Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
-                return null;
+                return MaterialEntry.NULL_ENTRY;
             });
         }
+        if (materialEntry == null) return MaterialEntry.NULL_ENTRY;
         return materialEntry;
     }
 
@@ -226,7 +224,11 @@ public class ChemicalHelper {
                 }
             }
         }
-        return TAG_MATERIAL_ENTRY.get(tag);
+        var matEntry = TAG_MATERIAL_ENTRY.get(tag);
+        if (matEntry == null) {
+            return MaterialEntry.NULL_ENTRY;
+        }
+        return matEntry;
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {

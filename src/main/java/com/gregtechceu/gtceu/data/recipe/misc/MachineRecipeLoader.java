@@ -70,7 +70,7 @@ public class MachineRecipeLoader {
 
     private static void registerBendingCompressingRecipes(Consumer<FinishedRecipe> provider) {
         COMPRESSOR_RECIPES.recipeBuilder("compressed_fireclay")
-                .inputItems(dust, Fireclay)
+                .inputItems(DUST, Fireclay)
                 .outputItems(COMPRESSED_FIRECLAY)
                 .duration(80).EUt(4)
                 .save(provider);
@@ -78,7 +78,7 @@ public class MachineRecipeLoader {
         FORMING_PRESS_RECIPES.recipeBuilder("credit_cupronickel")
                 .duration(100).EUt(16)
                 .notConsumable(SHAPE_MOLD_CREDIT)
-                .inputItems(plate, Cupronickel, 1)
+                .inputItems(PLATE, Cupronickel, 1)
                 .outputItems(CREDIT_CUPRONICKEL, 4)
                 .addMaterialInfo(true)
                 .save(provider);
@@ -86,7 +86,7 @@ public class MachineRecipeLoader {
         FORMING_PRESS_RECIPES.recipeBuilder("doge_coin")
                 .duration(100).EUt(16)
                 .notConsumable(SHAPE_MOLD_CREDIT)
-                .inputItems(plate, Brass, 1)
+                .inputItems(PLATE, Brass, 1)
                 .outputItems(COIN_DOGE, 4)
                 .addMaterialInfo(true)
                 .save(provider);
@@ -112,7 +112,7 @@ public class MachineRecipeLoader {
 
         BENDER_RECIPES.recipeBuilder("empty_shape")
                 .circuitMeta(4)
-                .inputItems(plate, Steel, 4)
+                .inputItems(PLATE, Steel, 4)
                 .outputItems(SHAPE_EMPTY)
                 .duration(180).EUt(12)
                 .addMaterialInfo(true)
@@ -120,80 +120,80 @@ public class MachineRecipeLoader {
 
         BENDER_RECIPES.recipeBuilder("fluid_cell_tin")
                 .circuitMeta(12)
-                .inputItems(plate, Tin, 2)
+                .inputItems(PLATE, Tin, 2)
                 .outputItems(FLUID_CELL)
                 .duration(200).EUt(VA[ULV])
                 .save(provider);
 
         BENDER_RECIPES.recipeBuilder("fluid_cell_steel")
                 .circuitMeta(12)
-                .inputItems(plate, Steel)
+                .inputItems(PLATE, Steel)
                 .outputItems(FLUID_CELL)
                 .duration(100).EUt(VA[ULV])
                 .save(provider);
 
         BENDER_RECIPES.recipeBuilder("fluid_cell_ptfe")
                 .circuitMeta(12)
-                .inputItems(plate, Polytetrafluoroethylene)
+                .inputItems(PLATE, Polytetrafluoroethylene)
                 .outputItems(FLUID_CELL, 4)
                 .duration(100).EUt(VA[ULV])
                 .save(provider);
 
         BENDER_RECIPES.recipeBuilder("fluid_cell_pbi")
                 .circuitMeta(12)
-                .inputItems(plate, Polybenzimidazole)
+                .inputItems(PLATE, Polybenzimidazole)
                 .outputItems(FLUID_CELL, 16)
                 .duration(100).EUt(VA[ULV])
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("fluid_cell_tin")
-                .inputItems(ingot, Tin, 2)
+                .inputItems(INGOT, Tin, 2)
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL)
                 .duration(128).EUt(VA[LV])
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("fluid_cell_steel")
-                .inputItems(ingot, Steel)
+                .inputItems(INGOT, Steel)
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL)
                 .duration(128).EUt(VA[LV])
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("fluid_cell_ptfe")
-                .inputItems(ingot, Polytetrafluoroethylene)
+                .inputItems(INGOT, Polytetrafluoroethylene)
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL, 4)
                 .duration(128).EUt(VA[LV])
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("fluid_cell_pbi")
-                .inputItems(ingot, Polybenzimidazole)
+                .inputItems(INGOT, Polybenzimidazole)
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL, 16)
                 .duration(128).EUt(VA[LV])
                 .save(provider);
 
         EXTRUDER_RECIPES.recipeBuilder("glass_vial")
-                .inputItems(dust, Glass)
+                .inputItems(DUST, Glass)
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL_GLASS_VIAL, 4)
                 .duration(128).EUt(VA[LV])
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("nether_quartz_plate")
-                .inputItems(dust, NetherQuartz)
-                .outputItems(plate, NetherQuartz)
+                .inputItems(DUST, NetherQuartz)
+                .outputItems(PLATE, NetherQuartz)
                 .duration(400).EUt(2).save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("certus_quartz_plate")
-                .inputItems(dust, CertusQuartz)
-                .outputItems(plate, CertusQuartz)
+                .inputItems(DUST, CertusQuartz)
+                .outputItems(PLATE, CertusQuartz)
                 .duration(400).EUt(2).save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("quartzite_plate")
-                .inputItems(dust, Quartzite)
-                .outputItems(plate, Quartzite)
+                .inputItems(DUST, Quartzite)
+                .outputItems(PLATE, Quartzite)
                 .duration(400).EUt(2).save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("coke_bricks")
@@ -203,71 +203,73 @@ public class MachineRecipeLoader {
     }
 
     private static void registerPrimitiveBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_gem").inputItems(ingot, Iron)
-                .inputItems(gem, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_gem").inputItems(INGOT, Iron)
+                .inputItems(GEM, Coal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2).duration(1800)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust").inputItems(ingot, Iron)
-                .inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust").inputItems(INGOT, Iron)
+                .inputItems(DUST, Coal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2).duration(1800)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem").inputItems(ingot, Iron)
-                .inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem").inputItems(INGOT, Iron)
+                .inputItems(GEM, Charcoal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2)
+                .duration(1800)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust").inputItems(ingot, Iron)
-                .inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust").inputItems(INGOT, Iron)
+                .inputItems(DUST, Charcoal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2)
                 .duration(1800).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(ingot, Iron)
-                .inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0).duration(1500)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(INGOT, Iron)
+                .inputItems(GEM, Coke).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0).duration(1500)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(ingot, Iron)
-                .inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0).duration(1500)
-                .save(provider);
-
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block").inputItems(block, Iron)
-                .inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200)
-                .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block").inputItems(block, Iron)
-                .inputItems(block, Charcoal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200)
-                .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_block").inputItems(block, Iron)
-                .inputItems(block, Coke).outputItems(block, Steel).outputItems(dust, Ash).duration(13500)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(INGOT, Iron)
+                .inputItems(DUST, Coke).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0).duration(1500)
                 .save(provider);
 
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_gem_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(gem, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block").inputItems(BLOCK, Iron)
+                .inputItems(BLOCK, Coal, 2).outputItems(BLOCK, Steel).outputItems(DUST, DarkAsh, 2).duration(16200)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block").inputItems(BLOCK, Iron)
+                .inputItems(BLOCK, Charcoal, 2).outputItems(BLOCK, Steel).outputItems(DUST, DarkAsh, 2).duration(16200)
                 .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800)
-                .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800)
-                .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0).duration(600)
-                .save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(ingot, WroughtIron)
-                .inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0).duration(600)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_block").inputItems(BLOCK, Iron)
+                .inputItems(BLOCK, Coke).outputItems(BLOCK, Steel).outputItems(DUST, Ash).duration(13500)
                 .save(provider);
 
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block_wrought").inputItems(block, WroughtIron)
-                .inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(7200)
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_gem_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(GEM, Coal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2).duration(800)
+                .save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(DUST, Coal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2).duration(800)
+                .save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(GEM, Charcoal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2).duration(800)
+                .save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(DUST, Charcoal, 2).outputItems(INGOT, Steel).outputItems(DUST_TINY, DarkAsh, 2)
+                .duration(800)
+                .save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(GEM, Coke).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0).duration(600)
+                .save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(INGOT, WroughtIron)
+                .inputItems(DUST, Coke).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0).duration(600)
+                .save(provider);
+
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block_wrought").inputItems(BLOCK, WroughtIron)
+                .inputItems(BLOCK, Coal, 2).outputItems(BLOCK, Steel).outputItems(DUST, DarkAsh, 2).duration(7200)
                 .save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block_wrought")
-                .inputItems(block, WroughtIron).inputItems(block, Charcoal, 2).outputItems(block, Steel)
-                .outputItems(dust, DarkAsh, 2).duration(7200).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_block_wrought").inputItems(block, WroughtIron)
-                .inputItems(block, Coke).outputItems(block, Steel).outputItems(dust, Ash).duration(5400).save(provider);
+                .inputItems(BLOCK, WroughtIron).inputItems(BLOCK, Charcoal, 2).outputItems(BLOCK, Steel)
+                .outputItems(DUST, DarkAsh, 2).duration(7200).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_block_wrought").inputItems(BLOCK, WroughtIron)
+                .inputItems(BLOCK, Coke).outputItems(BLOCK, Steel).outputItems(DUST, Ash).duration(5400).save(provider);
     }
 
     private static void registerCokeOvenRecipes(Consumer<FinishedRecipe> provider) {
         COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(ItemTags.LOGS_THAT_BURN)
-                .outputItems(gem, Charcoal)
+                .outputItems(GEM, Charcoal)
                 .outputFluids(Creosote.getFluid(250)).duration(900).save(provider);
-        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke").inputItems(gem, Coal).outputItems(gem, Coke)
+        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke").inputItems(GEM, Coal).outputItems(GEM, Coke)
                 .outputFluids(Creosote.getFluid(500)).duration(900).save(provider);
-        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block").inputItems(block, Coal).outputItems(block, Coke)
+        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block").inputItems(BLOCK, Coal).outputItems(BLOCK, Coke)
                 .outputFluids(Creosote.getFluid(4500)).duration(8100).save(provider);
     }
 
@@ -329,9 +331,9 @@ public class MachineRecipeLoader {
 
     private static void registerMixingCrystallizationRecipes(Consumer<FinishedRecipe> provider) {
         AUTOCLAVE_RECIPES.recipeBuilder("silicon_dioxide_to_quartzite_gem")
-                .inputItems(dust, SiliconDioxide)
+                .inputItems(DUST, SiliconDioxide)
                 .inputFluids(DistilledWater.getFluid(250))
-                .chancedOutput(ChemicalHelper.get(gem, Quartzite), 1000, 1000)
+                .chancedOutput(ChemicalHelper.get(GEM, Quartzite), 1000, 1000)
                 .duration(1200).EUt(24).save(provider);
 
         // todo find UU-Matter replacement
@@ -342,8 +344,8 @@ public class MachineRecipeLoader {
         // .duration(72000).EUt(VA[HV]).save(provider);
 
         MIXER_RECIPES.recipeBuilder("indium_concentrate")
-                .inputItems(crushedPurified, Sphalerite)
-                .inputItems(crushedPurified, Galena)
+                .inputItems(CRUSHED_PURIFIED, Sphalerite)
+                .inputItems(CRUSHED_PURIFIED, Galena)
                 .inputFluids(SulfuricAcid.getFluid(4000))
                 .outputFluids(IndiumConcentrate.getFluid(1000))
                 .duration(60).EUt(150).save(provider);
@@ -395,33 +397,33 @@ public class MachineRecipeLoader {
             if (stack[0].material().hasProperty(PropertyKey.INGOT)) {
                 ALLOY_SMELTER_RECIPES.recipeBuilder(String.format(recipeNape, "ingot", "dust"))
                         .duration((int) stack[2].amount() * 50).EUt(16)
-                        .inputItems(ingot, stack[0].material(), (int) stack[0].amount())
-                        .inputItems(dust, stack[1].material(), (int) stack[1].amount())
-                        .outputItems(ChemicalHelper.get(ingot, stack[2].material(), (int) stack[2].amount()))
+                        .inputItems(INGOT, stack[0].material(), (int) stack[0].amount())
+                        .inputItems(DUST, stack[1].material(), (int) stack[1].amount())
+                        .outputItems(ChemicalHelper.get(INGOT, stack[2].material(), (int) stack[2].amount()))
                         .save(provider);
             }
             if (stack[1].material().hasProperty(PropertyKey.INGOT)) {
                 ALLOY_SMELTER_RECIPES.recipeBuilder(String.format(recipeNape, "dust", "ingot"))
                         .duration((int) stack[2].amount() * 50).EUt(16)
-                        .inputItems(dust, stack[0].material(), (int) stack[0].amount())
-                        .inputItems(ingot, stack[1].material(), (int) stack[1].amount())
-                        .outputItems(ChemicalHelper.get(ingot, stack[2].material(), (int) stack[2].amount()))
+                        .inputItems(DUST, stack[0].material(), (int) stack[0].amount())
+                        .inputItems(INGOT, stack[1].material(), (int) stack[1].amount())
+                        .outputItems(ChemicalHelper.get(INGOT, stack[2].material(), (int) stack[2].amount()))
                         .save(provider);
             }
             if (stack[0].material().hasProperty(PropertyKey.INGOT) &&
                     stack[1].material().hasProperty(PropertyKey.INGOT)) {
                 ALLOY_SMELTER_RECIPES.recipeBuilder(String.format(recipeNape, "ingot", "ingot"))
                         .duration((int) stack[2].amount() * 50).EUt(16)
-                        .inputItems(ingot, stack[0].material(), (int) stack[0].amount())
-                        .inputItems(ingot, stack[1].material(), (int) stack[1].amount())
-                        .outputItems(ChemicalHelper.get(ingot, stack[2].material(), (int) stack[2].amount()))
+                        .inputItems(INGOT, stack[0].material(), (int) stack[0].amount())
+                        .inputItems(INGOT, stack[1].material(), (int) stack[1].amount())
+                        .outputItems(ChemicalHelper.get(INGOT, stack[2].material(), (int) stack[2].amount()))
                         .save(provider);
             }
             ALLOY_SMELTER_RECIPES.recipeBuilder(String.format(recipeNape, "dust", "dust"))
                     .duration((int) stack[2].amount() * 50).EUt(16)
-                    .inputItems(dust, stack[0].material(), (int) stack[0].amount())
-                    .inputItems(dust, stack[1].material(), (int) stack[1].amount())
-                    .outputItems(ChemicalHelper.get(ingot, stack[2].material(), (int) stack[2].amount()))
+                    .inputItems(DUST, stack[0].material(), (int) stack[0].amount())
+                    .inputItems(DUST, stack[1].material(), (int) stack[1].amount())
+                    .outputItems(ChemicalHelper.get(INGOT, stack[2].material(), (int) stack[2].amount()))
                     .save(provider);
         }
 
@@ -430,10 +432,10 @@ public class MachineRecipeLoader {
         COMPRESSOR_RECIPES.recipeBuilder("carbon_fiber_plate").inputItems(CARBON_MESH).outputItems(CARBON_FIBER_PLATE)
                 .duration(200).EUt(2).save(provider);
 
-        ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_sheet").duration(10).EUt(VA[ULV]).inputItems(ingot, Rubber, 2)
-                .notConsumable(SHAPE_MOLD_PLATE).outputItems(plate, Rubber).save(provider);
-        ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_bar").duration(100).EUt(VA[ULV]).inputItems(dust, Sulfur)
-                .inputItems(dust, RawRubber, 3).outputItems(ingot, Rubber).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_sheet").duration(10).EUt(VA[ULV]).inputItems(INGOT, Rubber, 2)
+                .notConsumable(SHAPE_MOLD_PLATE).outputItems(PLATE, Rubber).save(provider);
+        ALLOY_SMELTER_RECIPES.recipeBuilder("rubber_bar").duration(100).EUt(VA[ULV]).inputItems(DUST, Sulfur)
+                .inputItems(DUST, RawRubber, 3).outputItems(INGOT, Rubber).save(provider);
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("coke_oven_brick").duration(150).EUt(VA[ULV])
                 .inputItems(Tags.Items.SAND)
@@ -457,8 +459,8 @@ public class MachineRecipeLoader {
             LampBlock lamp = GTBlocks.LAMPS.get(color).get();
             for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
                 ASSEMBLER_RECIPES.recipeBuilder("lamp_" + color + "_" + lampMeta)
-                        .inputItems(plate, Glass, 6)
-                        .inputItems(dust, Glowstone, 1)
+                        .inputItems(PLATE, Glass, 6)
+                        .inputItems(DUST, Glowstone, 1)
                         .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
                         .outputItems(lamp.getStackFromIndex(lampMeta))
                         .circuitMeta(lampMeta + 1).EUt(VA[ULV]).duration(40)
@@ -468,8 +470,8 @@ public class MachineRecipeLoader {
             lamp = GTBlocks.BORDERLESS_LAMPS.get(color).get();
             for (int lampMeta = 0; lampMeta < 8; lampMeta++) {
                 ASSEMBLER_RECIPES.recipeBuilder("borderless_lamp_" + color + "_" + lampMeta)
-                        .inputItems(plate, Glass, 6)
-                        .inputItems(dust, Glowstone, 1)
+                        .inputItems(PLATE, Glass, 6)
+                        .inputItems(DUST, Glowstone, 1)
                         .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
                         .outputItems(lamp.getStackFromIndex(lampMeta))
                         .circuitMeta(lampMeta + 9).EUt(VA[ULV]).duration(40)
@@ -488,27 +490,27 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         CANNER_RECIPES.recipeBuilder("mask_filter")
-                .inputItems(plate, Polyethylene, 4)
-                .inputItems(dust, ActivatedCarbon, 2)
+                .inputItems(PLATE, Polyethylene, 4)
+                .inputItems(DUST, ActivatedCarbon, 2)
                 .outputItems(MASK_FILTER)
                 .addMaterialInfo(true)
                 .duration(100).EUt(2).save(provider);
 
         CANNER_RECIPES.recipeBuilder("pack_paracetamol")
-                .inputItems(dust, Paracetamol, 16)
+                .inputItems(DUST, Paracetamol, 16)
                 .notConsumable(GTItems.SHAPE_MOLD_PILL)
                 .outputItems(GTItems.PARACETAMOL_PILL.asStack(16))
                 .duration(60).EUt(VA[LV]).save(provider);
 
         CANNER_RECIPES.recipeBuilder("pack_rad_away")
-                .inputItems(dust, RadAway, 16)
+                .inputItems(DUST, RadAway, 16)
                 .notConsumable(GTItems.SHAPE_MOLD_PILL)
                 .outputItems(GTItems.RAD_AWAY_PILL.asStack(16))
                 .duration(60).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_shutter")
                 .inputItems(new ItemStack(Items.IRON_DOOR))
-                .inputItems(plate, Iron, 2)
+                .inputItems(PLATE, Iron, 2)
                 .outputItems(COVER_SHUTTER, 2)
                 .EUt(16).duration(100)
                 .addMaterialInfo(true, true)
@@ -516,7 +518,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_machine_controller")
                 .inputItems(new ItemStack(Blocks.LEVER))
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_MACHINE_CONTROLLER)
                 .EUt(16).duration(100)
@@ -524,9 +526,9 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_energy_detector")
-                .inputItems(cableGtSingle, Copper, 4)
+                .inputItems(CABLE_GT_SINGLE, Copper, 4)
                 .inputItems(CustomTags.LV_CIRCUITS)
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ENERGY_DETECTOR)
                 .EUt(16).duration(100)
@@ -544,7 +546,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_activity_detector")
                 .inputItems(new ItemStack(Blocks.REDSTONE_TORCH))
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ACTIVITY_DETECTOR)
                 .EUt(16).duration(100)
@@ -552,9 +554,9 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_activity_cover")
-                .inputItems(wireFine, Gold, 4)
+                .inputItems(WIRE_FINE, Gold, 4)
                 .inputItems(CustomTags.HV_CIRCUITS)
-                .inputItems(plate, Aluminium)
+                .inputItems(PLATE, Aluminium)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ACTIVITY_DETECTOR_ADVANCED)
                 .EUt(16).duration(100)
@@ -563,7 +565,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_fluid_detector")
                 .inputItems(new ItemStack(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_FLUID_DETECTOR)
                 .EUt(16).duration(100)
@@ -572,7 +574,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_item_detector")
                 .inputItems(new ItemStack(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE))
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ITEM_DETECTOR)
                 .EUt(16).duration(100)
@@ -599,7 +601,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_maintenance_detector")
                 .inputItems(EMITTER_LV)
-                .inputItems(plate, Steel)
+                .inputItems(PLATE, Steel)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_MAINTENANCE_DETECTOR)
                 .EUt(16).duration(100)
@@ -607,10 +609,10 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_screen")
-                .inputItems(plate, Glass)
-                .inputItems(foil, Aluminium, 4)
+                .inputItems(PLATE, Glass)
+                .inputItems(FOIL, Aluminium, 4)
                 .inputItems(CustomTags.LV_CIRCUITS)
-                .inputItems(wireFine, Copper, 4)
+                .inputItems(WIRE_FINE, Copper, 4)
                 .outputItems(COVER_SCREEN)
                 .EUt(16).duration(50)
                 .addMaterialInfo(true)
@@ -626,8 +628,8 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_ender_fluid_link")
-                .inputItems(plate, EnderPearl, 9)
-                .inputItems(plateDouble, StainlessSteel)
+                .inputItems(PLATE, EnderPearl, 9)
+                .inputItems(PLATE_DOUBLE, StainlessSteel)
                 .inputItems(SENSOR_HV)
                 .inputItems(EMITTER_HV)
                 .inputItems(ELECTRIC_PUMP_HV)
@@ -640,7 +642,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
                 .inputItems(Tags.Blocks.CHESTS_WOODEN)
                 .inputItems(ELECTRIC_PISTON_LV)
-                .inputItems(plate, Iron)
+                .inputItems(PLATE, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_STORAGE)
                 .EUt(16)
@@ -648,122 +650,122 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true, true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(PLATE, WroughtIron, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ULV.asStack())
                 .circuitMeta(8).duration(25)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_lv").EUt(16).inputItems(plate, Steel, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_lv").EUt(16).inputItems(PLATE, Steel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_LV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_mv").EUt(16).inputItems(plate, Aluminium, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_mv").EUt(16).inputItems(PLATE, Aluminium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_MV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hv").EUt(16).inputItems(plate, StainlessSteel, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_hv").EUt(16).inputItems(PLATE, StainlessSteel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_HV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ev").EUt(16).inputItems(plate, Titanium, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_ev").EUt(16).inputItems(PLATE, Titanium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_EV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_iv").EUt(16).inputItems(plate, TungstenSteel, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_iv").EUt(16).inputItems(PLATE, TungstenSteel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_IV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_luv").EUt(16).inputItems(plate, RhodiumPlatedPalladium, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_luv").EUt(16).inputItems(PLATE, RhodiumPlatedPalladium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_LuV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_zpm").EUt(16).inputItems(plate, NaquadahAlloy, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_zpm").EUt(16).inputItems(PLATE, NaquadahAlloy, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ZPM.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_uv").EUt(16).inputItems(plate, Darmstadtium, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_uv").EUt(16).inputItems(PLATE, Darmstadtium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_UV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_uhv").EUt(16).inputItems(plate, Neutronium, 8)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_uhv").EUt(16).inputItems(PLATE, Neutronium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_UHV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
-                .inputItems(foil, Bronze, 8).inputFluids(TinAlloy, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(WIRE_GT_DOUBLE, Cupronickel, 8)
+                .inputItems(FOIL, Bronze, 8).inputFluids(TinAlloy, GTValues.L)
                 .outputItems(GTBlocks.COIL_CUPRONICKEL.asStack()).duration(200)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
-                .inputItems(foil, Aluminium, 8).inputFluids(Copper, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(WIRE_GT_DOUBLE, Kanthal, 8)
+                .inputItems(FOIL, Aluminium, 8).inputFluids(Copper, GTValues.L)
                 .outputItems(GTBlocks.COIL_KANTHAL.asStack()).duration(300)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
-                .inputItems(foil, StainlessSteel, 8).inputFluids(Aluminium, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(WIRE_GT_DOUBLE, Nichrome, 8)
+                .inputItems(FOIL, StainlessSteel, 8).inputFluids(Aluminium, GTValues.L)
                 .outputItems(GTBlocks.COIL_NICHROME.asStack()).duration(400)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
-                .inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(WIRE_GT_DOUBLE, RTMAlloy, 8)
+                .inputItems(FOIL, VanadiumSteel, 8).inputFluids(Nichrome, GTValues.L)
                 .outputItems(GTBlocks.COIL_RTMALLOY.asStack()).duration(500)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
-                .inputItems(foil, TungstenCarbide, 8).inputFluids(Tungsten, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(WIRE_GT_DOUBLE, HSSG, 8)
+                .inputItems(FOIL, TungstenCarbide, 8).inputFluids(Tungsten, GTValues.L)
                 .outputItems(GTBlocks.COIL_HSSG.asStack()).duration(600)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
-                .inputItems(foil, Osmium, 8).inputFluids(TungstenSteel, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(WIRE_GT_DOUBLE, Naquadah, 8)
+                .inputItems(FOIL, Osmium, 8).inputFluids(TungstenSteel, GTValues.L)
                 .outputItems(GTBlocks.COIL_NAQUADAH.asStack()).duration(700)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
-                .inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(WIRE_GT_DOUBLE, Trinium, 8)
+                .inputItems(FOIL, NaquadahEnriched, 8).inputFluids(Naquadah, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
-                .inputItems(foil, Naquadria, 8).inputFluids(Trinium, GTValues.L)
+        ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(WIRE_GT_DOUBLE, Tritanium, 8)
+                .inputItems(FOIL, Naquadria, 8).inputFluids(Trinium, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRITANIUM.asStack()).duration(900)
                 .addMaterialInfo(true, true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(PLATE, Bronze, 6)
                 .inputItems(new ItemStack(Blocks.BRICKS)).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_BRONZE_BRICKS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(plate, Invar, 6)
-                .inputItems(frameGt, Invar).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(PLATE, Invar, 6)
+                .inputItems(FRAME_GT, Invar).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_INVAR_HEATPROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(plate, Steel, 6)
-                .inputItems(frameGt, Steel).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(PLATE, Steel, 6)
+                .inputItems(FRAME_GT, Steel).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STEEL_SOLID.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(plate, Aluminium, 6)
-                .inputItems(frameGt, Aluminium).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(PLATE, Aluminium, 6)
+                .inputItems(FRAME_GT, Aluminium).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(plate, TungstenSteel, 6)
-                .inputItems(frameGt, TungstenSteel).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(PLATE, TungstenSteel, 6)
+                .inputItems(FRAME_GT, TungstenSteel).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6)
-                .inputItems(frameGt, StainlessSteel).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(PLATE, StainlessSteel, 6)
+                .inputItems(FRAME_GT, StainlessSteel).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6)
-                .inputItems(frameGt, Titanium).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(PLATE, Titanium, 6)
+                .inputItems(FRAME_GT, Titanium).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6)
-                .inputItems(frameGt, Europium).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(PLATE, HSSE, 6)
+                .inputItems(FRAME_GT, Europium).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(plate, Palladium, 6)
-                .inputItems(frameGt, Iridium).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(PLATE, Palladium, 6)
+                .inputItems(FRAME_GT, Iridium).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_evaporation")
                 .inputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(1))
-                .inputItems(wireGtDouble, AnnealedCopper, 4)
+                .inputItems(WIRE_GT_DOUBLE, AnnealedCopper, 4)
                 .inputFluids(PolyvinylChloride, L * 2)
                 .outputItems(
                         GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
@@ -775,79 +777,79 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV])
-                .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32)
+                .inputItems(WIRE_GT_DOUBLE, IndiumTinBariumTitaniumCuprate, 32).inputItems(FOIL, NiobiumTitanium, 32)
                 .inputFluids(Trinium, GTValues.L * 24).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_zpm").EUt(VA[ZPM])
-                .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16).inputItems(foil, NiobiumTitanium, 16)
+                .inputItems(WIRE_GT_DOUBLE, UraniumRhodiumDinaquadide, 16).inputItems(FOIL, NiobiumTitanium, 16)
                 .inputFluids(Trinium, GTValues.L * 16).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_uv").EUt(VA[UV])
-                .inputItems(wireGtDouble, EnrichedNaquadahTriniumEuropiumDuranide, 8)
-                .inputItems(foil, NiobiumTitanium, 8).inputFluids(Trinium, GTValues.L * 8)
+                .inputItems(WIRE_GT_DOUBLE, EnrichedNaquadahTriniumEuropiumDuranide, 8)
+                .inputItems(FOIL, NiobiumTitanium, 8).inputFluids(Trinium, GTValues.L * 8)
                 .outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_coil").EUt(VA[ZPM]).inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .inputItems(FIELD_GENERATOR_IV.asStack(2)).inputItems(ELECTRIC_PUMP_IV)
                 .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(CustomTags.LuV_CIRCUITS, 4)
-                .inputItems(pipeSmallFluid, Naquadah, 4).inputItems(plate, Europium, 4)
+                .inputItems(PIPE_SMALL_FLUID, Naquadah, 4).inputItems(PLATE, Europium, 4)
                 .inputFluids(VanadiumGallium, GTValues.L * 4).outputItems(GTBlocks.FUSION_COIL.asStack())
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true, true)
                 .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_glass").EUt(VA[LuV])
-                .inputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack()).inputItems(plate, Naquadah, 4)
+                .inputItems(GTBlocks.CASING_LAMINATED_GLASS.asStack()).inputItems(PLATE, Naquadah, 4)
                 .inputItems(NEUTRON_REFLECTOR.asStack(4)).outputItems(GTBlocks.FUSION_GLASS.asStack(2))
                 .inputFluids(Polybenzimidazole, GTValues.L).duration(50).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing").EUt(VA[LuV]).inputItems(GTBlocks.MACHINE_CASING_LuV.asStack())
                 .inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).inputItems(NEUTRON_REFLECTOR)
-                .inputItems(ELECTRIC_PUMP_LuV).inputItems(plate, TungstenSteel, 6)
+                .inputItems(ELECTRIC_PUMP_LuV).inputItems(PLATE, TungstenSteel, 6)
                 .inputFluids(Polybenzimidazole, GTValues.L)
                 .outputItems(GTBlocks.FUSION_CASING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .addMaterialInfo(true, true)
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing_mk2").EUt(VA[ZPM])
                 .inputItems(GTBlocks.MACHINE_CASING_ZPM.asStack()).inputItems(GTBlocks.FUSION_COIL.asStack())
-                .inputItems(VOLTAGE_COIL_ZPM.asStack(2)).inputItems(FIELD_GENERATOR_LuV).inputItems(plate, Europium, 6)
+                .inputItems(VOLTAGE_COIL_ZPM.asStack(2)).inputItems(FIELD_GENERATOR_LuV).inputItems(PLATE, Europium, 6)
                 .inputFluids(Polybenzimidazole, GTValues.L * 2)
                 .outputItems(GTBlocks.FUSION_CASING_MK2.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_casing_mk3").EUt(VA[UV])
                 .inputItems(GTBlocks.MACHINE_CASING_UV.asStack()).inputItems(GTBlocks.FUSION_COIL.asStack())
-                .inputItems(VOLTAGE_COIL_UV.asStack(2)).inputItems(FIELD_GENERATOR_ZPM).inputItems(plate, Americium, 6)
+                .inputItems(VOLTAGE_COIL_UV.asStack(2)).inputItems(FIELD_GENERATOR_ZPM).inputItems(PLATE, Americium, 6)
                 .inputFluids(Polybenzimidazole, GTValues.L * 4)
                 .outputItems(GTBlocks.FUSION_CASING_MK3.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6)
-                .inputItems(frameGt, BlueSteel, 1).circuitMeta(6)
+        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(PLATE, Magnalium, 6)
+                .inputItems(FRAME_GT, BlueSteel, 1).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(PLATE, StainlessSteel, 6).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(PLATE, Titanium, 6).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(PLATE, TungstenSteel, 6).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(frameGt, Steel)
-                .inputItems(plate, Polyethylene, 6).inputFluids(Concrete, L)
+        ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(FRAME_GT, Steel)
+                .inputItems(PLATE, Polyethylene, 6).inputFluids(Concrete, L)
                 .outputItems(GTBlocks.PLASTCRETE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft)).duration(200)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("cleanroom_glass").EUt(48).inputItems(frameGt, Steel)
-                .inputItems(plate, Polyethylene, 6).inputFluids(Glass, L)
+        ASSEMBLER_RECIPES.recipeBuilder("cleanroom_glass").EUt(48).inputItems(FRAME_GT, Steel)
+                .inputItems(PLATE, Polyethylene, 6).inputFluids(Glass, L)
                 .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(200)
                 .addMaterialInfo(true, true).save(provider);
@@ -855,197 +857,198 @@ public class MachineRecipeLoader {
         // If these recipes are changed, change the values in MaterialInfoLoader.java
 
         ASSEMBLER_RECIPES.recipeBuilder("hull_ulv").duration(25).EUt(16)
-                .inputItems(GTBlocks.MACHINE_CASING_ULV.asStack()).inputItems(cableGtSingle, RedAlloy, 2)
+                .inputItems(GTBlocks.MACHINE_CASING_ULV.asStack()).inputItems(CABLE_GT_SINGLE, RedAlloy, 2)
                 .inputFluids(Polyethylene, L * 2).outputItems(GTMachines.HULL[ULV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_lv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_LV.asStack())
-                .inputItems(cableGtSingle, Tin, 2).inputFluids(Polyethylene, L * 2)
+                .inputItems(CABLE_GT_SINGLE, Tin, 2).inputFluids(Polyethylene, L * 2)
                 .outputItems(GTMachines.HULL[LV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_mv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_MV.asStack())
-                .inputItems(cableGtSingle, Copper, 2).inputFluids(Polyethylene, L * 2)
+                .inputItems(CABLE_GT_SINGLE, Copper, 2).inputFluids(Polyethylene, L * 2)
                 .outputItems(GTMachines.HULL[MV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_mv_annealed").duration(50).EUt(16)
-                .inputItems(GTBlocks.MACHINE_CASING_MV.asStack()).inputItems(cableGtSingle, AnnealedCopper, 2)
+                .inputItems(GTBlocks.MACHINE_CASING_MV.asStack()).inputItems(CABLE_GT_SINGLE, AnnealedCopper, 2)
                 .inputFluids(Polyethylene, L * 2).outputItems(GTMachines.HULL[MV]).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_hv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_HV.asStack())
-                .inputItems(cableGtSingle, Gold, 2).inputFluids(Polyethylene, L * 2)
+                .inputItems(CABLE_GT_SINGLE, Gold, 2).inputFluids(Polyethylene, L * 2)
                 .outputItems(GTMachines.HULL[HV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_ev").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_EV.asStack())
-                .inputItems(cableGtSingle, Aluminium, 2).inputFluids(Polyethylene, L * 2)
+                .inputItems(CABLE_GT_SINGLE, Aluminium, 2).inputFluids(Polyethylene, L * 2)
                 .outputItems(GTMachines.HULL[EV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_iv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_IV.asStack())
-                .inputItems(cableGtSingle, Platinum, 2).inputFluids(Polytetrafluoroethylene, L * 2)
+                .inputItems(CABLE_GT_SINGLE, Platinum, 2).inputFluids(Polytetrafluoroethylene, L * 2)
                 .outputItems(GTMachines.HULL[IV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_luv").duration(50).EUt(16)
-                .inputItems(GTBlocks.MACHINE_CASING_LuV.asStack()).inputItems(cableGtSingle, NiobiumTitanium, 2)
+                .inputItems(GTBlocks.MACHINE_CASING_LuV.asStack()).inputItems(CABLE_GT_SINGLE, NiobiumTitanium, 2)
                 .inputFluids(Polytetrafluoroethylene, L * 2).outputItems(GTMachines.HULL[LuV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_zpm").duration(50).EUt(16)
-                .inputItems(GTBlocks.MACHINE_CASING_ZPM.asStack()).inputItems(cableGtSingle, VanadiumGallium, 2)
+                .inputItems(GTBlocks.MACHINE_CASING_ZPM.asStack()).inputItems(CABLE_GT_SINGLE, VanadiumGallium, 2)
                 .inputFluids(Polybenzimidazole, L * 2).outputItems(GTMachines.HULL[ZPM])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_uv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UV.asStack())
-                .inputItems(cableGtSingle, YttriumBariumCuprate, 2).inputFluids(Polybenzimidazole, L * 2)
+                .inputItems(CABLE_GT_SINGLE, YttriumBariumCuprate, 2).inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(GTMachines.HULL[UV])
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_uhv").duration(50).EUt(16)
-                .inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2)
+                .inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(CABLE_GT_SINGLE, Europium, 2)
                 .inputFluids(Polybenzimidazole, L * 2).outputItems(GTMachines.HULL[UHV])
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
-                .inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
+                .inputItems(PLATE, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(Tags.Items.CHESTS_WOODEN)
-                .inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
+                .inputItems(PLATE, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4)
-                .inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5)
+                .inputItems(SCREW, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(rodLong, Bronze, 4)
-                .inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1)
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(ROD_LONG, Bronze, 4)
+                .inputItems(PLATE, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("steel_crate").EUt(16).inputItems(rodLong, Steel, 4).inputItems(plate, Steel, 4)
+        ASSEMBLER_RECIPES.recipeBuilder("steel_crate").EUt(16).inputItems(ROD_LONG, Steel, 4)
+                .inputItems(PLATE, Steel, 4)
                 .outputItems(STEEL_CRATE).duration(200).circuitMeta(1)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("aluminium_crate").EUt(16).inputItems(rodLong, Aluminium, 4)
-                .inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1)
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_crate").EUt(16).inputItems(ROD_LONG, Aluminium, 4)
+                .inputItems(PLATE, Aluminium, 4).outputItems(ALUMINIUM_CRATE).duration(200).circuitMeta(1)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_crate").EUt(16).inputItems(rodLong, StainlessSteel, 4)
-                .inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200)
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_crate").EUt(16).inputItems(ROD_LONG, StainlessSteel, 4)
+                .inputItems(PLATE, StainlessSteel, 4).outputItems(STAINLESS_STEEL_CRATE).circuitMeta(1).duration(200)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("titanium_crate").EUt(16).inputItems(rodLong, Titanium, 4)
-                .inputItems(plate, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1)
+        ASSEMBLER_RECIPES.recipeBuilder("titanium_crate").EUt(16).inputItems(ROD_LONG, Titanium, 4)
+                .inputItems(PLATE, Titanium, 4).outputItems(TITANIUM_CRATE).duration(200).circuitMeta(1)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_crate").EUt(16).inputItems(rodLong, TungstenSteel, 4)
-                .inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1)
+        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_crate").EUt(16).inputItems(ROD_LONG, TungstenSteel, 4)
+                .inputItems(PLATE, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_CRATE).duration(200).circuitMeta(1)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wood_barrel").EUt(16).inputItems(ItemTags.PLANKS, 4)
-                .inputItems(rodLong, Iron, 2).outputItems(WOODEN_DRUM).duration(200).circuitMeta(2)
+                .inputItems(ROD_LONG, Iron, 2).outputItems(WOODEN_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bronze_drum").EUt(16).inputItems(rodLong, Bronze, 2)
-                .inputItems(plate, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2)
+        ASSEMBLER_RECIPES.recipeBuilder("bronze_drum").EUt(16).inputItems(ROD_LONG, Bronze, 2)
+                .inputItems(PLATE, Bronze, 4).outputItems(BRONZE_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("steel_drum").EUt(16).inputItems(rodLong, Steel, 2).inputItems(plate, Steel, 4)
+        ASSEMBLER_RECIPES.recipeBuilder("steel_drum").EUt(16).inputItems(ROD_LONG, Steel, 2).inputItems(PLATE, Steel, 4)
                 .outputItems(STEEL_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("aluminium_drum").EUt(16).inputItems(rodLong, Aluminium, 2)
-                .inputItems(plate, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2)
+        ASSEMBLER_RECIPES.recipeBuilder("aluminium_drum").EUt(16).inputItems(ROD_LONG, Aluminium, 2)
+                .inputItems(PLATE, Aluminium, 4).outputItems(ALUMINIUM_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_drum").EUt(16).inputItems(rodLong, StainlessSteel, 2)
-                .inputItems(plate, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2)
+        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_drum").EUt(16).inputItems(ROD_LONG, StainlessSteel, 2)
+                .inputItems(PLATE, StainlessSteel, 4).outputItems(STAINLESS_STEEL_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("gold_drum").EUt(16).inputItems(rodLong, Gold, 2).inputItems(plate, Gold, 4)
+        ASSEMBLER_RECIPES.recipeBuilder("gold_drum").EUt(16).inputItems(ROD_LONG, Gold, 2).inputItems(PLATE, Gold, 4)
                 .outputItems(GOLD_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("titanium_drum").EUt(16).inputItems(rodLong, Titanium, 2)
-                .inputItems(plate, Titanium, 4).outputItems(TITANIUM_DRUM).duration(200).circuitMeta(2)
+        ASSEMBLER_RECIPES.recipeBuilder("titanium_drum").EUt(16).inputItems(ROD_LONG, Titanium, 2)
+                .inputItems(PLATE, Titanium, 4).outputItems(TITANIUM_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_drum").EUt(16).inputItems(rodLong, TungstenSteel, 2)
-                .inputItems(plate, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_DRUM).duration(200).circuitMeta(2)
+        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_drum").EUt(16).inputItems(ROD_LONG, TungstenSteel, 2)
+                .inputItems(PLATE, TungstenSteel, 4).outputItems(TUNGSTENSTEEL_DRUM).duration(200).circuitMeta(2)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polyethylene").EUt(VA[LV]).inputItems(foil, Polyethylene, 4)
+        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polyethylene").EUt(VA[LV]).inputItems(FOIL, Polyethylene, 4)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE).duration(100)
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_silicone_rubber").EUt(VA[LV]).inputItems(foil, SiliconeRubber, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_silicone_rubber").EUt(VA[LV]).inputItems(FOIL, SiliconeRubber, 2)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(288)).outputItems(DUCT_TAPE, 2).duration(100)
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polycaprolactam").EUt(VA[LV]).inputItems(foil, Polycaprolactam, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polycaprolactam").EUt(VA[LV]).inputItems(FOIL, Polycaprolactam, 2)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(L)).outputItems(DUCT_TAPE, 4).duration(100)
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polybenzimidazole").EUt(VA[LV]).inputItems(foil, Polybenzimidazole)
+        ASSEMBLER_RECIPES.recipeBuilder("duct_tape_polybenzimidazole").EUt(VA[LV]).inputItems(FOIL, Polybenzimidazole)
                 .inputItems(CARBON_MESH).inputFluids(Polyethylene.getFluid(72)).outputItems(DUCT_TAPE, 8).duration(100)
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "basic_tape", BASIC_TAPE.asStack(),
-                " P ", "PSP", " P ", 'P', new MaterialEntry(plate, Paper), 'S', STICKY_RESIN.asItem());
-        ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(plate, Paper, 2).inputItems(STICKY_RESIN)
+                " P ", "PSP", " P ", 'P', new MaterialEntry(PLATE, Paper), 'S', STICKY_RESIN.asItem());
+        ASSEMBLER_RECIPES.recipeBuilder("basic_tape").EUt(VA[ULV]).inputItems(PLATE, Paper, 2).inputItems(STICKY_RESIN)
                 .outputItems(BASIC_TAPE, 2)
                 .duration(100).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_steel")
-                .inputItems(plateDouble, Steel, 2)
-                .inputItems(ring, Bronze, 2)
+                .inputItems(PLATE_DOUBLE, Steel, 2)
+                .inputItems(RING, Bronze, 2)
                 .outputItems(FLUID_CELL_LARGE_STEEL)
                 .duration(200).EUt(VA[LV])
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_aluminium")
-                .inputItems(plateDouble, Aluminium, 2)
-                .inputItems(ring, Silver, 2)
+                .inputItems(PLATE_DOUBLE, Aluminium, 2)
+                .inputItems(RING, Silver, 2)
                 .outputItems(FLUID_CELL_LARGE_ALUMINIUM)
                 .duration(200).EUt(64)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_stainless_steel")
-                .inputItems(plateDouble, StainlessSteel, 3)
-                .inputItems(ring, Electrum, 3)
+                .inputItems(PLATE_DOUBLE, StainlessSteel, 3)
+                .inputItems(RING, Electrum, 3)
                 .outputItems(FLUID_CELL_LARGE_STAINLESS_STEEL)
                 .duration(200).EUt(VA[MV])
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_titanium")
-                .inputItems(plateDouble, Titanium, 3)
-                .inputItems(ring, RoseGold, 3)
+                .inputItems(PLATE_DOUBLE, Titanium, 3)
+                .inputItems(RING, RoseGold, 3)
                 .outputItems(FLUID_CELL_LARGE_TITANIUM)
                 .duration(200).EUt(256)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("fluid_cell_large_tungstensteel")
-                .inputItems(plateDouble, TungstenSteel, 4)
-                .inputItems(ring, Platinum, 4)
+                .inputItems(PLATE_DOUBLE, TungstenSteel, 4)
+                .inputItems(RING, Platinum, 4)
                 .outputItems(FLUID_CELL_LARGE_TUNGSTEN_STEEL)
                 .duration(200).EUt(VA[HV])
                 .addMaterialInfo(true).save(provider);
     }
 
     private static void registerBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(dust, Ruby)
-                .outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, "1/9", 0).blastFurnaceTemp(1200)
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(DUST, Ruby)
+                .outputItems(NUGGET, Aluminium, 3).chancedOutput(DUST, Ash, "1/9", 0).blastFurnaceTemp(1200)
                 .save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(gem, Ruby)
-                .outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, "1/9", 0).blastFurnaceTemp(1200)
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(GEM, Ruby)
+                .outputItems(NUGGET, Aluminium, 3).chancedOutput(DUST, Ash, "1/9", 0).blastFurnaceTemp(1200)
                 .save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_dust").duration(400).EUt(100)
-                .inputItems(dust, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, "1/9", 0)
+                .inputItems(DUST, GreenSapphire).outputItems(NUGGET, Aluminium, 3).chancedOutput(DUST, Ash, "1/9", 0)
                 .blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_gem").duration(320).EUt(100)
-                .inputItems(gem, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, "1/9", 0)
+                .inputItems(GEM, GreenSapphire).outputItems(NUGGET, Aluminium, 3).chancedOutput(DUST, Ash, "1/9", 0)
                 .blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_dust").duration(400).EUt(100).inputItems(dust, Sapphire)
-                .outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_gem").duration(320).EUt(100).inputItems(gem, Sapphire)
-                .outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_dust").duration(400).EUt(100).inputItems(DUST, Sapphire)
+                .outputItems(NUGGET, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_gem").duration(320).EUt(100).inputItems(GEM, Sapphire)
+                .outputItems(NUGGET, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("titanium_from_tetrachloride").duration(800).EUt(VA[HV])
-                .inputItems(dust, Magnesium, 2).inputFluids(TitaniumTetrachloride.getFluid(1000))
-                .outputItems(ingotHot, Titanium).outputItems(dust, MagnesiumChloride, 6)
+                .inputItems(DUST, Magnesium, 2).inputFluids(TitaniumTetrachloride.getFluid(1000))
+                .outputItems(INGOT_HOT, Titanium).outputItems(DUST, MagnesiumChloride, 6)
                 .blastFurnaceTemp(Titanium.getBlastTemperature() + 200).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron)
-                .inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0)
+        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(INGOT, Iron)
+                .inputFluids(Oxygen.getFluid(200)).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0)
                 .blastFurnaceTemp(1000).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron)
-                .inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0)
+        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(INGOT, WroughtIron)
+                .inputFluids(Oxygen.getFluid(200)).outputItems(INGOT, Steel).chancedOutput(DUST, Ash, "1/9", 0)
                 .blastFurnaceTemp(1000).save(provider);
 
         BLAST_RECIPES.recipeBuilder("rutile_from_ilmenite")
-                .inputItems(dust, Ilmenite, 10)
-                .inputItems(dust, Carbon, 4)
-                .outputItems(ingot, WroughtIron, 2)
-                .outputItems(dust, Rutile, 4)
+                .inputItems(DUST, Ilmenite, 10)
+                .inputItems(DUST, Carbon, 4)
+                .outputItems(INGOT, WroughtIron, 2)
+                .outputItems(DUST, Rutile, 4)
                 .outputFluids(CarbonDioxide.getFluid(2000))
                 .blastFurnaceTemp(1700)
                 .duration(1600).EUt(VA[HV]).save(provider);
 
         BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
-                .inputItems(block, Glass)
+                .inputItems(BLOCK, Glass)
                 .inputFluids(Oxygen.getFluid(100))
                 .outputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack())
                 .blastFurnaceTemp(1000)
@@ -1061,43 +1064,43 @@ public class MachineRecipeLoader {
         createSulfurDioxideRecipe(provider, Pentlandite, Garnierite, 1000);
 
         BLAST_RECIPES.recipeBuilder("tetrahedrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, Tetrahedrite)
+                .inputItems(DUST, Tetrahedrite)
                 .inputFluids(Oxygen.getFluid(3000))
-                .outputItems(dust, CupricOxide)
-                .outputItems(dustTiny, AntimonyTrioxide, 3)
+                .outputItems(DUST, CupricOxide)
+                .outputItems(DUST_TINY, AntimonyTrioxide, 3)
                 .outputFluids(SulfurDioxide.getFluid(2000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("cobaltite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, Cobaltite)
+                .inputItems(DUST, Cobaltite)
                 .inputFluids(Oxygen.getFluid(3000))
-                .outputItems(dust, CobaltOxide)
-                .outputItems(dust, ArsenicTrioxide)
+                .outputItems(DUST, CobaltOxide)
+                .outputItems(DUST, ArsenicTrioxide)
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("galena_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, Galena)
+                .inputItems(DUST, Galena)
                 .inputFluids(Oxygen.getFluid(3000))
-                .outputItems(dust, Massicot)
-                .outputItems(nugget, Silver, 6)
+                .outputItems(DUST, Massicot)
+                .outputItems(NUGGET, Silver, 6)
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, Chalcopyrite)
-                .inputItems(dust, SiliconDioxide)
+                .inputItems(DUST, Chalcopyrite)
+                .inputItems(DUST, SiliconDioxide)
                 .inputFluids(Oxygen.getFluid(3000))
-                .outputItems(dust, CupricOxide)
-                .outputItems(dust, Ferrosilite)
+                .outputItems(DUST, CupricOxide)
+                .outputItems(DUST, Ferrosilite)
                 .outputFluids(SulfurDioxide.getFluid(2000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(2273)
-                .inputItems(dust, SiliconDioxide, 3)
-                .inputItems(dust, Carbon, 2)
-                .outputItems(ingotHot, Silicon)
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .inputItems(DUST, SiliconDioxide, 3)
+                .inputItems(DUST, Carbon, 2)
+                .outputItems(INGOT_HOT, Silicon)
+                .chancedOutput(DUST, Ash, "1/9", 0)
                 .outputFluids(CarbonMonoxide.getFluid(2000))
                 .save(provider);
     }
@@ -1106,10 +1109,10 @@ public class MachineRecipeLoader {
                                                   Material outputMaterial, int sulfurDioxideAmount) {
         BLAST_RECIPES.recipeBuilder(inputMaterial.getName() + "_metallurgy").duration(120).EUt(VA[MV])
                 .blastFurnaceTemp(1200)
-                .inputItems(dust, inputMaterial)
+                .inputItems(DUST, inputMaterial)
                 .inputFluids(Oxygen.getFluid(3000))
-                .outputItems(dust, outputMaterial)
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .outputItems(DUST, outputMaterial)
+                .chancedOutput(DUST, Ash, "1/9", 0)
                 .outputFluids(SulfurDioxide.getFluid(sulfurDioxideAmount))
                 .save(provider);
     }
@@ -1117,28 +1120,28 @@ public class MachineRecipeLoader {
     private static void registerDecompositionRecipes(Consumer<FinishedRecipe> provider) {
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_resin")
                 .inputItems(STICKY_RESIN)
-                .outputItems(dust, RawRubber, 3)
+                .outputItems(DUST, RawRubber, 3)
                 .duration(150).EUt(2)
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_leaves").duration(300).EUt(2)
                 .inputItems(GTBlocks.RUBBER_LEAVES.asStack(16))
-                .outputItems(dust, RawRubber)
+                .outputItems(DUST, RawRubber)
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_log").duration(300).EUt(2)
                 .inputItems(GTBlocks.RUBBER_LOG.asStack())
-                .outputItems(dust, RawRubber)
+                .outputItems(DUST, RawRubber)
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_sapling").duration(300).EUt(2)
                 .inputItems(GTBlocks.RUBBER_SAPLING.asStack())
-                .outputItems(dust, RawRubber)
+                .outputItems(DUST, RawRubber)
                 .save(provider);
 
         EXTRACTOR_RECIPES.recipeBuilder("raw_rubber_from_slime").duration(150).EUt(2)
                 .inputItems(new ItemStack(Items.SLIME_BALL))
-                .outputItems(dust, RawRubber, 2)
+                .outputItems(DUST, RawRubber, 2)
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_sapling").duration(300).EUt(2).inputItems(ItemTags.SAPLINGS)
@@ -1182,21 +1185,21 @@ public class MachineRecipeLoader {
     private static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider) {
         MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
-                .outputItems(dust, Endstone)
-                .chancedOutput(dust, Tungstate, 130, 30)
+                .outputItems(DUST, Endstone)
+                .chancedOutput(DUST, Tungstate, 130, 30)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_netherrack")
                 .inputItems(new ItemStack(Blocks.NETHERRACK))
-                .outputItems(dust, Netherrack)
-                .chancedOutput(nugget, Gold, 500, 120)
+                .outputItems(DUST, Netherrack)
+                .chancedOutput(NUGGET, Gold, 500, 120)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_obsidian")
                 .inputItems(new ItemStack(Blocks.OBSIDIAN))
-                .outputItems(dust, Obsidian)
+                .outputItems(DUST, Obsidian)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -1218,100 +1221,100 @@ public class MachineRecipeLoader {
         // .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_marble")
-                .inputItems(rock, Marble)
-                .outputItems(dust, Marble)
-                .chancedOutput(dust, Marble, 1000, 380)
+                .inputItems(ROCK, Marble)
+                .outputItems(DUST, Marble)
+                .chancedOutput(DUST, Marble, 1000, 380)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
-                .outputItems(dust, Basalt)
-                .chancedOutput(dust, Basalt, 1000, 380)
+                .outputItems(DUST, Basalt)
+                .chancedOutput(DUST, Basalt, 1000, 380)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
                 .inputItems(Blocks.DEEPSLATE.asItem())
-                .outputItems(dust, Deepslate)
-                .chancedOutput(dust, Thorium, 100, 40)
+                .outputItems(DUST, Deepslate)
+                .chancedOutput(DUST, Thorium, 100, 40)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-                .inputItems(rock, GraniteRed)
-                .outputItems(dust, GraniteRed)
-                .chancedOutput(dust, Uranium238, 10, 5)
+                .inputItems(ROCK, GraniteRed)
+                .outputItems(DUST, GraniteRed)
+                .chancedOutput(DUST, Uranium238, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
-                .outputItems(dust, Andesite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .outputItems(DUST, Andesite)
+                .chancedOutput(DUST, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
-                .outputItems(dust, Diorite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .outputItems(DUST, Diorite)
+                .chancedOutput(DUST, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
-                .outputItems(dust, Granite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .outputItems(DUST, Granite)
+                .chancedOutput(DUST, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_calcite")
                 .inputItems(Blocks.CALCITE.asItem())
-                .outputItems(dust, Calcite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .outputItems(DUST, Calcite)
+                .chancedOutput(DUST, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         // TODO add other foods
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))
-                .outputItems(dust, Meat)
-                .chancedOutput(dust, Meat, 5000, 0)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .chancedOutput(DUST, Meat, 5000, 0)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_fish")
                 .inputItems(ItemTags.FISHES)
-                .outputItems(dust, Meat)
-                .chancedOutput(dust, Meat, 5000, 0)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .chancedOutput(DUST, Meat, 5000, 0)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_chicken")
                 .inputItems(new ItemStack(Items.CHICKEN))
-                .outputItems(dust, Meat)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_steak")
                 .inputItems(new ItemStack(Items.BEEF))
-                .outputItems(dust, Meat)
-                .chancedOutput(dust, Meat, 5000, 0)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .chancedOutput(DUST, Meat, 5000, 0)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_rabbit")
                 .inputItems(new ItemStack(Items.RABBIT))
-                .outputItems(dust, Meat)
-                .chancedOutput(dust, Meat, 5000, 0)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .chancedOutput(DUST, Meat, 5000, 0)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_mutton")
                 .inputItems(new ItemStack(Items.MUTTON))
-                .outputItems(dust, Meat)
-                .outputItems(dustTiny, Bone)
+                .outputItems(DUST, Meat)
+                .outputItems(DUST_TINY, Bone)
                 .duration(102).EUt(2).save(provider);
     }
 
@@ -1374,7 +1377,7 @@ public class MachineRecipeLoader {
             ResourceLocation brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
             LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + brickId.getPath())
                     .inputItems(polishedStack.get(i))
-                    .notConsumable(lens, color)
+                    .notConsumable(LENS, color)
                     .outputItems(brickStack.get(i))
                     .duration(50).EUt(16).save(provider);
         }

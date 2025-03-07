@@ -49,7 +49,7 @@ public class MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
             float durability = 1.f - (float) turbineBehaviour.getPartDamage(stack) /
                     (float) turbineBehaviour.getPartMaxDurability(stack);
             return applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
-                    (float) (turbineBlade.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
+                    (float) (TURBINE_BLADE.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
         }
 
         if (stack.getItem() instanceof IGTTool tool && !tool.isElectric()) {
@@ -69,7 +69,7 @@ public class MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         float outputAmount = (durability * fullAmount);
         int dustAmount = (int) outputAmount;
         int leftover = (int) ((outputAmount - (float) dustAmount) * 36.f);
-        TagPrefix tag = leftover % 4 >= leftover % 9 ? dustSmall : dustTiny;
+        TagPrefix tag = leftover % 4 >= leftover % 9 ? DUST_SMALL : DUST_TINY;
         int leftAmount = leftover % 4 >= leftover % 9 ? leftover / 9 : leftover / 4;
 
         if (dustAmount == 0 && leftAmount == 0)
@@ -81,7 +81,7 @@ public class MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
                 .duration((int) (mat.getMass() * outputAmount) * durationFactor);
 
         if (dustAmount > 0) {
-            builder.outputItems(dust, mat, dustAmount);
+            builder.outputItems(DUST, mat, dustAmount);
         }
         if (leftAmount > 0) {
             builder.outputItems(tag, mat, leftAmount);
@@ -103,7 +103,7 @@ public class MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
 
         rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
-                (float) (turbineBlade.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
+                (float) (TURBINE_BLADE.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
 
         stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();

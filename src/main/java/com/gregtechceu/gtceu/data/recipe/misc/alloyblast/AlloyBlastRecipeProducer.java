@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingotHot;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.INGOT_HOT;
 
 public class AlloyBlastRecipeProducer {
 
@@ -49,7 +49,7 @@ public class AlloyBlastRecipeProducer {
 
         // get the output fluid
         Fluid molten;
-        if (ingotHot.doGenerateItem(material)) {
+        if (INGOT_HOT.doGenerateItem(material)) {
             molten = GTUtil.getMoltenFluid(material);
             addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
         } else {
@@ -103,7 +103,7 @@ public class AlloyBlastRecipeProducer {
             final int msAmount = (int) materialStack.amount();
 
             if (msMat.hasProperty(PropertyKey.DUST)) {
-                builder.inputItems(TagPrefix.dust, msMat, msAmount);
+                builder.inputItems(TagPrefix.DUST, msMat, msAmount);
             } else if (msMat.hasProperty(PropertyKey.FLUID)) {
                 if (fluidAmount >= 2) return -1; // more than 2 fluids won't fit in the machine
                 fluidAmount++;
@@ -181,7 +181,7 @@ public class AlloyBlastRecipeProducer {
                 .inputFluids(new FluidStack(molten, GTValues.L))
                 .duration((int) material.getMass() * 3)
                 .notConsumable(GTItems.SHAPE_MOLD_INGOT.asStack())
-                .outputItems(TagPrefix.ingot, material);
+                .outputItems(TagPrefix.INGOT, material);
 
         // helium for when >= 5000K temperature
         if (temperature >= 5000) {

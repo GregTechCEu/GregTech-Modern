@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -116,16 +117,16 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         float remainderChance;
         ItemStack remainder;
         var materialStack = ChemicalHelper.getMaterialStack(fuelStack);
-        if (materialStack == null)
+        if (materialStack == MaterialStack.EMPTY)
             return ItemStack.EMPTY;
         else if (materialStack.material() == GTMaterials.Charcoal) {
-            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
+            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.Ash);
             remainderChance = 0.3f;
         } else if (materialStack.material() == GTMaterials.Coal) {
-            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.DarkAsh);
+            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.DarkAsh);
             remainderChance = 0.35f;
         } else if (materialStack.material() == GTMaterials.Coke) {
-            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
+            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.Ash);
             remainderChance = 0.5f;
         } else return ItemStack.EMPTY;
         return GTValues.RNG.nextFloat() <= remainderChance ? remainder : ItemStack.EMPTY;

@@ -40,9 +40,9 @@ public class GTMaterialItems {
     public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
     static {
-        purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
-        purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
-        purifyMap.put(TagPrefix.dustPure, TagPrefix.dust);
+        purifyMap.put(TagPrefix.CRUSHED, TagPrefix.CRUSHED_PURIFIED);
+        purifyMap.put(TagPrefix.DUST_IMPURE, TagPrefix.DUST);
+        purifyMap.put(TagPrefix.DUST_PURE, TagPrefix.DUST);
     }
 
     // Reference Tables

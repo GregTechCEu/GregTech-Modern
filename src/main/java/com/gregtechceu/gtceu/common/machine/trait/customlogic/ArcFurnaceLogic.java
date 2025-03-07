@@ -49,7 +49,7 @@ public class ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
             float durability = 1.f - (float) turbineBehaviour.getPartDamage(stack) /
                     (float) turbineBehaviour.getPartMaxDurability(stack);
             return applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
-                    (float) (turbineBlade.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
+                    (float) (TURBINE_BLADE.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
         }
 
         if (stack.getItem() instanceof IGTTool tool && !tool.isElectric()) {
@@ -86,10 +86,10 @@ public class ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
                 .duration((int) (materialArc.getMass() * outputAmount) * durationFactor);
 
         if (dustAmount > 0) {
-            builder.outputItems(ingot, materialArc, dustAmount);
+            builder.outputItems(INGOT, materialArc, dustAmount);
         }
         if (leftover > 0) {
-            builder.outputItems(nugget, materialArc, leftover);
+            builder.outputItems(NUGGET, materialArc, leftover);
         }
 
         return builder.buildRawRecipe();
@@ -108,7 +108,7 @@ public class ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
 
         rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
-                (float) (turbineBlade.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
+                (float) (TURBINE_BLADE.materialAmount() * 8) / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
 
         stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();

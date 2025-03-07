@@ -73,7 +73,7 @@ public class ServerCache extends WorldCache {
                     .anyMatch(generator -> generator.block() != null && Objects.requireNonNull(generator.block())
                             .map(state -> {
                                 MaterialStack mat = ChemicalHelper.getMaterialStack(state.getBlock().asItem());
-                                if (mat == null) return false;
+                                if (mat == MaterialStack.EMPTY) return false;
                                 return mat.material() == material;
                             },
                                     mat -> mat == material))) {

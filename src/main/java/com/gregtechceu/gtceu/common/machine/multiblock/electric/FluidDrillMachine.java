@@ -141,12 +141,12 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     @SuppressWarnings("DataFlowIssue")
     public static Block getFrameState(int tier) {
         if (tier == GTValues.MV)
-            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get();
+            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, GTMaterials.Steel).get();
         if (tier == GTValues.HV)
-            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Titanium).get();
+            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, GTMaterials.Titanium).get();
         if (tier == GTValues.EV)
-            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.TungstenSteel).get();
-        return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, GTMaterials.Steel).get();
+            return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, GTMaterials.TungstenSteel).get();
+        return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, GTMaterials.Steel).get();
     }
 
     public static ResourceLocation getBaseTexture(int tier) {

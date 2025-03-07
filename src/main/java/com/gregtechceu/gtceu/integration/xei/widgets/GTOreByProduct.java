@@ -60,11 +60,11 @@ public class GTOreByProduct {
     public GTOreByProduct(Material material) {
         if (IN_PROCESSING_STEPS == null) {
             IN_PROCESSING_STEPS = ImmutableList.of(
-                    TagPrefix.crushed,
-                    TagPrefix.crushedPurified,
-                    TagPrefix.dustImpure,
-                    TagPrefix.dustPure,
-                    TagPrefix.crushedRefined);
+                    TagPrefix.CRUSHED,
+                    TagPrefix.CRUSHED_PURIFIED,
+                    TagPrefix.DUST_IMPURE,
+                    TagPrefix.DUST_PURE,
+                    TagPrefix.CRUSHED_REFINED);
         }
         if (ALWAYS_MACHINES == null) {
             ALWAYS_MACHINES = ImmutableList.of(
@@ -98,7 +98,7 @@ public class GTOreByProduct {
             // get all ores with the relevant oredicts instead of just the first unified ore
             oreStacks.add(ChemicalHelper.getTag(prefix, material), 1, null);
         }
-        oreStacks.add(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1, null);
+        oreStacks.add(ChemicalHelper.getTag(TagPrefix.RAW_ORE, material), 1, null);
         itemInputs.add(oreStacks);
 
         // set up machines as inputs
@@ -157,11 +157,11 @@ public class GTOreByProduct {
             Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                     property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
-                smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);
+                smeltingResult = ChemicalHelper.get(TagPrefix.INGOT, smeltingMaterial);
             } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
-                smeltingResult = ChemicalHelper.get(TagPrefix.gem, smeltingMaterial);
+                smeltingResult = ChemicalHelper.get(TagPrefix.GEM, smeltingMaterial);
             } else {
-                smeltingResult = ChemicalHelper.get(TagPrefix.dust, smeltingMaterial);
+                smeltingResult = ChemicalHelper.get(TagPrefix.DUST, smeltingMaterial);
             }
             smeltingResult.setCount(smeltingResult.getCount() * oreMultiplier);
             addToOutputs(smeltingResult);
@@ -170,27 +170,27 @@ public class GTOreByProduct {
         }
 
         // macerate ore -> crushed
-        addToOutputs(material, TagPrefix.crushed, 2 * oreMultiplier);
-        if (!ChemicalHelper.get(TagPrefix.gem, byproducts[0]).isEmpty()) {
-            addToOutputs(byproducts[0], TagPrefix.gem, 1);
+        addToOutputs(material, TagPrefix.CRUSHED, 2 * oreMultiplier);
+        if (!ChemicalHelper.get(TagPrefix.GEM, byproducts[0]).isEmpty()) {
+            addToOutputs(byproducts[0], TagPrefix.GEM, 1);
         } else {
-            addToOutputs(byproducts[0], TagPrefix.dust, 1);
+            addToOutputs(byproducts[0], TagPrefix.DUST, 1);
         }
         addChance(1400, 850);
 
         // macerate crushed -> impure
-        addToOutputs(material, TagPrefix.dustImpure, 1);
-        addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
+        addToOutputs(material, TagPrefix.DUST_IMPURE, 1);
+        addToOutputs(byproducts[0], TagPrefix.DUST, byproductMultiplier);
         addChance(1400, 850);
 
         // centrifuge impure -> dust
-        addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[0], TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.DUST, 1);
+        addToOutputs(byproducts[0], TagPrefix.DUST, 1);
         addChance(1111, 0);
 
         // ore wash crushed -> crushed purified
-        addToOutputs(material, TagPrefix.crushedPurified, 1);
-        addToOutputs(byproducts[0], TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.CRUSHED_PURIFIED, 1);
+        addToOutputs(byproducts[0], TagPrefix.DUST, 1);
         addChance(3333, 0);
         FluidTagList tagList = new FluidTagList();
         tagList.add(GTMaterials.Water.getFluidTag(), 1000, null);
@@ -198,39 +198,39 @@ public class GTOreByProduct {
         fluidInputs.add(tagList);
 
         // TC crushed/crushed purified -> centrifuged
-        addToOutputs(material, TagPrefix.crushedRefined, 1);
-        addToOutputs(byproducts[1], TagPrefix.dust, byproductMultiplier);
+        addToOutputs(material, TagPrefix.CRUSHED_REFINED, 1);
+        addToOutputs(byproducts[1], TagPrefix.DUST, byproductMultiplier);
         addChance(3333, 0);
 
         // macerate centrifuged -> dust
-        addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[2], TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.DUST, 1);
+        addToOutputs(byproducts[2], TagPrefix.DUST, 1);
         addChance(1400, 850);
 
         // macerate crushed purified -> purified
-        addToOutputs(material, TagPrefix.dustPure, 1);
-        addToOutputs(byproducts[1], TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.DUST_PURE, 1);
+        addToOutputs(byproducts[1], TagPrefix.DUST, 1);
         addChance(1400, 850);
 
         // centrifuge purified -> dust
-        addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[1], TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.DUST, 1);
+        addToOutputs(byproducts[1], TagPrefix.DUST, 1);
         addChance(1111, 0);
 
         // cauldron/simple washer
-        addToOutputs(material, TagPrefix.crushed, 1);
-        addToOutputs(material, TagPrefix.crushedPurified, 1);
-        addToOutputs(material, TagPrefix.dustImpure, 1);
-        addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(material, TagPrefix.dustPure, 1);
-        addToOutputs(material, TagPrefix.dust, 1);
+        addToOutputs(material, TagPrefix.CRUSHED, 1);
+        addToOutputs(material, TagPrefix.CRUSHED_PURIFIED, 1);
+        addToOutputs(material, TagPrefix.DUST_IMPURE, 1);
+        addToOutputs(material, TagPrefix.DUST, 1);
+        addToOutputs(material, TagPrefix.DUST_PURE, 1);
+        addToOutputs(material, TagPrefix.DUST, 1);
 
         // ADVANCED PROCESSING
 
         // chem bath
         if (hasChemBath) {
-            addToOutputs(material, TagPrefix.crushedPurified, 1);
-            addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
+            addToOutputs(material, TagPrefix.CRUSHED_PURIFIED, 1);
+            addToOutputs(byproducts[3], TagPrefix.DUST, byproductMultiplier);
             addChance(7000, 580);
             fluidInputs.add(FluidTagList.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
         } else {
@@ -242,16 +242,16 @@ public class GTOreByProduct {
         if (hasSeparator) {
             // noinspection DataFlowIssue
             TagPrefix prefix = (separatedInto.get(separatedInto.size() - 1).getBlastTemperature() == 0 &&
-                    separatedInto.get(separatedInto.size() - 1).hasProperty(PropertyKey.INGOT)) ? TagPrefix.nugget :
-                            TagPrefix.dust;
+                    separatedInto.get(separatedInto.size() - 1).hasProperty(PropertyKey.INGOT)) ? TagPrefix.NUGGET :
+                            TagPrefix.DUST;
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedInto.get(separatedInto.size() - 1),
-                    prefix == TagPrefix.nugget ? 2 : 1);
+                    prefix == TagPrefix.NUGGET ? 2 : 1);
 
-            addToOutputs(material, TagPrefix.dust, 1);
-            addToOutputs(separatedInto.get(0), TagPrefix.dust, 1);
+            addToOutputs(material, TagPrefix.DUST, 1);
+            addToOutputs(separatedInto.get(0), TagPrefix.DUST, 1);
             addChance(1000, 250);
             addToOutputs(separatedStack2);
-            addChance(prefix == TagPrefix.dust ? 500 : 2000, prefix == TagPrefix.dust ? 150 : 600);
+            addChance(prefix == TagPrefix.DUST ? 500 : 2000, prefix == TagPrefix.DUST ? 150 : 600);
         } else {
             addEmptyOutputs(3);
         }
@@ -259,16 +259,16 @@ public class GTOreByProduct {
         // sifter
         if (hasSifter) {
             boolean highOutput = material.hasFlag(MaterialFlags.HIGH_SIFTER_OUTPUT);
-            ItemStack flawedStack = ChemicalHelper.get(TagPrefix.gemFlawed, material);
-            ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material);
+            ItemStack flawedStack = ChemicalHelper.get(TagPrefix.GEM_FLAWED, material);
+            ItemStack chippedStack = ChemicalHelper.get(TagPrefix.GEM_CHIPPED, material);
 
-            addToOutputs(material, TagPrefix.gemExquisite, 1);
+            addToOutputs(material, TagPrefix.GEM_EXQUISITE, 1);
             addGemChance(300, 100, 500, 150, highOutput);
-            addToOutputs(material, TagPrefix.gemFlawless, 1);
+            addToOutputs(material, TagPrefix.GEM_FLAWLESS, 1);
             addGemChance(1000, 150, 1500, 200, highOutput);
-            addToOutputs(material, TagPrefix.gem, 1);
+            addToOutputs(material, TagPrefix.GEM, 1);
             addGemChance(3500, 500, 5000, 1000, highOutput);
-            addToOutputs(material, TagPrefix.dustPure, 1);
+            addToOutputs(material, TagPrefix.DUST_PURE, 1);
             addGemChance(5000, 750, 2500, 500, highOutput);
 
             if (!flawedStack.isEmpty()) {

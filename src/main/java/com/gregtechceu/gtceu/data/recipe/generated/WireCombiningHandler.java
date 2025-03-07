@@ -24,19 +24,19 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
 public class WireCombiningHandler {
 
     private static final TagPrefix[] WIRE_DOUBLING_ORDER = new TagPrefix[] {
-            wireGtSingle, wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex
+            WIRE_GT_SINGLE, WIRE_GT_DOUBLE, WIRE_GT_QUADRUPLE, WIRE_GT_OCTAL, WIRE_GT_HEX
     };
 
     private static final Map<TagPrefix, TagPrefix> cableToWireMap = ImmutableMap.of(
-            cableGtSingle, wireGtSingle,
-            cableGtDouble, wireGtDouble,
-            cableGtQuadruple, wireGtQuadruple,
-            cableGtOctal, wireGtOctal,
-            cableGtHex, wireGtHex);
+            CABLE_GT_SINGLE, WIRE_GT_SINGLE,
+            CABLE_GT_DOUBLE, WIRE_GT_DOUBLE,
+            CABLE_GT_QUADRUPLE, WIRE_GT_QUADRUPLE,
+            CABLE_GT_OCTAL, WIRE_GT_OCTAL,
+            CABLE_GT_HEX, WIRE_GT_HEX);
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // Generate Wire Packer/Unpacker recipes
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
+        WIRE_GT_SINGLE.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
 
         // Generate manual recipes for combining Wires/Cables
         for (TagPrefix wirePrefix : WIRE_DOUBLING_ORDER) {
@@ -105,7 +105,7 @@ public class WireCombiningHandler {
         PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(cableToWireMap.get(prefix), material)
-                .outputItems(plate, GTMaterials.Rubber,
+                .outputItems(PLATE, GTMaterials.Rubber,
                         (int) (prefix.secondaryMaterials().get(0).amount() / GTValues.M))
                 .duration(100).EUt(GTValues.VA[GTValues.ULV])
                 .save(provider);

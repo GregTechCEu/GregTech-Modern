@@ -38,13 +38,13 @@ public class GTCreativeModeTabs {
             .register();
     public static RegistryEntry<CreativeModeTab> MATERIAL_ITEM = REGISTRATE.defaultCreativeTab("material_item",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_item", REGISTRATE))
-                    .icon(() -> ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Aluminium))
+                    .icon(() -> ChemicalHelper.get(TagPrefix.INGOT, GTMaterials.Aluminium))
                     .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_item"), GTCEu.NAME + " Material Items"))
                     .build())
             .register();
     public static RegistryEntry<CreativeModeTab> MATERIAL_BLOCK = REGISTRATE.defaultCreativeTab("material_block",
             builder -> builder.displayItems(new RegistrateDisplayItemsGenerator("material_block", REGISTRATE))
-                    .icon(() -> ChemicalHelper.get(TagPrefix.block, GTMaterials.Gold))
+                    .icon(() -> ChemicalHelper.get(TagPrefix.BLOCK, GTMaterials.Gold))
                     .title(REGISTRATE.addLang("itemGroup", GTCEu.id("material_block"), GTCEu.NAME + " Material Blocks"))
                     .build())
             .register();

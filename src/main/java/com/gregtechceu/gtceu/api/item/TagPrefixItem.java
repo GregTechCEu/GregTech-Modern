@@ -102,7 +102,7 @@ public class TagPrefixItem extends Item {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST))
+                if (tagPrefix != TagPrefix.INGOT_HOT || !material.hasProperty(PropertyKey.BLAST))
                     return;
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;

@@ -17,13 +17,13 @@ public class ChemicalBathRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_wood_dust")
-                .inputItems(dust, Wood)
+                .inputItems(DUST, Wood)
                 .inputFluids(Water.getFluid(100))
                 .outputItems(Items.PAPER)
                 .duration(200).EUt(4).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_paper_dust")
-                .inputItems(dust, Paper)
+                .inputItems(DUST, Paper)
                 .inputFluids(Water.getFluid(100))
                 .outputItems(Items.PAPER)
                 .duration(100).EUt(4).save(provider);
@@ -35,13 +35,13 @@ public class ChemicalBathRecipes {
                 .duration(100).EUt(VA[ULV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_wood_dust_distilled")
-                .inputItems(dust, Wood)
+                .inputItems(DUST, Wood)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(Items.PAPER)
                 .duration(200).EUt(4).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_paper_dust_distilled")
-                .inputItems(dust, Paper)
+                .inputItems(DUST, Paper)
                 .inputFluids(DistilledWater.getFluid(100))
                 .outputItems(Items.PAPER)
                 .duration(100).EUt(4).save(provider);
@@ -65,77 +65,77 @@ public class ChemicalBathRecipes {
                 .duration(100).EUt(VA[ULV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("tungstic_acid_from_scheelite")
-                .inputItems(dust, Scheelite, 6)
+                .inputItems(DUST, Scheelite, 6)
                 .inputFluids(HydrochloricAcid.getFluid(2000))
-                .outputItems(dust, TungsticAcid, 7)
-                .outputItems(dust, CalciumChloride, 3)
+                .outputItems(DUST, TungsticAcid, 7)
+                .outputItems(DUST, CalciumChloride, 3)
                 .duration(210).EUt(960).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("tungstic_acid_from_tungstate")
-                .inputItems(dust, Tungstate, 7)
+                .inputItems(DUST, Tungstate, 7)
                 .inputFluids(HydrochloricAcid.getFluid(2000))
-                .outputItems(dust, TungsticAcid, 7)
-                .outputItems(dust, LithiumChloride, 4)
+                .outputItems(DUST, TungsticAcid, 7)
+                .outputItems(DUST, LithiumChloride, 4)
                 .duration(210).EUt(960).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("kanthal_cool_down")
-                .inputItems(ingotHot, Kanthal)
+                .inputItems(INGOT_HOT, Kanthal)
                 .inputFluids(Water.getFluid(100))
-                .outputItems(ingot, Kanthal)
+                .outputItems(INGOT, Kanthal)
                 .duration(400).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("kanthal_cool_down_distilled_water")
-                .inputItems(ingotHot, Kanthal)
+                .inputItems(INGOT_HOT, Kanthal)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(ingot, Kanthal)
+                .outputItems(INGOT, Kanthal)
                 .duration(250).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("silicon_cool_down")
-                .inputItems(ingotHot, Silicon)
+                .inputItems(INGOT_HOT, Silicon)
                 .inputFluids(Water.getFluid(100))
-                .outputItems(ingot, Silicon)
+                .outputItems(INGOT, Silicon)
                 .duration(400).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("silicon_cool_down_distilled_water")
-                .inputItems(ingotHot, Silicon)
+                .inputItems(INGOT_HOT, Silicon)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(ingot, Silicon)
+                .outputItems(INGOT, Silicon)
                 .duration(250).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("black_steel_cool_down")
-                .inputItems(ingotHot, BlackSteel)
+                .inputItems(INGOT_HOT, BlackSteel)
                 .inputFluids(Water.getFluid(100))
-                .outputItems(ingot, BlackSteel)
+                .outputItems(INGOT, BlackSteel)
                 .duration(200).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("black_steel_cool_down_distilled_water")
-                .inputItems(ingotHot, BlackSteel)
+                .inputItems(INGOT_HOT, BlackSteel)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(ingot, BlackSteel)
+                .outputItems(INGOT, BlackSteel)
                 .duration(125).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("red_steel_cool_down")
-                .inputItems(ingotHot, RedSteel)
+                .inputItems(INGOT_HOT, RedSteel)
                 .inputFluids(Water.getFluid(100))
-                .outputItems(ingot, RedSteel)
+                .outputItems(INGOT, RedSteel)
                 .duration(400).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("red_steel_cool_down_distilled_water")
-                .inputItems(ingotHot, RedSteel)
+                .inputItems(INGOT_HOT, RedSteel)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(ingot, RedSteel)
+                .outputItems(INGOT, RedSteel)
                 .duration(250).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("blue_steel_cool_down")
-                .inputItems(ingotHot, BlueSteel)
+                .inputItems(INGOT_HOT, BlueSteel)
                 .inputFluids(Water.getFluid(100))
-                .outputItems(ingot, BlueSteel)
+                .outputItems(INGOT, BlueSteel)
                 .duration(400).EUt(VA[MV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("blue_steel_cool_down_distilled_water")
-                .inputItems(ingotHot, BlueSteel)
+                .inputItems(INGOT_HOT, BlueSteel)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(ingot, BlueSteel)
+                .outputItems(INGOT, BlueSteel)
                 .duration(250).EUt(VA[MV]).save(provider);
     }
 }

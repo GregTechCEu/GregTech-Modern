@@ -962,7 +962,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (matStack != null) {
+        if (matStack != GTMaterials.NULL) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -973,7 +973,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         for (var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
-            if (matStack != null) {
+            if (matStack != GTMaterials.NULL) {
                 if (chance == maxChance) {
                     tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
                 }
@@ -1392,12 +1392,12 @@ public class GTRecipeBuilder {
             Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
             for (var input : tempItemMaterialStacks) {
                 long am = input.amount() / outputCount;
-                matStacks.merge(input.material(), am, Long::sum);
+                matStacks.addTo(input.material(), am);
             }
 
             for (var input : tempFluidStacks) {
                 long am = input.amount() / outputCount;
-                matStacks.merge(input.material(), am, Long::sum);
+                matStacks.addTo(input.material(), am);
             }
 
             if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())

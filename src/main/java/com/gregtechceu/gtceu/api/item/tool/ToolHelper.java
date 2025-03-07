@@ -430,7 +430,7 @@ public class ToolHelper {
                         be.getMetaMachine().recipeLogic.getChanceCaches())) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
-                    if (prefix == null) {
+                    if (prefix.isEmpty()) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
@@ -442,7 +442,7 @@ public class ToolHelper {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
                                 // Only apply fortune on ore -> crushed forge hammer recipes
-                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
+                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.CRUSHED) {
                                     output = output.copy();
                                     if (fortune > 0) output.grow(random.nextInt(fortune));
                                     drops.add(output);

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.GTValues.LV;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.AceticAcid;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -30,7 +30,7 @@ public class AntidoteRecipes {
         CHEMICAL_RECIPES.recipeBuilder("aminophenol")
                 .inputFluids(Phenol.getFluid(1000))
                 .inputFluids(NitrationMixture.getFluid(1000))
-                .notConsumable(dust, Iron)
+                .notConsumable(DUST, Iron)
                 .outputFluids(AminoPhenol.getFluid(1000))
                 .outputFluids(DilutedSulfuricAcid.getFluid(1000))
                 .duration(300).EUt(VA[LV]).save(provider);
@@ -38,23 +38,23 @@ public class AntidoteRecipes {
         CHEMICAL_RECIPES.recipeBuilder("paracetamol")
                 .inputFluids(AceticAnhydride.getFluid(1000))
                 .inputFluids(AminoPhenol.getFluid(1000))
-                .outputItems(dust, Paracetamol, 1)
+                .outputItems(DUST, Paracetamol, 1)
                 .outputFluids(AceticAcid.getFluid(1000))
                 .duration(100).EUt(VA[LV]).save(provider);
     }
 
     private static void potassiumHydroxideProcess(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("potassium_hydroxide")
-                .inputItems(dust, RockSalt, 2)
+                .inputItems(DUST, RockSalt, 2)
                 .inputFluids(Water.getFluid(1000))
-                .outputItems(dust, PotassiumHydroxide, 3)
+                .outputItems(DUST, PotassiumHydroxide, 3)
                 .outputFluids(HydrochloricAcid.getFluid(1000))
                 .duration(100).EUt(VA[MV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("potassium_iodide")
-                .inputItems(dust, PotassiumHydroxide, 3)
-                .inputItems(dust, Iodine, 1)
-                .outputItems(dust, PotassiumIodide, 1)
+                .inputItems(DUST, PotassiumHydroxide, 3)
+                .inputItems(DUST, Iodine, 1)
+                .outputItems(DUST, PotassiumIodide, 1)
                 .outputFluids(Oxygen.getFluid(1000))
                 .outputFluids(Hydrogen.getFluid(1000))
                 .duration(100).EUt(VA[MV]).save(provider);
@@ -62,9 +62,9 @@ public class AntidoteRecipes {
 
     private static void prussianBlueProcess(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("calcium_hydroxide")
-                .inputItems(dust, Quicklime, 2)
+                .inputItems(DUST, Quicklime, 2)
                 .inputFluids(Water.getFluid(1000))
-                .outputItems(dust, CalciumHydroxide, 3)
+                .outputItems(DUST, CalciumHydroxide, 3)
                 .duration(100).EUt(VHA[MV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("formic_acid")
@@ -86,9 +86,9 @@ public class AntidoteRecipes {
                 .duration(16).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("potassium_cyanide")
-                .inputItems(dust, PotassiumHydroxide, 3)
+                .inputItems(DUST, PotassiumHydroxide, 3)
                 .inputFluids(Formamide.getFluid(1000))
-                .outputItems(dust, PotassiumCyanide, 3)
+                .outputItems(DUST, PotassiumCyanide, 3)
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VHA[MV]).save(provider);
 
@@ -96,15 +96,15 @@ public class AntidoteRecipes {
                 .inputFluids(Methane.getFluid(1000))
                 .inputFluids(Ammonia.getFluid(1000))
                 .inputFluids(Oxygen.getFluid(3000))
-                .notConsumable(dust, Platinum)
+                .notConsumable(DUST, Platinum)
                 .outputFluids(HydrogenCyanide.getFluid(1000))
                 .outputFluids(Water.getFluid(3000))
                 .duration(100).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("potassium_carbonate")
-                .inputItems(dust, PotassiumHydroxide, 6)
+                .inputItems(DUST, PotassiumHydroxide, 6)
                 .inputFluids(CarbonDioxide.getFluid(1000))
-                .outputItems(dust, PotassiumCarbonate, 6)
+                .outputItems(DUST, PotassiumCarbonate, 6)
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VHA[MV]).save(provider);
 
@@ -112,25 +112,25 @@ public class AntidoteRecipes {
                 .inputFluids(HydrogenCyanide.getFluid(6000))
                 .inputFluids(Iron2Chloride.getFluid(1000))
                 .inputFluids(Water.getFluid(7000))
-                .inputItems(dust, CalciumHydroxide, 10)
-                .outputItems(dust, CalciumFerrocyanide, 15)
+                .inputItems(DUST, CalciumHydroxide, 10)
+                .outputItems(DUST, CalciumFerrocyanide, 15)
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(300).EUt(VA[HV]).save(provider);
 
         LARGE_CHEMICAL_RECIPES.recipeBuilder("potassium_ferrocyanide")
-                .inputItems(dust, CalciumFerrocyanide, 15)
-                .inputItems(dust, RockSalt, 8)
-                .outputItems(dust, PotassiumFerrocyanide, 17)
-                .outputItems(dust, CalciumHydroxide, 10)
+                .inputItems(DUST, CalciumFerrocyanide, 15)
+                .inputItems(DUST, RockSalt, 8)
+                .outputItems(DUST, PotassiumFerrocyanide, 17)
+                .outputItems(DUST, CalciumHydroxide, 10)
                 .outputFluids(HydrochloricAcid.getFluid(4000))
                 .outputFluids(Water.getFluid(4000))
                 .duration(300).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("prussian_blue")
-                .inputItems(dust, PotassiumFerrocyanide, 51)
+                .inputItems(DUST, PotassiumFerrocyanide, 51)
                 .inputFluids(Iron3Chloride.getFluid(4000))
-                .outputItems(dust, PrussianBlue, 1)
-                .outputItems(dust, RockSalt, 6)
+                .outputItems(DUST, PrussianBlue, 1)
+                .outputItems(DUST, RockSalt, 6)
                 .duration(500).EUt(VA[HV]).save(provider);
     }
 
@@ -153,7 +153,7 @@ public class AntidoteRecipes {
         CHEMICAL_RECIPES.recipeBuilder("formaldehyde")
                 .inputFluids(Methanol.getFluid(1000))
                 .inputFluids(Oxygen.getFluid(1000))
-                .notConsumable(dust, Silver)
+                .notConsumable(DUST, Silver)
                 .outputFluids(Formaldehyde.getFluid(1000))
                 .outputFluids(Water.getFluid(1000))
                 .duration(100).EUt(VA[HV]).save(provider);
@@ -172,11 +172,11 @@ public class AntidoteRecipes {
                 .duration(100).EUt(VA[HV]).save(provider);
 
         LARGE_CHEMICAL_RECIPES.recipeBuilder("diethylenetriaminepentaacetic_acid")
-                .inputItems(dust, SodiumHydroxide, 15)
+                .inputItems(DUST, SodiumHydroxide, 15)
                 .inputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
                 .inputFluids(Oxygen.getFluid(15000))
-                .outputItems(dust, DiethylenetriaminepentaaceticAcid, 1)
-                .outputItems(dust, SodiumNitrite, 20)
+                .outputItems(DUST, DiethylenetriaminepentaaceticAcid, 1)
+                .outputItems(DUST, SodiumNitrite, 20)
                 .duration(100).EUt(VA[EV]).save(provider);
     }
 }

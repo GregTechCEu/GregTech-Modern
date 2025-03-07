@@ -2,59 +2,60 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
-import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.objects.Reference2LongLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class ItemMaterialInfo {
 
-    private final Reference2LongLinkedOpenHashMap<Material> materials = new Reference2LongLinkedOpenHashMap<>();
     private final List<MaterialStack> sortedMaterials = new ArrayList<>();
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
+        var materials = new Object2LongOpenHashMap<Material>();
         for (var mat : materialStacks) {
-            materials.merge(mat.material(), mat.amount(), Long::sum);
+            materials.addTo(mat.material(), mat.amount());
         }
-        setSortedMaterials();
+        setSortedMaterials(materials);
     }
 
     public ItemMaterialInfo(List<MaterialStack> materialStacks) {
-        for (var mat : materialStacks) {
-            materials.merge(mat.material(), mat.amount(), Long::sum);
-        }
-        setSortedMaterials();
+        var materials = new Object2LongOpenHashMap<Material>();
+        materialStacks.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
+        setSortedMaterials(materials);
     }
 
     /**
      * Returns the first MaterialStack in the "materials" list
      */
     public MaterialStack getMaterial() {
-        return sortedMaterials.isEmpty() ? null : sortedMaterials.get(0);
+        return sortedMaterials.isEmpty() ? MaterialStack.EMPTY : sortedMaterials.get(0);
     }
 
     /**
      * Returns all MaterialStacks associated with this Object.
      */
-    public ImmutableList<MaterialStack> getMaterials() {
-        return ImmutableList.copyOf(sortedMaterials);
+    @Unmodifiable
+    public List<MaterialStack> getMaterials() {
+        return Collections.unmodifiableList(sortedMaterials);
     }
 
     public void addMaterialStacks(List<MaterialStack> stacks) {
-        for (var mat : stacks) {
-            materials.merge(mat.material(), mat.amount(), Long::sum);
-        }
-        setSortedMaterials();
+        var materials = new Object2LongOpenHashMap<Material>();
+        sortedMaterials.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
+        stacks.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
+        setSortedMaterials(materials);
     }
 
-    private void setSortedMaterials() {
+    private void setSortedMaterials(Object2LongMap<Material> materials) {
         sortedMaterials.clear();
-        for (var m : materials.keySet()) {
-            sortedMaterials.add(new MaterialStack(m, materials.getLong(m)));
-        }
-        sortedMaterials.sort(Comparator.comparingLong(MaterialStack::amount));
+        materials.object2LongEntrySet().stream()
+                .sorted(Comparator.comparingLong(Object2LongMap.Entry::getLongValue))
+                .forEach(entry -> sortedMaterials.add(new MaterialStack(entry.getKey(), entry.getLongValue())));
     }
 
     @Override

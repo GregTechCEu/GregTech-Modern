@@ -89,16 +89,16 @@ public class GTMaterials {
                 Neutronium
         };
 
-        gemExquisite.setIgnored(Sugar);
-        gemFlawless.setIgnored(Sugar);
+        GEM_EXQUISITE.setIgnored(Sugar);
+        GEM_FLAWLESS.setIgnored(Sugar);
 
-        gem.setIgnored(Diamond, Items.DIAMOND);
-        gem.setIgnored(Emerald, Items.EMERALD);
-        gem.setIgnored(Lapis, Items.LAPIS_LAZULI);
-        gem.setIgnored(NetherQuartz, Items.QUARTZ);
-        gem.setIgnored(Coal, Items.COAL);
-        gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
-        gem.setIgnored(EchoShard, Items.ECHO_SHARD);
+        GEM.setIgnored(Diamond, Items.DIAMOND);
+        GEM.setIgnored(Emerald, Items.EMERALD);
+        GEM.setIgnored(Lapis, Items.LAPIS_LAZULI);
+        GEM.setIgnored(NetherQuartz, Items.QUARTZ);
+        GEM.setIgnored(Coal, Items.COAL);
+        GEM.setIgnored(Amethyst, Items.AMETHYST_SHARD);
+        GEM.setIgnored(EchoShard, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -106,166 +106,166 @@ public class GTMaterials {
         excludeAllGems(NetherStar, Items.NETHER_STAR);
         excludeAllGemsButNormal(Lapotron);
 
-        dust.setIgnored(Redstone, Items.REDSTONE);
-        dust.setIgnored(Glowstone, Items.GLOWSTONE_DUST);
-        dust.setIgnored(Gunpowder, Items.GUNPOWDER);
-        dust.setIgnored(Sugar, Items.SUGAR);
-        dust.setIgnored(Bone, Items.BONE_MEAL);
-        dust.setIgnored(Blaze, Items.BLAZE_POWDER);
+        DUST.setIgnored(Redstone, Items.REDSTONE);
+        DUST.setIgnored(Glowstone, Items.GLOWSTONE_DUST);
+        DUST.setIgnored(Gunpowder, Items.GUNPOWDER);
+        DUST.setIgnored(Sugar, Items.SUGAR);
+        DUST.setIgnored(Bone, Items.BONE_MEAL);
+        DUST.setIgnored(Blaze, Items.BLAZE_POWDER);
 
-        rod.setIgnored(Wood, Items.STICK);
-        rod.setIgnored(Bone, Items.BONE);
-        rod.setIgnored(Blaze, Items.BLAZE_ROD);
-        rod.setIgnored(Paper);
+        ROD.setIgnored(Wood, Items.STICK);
+        ROD.setIgnored(Bone, Items.BONE);
+        ROD.setIgnored(Blaze, Items.BLAZE_ROD);
+        ROD.setIgnored(Paper);
 
-        ingot.setIgnored(Iron, Items.IRON_INGOT);
-        ingot.setIgnored(Gold, Items.GOLD_INGOT);
-        ingot.setIgnored(Copper, Items.COPPER_INGOT);
-        ingot.setIgnored(Netherite, Items.NETHERITE_INGOT);
-        ingot.setIgnored(Brick, Items.BRICK);
-        ingot.setIgnored(Wax, Items.HONEYCOMB);
+        INGOT.setIgnored(Iron, Items.IRON_INGOT);
+        INGOT.setIgnored(Gold, Items.GOLD_INGOT);
+        INGOT.setIgnored(Copper, Items.COPPER_INGOT);
+        INGOT.setIgnored(Netherite, Items.NETHERITE_INGOT);
+        INGOT.setIgnored(Brick, Items.BRICK);
+        INGOT.setIgnored(Wax, Items.HONEYCOMB);
 
-        nugget.setIgnored(Gold, Items.GOLD_NUGGET);
-        nugget.setIgnored(Iron, Items.IRON_NUGGET);
+        NUGGET.setIgnored(Gold, Items.GOLD_NUGGET);
+        NUGGET.setIgnored(Iron, Items.IRON_NUGGET);
 
-        plate.setIgnored(Paper, Items.PAPER);
+        PLATE.setIgnored(Paper, Items.PAPER);
 
-        block.setIgnored(Iron, Blocks.IRON_BLOCK);
-        block.setIgnored(Gold, Blocks.GOLD_BLOCK);
-        block.setIgnored(Copper, Blocks.COPPER_BLOCK);
-        block.setIgnored(Netherite, Items.NETHERITE_BLOCK);
-        block.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
-        block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
-        block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
-        block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
-        block.setIgnored(Coal, Blocks.COAL_BLOCK);
-        block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
-        block.setIgnored(Glass, Blocks.GLASS);
-        block.setIgnored(Glowstone, Blocks.GLOWSTONE);
-        block.setIgnored(Oilsands);
-        block.setIgnored(Wood);
-        block.setIgnored(TreatedWood);
-        block.setIgnored(RawRubber);
-        block.setIgnored(Clay, Blocks.CLAY);
-        block.setIgnored(Brick, Blocks.BRICKS);
-        block.setIgnored(Bone, Blocks.BONE_BLOCK);
-        block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
-        block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE,
+        BLOCK.setIgnored(Iron, Blocks.IRON_BLOCK);
+        BLOCK.setIgnored(Gold, Blocks.GOLD_BLOCK);
+        BLOCK.setIgnored(Copper, Blocks.COPPER_BLOCK);
+        BLOCK.setIgnored(Netherite, Items.NETHERITE_BLOCK);
+        BLOCK.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
+        BLOCK.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
+        BLOCK.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
+        BLOCK.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
+        BLOCK.setIgnored(Coal, Blocks.COAL_BLOCK);
+        BLOCK.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
+        BLOCK.setIgnored(Glass, Blocks.GLASS);
+        BLOCK.setIgnored(Glowstone, Blocks.GLOWSTONE);
+        BLOCK.setIgnored(Oilsands);
+        BLOCK.setIgnored(Wood);
+        BLOCK.setIgnored(TreatedWood);
+        BLOCK.setIgnored(RawRubber);
+        BLOCK.setIgnored(Clay, Blocks.CLAY);
+        BLOCK.setIgnored(Brick, Blocks.BRICKS);
+        BLOCK.setIgnored(Bone, Blocks.BONE_BLOCK);
+        BLOCK.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
+        BLOCK.setIgnored(Ice, Blocks.ICE);
+        BLOCK.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE,
                 Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
                 Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE,
                 Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
-        block.setIgnored(Blaze);
-        block.setIgnored(Lapotron);
-        block.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
+        BLOCK.setIgnored(Blaze);
+        BLOCK.setIgnored(Lapotron);
+        BLOCK.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
 
-        rock.setIgnored(Marble, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
-        rock.setIgnored(Granite, Blocks.GRANITE);
-        rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
-        rock.setIgnored(Andesite, Blocks.ANDESITE);
-        rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
-        rock.setIgnored(Diorite, Blocks.DIORITE);
-        rock.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
-        rock.setIgnored(Stone, Blocks.STONE);
-        rock.setIgnored(Calcite, Blocks.CALCITE);
-        rock.setIgnored(Netherrack, Blocks.NETHERRACK);
-        rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
-        rock.setIgnored(Endstone, Blocks.END_STONE);
-        rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
-        rock.setIgnored(Basalt, Blocks.BASALT);
-        rock.setIgnored(Blackstone, Blocks.BLACKSTONE);
-        block.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
+        ROCK.setIgnored(Marble, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
+        ROCK.setIgnored(Granite, Blocks.GRANITE);
+        ROCK.setIgnored(Granite, Blocks.POLISHED_GRANITE);
+        ROCK.setIgnored(GraniteRed, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
+        ROCK.setIgnored(Andesite, Blocks.ANDESITE);
+        ROCK.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
+        ROCK.setIgnored(Diorite, Blocks.DIORITE);
+        ROCK.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
+        ROCK.setIgnored(Stone, Blocks.STONE);
+        ROCK.setIgnored(Calcite, Blocks.CALCITE);
+        ROCK.setIgnored(Netherrack, Blocks.NETHERRACK);
+        ROCK.setIgnored(Obsidian, Blocks.OBSIDIAN);
+        ROCK.setIgnored(Endstone, Blocks.END_STONE);
+        ROCK.setIgnored(Deepslate, Blocks.DEEPSLATE);
+        ROCK.setIgnored(Basalt, Blocks.BASALT);
+        ROCK.setIgnored(Blackstone, Blocks.BLACKSTONE);
+        BLOCK.setIgnored(Sculk, Blocks.SCULK);
+        BLOCK.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        BLOCK.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
             if (oreType.shouldDropAsItem() && oreType.material() != null) {
-                prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), dust.materialAmount()));
+                prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), DUST.materialAmount()));
             }
         }
 
-        crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
+        CRUSHED.addSecondaryMaterial(new MaterialStack(Stone, DUST.materialAmount()));
 
-        toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));
-        toolHeadChainsaw
-                .addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4 + ring.materialAmount() * 2));
-        toolHeadWrench
-                .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
-        toolHeadWireCutter
-                .addSecondaryMaterial(new MaterialStack(Steel, ring.materialAmount() + screw.materialAmount() * 2));
+        TOOL_HEAD_DRILL.addSecondaryMaterial(new MaterialStack(Steel, PLATE.materialAmount() * 4));
+        TOOL_HEAD_CHAINSAW
+                .addSecondaryMaterial(new MaterialStack(Steel, PLATE.materialAmount() * 4 + RING.materialAmount() * 2));
+        TOOL_HEAD_WRENCH
+                .addSecondaryMaterial(new MaterialStack(Steel, RING.materialAmount() + SCREW.materialAmount() * 2));
+        TOOL_HEAD_WIRE_CUTTER
+                .addSecondaryMaterial(new MaterialStack(Steel, RING.materialAmount() + SCREW.materialAmount() * 2));
 
-        pipeTinyFluid.setIgnored(Wood);
-        pipeHugeFluid.setIgnored(Wood);
-        pipeQuadrupleFluid.setIgnored(Wood);
-        pipeNonupleFluid.setIgnored(Wood);
-        pipeTinyFluid.setIgnored(TreatedWood);
-        pipeHugeFluid.setIgnored(TreatedWood);
-        pipeQuadrupleFluid.setIgnored(TreatedWood);
-        pipeNonupleFluid.setIgnored(TreatedWood);
+        PIPE_TINY_FLUID.setIgnored(Wood);
+        PIPE_HUGE_FLUID.setIgnored(Wood);
+        PIPE_QUADRUPLE_FLUID.setIgnored(Wood);
+        PIPE_NONUPLE_FLUID.setIgnored(Wood);
+        PIPE_TINY_FLUID.setIgnored(TreatedWood);
+        PIPE_HUGE_FLUID.setIgnored(TreatedWood);
+        PIPE_QUADRUPLE_FLUID.setIgnored(TreatedWood);
+        PIPE_NONUPLE_FLUID.setIgnored(TreatedWood);
 
-        pipeSmallRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeNormalRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeLargeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
-        pipeHugeRestrictive.addSecondaryMaterial(new MaterialStack(Iron, ring.materialAmount() * 2));
+        PIPE_SMALL_RESTRICTIVE.addSecondaryMaterial(new MaterialStack(Iron, RING.materialAmount() * 2));
+        PIPE_NORMAL_RESTRICTIVE.addSecondaryMaterial(new MaterialStack(Iron, RING.materialAmount() * 2));
+        PIPE_LARGE_RESTRICTIVE.addSecondaryMaterial(new MaterialStack(Iron, RING.materialAmount() * 2));
+        PIPE_HUGE_RESTRICTIVE.addSecondaryMaterial(new MaterialStack(Iron, RING.materialAmount() * 2));
 
-        cableGtSingle.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
-        cableGtDouble.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount()));
-        cableGtQuadruple.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount() * 2));
-        cableGtOctal.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount() * 3));
-        cableGtHex.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount() * 5));
+        CABLE_GT_SINGLE.addSecondaryMaterial(new MaterialStack(Rubber, PLATE.materialAmount()));
+        CABLE_GT_DOUBLE.addSecondaryMaterial(new MaterialStack(Rubber, PLATE.materialAmount()));
+        CABLE_GT_QUADRUPLE.addSecondaryMaterial(new MaterialStack(Rubber, PLATE.materialAmount() * 2));
+        CABLE_GT_OCTAL.addSecondaryMaterial(new MaterialStack(Rubber, PLATE.materialAmount() * 3));
+        CABLE_GT_HEX.addSecondaryMaterial(new MaterialStack(Rubber, PLATE.materialAmount() * 5));
 
-        plateDouble.setIgnored(BorosilicateGlass);
-        plateDouble.setIgnored(Wood);
-        plateDouble.setIgnored(TreatedWood);
-        plate.setIgnored(BorosilicateGlass);
-        foil.setIgnored(BorosilicateGlass);
+        PLATE_DOUBLE.setIgnored(BorosilicateGlass);
+        PLATE_DOUBLE.setIgnored(Wood);
+        PLATE_DOUBLE.setIgnored(TreatedWood);
+        PLATE.setIgnored(BorosilicateGlass);
+        FOIL.setIgnored(BorosilicateGlass);
 
-        dye.setIgnored(DyeBlack, Items.BLACK_DYE);
-        dye.setIgnored(DyeRed, Items.RED_DYE);
-        dye.setIgnored(DyeGreen, Items.GREEN_DYE);
-        dye.setIgnored(DyeBrown, Items.BROWN_DYE);
-        dye.setIgnored(DyeBlue, Items.BLUE_DYE);
-        dye.setIgnored(DyePurple, Items.PURPLE_DYE);
-        dye.setIgnored(DyeCyan, Items.CYAN_DYE);
-        dye.setIgnored(DyeLightGray, Items.LIGHT_GRAY_DYE);
-        dye.setIgnored(DyeGray, Items.GRAY_DYE);
-        dye.setIgnored(DyePink, Items.PINK_DYE);
-        dye.setIgnored(DyeLime, Items.LIME_DYE);
-        dye.setIgnored(DyeYellow, Items.YELLOW_DYE);
-        dye.setIgnored(DyeLightBlue, Items.LIGHT_BLUE_DYE);
-        dye.setIgnored(DyeMagenta, Items.MAGENTA_DYE);
-        dye.setIgnored(DyeOrange, Items.ORANGE_DYE);
-        dye.setIgnored(DyeWhite, Items.WHITE_DYE);
+        DYE.setIgnored(DyeBlack, Items.BLACK_DYE);
+        DYE.setIgnored(DyeRed, Items.RED_DYE);
+        DYE.setIgnored(DyeGreen, Items.GREEN_DYE);
+        DYE.setIgnored(DyeBrown, Items.BROWN_DYE);
+        DYE.setIgnored(DyeBlue, Items.BLUE_DYE);
+        DYE.setIgnored(DyePurple, Items.PURPLE_DYE);
+        DYE.setIgnored(DyeCyan, Items.CYAN_DYE);
+        DYE.setIgnored(DyeLightGray, Items.LIGHT_GRAY_DYE);
+        DYE.setIgnored(DyeGray, Items.GRAY_DYE);
+        DYE.setIgnored(DyePink, Items.PINK_DYE);
+        DYE.setIgnored(DyeLime, Items.LIME_DYE);
+        DYE.setIgnored(DyeYellow, Items.YELLOW_DYE);
+        DYE.setIgnored(DyeLightBlue, Items.LIGHT_BLUE_DYE);
+        DYE.setIgnored(DyeMagenta, Items.MAGENTA_DYE);
+        DYE.setIgnored(DyeOrange, Items.ORANGE_DYE);
+        DYE.setIgnored(DyeWhite, Items.WHITE_DYE);
 
         // register vanilla materials
 
-        rawOre.setIgnored(Gold, Items.RAW_GOLD);
-        rawOre.setIgnored(Iron, Items.RAW_IRON);
-        rawOre.setIgnored(Copper, Items.RAW_COPPER);
-        rawOreBlock.setIgnored(Gold, Blocks.RAW_GOLD_BLOCK);
-        rawOreBlock.setIgnored(Iron, Blocks.RAW_IRON_BLOCK);
-        rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
+        RAW_ORE.setIgnored(Gold, Items.RAW_GOLD);
+        RAW_ORE.setIgnored(Iron, Items.RAW_IRON);
+        RAW_ORE.setIgnored(Copper, Items.RAW_COPPER);
+        RAW_ORE_BLOCK.setIgnored(Gold, Blocks.RAW_GOLD_BLOCK);
+        RAW_ORE_BLOCK.setIgnored(Iron, Blocks.RAW_IRON_BLOCK);
+        RAW_ORE_BLOCK.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
-        block.modifyMaterialAmount(Amethyst, 4);
-        block.modifyMaterialAmount(EchoShard, 4);
-        block.modifyMaterialAmount(Glowstone, 4);
-        block.modifyMaterialAmount(NetherQuartz, 4);
-        block.modifyMaterialAmount(CertusQuartz, 4);
-        block.modifyMaterialAmount(Brick, 4);
-        block.modifyMaterialAmount(Clay, 4);
+        BLOCK.modifyMaterialAmount(Amethyst, 4);
+        BLOCK.modifyMaterialAmount(EchoShard, 4);
+        BLOCK.modifyMaterialAmount(Glowstone, 4);
+        BLOCK.modifyMaterialAmount(NetherQuartz, 4);
+        BLOCK.modifyMaterialAmount(CertusQuartz, 4);
+        BLOCK.modifyMaterialAmount(Brick, 4);
+        BLOCK.modifyMaterialAmount(Clay, 4);
 
-        block.modifyMaterialAmount(Concrete, 1);
-        block.modifyMaterialAmount(Glass, 1);
-        block.modifyMaterialAmount(Ice, 1);
-        block.modifyMaterialAmount(Obsidian, 1);
-        block.modifyMaterialAmount(Sculk, 1);
-        block.modifyMaterialAmount(Wax, 4);
+        BLOCK.modifyMaterialAmount(Concrete, 1);
+        BLOCK.modifyMaterialAmount(Glass, 1);
+        BLOCK.modifyMaterialAmount(Ice, 1);
+        BLOCK.modifyMaterialAmount(Obsidian, 1);
+        BLOCK.modifyMaterialAmount(Sculk, 1);
+        BLOCK.modifyMaterialAmount(Wax, 4);
 
-        rod.modifyMaterialAmount(Blaze, 4);
-        rod.modifyMaterialAmount(Bone, 5);
+        ROD.modifyMaterialAmount(Blaze, 4);
+        ROD.modifyMaterialAmount(Bone, 5);
     }
 
     public static Material get(String name) {
@@ -273,15 +273,15 @@ public class GTMaterials {
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
-        gem.setIgnored(material, items);
+        GEM.setIgnored(material, items);
         excludeAllGemsButNormal(material);
     }
 
     private static void excludeAllGemsButNormal(Material material) {
-        gemChipped.setIgnored(material);
-        gemFlawed.setIgnored(material);
-        gemFlawless.setIgnored(material);
-        gemExquisite.setIgnored(material);
+        GEM_CHIPPED.setIgnored(material);
+        GEM_FLAWED.setIgnored(material);
+        GEM_FLAWLESS.setIgnored(material);
+        GEM_EXQUISITE.setIgnored(material);
     }
 
     public static final List<MaterialFlag> STD_METAL = new ArrayList<>();

@@ -16,7 +16,7 @@ public class CustomAlloyBlastRecipeProducer extends AlloyBlastRecipeProducer {
      * @param circuitNum    the custom circuit number to use
      * @param gasCircuitNum the custom gas circuit number to use
      * @param outputAmount  the custom output amount in quantities of
-     *                      {@link com.gregtechceu.gtceu.api.data.tag.TagPrefix#ingot}
+     *                      {@link com.gregtechceu.gtceu.api.data.tag.TagPrefix#INGOT}
      *                      / {@link com.gregtechceu.gtceu.api.GTValues#M}) to use
      */
     public CustomAlloyBlastRecipeProducer(int circuitNum, int gasCircuitNum, int outputAmount) {

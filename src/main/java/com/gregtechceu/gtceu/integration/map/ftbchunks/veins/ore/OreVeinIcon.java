@@ -66,7 +66,7 @@ public class OreVeinIcon implements MapIcon {
                 return null;
             } else if (blockOrMaterial.left().isPresent()) {
                 var entry = ChemicalHelper.getMaterialEntry(blockOrMaterial.left().get().getBlock());
-                firstMaterial = entry == null ? null : entry.material();
+                firstMaterial = entry.material();
             } else if (blockOrMaterial.right().isPresent()) {
                 firstMaterial = blockOrMaterial.right().get();
             }

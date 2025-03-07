@@ -5,7 +5,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
@@ -61,9 +61,9 @@ public class BrineRecipes {
         // byproduct loop
         CHEMICAL_RECIPES.recipeBuilder("brine_neutralization")
                 .inputFluids(HotAlkalineDebrominatedBrine.getFluid(3000))
-                .inputItems(dust, Potassium, 1)
+                .inputItems(DUST, Potassium, 1)
                 .outputFluids(HotDebrominatedBrine.getFluid(2000))
-                .outputItems(dust, RockSalt, 2)
+                .outputItems(DUST, RockSalt, 2)
                 .duration(100).EUt(VA[HV]).save(provider);
         CHEMICAL_RECIPES.recipeBuilder("debrominated_brine_raw_brine_mixing")
                 .inputFluids(RawBrine.getFluid(1000))
@@ -94,7 +94,7 @@ public class BrineRecipes {
         CHEMICAL_RECIPES.recipeBuilder("iodine")
                 .inputFluids(HydrogenIodide.getFluid(2000))
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputItems(dust, Iodine, 1)
+                .outputItems(DUST, Iodine, 1)
                 .outputFluids(Water.getFluid(1000))
                 .duration(1000).EUt(VHA[HV]).save(provider);
     }

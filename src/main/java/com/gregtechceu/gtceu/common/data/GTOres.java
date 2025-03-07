@@ -28,8 +28,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ORE;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ORE_NETHERRACK;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -723,9 +723,9 @@ public class GTOres {
         var block = GTMaterialBlocks.MATERIAL_BLOCKS.get(oreTag, material);
         if (block == null) {
             ResourceLocation oreKey;
-            if (oreTag == ore) {
+            if (oreTag == ORE) {
                 oreKey = new ResourceLocation("%s_ore".formatted(material.getName()));
-            } else if (oreTag == oreNetherrack) {
+            } else if (oreTag == ORE_NETHERRACK) {
                 oreKey = new ResourceLocation("nether_%s_ore".formatted(material.getName()));
             } else {
                 oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
