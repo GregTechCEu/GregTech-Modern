@@ -176,7 +176,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
             RecipeHandlerList handlerList = new RecipeHandlerList(entry.getKey());
             handlerList.addHandlers(entry.getValue());
             this.addHandlerList(handlerList);
-            traitSubscriptions.addAll(handlerList.addChangeListeners(recipeLogic::updateTickSubscription));
+            traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
     }
 

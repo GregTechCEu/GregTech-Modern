@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -13,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -43,14 +45,6 @@ public class RecipeHelper {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) return EUt;
         return -getOutputEUt(recipe);
-    }
-
-    public static void setInputEUt(GTRecipe recipe, long eut) {
-        recipe.getTickInputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
-    }
-
-    public static void setOutputEUt(GTRecipe recipe, long eut) {
-        recipe.getTickOutputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
@@ -228,30 +222,18 @@ public class RecipeHelper {
                                             Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                                             boolean isTick, boolean simulated) {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
-        var handle = runner.handle(contents);
+        var result = runner.handle(contents);
 
-        // TODO: make this actually log error on failed non-simulate
-        if (handle == null || handle.content() != null) {
+        if (!result.isSuccess()) {
+            assert result.capability() != null;
+            if (!simulated) {
+                GTCEu.LOGGER.warn("IO Error while handling recipe {} outputs for {}", recipe, holder);
+            }
             String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
             return ActionResult.fail(Component.translatable(key)
-                    .append(": ").append(handle.capability().getName()));
+                    .append(": ").append(result.capability().getName()));
         }
-        return handle.result();
-
-        /*
-         * RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, false);
-         * for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-         * var handled = runner.handle(entry);
-         * if (handled == null)
-         * continue;
-         *
-         * if (handled.content() != null) {
-         * GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", recipe.id, holder);
-         * return false;
-         * }
-         * }
-         * return true;
-         */
+        return result.result();
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -338,13 +320,13 @@ public class RecipeHelper {
     /**
      * Trims the recipe outputs and tick outputs based on the performing Machine's trim limit.
      */
-    public static GTRecipe trimRecipeOutputs(GTRecipe recipe, Map<RecipeCapability<?>, Integer> trimLimits) {
+    public static GTRecipe trimRecipeOutputs(GTRecipe recipe, Object2IntMap<RecipeCapability<?>> trimLimits) {
         // Fast return early if no trimming desired
-        if (trimLimits.isEmpty() || trimLimits.values().stream().allMatch(integer -> integer == -1)) {
+        if (trimLimits.isEmpty() || trimLimits.values().intStream().allMatch(integer -> integer == -1)) {
             return recipe;
         }
 
-        GTRecipe current = recipe.copy();
+        GTRecipe current = recipe;// .copy();
 
         GTRecipeBuilder builder = new GTRecipeBuilder(current, recipe.recipeType);
 
@@ -365,69 +347,42 @@ public class RecipeHelper {
      * Takes into account any specific output limiters, ie macerator slots, to trim down the output list
      * Trims from chanced outputs first, then regular outputs
      *
-     * @param trimLimits The limit(s) on the number of outputs, -1 for disabled.
+     * @param trimLimits The limit(s) on the number of outputs
      * @return All recipe outputs, limited by some factor(s)
      */
     public static Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
-                                                                 Map<RecipeCapability<?>, Integer> trimLimits) {
-        Map<RecipeCapability<?>, List<Content>> outputs = new HashMap<>();
+                                                                 Object2IntMap<RecipeCapability<?>> trimLimits) {
+        Map<RecipeCapability<?>, List<Content>> outputs = new Reference2ObjectOpenHashMap<>(current.size());
 
-        Set<RecipeCapability<?>> trimmed = new HashSet<>();
-        for (Map.Entry<RecipeCapability<?>, Integer> entry : trimLimits.entrySet()) {
-            RecipeCapability<?> key = entry.getKey();
+        for (var entry : current.entrySet()) {
+            var cap = entry.getKey();
+            var contents = entry.getValue();
+            if (contents.isEmpty()) continue;
+            if (!trimLimits.containsKey(cap)) {
+                outputs.computeIfAbsent(cap, c -> new ArrayList<>()).addAll(contents);
+                continue;
+            }
 
-            if (!current.containsKey(key)) continue;
-            List<Content> nonChanced = new ArrayList<>();
+            int N = trimLimits.getInt(cap);
+            if (N == 0) continue;
+
+            int added = 0;
+            List<Content> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
             List<Content> chanced = new ArrayList<>();
-            for (Content content : current.getOrDefault(key, List.of())) {
-                if (content.chance <= 0 || content.chance >= content.maxChance) nonChanced.add(content);
-                else chanced.add(content);
+            for (var content : contents) {
+                if (added == N) break;
+                if (!content.isChanced()) {
+                    added++;
+                    list.add(content);
+                } else {
+                    chanced.add(content);
+                }
             }
 
-            int outputLimit = entry.getValue();
-            if (outputLimit == -1) {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced);
+            if (added < N) {
+                int rem = Math.min(chanced.size(), N - added);
+                list.addAll(chanced.subList(0, rem));
             }
-            // If just the regular outputs would satisfy the outputLimit
-            else if (nonChanced.size() >= outputLimit) {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(nonChanced.stream()
-                                .map(cont -> cont.copy(key, null))
-                                .toList()
-                                .subList(0, outputLimit));
-
-                chanced.clear();
-            }
-            // If the regular outputs and chanced outputs are required to satisfy the outputLimit
-            else if (!nonChanced.isEmpty() && (nonChanced.size() + chanced.size()) >= outputLimit) {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
-
-                // Calculate the number of chanced outputs after adding all the regular outputs
-                int numChanced = outputLimit - nonChanced.size();
-
-                chanced = chanced.subList(0, Math.min(numChanced, chanced.size()));
-            }
-            // There are only chanced outputs to satisfy the outputLimit
-            else if (nonChanced.isEmpty()) {
-                chanced = chanced.subList(0, Math.min(outputLimit, chanced.size()));
-            }
-            // The number of outputs + chanced outputs is lower than the trim number, so just add everything
-            else {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
-                // Chanced outputs are taken care of in the original copy
-            }
-
-            if (!chanced.isEmpty())
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
-                        .addAll(chanced.stream().map(cont -> cont.copy(key, null)).toList());
-
-            trimmed.add(key);
-        }
-        for (Map.Entry<RecipeCapability<?>, List<Content>> entry : current.entrySet()) {
-            if (trimmed.contains(entry.getKey())) continue;
-            outputs.computeIfAbsent(entry.getKey(), $ -> new ArrayList<>()).addAll(entry.getValue());
         }
 
         return outputs;

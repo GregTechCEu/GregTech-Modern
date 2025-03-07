@@ -116,8 +116,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     outputs.addAll(containers);
                 }
 
-                traitSubscriptions.addAll(
-                        handlerList.addChangeListeners(tickSubscription::updateSubscription, EURecipeCapability.CAP));
+                traitSubscriptions
+                        .add(handlerList.subscribe(tickSubscription::updateSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputHatches = new EnergyContainerList(inputs);

@@ -222,4 +222,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public int hashCode() {
         return id.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
 }

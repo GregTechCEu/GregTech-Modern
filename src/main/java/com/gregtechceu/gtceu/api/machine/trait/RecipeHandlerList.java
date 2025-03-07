@@ -7,10 +7,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,7 @@ import java.util.Map;
 
 public class RecipeHandlerList {
 
-    public static RecipeHandlerList NO_DATA = new RecipeHandlerList(IO.NONE);
+    public static final RecipeHandlerList NO_DATA = new RecipeHandlerList(IO.NONE);
 
     public static final Comparator<RecipeHandlerList> COMPARATOR = (h1, h2) -> {
         int cmp = Long.compare(h1.getPriority(), h2.getPriority());
@@ -33,14 +31,16 @@ public class RecipeHandlerList {
 
     @Getter
     private final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> handlerMap = new Reference2ObjectOpenHashMap<>();
-    private final List<IRecipeHandler<?>> allHandlers = new ObjectArrayList<>();
-    private final IO io;
-    @Setter
+    private final List<IRecipeHandler<?>> allHandlers = new ArrayList<>();
+    private final List<IRecipeHandlerTrait<?>> allHandlerTraits = new ArrayList<>();
+
+    @Getter
+    private final IO handlerIO;
     @Getter
     private boolean isDistinct = false;
 
-    public RecipeHandlerList(IO io) {
-        this.io = io;
+    public RecipeHandlerList(IO handlerIO) {
+        this.handlerIO = handlerIO;
     }
 
     public static RecipeHandlerList of(IO io, IRecipeHandler<?> handler) {
@@ -61,13 +61,25 @@ public class RecipeHandlerList {
         for (var handler : handlers) {
             getHandlerMap().computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
             allHandlers.add(handler);
+            if (handler instanceof IRecipeHandlerTrait<?> rht) allHandlerTraits.add(rht);
         }
-        if (io == IO.OUT) sort();
+        if (handlerIO == IO.OUT) sort();
     }
 
     private void sort() {
         for (var list : getHandlerMap().values()) {
             list.sort(IRecipeHandler.ENTRY_COMPARATOR);
+        }
+    }
+
+    public void setDistinct(boolean distinct) {
+        if (isDistinct != distinct) {
+            isDistinct = distinct;
+            for (var rht : allHandlerTraits) {
+                if (rht instanceof NotifiableRecipeHandlerTrait<?> nrht) {
+                    nrht.setDistinct(distinct);
+                }
+            }
         }
     }
 
@@ -81,11 +93,7 @@ public class RecipeHandlerList {
 
     public boolean isValid(IO extIO) {
         if (this == NO_DATA) return false;
-        return (extIO == IO.BOTH || io == IO.BOTH || extIO == io);
-    }
-
-    public IO getHandlerIO() {
-        return io;
+        return (extIO == IO.BOTH || handlerIO == IO.BOTH || extIO == handlerIO);
     }
 
     public long getPriority() {
@@ -98,26 +106,6 @@ public class RecipeHandlerList {
         double sum = 0;
         for (var handler : allHandlers) sum += handler.getTotalContentAmount();
         return sum;
-    }
-
-    public List<ISubscription> addChangeListeners(Runnable listener) {
-        List<ISubscription> ret = new ArrayList<>();
-        for (var handler : allHandlers) {
-            if (handler instanceof IRecipeHandlerTrait<?> trait) {
-                ret.add(trait.addChangedListener(listener));
-            }
-        }
-        return ret;
-    }
-
-    public List<ISubscription> addChangeListeners(Runnable listener, RecipeCapability<?> cap) {
-        List<ISubscription> ret = new ArrayList<>();
-        for (var handler : getCapability(cap)) {
-            if (handler instanceof IRecipeHandlerTrait<?> trait) {
-                ret.add(trait.addChangedListener(listener));
-            }
-        }
-        return ret;
     }
 
     public Map<RecipeCapability<?>, List> handleRecipe(IO io, GTRecipe recipe, Map<RecipeCapability<?>, List> contents,
@@ -140,5 +128,30 @@ public class RecipeHandlerList {
             }
         }
         return copy;
+    }
+
+    private record Subscription(List<ISubscription> subs) implements ISubscription {
+
+        @Override
+        public void unsubscribe() {
+            subs.forEach(ISubscription::unsubscribe);
+        }
+    }
+
+    public ISubscription subscribe(Runnable listener) {
+        List<ISubscription> subs = new ArrayList<>(allHandlerTraits.size());
+        allHandlerTraits.forEach(rht -> subs.add(rht.addChangedListener(listener)));
+        return new Subscription(subs);
+    }
+
+    public ISubscription subscribe(Runnable listener, RecipeCapability<?> cap) {
+        var capList = getCapability(cap);
+        List<ISubscription> subs = new ArrayList<>(capList.size());
+        for (var handler : capList) {
+            if (handler instanceof IRecipeHandlerTrait<?> trait) {
+                subs.add(trait.addChangedListener(listener));
+            }
+        }
+        return new Subscription(subs);
     }
 }

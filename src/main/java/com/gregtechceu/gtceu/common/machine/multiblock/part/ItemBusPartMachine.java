@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -33,8 +32,6 @@ import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -59,6 +56,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    @Persisted
+    private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
@@ -92,14 +92,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         }
     }
 
-    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
-        } else {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
-        }
-    }
-
     @Override
     public void onMachineRemoved() {
         clearInventory(getInventory().storage);
@@ -116,7 +108,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
-        getRecipeHandlers().get(0).setDistinct(getInventory().isDistinct());
+        getHandlerList().setDistinct(isDistinct);
     }
 
     @Override
@@ -129,15 +121,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public boolean isDistinct() {
-        return io != IO.OUT && getInventory().isDistinct() && circuitInventory.isDistinct();
-    }
-
-    @Override
-    public void setDistinct(boolean isDistinct) {
-        getInventory().setDistinct(isDistinct);
-        circuitInventory.setDistinct(isDistinct);
-        getRecipeHandlers().get(0).setDistinct(isDistinct);
+    public void setDistinct(boolean distinct) {
+        isDistinct = (io == IO.OUT && distinct);
+        getHandlerList().setDistinct(isDistinct);
     }
 
     //////////////////////////////////////

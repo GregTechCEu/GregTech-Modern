@@ -134,8 +134,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
                         .forEach(energyContainers::add);
-                traitSubscriptions.addAll(
-                        handlerList.addChangeListeners(this::updatePreHeatSubscription, EURecipeCapability.CAP));
+                traitSubscriptions.add(handlerList.subscribe(this::updatePreHeatSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);

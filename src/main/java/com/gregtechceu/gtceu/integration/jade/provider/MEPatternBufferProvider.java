@@ -59,8 +59,8 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
 
     public static void writeBufferTag(CompoundTag compoundTag, MEPatternBufferPartMachine buffer) {
         var merged = buffer.mergeInternalSlots();
-        var items = merged.getLeft();
-        var fluids = merged.getRight();
+        var items = merged.items();
+        var fluids = merged.fluids();
 
         ListTag itemsTag = new ListTag();
         for (var entry : items.object2LongEntrySet()) {

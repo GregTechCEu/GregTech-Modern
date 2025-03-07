@@ -104,8 +104,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                     powerOutput.addAll(containers);
                 }
 
-                traitSubscriptions.addAll(handlerList.addChangeListeners(converterSubscription::updateSubscription,
-                        EURecipeCapability.CAP));
+                traitSubscriptions
+                        .add(handlerList.subscribe(converterSubscription::updateSubscription, EURecipeCapability.CAP));
             }
         }
 

@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,14 @@ import java.util.Map;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 class RecipeRunner {
 
-    record RecipeHandlingResult(@Nullable RecipeCapability<?> capability, @UnknownNullability List content,
-                                ActionResult result) {
+    record RecipeHandlingResult(ActionResult result,
+                                @Nullable("Null when isSuccess()") RecipeCapability<?> capability) {
 
-        public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(null, null, ActionResult.SUCCESS);
+        public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(ActionResult.SUCCESS, null);
+
+        public boolean isSuccess() {
+            return result.isSuccess();
+        }
     }
 
     private final GTRecipe recipe;
@@ -51,12 +55,12 @@ class RecipeRunner {
         this.simulated = simulated;
     }
 
-    @Nullable
+    @NotNull
     public RecipeHandlingResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty())
-            return new RecipeHandlingResult(null, null, ActionResult.PASS_NO_CONTENTS);
+            return new RecipeHandlingResult(ActionResult.PASS_NO_CONTENTS, null);
 
         return this.handleContents();
     }
@@ -121,7 +125,7 @@ class RecipeRunner {
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
         if (!capabilityProxies.containsKey(capIO)) {
-            return new RecipeHandlingResult(null, null, ActionResult.FAIL_NO_REASON);
+            return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, null);
         }
 
         var handlers = capabilityProxies.get(capIO);
@@ -163,11 +167,10 @@ class RecipeRunner {
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return new RecipeHandlingResult(entry.getKey(), entry.getValue(),
-                        ActionResult.FAIL_NO_REASON);
+                return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, entry.getKey());
             }
         }
 
-        return new RecipeHandlingResult(null, null, ActionResult.FAIL_NO_REASON);
+        return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, null);
     }
 }

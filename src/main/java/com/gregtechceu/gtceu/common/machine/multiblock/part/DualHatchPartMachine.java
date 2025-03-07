@@ -158,18 +158,6 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     }
 
     @Override
-    public boolean isDistinct() {
-        return io != IO.OUT && super.isDistinct() && tank.isDistinct();
-    }
-
-    @Override
-    public void setDistinct(boolean isDistinct) {
-        super.setDistinct(isDistinct);
-        tank.setDistinct(isDistinct);
-        getRecipeHandlers().get(0).setDistinct(isDistinct);
-    }
-
-    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }

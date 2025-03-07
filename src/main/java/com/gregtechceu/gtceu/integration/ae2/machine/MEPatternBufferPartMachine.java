@@ -72,10 +72,9 @@ import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -149,7 +148,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
     @Getter
-    protected final InternalSlotRecipeHandler ISRHL;
+    protected final InternalSlotRecipeHandler internalRecipeHandler;
 
     @Nullable
     protected TickableSubscription updateSubs;
@@ -178,7 +177,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE);
-        this.ISRHL = new InternalSlotRecipeHandler(this, internalInventory);
+        this.internalRecipeHandler = new InternalSlotRecipeHandler(this, internalInventory);
     }
 
     @Override
@@ -200,7 +199,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
-        return ISRHL.getSlotHandlers();
+        return internalRecipeHandler.getSlotHandlers();
     }
 
     @Override
@@ -433,15 +432,16 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         return InteractionResult.SUCCESS;
     }
 
-    public Pair<Object2LongMap<ItemStack>, Object2LongMap<FluidStack>> mergeInternalSlots() {
-        Object2LongMap<ItemStack> items = new Object2LongOpenCustomHashMap<>(
-                ItemStackHashStrategy.comparingAllButCount());
-        Object2LongMap<FluidStack> fluids = new Object2LongOpenHashMap<>();
+    public record BufferData(Object2LongMap<ItemStack> items, Object2LongMap<FluidStack> fluids) {}
+
+    public BufferData mergeInternalSlots() {
+        var items = new Object2LongOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
+        var fluids = new Object2LongOpenHashMap<FluidStack>();
         for (InternalSlot slot : internalInventory) {
-            slot.itemInventory.forEach((stack, count) -> items.mergeLong(stack, count, Long::sum));
-            slot.fluidInventory.forEach((stack, amount) -> fluids.mergeLong(stack, amount, Long::sum));
+            slot.itemInventory.object2LongEntrySet().fastForEach(e -> items.addTo(e.getKey(), e.getLongValue()));
+            slot.fluidInventory.object2LongEntrySet().fastForEach(e -> fluids.addTo(e.getKey(), e.getLongValue()));
         }
-        return new ImmutablePair<>(items, fluids);
+        return new BufferData(items, fluids);
     }
 
     public class InternalSlot implements ITagSerializable<CompoundTag>, IContentChangeAware {
@@ -450,9 +450,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         @Setter
         private Runnable onContentsChanged = () -> {};
 
-        private final Object2LongMap<ItemStack> itemInventory = new Object2LongOpenCustomHashMap<>(
+        private final Object2LongOpenCustomHashMap<ItemStack> itemInventory = new Object2LongOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
-        private final Object2LongMap<FluidStack> fluidInventory = new Object2LongOpenHashMap<>();
+        private final Object2LongOpenHashMap<FluidStack> fluidInventory = new Object2LongOpenHashMap<>();
         private List<ItemStack> itemStacks = null;
         private List<FluidStack> fluidStacks = null;
 
@@ -476,18 +476,19 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             if (amount <= 0L) return;
             if (what instanceof AEItemKey itemKey) {
                 var stack = itemKey.toStack();
-                itemInventory.mergeLong(stack, amount, Long::sum);
+                itemInventory.addTo(stack, amount);
             } else if (what instanceof AEFluidKey fluidKey) {
                 var stack = fluidKey.toStack(1);
-                fluidInventory.mergeLong(stack, amount, Long::sum);
+                fluidInventory.addTo(stack, amount);
             }
         }
 
         public List<ItemStack> getItems() {
             if (itemStacks == null) {
-                itemStacks = itemInventory.object2LongEntrySet().stream()
-                        .flatMap(e -> GTMath.splitStacks(e.getKey(), e.getLongValue()).stream())
-                        .toList();
+                itemStacks = new ArrayList<>();
+                itemInventory.object2LongEntrySet().stream()
+                        .map(e -> GTMath.splitStacks(e.getKey(), e.getLongValue()))
+                        .forEach(itemStacks::addAll);
             }
             return itemStacks;
         }

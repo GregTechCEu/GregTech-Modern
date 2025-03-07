@@ -35,7 +35,7 @@ public class ProxySlotRecipeHandler {
     }
 
     public void updateProxy(MEPatternBufferPartMachine patternBuffer) {
-        var slotHandlers = patternBuffer.getISRHL().getSlotHandlers();
+        var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
         for (int i = 0; i < proxySlotHandlers.size(); ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
             SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
