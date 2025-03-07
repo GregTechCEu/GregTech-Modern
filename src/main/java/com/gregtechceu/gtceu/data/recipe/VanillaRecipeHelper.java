@@ -621,8 +621,8 @@ public class VanillaRecipeHelper {
             }
         }
 
-        return new ItemMaterialInfo(materialStacksExploded.entrySet().stream()
-                .map(e -> new MaterialStack(e.getKey(), e.getValue() / outputCount))
+        return new ItemMaterialInfo(materialStacksExploded.object2LongEntrySet().stream()
+                .map(e -> new MaterialStack(e.getKey(), e.getLongValue() / outputCount))
                 .sorted(Comparator.comparingLong(m -> -m.amount()))
                 .collect(Collectors.toList()));
     }
