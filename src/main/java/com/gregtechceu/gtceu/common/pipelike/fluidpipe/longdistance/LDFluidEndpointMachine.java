@@ -21,18 +21,14 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
     @Override
     public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        if (isRemote() || getIoType() != IO.IN) {
+        if (isRemote() || getIoType() != IO.IN || side != getFrontFacing()) {
             return null;
         }
         var endpoint = getLink();
         if (endpoint == null) {
             return null;
         }
-        var outputFacing = endpoint.getOutputFacing();
-        if (side != outputFacing.getOpposite()) {
-            return null;
-        }
-        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getPos(), outputFacing)
+        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
                 .map(LDFluidEndpointMachine.FluidHandlerWrapper::new)
                 .orElse(null);
     }

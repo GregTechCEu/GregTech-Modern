@@ -21,18 +21,14 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
     @Override
     public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        if (isRemote() || getIoType() != IO.IN) {
+        if (isRemote() || getIoType() != IO.IN || side != getFrontFacing()) {
             return null;
         }
         var endpoint = getLink();
         if (endpoint == null) {
             return null;
         }
-        var outputFacing = endpoint.getOutputFacing();
-        if (side != outputFacing.getOpposite()) {
-            return null;
-        }
-        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getPos(), outputFacing)
+        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
                 .map(ItemHandlerWrapper::new)
                 .orElse(null);
     }
