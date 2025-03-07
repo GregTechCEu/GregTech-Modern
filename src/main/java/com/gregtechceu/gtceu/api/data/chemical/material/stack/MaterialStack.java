@@ -4,18 +4,24 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialStack(Material material, long amount) {
+public record MaterialStack(@NotNull Material material, long amount) {
+
+    public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialStack copy(long amount) {
+        if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);
     }
 
     public MaterialStack copy() {
+        if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);
     }
 
@@ -26,7 +32,7 @@ public record MaterialStack(Material material, long amount) {
         var cached = PARSE_CACHE.get(trimmed);
 
         if (cached != null) {
-            return cached.isEmpty() ? null : cached.copy();
+            return cached.copy();
         }
 
         var count = 1;
@@ -43,7 +49,7 @@ public record MaterialStack(Material material, long amount) {
     }
 
     public boolean isEmpty() {
-        return this.material == GTMaterials.Air || this.amount < 1;
+        return this.material == GTMaterials.NULL || this.amount < 1;
     }
 
     @Override

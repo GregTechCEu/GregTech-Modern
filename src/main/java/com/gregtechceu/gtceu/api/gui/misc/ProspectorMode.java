@@ -88,7 +88,7 @@ public abstract class ProspectorMode<T> {
         public int getItemColor(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
-                if (mat != null) {
+                if (mat != GTMaterials.NULL) {
                     return mat.getMaterialRGB();
                 }
             }
@@ -100,7 +100,7 @@ public abstract class ProspectorMode<T> {
             return ICON_CACHE.computeIfAbsent(item, name -> {
                 if (name.startsWith("material_")) {
                     var mat = GTMaterials.get(name.substring(9));
-                    if (mat != null) {
+                    if (mat != GTMaterials.NULL) {
                         var list = new ArrayList<ItemStack>();
                         for (TagPrefix oreTag : TagPrefix.ORES.keySet()) {
                             for (var block : ChemicalHelper.getBlocks(new MaterialEntry(oreTag, mat))) {
@@ -119,7 +119,7 @@ public abstract class ProspectorMode<T> {
         public String getDescriptionId(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
-                if (mat != null) {
+                if (mat != GTMaterials.NULL) {
                     return mat.getUnlocalizedName();
                 }
             }

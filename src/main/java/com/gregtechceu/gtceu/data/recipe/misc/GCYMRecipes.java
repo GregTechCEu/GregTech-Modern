@@ -189,8 +189,8 @@ public class GCYMRecipes {
 
     private static void registerAssemblerRecipes(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("crushing_wheels")
-                .inputItems(ChemicalHelper.get(gearSmall, TungstenCarbide, 2))
-                .inputItems(ChemicalHelper.get(gear, Ultimet, 3))
+                .inputItems(gearSmall, TungstenCarbide, 2)
+                .inputItems(gear, Ultimet, 3)
                 .inputItems(CASING_SECURE_MACERATION.asStack())
                 .inputItems(ELECTRIC_MOTOR_IV.asStack())
                 .outputItems(CRUSHING_WHEELS.asStack(2))
@@ -198,8 +198,8 @@ public class GCYMRecipes {
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("slicing_blades")
-                .inputItems(ChemicalHelper.get(plate, TungstenCarbide, 2))
-                .inputItems(ChemicalHelper.get(gear, Ultimet, 3))
+                .inputItems(plate, TungstenCarbide, 2)
+                .inputItems(gear, Ultimet, 3)
                 .inputItems(CASING_SHOCK_PROOF.asStack())
                 .inputItems(ELECTRIC_MOTOR_IV.asStack())
                 .outputItems(SLICING_BLADES.asStack(2))
@@ -207,8 +207,8 @@ public class GCYMRecipes {
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("electrolytic_cell")
-                .inputItems(ChemicalHelper.get(wireGtDouble, Platinum, 4))
-                .inputItems(ChemicalHelper.get(cableGtSingle, Tungsten, 1))
+                .inputItems(wireGtDouble, Platinum, 4)
+                .inputItems(cableGtSingle, Tungsten, 1)
                 .inputItems(CASING_NONCONDUCTING.asStack())
                 .inputItems(CustomTags.IV_CIRCUITS)
                 .outputItems(ELECTROLYTIC_CELL.asStack(2))
@@ -216,86 +216,106 @@ public class GCYMRecipes {
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("mds_coil_block")
-                .inputItems(ChemicalHelper.get(ring, MolybdenumDisilicide, 32))
-                .inputItems(ChemicalHelper.get(foil, Graphene, 16))
-                .inputFluids(HSLASteel.getFluid(L))
+                .inputItems(ring, MolybdenumDisilicide, 32)
+                .inputItems(foil, Graphene, 16)
+                .inputFluids(HSLASteel, L)
                 .outputItems(MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(1))
                 .duration(500).EUt(1920)
                 .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("heat_vent")
-                .inputItems(ChemicalHelper.get(plate, TantalumCarbide, 3))
-                .inputItems(ChemicalHelper.get(plateDouble, MolybdenumDisilicide, 2))
-                .inputItems(ChemicalHelper.get(rotor, Titanium, 1))
-                .inputItems(ChemicalHelper.get(rodLong, MolybdenumDisilicide, 1))
+                .inputItems(plate, TantalumCarbide, 3)
+                .inputItems(plateDouble, MolybdenumDisilicide, 2)
+                .inputItems(rotor, Titanium, 1)
+                .inputItems(rodLong, MolybdenumDisilicide, 1)
                 .outputItems(HEAT_VENT.asStack(2))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting")
-                .inputItems(plate, HSLASteel, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
+                .inputItems(plate, HSLASteel, 6)
+                .inputItems(frameGt, HSLASteel)
+                .circuitMeta(6)
                 .outputItems(CASING_NONCONDUCTING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe")
-                .inputItems(plate, IncoloyMA956, 6).inputItems(frameGt, IncoloyMA956).circuitMeta(6)
+                .inputItems(plate, IncoloyMA956, 6)
+                .inputItems(frameGt, IncoloyMA956)
+                .circuitMeta(6)
                 .outputItems(CASING_VIBRATION_SAFE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .EUt(16).duration(50)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_watertight")
-                .inputItems(plate, WatertightSteel, 6).inputItems(frameGt, WatertightSteel).circuitMeta(6)
+                .inputItems(plate, WatertightSteel, 6)
+                .inputItems(frameGt, WatertightSteel)
+                .circuitMeta(6)
                 .outputItems(CASING_WATERTIGHT.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_secure_maceration")
-                .inputItems(plate, Zeron100, 6).inputItems(frameGt, Titanium).circuitMeta(6)
+                .inputItems(plate, Zeron100, 6)
+                .inputItems(frameGt, Titanium)
+                .circuitMeta(6)
                 .outputItems(CASING_SECURE_MACERATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .EUt(16).duration(50)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_high_temperature_smelting")
-                .inputItems(plate, TitaniumCarbide, 4).inputItems(plate, HSLASteel, 2)
-                .inputItems(frameGt, TungstenCarbide).circuitMeta(6)
+                .inputItems(plate, TitaniumCarbide, 4)
+                .inputItems(plate, HSLASteel, 2)
+                .inputItems(frameGt, TungstenCarbide)
+                .circuitMeta(6)
                 .outputItems(CASING_HIGH_TEMPERATURE_SMELTING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_reaction_safe_mixing")
                 .inputItems(TagPrefix.plate, GTMaterials.HastelloyX, 6)
-                .inputItems(TagPrefix.frameGt, GTMaterials.MaragingSteel300).circuitMeta(6)
+                .inputItems(TagPrefix.frameGt, GTMaterials.MaragingSteel300)
+                .circuitMeta(6)
                 .outputItems(CASING_REACTION_SAFE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_laser_safe_engraving")
-                .inputItems(plate, TitaniumTungstenCarbide, 6).inputItems(frameGt, Titanium).circuitMeta(6)
+                .inputItems(plate, TitaniumTungstenCarbide, 6)
+                .inputItems(frameGt, Titanium).circuitMeta(6)
                 .outputItems(CASING_LASER_SAFE_ENGRAVING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_large_scale_assembling")
-                .inputItems(plate, Stellite100, 6).inputItems(frameGt, Tungsten).circuitMeta(6)
+                .inputItems(plate, Stellite100, 6)
+                .inputItems(frameGt, Tungsten)
+                .circuitMeta(6)
                 .outputItems(CASING_LARGE_SCALE_ASSEMBLING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_shock_proof")
-                .inputItems(plate, HastelloyC276, 6).inputItems(frameGt, HastelloyC276).circuitMeta(6)
+                .inputItems(plate, HastelloyC276, 6)
+                .inputItems(frameGt, HastelloyC276)
+                .circuitMeta(6)
                 .outputItems(CASING_SHOCK_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_corrosion_proof")
-                .inputItems(plate, CobaltBrass, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
+                .inputItems(plate, CobaltBrass, 6)
+                .inputItems(frameGt, HSLASteel)
+                .circuitMeta(6)
                 .outputItems(CASING_CORROSION_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_stress_proof")
-                .inputItems(plate, MaragingSteel300, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6)
+                .inputItems(plate, MaragingSteel300, 6)
+                .inputItems(frameGt, StainlessSteel)
+                .circuitMeta(6)
                 .outputItems(CASING_STRESS_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);

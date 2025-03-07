@@ -15,8 +15,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -270,7 +268,6 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    @Nullable
     public static Material get(String name) {
         return GTCEuAPI.materialManager.getMaterial(name);
     }
