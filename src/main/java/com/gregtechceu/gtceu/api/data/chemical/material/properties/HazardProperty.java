@@ -193,7 +193,7 @@ public class HazardProperty implements IMaterialProperty {
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
             MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (entry != MaterialEntry.NULL_ENTRY && entry.material() != GTMaterials.NULL) {
+            if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
                 material = entry.material();
                 prefix = entry.tagPrefix();
             }

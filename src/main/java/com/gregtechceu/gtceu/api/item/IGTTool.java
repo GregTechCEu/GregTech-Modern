@@ -428,7 +428,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry == MaterialEntry.NULL_ENTRY || entry.material() == GTMaterials.NULL) return false;
+        if (entry.isEmpty() || entry.material() == GTMaterials.NULL) return false;
         if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {

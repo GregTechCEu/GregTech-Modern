@@ -168,7 +168,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
-            if (prefix != TagPrefix.NULL_PREFIX && TagPrefix.ORES.containsKey(prefix)) {
+            if (!prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix)) {
                 Material material = ChemicalHelper.getMaterialStack(stack.getItem()).material();
                 ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(
                         Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));

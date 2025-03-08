@@ -73,7 +73,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return false;
 
             if (!tool.isElectric()) return false;
-            if (toolHead == MaterialEntry.NULL_ENTRY) return false;
+            if (toolHead.isEmpty()) return false;
             GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
             return output != null && output[tool.getElectricTier()] != null;
         }
@@ -109,7 +109,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return ItemStack.EMPTY;
             if (!tool.isElectric()) return ItemStack.EMPTY;
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(realTool);
-            if (toolHead == MaterialEntry.NULL_ENTRY || powerUnit == null) return ItemStack.EMPTY;
+            if (toolHead.isEmpty() || powerUnit == null) return ItemStack.EMPTY;
             GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
             ItemStack newTool = GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), toolArray[tool.getElectricTier()])
                     .get().get(powerUnit.getCharge(), powerUnit.getMaxCharge());

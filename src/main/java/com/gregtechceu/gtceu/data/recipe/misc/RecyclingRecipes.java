@@ -114,7 +114,7 @@ public class RecyclingRecipes {
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != MaterialEntry.NULL_ENTRY && entry.material() != GTMaterials.NULL &&
+        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL &&
                 entry.tagPrefix().unificationEnabled()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
@@ -152,14 +152,14 @@ public class RecyclingRecipes {
                                                    @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != MaterialEntry.NULL_ENTRY && entry.material() != GTMaterials.NULL) {
+        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-            if (ms == MaterialStack.EMPTY || ms.material() == GTMaterials.NULL) {
+            if (ms.isEmpty() || ms.material() == GTMaterials.NULL) {
                 return;
             }
             Material m = ms.material();
@@ -238,16 +238,16 @@ public class RecyclingRecipes {
                                              List<MaterialStack> materials, @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != MaterialEntry.NULL_ENTRY && entry.material() != GTMaterials.NULL) {
+        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Block dusts from being arc'd instead of EBF'd
         MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-        if (prefix == TagPrefix.DUST && ms != MaterialStack.EMPTY && ms.material().hasProperty(PropertyKey.BLAST)) {
+        if (prefix == TagPrefix.DUST && !ms.isEmpty() && ms.material().hasProperty(PropertyKey.BLAST)) {
             return;
         } else if (prefix == TagPrefix.BLOCK) {
-            if (ms != MaterialStack.EMPTY && !ms.material().hasProperty(PropertyKey.GEM)) {
+            if (!ms.isEmpty() && !ms.material().hasProperty(PropertyKey.GEM)) {
                 ItemStack output = ChemicalHelper.get(TagPrefix.INGOT,
                         ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(),
                         (int) (TagPrefix.BLOCK.getMaterialAmount(ms.material()) / GTValues.M));
@@ -312,7 +312,7 @@ public class RecyclingRecipes {
         if (prefix == TagPrefix.NUGGET || prefix == TagPrefix.INGOT || prefix == TagPrefix.BLOCK) {
             if (outputs.size() == 1) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.get(0).getItem());
-                if (entry != MaterialEntry.NULL_ENTRY && inputStack != null) {
+                if (!entry.isEmpty() && inputStack != null) {
                     Material mat = inputStack.material();
                     if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
                         return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material();
@@ -423,7 +423,7 @@ public class RecyclingRecipes {
         long duration = 0;
         for (ItemStack is : materials) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(is);
-            if (ms != MaterialStack.EMPTY) duration += ms.amount() * ms.material().getMass() * is.getCount();
+            if (!ms.isEmpty()) duration += ms.amount() * ms.material().getMass() * is.getCount();
         }
         return (int) Math.max(1L, duration / M);
     }
@@ -455,7 +455,7 @@ public class RecyclingRecipes {
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
-                if (entry != MaterialEntry.NULL_ENTRY) { // should always be true
+                if (!entry.isEmpty()) { // should always be true
                     TagPrefix prefix = entry.tagPrefix();
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),

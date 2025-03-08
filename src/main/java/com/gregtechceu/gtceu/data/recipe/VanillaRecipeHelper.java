@@ -605,13 +605,13 @@ public class VanillaRecipeHelper {
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
-            if (materialStack != MaterialStack.EMPTY && !(materialStack.material() instanceof MarkerMaterial)) {
+            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
                 addMaterialStack(materialStacksExploded, inputCountMap, materialStack, lastChar);
             }
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
-            if (prefix != TagPrefix.NULL_PREFIX && !prefix.secondaryMaterials().isEmpty()) {
+            if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
                     addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
                 }

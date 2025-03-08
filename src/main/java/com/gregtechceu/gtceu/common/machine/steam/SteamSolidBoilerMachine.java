@@ -117,7 +117,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         float remainderChance;
         ItemStack remainder;
         var materialStack = ChemicalHelper.getMaterialStack(fuelStack);
-        if (materialStack == MaterialStack.EMPTY)
+        if (materialStack.isEmpty())
             return ItemStack.EMPTY;
         else if (materialStack.material() == GTMaterials.Charcoal) {
             remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.Ash);

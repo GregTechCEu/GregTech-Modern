@@ -237,7 +237,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputItems(InputItem... inputs) {
             for (var stack : inputs) {
                 var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
-                if (matStack != MaterialStack.EMPTY) {
+                if (!matStack.isEmpty()) {
                     itemMaterialStacks.add(matStack.copy(matStack.amount() * stack.count));
                 }
             }
@@ -247,7 +247,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
                 var matStack = ChemicalHelper.getMaterialStack(itemStack);
-                if (matStack != MaterialStack.EMPTY) {
+                if (!matStack.isEmpty()) {
                     itemMaterialStacks.add(matStack.copy(matStack.amount() * itemStack.getCount()));
                 }
                 if (itemStack.isEmpty()) {

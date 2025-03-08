@@ -60,7 +60,7 @@ public class ChemicalHelper {
         } else if (object instanceof Ingredient ing) {
             for (var stack : ing.getItems()) {
                 var ms = getMaterialStack(stack);
-                if (ms != MaterialStack.EMPTY) return ms;
+                if (!ms.isEmpty()) return ms;
             }
         }
         return MaterialStack.EMPTY;
@@ -81,7 +81,7 @@ public class ChemicalHelper {
 
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
         var entry = getMaterialEntry(itemLike);
-        if (entry != MaterialEntry.NULL_ENTRY) {
+        if (!entry.isEmpty()) {
             Material entryMaterial = entry.material();
             if (entryMaterial != GTMaterials.NULL) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
@@ -121,7 +121,7 @@ public class ChemicalHelper {
     public static TagPrefix getPrefix(ItemLike itemLike) {
         if (itemLike == null) return TagPrefix.NULL_PREFIX;
         MaterialEntry entry = getMaterialEntry(itemLike);
-        if (entry != MaterialEntry.NULL_ENTRY) return entry.tagPrefix();
+        if (!entry.isEmpty()) return entry.tagPrefix();
         return TagPrefix.NULL_PREFIX;
     }
 
@@ -193,7 +193,7 @@ public class ChemicalHelper {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (materialEntry1 != MaterialEntry.NULL_ENTRY &&
+                    if (!materialEntry1.isEmpty() &&
                             Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
@@ -201,7 +201,7 @@ public class ChemicalHelper {
                 return MaterialEntry.NULL_ENTRY;
             });
         }
-        if (materialEntry == null) return MaterialEntry.NULL_ENTRY;
+        if (materialEntry.isEmpty()) return MaterialEntry.NULL_ENTRY;
         return materialEntry;
     }
 
