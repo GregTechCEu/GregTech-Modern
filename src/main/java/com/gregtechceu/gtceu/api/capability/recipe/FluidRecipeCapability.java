@@ -319,7 +319,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @NotNull
     @Override
     public Class<? extends Widget>[] getWidgetClass() {
-        return new Class[]{TankWidget.class, com.lowdragmc.lowdraglib.gui.widget.TankWidget.class};
+        return new Class[] { TankWidget.class, com.lowdragmc.lowdraglib.gui.widget.TankWidget.class };
     }
 
     @Override

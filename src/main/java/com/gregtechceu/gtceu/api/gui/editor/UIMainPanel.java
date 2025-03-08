@@ -24,6 +24,7 @@ public class UIMainPanel extends MainPanel {
     public UIMainPanel(Editor editor, WidgetGroup root, String description) {
         super(editor, root);
         this.setBackground(new IGuiTexture() {
+
             @Override
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {

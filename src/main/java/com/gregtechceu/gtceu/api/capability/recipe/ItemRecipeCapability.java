@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -471,7 +470,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @Override
     public Class<? extends Widget>[] getWidgetClass() {
         // TODO: remove it for future versions. it just for compatibility with old version.
-        return new Class[]{SlotWidget.class, com.lowdragmc.lowdraglib.gui.widget.SlotWidget.class};
+        return new Class[] { SlotWidget.class, com.lowdragmc.lowdraglib.gui.widget.SlotWidget.class };
     }
 
     @Override
@@ -484,7 +483,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget && !(widget instanceof SlotWidget)) {
+        if (widget instanceof com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget &&
+                !(widget instanceof SlotWidget)) {
             // TODO: remove it for future versions. it just for compatibility with old version.
             // move to use gtm widget instead
             var parent = slotWidget.getParent();

@@ -389,7 +389,8 @@ public class GTRecipeWidget extends WidgetGroup {
                                 var index = WidgetUtils.widgetIdIndex(widget);
                                 if (index >= 0 && index < contents.size()) {
                                     var content = contents.get(index);
-                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
+                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                            content,
                                             null, minTier, tier);
                                     widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
                                             recipe.getType().getChanceFunction()));

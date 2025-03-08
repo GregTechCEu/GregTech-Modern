@@ -15,7 +15,9 @@ import static com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox.Default.
  */
 @LDLRegister(name = "editor.gtceu", group = "editor")
 public class GTUIEditor extends UIEditor {
-    public static final WidgetToolBox.Default GEM_CONTAINER = registerTab("widget.gtm_container", Icons.WIDGET_CONTAINER);
+
+    public static final WidgetToolBox.Default GEM_CONTAINER = registerTab("widget.gtm_container",
+            Icons.WIDGET_CONTAINER);
 
     public GTUIEditor() {
         super(LDLib.location);
