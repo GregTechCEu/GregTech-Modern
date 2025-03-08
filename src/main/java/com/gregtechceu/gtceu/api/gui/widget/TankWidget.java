@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
@@ -68,7 +69,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-@LDLRegister(name = "fluid_slot", group = "widget.container", priority = 50)
+@LDLRegister(name = "fluid_slot_gtceu", group = "widget.container", priority = 50)
 @Accessors(chain = true)
 public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfigurableWidget {
 
@@ -110,8 +111,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     protected int lastTankCapacity;
     @Setter
     protected Runnable changeListener;
-    @Nullable
-    FluidStack currentJEIRenderedIngredient = null;
 
     public TankWidget() {
         this(null, 0, 0, 18, 18, true, true);
@@ -299,13 +298,13 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public List<Component> getFullTooltipTexts() {
         List<Component> tooltips = new ArrayList<>();
         boolean isPhantom = this instanceof PhantomFluidWidget;
-        var stack = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
-        if (stack != null && !stack.isEmpty()) {
-            tooltips.add(stack.getDisplayName());
+        var fluidStack = this.lastFluidInTank;
+        if (fluidStack != null && !fluidStack.isEmpty()) {
+            tooltips.add(fluidStack.getDisplayName());
             if (!isPhantom && showAmount) {
-                tooltips.add(Component.translatable("gtceu.fluid.amount", stack.getAmount(), lastTankCapacity));
+                tooltips.add(Component.translatable("gtceu.fluid.amount", fluidStack.getAmount(), lastTankCapacity));
             }
-            TooltipsHandler.appendFluidTooltips(stack, tooltips::add, null);
+            TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add, null);
         } else {
             tooltips.add(Component.translatable("gtceu.fluid.empty"));
             if (!isPhantom && showAmount) {
@@ -317,12 +316,12 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     @Override
-    public void setCurrentJEIRenderedIngredient(Object ingredient) {
-        if (GTCEu.Mods.isJEILoaded()) {
-            currentJEIRenderedIngredient = ingredient instanceof FluidStack f ? f : null;
-        } else {
-            currentJEIRenderedIngredient = null;
+    public Object getXEICurrentIngredient() {
+        if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
+        if (LDLib.isJeiLoaded()) {
+            return JEICallWrapper.getJEIFluidClickable(lastFluidInTank, getPosition(), getSize());
         }
+        return null;
     }
 
     @Override
@@ -343,7 +342,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         }
         Position pos = getPosition();
         Size size = getSize();
-        var renderedFluid = currentJEIRenderedIngredient != null ? currentJEIRenderedIngredient : lastFluidInTank;
+        var renderedFluid = lastFluidInTank;
         if (renderedFluid != null) {
             RenderSystem.disableBlend();
             if (!renderedFluid.isEmpty()) {

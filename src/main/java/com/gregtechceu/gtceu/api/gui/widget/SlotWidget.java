@@ -45,7 +45,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@LDLRegister(name = "item_slot", group = "widget.container", priority = 50)
+@LDLRegister(name = "item_slot_gtceu", group = "widget.container", priority = 50)
 public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     public SlotWidget() {
