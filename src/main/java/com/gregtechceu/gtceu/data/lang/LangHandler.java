@@ -41,6 +41,11 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
+        provider.add("ldlib.gui.editor.group.widget.gtm_container", "GTM Container Widgets");
+        provider.add("ldlib.gui.editor.register.widget.container.gtm_item_slot", "GTM Item Slot");
+        provider.add("ldlib.gui.editor.register.widget.container.gtm_fluid_slot", "GTM Fluid Slot");
+        provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot", "GTM Phantom Item Slot");
+        provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
 
         provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
         // capabilities

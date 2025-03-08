@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,15 +46,21 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@LDLRegister(name = "phantom_fluid_slot_gtceu", group = "widget.container", priority = 50)
+@LDLRegister(name = "gtm_phantom_fluid_slot", group = "widget.gtm_container", priority = 50)
 public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTarget, IConfigurableWidget {
 
-    private final Supplier<FluidStack> phantomFluidGetter;
-    private final Consumer<FluidStack> phantomFluidSetter;
+    @Setter
+    private Supplier<FluidStack> phantomFluidGetter;
+    @Setter
+    private Consumer<FluidStack> phantomFluidSetter;
 
     @Nullable
     @Getter
     protected FluidStack lastPhantomStack;
+
+    public PhantomFluidWidget() {
+        super();
+    }
 
     public PhantomFluidWidget(@Nullable IFluidHandler fluidTank, int tank, int x, int y, int width, int height,
                               Supplier<FluidStack> phantomFluidGetter, Consumer<FluidStack> phantomFluidSetter) {

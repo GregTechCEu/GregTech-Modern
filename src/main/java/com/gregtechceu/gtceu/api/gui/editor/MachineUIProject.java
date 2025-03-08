@@ -101,6 +101,10 @@ public class MachineUIProject extends UIProject {
                 new UIMainPanel(editor, root, machineDefinition == null ? null : machineDefinition.getDescriptionId()));
 
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
+            if (tab == WidgetToolBox.Default.CONTAINER) {
+                // TODO: remove it for future versions. it just for compatibility with old version.
+                continue;
+            }
             editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon,
                     tab.createToolBox());
         }

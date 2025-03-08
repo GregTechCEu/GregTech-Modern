@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
@@ -69,7 +70,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-@LDLRegister(name = "fluid_slot_gtceu", group = "widget.container", priority = 50)
+@LDLRegister(name = "gtm_fluid_slot", group = "widget.gtm_container", priority = 50)
 @Accessors(chain = true)
 public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfigurableWidget {
 
@@ -168,6 +169,28 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         this.tank = tank;
         if (isClientSideWidget) {
             setClientSideWidget();
+        }
+        return this;
+    }
+
+    // for kjs
+    public FluidStack getFluid() {
+        if (isClientSideWidget || isRemote()) {
+            return lastFluidInTank == null ? FluidStack.EMPTY : lastFluidInTank;
+        }
+        return fluidTank != null ? fluidTank.getFluidInTank(tank) : FluidStack.EMPTY;
+    }
+
+    public TankWidget setFluid(FluidStack fluidStack) {
+        return setFluid(fluidStack, true);
+    }
+
+    public TankWidget setFluid(FluidStack fluidStack, boolean notify) {
+        if (fluidTank instanceof IFluidHandlerModifiable modifiable) {
+            modifiable.setFluidInTank(tank, fluidStack);
+            if (notify) {
+                detectAndSendChanges();
+            }
         }
         return this;
     }
