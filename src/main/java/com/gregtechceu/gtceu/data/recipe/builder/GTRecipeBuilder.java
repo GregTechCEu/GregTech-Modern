@@ -477,8 +477,8 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix(), input.material(), count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @Nullable Material material, int count) {
-        if (material == null) {
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
+        if (material == GTMaterials.NULL) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, tagPrefix, "null", count);
@@ -588,8 +588,8 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @Nullable Material material, int count) {
-        if (material == null) {
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
+        if (material == GTMaterials.NULL) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
@@ -1368,8 +1368,8 @@ public class GTRecipeBuilder {
     }
 
     public void addOutputMaterialInfo() {
-        var itemOutputs = output.get(ItemRecipeCapability.CAP);
-        var itemInputs = input.get(ItemRecipeCapability.CAP);
+        var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
+        var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
             var currOutput = itemOutputs.get(0).content;
             ItemLike out = null;
@@ -1389,6 +1389,10 @@ public class GTRecipeBuilder {
                 outputCount = sized.getItems()[0].getCount();
             }
 
+            if (out == null) {
+                return;
+            }
+
             Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
             for (var input : tempItemMaterialStacks) {
                 long am = input.amount() / outputCount;
@@ -1400,14 +1404,12 @@ public class GTRecipeBuilder {
                 matStacks.addTo(input.material(), am);
             }
 
-            if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty())
+            if (out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty()) {
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
+            }
 
             if (!matStacks.isEmpty()) {
-                var matList = matStacks.reference2LongEntrySet().stream()
-                        .map(mat -> new MaterialStack(mat.getKey(), mat.getLongValue())).toList();
-
-                ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matList));
+                ItemMaterialData.registerMaterialInfo(out, new ItemMaterialInfo(matStacks));
             }
         }
     }

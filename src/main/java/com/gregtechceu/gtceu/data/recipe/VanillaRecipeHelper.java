@@ -23,14 +23,11 @@ import net.minecraft.world.level.ItemLike;
 
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -547,7 +544,7 @@ public class VanillaRecipeHelper {
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {
         Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();
-        Object2LongMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
+        Reference2LongOpenHashMap<Material> materialStacksExploded = new Reference2LongOpenHashMap<>();
 
         int itr = 0;
         while (recipe[itr] instanceof String s) {
@@ -621,13 +618,10 @@ public class VanillaRecipeHelper {
             }
         }
 
-        return new ItemMaterialInfo(materialStacksExploded.object2LongEntrySet().stream()
-                .map(e -> new MaterialStack(e.getKey(), e.getLongValue() / outputCount))
-                .sorted(Comparator.comparingLong(m -> -m.amount()))
-                .collect(Collectors.toList()));
+        return new ItemMaterialInfo(materialStacksExploded);
     }
 
-    private static void addMaterialStack(@NotNull Object2LongMap<Material> materialStacksExploded,
+    private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<Material> materialStacksExploded,
                                          @NotNull Char2IntFunction inputCountMap, @NotNull MaterialStack ms, char c) {
         long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
         materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);

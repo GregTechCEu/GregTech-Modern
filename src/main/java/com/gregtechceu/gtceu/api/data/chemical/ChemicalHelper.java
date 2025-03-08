@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,11 +115,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        var mat = FLUID_MATERIAL.get(fluid);
-        if (mat == null) {
-            return GTMaterials.NULL;
-        }
-        return mat;
+        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL);
     }
 
     public static TagPrefix getPrefix(ItemLike itemLike) {
@@ -224,11 +222,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        var matEntry = TAG_MATERIAL_ENTRY.get(tag);
-        if (matEntry == null) {
-            return MaterialEntry.NULL_ENTRY;
-        }
-        return matEntry;
+        return TAG_MATERIAL_ENTRY.getOrDefault(tag, MaterialEntry.NULL_ENTRY);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
@@ -312,7 +306,8 @@ public class ChemicalHelper {
     }
 
     public static Map<ItemStack, ItemMaterialInfo> getAllItemInfos() {
-        Map<ItemStack, ItemMaterialInfo> f = new HashMap<>();
+        Map<ItemStack, ItemMaterialInfo> f = new Object2ObjectOpenCustomHashMap<>(
+                ItemStackHashStrategy.comparingAllButCount());
         for (var entry : ITEM_MATERIAL_INFO.entrySet()) {
             f.put(new ItemStack(entry.getKey().asItem()), entry.getValue());
         }

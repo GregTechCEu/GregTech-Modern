@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import org.jetbrains.annotations.Unmodifiable;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,9 +14,10 @@ import java.util.List;
 public class ItemMaterialInfo {
 
     private final List<MaterialStack> sortedMaterials = new ArrayList<>();
+    private int sortedHash = 0;
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
-        var materials = new Object2LongOpenHashMap<Material>();
+        var materials = new Reference2LongOpenHashMap<Material>();
         for (var mat : materialStacks) {
             materials.addTo(mat.material(), mat.amount());
         }
@@ -24,9 +25,15 @@ public class ItemMaterialInfo {
     }
 
     public ItemMaterialInfo(List<MaterialStack> materialStacks) {
-        var materials = new Object2LongOpenHashMap<Material>();
-        materialStacks.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
+        var materials = new Reference2LongOpenHashMap<Material>();
+        for (var stack : materialStacks) {
+            materials.addTo(stack.material(), stack.amount());
+        }
         setSortedMaterials(materials);
+    }
+
+    public ItemMaterialInfo(Reference2LongMap<Material> materialList) {
+        setSortedMaterials(materialList);
     }
 
     /**
@@ -39,23 +46,24 @@ public class ItemMaterialInfo {
     /**
      * Returns all MaterialStacks associated with this Object.
      */
-    @Unmodifiable
+    @UnmodifiableView
     public List<MaterialStack> getMaterials() {
         return Collections.unmodifiableList(sortedMaterials);
     }
 
     public void addMaterialStacks(List<MaterialStack> stacks) {
-        var materials = new Object2LongOpenHashMap<Material>();
+        var materials = new Reference2LongOpenHashMap<Material>();
         sortedMaterials.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
         stacks.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
         setSortedMaterials(materials);
     }
 
-    private void setSortedMaterials(Object2LongMap<Material> materials) {
+    private void setSortedMaterials(Reference2LongMap<Material> materials) {
         sortedMaterials.clear();
-        materials.object2LongEntrySet().stream()
-                .sorted(Comparator.comparingLong(Object2LongMap.Entry::getLongValue))
+        materials.reference2LongEntrySet().stream()
+                .sorted(Comparator.comparingLong(Reference2LongMap.Entry::getLongValue))
                 .forEach(entry -> sortedMaterials.add(new MaterialStack(entry.getKey(), entry.getLongValue())));
+        sortedHash = sortedMaterials.hashCode();
     }
 
     @Override
@@ -64,12 +72,12 @@ public class ItemMaterialInfo {
         if (o == null || getClass() != o.getClass()) return false;
 
         ItemMaterialInfo that = (ItemMaterialInfo) o;
-        return sortedMaterials.equals(that.sortedMaterials);
+        return this.hashCode() == o.hashCode() && sortedMaterials.equals(that.sortedMaterials);
     }
 
     @Override
     public int hashCode() {
-        return sortedMaterials.hashCode();
+        return sortedHash;
     }
 
     @Override
