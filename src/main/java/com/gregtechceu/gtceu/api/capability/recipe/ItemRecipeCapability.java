@@ -237,6 +237,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return true;
     }
 
+    /**
+     * Calculates the limits based on the recipe outputs.
+     *
+     * @param recipe     The recipe to be executed.
+     * @param holder     The holder of the recipe capabilities.
+     * @param multiplier The initial multiplier for parallel execution.
+     * @return The limited multiplier for parallel execution.
+     */
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
         if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
@@ -259,6 +267,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         .filter(ingredient -> !ingredient.isEmpty())
                         .map(ingredient -> ingredient.getItems()[0])
                         .toList());
+
+        if (itemHandler.getEmptyInfiniteSlots() > recipeOutputs.size()) {
+            // If the output inventory is infinitely sized with more empty slots than outputs (ignores merging),
+            // return the maximum multiplier without actually simulating
+            return multiplier;
+        }
 
         while (minMultiplier != maxMultiplier) {
             itemHandler.reset();

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class OverlayedItemHandler {
@@ -11,10 +12,22 @@ public class OverlayedItemHandler {
     private final OverlayedItemHandlerSlot[] slots;
     private final IItemHandlerModifiable overlayedHandler;
 
+    @Getter
+    private int emptyInfiniteSlots = 0;
+
     public OverlayedItemHandler(@NotNull IItemHandlerModifiable toOverlay) {
         this.slots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.originalSlots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.overlayedHandler = toOverlay;
+
+        if (toOverlay.getSlots() >= 0) {
+            for (int i = 0; i < toOverlay.getSlots(); i++) {
+                if (toOverlay.getStackInSlot(i) != ItemStack.EMPTY) continue;
+                if (toOverlay.getSlotLimit(i) == Integer.MAX_VALUE) {
+                    emptyInfiniteSlots += 1;
+                }
+            }
+        }
     }
 
     /**

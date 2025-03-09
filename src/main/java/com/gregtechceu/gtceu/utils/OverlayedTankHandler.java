@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
 import net.minecraftforge.fluids.FluidStack;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -16,12 +18,21 @@ public class OverlayedTankHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
+    @Getter
+    private int infiniteEmptyTanks = 0;
+
     public OverlayedTankHandler(List<NotifiableFluidTank> tanks) {
         overlayedTanks = new ArrayList<>(tanks.size());
         var copy = new ArrayList<>(tanks);
         copy.sort(IRecipeHandler.ENTRY_COMPARATOR);
         for (var tank : copy) {
-            overlayedTanks.add(new OverlayedTank(tank));
+            var overlayedTank = new OverlayedTank(tank);
+            overlayedTanks.add(overlayedTank);
+
+            for (int i = 0; i < tank.getTanks(); i++) {
+                if (tank.getTankCapacity(i) == Integer.MAX_VALUE)
+                    infiniteEmptyTanks += 1;
+            }
         }
     }
 

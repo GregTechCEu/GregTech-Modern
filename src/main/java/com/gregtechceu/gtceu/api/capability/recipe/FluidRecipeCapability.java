@@ -167,6 +167,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 .map(ingredient -> ingredient.getStacks()[0])
                 .toList();
 
+        if (recipeOutputs.size() < overlayedFluidHandler.getInfiniteEmptyTanks()) {
+            // if we have fewer outputs than infinite tanks, skip simulating and return the max multiplier
+            return multiplier;
+        }
+
         while (minMultiplier != maxMultiplier) {
             overlayedFluidHandler.reset();
 
