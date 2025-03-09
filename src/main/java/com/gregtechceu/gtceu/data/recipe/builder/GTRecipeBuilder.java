@@ -1376,18 +1376,11 @@ public class GTRecipeBuilder {
             ItemLike out = null;
             int outputCount = 0;
 
-            if (currOutput instanceof Item i) {
-                out = i;
-                outputCount = 1;
-            } else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
-                out = i;
-                outputCount = 1;
-            } else if (currOutput instanceof ItemStack stack) {
-                out = stack.getItem();
-                outputCount = stack.getCount();
-            } else if (currOutput instanceof SizedIngredient sized) {
-                out = sized.getItems()[0].getItem();
-                outputCount = sized.getItems()[0].getCount();
+            if (currOutput instanceof Ingredient ingredient) {
+                if (ingredient.getItems().length > 0) {
+                    out = ingredient.getItems()[0].getItem();
+                }
+                outputCount = ingredient.getItems()[0].getCount();
             }
 
             if (out == null || out == Items.AIR) {
@@ -1422,18 +1415,11 @@ public class GTRecipeBuilder {
             ItemLike out = null;
             int outputCount = 0;
 
-            if (currOutput instanceof Item i) {
-                out = i;
-                outputCount = 1;
-            } else if (currOutput instanceof Supplier<?> supplier && supplier.get() instanceof ItemLike i) {
-                out = i;
-                outputCount = 1;
-            } else if (currOutput instanceof ItemStack stack) {
-                out = stack.getItem();
-                outputCount = stack.getCount();
-            } else if (currOutput instanceof SizedIngredient sized) {
-                out = sized.getItems()[0].getItem();
-                outputCount = sized.getItems()[0].getCount();
+            if (currOutput instanceof Ingredient ingredient) {
+                if (ingredient.getItems().length > 0) {
+                    out = ingredient.getItems()[0].getItem();
+                }
+                outputCount = ingredient.getItems()[0].getCount();
             }
 
             if (out == null || out == Items.AIR) {

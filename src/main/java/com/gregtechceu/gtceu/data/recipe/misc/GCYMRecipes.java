@@ -194,7 +194,7 @@ public class GCYMRecipes {
                 .inputItems(GEAR, Ultimet, 3)
                 .inputItems(CASING_SECURE_MACERATION.asStack())
                 .inputItems(ELECTRIC_MOTOR_IV.asStack())
-                .outputItems(CRUSHING_WHEELS.asStack(2))
+                .outputItems(CRUSHING_WHEELS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
@@ -203,7 +203,7 @@ public class GCYMRecipes {
                 .inputItems(GEAR, Ultimet, 3)
                 .inputItems(CASING_SHOCK_PROOF.asStack())
                 .inputItems(ELECTRIC_MOTOR_IV.asStack())
-                .outputItems(SLICING_BLADES.asStack(2))
+                .outputItems(SLICING_BLADES.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
@@ -212,7 +212,7 @@ public class GCYMRecipes {
                 .inputItems(CABLE_GT_SINGLE, Tungsten, 1)
                 .inputItems(CASING_NONCONDUCTING.asStack())
                 .inputItems(CustomTags.IV_CIRCUITS)
-                .outputItems(ELECTROLYTIC_CELL.asStack(2))
+                .outputItems(ELECTROLYTIC_CELL.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
@@ -229,7 +229,7 @@ public class GCYMRecipes {
                 .inputItems(PLATE_DOUBLE, MolybdenumDisilicide, 2)
                 .inputItems(ROTOR, Titanium, 1)
                 .inputItems(ROD_LONG, MolybdenumDisilicide, 1)
-                .outputItems(HEAT_VENT.asStack(2))
+                .outputItems(HEAT_VENT.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
