@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
@@ -341,7 +340,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     @Override
     public Object getXEICurrentIngredient() {
         if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
-        if (LDLib.isJeiLoaded()) {
+        if (GTCEu.Mods.isJEILoaded()) {
             return JEICallWrapper.getJEIFluidClickable(lastFluidInTank, getPosition(), getSize());
         }
         return null;
