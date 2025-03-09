@@ -43,6 +43,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -1389,7 +1390,7 @@ public class GTRecipeBuilder {
                 outputCount = sized.getItems()[0].getCount();
             }
 
-            if (out == null) {
+            if (out == null || out == Items.AIR) {
                 return;
             }
 
@@ -1404,7 +1405,7 @@ public class GTRecipeBuilder {
                 matStacks.addTo(input.material(), am);
             }
 
-            if (out != ItemStack.EMPTY.getItem() && outputCount != 0 && !tempItemStacks.isEmpty()) {
+            if (outputCount != 0 && !tempItemStacks.isEmpty()) {
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.put(new ItemStack(out, outputCount), tempItemStacks);
             }
 
@@ -1435,8 +1436,13 @@ public class GTRecipeBuilder {
                 outputCount = sized.getItems()[0].getCount();
             }
 
-            if (out != null && out != ItemStack.EMPTY.getItem() && outputCount != 0)
+            if (out == null || out == Items.AIR) {
+                return;
+            }
+
+            if (outputCount != 0) {
                 ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.remove(new ItemStack(out, outputCount));
+            }
 
             var existingItemInfo = ItemMaterialData.getMaterialInfo(out);
             if (existingItemInfo != null) {
