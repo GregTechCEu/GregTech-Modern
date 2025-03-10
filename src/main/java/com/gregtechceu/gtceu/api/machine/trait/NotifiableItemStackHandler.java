@@ -281,12 +281,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (canCapOutput()) {
             ItemStack stack = storage.extractItem(slot, amount, simulate);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
             // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
 =======
             // Trigger the forge attach capabilities event to ensure item compatibility with other mods
 >>>>>>> ec79286e4 (added comments)
+=======
+>>>>>>> 9986bd75c (Revert "added comments")
             if (!stack.isEmpty() && !simulate) {
                 MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
             }
@@ -298,9 +301,12 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
         ItemStack stack = storage.extractItem(slot, amount, simulate);
+<<<<<<< HEAD
 
         // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
 
+=======
+>>>>>>> 9986bd75c (Revert "added comments")
         if (!stack.isEmpty() && !simulate) {
             MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
         }
