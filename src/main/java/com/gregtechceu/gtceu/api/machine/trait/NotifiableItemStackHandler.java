@@ -20,6 +20,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
@@ -278,13 +280,27 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (canCapOutput()) {
-            return storage.extractItem(slot, amount, simulate);
+            ItemStack stack = storage.extractItem(slot, amount, simulate);
+
+            // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
+            if (!stack.isEmpty() && !simulate) {
+                MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
+            }
+
+            return stack;
         }
         return ItemStack.EMPTY;
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
-        return storage.extractItem(slot, amount, simulate);
+        ItemStack stack = storage.extractItem(slot, amount, simulate);
+
+        // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
+        if (!stack.isEmpty() && !simulate) {
+            MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
+        }
+
+        return stack;
     }
 
     @Override
