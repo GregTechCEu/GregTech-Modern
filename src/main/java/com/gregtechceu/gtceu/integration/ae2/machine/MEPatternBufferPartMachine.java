@@ -73,6 +73,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -193,8 +194,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     }
                 }
             }));
-            for (var rhl : getRecipeHandlers()) rhl.setDistinct(true);
         }
+        setDistinct(true);
     }
 
     @Override
@@ -234,6 +235,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         proxyMachines.remove(proxy);
     }
 
+    @UnmodifiableView
     public Set<MEPatternBufferProxyPartMachine> getProxies() {
         if (proxyMachines.size() != proxies.size()) {
             proxyMachines.clear();

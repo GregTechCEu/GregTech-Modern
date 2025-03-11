@@ -11,8 +11,7 @@ import java.util.List;
 public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left,
-                                        boolean simulate) {
+    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, boolean simulate) {
         return null;
     }
 

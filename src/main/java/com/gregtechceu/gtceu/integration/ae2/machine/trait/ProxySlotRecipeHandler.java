@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -90,11 +91,10 @@ public class ProxySlotRecipeHandler {
         private IRecipeHandlerTrait<Ingredient> proxy = null;
         private ISubscription proxySub = null;
 
-        private final int size = 81;
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
 
-        public ProxyItemRecipeHandler(MEPatternBufferProxyPartMachine machine) {
+        public ProxyItemRecipeHandler(MetaMachine machine) {
             super(machine);
         }
 
@@ -113,6 +113,12 @@ public class ProxySlotRecipeHandler {
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
+        }
+
+        @Override
+        public int getSize() {
+            if (proxy == null) return 0;
+            return proxy.getSize();
         }
 
         @Override
@@ -139,11 +145,10 @@ public class ProxySlotRecipeHandler {
         private IRecipeHandlerTrait<FluidIngredient> proxy = null;
         private ISubscription proxySub = null;
 
-        private final int size = 81;
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
 
-        public ProxyFluidRecipeHandler(MEPatternBufferProxyPartMachine machine) {
+        public ProxyFluidRecipeHandler(MetaMachine machine) {
             super(machine);
         }
 
@@ -163,6 +168,12 @@ public class ProxySlotRecipeHandler {
                                                        boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
+        }
+
+        @Override
+        public int getSize() {
+            if (proxy == null) return 0;
+            return proxy.getSize();
         }
 
         @Override

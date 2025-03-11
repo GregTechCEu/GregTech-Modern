@@ -20,11 +20,9 @@ import java.util.Map;
 /**
  * Used to handle recipes, only valid for a single RecipeCapability's entries
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 class RecipeRunner {
 
-    record RecipeHandlingResult(ActionResult result,
-                                @Nullable("Null when isSuccess()") RecipeCapability<?> capability) {
+    record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
 
         public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(ActionResult.SUCCESS, null);
 
@@ -39,8 +37,8 @@ class RecipeRunner {
     private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Map<IO, List<RecipeHandlerList>> capabilityProxies;
     private final boolean simulated;
-    private Map<RecipeCapability<?>, List> recipeContents;
-    private final Map<RecipeCapability<?>, List> searchRecipeContents;
+    private Map<RecipeCapability<?>, List<Object>> recipeContents;
+    private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -59,8 +57,9 @@ class RecipeRunner {
     public RecipeHandlingResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
         fillContentMatchList(entries);
 
-        if (searchRecipeContents.isEmpty())
+        if (searchRecipeContents.isEmpty()) {
             return new RecipeHandlingResult(ActionResult.PASS_NO_CONTENTS, null);
+        }
 
         return this.handleContents();
     }
@@ -74,9 +73,8 @@ class RecipeRunner {
         int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
-            if (!cap.doMatchInRecipe()) {
-                continue;
-            }
+            if (!cap.doMatchInRecipe()) continue;
+
             ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
             List<Content> chancedContents = new ArrayList<>();
             // skip if empty
@@ -87,7 +85,8 @@ class RecipeRunner {
             for (Content cont : entry.getValue()) {
                 searchContentList.add(cont.content);
 
-                // When simulating the recipe handling (used for recipe matching), chanced contents are ignored.
+                // When simulating the recipe handling (used for recipe matching),
+                // searchRecipeContents == recipeContents, so all contents, chanced and unchanced, must match
                 if (simulated) continue;
 
                 if (cont.chance >= cont.maxChance) {
@@ -125,7 +124,7 @@ class RecipeRunner {
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
         if (!capabilityProxies.containsKey(capIO)) {
-            return new RecipeHandlingResult(ActionResult.FAIL_NO_REASON, null);
+            return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
         }
 
         var handlers = capabilityProxies.get(capIO);

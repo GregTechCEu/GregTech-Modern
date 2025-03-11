@@ -108,12 +108,12 @@ public class RecipeHandlerList {
         return sum;
     }
 
-    public Map<RecipeCapability<?>, List> handleRecipe(IO io, GTRecipe recipe, Map<RecipeCapability<?>, List> contents,
-                                                       boolean simulate) {
+    public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
+                                                               Map<RecipeCapability<?>, List<Object>> contents,
+                                                               boolean simulate) {
         if (getHandlerMap().isEmpty()) return contents;
         var copy = new Reference2ObjectOpenHashMap<>(contents);
-        var it = copy.entrySet().iterator();
-        while (it.hasNext()) {
+        for (var it = copy.reference2ObjectEntrySet().iterator(); it.hasNext();) {
             var entry = it.next();
             var handlerList = getHandlerMap().get(entry.getKey());
             if (handlerList == null) continue;
@@ -123,10 +123,25 @@ public class RecipeHandlerList {
                     it.remove();
                     break;
                 } else {
-                    entry.setValue(left);
+                    entry.setValue(new ArrayList<>(left));
                 }
             }
         }
+        // var it = copy.entrySet().iterator();
+        // while (it.hasNext()) {
+        // var entry = it.next();
+        // var handlerList = getHandlerMap().get(entry.getKey());
+        // if (handlerList == null) continue;
+        // for (var handler : handlerList) {
+        // var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
+        // if (left == null) {
+        // it.remove();
+        // break;
+        // } else {
+        // entry.setValue(new ArrayList<>(left));
+        // }
+        // }
+        // }
         return copy;
     }
 

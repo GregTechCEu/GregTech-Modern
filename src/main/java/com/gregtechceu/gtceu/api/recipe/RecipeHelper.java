@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -182,8 +183,7 @@ public class RecipeHelper {
     }
 
     private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
-        if (!holder.hasCapabilityProxies())
-            return ActionResult.FAIL_NO_CAPABILITIES;
+        if (!holder.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
 
         var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs,
                 Collections.emptyMap(), tick, true);
@@ -196,16 +196,14 @@ public class RecipeHelper {
 
     public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                               Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        if (!holder.hasCapabilityProxies() || io == IO.BOTH)
-            return ActionResult.FAIL_NO_CAPABILITIES;
+        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
                 false);
     }
 
     public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                                   Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        if (!holder.hasCapabilityProxies() || io == IO.BOTH)
-            return ActionResult.FAIL_NO_CAPABILITIES;
+        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
                 true, false);
     }
@@ -213,7 +211,6 @@ public class RecipeHelper {
     /**
      * Checks if all the contents of the recipe are located in the holder.
      *
-     * @param isTick
      * @param simulated checks that the recipe ingredients are in the holder if true,
      *                  process the recipe contents if false
      */
@@ -225,7 +222,7 @@ public class RecipeHelper {
         var result = runner.handle(contents);
 
         if (!result.isSuccess()) {
-            assert result.capability() != null;
+            if (result.capability() == null) return result.result();
             if (!simulated) {
                 GTCEu.LOGGER.warn("IO Error while handling recipe {} outputs for {}", recipe, holder);
             }
@@ -254,33 +251,25 @@ public class RecipeHelper {
     }
 
     public static void handlePre(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        (io == IO.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
-            var capFlatMap = holder.getCapabilitiesFlat(io, capability);
-            if (!capFlatMap.isEmpty()) {
-                for (IRecipeHandler<?> capabilityProxy : capFlatMap) {
-                    capabilityProxy.preWorking(holder, io, recipe);
-                }
-            } else if (!holder.getCapabilitiesFlat(IO.BOTH, capability).isEmpty()) {
-                for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesFlat(IO.BOTH, capability)) {
-                    capabilityProxy.preWorking(holder, io, recipe);
-                }
+        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
+        for (var cap : map.keySet()) {
+            var handlers = holder.getCapabilitiesFlat(io, cap);
+            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
+            for (var handler : handlers) {
+                handler.preWorking(holder, io, recipe);
             }
-        }));
+        }
     }
 
     public static void handlePost(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        (io == IO.IN ? recipe.inputs : recipe.outputs).forEach(((capability, tuples) -> {
-            var capFlatMap = holder.getCapabilitiesFlat(io, capability);
-            if (!capFlatMap.isEmpty()) {
-                for (IRecipeHandler<?> capabilityProxy : capFlatMap) {
-                    capabilityProxy.postWorking(holder, io, recipe);
-                }
-            } else if (!holder.getCapabilitiesFlat(IO.BOTH, capability).isEmpty()) {
-                for (IRecipeHandler<?> capabilityProxy : holder.getCapabilitiesFlat(IO.BOTH, capability)) {
-                    capabilityProxy.postWorking(holder, io, recipe);
-                }
+        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
+        for (var cap : map.keySet()) {
+            var handlers = holder.getCapabilitiesFlat(io, cap);
+            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
+            for (var handler : handlers) {
+                handler.postWorking(holder, io, recipe);
             }
-        }));
+        }
     }
 
     /**
@@ -310,9 +299,7 @@ public class RecipeHelper {
                 if (passed) break;
             }
 
-            if (!passed) {
-                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails"));
-            }
+            if (!passed) return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails"));
         }
         return ActionResult.SUCCESS;
     }
@@ -326,20 +313,14 @@ public class RecipeHelper {
             return recipe;
         }
 
-        GTRecipe current = recipe;// .copy();
+        GTRecipe copy = recipe.copy();
 
-        GTRecipeBuilder builder = new GTRecipeBuilder(current, recipe.recipeType);
+        copy.outputs.clear();
+        copy.outputs.putAll(doTrim(recipe.outputs, trimLimits));
+        copy.tickOutputs.clear();
+        copy.tickOutputs.putAll(doTrim(recipe.tickOutputs, trimLimits));
 
-        builder.output.clear();
-        builder.tickOutput.clear();
-
-        Map<RecipeCapability<?>, List<Content>> recipeOutputs = doTrim(current.outputs, trimLimits);
-        Map<RecipeCapability<?>, List<Content>> recipeTickOutputs = doTrim(current.tickOutputs, trimLimits);
-
-        builder.output.putAll(recipeOutputs);
-        builder.tickOutput.putAll(recipeTickOutputs);
-
-        return builder.buildRawRecipe();
+        return copy;
     }
 
     /**
@@ -350,6 +331,7 @@ public class RecipeHelper {
      * @param trimLimits The limit(s) on the number of outputs
      * @return All recipe outputs, limited by some factor(s)
      */
+    @Contract(pure = true)
     public static Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
                                                                  Object2IntMap<RecipeCapability<?>> trimLimits) {
         Map<RecipeCapability<?>, List<Content>> outputs = new Reference2ObjectOpenHashMap<>(current.size());
@@ -358,27 +340,29 @@ public class RecipeHelper {
             var cap = entry.getKey();
             var contents = entry.getValue();
             if (contents.isEmpty()) continue;
-            if (!trimLimits.containsKey(cap)) {
-                outputs.computeIfAbsent(cap, c -> new ArrayList<>()).addAll(contents);
+            int N = trimLimits.getOrDefault(cap, -1);
+            if (N == 0) continue; // Skip this cap if limit is 0
+
+            List<Content> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
+            if (N == -1) { // Add all if limit is -1/not in map
+                list.addAll(contents);
                 continue;
             }
 
-            int N = trimLimits.getInt(cap);
-            if (N == 0) continue;
-
             int added = 0;
-            List<Content> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
             List<Content> chanced = new ArrayList<>();
+            // Add non-chanced contents with priority and store chanced contents for later
             for (var content : contents) {
                 if (added == N) break;
-                if (!content.isChanced()) {
-                    added++;
-                    list.add(content);
-                } else {
+                if (0 < content.chance && content.chance < content.maxChance) {
                     chanced.add(content);
+                } else {
+                    list.add(content);
+                    added++;
                 }
             }
 
+            // Add as many chanced contents as needed
             if (added < N) {
                 int rem = Math.min(chanced.size(), N - added);
                 list.addAll(chanced.subList(0, rem));

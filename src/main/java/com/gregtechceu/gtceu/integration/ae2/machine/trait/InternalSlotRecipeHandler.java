@@ -43,17 +43,8 @@ public class InternalSlotRecipeHandler {
             super(IO.IN);
             itemRecipeHandler = new SlotItemRecipeHandler(buffer, slot, idx);
             fluidRecipeHandler = new SlotFluidRecipeHandler(buffer, slot, idx);
-
-            itemRecipeHandler.setDistinct(true);
-            fluidRecipeHandler.setDistinct(true);
-
-            addHandlers(List.of(
-                    buffer.getCircuitInventory(),
-                    buffer.getShareInventory(),
-                    buffer.getShareTank(),
-                    itemRecipeHandler,
-                    fluidRecipeHandler));
-            setDistinct(true);
+            addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
+                    itemRecipeHandler, fluidRecipeHandler);
         }
     }
 

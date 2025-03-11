@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.core.mixins.PotionBrewingAccessor;
@@ -22,13 +21,11 @@ import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -39,102 +36,102 @@ public class BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         // TODO: Make this use generic IRecipeHandlers and not Item/FluidHandlers - i.e. pattern buffer
-        var itemInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP),
-                        ArrayList::new)
-                .stream()
-                .filter(IItemHandlerModifiable.class::isInstance)
-                .map(IItemHandlerModifiable.class::cast)
-                .toArray(IItemHandlerModifiable[]::new);
+        List<ItemStack> itemStacks = new ArrayList<>();
+        for (var handler : holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP)) {
+            for (var content : handler.getContents()) {
+                if (content instanceof ItemStack stack && !stack.isEmpty()) {
+                    itemStacks.add(stack);
+                }
+            }
+        }
 
-        var fluidInputs = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP),
-                        ArrayList::new)
-                .stream()
-                .filter(IFluidHandler.class::isInstance).map(IFluidHandler.class::cast)
-                .toArray(IFluidHandler[]::new);
+        if (itemStacks.isEmpty()) return null;
 
-        var combinedItemInputs = new CombinedInvWrapper(itemInputs);
-        var combinedFluidInputs = new FluidHandlerList(fluidInputs);
-        for (int i = 0; i < combinedItemInputs.getSlots(); i++) {
-            ItemStack item = combinedItemInputs.getStackInSlot(i);
-            if (!item.isEmpty()) {
-                for (PotionBrewing.Mix<Potion> mix : PotionBrewingAccessor.getPotionMixes()) {
-                    // test item ingredient first
-                    if (!mix.ingredient.test(item)) {
-                        continue;
+        List<FluidStack> fluidStacks = new ArrayList<>();
+        for (var handler : holder.getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP)) {
+            for (var content : handler.getContents()) {
+                if (content instanceof FluidStack stack && !stack.isEmpty()) {
+                    fluidStacks.add(stack);
+                }
+            }
+        }
+
+        if (fluidStacks.isEmpty()) return null;
+
+        for (var itemStack : itemStacks) {
+            for (PotionBrewing.Mix<Potion> mix : PotionBrewingAccessor.getPotionMixes()) {
+                // test item ingredient first
+                if (!mix.ingredient.test(itemStack)) {
+                    continue;
+                }
+                FluidStack fromFluid = PotionFluidHelper.getFluidFromPotion(mix.from.get(),
+                        PotionFluidHelper.MB_PER_RECIPE);
+                var fromTag = TagUtil
+                        .createFluidTag(BuiltInRegistries.FLUID.getKey(fromFluid.getFluid()).getPath());
+
+                // then match fluid input
+                boolean found = false;
+                for (var fluidStack : fluidStacks) {
+                    if (fluidStack.getFluid().is(fromTag) &&
+                            Objects.equals(fromFluid.getTag(), fluidStack.getTag())) {
+                        found = true;
+                        break;
                     }
-                    FluidStack fromFluid = PotionFluidHelper.getFluidFromPotion(mix.from.get(),
-                            PotionFluidHelper.MB_PER_RECIPE);
-                    var fromTag = TagUtil
-                            .createFluidTag(BuiltInRegistries.FLUID.getKey(fromFluid.getFluid()).getPath());
-
-                    // then match fluid input
-                    boolean found = false;
-                    for (int j = 0; j < combinedFluidInputs.getTanks(); ++j) {
-                        FluidStack contained = combinedFluidInputs.getFluidInTank(j);
-                        if (!contained.isEmpty() &&
-                                contained.getFluid().is(fromTag) &&
-                                Objects.equals(fromFluid.getTag(), contained.getTag())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        continue;
-                    }
-
-                    FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to.get(),
-                            PotionFluidHelper.MB_PER_RECIPE);
-
-                    return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_vanilla_" + mix.to.get().getName(""))
-                            .inputItems(mix.ingredient)
-                            .inputFluids(fromFluid)
-                            .outputFluids(toFluid)
-                            .duration(400)
-                            // is this a good voltage?
-                            .EUt(VHA[MV])
-                            .buildRawRecipe();
                 }
 
-                for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
-                    if (!(recipe instanceof BrewingRecipe impl)) {
-                        continue;
-                    }
-
-                    FluidIngredient fromFluid = PotionFluidHelper.getPotionFluidIngredientFrom(impl.getInput(),
-                            PotionFluidHelper.MB_PER_RECIPE);
-
-                    boolean found = false;
-                    for (int j = 0; j < combinedFluidInputs.getTanks(); ++j) {
-                        FluidStack contained = combinedFluidInputs.getFluidInTank(j);
-                        if (!contained.isEmpty() && !fromFluid.test(contained)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        continue;
-                    }
-
-                    FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(impl.getOutput(),
-                            PotionFluidHelper.MB_PER_RECIPE);
-
-                    String name = toFluid.getFluid().builtInRegistryHolder().key().location().getPath();
-                    Potion output = PotionUtils.getPotion(impl.getOutput());
-                    if (output != null) {
-                        name = output.getName("");
-                    }
-
-                    return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name)
-                            .inputItems(impl.getIngredient())
-                            .inputFluids(fromFluid)
-                            .outputFluids(toFluid)
-                            .duration(400)
-                            .EUt(VHA[MV])
-                            .buildRawRecipe();
-
+                if (!found) {
+                    continue;
                 }
+
+                FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to.get(),
+                        PotionFluidHelper.MB_PER_RECIPE);
+
+                return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_vanilla_" + mix.to.get().getName(""))
+                        .inputItems(mix.ingredient)
+                        .inputFluids(fromFluid)
+                        .outputFluids(toFluid)
+                        .duration(400)
+                        .EUt(VHA[MV])
+                        .buildRawRecipe();
+            }
+
+            for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
+                if (!(recipe instanceof BrewingRecipe impl) || !impl.isIngredient(itemStack)) {
+                    continue;
+                }
+
+                FluidIngredient fromFluid = PotionFluidHelper.getPotionFluidIngredientFrom(impl.getInput(),
+                        PotionFluidHelper.MB_PER_RECIPE);
+
+                boolean found = false;
+                for (var fluidStack : fluidStacks) {
+                    if (fromFluid.test(fluidStack)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    continue;
+                }
+
+                FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(impl.getOutput(),
+                        PotionFluidHelper.MB_PER_RECIPE);
+
+                String name = toFluid.getFluid().builtInRegistryHolder().key().location().getPath();
+                Potion output = PotionUtils.getPotion(impl.getOutput());
+                if (output != null) {
+                    name = output.getName("");
+                }
+
+                return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name)
+                        .inputItems(impl.getIngredient())
+                        .inputFluids(fromFluid)
+                        .outputFluids(toFluid)
+                        .duration(400)
+                        .EUt(VHA[MV])
+                        .buildRawRecipe();
+
             }
         }
         return null;

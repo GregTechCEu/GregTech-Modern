@@ -32,8 +32,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left,
-                                        boolean simulate) {
+    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, boolean simulate) {
         long eut = left.stream().reduce(0L, Long::sum);
         int totalSteam = GTMath.saturatedCast((long) Math.ceil(eut * conversionRate));
         if (totalSteam > 0) {
@@ -57,7 +56,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0, Integer::sum);
+        long sum = tankContents.stream().mapToLong(FluidStack::getAmount).sum();
         long realSum = (long) Math.ceil(sum * conversionRate);
         return List.of(realSum);
     }
@@ -71,7 +70,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0, Integer::sum);
+        long sum = tankContents.stream().mapToLong(FluidStack::getAmount).sum();
         return (long) Math.ceil(sum * conversionRate);
     }
 
