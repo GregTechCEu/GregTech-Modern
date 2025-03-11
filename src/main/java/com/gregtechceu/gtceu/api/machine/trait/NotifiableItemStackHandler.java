@@ -20,6 +20,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
@@ -278,13 +280,38 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (canCapOutput()) {
-            return storage.extractItem(slot, amount, simulate);
+            ItemStack stack = storage.extractItem(slot, amount, simulate);
+<<<<<<< HEAD
+
+<<<<<<< HEAD
+            // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
+=======
+            // Trigger the forge attach capabilities event to ensure item compatibility with other mods
+>>>>>>> ec79286e4 (added comments)
+=======
+>>>>>>> 9986bd75c (Revert "added comments")
+            if (!stack.isEmpty() && !simulate) {
+                MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
+            }
+
+            return stack;
         }
         return ItemStack.EMPTY;
     }
 
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
-        return storage.extractItem(slot, amount, simulate);
+        ItemStack stack = storage.extractItem(slot, amount, simulate);
+<<<<<<< HEAD
+
+        // Trigger AttachCapabilitiesEvent to ensure items are compatible with other mods
+
+=======
+>>>>>>> 9986bd75c (Revert "added comments")
+        if (!stack.isEmpty() && !simulate) {
+            MinecraftForge.EVENT_BUS.post(new AttachCapabilitiesEvent<>(ItemStack.class, stack));
+        }
+
+        return stack;
     }
 
     @Override
