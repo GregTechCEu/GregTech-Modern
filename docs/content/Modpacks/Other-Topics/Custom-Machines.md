@@ -8,6 +8,7 @@ title: Custom Machines
 
 ## Creating Custom Steam Machine
 
+```js title="example_steam_machine.js"
 GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
     event.create('example_steam_machine_recipes')
         .setEUIO('in')
@@ -26,6 +27,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
                 .workableSteamHullRenderer(hp, 'gtceu:block/machines/mixer') // (5)
         ))
 })
+```
 
 1. (item in, item out, fluid in, fluid out) You *cannot* use fluid slots on steam machines currently due to steam tank issues
 2. Machine ID, Machine Type ('steam' for a steam singeblock)
