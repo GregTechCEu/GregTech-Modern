@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -30,6 +31,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
@@ -150,6 +152,30 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         getInventory().setDistinct(isDistinct);
         circuitInventory.setDistinct(isDistinct);
         combinedInventory.setDistinct(isDistinct);
+    }
+
+    @Override
+    public void addedToController(IMultiController controller) {
+        if (!controller.allowCircuitSlots()) {
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                clearInventory(circuitInventory.storage);
+            } else {
+                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+            }
+            setCircuitSlotEnabled(false);
+        }
+        super.addedToController(controller);
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        for (var c : controllers) {
+            if (!c.allowCircuitSlots()) {
+                return;
+            }
+        }
+        setCircuitSlotEnabled(true);
     }
 
     //////////////////////////////////////

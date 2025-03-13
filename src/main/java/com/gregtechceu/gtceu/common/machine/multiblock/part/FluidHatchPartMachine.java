@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -33,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -134,6 +136,30 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             tankSubs.unsubscribe();
             tankSubs = null;
         }
+    }
+
+    @Override
+    public void addedToController(IMultiController controller) {
+        if (!controller.allowCircuitSlots()) {
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                clearInventory(circuitInventory.storage);
+            } else {
+                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+            }
+            setCircuitSlotEnabled(false);
+        }
+        super.addedToController(controller);
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        for (var c : controllers) {
+            if (!c.allowCircuitSlots()) {
+                return;
+            }
+        }
+        setCircuitSlotEnabled(true);
     }
 
     //////////////////////////////////////
