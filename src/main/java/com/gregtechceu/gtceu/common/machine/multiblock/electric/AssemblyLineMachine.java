@@ -11,11 +11,15 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -23,8 +27,18 @@ import java.util.function.Function;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
-    public AssemblyLineMachine(IMachineBlockEntity holder) {
+    @Accessors(fluent = true)
+    @Getter
+    @Persisted
+    protected boolean allowCircuitSlots;
+
+    public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
         super(holder);
+        this.allowCircuitSlots = allowCircuitSlots;
+    }
+
+    public AssemblyLineMachine(IMachineBlockEntity holder) {
+        this(holder, false);
     }
 
     @Override
