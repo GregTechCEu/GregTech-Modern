@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -32,6 +33,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -57,6 +59,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Nullable
     protected ISubscription inventorySubs;
     @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean circuitSlotEnabled;
+    @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
@@ -65,6 +72,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
+        this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io);
         this.combinedInventory = createCombinedItemHandler(io);
     }
@@ -198,7 +206,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
         } else if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            if (isCircuitSlotEnabled()) {
+                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
         }
     }
 

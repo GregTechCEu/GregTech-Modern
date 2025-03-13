@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -37,6 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -65,6 +67,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Nullable
     protected ISubscription tankSubs;
     @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean circuitSlotEnabled;
+    @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
 
@@ -75,6 +82,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
+        this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io);
     }
 
@@ -180,7 +188,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         super.attachConfigurators(configuratorPanel);
-        if (this.io == IO.IN) {
+        if (isCircuitSlotEnabled() && this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }
