@@ -482,8 +482,8 @@ public class GTMachineUtils {
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
                 .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .partAppearance((controller, part,
-                                 side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ?
+                .partAppearance((controller, part, side)
+                        -> controller.self().getPos().below().getY() == part.self().getPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     TraceabilityPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
