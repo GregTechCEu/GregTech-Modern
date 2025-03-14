@@ -205,8 +205,12 @@ public class PipeModel {
                 }
                 int borderMask = computeBorderMask(blockedConnections, connections, side);
                 if (borderMask != 0) {
-                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(side)).cubeUV()
+                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask ^ 1)).cube(coreCube).cubeUV()
                             .bake());
+                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask ^ 1)).cube(sideCubes.get(side))
+                            .cubeUV()
+                            .bake());
+
                 }
                 return quads;
             }
