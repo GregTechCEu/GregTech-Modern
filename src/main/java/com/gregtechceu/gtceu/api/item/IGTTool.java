@@ -477,7 +477,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default boolean definition$shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return oldStack.getItem() != newStack.getItem() || oldStack.getDamageValue() < newStack.getDamageValue();
+        return (!oldStack.is(newStack.getItem()) || oldStack.getDamageValue() < newStack.getDamageValue());
+    }
+
+    default boolean definition$canContinueUsing(ItemStack oldStack, ItemStack newStack) {
+        return oldStack.is(newStack.getItem()) && oldStack.getDamageValue() >= newStack.getDamageValue();
     }
 
     default boolean definition$hasCraftingRemainingItem(ItemStack stack) {
