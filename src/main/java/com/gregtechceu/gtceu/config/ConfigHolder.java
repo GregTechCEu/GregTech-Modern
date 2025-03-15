@@ -700,8 +700,8 @@ public class ConfigHolder {
         public boolean universalHazards = true;
         @Configurable
         @Configurable.Comment({ "Whether environmental hazards like pollution or radiation are active",
-                "Default: true" })
-        public boolean environmentalHazards = true;
+                "Default: false" })
+        public boolean environmentalHazards = false;
         @Configurable
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
