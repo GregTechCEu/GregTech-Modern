@@ -47,7 +47,7 @@ public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN).stream()
                 .filter(rhl -> rhl.hasCapability(ItemRecipeCapability.CAP))
-                .collect(Collectors.groupingBy(RecipeHandlerList::isDistinct));
+                .collect(Collectors.partitioningBy(RecipeHandlerList::isDistinct));
 
         if (handlerLists.isEmpty()) return null;
 
