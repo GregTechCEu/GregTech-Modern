@@ -483,21 +483,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget &&
-                !(widget instanceof SlotWidget)) {
-            // TODO: remove it for future versions. it just for compatibility with old version.
-            // move to use gtm widget instead
-            var parent = slotWidget.getParent();
-            parent.removeWidget(slotWidget);
-            var newWidget = new SlotWidget();
-            parent.addWidget(newWidget);
-            var data = slotWidget.serializeInnerNBT();
-            newWidget.deserializeInnerNBT(data);
-            if (slotWidget.getHandler() != null) {
-                newWidget.updateSlot(slotWidget.getHandler());
-            }
-            widget = newWidget;
-        }
         if (widget instanceof SlotWidget slot) {
             if (storage instanceof IItemHandlerModifiable items) {
                 if (index >= 0 && index < items.getSlots()) {

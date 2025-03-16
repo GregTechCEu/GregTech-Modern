@@ -332,17 +332,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof com.lowdragmc.lowdraglib.gui.widget.TankWidget tankWidget) {
-            // TODO: remove it for future versions. it just for compatibility with old version.
-            // move to use gtm widget instead
-            var parent = tankWidget.getParent();
-            parent.removeWidget(tankWidget);
-            var newWidget = new TankWidget();
-            parent.addWidget(newWidget);
-            var data = tankWidget.serializeInnerNBT();
-            newWidget.deserializeInnerNBT(data);
-            widget = newWidget;
-        }
+
         if (widget instanceof TankWidget tank) {
             if (storage instanceof CycleFluidEntryHandler cycleHandler) {
                 tank.setFluidTank(cycleHandler, index);
