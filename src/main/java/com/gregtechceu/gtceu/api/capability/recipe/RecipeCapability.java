@@ -181,7 +181,7 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
-     * Return a class array of the supported widget that should be used to display this capability.
+     * Return the class of the supported widget that should be used to display this capability.
      */
     @Nullable
     public Class<? extends Widget> getWidgetClass() {
