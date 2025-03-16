@@ -469,7 +469,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     @NotNull
     @Override
     public Class<? extends Widget> getWidgetClass() {
-        // TODO: remove it for future versions. it just for compatibility with old version.
         return SlotWidget.class;
     }
 
