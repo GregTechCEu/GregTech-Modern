@@ -44,7 +44,7 @@ public class GTToolType {
 
     public static final GTToolType SWORD = GTToolType.builder("sword")
             .toolTag(TagUtil.createItemTag("swords", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/sword"))
+            .harvestTag(TagUtil.createBlockTag("sword_efficent"))
             .toolStats(b -> b.attacking().attackDamage(3.0F).attackSpeed(-2.4F))
             .constructor(GTSwordItem::create)
             .toolClassNames("sword")
@@ -331,7 +331,7 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("axes", true))
             .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
             .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
-            .harvestTag(TagUtil.createBlockTag("mineable/sword", true))
+            .harvestTag(TagUtil.createBlockTag("sword_efficent", true))
             .harvestTag(TagUtil.createBlockTag("mineable/hoe", true))
             .toolStats(b -> b.blockBreaking()
                     .efficiencyMultiplier(2.0F)
