@@ -58,6 +58,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     public int rotorSpeed;
     @Getter
     @Setter
+    @Persisted
     @DescSynced
     @RequireRerender
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
