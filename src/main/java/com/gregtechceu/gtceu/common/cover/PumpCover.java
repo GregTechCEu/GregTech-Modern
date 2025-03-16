@@ -142,7 +142,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     @Override
     public boolean canAttach() {
-        return getOwnFluidHandler() != null;
+        return super.canAttach() && getOwnFluidHandler() != null;
     }
 
     public void setIo(IO io) {

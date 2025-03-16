@@ -77,7 +77,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return !getAllowedModes().isEmpty();
+        return super.canAttach() && !getAllowedModes().isEmpty();
     }
 
     @Override

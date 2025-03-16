@@ -17,7 +17,7 @@ public class FluidDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getFluidHandler() != null;
+        return super.canAttach() && getFluidHandler() != null;
     }
 
     @Override
