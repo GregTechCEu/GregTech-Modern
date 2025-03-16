@@ -468,9 +468,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @NotNull
     @Override
-    public Class<? extends Widget>[] getWidgetClass() {
+    public Class<? extends Widget> getWidgetClass() {
         // TODO: remove it for future versions. it just for compatibility with old version.
-        return new Class[] { SlotWidget.class, com.lowdragmc.lowdraglib.gui.widget.SlotWidget.class };
+        return SlotWidget.class;
     }
 
     @Override
