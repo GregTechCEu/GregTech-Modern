@@ -383,7 +383,8 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                for (var widgetClass : cap.getWidgetClass()) {
+                var widgetClass = cap.getWidgetClass();
+                if (widgetClass != null) {
                     WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                             widget -> {
                                 var index = WidgetUtils.widgetIdIndex(widget);
@@ -397,7 +398,6 @@ public class GTRecipeWidget extends WidgetGroup {
                                 }
                             });
                 }
-
             }
         }
     }

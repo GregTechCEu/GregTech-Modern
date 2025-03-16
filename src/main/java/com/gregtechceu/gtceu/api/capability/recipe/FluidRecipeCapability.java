@@ -332,7 +332,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
-
         if (widget instanceof TankWidget tank) {
             if (storage instanceof CycleFluidEntryHandler cycleHandler) {
                 tank.setFluidTank(cycleHandler, index);
