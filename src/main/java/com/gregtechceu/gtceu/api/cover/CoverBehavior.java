@@ -97,8 +97,9 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
      * @return true if cover can be attached, false otherwise
      */
     public boolean canAttach() {
-        return MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos()) instanceof IMultiController ||
-                coverHolder.getFrontFacing() != attachedSide;
+        var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        return machine == null || !machine.hasFrontFacing() || coverHolder.getFrontFacing() != attachedSide ||
+                machine instanceof IMultiController;
     }
 
     /**
