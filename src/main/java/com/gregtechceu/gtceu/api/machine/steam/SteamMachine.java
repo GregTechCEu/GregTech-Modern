@@ -4,18 +4,14 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -57,24 +53,4 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
     }
 
     protected abstract NotifiableFluidTank createSteamTank(Object... args);
-
-    //////////////////////////////////////
-    // ****** Capability ********//
-    //////////////////////////////////////
-
-    @Override
-    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        if (side == getFrontFacing()) {
-            return null;
-        }
-        return super.getItemHandlerCap(side, useCoverCapability);
-    }
-
-    @Override
-    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-        if (side == getFrontFacing()) {
-            return null;
-        }
-        return super.getFluidHandlerCap(side, useCoverCapability);
-    }
 }
