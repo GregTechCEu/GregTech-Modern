@@ -59,7 +59,7 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
                             modelState, -101, 0, true, false));
                     var material = rotorHolderMachine.getRotorMaterial();
-                    if (material != GTMaterials.NULL) {
+                    if (material != null && material != GTMaterials.NULL) {
                         boolean emissive = material.hasProperty(PropertyKey.ORE) &&
                                 material.getProperty(PropertyKey.ORE).isEmissive();
                         if (rotorHolderMachine.isRotorSpinning()) {
