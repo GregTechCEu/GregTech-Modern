@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -31,6 +32,8 @@ public interface IRotorHolderMachine extends IMultiPart {
     static int getBaseEfficiency() {
         return 100;
     }
+
+    Material getRotorMaterial();
 
     ItemStack getRotorStack();
 
