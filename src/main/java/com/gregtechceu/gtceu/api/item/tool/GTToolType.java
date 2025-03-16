@@ -331,6 +331,8 @@ public class GTToolType {
             .toolTag(TagUtil.createItemTag("axes", true))
             .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
             .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/sword", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/hoe", true))
             .toolStats(b -> b.blockBreaking()
                     .efficiencyMultiplier(2.0F)
                     .attackDamage(5.0F).attackSpeed(-3.2F)
