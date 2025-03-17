@@ -433,7 +433,7 @@ public class GTItems {
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create(FluidType.BUCKET_VOLUME * 64,
                             GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
-                            true, false, false, false, true),
+                            true, true, false, false, true),
                     new ItemFluidContainer()))
             .onRegister(
                     materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6))))
