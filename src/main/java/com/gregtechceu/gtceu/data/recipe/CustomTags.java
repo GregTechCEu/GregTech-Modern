@@ -110,6 +110,28 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_DURANIUM_TOOL = TagUtil.createBlockTag("needs_duranium_tool");
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createBlockTag("needs_neutronium_tool");
 
+    // Tool tags
+    public static final TagKey<Item> BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
+    public static final TagKey<Item> BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");
+    public static final TagKey<Item> CHAINSAWS = TagUtil.createItemTag("tools/chainsaws");
+    public static final TagKey<Item> CROWBARS = TagUtil.createItemTag("tools/crowbars");
+    public static final TagKey<Item> DRILLS = TagUtil.createItemTag("tools/drills");
+    public static final TagKey<Item> FILES = TagUtil.createItemTag("tools/files");
+    public static final TagKey<Item> HAMMERS = TagUtil.createItemTag("tools/hammers");
+    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knife");
+    public static final TagKey<Item> MALLETS = TagUtil.createItemTag("tools/mallets");
+    public static final TagKey<Item> MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
+    public static final TagKey<Item> MORTARS = TagUtil.createItemTag("tools/mortars");
+    public static final TagKey<Item> PLUNGERS = TagUtil.createItemTag("tools/plungers");
+    public static final TagKey<Item> SAWS = TagUtil.createItemTag("tools/saws");
+    public static final TagKey<Item> SCREWDRIVERS = TagUtil.createItemTag("tools/screwdrivers");
+    public static final TagKey<Item> SCYTHES = TagUtil.createItemTag("tools/scythes");
+    public static final TagKey<Item> SHEARS = TagUtil.createItemTag("tools/shears");
+    public static final TagKey<Item> SPADES = TagUtil.createItemTag("tools/spades");
+    public static final TagKey<Item> WIRE_CUTTERS = TagUtil.createItemTag("tools/wire_cutters");
+    public static final TagKey<Item> WRENCHES = TagUtil.createItemTag("tools/wrenches");
+    public static final TagKey<Item> WRENCH = TagUtil.createItemTag("tools/wrench"); // Compat with other mods
+
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
             NEEDS_WOOD_TOOL,
@@ -121,7 +143,7 @@ public class CustomTags {
             NEEDS_NEUTRONIUM_TOOL,
     };
 
-    // Harvest tags
+    // Tool harvest tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
     public static final TagKey<Block> MINEABLE_WITH_SAW = TagUtil.createBlockTag("mineable/saw");
     public static final TagKey<Block> MINEABLE_WITH_HAMMER = TagUtil.createBlockTag("mineable/hammer");
