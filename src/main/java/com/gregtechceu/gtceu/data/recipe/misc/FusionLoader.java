@@ -210,5 +210,23 @@ public class FusionLoader {
                 .EUt(VA[LuV])
                 .fusionStartEU(200_000_000)
                 .save(provider);
+
+        FUSION_RECIPES.recipeBuilder("plutonium_241_and_hydrogen_gas_to_americium_plasma")
+                .inputFluids(GTMaterials.Plutonium241.getFluid(144))
+                .inputFluids(GTMaterials.Hydrogen.getFluid(FluidStorageKeys.GAS, 2000))
+                .outputFluids(GTMaterials.Americium.getFluid(FluidStorageKeys.PLASMA, 144))
+                .duration(64)
+                .EUt(98304)
+                .fusionStartEU(500_000_000)
+                .save(provider);
+
+        FUSION_RECIPES.recipeBuilder("silver_and_helium_3_to_tin_plasma")
+                .inputFluids(GTMaterials.Silver.getFluid(144))
+                .inputFluids(GTMaterials.Helium3.getFluid(375))
+                .outputFluids(GTMaterials.Tin.getFluid(FluidStorageKeys.PLASMA, 144))
+                .duration(16)
+                .EUt(49152)
+                .fusionStartEU(280_000_000)
+                .save(provider);
     }
 }
