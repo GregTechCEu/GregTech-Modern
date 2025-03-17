@@ -320,6 +320,13 @@ public class FuelRecipes {
                 .EUt(-V[EV])
                 .save(provider);
 
+        PLASMA_GENERATOR_FUELS.recipeBuilder("argon")
+                .inputFluids(Argon.getFluid(FluidStorageKeys.PLASMA, 1))
+                .outputFluids(Argon.getFluid(1))
+                .duration(96)
+                .EUt(-V[EV])
+                .save(provider);
+
         PLASMA_GENERATOR_FUELS.recipeBuilder("iron")
                 .inputFluids(Iron.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Iron.getFluid(1))
