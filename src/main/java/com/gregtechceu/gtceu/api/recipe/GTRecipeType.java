@@ -226,7 +226,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
             GTRecipe recipe = logic.createCustomRecipe(holder);
-            if (recipe != null) return Collections.singleton(recipe).iterator();
+            if (recipe != null && canHandle.test(recipe)) return Collections.singleton(recipe).iterator();
         }
         return Collections.emptyIterator();
     }

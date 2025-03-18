@@ -17,29 +17,32 @@ import net.minecraft.world.item.Items;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
-
+public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
+    INSTANCE;
     // Data class so that item data can be kept between searches
     private static class RecipeData {
 
-        public ItemStack mold = ItemStack.EMPTY;
-        public ItemStack item = ItemStack.EMPTY;
+        ItemStack mold = ItemStack.EMPTY;
+        ItemStack item = ItemStack.EMPTY;
 
-        public boolean found() {
+        boolean found() {
             return !mold.isEmpty() && !item.isEmpty();
         }
 
-        public void clear() {
-            mold = ItemStack.EMPTY;
-            item = ItemStack.EMPTY;
-        }
-
-        public boolean isEmpty() {
-            return mold.isEmpty() && item.isEmpty();
+        GTRecipe recipe() {
+            ItemStack output = item.copyWithCount(1);
+            output.setHoverName(mold.getHoverName());
+            return GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(output))
+                    .notConsumable(mold)
+                    .inputItems(item.copyWithCount(1))
+                    .outputItems(output)
+                    .duration(40).EUt(4)
+                    .buildRawRecipe();
         }
     }
 
@@ -51,33 +54,78 @@ public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
 
         if (handlerLists.isEmpty()) return null;
 
+        var hl = holder.getCapabilitiesForIO(IO.IN);
+
+        List<RecipeHandlerList> distinct = new ArrayList<>();
+        List<IRecipeHandler<?>> indistinct = new ArrayList<>();
+
+        for (var rhl : hl) {
+            if (rhl.isDistinct() && rhl.hasCapability(ItemRecipeCapability.CAP)) {
+                distinct.add(rhl);
+            } else if (rhl.hasCapability(ItemRecipeCapability.CAP)) {
+                indistinct.addAll(rhl.getCapability(ItemRecipeCapability.CAP));
+            }
+        }
+
         RecipeData data = new RecipeData();
 
+        for (var rhl : distinct) {
+            var stacks = collect(rhl);
+            if (stacks.isEmpty()) continue;
+            data.mold = ItemStack.EMPTY;
+            data.item = ItemStack.EMPTY;
+            for (var stack : stacks) {
+                if (GTItems.PROGRAMMED_CIRCUIT.isIn(stack)) continue; // Skip programmed circuit slot
+                boolean isMold = GTItems.SHAPE_MOLD_NAME.isIn(stack);
+                if (data.mold.isEmpty() && isMold && stack.hasCustomHoverName()) {
+                    data.mold = stack;
+                } else if (data.item.isEmpty() && !(isMold && stack.hasCustomHoverName())) {
+                    data.item = stack;
+                }
+
+                if (data.found()) return data.recipe();
+            }
+        }
+
+        var stacks = collect(indistinct);
+        if (stacks.isEmpty()) return null;
+        for (var stack : stacks) {
+            if (GTItems.PROGRAMMED_CIRCUIT.isIn(stack)) continue; // Skip programmed circuit slot
+            if (data.mold.isEmpty() && GTItems.SHAPE_MOLD_NAME.isIn(stack) && stack.hasCustomHoverName()) {
+                data.mold = stack;
+            } else if (data.item.isEmpty()) {
+                data.item = stack;
+            }
+
+            if (data.found()) return data.recipe();
+        }
+
+
         // Distinct first, reset our stacks for every inventory
-        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
-            data.clear();
-            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-            if (recipe != null) return recipe;
-        }
-
-        data.clear();
-        // Non-distinct, return as soon as we find valid items
-        for (var handlerList : handlerLists.getOrDefault(false, Collections.emptyList())) {
-            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-            if (recipe != null) return recipe;
-        }
-
-        if (data.isEmpty()) return null;
-
-        // If we found one of the two, search for the other in the distinct handlers.
-        ItemStack existingMold = data.mold;
-        ItemStack existingItem = data.item;
-        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
-            data.mold = existingMold;
-            data.item = existingItem;
-            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-            if (recipe != null) return recipe;
-        }
+//        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+//            data.clear();
+//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+//            if (recipe != null) return recipe;
+//        }
+//
+//        data.clear();
+//        // Non-distinct, return as soon as we find valid items
+//        for (var handlerList : handlerLists.getOrDefault(false, Collections.emptyList())) {
+//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+//            if (recipe != null) return recipe;
+//        }
+//
+//        if (data.isEmpty()) return null;
+//
+//        // If we found one of the two, search for the other in the distinct handlers.
+//        ItemStack existingMold = data.mold;
+//        ItemStack existingItem = data.item;
+//        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+//            data.mold = existingMold;
+//            data.item = existingItem;
+//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+//            if (recipe != null) return recipe;
+//        }
 
         return null;
     }
@@ -111,6 +159,23 @@ public class FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
         }
 
         return null;
+    }
+
+    private static List<ItemStack> collect(RecipeHandlerList rhl) {
+        return collect(rhl.getCapability(ItemRecipeCapability.CAP));
+    }
+
+    private static List<ItemStack> collect(List<IRecipeHandler<?>> handlers) {
+        if (handlers.isEmpty()) return Collections.emptyList();
+        List<ItemStack> list = new ArrayList<>();
+        for (var handler : handlers) {
+            for (var content : handler.getContents()) {
+                if (content instanceof ItemStack stack && !stack.isEmpty()) {
+                    list.add(stack);
+                }
+            }
+        }
+        return list;
     }
 
     @Override

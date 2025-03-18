@@ -109,7 +109,7 @@ public class GTRecipeTypes {
                     recipeBuilder.inputFluids(GTMaterials.Oxygen.getFluid(recipeBuilder.duration));
                 }
             })
-            .addCustomRecipeLogic(new ArcFurnaceLogic());
+            .addCustomRecipeLogic(ArcFurnaceLogic.INSTANCE);
 
     public final static GTRecipeType ASSEMBLER_RECIPES = register("assembler", ELECTRIC).setMaxIOSize(9, 1, 1, 0)
             .setEUIO(IO.IN)
@@ -136,7 +136,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(128).EUt(4))
             .setSlotOverlay(false, false, GuiTextures.BREWER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new BreweryLogic())
+            .addCustomRecipeLogic(BreweryLogic.INSTANCE)
             .setSound(GTSoundEntries.CHEMICAL);
 
     public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
@@ -147,7 +147,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new MaceratorLogic())
+            .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR);
 
     public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
@@ -158,7 +158,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setSlotOverlay(true, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_CANNER, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new CannerLogic())
+            .addCustomRecipeLogic(CannerLogic.INSTANCE)
             .setSound(GTSoundEntries.BATH);
 
     public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
@@ -310,7 +310,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType FORMING_PRESS_RECIPES = register("forming_press", ELECTRIC)
             .setMaxIOSize(6, 1, 0, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_COMPRESS, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new FormingPressLogic())
+            .addCustomRecipeLogic(FormingPressLogic.INSTANCE)
             .setSound(GTSoundEntries.COMPRESSOR);
 
     public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)

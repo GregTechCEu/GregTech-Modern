@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 /**
@@ -52,7 +53,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     private Boolean isEmpty;
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO,
-                                      Function<Integer, CustomItemStackHandler> storageFactory) {
+                                      IntFunction<CustomItemStackHandler> storageFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = storageFactory.apply(slots);

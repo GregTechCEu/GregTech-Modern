@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -9,10 +12,14 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import java.util.function.Predicate;
 
 public class CustomFluidTank extends FluidTank
-                             implements IFluidHandlerModifiable, ITagSerializable<CompoundTag> {
+        implements IFluidHandlerModifiable, ITagSerializable<CompoundTag>, IContentChangeAware {
+
+    @Getter
+    @Setter
+    protected Runnable onContentsChanged = () -> {};
 
     public CustomFluidTank(int capacity) {
-        super(capacity);
+        super(capacity, e -> true);
     }
 
     public CustomFluidTank(int capacity, Predicate<FluidStack> validator) {
@@ -25,8 +32,19 @@ public class CustomFluidTank extends FluidTank
     }
 
     @Override
+    protected void onContentsChanged() {
+        onContentsChanged.run();
+    }
+
+    @Override
     public void setFluidInTank(int tank, FluidStack stack) {
         setFluid(stack);
+    }
+
+    @Override
+    public void setFluid(FluidStack stack) {
+        super.setFluid(stack);
+        this.onContentsChanged();
     }
 
     @Override

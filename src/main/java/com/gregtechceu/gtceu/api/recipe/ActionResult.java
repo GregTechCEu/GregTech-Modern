@@ -6,9 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @param isSuccess      is action success
- * @param reasonSupplier if fail, fail reasonSupplier
+ * @param reason if fail, fail reason
  */
-public record ActionResult(boolean isSuccess, @Nullable Component reasonSupplier) {
+public record ActionResult(boolean isSuccess, @Nullable Component reason) {
 
     public final static ActionResult SUCCESS = new ActionResult(true, null);
     public final static ActionResult FAIL_NO_REASON = new ActionResult(false, null);
@@ -22,7 +22,7 @@ public record ActionResult(boolean isSuccess, @Nullable Component reasonSupplier
     }
 
     public Component reason() {
-        if (reasonSupplier == null) return Component.empty();
-        return reasonSupplier;
+        if (reason == null) return Component.empty();
+        return reason;
     }
 }
