@@ -29,9 +29,11 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
+        if (recipe == null) return true;
         if (ConfigHolder.INSTANCE.machines.orderedAssemblyLineItems) {
 
             var recipeInputs = recipe.inputs.get(ItemRecipeCapability.CAP);
+            if (recipeInputs == null) return true;
             var itemInputInventory = Objects
                     .requireNonNullElseGet(getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
                             Collections::<IRecipeHandler<?>>emptyList)
@@ -54,6 +56,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             if (ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids) {
                 recipeInputs = recipe.inputs.get(FluidRecipeCapability.CAP);
+                if (recipeInputs == null) return true;
                 var itemFluidInventory = Objects
                         .requireNonNullElseGet(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP),
                                 Collections::<IRecipeHandler<?>>emptyList)
