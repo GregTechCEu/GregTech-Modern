@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class LargeMacerationTower extends WorkableElectricMultiblockMachine {
+public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachine {
 
     private AABB grindBound;
 
-    public LargeMacerationTower(IMachineBlockEntity holder) {
+    public LargeMacerationTowerMachine(IMachineBlockEntity holder) {
         super(holder);
         grindBound = new AABB(getPos());
         updateBounds();
