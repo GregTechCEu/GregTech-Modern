@@ -142,7 +142,6 @@ public class CustomTags {
     public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
     public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("tools/crafting_knives");
 
-
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
             NEEDS_WOOD_TOOL,
@@ -179,5 +178,4 @@ public class CustomTags {
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
-
 }
