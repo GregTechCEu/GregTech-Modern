@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -36,6 +37,8 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
@@ -44,9 +47,11 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.
  * @date 2023/2/22
  * @implNote ChemicalHelper
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ChemicalHelper {
 
-    public static MaterialStack getMaterialStack(Object object) {
+    public static MaterialStack getMaterialStack(@Nullable Object object) {
         if (object instanceof MaterialStack materialStack) {
             return materialStack;
         } else if (object instanceof MaterialEntry entry) {
@@ -119,7 +124,6 @@ public class ChemicalHelper {
     }
 
     public static TagPrefix getPrefix(ItemLike itemLike) {
-        if (itemLike == null) return TagPrefix.NULL_PREFIX;
         MaterialEntry entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) return entry.tagPrefix();
         return TagPrefix.NULL_PREFIX;
@@ -273,12 +277,14 @@ public class ChemicalHelper {
         }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
+    @Nullable
     public static Block getBlock(MaterialEntry materialEntry) {
         var list = getBlocks(materialEntry);
         if (list.isEmpty()) return null;
         return list.get(0);
     }
 
+    @Nullable
     public static Block getBlock(TagPrefix orePrefix, Material material) {
         return getBlock(new MaterialEntry(orePrefix, material));
     }
