@@ -54,7 +54,8 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
                 allowPartialFill);
     }
 
-    public static ThermalFluidStats create(int capacity, @NotNull FluidPipeProperties properties, boolean allowPartialFill) {
+    public static ThermalFluidStats create(int capacity, @NotNull FluidPipeProperties properties,
+                                           boolean allowPartialFill) {
         return new ThermalFluidStats(capacity, properties.getMaxFluidTemperature(), properties.isGasProof(),
                 properties.isAcidProof(), properties.isCryoProof(), properties.isPlasmaProof(), allowPartialFill);
     }

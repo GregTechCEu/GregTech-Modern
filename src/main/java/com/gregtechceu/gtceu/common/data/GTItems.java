@@ -425,7 +425,10 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
-        if (prop == null) prop = GTMaterials.Wood.getProperty(PropertyKey.FLUID_PIPE);
+        if (prop == null) {
+            GTCEu.LOGGER.error("Material {} does not have any fluid props!", mat.getName());
+            throw new IllegalArgumentException();
+        }
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
                 .lang("%s " + toEnglishName(mat.getName()) + " Cell")
