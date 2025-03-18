@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
 import net.minecraft.ChatFormatting;
@@ -30,7 +31,7 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
 
                 int[] pos = serverData.getIntArray("pos");
                 iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
-                        .withStyle(ChatFormatting.YELLOW));
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
 
                 MEPatternBufferProvider.readBufferTag(iTooltip, serverData);
             }

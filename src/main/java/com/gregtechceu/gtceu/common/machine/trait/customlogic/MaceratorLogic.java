@@ -29,6 +29,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeCategories.MACERATOR_REC
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MACERATOR_RECIPES;
 
 public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
+
     INSTANCE;
 
     @Override

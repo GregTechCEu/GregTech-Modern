@@ -199,12 +199,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
         boolean unsubscribe = false;
         if (isSuspend()) {
+            // Machine is paused and can unsubscribe
             unsubscribe = true;
         } else if (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty &&
                 lastFailedMatches == null) {
-                    // machine isn't working enabled
-                    // or
-                    // there is no available recipes, so it will wait for notification.
+                    // No recipes available and the machine wants to unsubscribe until notified
                     unsubscribe = true;
                 }
 
@@ -328,11 +327,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public ActionResult handleTickRecipe(GTRecipe recipe) {
         if (!recipe.hasTick()) return ActionResult.SUCCESS;
+
         var result = RecipeHelper.matchTickRecipe(machine, recipe);
-        if (result.isSuccess()) {
-            handleTickRecipeIO(recipe, IO.IN);
-            handleTickRecipeIO(recipe, IO.OUT);
-        }
+        if (!result.isSuccess()) return result;
+
+        result = handleTickRecipeIO(recipe, IO.IN);
+        if (!result.isSuccess()) return result;
+
+        result = handleTickRecipeIO(recipe, IO.OUT);
         return result;
     }
 

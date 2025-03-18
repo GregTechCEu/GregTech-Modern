@@ -9,24 +9,24 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.minecraftforge.fluids.capability.IFluidHandler.*;
 
 public enum CannerLogic implements GTRecipeType.ICustomRecipeLogic {
+
     INSTANCE;
+
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
@@ -167,7 +167,8 @@ public enum CannerLogic implements GTRecipeType.ICustomRecipeLogic {
                 itemStacks, fluidStacks);
     }
 
-    private static boolean collect(List<IRecipeHandler<?>> itemHandlers, List<IRecipeHandler<?>> fluidHandlers, List<ItemStack> itemStacks, List<FluidStack> fluidStacks) {
+    private static boolean collect(List<IRecipeHandler<?>> itemHandlers, List<IRecipeHandler<?>> fluidHandlers,
+                                   List<ItemStack> itemStacks, List<FluidStack> fluidStacks) {
         for (var handler : itemHandlers) {
             for (var content : handler.getContents()) {
                 if (content instanceof ItemStack stack && !stack.isEmpty()) {

@@ -43,11 +43,15 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 // TODO: Make these static recipes
 @SuppressWarnings("deprecation")
 public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
+
     INSTANCE;
 
-    private static final Function<Fluid, TagKey<Fluid>> FLUID_TAGS = Util.memoize(fluid -> TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid).getPath()));
-    private static final Function<PotionBrewing.Mix<Potion>, FluidStack> MIX_INPUTS = Util.memoize(mix -> PotionFluidHelper.getFluidFromPotion(mix.from.get(), PotionFluidHelper.MB_PER_RECIPE));
-    private static final Function<BrewingRecipe, FluidIngredient> BREW_INGREDIENTS = Util.memoize(brew -> PotionFluidHelper.getPotionFluidIngredientFrom(brew.getInput(), PotionFluidHelper.MB_PER_RECIPE));
+    private static final Function<Fluid, TagKey<Fluid>> FLUID_TAGS = Util
+            .memoize(fluid -> TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid).getPath()));
+    private static final Function<PotionBrewing.Mix<Potion>, FluidStack> MIX_INPUTS = Util
+            .memoize(mix -> PotionFluidHelper.getFluidFromPotion(mix.from.get(), PotionFluidHelper.MB_PER_RECIPE));
+    private static final Function<BrewingRecipe, FluidIngredient> BREW_INGREDIENTS = Util.memoize(
+            brew -> PotionFluidHelper.getPotionFluidIngredientFrom(brew.getInput(), PotionFluidHelper.MB_PER_RECIPE));
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
@@ -212,12 +216,13 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
 
     private static boolean testMixFluid(FluidStack fluidStack, FluidStack fromFluid) {
         var fromTag = FLUID_TAGS.apply(fromFluid.getFluid());
-        return (fluidStack.getFluid() == fromFluid.getFluid() || fluidStack.getFluid().is(fromTag))
-                && Objects.equals(fromFluid.getTag(), fluidStack.getTag());
+        return (fluidStack.getFluid() == fromFluid.getFluid() || fluidStack.getFluid().is(fromTag)) &&
+                Objects.equals(fromFluid.getTag(), fluidStack.getTag());
     }
 
     private static @NotNull GTRecipe forgePotionRecipe(BrewingRecipe brew, FluidIngredient fromFluid) {
-        FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(brew.getOutput(), PotionFluidHelper.MB_PER_RECIPE);
+        FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(brew.getOutput(),
+                PotionFluidHelper.MB_PER_RECIPE);
         String name;
         Potion output = PotionUtils.getPotion(brew.getOutput());
         if (output != Potions.EMPTY) {
@@ -251,7 +256,8 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 itemStacks, fluidStacks);
     }
 
-    private static boolean collect(List<IRecipeHandler<?>> itemHandlers, List<IRecipeHandler<?>> fluidHandlers, List<ItemStack> itemStacks, List<FluidStack> fluidStacks) {
+    private static boolean collect(List<IRecipeHandler<?>> itemHandlers, List<IRecipeHandler<?>> fluidHandlers,
+                                   List<ItemStack> itemStacks, List<FluidStack> fluidStacks) {
         for (var handler : itemHandlers) {
             for (var content : handler.getContents()) {
                 if (content instanceof ItemStack stack && !stack.isEmpty()) {

@@ -27,7 +27,9 @@ import snownee.jade.api.view.IClientExtensionProvider;
 import snownee.jade.api.view.IServerExtensionProvider;
 import snownee.jade.api.view.ViewGroup;
 import snownee.jade.util.FluidTextHelper;
+import snownee.jade.util.JadeForgeUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,21 +58,22 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
                                                             MetaMachineBlockEntity mmbe, boolean b) {
         MetaMachine machine = mmbe.getMetaMachine();
         if (machine instanceof QuantumTankMachine qtm) {
-            CompoundTag tag = new CompoundTag();
-            tag.putBoolean("special", true);
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
-            tag.putString("fluid", BuiltInRegistries.FLUID.getKey(stored.getFluid()).toString());
-            long amount = qtm.getStoredAmount();
-            if (qtm instanceof CreativeTankMachine ctm) {
-                amount = (long) Math.ceil(1d * ctm.getMBPerCycle() / ctm.getTicksPerCycle());
-            }
-            tag.putLong("amount", amount);
-            tag.putLong("capacity", qtm.getMaxAmount());
-            if (stored.hasTag()) tag.put("tag", stored.getTag());
+            CompoundTag tag = JadeForgeUtils.fromFluidStack(stored, qtm.getMaxAmount());
+            tag.putBoolean("special", true);
+            tag.putLong("amount", qtm.getStoredAmount());
             return List.of(new ViewGroup<>(List.of(tag)));
-        } else if (machine instanceof MEPatternBufferPartMachine buffer && !buffer.isFormed()) {
-            return Collections.emptyList();
+        } else if (machine instanceof MEPatternBufferPartMachine buffer) {
+            var tank = buffer.getShareTank();
+            List<CompoundTag> list = new ArrayList<>(tank.getTanks());
+            for (var storage : tank.getStorages()) {
+                var stack = storage.getFluid();
+                if (stack.isEmpty()) continue;
+                int capacity = storage.getCapacity();
+                list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
+            }
+            return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
         } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
@@ -87,14 +90,14 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
         if (capacity <= 0) return null;
 
         Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
-        CompoundTag nbt = tag.contains("nbt") ? tag.getCompound("nbt") : null;
+        CompoundTag nbt = tag.contains("tag") ? tag.getCompound("tag") : null;
         long amount = tag.getLong("amount");
         JadeFluidObject fluidObject = JadeFluidObject.of(fluid, 1000, nbt);
         FluidView fluidView = new FluidView(IElementHelper.get().fluid(fluidObject));
         fluidView.fluidName = fluid.getFluidType().getDescription();
         fluidView.current = FluidTextHelper.getUnicodeMillibuckets(amount, true);
         fluidView.max = FluidTextHelper.getUnicodeMillibuckets(capacity, true);
-        fluidView.ratio = (float) ((double) amount / capacity);
+        fluidView.ratio = Math.min(1f, (float) ((double) amount / capacity));
 
         return fluidView;
     }

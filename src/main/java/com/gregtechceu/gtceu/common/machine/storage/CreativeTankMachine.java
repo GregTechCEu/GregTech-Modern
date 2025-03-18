@@ -61,6 +61,11 @@ public class CreativeTankMachine extends QuantumTankMachine {
         }
     }
 
+    @Override
+    public long getStoredAmount() {
+        return (long) Math.ceil(1d * mBPerCycle / ticksPerCycle);
+    }
+
     private InteractionResult updateStored(FluidStack fluid) {
         stored = new FluidStack(fluid, 1000);
         onFluidChanged();

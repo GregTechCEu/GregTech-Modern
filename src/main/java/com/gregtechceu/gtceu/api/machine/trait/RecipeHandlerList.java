@@ -127,21 +127,6 @@ public class RecipeHandlerList {
                 }
             }
         }
-        // var it = copy.entrySet().iterator();
-        // while (it.hasNext()) {
-        // var entry = it.next();
-        // var handlerList = getHandlerMap().get(entry.getKey());
-        // if (handlerList == null) continue;
-        // for (var handler : handlerList) {
-        // var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
-        // if (left == null) {
-        // it.remove();
-        // break;
-        // } else {
-        // entry.setValue(new ArrayList<>(left));
-        // }
-        // }
-        // }
         return copy;
     }
 

@@ -28,6 +28,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeCategories.ARC_FURNACE_R
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ARC_FURNACE_RECIPES;
 
 public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
+
     INSTANCE;
 
     @Override

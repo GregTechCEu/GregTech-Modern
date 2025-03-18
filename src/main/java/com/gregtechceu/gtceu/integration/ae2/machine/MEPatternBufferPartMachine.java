@@ -154,19 +154,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Nullable
     protected TickableSubscription updateSubs;
 
-    @Override
-    public NotifiableItemStackHandler getCircuitInventory() {
-        return getCircuitInventorySimulated();
-    }
-
-    @Override
-    public boolean isWorkingEnabled() {
-        return true;
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean ignored) {}
-
     public MEPatternBufferPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
@@ -204,6 +191,19 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
+    public NotifiableItemStackHandler getCircuitInventory() {
+        return getCircuitInventorySimulated();
+    }
+
+    @Override
+    public boolean isWorkingEnabled() {
+        return true;
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean ignored) {}
+
+    @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
         this.updateSubscription();
@@ -227,7 +227,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     public void addProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getPos());
-        proxyMachines.remove(proxy);
+        proxyMachines.add(proxy);
     }
 
     public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
@@ -339,7 +339,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        if (!getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) || !checkInput(inputHolder)) {
+        if (!isFormed() || !getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) ||
+                !checkInput(inputHolder)) {
             return false;
         }
 

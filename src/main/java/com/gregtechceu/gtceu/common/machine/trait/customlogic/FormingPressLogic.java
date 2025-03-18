@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
+
     INSTANCE;
+
     // Data class so that item data can be kept between searches
     private static class RecipeData {
 
@@ -100,32 +102,31 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
             if (data.found()) return data.recipe();
         }
 
-
         // Distinct first, reset our stacks for every inventory
-//        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
-//            data.clear();
-//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-//            if (recipe != null) return recipe;
-//        }
-//
-//        data.clear();
-//        // Non-distinct, return as soon as we find valid items
-//        for (var handlerList : handlerLists.getOrDefault(false, Collections.emptyList())) {
-//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-//            if (recipe != null) return recipe;
-//        }
-//
-//        if (data.isEmpty()) return null;
-//
-//        // If we found one of the two, search for the other in the distinct handlers.
-//        ItemStack existingMold = data.mold;
-//        ItemStack existingItem = data.item;
-//        for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
-//            data.mold = existingMold;
-//            data.item = existingItem;
-//            GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
-//            if (recipe != null) return recipe;
-//        }
+        // for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+        // data.clear();
+        // GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+        // if (recipe != null) return recipe;
+        // }
+        //
+        // data.clear();
+        // // Non-distinct, return as soon as we find valid items
+        // for (var handlerList : handlerLists.getOrDefault(false, Collections.emptyList())) {
+        // GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+        // if (recipe != null) return recipe;
+        // }
+        //
+        // if (data.isEmpty()) return null;
+        //
+        // // If we found one of the two, search for the other in the distinct handlers.
+        // ItemStack existingMold = data.mold;
+        // ItemStack existingItem = data.item;
+        // for (var handlerList : handlerLists.getOrDefault(true, Collections.emptyList())) {
+        // data.mold = existingMold;
+        // data.item = existingItem;
+        // GTRecipe recipe = search(data, handlerList.getCapability(ItemRecipeCapability.CAP));
+        // if (recipe != null) return recipe;
+        // }
 
         return null;
     }

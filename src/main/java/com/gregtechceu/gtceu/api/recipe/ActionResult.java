@@ -5,8 +5,8 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @param isSuccess      is action success
- * @param reason if fail, fail reason
+ * @param isSuccess is action success
+ * @param reason    if fail, fail reason
  */
 public record ActionResult(boolean isSuccess, @Nullable Component reason) {
 

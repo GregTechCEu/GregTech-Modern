@@ -224,7 +224,8 @@ public class RecipeHelper {
         if (!result.isSuccess()) {
             if (result.capability() == null) return result.result();
             if (!simulated) {
-                GTCEu.LOGGER.warn("IO Error while handling recipe {} outputs for {}", recipe, holder);
+                GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
+                        Component.translatable(io.tooltip).getString(), recipe, holder);
             }
             String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
             return ActionResult.fail(Component.translatable(key)

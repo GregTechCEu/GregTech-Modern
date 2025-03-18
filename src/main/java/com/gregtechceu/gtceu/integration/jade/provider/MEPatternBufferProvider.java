@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
+import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -19,6 +21,7 @@ import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.ui.IElementHelper;
 
 public class MEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
@@ -31,7 +34,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
                 if (!serverData.getBoolean("formed")) return;
 
                 iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
-                        .withStyle(ChatFormatting.LIGHT_PURPLE));
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
                 readBufferTag(iTooltip, serverData);
             }
         }
@@ -90,7 +93,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
             if (!stack.isEmpty() && count > 0) {
                 iTooltip.add(helper.smallItem(stack));
                 Component text = Component.literal(" ")
-                        .append(Component.literal(String.valueOf(count)).withStyle(ChatFormatting.LIGHT_PURPLE))
+                        .append(Component.literal(String.valueOf(count)).withStyle(ChatFormatting.DARK_PURPLE))
                         .append(Component.literal("× ").withStyle(ChatFormatting.WHITE))
                         .append(stack.getHoverName().copy().withStyle(ChatFormatting.GOLD));
                 iTooltip.append(text);
@@ -102,11 +105,13 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
             var stack = FluidStack.loadFluidStackFromNBT(ct);
             var amount = ct.getLong("real");
             if (!stack.isEmpty() && amount > 0) {
-                Component text = Component.literal(FormattingUtil.formatBuckets(amount))
-                        .withStyle(ChatFormatting.LIGHT_PURPLE)
+                iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.getFluid())));
+                Component text = Component.literal(" ")
+                        .append(Component.literal(FormattingUtil.formatBuckets(amount)))
+                        .withStyle(ChatFormatting.DARK_PURPLE)
                         .append(Component.literal(" ").withStyle(ChatFormatting.WHITE))
-                        .append(stack.getDisplayName().copy().withStyle(ChatFormatting.GOLD));
-                iTooltip.add(text);
+                        .append(stack.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA));
+                iTooltip.append(text);
             }
         }
     }
