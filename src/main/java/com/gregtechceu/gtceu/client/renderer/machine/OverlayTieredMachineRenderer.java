@@ -46,7 +46,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand)
                 .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
         if (machine != null) {
-            int start = quads.size() + 1;
+            int start = quads.size();
             renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
                     machine.getLevel(), modelState);
             for (int i = start; i < quads.size(); i++) {
