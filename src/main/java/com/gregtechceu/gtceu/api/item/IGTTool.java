@@ -55,9 +55,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -767,13 +765,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                         !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
         }
 
-        // Block Mending and Unbreaking on Electric tools
-        if (isElectric() &&
-                (enchantment instanceof MendingEnchantment || enchantment instanceof DigDurabilityEnchantment)) {
-            return false;
-        }
-
-        if (enchantment.category == null) return true;
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
         // the Minecraft method takes an Item, and does not respect NBT nor meta.
         switch (enchantment.category) {
