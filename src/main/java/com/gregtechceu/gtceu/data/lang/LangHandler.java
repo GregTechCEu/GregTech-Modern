@@ -455,6 +455,15 @@ public class LangHandler {
         provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
         provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
 
+        var detectorLatchDescription = """
+                Change the redstone behavior of this Cover.
+                §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
+                §eLatched§7 - output 15 until above max, then output 0 until below min""";
+        multilineLang(provider, "cover.advanced_detector.latch.enabled",
+                "Behavior: Latched\n\n" + detectorLatchDescription);
+        multilineLang(provider, "cover.advanced_detector.latch.disabled",
+                "Behavior: Continuous\n\n" + detectorLatchDescription);
+
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
         provider.add("cover.advanced_energy_detector.min", "Min");
         provider.add("cover.advanced_energy_detector.max", "Max");
@@ -1082,10 +1091,10 @@ public class LangHandler {
         provider.add("gtceu.jei.materials.average_neutrons", "Average neutrons: %d");
         provider.add("gtceu.item_filter.empty_item", "Empty (No Item)");
         provider.add("gtceu.item_filter.footer", "§eClick with item to override");
-        provider.add("gtceu.cable.voltage", "Max Voltage: §a%d §a(%s§a)");
-        provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
-        provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
-        provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
+        provider.add("gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
+        provider.add("gtceu.cable.amperage", "§eMax Amperage:§r §e%d");
+        provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
+        provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
@@ -1125,17 +1134,12 @@ public class LangHandler {
         provider.add("gtceu.multiblock.universal.has_problems", "Has Maintenance Problems!");
         provider.add("gtceu.multiblock.universal.has_problems_header",
                 "Fix the following issues in a Maintenance Hatch:");
-        provider.add("gtceu.multiblock.universal.problem.wrench", "%s§7Pipe is loose. (§aWrench§7)");
-        provider.add("gtceu.multiblock.universal.problem.screwdriver",
-                "%s§7Screws are loose. (§aScrewdriver§7)");
-        provider.add("gtceu.multiblock.universal.problem.soft_mallet",
-                "%s§7Something is stuck. (§aSoft Mallet§7)");
-        provider.add("gtceu.multiblock.universal.problem.hard_hammer",
-                "%s§7Plating is dented. (§aHard Hammer§7)");
-        provider.add("gtceu.multiblock.universal.problem.wire_cutter",
-                "%s§7Wires burned out. (§aWire Cutter§7)");
-        provider.add("gtceu.multiblock.universal.problem.crowbar",
-                "%s§7That doesn't belong there. (§aCrowbar§7)");
+        provider.add("gtceu.multiblock.universal.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
+        provider.add("gtceu.multiblock.universal.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
+        provider.add("gtceu.multiblock.universal.problem.soft_mallet", "§7Something is stuck. (§aSoft Mallet§7)");
+        provider.add("gtceu.multiblock.universal.problem.hard_hammer", "§7Plating is dented. (§aHard Hammer§7)");
+        provider.add("gtceu.multiblock.universal.problem.wire_cutter", "§7Wires burned out. (§aWire Cutter§7)");
+        provider.add("gtceu.multiblock.universal.problem.crowbar", "§7That doesn't belong there. (§aCrowbar§7)");
         provider.add("gtceu.multiblock.universal.muffler_obstructed", "Muffler Hatch is Obstructed!");
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");

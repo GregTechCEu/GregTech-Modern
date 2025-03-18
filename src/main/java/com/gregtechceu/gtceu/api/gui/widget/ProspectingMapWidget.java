@@ -22,6 +22,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -258,17 +259,20 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!WaypointManager.isActive()) return true;
         var clickedItem = getClickedVein(mouseX, mouseY);
         if (clickedItem == null) {
             return super.mouseClicked(mouseX, mouseY, button);
         }
+        MutableComponent veinName = Component.literal(clickedItem.name());
+        veinName.setStyle(veinName.getStyle().withColor(clickedItem.color));
         WaypointManager.setWaypoint(new ChunkPos(clickedItem.position).toString(),
                 clickedItem.name,
                 clickedItem.color,
                 gui.entityPlayer.level().dimension(),
                 clickedItem.position.getX(), clickedItem.position.getY(), clickedItem.position.getZ());
         gui.entityPlayer.displayClientMessage(
-                Component.translatable("behavior.prospector.added_waypoint", clickedItem.name), true);
+                Component.translatable("behavior.prospector.added_waypoint", veinName), false);
         playButtonClickSound();
         return true;
     }
