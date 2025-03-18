@@ -543,7 +543,7 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("light_weighted_pressure_plate")
                     .inputItems(plate, Gold, 2)
                     .outputItems(new ItemStack(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE))
-                    .circuitMeta(2).duration(100).EUt(4).save(provider);
+                    .circuitMeta(3).duration(100).EUt(4).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("heavy_weighted_pressure_plate")
                     .inputItems(plate, Iron, 2)
@@ -1280,7 +1280,7 @@ public class RecipeAddition {
                 new ItemStack(Items.SUGAR_CANE));
         VanillaRecipeHelper.addShapedRecipe(provider, "sugar", ChemicalHelper.get(TagPrefix.dust, GTMaterials.Sugar, 1),
                 "Sm ", 'S', new ItemStack(Items.SUGAR_CANE));
-        VanillaRecipeHelper.addShapedRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
+        VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
                 " r ", "SSS", " B ",
                 'S', new UnificationEntry(TagPrefix.dust, GTMaterials.Paper),
                 'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));
