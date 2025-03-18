@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,16 +43,16 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         // expand the overlay quads ever so slightly to combat z-fighting.
-        var overlayQuads = new LinkedList<>(overlayModel.getRotatedModel(frontFacing)
-                .getQuads(definition.defaultBlockState(), side, rand));
+        overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand)
+                .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
         if (machine != null) {
-            renderCovers(overlayQuads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
-                    machine.getLevel(),
-                    modelState);
+            int start = quads.size() + 1;
+            renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
+                    machine.getLevel(), modelState);
+            for (int i = start; i < quads.size(); i++) {
+                quads.set(i, Quad.from(quads.get(i), this.reBakeOverlayQuadsOffset()).rebake());
+            }
         }
-        quads.addAll(overlayQuads.stream()
-                .map(quad -> Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake())
-                .toList());
     }
 
     @Override
