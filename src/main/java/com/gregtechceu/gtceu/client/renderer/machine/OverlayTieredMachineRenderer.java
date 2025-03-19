@@ -49,8 +49,9 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
             int start = quads.size();
             renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
                     machine.getLevel(), modelState);
-            for (int i = start; i < quads.size(); i++) {
-                quads.set(i, Quad.from(quads.get(i), this.reBakeOverlayQuadsOffset()).rebake());
+            var iterator = quads.listIterator(start);
+            while (iterator.hasNext()) {
+                iterator.set(Quad.from(iterator.next(), this.reBakeOverlayQuadsOffset()).rebake());
             }
         }
     }
