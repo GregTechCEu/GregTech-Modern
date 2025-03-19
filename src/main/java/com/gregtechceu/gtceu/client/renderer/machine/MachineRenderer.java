@@ -116,26 +116,26 @@ public class MachineRenderer extends TextureOverrideRenderer
                 if (machine instanceof IAutoOutputItem autoOutputItem) {
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
-                        quads.add(Quad.from(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
                                 modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState,
-                                -1, 0, true, true), outputOverlayOffset()).rebake());
+                                -1, 0, true, true));
                         if (autoOutputItem.isAutoOutputItems()) {
-                            quads.add(Quad.from(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
                                     modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState,
-                                    -101, 15, true, true), autoOutputOverlayOffset()).rebake());
+                                    -101, 15, true, true));
                         }
                     }
                 }
                 if (machine instanceof IAutoOutputFluid autoOutputFluid) {
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
-                        quads.add(Quad.from(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
                                 modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState,
-                                -1, 0, true, true), outputOverlayOffset()).rebake());
+                                -1, 0, true, true));
                         if (autoOutputFluid.isAutoOutputFluids()) {
-                            quads.add(Quad.from(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
+                            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
                                     modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState,
-                                    -101, 15, true, true), autoOutputOverlayOffset()).rebake());
+                                    -101, 15, true, true));
                         }
                     }
                 }
@@ -203,14 +203,6 @@ public class MachineRenderer extends TextureOverrideRenderer
         var sourceStateAppearance = FacadeBlockAndTintGetter.getAppearance(sourceState, level, sourcePos, side, state,
                 pos);
         return stateAppearance == sourceStateAppearance;
-    }
-
-    public float outputOverlayOffset() {
-        return .004f;
-    }
-
-    public float autoOutputOverlayOffset() {
-        return .006f;
     }
 
     public float coverOverlayOffset() {
