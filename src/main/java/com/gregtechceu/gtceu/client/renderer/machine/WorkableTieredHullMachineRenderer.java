@@ -49,10 +49,10 @@ public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer
         }
         if (machine instanceof IWorkable workable) {
             overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(), workable.isWorkingEnabled())
-                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
+                    .forEach(quad -> quads.add(Quad.from(quad, overlayQuadsOffset()).rebake()));
         } else {
             overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false)
-                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
+                    .forEach(quad -> quads.add(Quad.from(quad, overlayQuadsOffset()).rebake()));
         }
     }
 
@@ -65,7 +65,7 @@ public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer
         }
     }
 
-    public float reBakeOverlayQuadsOffset() {
+    public float overlayQuadsOffset() {
         return 0.004f;
     }
 }

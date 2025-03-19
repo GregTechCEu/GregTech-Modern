@@ -44,16 +44,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         // expand the overlay quads ever so slightly to combat z-fighting.
         overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand)
-                .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
-        if (machine != null) {
-            int start = quads.size();
-            renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
-                    machine.getLevel(), modelState);
-            var iterator = quads.listIterator(start);
-            while (iterator.hasNext()) {
-                iterator.set(Quad.from(iterator.next(), this.reBakeOverlayQuadsOffset()).rebake());
-            }
-        }
+                .forEach(quad -> quads.add(Quad.from(quad, overlayQuadsOffset()).rebake()));
     }
 
     @Override
@@ -66,7 +57,7 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
                 modelLocation));
     }
 
-    public float reBakeOverlayQuadsOffset() {
-        return 0.002f;
+    public float overlayQuadsOffset() {
+        return 0.004f;
     }
 }

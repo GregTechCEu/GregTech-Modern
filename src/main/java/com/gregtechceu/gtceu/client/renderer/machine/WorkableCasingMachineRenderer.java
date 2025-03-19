@@ -57,10 +57,10 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
         }
         if (machine instanceof IWorkable workable) {
             overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(), workable.isWorkingEnabled())
-                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
+                    .forEach(quad -> quads.add(Quad.from(quad, reBakeOverlayQuadsOffset()).rebake()));
         } else {
             overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false)
-                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
+                    .forEach(quad -> quads.add(Quad.from(quad, reBakeOverlayQuadsOffset()).rebake()));
         }
     }
 
