@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -41,7 +42,7 @@ public class ItemMaterialData {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Map<Supplier<? extends ItemLike>, MaterialEntry> ITEM_MATERIAL_ENTRY = new Object2ObjectOpenHashMap<>();
+    public static final List<Pair<Supplier<? extends ItemLike>, MaterialEntry>> ITEM_MATERIAL_ENTRY = new ArrayList<>();
     public static final Map<ItemLike, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
@@ -57,6 +58,16 @@ public class ItemMaterialData {
             ItemStackHashStrategy.comparingAllButCount());
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
+        if (item instanceof Block block) {
+            ITEM_MATERIAL_INFO.put(block, materialInfo);
+            return;
+        } else if (item instanceof BlockItem blockItem) {
+            ITEM_MATERIAL_INFO.put(blockItem.getBlock(), materialInfo);
+            return;
+        } else if (item instanceof ItemEntry<?> entry) {
+            ITEM_MATERIAL_INFO.put(entry.asItem(), materialInfo);
+            return;
+        }
         ITEM_MATERIAL_INFO.put(item, materialInfo);
     }
 
@@ -98,7 +109,7 @@ public class ItemMaterialData {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                 .addAll(Arrays.asList(items));
         for (Supplier<? extends ItemLike> item : items) {
-            ITEM_MATERIAL_ENTRY.put(item, materialEntry);
+            ITEM_MATERIAL_ENTRY.add(Pair.of(item, materialEntry));
             if (item instanceof Block block) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(() -> block);
@@ -164,10 +175,11 @@ public class ItemMaterialData {
     public static void resolveItemMaterialInfos(Consumer<FinishedRecipe> provider) {
         for (var entry : UNRESOLVED_ITEM_MATERIAL_INFO.entrySet()) {
             List<MaterialStack> stacks = new ArrayList<>();
+            var count = entry.getKey().getCount();
             for (var input : entry.getValue()) {
                 var matStack = getMaterialInfo(input.getItem());
                 if (matStack != null) {
-                    matStack.getMaterials().forEach(ms -> stacks.add(ms.copy(ms.amount() / entry.getKey().getCount())));
+                    matStack.getMaterials().forEach(ms -> stacks.add(ms.copy(ms.amount() / count)));
                 }
             }
             if (stacks.isEmpty())

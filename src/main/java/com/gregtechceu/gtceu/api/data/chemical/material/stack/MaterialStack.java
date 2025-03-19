@@ -53,22 +53,6 @@ public record MaterialStack(@NotNull Material material, long amount) {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MaterialStack that = (MaterialStack) o;
-
-        if (amount != that.amount) return false;
-        return material.equals(that.material);
-    }
-
-    @Override
-    public int hashCode() {
-        return material.hashCode() * 31 + (int) amount * 31;
-    }
-
-    @Override
     public String toString() {
         String string = "";
         if (material.getChemicalFormula().isEmpty()) {

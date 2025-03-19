@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -188,8 +186,9 @@ public class ChemicalHelper {
         if (materialEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
-            ITEM_MATERIAL_ENTRY.forEach(
-                    (entry, value) -> ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.get().asItem(), value));
+            for (var entry : ITEM_MATERIAL_ENTRY) {
+                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get(), entry.getSecond());
+            }
             ITEM_MATERIAL_ENTRY.clear();
 
             // guess an entry based on the item's tags if none are pre-registered.
@@ -311,11 +310,10 @@ public class ChemicalHelper {
         return orePrefix.getItemTags(material);
     }
 
-    public static Map<ItemStack, ItemMaterialInfo> getAllItemInfos() {
-        Map<ItemStack, ItemMaterialInfo> f = new Object2ObjectOpenCustomHashMap<>(
-                ItemStackHashStrategy.comparingAllButCount());
+    public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {
+        List<Pair<ItemStack, ItemMaterialInfo>> f = new ArrayList<>();
         for (var entry : ITEM_MATERIAL_INFO.entrySet()) {
-            f.put(new ItemStack(entry.getKey().asItem()), entry.getValue());
+            f.add(Pair.of(new ItemStack(entry.getKey().asItem()), entry.getValue()));
         }
         return f;
     }

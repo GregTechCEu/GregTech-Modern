@@ -88,7 +88,8 @@ public class HigherDegreeMaterials {
         HSSG = new Material.Builder(GTCEu.id("hssg"))
                 .ingot(3).fluid()
                 .color(0x9cbabe).secondaryColor(0x032550).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE,
+                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING,
+                        GENERATE_FINE_WIRE,
                         GENERATE_FOIL, GENERATE_GEAR)
                 .components(TungstenSteel, 5, Chromium, 1, Molybdenum, 2, Vanadium, 1)
                 .rotorStats(205, 140, 5.5f, 4000)

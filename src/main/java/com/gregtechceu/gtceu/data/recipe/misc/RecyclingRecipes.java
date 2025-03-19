@@ -46,9 +46,9 @@ public class RecyclingRecipes {
     // TODO - Work on durations and EUt's
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        for (var entry : ChemicalHelper.getAllItemInfos().entrySet()) {
-            ItemStack itemStack = entry.getKey();
-            ItemMaterialInfo materialInfo = entry.getValue();
+        for (var entry : ChemicalHelper.getAllItemInfos()) {
+            ItemStack itemStack = entry.getFirst();
+            ItemMaterialInfo materialInfo = entry.getSecond();
             ArrayList<MaterialStack> materialStacks = new ArrayList<>(materialInfo.getMaterials());
             registerRecyclingRecipes(provider, itemStack, materialStacks, false, null);
         }

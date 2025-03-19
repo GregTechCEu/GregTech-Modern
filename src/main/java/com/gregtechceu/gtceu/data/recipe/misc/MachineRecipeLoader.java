@@ -83,14 +83,6 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true)
                 .save(provider);
 
-        FORMING_PRESS_RECIPES.recipeBuilder("doge_coin")
-                .duration(100).EUt(16)
-                .notConsumable(SHAPE_MOLD_CREDIT)
-                .inputItems(PLATE, Brass, 1)
-                .outputItems(COIN_DOGE, 4)
-                .addMaterialInfo(true)
-                .save(provider);
-
         for (ItemEntry<Item> shapeMold : SHAPE_MOLDS) {
             FORMING_PRESS_RECIPES.recipeBuilder("copy_mold_" + shapeMold.get())
                     .duration(120).EUt(22)

@@ -67,7 +67,8 @@ public class SecondDegreeMaterials {
         Opal = new Material.Builder(GTCEu.id("opal"))
                 .gem().ore()
                 .color(0xf9e3ea).secondaryColor(0x16bbe0).iconSet(OPAL)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DECOMPOSITION_BY_CENTRIFUGING)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
+                        DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 1)
                 .buildAndRegister();
 
@@ -172,14 +173,16 @@ public class SecondDegreeMaterials {
         GarnetRed = new Material.Builder(GTCEu.id("red_garnet"))
                 .gem().ore(4, 1)
                 .color(0x950c15).secondaryColor(0x510b04).iconSet(RUBY)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DECOMPOSITION_BY_CENTRIFUGING)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
+                        DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Pyrope, 3, Almandine, 5, Spessartine, 8)
                 .buildAndRegister();
 
         GarnetYellow = new Material.Builder(GTCEu.id("yellow_garnet"))
                 .gem().ore(4, 1)
                 .color(0xf6ff09).secondaryColor(0xe7a800).iconSet(RUBY)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DECOMPOSITION_BY_CENTRIFUGING)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
+                        DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Andradite, 5, Grossular, 8, Uvarovite, 3)
                 .buildAndRegister();
 

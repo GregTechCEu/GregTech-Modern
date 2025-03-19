@@ -1379,8 +1379,8 @@ public class GTRecipeBuilder {
             if (currOutput instanceof Ingredient ingredient) {
                 if (ingredient.getItems().length > 0) {
                     out = ingredient.getItems()[0].getItem();
+                    outputCount = ingredient.getItems()[0].getCount();
                 }
-                outputCount = ingredient.getItems()[0].getCount();
             }
 
             if (out == null || out == Items.AIR) {

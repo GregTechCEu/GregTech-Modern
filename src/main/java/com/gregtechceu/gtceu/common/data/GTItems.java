@@ -123,10 +123,6 @@ public class GTItems {
             .lang("Ancient Gold Coin").properties(p -> p.rarity(Rarity.RARE))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
             .register();
-    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("doge_coin", Item::new).lang("Doge Coin")
-            .properties(p -> p.rarity(Rarity.EPIC))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
-            .register();
     public static ItemEntry<ComponentItem> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", ComponentItem::create)
             .lang("Chocolate Coin")
             .properties(p -> p.rarity(Rarity.EPIC))
@@ -412,7 +408,6 @@ public class GTItems {
                             GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false,
                             false, false, true),
                     new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE
             .item("aluminium_fluid_cell", ComponentItem::create)
@@ -424,7 +419,6 @@ public class GTItems {
                             GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
                             false, false, false, true),
                     new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE
             .item("stainless_steel_fluid_cell", ComponentItem::create)
@@ -436,8 +430,6 @@ public class GTItems {
                             GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
-            .onRegister(
-                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE
             .item("titanium_fluid_cell", ComponentItem::create)
@@ -449,7 +441,6 @@ public class GTItems {
                             GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
                             false, false, false, true),
                     new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE
             .item("tungstensteel_fluid_cell", ComponentItem::create)
@@ -462,8 +453,6 @@ public class GTItems {
                             GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
                             true, false, false, false, true),
                     new ItemFluidContainer()))
-            .onRegister(
-                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::create)
             .lang("%s Glass Vial")
@@ -474,7 +463,6 @@ public class GTItems {
                             ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1200, false, true, false, false,
                                     true),
                             new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4))))
             .register();
 
     public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
