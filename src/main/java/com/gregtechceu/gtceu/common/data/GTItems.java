@@ -59,6 +59,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 
+import com.google.common.base.Preconditions;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
@@ -425,10 +426,9 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
-        if (prop == null) {
-            GTCEu.LOGGER.error("Material {} does not have any fluid props!", mat.getName());
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(prop != null,
+                "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
+                mat.getName());
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
                 .lang("%s " + toEnglishName(mat.getName()) + " Cell")
