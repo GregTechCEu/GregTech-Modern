@@ -15,6 +15,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.Objects;
 public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachine {
 
     private AABB grindBound;
+    @Nullable
+    private List<NotifiableItemStackHandler> holders = null;
 
     public LargeMacerationTowerMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -34,6 +37,14 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     public void onStructureFormed() {
         super.onStructureFormed();
         updateBounds();
+        holders = Objects
+                .requireNonNullElseGet(getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .filter(handler -> !handler.isProxy())
+                .filter(NotifiableItemStackHandler.class::isInstance)
+                .map(NotifiableItemStackHandler.class::cast)
+                .toList();
     }
 
     @Override
@@ -45,18 +56,6 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     @Override
     public void onLoad() {
         super.onLoad();
-        updateBounds();
-    }
-
-    @Override
-    public void setFrontFacing(Direction facing) {
-        super.setFrontFacing(facing);
-        updateBounds();
-    }
-
-    @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
-        super.setUpwardsFacing(upwardsFacing);
         updateBounds();
     }
 
@@ -79,19 +78,12 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
         if (isRemote() || getLevel() == null) return;
         getLevel().getEntities(null, grindBound).forEach(
                 e -> e.hurt(e.damageSources().cramming(), 2.0f));
-        var holders = Objects
-                .requireNonNullElseGet(getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .filter(handler -> !handler.isProxy())
-                .filter(NotifiableItemStackHandler.class::isInstance)
-                .map(NotifiableItemStackHandler.class::cast)
-                .toList();
+
 
         List<ItemEntity> items = getLevel().getEntitiesOfClass(ItemEntity.class, grindBound);
         for (ItemEntity item : items) {
-            if (item.isRemoved()) continue;
-
+            if (item.isRemoved() || holder == null) continue;
+            assert holders != null;
             for (var holder : holders) {
                 item.setItem(ItemHandlerHelper.insertItem(holder, item.getItem(), false));
                 if (item.getItem().isEmpty()) {
