@@ -29,36 +29,36 @@ public class PartsRecipeHandler {
     private PartsRecipeHandler() {}
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        ROD.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processStick);
-        ROD_LONG.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processLongStick);
-        PLATE.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlate);
-        PLATE_DOUBLE.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDouble);
-        PLATE_DENSE.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlateDense);
+        rod.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processStick);
+        rodLong.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processLongStick);
+        plate.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlate);
+        plateDouble.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDouble);
+        plateDense.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlateDense);
 
-        TURBINE_BLADE.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processTurbine);
-        ROTOR.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRotor);
-        BOLT.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processBolt);
-        SCREW.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processScrew);
-        WIRE_FINE.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFineWire);
-        FOIL.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFoil);
-        LENS.executeHandler(provider, PropertyKey.GEM, PartsRecipeHandler::processLens);
+        turbineBlade.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processTurbine);
+        rotor.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRotor);
+        bolt.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processBolt);
+        screw.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processScrew);
+        wireFine.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFineWire);
+        foil.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFoil);
+        lens.executeHandler(provider, PropertyKey.GEM, PartsRecipeHandler::processLens);
 
-        GEAR.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
-        GEAR_SMALL.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
-        RING.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRing);
-        SPRING_SMALL.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpringSmall);
-        SPRING.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpring);
-        ROUND.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRound);
+        gear.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
+        gearSmall.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
+        ring.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRing);
+        springSmall.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpringSmall);
+        spring.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpring);
+        round.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRound);
     }
 
     public static void processBolt(TagPrefix boltPrefix, Material material, DustProperty property,
                                    Consumer<FinishedRecipe> provider) {
         ItemStack boltStack = ChemicalHelper.get(boltPrefix, material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
-        ItemStack ingotStack = ChemicalHelper.get(INGOT, material);
+        ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
-                .inputItems(SCREW, material)
+                .inputItems(screw, material)
                 .outputItems(boltStack)
                 .duration(20)
                 .EUt(24)
@@ -66,7 +66,7 @@ public class PartsRecipeHandler {
 
         if (!boltStack.isEmpty() && !ingotStack.isEmpty()) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_bolt")
-                    .inputItems(INGOT, material)
+                    .inputItems(ingot, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
                     .outputItems(GTUtil.copyAmount(8, boltStack))
                     .duration(15)
@@ -75,7 +75,7 @@ public class PartsRecipeHandler {
 
             if (material.hasFlag(NO_SMASHING)) {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_bolt")
-                        .inputItems(DUST, material)
+                        .inputItems(dust, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
                         .outputItems(GTUtil.copyAmount(8, boltStack))
                         .duration(15)
@@ -91,7 +91,7 @@ public class PartsRecipeHandler {
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_bolt_to_screw")
-                .inputItems(BOLT, material)
+                .inputItems(bolt, material)
                 .outputItems(screwStack)
                 .duration((int) Math.max(1, material.getMass() / 8L))
                 .EUt(4)
@@ -99,7 +99,7 @@ public class PartsRecipeHandler {
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("screw_%s", material.getName()),
                 screwStack, "fX", "X ",
-                'X', new MaterialEntry(BOLT, material));
+                'X', new MaterialEntry(bolt, material));
     }
 
     public static void processFoil(TagPrefix foilPrefix, Material material, IngotProperty property,
@@ -109,10 +109,10 @@ public class PartsRecipeHandler {
         if (!material.hasFlag(NO_SMASHING))
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("foil_%s", material.getName()),
                     ChemicalHelper.get(foilPrefix, material, 2),
-                    "hP ", 'P', new MaterialEntry(PLATE, magMaterial));
+                    "hP ", 'P', new MaterialEntry(plate, magMaterial));
 
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_foil")
-                .inputItems(PLATE, material)
+                .inputItems(plate, material)
                 .outputItems(foilPrefix, magMaterial, 4)
                 .duration((int) material.getMass())
                 .EUt(24)
@@ -120,7 +120,7 @@ public class PartsRecipeHandler {
                 .save(provider);
 
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_foil")
-                .inputItems(INGOT, material)
+                .inputItems(ingot, material)
                 .outputItems(foilPrefix, magMaterial, 4)
                 .duration((int) material.getMass())
                 .EUt(24)
@@ -129,7 +129,7 @@ public class PartsRecipeHandler {
 
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_foil")
-                    .inputItems(INGOT, material)
+                    .inputItems(ingot, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_FOIL)
                     .outputItems(foilPrefix, magMaterial, 4)
                     .duration((int) material.getMass())
@@ -137,7 +137,7 @@ public class PartsRecipeHandler {
                     .save(provider);
 
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_foil")
-                    .inputItems(DUST, material)
+                    .inputItems(dust, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_FOIL)
                     .outputItems(foilPrefix, magMaterial, 4)
                     .duration((int) material.getMass())
@@ -151,20 +151,20 @@ public class PartsRecipeHandler {
         ItemStack fineWireStack = ChemicalHelper.get(fineWirePrefix, material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
 
-        if (!ChemicalHelper.get(FOIL, material).isEmpty())
+        if (!ChemicalHelper.get(foil, material).isEmpty())
             VanillaRecipeHelper.addShapelessRecipe(provider, String.format("fine_wire_%s", material.getName()),
-                    fineWireStack, 'x', new MaterialEntry(FOIL, material));
+                    fineWireStack, 'x', new MaterialEntry(foil, material));
 
         if (material.hasProperty(PropertyKey.WIRE)) {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_to_fine_wire")
-                    .inputItems(WIRE_GT_SINGLE, material)
+                    .inputItems(wireGtSingle, material)
                     .outputItems(GTUtil.copyAmount(4, fineWireStack))
                     .duration((int) material.getMass() * 3 / 2)
                     .EUt(VA[ULV])
                     .save(provider);
         } else {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "ingot_to_fine_wire")
-                    .inputItems(INGOT, material)
+                    .inputItems(ingot, material)
                     .outputItems(GTUtil.copyAmount(8, fineWireStack))
                     .duration((int) material.getMass() * 3)
                     .EUt(VA[ULV])
@@ -176,10 +176,10 @@ public class PartsRecipeHandler {
                                    Consumer<FinishedRecipe> provider) {
         ItemStack stack = ChemicalHelper.get(gearPrefix, material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
-        if (gearPrefix == GEAR && material.hasProperty(PropertyKey.INGOT)) {
+        if (gearPrefix == gear && material.hasProperty(PropertyKey.INGOT)) {
             int voltageMultiplier = getVoltageMultiplier(material);
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
-                    .inputItems(INGOT, material, 4)
+                    .inputItems(ingot, material, 4)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
                     .outputItems(stack)
                     .duration((int) material.getMass() * 5)
@@ -187,7 +187,7 @@ public class PartsRecipeHandler {
                     .save(provider);
 
             ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_ingot_to_gear")
-                    .inputItems(INGOT, material, 8)
+                    .inputItems(ingot, material, 8)
                     .notConsumable(GTItems.SHAPE_MOLD_GEAR)
                     .outputItems(stack)
                     .duration((int) material.getMass() * 10)
@@ -197,7 +197,7 @@ public class PartsRecipeHandler {
 
             if (material.hasFlag(NO_SMASHING)) {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_gear")
-                        .inputItems(DUST, material, 4)
+                        .inputItems(dust, material, 4)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
                         .outputItems(stack)
                         .duration((int) material.getMass() * 5)
@@ -207,7 +207,7 @@ public class PartsRecipeHandler {
         }
 
         if (material.hasFluid()) {
-            boolean isSmall = gearPrefix == GEAR_SMALL;
+            boolean isSmall = gearPrefix == gearSmall;
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + gearPrefix.name)
                     .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
                     .inputFluids(material.getFluid(L * (isSmall ? 1 : 4)))
@@ -218,14 +218,14 @@ public class PartsRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD)) {
-            if (gearPrefix == GEAR_SMALL) {
+            if (gearPrefix == gearSmall) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_gear_%s", material.getName()),
                         stack,
-                        " R ", "hPx", " R ", 'R', new MaterialEntry(ROD, material), 'P',
-                        new MaterialEntry(PLATE, material));
+                        " R ", "hPx", " R ", 'R', new MaterialEntry(rod, material), 'P',
+                        new MaterialEntry(plate, material));
 
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_small_gear")
-                        .inputItems(INGOT, material)
+                        .inputItems(ingot, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
                         .outputItems(stack)
                         .duration((int) material.getMass())
@@ -234,7 +234,7 @@ public class PartsRecipeHandler {
 
                 ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_ingot_to_small_gear")
                         .duration((int) material.getMass()).EUt(VA[LV])
-                        .inputItems(INGOT, material, 2)
+                        .inputItems(ingot, material, 2)
                         .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                         .outputItems(stack)
                         .category(GTRecipeCategories.INGOT_MOLDING)
@@ -242,7 +242,7 @@ public class PartsRecipeHandler {
 
                 if (material.hasFlag(NO_SMASHING)) {
                     EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_small_gear")
-                            .inputItems(DUST, material)
+                            .inputItems(dust, material)
                             .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
                             .outputItems(stack)
                             .duration((int) material.getMass())
@@ -252,8 +252,8 @@ public class PartsRecipeHandler {
             } else {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("gear_%s", material.getName()), stack,
                         "RPR", "PwP", "RPR",
-                        'P', new MaterialEntry(PLATE, material),
-                        'R', new MaterialEntry(ROD, material));
+                        'P', new MaterialEntry(plate, material),
+                        'R', new MaterialEntry(rod, material));
             }
         }
     }
@@ -263,16 +263,16 @@ public class PartsRecipeHandler {
         ItemStack stack = ChemicalHelper.get(lensPrefix, material);
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_plate_to_lens")
-                .inputItems(PLATE, material)
-                .outputItems(LENS, material)
-                .outputItems(DUST_SMALL, material)
+                .inputItems(plate, material)
+                .outputItems(lens, material)
+                .outputItems(dustSmall, material)
                 .duration(1200).EUt(120).save(provider);
 
-        if (!ChemicalHelper.get(GEM_EXQUISITE, material).isEmpty()) {
+        if (!ChemicalHelper.get(gemExquisite, material).isEmpty()) {
             LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_gem_to_lens")
-                    .inputItems(GEM_EXQUISITE, material)
-                    .outputItems(LENS, material)
-                    .outputItems(DUST, material, 2)
+                    .inputItems(gemExquisite, material)
+                    .outputItems(lens, material)
+                    .outputItems(dust, material, 2)
                     .duration(2400).EUt(30).save(provider);
         }
     }
@@ -298,18 +298,18 @@ public class PartsRecipeHandler {
             if (!material.hasFlag(NO_SMASHING)) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_double_%s", material.getName()),
                         ChemicalHelper.get(doublePrefix, magMaterial),
-                        "h", "P", "P", 'P', new MaterialEntry(PLATE, material));
+                        "h", "P", "P", 'P', new MaterialEntry(plate, material));
             }
 
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_double_plate")
                     .EUt(96).duration((int) material.getMass() * 2)
-                    .inputItems(PLATE, material, 2)
+                    .inputItems(plate, material, 2)
                     .outputItems(doublePrefix, magMaterial)
                     .circuitMeta(2)
                     .save(provider);
 
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_double_plate")
-                    .inputItems(INGOT, material, 2)
+                    .inputItems(ingot, material, 2)
                     .circuitMeta(2)
                     .outputItems(doublePrefix, magMaterial)
                     .duration((int) material.getMass() * 2)
@@ -323,7 +323,7 @@ public class PartsRecipeHandler {
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
-                .inputItems(PLATE, material, 9)
+                .inputItems(plate, material, 9)
                 .circuitMeta(9)
                 .outputItems(tagPrefix, magMaterial)
                 .duration((int) Math.max(material.getMass() * 9L, 1L))
@@ -332,7 +332,7 @@ public class PartsRecipeHandler {
 
         if (material.hasProperty(PropertyKey.INGOT)) {
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_dense_plate")
-                    .inputItems(INGOT, material, 9)
+                    .inputItems(ingot, material, 9)
                     .circuitMeta(9)
                     .outputItems(tagPrefix, magMaterial)
                     .duration((int) Math.max(material.getMass() * 9L, 1L))
@@ -344,7 +344,7 @@ public class PartsRecipeHandler {
     public static void processRing(TagPrefix ringPrefix, Material material, IngotProperty property,
                                    Consumer<FinishedRecipe> provider) {
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_ring")
-                .inputItems(INGOT, material)
+                .inputItems(ingot, material)
                 .notConsumable(GTItems.SHAPE_EXTRUDER_RING)
                 .outputItems(ringPrefix, material, 4)
                 .duration((int) material.getMass() * 2)
@@ -355,10 +355,10 @@ public class PartsRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material.getName()),
                     ChemicalHelper.get(ringPrefix, material),
                     "h ", " X",
-                    'X', new MaterialEntry(ROD, material));
+                    'X', new MaterialEntry(rod, material));
         } else {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_ring")
-                    .inputItems(DUST, material)
+                    .inputItems(dust, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_RING)
                     .outputItems(ringPrefix, material, 4)
                     .duration((int) material.getMass() * 2)
@@ -370,13 +370,13 @@ public class PartsRecipeHandler {
     public static void processSpringSmall(TagPrefix springPrefix, Material material, IngotProperty property,
                                           Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.getName()),
-                ChemicalHelper.get(SPRING_SMALL, material),
-                " s ", "fRx", 'R', new MaterialEntry(ROD, material));
+                ChemicalHelper.get(springSmall, material),
+                " s ", "fRx", 'R', new MaterialEntry(rod, material));
 
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_rod_to_small_spring")
                 .duration((int) (material.getMass() / 2)).EUt(VA[ULV])
-                .inputItems(ROD, material)
-                .outputItems(SPRING_SMALL, material, 2)
+                .inputItems(rod, material)
+                .outputItems(springSmall, material, 2)
                 .circuitMeta(1)
                 .save(provider);
     }
@@ -384,16 +384,16 @@ public class PartsRecipeHandler {
     public static void processSpring(TagPrefix springPrefix, Material material, IngotProperty property,
                                      Consumer<FinishedRecipe> provider) {
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_long_rod_to_spring")
-                .inputItems(ROD_LONG, material)
-                .outputItems(SPRING, material)
+                .inputItems(rodLong, material)
+                .outputItems(spring, material)
                 .circuitMeta(1)
                 .duration(200)
                 .EUt(16)
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.getName()),
-                ChemicalHelper.get(SPRING, material),
-                " s ", "fRx", " R ", 'R', new MaterialEntry(ROD_LONG, material));
+                ChemicalHelper.get(spring, material),
+                " s ", "fRx", " R ", 'R', new MaterialEntry(rodLong, material));
     }
 
     public static void processRotor(TagPrefix rotorPrefix, Material material, IngotProperty property,
@@ -401,9 +401,9 @@ public class PartsRecipeHandler {
         ItemStack stack = ChemicalHelper.get(rotorPrefix, material);
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("rotor_%s", material.getName()), stack,
                 "ChC", "SRf", "CdC",
-                'C', new MaterialEntry(PLATE, material),
-                'S', new MaterialEntry(SCREW, material),
-                'R', new MaterialEntry(RING, material));
+                'C', new MaterialEntry(plate, material),
+                'S', new MaterialEntry(screw, material),
+                'R', new MaterialEntry(ring, material));
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_rotor")
@@ -416,7 +416,7 @@ public class PartsRecipeHandler {
         }
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_rotor")
-                .inputItems(INGOT, material, 4)
+                .inputItems(ingot, material, 4)
                 .notConsumable(GTItems.SHAPE_EXTRUDER_ROTOR)
                 .outputItems(GTUtil.copy(stack))
                 .duration((int) material.getMass() * 4)
@@ -425,7 +425,7 @@ public class PartsRecipeHandler {
 
         if (material.hasFlag(NO_SMASHING)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_rotor")
-                    .inputItems(DUST, material, 4)
+                    .inputItems(dust, material, 4)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_ROTOR)
                     .outputItems(GTUtil.copy(stack))
                     .duration((int) material.getMass() * 4)
@@ -438,23 +438,23 @@ public class PartsRecipeHandler {
                                     Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.GEM) || material.hasProperty(PropertyKey.INGOT)) {
             GTRecipeBuilder builder = LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_to_rod")
-                    .inputItems(material.hasProperty(PropertyKey.GEM) ? GEM : INGOT, material)
+                    .inputItems(material.hasProperty(PropertyKey.GEM) ? gem : ingot, material)
                     .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
             var materialOutput = material.hasFlag(IS_MAGNETIC) ?
                     material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
             if (ConfigHolder.INSTANCE.recipes.harderRods) {
-                builder.outputItems(ROD, materialOutput);
-                builder.outputItems(DUST_SMALL, materialOutput, 2);
+                builder.outputItems(rod, materialOutput);
+                builder.outputItems(dustSmall, materialOutput, 2);
             } else {
-                builder.outputItems(ROD, materialOutput, 2);
+                builder.outputItems(rod, materialOutput, 2);
             }
             builder.save(provider);
         }
 
         if (material.hasFlag(GENERATE_BOLT_SCREW)) {
-            ItemStack boltStack = ChemicalHelper.get(BOLT, material.hasFlag(IS_MAGNETIC) ?
+            ItemStack boltStack = ChemicalHelper.get(bolt, material.hasFlag(IS_MAGNETIC) ?
                     material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
             CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_rod_to_bolt")
                     .inputItems(stickPrefix, material)
@@ -466,7 +466,7 @@ public class PartsRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("bolt_saw_%s", material.getName()),
                     GTUtil.copyAmount(2, boltStack),
                     "s ", " X",
-                    'X', new MaterialEntry(ROD, material));
+                    'X', new MaterialEntry(rod, material));
         }
     }
 
@@ -474,7 +474,7 @@ public class PartsRecipeHandler {
                                         Consumer<FinishedRecipe> provider) {
         ItemStack stack = ChemicalHelper.get(longStickPrefix, material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
-        ItemStack stickStack = ChemicalHelper.get(ROD, material.hasFlag(IS_MAGNETIC) ?
+        ItemStack stickStack = ChemicalHelper.get(rod, material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_long_rod_to_rod")
@@ -485,7 +485,7 @@ public class PartsRecipeHandler {
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_%s", material.getName()),
                 GTUtil.copyAmount(2, stickStack),
-                "s", "X", 'X', new MaterialEntry(ROD_LONG, material));
+                "s", "X", 'X', new MaterialEntry(rodLong, material));
 
         if (material.hasProperty(PropertyKey.GEM)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
@@ -493,22 +493,22 @@ public class PartsRecipeHandler {
                     stickStack,
                     "sf",
                     "G ",
-                    'G', new MaterialEntry(GEM_FLAWLESS, material));
+                    'G', new MaterialEntry(gemFlawless, material));
 
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("stick_long_gem_exquisite_%s", material.getName()),
                     GTUtil.copyAmount(2, stickStack),
                     "sf", "G ",
-                    'G', new MaterialEntry(GEM_EXQUISITE, material));
+                    'G', new MaterialEntry(gemExquisite, material));
 
         }
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_stick_%s", material.getName()), stack,
                 "ShS",
-                'S', new MaterialEntry(ROD, material));
+                'S', new MaterialEntry(rod, material));
 
         FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_rod_to_long_rod")
-                .inputItems(ROD, material, 2)
+                .inputItems(rod, material, 2)
                 .outputItems(stack)
                 .duration((int) Math.max(material.getMass(), 1L))
                 .EUt(16)
@@ -516,7 +516,7 @@ public class PartsRecipeHandler {
 
         if (material.hasProperty(PropertyKey.INGOT)) {
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_long_rod")
-                    .inputItems(INGOT, material)
+                    .inputItems(ingot, material)
                     .notConsumable(GTItems.SHAPE_EXTRUDER_ROD_LONG)
                     .outputItems(stack)
                     .duration((int) Math.max(material.getMass(), 1L))
@@ -525,7 +525,7 @@ public class PartsRecipeHandler {
 
             if (material.hasFlag(NO_SMASHING)) {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_long_rod")
-                        .inputItems(DUST, material)
+                        .inputItems(dust, material)
                         .notConsumable(GTItems.SHAPE_EXTRUDER_ROD_LONG)
                         .outputItems(stack)
                         .duration((int) Math.max(material.getMass(), 1L))
@@ -542,16 +542,16 @@ public class PartsRecipeHandler {
         TurbineRotorBehaviour.getBehaviour(rotorStack).setPartMaterial(rotorStack, material);
 
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_turbine_blade")
-                .inputItems(TURBINE_BLADE, material, 8)
-                .inputItems(ROD_LONG, GTMaterials.Magnalium)
+                .inputItems(turbineBlade, material, 8)
+                .inputItems(rodLong, GTMaterials.Magnalium)
                 .outputItems(rotorStack)
                 .duration(200)
                 .EUt(400)
                 .save(provider);
 
         FORMING_PRESS_RECIPES.recipeBuilder("press_" + material.getName() + "_turbine_rotor")
-                .inputItems(PLATE_DOUBLE, material, 5)
-                .inputItems(SCREW, material, 2)
+                .inputItems(plateDouble, material, 5)
+                .inputItems(screw, material, 2)
                 .outputItems(toolPrefix, material)
                 .duration(20)
                 .EUt(256)
@@ -560,8 +560,8 @@ public class PartsRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("turbine_blade_%s", material.getName()),
                 ChemicalHelper.get(toolPrefix, material),
                 "PPP", "SPS", "fPd",
-                'P', new MaterialEntry(PLATE_DOUBLE, material),
-                'S', new MaterialEntry(SCREW, material));
+                'P', new MaterialEntry(plateDouble, material),
+                'S', new MaterialEntry(screw, material));
     }
 
     public static void processRound(TagPrefix roundPrefix, Material material, IngotProperty property,
@@ -571,18 +571,18 @@ public class PartsRecipeHandler {
         if (!material.hasFlag(NO_SMASHING)) {
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_%s", material.getName()),
-                    ChemicalHelper.get(ROUND, outputMaterial),
-                    "fN", "Nh", 'N', new MaterialEntry(NUGGET, material));
+                    ChemicalHelper.get(round, outputMaterial),
+                    "fN", "Nh", 'N', new MaterialEntry(nugget, material));
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_from_ingot_%s", material.getName()),
-                    ChemicalHelper.get(ROUND, outputMaterial, 4),
-                    "fIh", 'I', new MaterialEntry(INGOT, material));
+                    ChemicalHelper.get(round, outputMaterial, 4),
+                    "fIh", 'I', new MaterialEntry(ingot, material));
         }
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_nugget_to_round")
                 .EUt(VA[ULV]).duration(100)
-                .inputItems(NUGGET, material)
-                .outputItems(ROUND, outputMaterial)
+                .inputItems(nugget, material)
+                .outputItems(round, outputMaterial)
                 .save(provider);
     }
 

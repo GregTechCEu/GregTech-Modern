@@ -432,17 +432,17 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
-                return entry.tagPrefix() == TagPrefix.PLANKS;
+                return entry.tagPrefix() == TagPrefix.planks;
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix() == TagPrefix.PLATE) {
+            if (entry.tagPrefix() == TagPrefix.plate) {
                 return true;
             }
             if (entry.material().hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix() == TagPrefix.INGOT;
+                return entry.tagPrefix() == TagPrefix.ingot;
             }
             if (entry.material().hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix() == TagPrefix.GEM;
+                return entry.tagPrefix() == TagPrefix.gem;
             }
         }
         return false;
@@ -728,13 +728,13 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 Collection<Component> repairItems = new ArrayList<>();
                 if (!VanillaRecipeHelper.isMaterialWood(material)) {
                     if (material.hasProperty(PropertyKey.INGOT)) {
-                        repairItems.add(TagPrefix.INGOT.getLocalizedName(material));
+                        repairItems.add(TagPrefix.ingot.getLocalizedName(material));
                     } else if (material.hasProperty(PropertyKey.GEM)) {
-                        repairItems.add(TagPrefix.GEM.getLocalizedName(material));
+                        repairItems.add(TagPrefix.gem.getLocalizedName(material));
                     }
                 }
-                if (!ChemicalHelper.get(TagPrefix.PLATE, material).isEmpty()) {
-                    repairItems.add(TagPrefix.PLATE.getLocalizedName(material));
+                if (!ChemicalHelper.get(TagPrefix.plate, material).isEmpty()) {
+                    repairItems.add(TagPrefix.plate.getLocalizedName(material));
                 }
                 if (!repairItems.isEmpty()) {
                     tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream()

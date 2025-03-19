@@ -50,7 +50,7 @@ public abstract class VeinGenerator {
 
     public List<BlockState> getAllBlocks() {
         return getAllEntries().stream().map(entry -> entry.getKey().map(Function.identity(),
-                material -> ChemicalHelper.getBlock(TagPrefix.ORE, material).defaultBlockState())).toList();
+                material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState())).toList();
     }
 
     public List<Material> getAllMaterials() {

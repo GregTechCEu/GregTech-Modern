@@ -7,8 +7,8 @@ import net.minecraft.world.item.DyeColor;
 
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.BLOCK;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.PLATE;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.block;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plate;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LARGE_METAL_SHEETS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.METAL_SHEETS;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.STUDS;
@@ -30,24 +30,24 @@ public class DecorationRecipes {
 
     private static void assemblerRecipes(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("metal_sheet_white")
-                .inputItems(BLOCK, Concrete, 5)
-                .inputItems(PLATE, Iron, 2)
+                .inputItems(block, Concrete, 5)
+                .inputItems(plate, Iron, 2)
                 .circuitMeta(8)
                 .outputItems(METAL_SHEETS.get(DyeColor.WHITE), 32)
                 .EUt(4).duration(20)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("large_metal_sheet_white")
-                .inputItems(BLOCK, Concrete, 5)
-                .inputItems(PLATE, Iron, 4)
+                .inputItems(block, Concrete, 5)
+                .inputItems(plate, Iron, 4)
                 .circuitMeta(9)
                 .outputItems(LARGE_METAL_SHEETS.get(DyeColor.WHITE), 32)
                 .EUt(4).duration(20)
                 .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("studs_black")
-                .inputItems(BLOCK, Concrete, 3)
-                .inputItems(PLATE, Rubber, 3)
+                .inputItems(block, Concrete, 3)
+                .inputItems(plate, Rubber, 3)
                 .circuitMeta(8)
                 .outputItems(STUDS.get(DyeColor.BLACK), 32)
                 .EUt(4).duration(20)

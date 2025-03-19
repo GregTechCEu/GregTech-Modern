@@ -20,7 +20,7 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
     public GTBedrockOreEmiCategory() {
         super(GTCEu.id("bedrock_ore_diagram"),
-                EmiStack.of(ChemicalHelper.get(TagPrefix.RAW_ORE, GTMaterials.Tungstate)));
+                EmiStack.of(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Tungstate)));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

@@ -47,13 +47,13 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class WireRecipeHandler {
 
     private static final Map<TagPrefix, Integer> INSULATION_AMOUNT = ImmutableMap.of(
-            CABLE_GT_SINGLE, 1,
-            CABLE_GT_DOUBLE, 1,
-            CABLE_GT_QUADRUPLE, 2,
-            CABLE_GT_OCTAL, 3,
-            CABLE_GT_HEX, 5);
+            cableGtSingle, 1,
+            cableGtDouble, 1,
+            cableGtQuadruple, 2,
+            cableGtOctal, 3,
+            cableGtHex, 5);
 
-    private static final TagPrefix[] wireSizes = { WIRE_GT_DOUBLE, WIRE_GT_QUADRUPLE, WIRE_GT_OCTAL, WIRE_GT_HEX };
+    private static final TagPrefix[] wireSizes = {wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex};
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
@@ -61,25 +61,25 @@ public class WireRecipeHandler {
         // Wiremill: 1x Wire -> Fine
         // Extruder: Ingot -> 1x Wire
         // Wire Cutter: Plate -> 1x Wire
-        WIRE_GT_SINGLE.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
 
         // Generate Cable Covering Recipes
-        WIRE_GT_SINGLE.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        WIRE_GT_DOUBLE.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        WIRE_GT_QUADRUPLE.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        WIRE_GT_OCTAL.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        WIRE_GT_HEX.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtDouble.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtQuadruple.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtOctal.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
     }
 
     public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
                                     Consumer<FinishedRecipe> provider) {
-        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? INGOT :
-                material.hasProperty(PropertyKey.GEM) ? GEM : DUST;
+        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
+                material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
                 .inputItems(prefix, material)
                 .notConsumable(GTItems.SHAPE_EXTRUDER_WIRE)
-                .outputItems(WIRE_GT_SINGLE, material, 2)
+                .outputItems(wireGtSingle, material, 2)
                 .duration((int) material.getMass() * 2)
                 .EUt(6L * getVoltageMultiplier(material))
                 .save(provider);
@@ -87,7 +87,7 @@ public class WireRecipeHandler {
         WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire")
                 .inputItems(prefix, material)
                 .circuitMeta(1)
-                .outputItems(WIRE_GT_SINGLE, material, 2)
+                .outputItems(wireGtSingle, material, 2)
                 .duration((int) material.getMass())
                 .EUt(getVoltageMultiplier(material))
                 .save(provider);
@@ -107,7 +107,7 @@ public class WireRecipeHandler {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_fine")
                     .inputItems(prefix, material, 1)
                     .circuitMeta(3)
-                    .outputItems(WIRE_FINE, material, 8)
+                    .outputItems(wireFine, material, 8)
                     .duration((int) material.getMass() * 3)
                     .EUt(getVoltageMultiplier(material))
                     .save(provider);
@@ -115,8 +115,8 @@ public class WireRecipeHandler {
 
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material.getName()),
-                    ChemicalHelper.get(WIRE_GT_SINGLE, material), "Xx",
-                    'X', new MaterialEntry(PLATE, material));
+                    ChemicalHelper.get(wireGtSingle, material), "Xx",
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -145,7 +145,7 @@ public class WireRecipeHandler {
                     .inputFluids(Rubber, L * insulationAmount);
 
             if (voltageTier == EV) {
-                builder.inputItems(FOIL, PolyvinylChloride, insulationAmount);
+                builder.inputItems(foil, PolyvinylChloride, insulationAmount);
             }
             builder.save(provider);
         }
@@ -159,12 +159,12 @@ public class WireRecipeHandler {
 
         // Apply a Polyphenylene Sulfate Foil if LuV or above.
         if (voltageTier >= LuV) {
-            builder.inputItems(FOIL, PolyphenyleneSulfide, insulationAmount);
+            builder.inputItems(foil, PolyphenyleneSulfide, insulationAmount);
         }
 
         // Apply a PVC Foil if EV or above.
         if (voltageTier >= EV) {
-            builder.inputItems(FOIL, PolyvinylChloride, insulationAmount);
+            builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
         builder.inputFluids(SiliconeRubber.getFluid(L * insulationAmount / 2))
@@ -179,12 +179,12 @@ public class WireRecipeHandler {
 
         // Apply a Polyphenylene Sulfate Foil if LuV or above.
         if (voltageTier >= LuV) {
-            builder.inputItems(FOIL, PolyphenyleneSulfide, insulationAmount);
+            builder.inputItems(foil, PolyphenyleneSulfide, insulationAmount);
         }
 
         // Apply a PVC Foil if EV or above.
         if (voltageTier >= EV) {
-            builder.inputItems(FOIL, PolyvinylChloride, insulationAmount);
+            builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
         builder.inputFluids(StyreneButadieneRubber.getFluid(L * insulationAmount / 4))
@@ -197,7 +197,7 @@ public class WireRecipeHandler {
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new MaterialEntry(wirePrefix, material);
         for (int i = 1; i <= insulationAmount; i++) {
-            ingredients[i] = ChemicalHelper.get(PLATE, Rubber);
+            ingredients[i] = ChemicalHelper.get(plate, Rubber);
         }
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_cable_%d", material.getName(), cableAmount),
                 ChemicalHelper.get(cablePrefix, material),
@@ -205,7 +205,7 @@ public class WireRecipeHandler {
 
         PACKER_RECIPES.recipeBuilder("cover_" + material.getName() + "_" + wirePrefix)
                 .inputItems(wirePrefix, material)
-                .inputItems(PLATE, Rubber, insulationAmount)
+                .inputItems(plate, Rubber, insulationAmount)
                 .outputItems(cablePrefix, material)
                 .duration(100).EUt(VA[ULV])
                 .save(provider);

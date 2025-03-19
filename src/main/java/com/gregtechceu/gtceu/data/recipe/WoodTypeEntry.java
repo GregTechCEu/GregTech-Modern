@@ -225,7 +225,7 @@ public final class WoodTypeEntry {
             return Tags.Items.RODS_WOODEN;
         } else {
             // noinspection DataFlowIssue is valid.
-            return ChemicalHelper.getTag(TagPrefix.ROD, this.material);
+            return ChemicalHelper.getTag(TagPrefix.rod, this.material);
         }
     }
 

@@ -418,7 +418,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             } else {
                 if (frameMaterial != null) {
                     Block.popResource(getLevel(), getPipePos(),
-                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, frameMaterial).asStack());
+                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = null;
                     playerIn.swing(hand);
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);

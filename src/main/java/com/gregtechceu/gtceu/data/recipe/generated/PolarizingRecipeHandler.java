@@ -20,9 +20,9 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 public class PolarizingRecipeHandler {
 
     private static final TagPrefix[] POLARIZING_PREFIXES = new TagPrefix[] {
-            ROD, ROD_LONG, PLATE, INGOT, PLATE_DENSE, PLATE_DOUBLE, ROTOR,
-            BOLT, SCREW, WIRE_FINE, FOIL, RING, DUST, NUGGET, BLOCK,
-            DUST_TINY, DUST_SMALL };
+            rod, rodLong, plate, ingot, plateDense, plateDouble, rotor,
+            bolt, screw, wireFine, foil, ring, dust, nugget, block,
+            dustTiny, dustSmall};
 
     public static void init(Consumer<FinishedRecipe> provider) {
         for (TagPrefix orePrefix : POLARIZING_PREFIXES) {

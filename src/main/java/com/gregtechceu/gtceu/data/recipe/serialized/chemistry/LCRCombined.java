@@ -5,7 +5,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 
@@ -57,8 +57,8 @@ public class LCRCombined {
                 .circuitMeta(24)
                 .inputFluids(Benzene.getFluid(2000))
                 .inputFluids(Chlorine.getFluid(4000))
-                .inputItems(DUST, SodiumHydroxide, 6)
-                .outputItems(DUST, Salt, 4)
+                .inputItems(dust, SodiumHydroxide, 6)
+                .outputItems(dust, Salt, 4)
                 .outputFluids(Phenol.getFluid(2000))
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(1120).EUt(VA[LV]).save(provider);
@@ -86,7 +86,7 @@ public class LCRCombined {
 
         LARGE_CHEMICAL_RECIPES.recipeBuilder("acetone_shortcut")
                 .inputFluids(AceticAcid.getFluid(3000))
-                .notConsumable(DUST, Quicklime)
+                .notConsumable(dust, Quicklime)
                 .circuitMeta(24)
                 .outputFluids(Acetone.getFluid(2000))
                 .outputFluids(Oxygen.getFluid(1000))

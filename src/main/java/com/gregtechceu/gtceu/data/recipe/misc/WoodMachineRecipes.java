@@ -340,12 +340,12 @@ public class WoodMachineRecipes {
     public static void registerWoodMaterialInfo(@NotNull WoodTypeEntry entry) {
         for (var log_ : entry.getLogs()) {
             if (log_ != null && entry.addLogOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(LOG, entry.material, log_);
+                ItemMaterialData.registerMaterialInfoItems(log, entry.material, log_);
             }
         }
 
         if (entry.addPlanksOreDict) {
-            ItemMaterialData.registerMaterialInfoItems(PLANKS, entry.material, entry.planks);
+            ItemMaterialData.registerMaterialInfoItems(planks, entry.material, entry.planks);
         }
         if (entry.addPlanksMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.planks,
@@ -354,7 +354,7 @@ public class WoodMachineRecipes {
 
         if (entry.door != null) {
             if (entry.addDoorsOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(DOOR, entry.material, entry.door);
+                ItemMaterialData.registerMaterialInfoItems(door, entry.material, entry.door);
             }
             if (entry.addDoorsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.door, ConfigHolder.INSTANCE.recipes.hardWoodRecipes ?
@@ -366,7 +366,7 @@ public class WoodMachineRecipes {
 
         if (entry.slab != null) {
             if (entry.addSlabsOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(SLAB, entry.material, entry.slab);
+                ItemMaterialData.registerMaterialInfoItems(slab, entry.material, entry.slab);
             }
             if (entry.addSlabsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
@@ -376,7 +376,7 @@ public class WoodMachineRecipes {
 
         if (entry.fence != null) {
             if (entry.addFencesOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(FENCE, entry.material, entry.fence);
+                ItemMaterialData.registerMaterialInfoItems(fence, entry.material, entry.fence);
             }
             if (entry.addFencesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fence,
@@ -386,7 +386,7 @@ public class WoodMachineRecipes {
 
         if (entry.fenceGate != null) {
             if (entry.addFenceGatesOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(FENCE_GATE, entry.material, entry.fenceGate);
+                ItemMaterialData.registerMaterialInfoItems(fenceGate, entry.material, entry.fenceGate);
             }
             if (entry.addFenceGatesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fenceGate,
@@ -396,7 +396,7 @@ public class WoodMachineRecipes {
 
         if (entry.stairs != null) {
             if (entry.addStairsOreDict) {
-                ItemMaterialData.registerMaterialInfoItems(STAIRS, entry.material, entry.stairs);
+                ItemMaterialData.registerMaterialInfoItems(stairs, entry.material, entry.stairs);
             }
             if (entry.addStairsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stairs,
@@ -445,15 +445,15 @@ public class WoodMachineRecipes {
             LATHE_RECIPES.recipeBuilder("strip_" + name + "_log")
                     .inputItems(entry.log)
                     .outputItems(entry.strippedLog)
-                    .outputItems(DUST, Wood, 1)
+                    .outputItems(dust, Wood, 1)
                     .duration(160).EUt(VA[ULV])
                     .save(provider);
 
             // lathe stripped log
             LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_log")
                     .inputItems(entry.strippedLog)
-                    .outputItems(ROD_LONG, Wood, 4)
-                    .outputItems(DUST, Wood, 1)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
                     .duration(160).EUt(VA[ULV])
                     .save(provider);
         }
@@ -463,15 +463,15 @@ public class WoodMachineRecipes {
             LATHE_RECIPES.recipeBuilder("strip_" + name + "_wood")
                     .inputItems(entry.wood)
                     .outputItems(entry.strippedWood)
-                    .outputItems(DUST, Wood, 1)
+                    .outputItems(dust, Wood, 1)
                     .duration(160).EUt(VA[ULV])
                     .save(provider);
 
             // lathe stripped wood
             LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_wood")
                     .inputItems(entry.strippedWood)
-                    .outputItems(ROD_LONG, Wood, 4)
-                    .outputItems(DUST, Wood, 1)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
                     .duration(160).EUt(VA[ULV])
                     .save(provider);
         }
@@ -495,7 +495,7 @@ public class WoodMachineRecipes {
             CUTTER_RECIPES.recipeBuilder(name + "_planks")
                     .inputItems(logTag)
                     .outputItems(new ItemStack(entry.planks, 6))
-                    .outputItems(DUST, Wood, 2)
+                    .outputItems(dust, Wood, 2)
                     .duration(200)
                     .EUt(VA[ULV])
                     .save(provider);
@@ -513,8 +513,8 @@ public class WoodMachineRecipes {
                             "PTd", "PRS", "PPs",
                             'P', entry.planks,
                             'T', entry.trapdoor,
-                            'R', new MaterialEntry(RING, Iron),
-                            'S', new MaterialEntry(SCREW, Iron));
+                            'R', new MaterialEntry(ring, Iron),
+                            'S', new MaterialEntry(screw, Iron));
 
                     // plank -> door assembling
                     ASSEMBLER_RECIPES.recipeBuilder(name + "_door")
@@ -529,8 +529,8 @@ public class WoodMachineRecipes {
                             "PTd", "PRS", "PPs",
                             'P', entry.planks,
                             'T', ItemTags.WOODEN_TRAPDOORS,
-                            'R', new MaterialEntry(RING, Iron),
-                            'S', new MaterialEntry(SCREW, Iron));
+                            'R', new MaterialEntry(ring, Iron),
+                            'S', new MaterialEntry(screw, Iron));
 
                     // plank -> door assembling
                     ASSEMBLER_RECIPES.recipeBuilder(name + "_door")
@@ -565,7 +565,7 @@ public class WoodMachineRecipes {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.sign),
                         "LLL", "RPR", "sSd",
                         'P', entry.planks,
-                        'R', new MaterialEntry(SCREW, Iron),
+                        'R', new MaterialEntry(screw, Iron),
                         'L', entry.slab,
                         'S', entry.getStick());
 
@@ -581,7 +581,7 @@ public class WoodMachineRecipes {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.sign, 2),
                         "LLL", "RPR", "sSd",
                         'P', entry.planks,
-                        'R', new MaterialEntry(SCREW, Steel),
+                        'R', new MaterialEntry(screw, Steel),
                         'L', entry.slab,
                         'S', entry.getStick());
 
@@ -618,7 +618,7 @@ public class WoodMachineRecipes {
                     VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging, new ItemStack(entry.hangingSign),
                             "LLL", "C C", "RSR",
                             'C', Items.CHAIN,
-                            'R', new MaterialEntry(RING, Iron),
+                            'R', new MaterialEntry(ring, Iron),
                             'S', new ItemStack(entry.sign),
                             'L', new ItemStack(entry.slab));
 
@@ -626,7 +626,7 @@ public class WoodMachineRecipes {
                             new ItemStack(entry.hangingSign, 2),
                             "LLL", "C C", "RSR",
                             'C', Items.CHAIN,
-                            'R', new MaterialEntry(RING, Steel),
+                            'R', new MaterialEntry(ring, Steel),
                             'S', new ItemStack(entry.sign),
                             'L', new ItemStack(entry.slab));
 
@@ -664,7 +664,7 @@ public class WoodMachineRecipes {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.trapdoor),
                         "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'B', new MaterialEntry(BOLT, Iron),
+                        'B', new MaterialEntry(bolt, Iron),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
@@ -678,7 +678,7 @@ public class WoodMachineRecipes {
                 VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.trapdoor, 2),
                         "BPS", "PdP", "SPB",
                         'P', entry.planks,
-                        'B', new MaterialEntry(BOLT, Steel),
+                        'B', new MaterialEntry(bolt, Steel),
                         'S', entry.getStick());
 
                 // plank -> trapdoor assembling
@@ -790,7 +790,7 @@ public class WoodMachineRecipes {
                         "IdI", "SPS", "SPS",
                         'P', entry.planks,
                         'S', entry.getStick(),
-                        'I', new MaterialEntry(SCREW, Iron));
+                        'I', new MaterialEntry(screw, Iron));
             } else {
                 if (!hasFenceGateRecipe) {
                     VanillaRecipeHelper.addShapedRecipe(provider, name + "_fence_gate", new ItemStack(entry.fenceGate),
@@ -847,7 +847,7 @@ public class WoodMachineRecipes {
                             new ItemStack(entry.chestBoat),
                             " B ", "SCS", " w ",
                             'B', entry.boat,
-                            'S', new MaterialEntry(BOLT, Wood),
+                            'S', new MaterialEntry(bolt, Wood),
                             'C', Tags.Items.CHESTS_WOODEN);
                 } else {
                     VanillaRecipeHelper.addShapelessRecipe(provider, recipeName,
@@ -895,13 +895,13 @@ public class WoodMachineRecipes {
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                 VanillaRecipeHelper.addShapedRecipe(provider, name + "_pressure_plate",
                         new ItemStack(entry.pressurePlate, 2), "SrS", "LCL", "SdS",
-                        'S', new MaterialEntry(BOLT, GTMaterials.Wood),
+                        'S', new MaterialEntry(bolt, GTMaterials.Wood),
                         'L', entry.slab.asItem(),
-                        'C', new MaterialEntry(SPRING, GTMaterials.Iron));
+                        'C', new MaterialEntry(spring, GTMaterials.Iron));
 
                 ASSEMBLER_RECIPES.recipeBuilder(name + "_pressure_plate")
                         .inputItems(new ItemStack(entry.slab, 2))
-                        .inputItems(SPRING, Iron)
+                        .inputItems(spring, Iron)
                         .outputItems(entry.pressurePlate)
                         .circuitMeta(7)
                         .duration(100).EUt(VA[ULV]).save(provider);
@@ -927,12 +927,12 @@ public class WoodMachineRecipes {
      */
     private static void registerGTWoodRecipes(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
-                ChemicalHelper.get(ROD, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
+                ChemicalHelper.get(rod, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
                 "L", "L",
                 'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw",
-                    ChemicalHelper.get(ROD, TreatedWood, 4),
+                    ChemicalHelper.get(rod, TreatedWood, 4),
                     "s", "L", "L",
                     'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
@@ -1118,38 +1118,38 @@ public class WoodMachineRecipes {
         // Heavy Oil
         PYROLYSE_RECIPES.recipeBuilder("log_to_heavy_oil").circuitMeta(3)
                 .inputItems(ItemTags.LOGS_THAT_BURN, 16)
-                .outputItems(DUST, Ash, 4)
+                .outputItems(dust, Ash, 4)
                 .outputFluids(OilHeavy.getFluid(200))
                 .duration(320).EUt(192)
                 .save(provider);
 
         // Creosote
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coke_creosote").circuitMeta(1)
-                .inputItems(GEM, Coal, 16)
-                .outputItems(GEM, Coke, 16)
+                .inputItems(gem, Coal, 16)
+                .outputItems(gem, Coke, 16)
                 .outputFluids(Creosote.getFluid(8000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coke_creosote_nitrogen").circuitMeta(2)
-                .inputItems(GEM, Coal, 16)
+                .inputItems(gem, Coal, 16)
                 .inputFluids(Nitrogen.getFluid(1000))
-                .outputItems(GEM, Coke, 16)
+                .outputItems(gem, Coke, 16)
                 .outputFluids(Creosote.getFluid(8000))
                 .duration(320).EUt(96)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_block_to_coke_creosote").circuitMeta(1)
-                .inputItems(BLOCK, Coal, 8)
-                .outputItems(BLOCK, Coke, 8)
+                .inputItems(block, Coal, 8)
+                .outputItems(block, Coke, 8)
                 .outputFluids(Creosote.getFluid(32000))
                 .duration(2560).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_block_to_coke_creosote_nitrogen").circuitMeta(2)
-                .inputItems(BLOCK, Coal, 8)
+                .inputItems(block, Coal, 8)
                 .inputFluids(Nitrogen.getFluid(1000))
-                .outputItems(BLOCK, Coke, 8)
+                .outputItems(block, Coke, 8)
                 .outputFluids(Creosote.getFluid(32000))
                 .duration(1280).EUt(96)
                 .save(provider);
@@ -1171,16 +1171,16 @@ public class WoodMachineRecipes {
 
         // Sugar to Charcoal
         PYROLYSE_RECIPES.recipeBuilder("sugar_to_charcoal").circuitMeta(1)
-                .inputItems(DUST, Sugar, 23)
-                .outputItems(DUST, Charcoal, 12)
+                .inputItems(dust, Sugar, 23)
+                .outputItems(dust, Charcoal, 12)
                 .outputFluids(Water.getFluid(1500))
                 .duration(320).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("sugar_to_charcoal_nitrogen").circuitMeta(2)
-                .inputItems(DUST, Sugar, 23)
+                .inputItems(dust, Sugar, 23)
                 .inputFluids(Nitrogen.getFluid(500))
-                .outputItems(DUST, Charcoal, 12)
+                .outputItems(dust, Charcoal, 12)
                 .outputFluids(Water.getFluid(1500))
                 .duration(160).EUt(96)
                 .save(provider);
@@ -1198,17 +1198,17 @@ public class WoodMachineRecipes {
 
         // From Coal
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coal_gas").circuitMeta(22)
-                .inputItems(GEM, Coal, 16)
+                .inputItems(gem, Coal, 16)
                 .inputFluids(Steam.getFluid(1000))
-                .outputItems(GEM, Coke, 16)
+                .outputItems(gem, Coke, 16)
                 .outputFluids(CoalGas.getFluid(4000))
                 .duration(320).EUt(96)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_block_to_coal_gas").circuitMeta(22)
-                .inputItems(BLOCK, Coal, 8)
+                .inputItems(block, Coal, 8)
                 .inputFluids(Steam.getFluid(4000))
-                .outputItems(BLOCK, Coke, 8)
+                .outputItems(block, Coke, 8)
                 .outputFluids(CoalGas.getFluid(16000))
                 .duration(1280).EUt(96)
                 .save(provider);
@@ -1216,21 +1216,21 @@ public class WoodMachineRecipes {
         // COAL TAR ============================================
         PYROLYSE_RECIPES.recipeBuilder("charcoal_to_coal_tar").circuitMeta(8)
                 .inputItems(Items.CHARCOAL, 32)
-                .chancedOutput(DUST, Ash, 5000, 0)
+                .chancedOutput(dust, Ash, 5000, 0)
                 .outputFluids(CoalTar.getFluid(1000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coal_tar").circuitMeta(8)
                 .inputItems(Items.COAL, 12)
-                .chancedOutput(DUST, DarkAsh, 5000, 0)
+                .chancedOutput(dust, DarkAsh, 5000, 0)
                 .outputFluids(CoalTar.getFluid(3000))
                 .duration(320).EUt(96)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coke_to_coal_tar").circuitMeta(8)
-                .inputItems(GEM, Coke, 8)
-                .chancedOutput(DUST, Ash, 7500, 0)
+                .inputItems(gem, Coke, 8)
+                .chancedOutput(dust, Ash, 7500, 0)
                 .outputFluids(CoalTar.getFluid(4000))
                 .duration(320).EUt(96)
                 .save(provider);

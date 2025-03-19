@@ -21,16 +21,16 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 public class RecyclingRecipeHandler {
 
     private static final List<Object> CRUSHING_PREFIXES = Arrays.asList(
-            INGOT, GEM, ROD, PLATE, RING, ROD_LONG, FOIL, BOLT, SCREW,
-            NUGGET, GEAR_SMALL, GEAR, FRAME_GT, PLATE_DENSE, SPRING, SPRING_SMALL,
-            BLOCK, WIRE_FINE, ROTOR, LENS, TURBINE_BLADE, ROUND, PLATE_DOUBLE, DUST,
+            ingot, gem, rod, plate, ring, rodLong, foil, bolt, screw,
+            nugget, gearSmall, gear, frameGt, plateDense, spring, springSmall,
+            block, wireFine, rotor, lens, turbineBlade, round, plateDouble, dust,
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("toolHead"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().contains("Gem"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("cableGt"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("wireGt"),
             (Predicate<TagPrefix>) orePrefix -> orePrefix.name().startsWith("pipe"));
 
-    private static final List<TagPrefix> IGNORE_ARC_SMELTING = Arrays.asList(INGOT, GEM, NUGGET);
+    private static final List<TagPrefix> IGNORE_ARC_SMELTING = Arrays.asList(ingot, gem, nugget);
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // registers universal maceration recipes for specified ore prefixes

@@ -71,8 +71,8 @@ public enum StoneTypes implements StringRepresentable {
         return switch (this) {
             // case RED_GRANITE, MARBLE ->
             // TagPrefix.ore;
-            case CONCRETE_LIGHT, CONCRETE_DARK -> TagPrefix.BLOCK;
-            default -> TagPrefix.BLOCK;
+            case CONCRETE_LIGHT, CONCRETE_DARK -> TagPrefix.block;
+            default -> TagPrefix.block;
         };
     }
 

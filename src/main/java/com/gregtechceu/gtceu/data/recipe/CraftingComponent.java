@@ -160,219 +160,219 @@ public class CraftingComponent {
 
         WIRE_ELECTRIC = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Gold) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Gold) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Silver) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Electrum) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Osmium) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Osmium) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Osmium) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Osmium) },
-                { 9, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Osmium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Gold) },
+                { 1, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Gold) },
+                { 2, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Silver) },
+                { 3, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Electrum) },
+                { 4, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 6, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 7, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 8, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 9, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         WIRE_QUAD = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Lead) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Tungsten) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead) },
+                { 1, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tungsten) },
+                { 6, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         WIRE_OCT = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Lead) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Tungsten) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Lead) },
+                { 1, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Tungsten) },
+                { 6, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         WIRE_HEX = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Lead) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Tungsten) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.WIRE_GT_HEX, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Lead) },
+                { 1, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Tungsten) },
+                { 6, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.wireGtHex, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.RedAlloy) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Platinum) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy) },
+                { 1, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum) },
+                { 6, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_DOUBLE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.RedAlloy) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Platinum) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy) },
+                { 1, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum) },
+                { 6, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_QUAD = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.RedAlloy) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Platinum) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy) },
+                { 1, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum) },
+                { 6, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_OCT = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.RedAlloy) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Platinum) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy) },
+                { 1, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Platinum) },
+                { 6, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_HEX = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.RedAlloy) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Platinum) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy) },
+                { 1, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Platinum) },
+                { 6, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_TIER_UP = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Gold) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Aluminium) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.NiobiumTitanium) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.VanadiumGallium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.YttriumBariumCuprate) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_SINGLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Gold) },
+                { 3, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium) },
+                { 4, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium) },
+                { 6, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate) },
+                { 8, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_TIER_UP_DOUBLE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Gold) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Aluminium) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.NiobiumTitanium) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.VanadiumGallium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.YttriumBariumCuprate) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_DOUBLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Gold) },
+                { 3, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium) },
+                { 4, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium) },
+                { 6, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate) },
+                { 8, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_TIER_UP_QUAD = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Gold) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Aluminium) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.NiobiumTitanium) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.VanadiumGallium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.YttriumBariumCuprate) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_QUADRUPLE, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold) },
+                { 3, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium) },
+                { 4, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 6, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+                { 8, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_TIER_UP_OCT = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Gold) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Aluminium) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.NiobiumTitanium) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.VanadiumGallium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.YttriumBariumCuprate) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_OCTAL, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Gold) },
+                { 3, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Aluminium) },
+                { 4, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.NiobiumTitanium) },
+                { 6, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.VanadiumGallium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.YttriumBariumCuprate) },
+                { 8, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtOctal, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         CABLE_TIER_UP_HEX = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Gold) },
-                { 3, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Aluminium) },
-                { 4, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Platinum) },
-                { 5, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.NiobiumTitanium) },
-                { 6, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.VanadiumGallium) },
-                { 7, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.YttriumBariumCuprate) },
-                { 8, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Europium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.CABLE_GT_HEX, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Gold) },
+                { 3, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium) },
+                { 4, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Platinum) },
+                { 5, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium) },
+                { 6, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium) },
+                { 7, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate) },
+                { 8, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -428,42 +428,42 @@ public class CraftingComponent {
 
         PIPE_NORMAL = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Bronze) },
-                { 1, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Bronze) },
-                { 2, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Steel) },
-                { 3, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.StainlessSteel) },
-                { 4, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Titanium) },
-                { 5, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Iridium) },
-                { 8, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Naquadah) },
-                { FALLBACK, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Naquadah) },
+                { 0, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze) },
+                { 1, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze) },
+                { 2, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel) },
+                { 3, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.StainlessSteel) },
+                { 4, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Titanium) },
+                { 5, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Iridium) },
+                { 8, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah) },
+                { FALLBACK, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PIPE_LARGE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Bronze) },
-                { 1, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Bronze) },
-                { 2, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Steel) },
-                { 3, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.StainlessSteel) },
-                { 4, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Titanium) },
-                { 5, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Ultimet) },
-                { 8, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Naquadah) },
-                { FALLBACK, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Neutronium) },
+                { 0, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze) },
+                { 1, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze) },
+                { 2, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel) },
+                { 3, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel) },
+                { 4, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Titanium) },
+                { 5, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Ultimet) },
+                { 8, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Naquadah) },
+                { FALLBACK, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Neutronium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         PIPE_NONUPLE = new Component(Stream.of(new Object[][] {
 
-                { 4, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.Titanium) },
-                { 5, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.Iridium) },
-                { 8, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.Naquadah) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.PIPE_NONUPLE_FLUID, GTMaterials.Neutronium) },
+                { 4, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Titanium) },
+                { 5, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Iridium) },
+                { 8, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Naquadah) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Neutronium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -490,32 +490,32 @@ public class CraftingComponent {
 
         PLATE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.PLATE, GTMaterials.WroughtIron) },
-                { 1, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Steel) },
-                { 2, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Aluminium) },
-                { 3, new MaterialEntry(TagPrefix.PLATE, GTMaterials.StainlessSteel) },
-                { 4, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Titanium) },
-                { 5, new MaterialEntry(TagPrefix.PLATE, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.PLATE, GTMaterials.RhodiumPlatedPalladium) },
-                { 7, new MaterialEntry(TagPrefix.PLATE, GTMaterials.NaquadahAlloy) },
-                { 8, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Darmstadtium) },
-                { 9, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Neutronium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Neutronium) },
+                { 0, new MaterialEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 1, new MaterialEntry(TagPrefix.plate, GTMaterials.Steel) },
+                { 2, new MaterialEntry(TagPrefix.plate, GTMaterials.Aluminium) },
+                { 3, new MaterialEntry(TagPrefix.plate, GTMaterials.StainlessSteel) },
+                { 4, new MaterialEntry(TagPrefix.plate, GTMaterials.Titanium) },
+                { 5, new MaterialEntry(TagPrefix.plate, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium) },
+                { 7, new MaterialEntry(TagPrefix.plate, GTMaterials.NaquadahAlloy) },
+                { 8, new MaterialEntry(TagPrefix.plate, GTMaterials.Darmstadtium) },
+                { 9, new MaterialEntry(TagPrefix.plate, GTMaterials.Neutronium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.plate, GTMaterials.Neutronium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         HULL_PLATE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Wood) },
-                { 1, new MaterialEntry(TagPrefix.PLATE, GTMaterials.WroughtIron) },
-                { 2, new MaterialEntry(TagPrefix.PLATE, GTMaterials.WroughtIron) },
-                { 3, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polyethylene) },
-                { 4, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polyethylene) },
-                { 5, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polytetrafluoroethylene) },
-                { 6, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polytetrafluoroethylene) },
-                { 7, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polybenzimidazole) },
-                { 8, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polybenzimidazole) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.PLATE, GTMaterials.Polybenzimidazole) },
+                { 0, new MaterialEntry(TagPrefix.plate, GTMaterials.Wood) },
+                { 1, new MaterialEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 2, new MaterialEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 3, new MaterialEntry(TagPrefix.plate, GTMaterials.Polyethylene) },
+                { 4, new MaterialEntry(TagPrefix.plate, GTMaterials.Polyethylene) },
+                { 5, new MaterialEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene) },
+                { 6, new MaterialEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene) },
+                { 7, new MaterialEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
+                { 8, new MaterialEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -545,16 +545,16 @@ public class CraftingComponent {
 
         ROTOR = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Bronze) },
-                { 3, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Steel) },
-                { 4, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.StainlessSteel) },
-                { 5, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.RhodiumPlatedPalladium) },
-                { 7, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.NaquadahAlloy) },
-                { 8, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Darmstadtium) },
-                { FALLBACK, new MaterialEntry(TagPrefix.ROTOR, GTMaterials.Darmstadtium) },
+                { 0, new MaterialEntry(TagPrefix.rotor, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.rotor, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.rotor, GTMaterials.Bronze) },
+                { 3, new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel) },
+                { 4, new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel) },
+                { 5, new MaterialEntry(TagPrefix.rotor, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.rotor, GTMaterials.RhodiumPlatedPalladium) },
+                { 7, new MaterialEntry(TagPrefix.rotor, GTMaterials.NaquadahAlloy) },
+                { 8, new MaterialEntry(TagPrefix.rotor, GTMaterials.Darmstadtium) },
+                { FALLBACK, new MaterialEntry(TagPrefix.rotor, GTMaterials.Darmstadtium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -584,9 +584,9 @@ public class CraftingComponent {
 
         GRINDER = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.GEM, GTMaterials.Diamond) },
-                { 1, new MaterialEntry(TagPrefix.GEM, GTMaterials.Diamond) },
-                { 2, new MaterialEntry(TagPrefix.GEM, GTMaterials.Diamond) },
+                { 0, new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond) },
+                { 1, new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond) },
+                { 2, new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond) },
                 { 3, GTItems.COMPONENT_GRINDER_DIAMOND.asStack() },
                 { 4, GTItems.COMPONENT_GRINDER_DIAMOND.asStack() },
                 { 5, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack() },
@@ -596,22 +596,22 @@ public class CraftingComponent {
 
         SAWBLADE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.Bronze) },
-                { 1, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.CobaltBrass) },
-                { 2, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.VanadiumSteel) },
-                { 3, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.RedSteel) },
-                { 4, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.Ultimet) },
-                { 5, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.TungstenCarbide) },
-                { 6, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.HSSE) },
-                { 7, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.NaquadahAlloy) },
-                { 8, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.Duranium) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.TOOL_HEAD_BUZZ_SAW, GTMaterials.Duranium) },
+                { 0, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze) },
+                { 1, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.CobaltBrass) },
+                { 2, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.VanadiumSteel) },
+                { 3, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.RedSteel) },
+                { 4, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Ultimet) },
+                { 5, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.TungstenCarbide) },
+                { 6, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.HSSE) },
+                { 7, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.NaquadahAlloy) },
+                { 8, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         DIAMOND = new Component(Stream.of(new Object[][] {
 
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.GEM, GTMaterials.Diamond) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -712,74 +712,74 @@ public class CraftingComponent {
 
         COIL_HEATING = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Copper) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Cupronickel) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Kanthal) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Nichrome) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.RTMAlloy) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.HSSG) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Naquadah) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.NaquadahAlloy) },
-                { FALLBACK, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Trinium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 1, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Cupronickel) },
+                { 3, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal) },
+                { 4, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Nichrome) },
+                { 5, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.RTMAlloy) },
+                { 6, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.HSSG) },
+                { 7, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Naquadah) },
+                { 8, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.NaquadahAlloy) },
+                { FALLBACK, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Trinium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         COIL_HEATING_DOUBLE = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Copper) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Cupronickel) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Kanthal) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Nichrome) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.RTMAlloy) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.HSSG) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Naquadah) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.NaquadahAlloy) },
-                { FALLBACK, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Trinium) },
+                { 0, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 1, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Cupronickel) },
+                { 3, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Kanthal) },
+                { 4, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Nichrome) },
+                { 5, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.RTMAlloy) },
+                { 6, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.HSSG) },
+                { 7, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Naquadah) },
+                { 8, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.NaquadahAlloy) },
+                { FALLBACK, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Trinium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         COIL_ELECTRIC = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.WIRE_GT_SINGLE, GTMaterials.Tin) },
-                { 1, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.WIRE_GT_DOUBLE, GTMaterials.Silver) },
-                { 4, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Steel) },
-                { 5, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.Graphene) },
-                { 6, new MaterialEntry(TagPrefix.WIRE_GT_QUADRUPLE, GTMaterials.NiobiumNitride) },
-                { 7, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.WIRE_GT_OCTAL, GTMaterials.YttriumBariumCuprate) },
+                { 0, new MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Tin) },
+                { 1, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Silver) },
+                { 4, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Steel) },
+                { 5, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.Graphene) },
+                { 6, new MaterialEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumNitride) },
+                { 7, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_MAGNETIC = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.ROD, GTMaterials.IronMagnetic) },
-                { 1, new MaterialEntry(TagPrefix.ROD, GTMaterials.IronMagnetic) },
-                { 2, new MaterialEntry(TagPrefix.ROD, GTMaterials.SteelMagnetic) },
-                { 3, new MaterialEntry(TagPrefix.ROD, GTMaterials.SteelMagnetic) },
-                { 4, new MaterialEntry(TagPrefix.ROD, GTMaterials.NeodymiumMagnetic) },
-                { 5, new MaterialEntry(TagPrefix.ROD, GTMaterials.NeodymiumMagnetic) },
-                { 6, new MaterialEntry(TagPrefix.ROD_LONG, GTMaterials.NeodymiumMagnetic) },
-                { 7, new MaterialEntry(TagPrefix.ROD_LONG, GTMaterials.NeodymiumMagnetic) },
-                { 8, new MaterialEntry(TagPrefix.BLOCK, GTMaterials.NeodymiumMagnetic) },
+                { 0, new MaterialEntry(TagPrefix.rod, GTMaterials.IronMagnetic) },
+                { 1, new MaterialEntry(TagPrefix.rod, GTMaterials.IronMagnetic) },
+                { 2, new MaterialEntry(TagPrefix.rod, GTMaterials.SteelMagnetic) },
+                { 3, new MaterialEntry(TagPrefix.rod, GTMaterials.SteelMagnetic) },
+                { 4, new MaterialEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic) },
+                { 5, new MaterialEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic) },
+                { 6, new MaterialEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic) },
+                { 7, new MaterialEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic) },
+                { 8, new MaterialEntry(TagPrefix.block, GTMaterials.NeodymiumMagnetic) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_DISTILLATION = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.ROD, GTMaterials.Blaze) },
-                { 1, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Copper) },
-                { 2, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Cupronickel) },
-                { 3, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Kanthal) },
-                { 4, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Nichrome) },
-                { 5, new MaterialEntry(TagPrefix.SPRING, GTMaterials.RTMAlloy) },
-                { 6, new MaterialEntry(TagPrefix.SPRING, GTMaterials.HSSG) },
-                { 7, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Naquadah) },
-                { 8, new MaterialEntry(TagPrefix.SPRING, GTMaterials.NaquadahAlloy) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.ROD, GTMaterials.Blaze) },
+                { 0, new MaterialEntry(TagPrefix.rod, GTMaterials.Blaze) },
+                { 1, new MaterialEntry(TagPrefix.spring, GTMaterials.Copper) },
+                { 2, new MaterialEntry(TagPrefix.spring, GTMaterials.Cupronickel) },
+                { 3, new MaterialEntry(TagPrefix.spring, GTMaterials.Kanthal) },
+                { 4, new MaterialEntry(TagPrefix.spring, GTMaterials.Nichrome) },
+                { 5, new MaterialEntry(TagPrefix.spring, GTMaterials.RTMAlloy) },
+                { 6, new MaterialEntry(TagPrefix.spring, GTMaterials.HSSG) },
+                { 7, new MaterialEntry(TagPrefix.spring, GTMaterials.Naquadah) },
+                { 8, new MaterialEntry(TagPrefix.spring, GTMaterials.NaquadahAlloy) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.rod, GTMaterials.Blaze) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -808,22 +808,22 @@ public class CraftingComponent {
 
         STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.ROD, GTMaterials.Iron) },
-                { 1, new MaterialEntry(TagPrefix.ROD, GTMaterials.Iron) },
-                { 2, new MaterialEntry(TagPrefix.ROD, GTMaterials.Steel) },
-                { 3, new MaterialEntry(TagPrefix.ROD, GTMaterials.Steel) },
-                { 4, new MaterialEntry(TagPrefix.ROD, GTMaterials.Neodymium) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.ROD, GTMaterials.VanadiumGallium) },
+                { 0, new MaterialEntry(TagPrefix.rod, GTMaterials.Iron) },
+                { 1, new MaterialEntry(TagPrefix.rod, GTMaterials.Iron) },
+                { 2, new MaterialEntry(TagPrefix.rod, GTMaterials.Steel) },
+                { 3, new MaterialEntry(TagPrefix.rod, GTMaterials.Steel) },
+                { 4, new MaterialEntry(TagPrefix.rod, GTMaterials.Neodymium) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.rod, GTMaterials.VanadiumGallium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         STICK_RADIOACTIVE = new Component(Stream.of(new Object[][] {
 
-                { 4, new MaterialEntry(TagPrefix.ROD, GTMaterials.Uranium235) },
-                { 5, new MaterialEntry(TagPrefix.ROD, GTMaterials.Plutonium241) },
-                { 6, new MaterialEntry(TagPrefix.ROD, GTMaterials.NaquadahEnriched) },
-                { 7, new MaterialEntry(TagPrefix.ROD, GTMaterials.Americium) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.ROD, GTMaterials.Tritanium) },
+                { 4, new MaterialEntry(TagPrefix.rod, GTMaterials.Uranium235) },
+                { 5, new MaterialEntry(TagPrefix.rod, GTMaterials.Plutonium241) },
+                { 6, new MaterialEntry(TagPrefix.rod, GTMaterials.NaquadahEnriched) },
+                { 7, new MaterialEntry(TagPrefix.rod, GTMaterials.Americium) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.rod, GTMaterials.Tritanium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -832,13 +832,13 @@ public class CraftingComponent {
                 { 0, new ItemStack(Blocks.GLASS, 1) },
                 { 1, new ItemStack(Blocks.GLASS, 1) },
                 { 2, new ItemStack(Blocks.GLASS, 1) },
-                { 3, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Polyethylene) },
-                { 4, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Polyethylene) },
-                { 5, new MaterialEntry(TagPrefix.PIPE_HUGE_FLUID, GTMaterials.Polyethylene) },
-                { 6, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Polytetrafluoroethylene) },
-                { 7, new MaterialEntry(TagPrefix.PIPE_LARGE_FLUID, GTMaterials.Polytetrafluoroethylene) },
-                { 8, new MaterialEntry(TagPrefix.PIPE_HUGE_FLUID, GTMaterials.Polytetrafluoroethylene) },
-                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.PIPE_NORMAL_FLUID, GTMaterials.Polyethylene) },
+                { 3, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene) },
+                { 4, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polyethylene) },
+                { 5, new MaterialEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polyethylene) },
+                { 6, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polytetrafluoroethylene) },
+                { 7, new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene) },
+                { 8, new MaterialEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polytetrafluoroethylene) },
+                { GTValues.FALLBACK, new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -873,16 +873,16 @@ public class CraftingComponent {
 
         SPRING = new Component(Stream.of(new Object[][] {
 
-                { 0, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Lead) },
-                { 1, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Tin) },
-                { 2, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Copper) },
-                { 3, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Gold) },
-                { 4, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Aluminium) },
-                { 5, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Tungsten) },
-                { 6, new MaterialEntry(TagPrefix.SPRING, GTMaterials.NiobiumTitanium) },
-                { 7, new MaterialEntry(TagPrefix.SPRING, GTMaterials.VanadiumGallium) },
-                { 8, new MaterialEntry(TagPrefix.SPRING, GTMaterials.YttriumBariumCuprate) },
-                { 9, new MaterialEntry(TagPrefix.SPRING, GTMaterials.Europium) },
+                { 0, new MaterialEntry(TagPrefix.spring, GTMaterials.Lead) },
+                { 1, new MaterialEntry(TagPrefix.spring, GTMaterials.Tin) },
+                { 2, new MaterialEntry(TagPrefix.spring, GTMaterials.Copper) },
+                { 3, new MaterialEntry(TagPrefix.spring, GTMaterials.Gold) },
+                { 4, new MaterialEntry(TagPrefix.spring, GTMaterials.Aluminium) },
+                { 5, new MaterialEntry(TagPrefix.spring, GTMaterials.Tungsten) },
+                { 6, new MaterialEntry(TagPrefix.spring, GTMaterials.NiobiumTitanium) },
+                { 7, new MaterialEntry(TagPrefix.spring, GTMaterials.VanadiumGallium) },
+                { 8, new MaterialEntry(TagPrefix.spring, GTMaterials.YttriumBariumCuprate) },
+                { 9, new MaterialEntry(TagPrefix.spring, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
@@ -913,16 +913,16 @@ public class CraftingComponent {
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         FRAME = new Component(Stream.of(new Object[][] {
-                { 0, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Wood) },
-                { 1, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Steel) },
-                { 2, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Aluminium) },
-                { 3, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.StainlessSteel) },
-                { 4, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Titanium) },
-                { 5, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.TungstenSteel) },
-                { 6, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Ruridit) },
-                { 7, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.Iridium) },
-                { 8, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.NaquadahAlloy) },
-                { FALLBACK, new MaterialEntry(TagPrefix.FRAME_GT, GTMaterials.NaquadahAlloy) },
+                { 0, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Wood) },
+                { 1, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Steel) },
+                { 2, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Aluminium) },
+                { 3, new MaterialEntry(TagPrefix.frameGt, GTMaterials.StainlessSteel) },
+                { 4, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Titanium) },
+                { 5, new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel) },
+                { 6, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Ruridit) },
+                { 7, new MaterialEntry(TagPrefix.frameGt, GTMaterials.Iridium) },
+                { 8, new MaterialEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
+                { FALLBACK, new MaterialEntry(TagPrefix.frameGt, GTMaterials.NaquadahAlloy) },
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());

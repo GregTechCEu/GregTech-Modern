@@ -131,11 +131,11 @@ public class ChemicalHelper {
         if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0)
             return ItemStack.EMPTY;
         if (materialAmount % M == 0 || materialAmount >= M * 16)
-            return get(TagPrefix.DUST, material, (int) (materialAmount / M));
+            return get(TagPrefix.dust, material, (int) (materialAmount / M));
         else if ((materialAmount * 4) % M == 0 || materialAmount >= M * 8)
-            return get(TagPrefix.DUST_SMALL, material, (int) ((materialAmount * 4) / M));
+            return get(TagPrefix.dustSmall, material, (int) ((materialAmount * 4) / M));
         else if ((materialAmount * 9) >= M)
-            return get(TagPrefix.DUST_TINY, material, (int) ((materialAmount * 9) / M));
+            return get(TagPrefix.dustTiny, material, (int) ((materialAmount * 9) / M));
         return ItemStack.EMPTY;
     }
 
@@ -147,11 +147,11 @@ public class ChemicalHelper {
         if (!material.hasProperty(PropertyKey.INGOT) || materialAmount <= 0)
             return ItemStack.EMPTY;
         if (materialAmount % (M * 9) == 0)
-            return get(TagPrefix.BLOCK, material, (int) (materialAmount / (M * 9)));
+            return get(TagPrefix.block, material, (int) (materialAmount / (M * 9)));
         if (materialAmount % M == 0 || materialAmount >= M * 16)
-            return get(TagPrefix.INGOT, material, (int) (materialAmount / M));
+            return get(TagPrefix.ingot, material, (int) (materialAmount / M));
         else if ((materialAmount * 9) >= M)
-            return get(TagPrefix.NUGGET, material, (int) ((materialAmount * 9) / M));
+            return get(TagPrefix.nugget, material, (int) ((materialAmount * 9) / M));
         return ItemStack.EMPTY;
     }
 
@@ -171,9 +171,9 @@ public class ChemicalHelper {
 
     public static ItemStack getGem(MaterialStack materialStack) {
         if (materialStack.material().hasProperty(PropertyKey.GEM) &&
-                !TagPrefix.GEM.isIgnored(materialStack.material()) &&
-                materialStack.amount() == TagPrefix.GEM.getMaterialAmount(materialStack.material())) {
-            return get(TagPrefix.GEM, materialStack.material(), (int) (materialStack.amount() / M));
+                !TagPrefix.gem.isIgnored(materialStack.material()) &&
+                materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
+            return get(TagPrefix.gem, materialStack.material(), (int) (materialStack.amount() / M));
         }
         return getDust(materialStack);
     }

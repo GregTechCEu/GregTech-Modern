@@ -315,13 +315,13 @@ public abstract class ProspectorMode<T> {
             Material material = item.material;
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material);
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.CRUSHED, material); // backup 1: crushed; if raw
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material); // backup 1: crushed; if raw
                                                                                           // ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.GEM, material); // backup 2: gem; if crushed ore
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material); // backup 2: gem; if crushed ore
                                                                                       // doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ORE, material); // backup 3: ore; if gem doesn't
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: ore; if gem doesn't
                                                                                       // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.DUST, material); // backup 4: just fallback to
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material); // backup 4: just fallback to
                                                                                        // dust...
             return new ItemStackTexture(stack).scale(0.8f);
         }

@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.DUST;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CENTRIFUGE_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTROLYZER_RECIPES;
 
@@ -30,7 +30,7 @@ public class DecompositionRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            var prefix = material.hasProperty(PropertyKey.DUST) ? DUST : null;
+            var prefix = material.hasProperty(PropertyKey.DUST) ? dust : null;
             processDecomposition(prefix, material, provider);
         }
     }
@@ -53,7 +53,7 @@ public class DecompositionRecipeHandler {
         for (MaterialStack component : material.getMaterialComponents()) {
             totalInputAmount += component.amount();
             if (component.material().hasProperty(PropertyKey.DUST)) {
-                outputs.add(ChemicalHelper.get(DUST, component.material(), (int) component.amount()));
+                outputs.add(ChemicalHelper.get(dust, component.material(), (int) component.amount()));
             } else if (component.material().hasProperty(PropertyKey.FLUID)) {
                 fluidOutputs.add(component.material().getFluid((int) (1000 * component.amount())));
             }

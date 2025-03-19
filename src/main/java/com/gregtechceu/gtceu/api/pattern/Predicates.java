@@ -265,7 +265,7 @@ public class Predicates {
      */
     public static TraceabilityPredicate frames(Material... frameMaterials) {
         return blocks(
-                Arrays.stream(frameMaterials).map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, m))
+                Arrays.stream(frameMaterials).map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                         .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                         .toArray(Block[]::new))
                 .or(new TraceabilityPredicate(blockWorldState -> {
@@ -275,7 +275,7 @@ public class Predicates {
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
                 }, () -> Arrays.stream(frameMaterials)
-                        .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, m))
+                        .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                         .filter(Objects::nonNull).filter(RegistryEntry::isPresent).map(RegistryEntry::get)
                         .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
     }

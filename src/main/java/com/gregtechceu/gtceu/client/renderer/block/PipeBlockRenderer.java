@@ -94,7 +94,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                 ResourceLocation rl = MaterialIconType.frameGt
                         .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
-                        .get(TagPrefix.FRAME_GT, pipeNode.getFrameMaterial())
+                        .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                         .getDefaultState();
                 var frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
                 for (Direction face : Direction.values()) {

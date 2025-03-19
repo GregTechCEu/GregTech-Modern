@@ -19,17 +19,17 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public enum Insulation implements IMaterialPipeType<WireProperties> {
 
-    WIRE_SINGLE("single_wire", 0.125f, 1, 2, WIRE_GT_SINGLE, -1, false),
-    WIRE_DOUBLE("double_wire", 0.25f, 2, 2, WIRE_GT_DOUBLE, -1, false),
-    WIRE_QUADRUPLE("quadruple_wire", 0.375f, 4, 3, WIRE_GT_QUADRUPLE, -1, false),
-    WIRE_OCTAL("octal_wire", 0.5f, 8, 3, WIRE_GT_OCTAL, -1, false),
-    WIRE_HEX("hex_wire", 0.75f, 16, 3, WIRE_GT_HEX, -1, false),
+    WIRE_SINGLE("single_wire", 0.125f, 1, 2, wireGtSingle, -1, false),
+    WIRE_DOUBLE("double_wire", 0.25f, 2, 2, wireGtDouble, -1, false),
+    WIRE_QUADRUPLE("quadruple_wire", 0.375f, 4, 3, wireGtQuadruple, -1, false),
+    WIRE_OCTAL("octal_wire", 0.5f, 8, 3, wireGtOctal, -1, false),
+    WIRE_HEX("hex_wire", 0.75f, 16, 3, wireGtHex, -1, false),
 
-    CABLE_SINGLE("single_cable", 0.25f, 1, 1, CABLE_GT_SINGLE, 0, true),
-    CABLE_DOUBLE("double_cable", 0.375f, 2, 1, CABLE_GT_DOUBLE, 1, true),
-    CABLE_QUADRUPLE("quadruple_cable", 0.5f, 4, 1, CABLE_GT_QUADRUPLE, 2, true),
-    CABLE_OCTAL("octal_cable", 0.75f, 8, 1, CABLE_GT_OCTAL, 3, true),
-    CABLE_HEX("hex_cable", 1.0f, 16, 1, CABLE_GT_HEX, 4, true);
+    CABLE_SINGLE("single_cable", 0.25f, 1, 1, cableGtSingle, 0, true),
+    CABLE_DOUBLE("double_cable", 0.375f, 2, 1, cableGtDouble, 1, true),
+    CABLE_QUADRUPLE("quadruple_cable", 0.5f, 4, 1, cableGtQuadruple, 2, true),
+    CABLE_OCTAL("octal_cable", 0.75f, 8, 1, cableGtOctal, 3, true),
+    CABLE_HEX("hex_cable", 1.0f, 16, 1, cableGtHex, 4, true);
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("insulation");
 

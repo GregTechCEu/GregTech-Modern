@@ -133,7 +133,7 @@ public class LargeMinerLogic extends MinerLogic {
     protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState,
                                       LootParams.Builder builder) {
         for (ItemStack outputStack : outputs) {
-            if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.CRUSHED) {
+            if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
                 if (getDropCountMultiplier() > 0) {
                     ItemStack fortunePick = pickaxeTool.copy();
                     fortunePick.enchant(Enchantments.BLOCK_FORTUNE, getDropCountMultiplier());

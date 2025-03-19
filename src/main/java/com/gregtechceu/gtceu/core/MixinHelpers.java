@@ -202,13 +202,13 @@ public class MixinHelpers {
                     Block block = blockEntry.get();
 
                     if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.ORE_NETHERRACK : TagPrefix.ORE;
+                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 
-                    ItemStack dropItem = ChemicalHelper.get(TagPrefix.RAW_ORE, material);
-                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.GEM, material);
-                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.DUST, material);
+                    ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
+                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
+                    if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
                     int oreMultiplier = type.isDoubleDrops() ? 2 : 1;
 
                     LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
@@ -257,7 +257,7 @@ public class MixinHelpers {
             ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(),
                     "blocks/" + blockEntry.getId().getPath());
             LootTable.Builder builder = BLOCK_LOOT
-                    .createSingleItemTable(ChemicalHelper.get(TagPrefix.DUST_TINY, material).getItem(),
+                    .createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(),
                             UniformGenerator.between(3, 5))
                     .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE));
             lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());

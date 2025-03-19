@@ -337,7 +337,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (itemStack.getItem() instanceof PipeBlockItem itemPipe) {
             BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
             BlockState stateAtSide = level.getBlockState(offsetPos);
-            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.FRAME_GT) {
+            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
                 if (itemPipe.getBlock().pipeType == pipeType) {
                     boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack,
                             hit);
@@ -373,7 +373,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
         if (pipeNode.getFrameMaterial() != null) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
-                    .get(TagPrefix.FRAME_GT, pipeNode.getFrameMaterial())
+                    .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
         }
@@ -469,7 +469,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
             if (pipeTile.getFrameMaterial() != null) {
-                drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.FRAME_GT, pipeTile.getFrameMaterial())
+                drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
                         .getDefaultState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {

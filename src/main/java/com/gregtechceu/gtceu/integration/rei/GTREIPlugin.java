@@ -107,9 +107,9 @@ public class GTREIPlugin implements REIClientPlugin {
             List<ItemLike> items = new ArrayList<>();
             for (var t : value.entrySet()) {
                 var prefix = t.getKey();
-                if (prefix == TagPrefix.FRAME_GT ||
-                        prefix == TagPrefix.BLOCK ||
-                        prefix == TagPrefix.RAW_ORE_BLOCK)
+                if (prefix == TagPrefix.frameGt ||
+                        prefix == TagPrefix.block ||
+                        prefix == TagPrefix.rawOreBlock)
                     continue;
 
                 items.add(t.getValue());

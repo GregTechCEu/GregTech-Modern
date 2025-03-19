@@ -21,7 +21,7 @@ public class AcidRecipes {
     private static void sulfuricAcidRecipes(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("sulfur_dioxide_from_sulfur")
                 .circuitMeta(2)
-                .inputItems(DUST, Sulfur)
+                .inputItems(dust, Sulfur)
                 .inputFluids(Oxygen.getFluid(2000))
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .duration(60).EUt(VA[ULV]).save(provider);
@@ -55,7 +55,7 @@ public class AcidRecipes {
 
         LARGE_CHEMICAL_RECIPES.recipeBuilder("sulfuric_acid_from_sulfur")
                 .circuitMeta(24)
-                .inputItems(DUST, Sulfur)
+                .inputItems(dust, Sulfur)
                 .inputFluids(Water.getFluid(4000))
                 .outputFluids(SulfuricAcid.getFluid(1000))
                 .EUt(VA[HV])
@@ -130,29 +130,29 @@ public class AcidRecipes {
     private static void phosphoricAcidRecipes(Consumer<FinishedRecipe> provider) {
         CHEMICAL_RECIPES.recipeBuilder("phosphorus_pentoxide_from_elements")
                 .circuitMeta(1)
-                .inputItems(DUST, Phosphorus, 4)
+                .inputItems(dust, Phosphorus, 4)
                 .inputFluids(Oxygen.getFluid(10000))
-                .outputItems(DUST, PhosphorusPentoxide, 14)
+                .outputItems(dust, PhosphorusPentoxide, 14)
                 .duration(40).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("phosphoric_acid_from_pentoxide")
-                .inputItems(DUST, PhosphorusPentoxide, 14)
+                .inputItems(dust, PhosphorusPentoxide, 14)
                 .inputFluids(Water.getFluid(6000))
                 .outputFluids(PhosphoricAcid.getFluid(4000))
                 .duration(40).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("phosphoric_acid_from_apatite")
-                .inputItems(DUST, Apatite, 9)
+                .inputItems(dust, Apatite, 9)
                 .inputFluids(SulfuricAcid.getFluid(5000))
                 .inputFluids(Water.getFluid(10000))
-                .outputItems(DUST, Gypsum, 40)
+                .outputItems(dust, Gypsum, 40)
                 .outputFluids(HydrochloricAcid.getFluid(1000))
                 .outputFluids(PhosphoricAcid.getFluid(3000))
                 .duration(320).EUt(VA[LV]).save(provider);
 
         LARGE_CHEMICAL_RECIPES.recipeBuilder("phosphoric_acid_from_elements")
                 .circuitMeta(24)
-                .inputItems(DUST, Phosphorus, 2)
+                .inputItems(dust, Phosphorus, 2)
                 .inputFluids(Water.getFluid(3000))
                 .inputFluids(Oxygen.getFluid(5000))
                 .outputFluids(PhosphoricAcid.getFluid(2000))

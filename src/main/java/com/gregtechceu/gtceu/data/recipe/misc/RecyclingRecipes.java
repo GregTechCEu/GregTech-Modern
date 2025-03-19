@@ -73,7 +73,7 @@ public class RecyclingRecipes {
         // Calculate the voltage multiplier based on if a Material has a Blast Property
         int voltageMultiplier = calculateVoltageMultiplier(components);
 
-        if (prefix != TagPrefix.DUST) {
+        if (prefix != TagPrefix.dust) {
             registerMaceratorRecycling(provider, input, components, voltageMultiplier);
         }
         if (prefix != null) {
@@ -90,14 +90,14 @@ public class RecyclingRecipes {
             }
 
             // Skip Ingot -> Ingot Arc Recipes
-            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.INGOT &&
+            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot &&
                     m.getProperty(PropertyKey.INGOT).getArcSmeltingInto() == m) {
                 return;
             }
 
             // Prevent Magnetic dust -> Regular Ingot Arc Furnacing, avoiding the EBF recipe
             // "I will rework magnetic materials soon" - DStrand1
-            if (prefix == TagPrefix.DUST && m.hasFlag(IS_MAGNETIC)) {
+            if (prefix == TagPrefix.dust && m.hasFlag(IS_MAGNETIC)) {
                 return;
             }
         }
@@ -136,7 +136,7 @@ public class RecyclingRecipes {
         }
 
         boolean recycle = true;
-        if (entry != null && entry.tagPrefix() == TagPrefix.INGOT) {
+        if (entry != null && entry.tagPrefix() == TagPrefix.ingot) {
             recycle = false;
         }
 
@@ -169,7 +169,7 @@ public class RecyclingRecipes {
             if (!m.hasProperty(PropertyKey.FLUID) || m.getFluid() == null) {
                 return;
             }
-            if (prefix == TagPrefix.DUST && m.hasProperty(PropertyKey.BLAST)) {
+            if (prefix == TagPrefix.dust && m.hasProperty(PropertyKey.BLAST)) {
                 return;
             }
 
@@ -244,13 +244,13 @@ public class RecyclingRecipes {
 
         // Block dusts from being arc'd instead of EBF'd
         MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-        if (prefix == TagPrefix.DUST && !ms.isEmpty() && ms.material().hasProperty(PropertyKey.BLAST)) {
+        if (prefix == TagPrefix.dust && !ms.isEmpty() && ms.material().hasProperty(PropertyKey.BLAST)) {
             return;
-        } else if (prefix == TagPrefix.BLOCK) {
+        } else if (prefix == TagPrefix.block) {
             if (!ms.isEmpty() && !ms.material().hasProperty(PropertyKey.GEM)) {
-                ItemStack output = ChemicalHelper.get(TagPrefix.INGOT,
+                ItemStack output = ChemicalHelper.get(TagPrefix.ingot,
                         ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto(),
-                        (int) (TagPrefix.BLOCK.getMaterialAmount(ms.material()) / GTValues.M));
+                        (int) (TagPrefix.block.getMaterialAmount(ms.material()) / GTValues.M));
                 ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());
                 GTRecipeBuilder builder = GTRecipeTypes.ARC_FURNACE_RECIPES.recipeBuilder("arc_" + itemPath.getPath())
                         .outputItems(output)
@@ -309,7 +309,7 @@ public class RecyclingRecipes {
 
     private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @Nullable MaterialStack inputStack,
                                                   @NotNull List<ItemStack> outputs) {
-        if (prefix == TagPrefix.NUGGET || prefix == TagPrefix.INGOT || prefix == TagPrefix.BLOCK) {
+        if (prefix == TagPrefix.nugget || prefix == TagPrefix.ingot || prefix == TagPrefix.block) {
             if (outputs.size() == 1) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.get(0).getItem());
                 if (!entry.isEmpty() && inputStack != null) {
@@ -460,7 +460,7 @@ public class RecyclingRecipes {
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),
                     // so simply split the stacks and continue.
-                    if (prefix == TagPrefix.BLOCK || prefix == TagPrefix.DUST) {
+                    if (prefix == TagPrefix.block || prefix == TagPrefix.dust) {
                         splitStacks(outputs, stack, entry);
                     } else {
                         // Attempt to split and to shrink the stack, and choose the option that creates the
@@ -534,10 +534,10 @@ public class RecyclingRecipes {
                 new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * amount)));
     }
 
-    private static final List<TagPrefix> DUST_ORDER = ImmutableList.of(TagPrefix.DUST, TagPrefix.DUST_SMALL,
-            TagPrefix.DUST_TINY);
-    private static final List<TagPrefix> INGOT_ORDER = ImmutableList.of(TagPrefix.BLOCK, TagPrefix.INGOT,
-            TagPrefix.NUGGET);
+    private static final List<TagPrefix> DUST_ORDER = ImmutableList.of(TagPrefix.dust, TagPrefix.dustSmall,
+            TagPrefix.dustTiny);
+    private static final List<TagPrefix> INGOT_ORDER = ImmutableList.of(TagPrefix.block, TagPrefix.ingot,
+            TagPrefix.nugget);
 
     private static void shrinkStacks(List<Tuple<ItemStack, MaterialStack>> list, ItemStack originalStack,
                                      MaterialEntry entry) {

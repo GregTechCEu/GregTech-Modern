@@ -15,51 +15,51 @@ public class GemSlurryRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         // Ruby
         MIXER_RECIPES.recipeBuilder("ruby_slurry").duration(280).EUt(VA[EV])
-                .inputItems(CRUSHED, Ruby, 2)
+                .inputItems(crushed, Ruby, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(RubySlurry.getFluid(3000))
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("ruby_slurry_centrifuging").duration(320).EUt(VA[HV])
                 .inputFluids(RubySlurry.getFluid(3000))
-                .outputItems(DUST, Aluminium, 2)
-                .outputItems(DUST, Chromium)
-                .chancedOutput(DUST, Titanium, 200, 0)
-                .chancedOutput(DUST, Iron, 200, 0)
-                .chancedOutput(DUST, Vanadium, 200, 0)
+                .outputItems(dust, Aluminium, 2)
+                .outputItems(dust, Chromium)
+                .chancedOutput(dust, Titanium, 200, 0)
+                .chancedOutput(dust, Iron, 200, 0)
+                .chancedOutput(dust, Vanadium, 200, 0)
                 .outputFluids(DilutedHydrochloricAcid.getFluid(2000))
                 .save(provider);
 
         // Sapphire
         MIXER_RECIPES.recipeBuilder("sapphire_slurry").duration(280).EUt(VA[EV])
-                .inputItems(CRUSHED, Sapphire, 2)
+                .inputItems(crushed, Sapphire, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(SapphireSlurry.getFluid(3000))
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("sapphire_slurry_centrifuging").duration(320).EUt(VA[HV])
                 .inputFluids(SapphireSlurry.getFluid(3000))
-                .outputItems(DUST, Aluminium, 2)
-                .chancedOutput(DUST, Titanium, 200, 0)
-                .chancedOutput(DUST, Iron, 200, 0)
-                .chancedOutput(DUST, Vanadium, 200, 0)
+                .outputItems(dust, Aluminium, 2)
+                .chancedOutput(dust, Titanium, 200, 0)
+                .chancedOutput(dust, Iron, 200, 0)
+                .chancedOutput(dust, Vanadium, 200, 0)
                 .outputFluids(DilutedHydrochloricAcid.getFluid(2000))
                 .save(provider);
 
         // Green Sapphire
         MIXER_RECIPES.recipeBuilder("green_sapphire_slurry").duration(280).EUt(VA[EV])
-                .inputItems(CRUSHED, GreenSapphire, 2)
+                .inputItems(crushed, GreenSapphire, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(GreenSapphireSlurry.getFluid(3000))
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("green_sapphire_slurry_centrifuging").duration(320).EUt(VA[HV])
                 .inputFluids(GreenSapphireSlurry.getFluid(3000))
-                .outputItems(DUST, Aluminium, 2)
-                .chancedOutput(DUST, Beryllium, 200, 0)
-                .chancedOutput(DUST, Titanium, 200, 0)
-                .chancedOutput(DUST, Iron, 200, 0)
-                .chancedOutput(DUST, Vanadium, 200, 0)
+                .outputItems(dust, Aluminium, 2)
+                .chancedOutput(dust, Beryllium, 200, 0)
+                .chancedOutput(dust, Titanium, 200, 0)
+                .chancedOutput(dust, Iron, 200, 0)
+                .chancedOutput(dust, Vanadium, 200, 0)
                 .outputFluids(DilutedHydrochloricAcid.getFluid(2000))
                 .save(provider);
     }

@@ -442,7 +442,7 @@ public class ToolHelper {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
                                 // Only apply fortune on ore -> crushed forge hammer recipes
-                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.CRUSHED) {
+                                if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
                                     output = output.copy();
                                     if (fortune > 0) output.grow(random.nextInt(fortune));
                                     drops.add(output);

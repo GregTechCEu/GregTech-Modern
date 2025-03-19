@@ -93,7 +93,7 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (this.tagPrefix == TagPrefix.FRAME_GT) {
+        if (this.tagPrefix == TagPrefix.frameGt) {
             return FRAME_COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
@@ -164,7 +164,7 @@ public class MaterialBlock extends AppearanceBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
-        if (this.tagPrefix != TagPrefix.FRAME_GT) {
+        if (this.tagPrefix != TagPrefix.frameGt) {
             return super.use(state, level, pos, player, hand, hit);
         }
         ItemStack stack = player.getItemInHand(hand);
@@ -187,7 +187,7 @@ public class MaterialBlock extends AppearanceBlock {
         BlockPos.MutableBlockPos blockPos = pos.mutable();
         for (int i = 0; i < 32; i++) {
             if (level.getBlockState(blockPos).getBlock() instanceof MaterialBlock matBlock &&
-                    matBlock.tagPrefix == TagPrefix.FRAME_GT) {
+                    matBlock.tagPrefix == TagPrefix.frameGt) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -221,7 +221,7 @@ public class MaterialBlock extends AppearanceBlock {
         if (item instanceof BlockItem ib) {
             Block block = ib.getBlock();
             if (block instanceof MaterialBlock matBlock)
-                return matBlock.tagPrefix == TagPrefix.FRAME_GT ? matBlock : null;
+                return matBlock.tagPrefix == TagPrefix.frameGt ? matBlock : null;
         }
         return null;
     }
@@ -243,7 +243,7 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
-        if (this.tagPrefix == TagPrefix.FRAME_GT && useContext.getItemInHand().getItem() instanceof PipeBlockItem &&
+        if (this.tagPrefix == TagPrefix.frameGt && useContext.getItemInHand().getItem() instanceof PipeBlockItem &&
                 !useContext.getPlayer().isCrouching())
             return true;
         return super.canBeReplaced(state, useContext);
@@ -282,7 +282,7 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (this.tagPrefix == TagPrefix.FRAME_GT && entity instanceof LivingEntity livingEntity) {
+        if (this.tagPrefix == TagPrefix.frameGt && entity instanceof LivingEntity livingEntity) {
             double currentAccel = 0.15D * (livingEntity.getDeltaMovement().y < 0.3D ? 2.5D : 1.0D);
             double currentSpeedVertical = 0.9D * (livingEntity.isInWater() ? 0.4D : 1.0D);
             Vec3 deltaMovement = livingEntity.getDeltaMovement();

@@ -38,23 +38,23 @@ public class TagsHandler {
     }
 
     public static void initExtraUnificationEntries() {
-        registerMaterialInfoItems(INGOT, Clay, Items.CLAY_BALL);
+        registerMaterialInfoItems(ingot, Clay, Items.CLAY_BALL);
 
-        registerMaterialInfoItems(DYE, Color.Black, Items.BLACK_DYE);
-        registerMaterialInfoItems(DYE, Color.Red, Items.RED_DYE);
-        registerMaterialInfoItems(DYE, Color.Green, Items.GREEN_DYE);
-        registerMaterialInfoItems(DYE, Color.Brown, Items.BROWN_DYE);
-        registerMaterialInfoItems(DYE, Color.Blue, Items.BLUE_DYE);
-        registerMaterialInfoItems(DYE, Color.Purple, Items.PURPLE_DYE);
-        registerMaterialInfoItems(DYE, Color.Cyan, Items.CYAN_DYE);
-        registerMaterialInfoItems(DYE, Color.LightGray, Items.LIGHT_GRAY_DYE);
-        registerMaterialInfoItems(DYE, Color.Gray, Items.GRAY_DYE);
-        registerMaterialInfoItems(DYE, Color.Pink, Items.PINK_DYE);
-        registerMaterialInfoItems(DYE, Color.Lime, Items.LIME_DYE);
-        registerMaterialInfoItems(DYE, Color.Yellow, Items.YELLOW_DYE);
-        registerMaterialInfoItems(DYE, Color.LightBlue, Items.LIGHT_BLUE_DYE);
-        registerMaterialInfoItems(DYE, Color.Magenta, Items.MAGENTA_DYE);
-        registerMaterialInfoItems(DYE, Color.Orange, Items.ORANGE_DYE);
-        registerMaterialInfoItems(DYE, Color.White, Items.WHITE_DYE);
+        registerMaterialInfoItems(dye, Color.Black, Items.BLACK_DYE);
+        registerMaterialInfoItems(dye, Color.Red, Items.RED_DYE);
+        registerMaterialInfoItems(dye, Color.Green, Items.GREEN_DYE);
+        registerMaterialInfoItems(dye, Color.Brown, Items.BROWN_DYE);
+        registerMaterialInfoItems(dye, Color.Blue, Items.BLUE_DYE);
+        registerMaterialInfoItems(dye, Color.Purple, Items.PURPLE_DYE);
+        registerMaterialInfoItems(dye, Color.Cyan, Items.CYAN_DYE);
+        registerMaterialInfoItems(dye, Color.LightGray, Items.LIGHT_GRAY_DYE);
+        registerMaterialInfoItems(dye, Color.Gray, Items.GRAY_DYE);
+        registerMaterialInfoItems(dye, Color.Pink, Items.PINK_DYE);
+        registerMaterialInfoItems(dye, Color.Lime, Items.LIME_DYE);
+        registerMaterialInfoItems(dye, Color.Yellow, Items.YELLOW_DYE);
+        registerMaterialInfoItems(dye, Color.LightBlue, Items.LIGHT_BLUE_DYE);
+        registerMaterialInfoItems(dye, Color.Magenta, Items.MAGENTA_DYE);
+        registerMaterialInfoItems(dye, Color.Orange, Items.ORANGE_DYE);
+        registerMaterialInfoItems(dye, Color.White, Items.WHITE_DYE);
     }
 }

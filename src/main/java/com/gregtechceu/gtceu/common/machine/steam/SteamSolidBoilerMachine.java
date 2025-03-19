@@ -119,13 +119,13 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         if (materialStack.isEmpty())
             return ItemStack.EMPTY;
         else if (materialStack.material() == GTMaterials.Charcoal) {
-            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.Ash);
+            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.3f;
         } else if (materialStack.material() == GTMaterials.Coal) {
-            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.DarkAsh);
+            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.DarkAsh);
             remainderChance = 0.35f;
         } else if (materialStack.material() == GTMaterials.Coke) {
-            remainder = ChemicalHelper.get(TagPrefix.DUST, GTMaterials.Ash);
+            remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.5f;
         } else return ItemStack.EMPTY;
         return GTValues.RNG.nextFloat() <= remainderChance ? remainder : ItemStack.EMPTY;
