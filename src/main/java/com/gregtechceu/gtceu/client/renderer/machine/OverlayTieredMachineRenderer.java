@@ -46,9 +46,11 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         // expand the overlay quads ever so slightly to combat z-fighting.
         var overlayQuads = new LinkedList<>(overlayModel.getRotatedModel(frontFacing)
                 .getQuads(definition.defaultBlockState(), side, rand));
-        renderCovers(overlayQuads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
-                machine.getLevel(),
-                modelState);
+        if (machine != null) {
+            renderCovers(overlayQuads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
+                    machine.getLevel(),
+                    modelState);
+        }
         quads.addAll(overlayQuads.stream()
                 .map(quad -> Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake())
                 .toList());
