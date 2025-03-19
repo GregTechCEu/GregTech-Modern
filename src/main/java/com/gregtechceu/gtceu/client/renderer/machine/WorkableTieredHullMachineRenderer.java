@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -46,10 +48,11 @@ public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer
             upwardsFacing = multi.self().getUpwardsFacing();
         }
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
-                    workable.isWorkingEnabled()));
+            overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(), workable.isWorkingEnabled())
+                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
         } else {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
+            overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false)
+                    .forEach(quad -> quads.add(Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake()));
         }
     }
 
@@ -60,5 +63,9 @@ public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
             overlayModel.registerTextureAtlas(register);
         }
+    }
+
+    public float reBakeOverlayQuadsOffset() {
+        return 0.004f;
     }
 }
