@@ -1012,7 +1012,7 @@ public class Material implements Comparable<Material> {
         }
 
         /**
-         * Add {@link TagPrefixes} to be ignored by this Material.<br>
+         * Add {@link TagPrefix} to be ignored by this Material.<br>
          */
         public Builder ignoredTagPrefixes(TagPrefix... prefixes) {
             if (this.ignoredTagPrefixes == null) {
