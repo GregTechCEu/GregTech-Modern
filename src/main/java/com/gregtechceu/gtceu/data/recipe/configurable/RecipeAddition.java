@@ -1312,7 +1312,7 @@ public class RecipeAddition {
                 new ItemStack(Items.SUGAR_CANE));
         VanillaRecipeHelper.addShapedRecipe(provider, "sugar", ChemicalHelper.get(TagPrefix.dust, GTMaterials.Sugar, 1),
                 "Sm ", 'S', new ItemStack(Items.SUGAR_CANE));
-        VanillaRecipeHelper.addShapedRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
+        VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "paper", new ItemStack(Items.PAPER, 2),
                 " r ", "SSS", " B ",
                 'S', new MaterialEntry(TagPrefix.dust, GTMaterials.Paper),
                 'B', new FluidContainerIngredient(Water.getFluidTag(), 1000));

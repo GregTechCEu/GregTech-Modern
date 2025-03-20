@@ -2,6 +2,7 @@
   "values": [
     "gtceu:aluminium_bucket",
     "gtceu:americium_bucket",
+    "gtceu:americium_plasma_bucket",
     "gtceu:antimony_bucket",
     "gtceu:argon_bucket",
     "gtceu:argon_plasma_bucket",
@@ -64,6 +65,7 @@
     "gtceu:tantalum_bucket",
     "gtceu:thorium_bucket",
     "gtceu:tin_bucket",
+    "gtceu:tin_plasma_bucket",
     "gtceu:titanium_bucket",
     "gtceu:tritium_bucket",
     "gtceu:tungsten_bucket",

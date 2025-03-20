@@ -207,8 +207,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
             // drill a hole beneath the miner and extend the pipe downwards by one
             if ((dir == Direction.DOWN && mineY < pipeY) || (dir == Direction.UP && mineY > pipeY)) {
-                BlockPos miningPos = getMiningPos();
-                serverLevel.destroyBlock(new BlockPos(miningPos.getX(), pipeY, miningPos.getZ()), false);
+                var miningPos = getMiningPos();
+                var pipePos = new BlockPos(miningPos.getX(), pipeY, miningPos.getZ());
+                if (serverLevel.getBlockState(pipePos).getDestroySpeed(serverLevel, pipePos) < 0) {
+                    isDone = true;
+                    setStatus(Status.IDLE);
+                    return;
+                }
+                serverLevel.destroyBlock(pipePos, false);
                 if (dir == Direction.UP) {
                     ++pipeY;
                 } else {
@@ -499,15 +505,17 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         LinkedList<BlockPos> blocks = new LinkedList<>();
 
         // determine how many blocks to retrieve this time
-        double quotient = getQuotient(getMeanTickTime(getMachine().getLevel()));
+        var level = getMachine().getLevel();
+        assert level != null;
+        double quotient = getQuotient(getMeanTickTime(level));
         int calcAmount = quotient < 1 ? 1 : (int) (Math.min(quotient, Short.MAX_VALUE));
         int calculated = 0;
 
         if (this.minBuildHeight == Integer.MAX_VALUE)
-            this.minBuildHeight = this.getMachine().getLevel().getMinBuildHeight();
+            this.minBuildHeight = level.getMinBuildHeight();
 
         if (this.maxBuildHeight == Integer.MAX_VALUE)
-            this.maxBuildHeight = this.getMachine().getLevel().getMaxBuildHeight();
+            this.maxBuildHeight = level.getMaxBuildHeight();
 
         // keep getting blocks until the target amount is reached
         while (calculated < calcAmount) {
@@ -518,9 +526,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                     // check every block along the x-axis
                     if (x <= startX + currentRadius * 2) {
                         BlockPos blockPos = new BlockPos(x, y, z);
-                        BlockState state = getMachine().getLevel().getBlockState(blockPos);
-                        if (state.getBlock().defaultDestroyTime() >= 0 &&
-                                getMachine().getLevel().getBlockEntity(blockPos) == null &&
+                        BlockState state = level.getBlockState(blockPos);
+                        if (state.getDestroySpeed(level, blockPos) >= 0 &&
+                                level.getBlockEntity(blockPos) == null &&
                                 state.is(Tags.Blocks.ORES)) {
                             blocks.addLast(blockPos);
                         }

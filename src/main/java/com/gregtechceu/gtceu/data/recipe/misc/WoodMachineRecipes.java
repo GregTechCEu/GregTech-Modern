@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -172,7 +171,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
                             .planks(Items.BAMBOO_PLANKS, "bamboo_planks")
-                            .logTag(TagUtil.createItemTag("bamboo_blocks", true))
+                            .logTag(ItemTags.BAMBOO_BLOCKS)
                             .log(Items.BAMBOO_BLOCK).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_BAMBOO_BLOCK)
                             .door(Items.BAMBOO_DOOR, "bamboo_door")
@@ -231,7 +230,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
                             .planks(Items.CRIMSON_PLANKS, "crimson_planks")
-                            .logTag(TagUtil.createItemTag("crimson_stems", true))
+                            .logTag(ItemTags.CRIMSON_STEMS)
                             .log(Items.CRIMSON_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_CRIMSON_STEM)
                             .wood(Items.CRIMSON_HYPHAE)
@@ -250,7 +249,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "warped")
                             .planks(Items.WARPED_PLANKS, "warped_planks")
-                            .logTag(TagUtil.createItemTag("warped_stems", true))
+                            .logTag(ItemTags.WARPED_STEMS)
                             .log(Items.WARPED_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_WARPED_STEM)
                             .wood(Items.WARPED_HYPHAE)
