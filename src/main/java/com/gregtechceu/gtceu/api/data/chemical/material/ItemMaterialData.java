@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
@@ -30,8 +29,8 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -49,10 +48,10 @@ public class ItemMaterialData {
     /** Mapping of a fluid to a material */
     public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<MaterialEntry, ArrayList<Supplier<? extends ItemLike>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
-    public static final Map<MaterialEntry, ArrayList<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new Object2ObjectOpenHashMap<>();
+    public static final Map<MaterialEntry, List<Supplier<? extends ItemLike>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
+    public static final Map<MaterialEntry, List<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new Object2ObjectOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectOpenHashMap<>();
+    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ReferenceOpenHashMap<>();
 
     public static final Map<ItemStack, List<ItemStack>> UNRESOLVED_ITEM_MATERIAL_INFO = new Object2ObjectOpenCustomHashMap<>(
             ItemStackHashStrategy.comparingAllButCount());
@@ -60,15 +59,13 @@ public class ItemMaterialData {
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         if (item instanceof Block block) {
             ITEM_MATERIAL_INFO.put(block, materialInfo);
-            return;
         } else if (item instanceof BlockItem blockItem) {
             ITEM_MATERIAL_INFO.put(blockItem.getBlock(), materialInfo);
-            return;
         } else if (item instanceof ItemEntry<?> entry) {
             ITEM_MATERIAL_INFO.put(entry.asItem(), materialInfo);
-            return;
+        } else {
+            ITEM_MATERIAL_INFO.put(item, materialInfo);
         }
-        ITEM_MATERIAL_INFO.put(item, materialInfo);
     }
 
     public static ItemMaterialInfo getMaterialInfo(ItemLike item) {
@@ -87,29 +84,27 @@ public class ItemMaterialData {
     public static void clearMaterialInfo(ItemLike item) {
         if (item instanceof Block block) {
             ITEM_MATERIAL_INFO.remove(block);
-            return;
         } else if (item instanceof BlockItem blockItem) {
             var info = ITEM_MATERIAL_INFO.get(blockItem.getBlock());
             if (info != null) {
                 ITEM_MATERIAL_INFO.remove(blockItem.getBlock());
-                return;
+            } else {
+                ITEM_MATERIAL_INFO.remove(item);
             }
-            ITEM_MATERIAL_INFO.remove(item);
-            return;
         } else if (item instanceof ItemEntry<?> entry) {
             ITEM_MATERIAL_INFO.remove(entry.asItem());
-            return;
+        } else {
+            ITEM_MATERIAL_INFO.remove(item);
         }
-        ITEM_MATERIAL_INFO.remove(item);
     }
 
     @SafeVarargs
     public static void registerMaterialInfoItems(MaterialEntry materialEntry,
                                                  Supplier<? extends ItemLike>... items) {
-        MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
-                .addAll(Arrays.asList(items));
+        var entryList = MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>());
         for (Supplier<? extends ItemLike> item : items) {
             ITEM_MATERIAL_ENTRY.add(Pair.of(item, materialEntry));
+            entryList.add(item);
             if (item instanceof Block block) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(() -> block);
@@ -130,7 +125,7 @@ public class ItemMaterialData {
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
         }
-        if (materialEntry.material() != GTMaterials.NULL) {
+        if (!materialEntry.isEmpty()) {
             for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
                 TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
             }
@@ -138,12 +133,12 @@ public class ItemMaterialData {
     }
 
     @SafeVarargs
-    public static void registerMaterialInfoItems(TagPrefix tagPrefix, @Nullable Material material,
+    public static void registerMaterialInfoItems(TagPrefix tagPrefix, Material material,
                                                  Supplier<? extends ItemLike>... items) {
         registerMaterialInfoItems(new MaterialEntry(tagPrefix, material), items);
     }
 
-    public static void registerMaterialInfoItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
+    public static void registerMaterialInfoItems(TagPrefix tagPrefix, Material material, ItemLike... items) {
         registerMaterialInfoItems(new MaterialEntry(tagPrefix, material),
                 Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
         for (ItemLike item : items) {
@@ -175,23 +170,25 @@ public class ItemMaterialData {
     public static void resolveItemMaterialInfos(Consumer<FinishedRecipe> provider) {
         for (var entry : UNRESOLVED_ITEM_MATERIAL_INFO.entrySet()) {
             List<MaterialStack> stacks = new ArrayList<>();
-            var count = entry.getKey().getCount();
+            var stack = entry.getKey();
+            var count = stack.getCount();
             for (var input : entry.getValue()) {
                 var matStack = getMaterialInfo(input.getItem());
                 if (matStack != null) {
-                    matStack.getMaterials().forEach(ms -> stacks.add(ms.copy(ms.amount() / count)));
+                    matStack.getMaterials()
+                            .forEach(ms -> stacks.add(new MaterialStack(ms.material(), ms.amount() / count)));
                 }
             }
-            if (stacks.isEmpty())
-                continue;
-            var matInfo = ITEM_MATERIAL_INFO.get(entry.getKey().getItem());
+            if (stacks.isEmpty()) continue;
+            var matInfo = ITEM_MATERIAL_INFO.get(stack.getItem());
             if (matInfo == null) {
-                ITEM_MATERIAL_INFO.put(entry.getKey().getItem(), new ItemMaterialInfo(stacks));
+                matInfo = new ItemMaterialInfo(stacks);
+                ITEM_MATERIAL_INFO.put(stack.getItem(), matInfo);
             } else {
                 matInfo.addMaterialStacks(stacks);
             }
             RecyclingRecipes.registerRecyclingRecipes(provider, entry.getKey().copyWithCount(1),
-                    ITEM_MATERIAL_INFO.get(entry.getKey().getItem()).getMaterials(), false, null);
+                    matInfo.getMaterials(), false, null);
         }
         UNRESOLVED_ITEM_MATERIAL_INFO.clear();
     }

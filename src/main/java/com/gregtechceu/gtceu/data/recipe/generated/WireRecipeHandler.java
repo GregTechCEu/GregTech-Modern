@@ -53,7 +53,7 @@ public class WireRecipeHandler {
             cableGtOctal, 3,
             cableGtHex, 5);
 
-    private static final TagPrefix[] wireSizes = {wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex};
+    private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)

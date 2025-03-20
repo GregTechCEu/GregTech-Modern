@@ -355,9 +355,9 @@ public class GTRecipeBuilder {
         } else if (input instanceof MachineDefinition machine) {
             return inputItems(machine);
         } else {
-            GTCEu.LOGGER.error(
-                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
-                    id);
+            GTCEu.LOGGER.error("Input item is not one of:\n" +
+                    "Item, Supplier<Item>, ItemStack, Ingredient, " +
+                    "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
             return this;
         }
     }
@@ -378,9 +378,9 @@ public class GTRecipeBuilder {
         } else if (input instanceof MachineDefinition machine) {
             return inputItems(machine, count);
         } else {
-            GTCEu.LOGGER.error(
-                    "Input item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
-                    id);
+            GTCEu.LOGGER.error("Input item is not one of:\n" +
+                            "Item, Supplier<Item>, ItemStack, Ingredient, " +
+                    "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
             return this;
         }
     }
@@ -468,12 +468,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input) {
-        return inputItems(input.tagPrefix(), input.material(), 1);
+        return inputItems(input, 1);
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
         if (input.material() == GTMaterials.NULL) {
-            GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
+            GTCEu.LOGGER.error("MaterialEntry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         }
         return inputItems(input.tagPrefix(), input.material(), count);
     }
@@ -522,9 +522,9 @@ public class GTRecipeBuilder {
         } else if (input instanceof MachineDefinition machine) {
             return outputItems(machine);
         } else {
-            GTCEu.LOGGER.error(
-                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
-                    id);
+            GTCEu.LOGGER.error("Output item is not one of:\n" +
+                    "Item, Supplier<Item>, ItemStack, Ingredient, " +
+                    "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
             return this;
         }
     }
@@ -541,9 +541,9 @@ public class GTRecipeBuilder {
         } else if (input instanceof MachineDefinition machine) {
             return outputItems(machine, count);
         } else {
-            GTCEu.LOGGER.error(
-                    "Output item is not one of: Item, Supplier<Item>, ItemStack, Ingredient, MaterialEntry, TagKey<Item>, MachineDefinition, id: {}",
-                    id);
+            GTCEu.LOGGER.error("Output item is not one of:\n" +
+                    "Item, Supplier<Item>, ItemStack, Ingredient, " +
+                    "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
             return this;
         }
     }

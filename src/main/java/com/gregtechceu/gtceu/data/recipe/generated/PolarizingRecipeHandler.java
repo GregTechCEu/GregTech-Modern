@@ -22,7 +22,7 @@ public class PolarizingRecipeHandler {
     private static final TagPrefix[] POLARIZING_PREFIXES = new TagPrefix[] {
             rod, rodLong, plate, ingot, plateDense, plateDouble, rotor,
             bolt, screw, wireFine, foil, ring, dust, nugget, block,
-            dustTiny, dustSmall};
+            dustTiny, dustSmall };
 
     public static void init(Consumer<FinishedRecipe> provider) {
         for (TagPrefix orePrefix : POLARIZING_PREFIXES) {

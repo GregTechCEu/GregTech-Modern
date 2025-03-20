@@ -48,11 +48,11 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
-        if (!materialEntry.isEmpty() && materialEntry.material() != GTMaterials.NULL) {
-            if (materialEntry.material().getChemicalFormula() != null &&
-                    !materialEntry.material().getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(materialEntry.material().getChemicalFormula())
-                        .withStyle(ChatFormatting.YELLOW));
+        if (!materialEntry.isEmpty()) {
+            var formula = materialEntry.material().getChemicalFormula();
+            if (formula != null && !formula.isEmpty()) {
+                tooltips.add(1, Component.literal(formula).withStyle(ChatFormatting.YELLOW));
+            }
         }
         if (stack.getItem() instanceof BucketItem bucket) {
             var fluid = bucket.getFluid();
@@ -78,7 +78,7 @@ public class TooltipsHandler {
         }
 
         Material material = HazardProperty.getValidHazardMaterial(stack);
-        if (material == null) {
+        if (material == GTMaterials.NULL) {
             return;
         }
         GTUtil.appendHazardTooltips(material, tooltips);
@@ -99,8 +99,10 @@ public class TooltipsHandler {
 
         var material = ChemicalHelper.getMaterial(fluid);
         if (material != null) {
-            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
-                tooltips.accept(Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+            var formula = material.getChemicalFormula();
+            if (formula != null && !formula.isEmpty()) {
+                tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));
+            }
 
             if (material.hasProperty(PropertyKey.INGOT)) {
                 if (GTUtil.isShiftDown() && amount >= GTValues.L) {

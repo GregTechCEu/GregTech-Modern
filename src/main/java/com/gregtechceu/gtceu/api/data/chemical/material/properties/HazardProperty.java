@@ -21,7 +21,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -178,10 +177,9 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    @Nullable
     public static Material getValidHazardMaterial(ItemStack item) {
-        Material material = null;
-        TagPrefix prefix = null;
+        Material material = GTMaterials.NULL;
+        TagPrefix prefix = TagPrefix.NULL_PREFIX;
         boolean isFluid = false;
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
             material = prefixItem.material;
@@ -193,20 +191,20 @@ public class HazardProperty implements IMaterialProperty {
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
             MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
+            if (!entry.isEmpty()) {
                 material = entry.material();
                 prefix = entry.tagPrefix();
             }
         }
-        if (material == null) {
-            return null;
+        if (material == GTMaterials.NULL) {
+            return material;
         }
         HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property == null) {
-            return null;
+            return GTMaterials.NULL;
         }
         if (!isFluid && !property.hazardTrigger.isAffected(prefix)) {
-            return null;
+            return GTMaterials.NULL;
         }
         return material;
     }

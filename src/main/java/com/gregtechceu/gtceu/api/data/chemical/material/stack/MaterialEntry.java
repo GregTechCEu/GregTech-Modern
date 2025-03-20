@@ -15,7 +15,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     }
 
     public boolean isEmpty() {
-        return this == NULL_ENTRY;
+        return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
     }
 
     @Override

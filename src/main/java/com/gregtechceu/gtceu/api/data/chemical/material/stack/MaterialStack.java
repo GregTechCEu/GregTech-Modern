@@ -15,11 +15,6 @@ public record MaterialStack(@NotNull Material material, long amount) {
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
-    public MaterialStack copy(long amount) {
-        if (isEmpty()) return EMPTY;
-        return new MaterialStack(material, amount);
-    }
-
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);

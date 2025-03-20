@@ -238,7 +238,7 @@ public interface GTRecipeSchema {
             for (var stack : inputs) {
                 var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
                 if (!matStack.isEmpty()) {
-                    itemMaterialStacks.add(matStack.copy(matStack.amount() * stack.count));
+                    itemMaterialStacks.add(new MaterialStack(matStack.material(), matStack.amount() * stack.count));
                 }
             }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
@@ -248,7 +248,8 @@ public interface GTRecipeSchema {
             for (ItemStack itemStack : inputs) {
                 var matStack = ChemicalHelper.getMaterialStack(itemStack);
                 if (!matStack.isEmpty()) {
-                    itemMaterialStacks.add(matStack.copy(matStack.amount() * itemStack.getCount()));
+                    itemMaterialStacks
+                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
                 }
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("Input items is empty, id: %s", id);
