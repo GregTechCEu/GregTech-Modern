@@ -116,7 +116,7 @@ public class CustomTags {
     public static final TagKey<Item> DRILLS = TagUtil.createItemTag("tools/drills");
     public static final TagKey<Item> FILES = TagUtil.createItemTag("tools/files");
     public static final TagKey<Item> HAMMERS = TagUtil.createItemTag("tools/hammers");
-    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knife");
+    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knives");
     public static final TagKey<Item> MALLETS = TagUtil.createItemTag("tools/mallets");
     public static final TagKey<Item> MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
     public static final TagKey<Item> MORTARS = TagUtil.createItemTag("tools/mortars");
