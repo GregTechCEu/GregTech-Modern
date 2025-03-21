@@ -116,7 +116,7 @@ public class CustomTags {
     public static final TagKey<Item> DRILLS = TagUtil.createItemTag("tools/drills");
     public static final TagKey<Item> FILES = TagUtil.createItemTag("tools/files");
     public static final TagKey<Item> HAMMERS = TagUtil.createItemTag("tools/hammers");
-    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knife");
+    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knives");
     public static final TagKey<Item> MALLETS = TagUtil.createItemTag("tools/mallets");
     public static final TagKey<Item> MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
     public static final TagKey<Item> MORTARS = TagUtil.createItemTag("tools/mortars");
@@ -129,6 +129,18 @@ public class CustomTags {
     public static final TagKey<Item> WIRE_CUTTERS = TagUtil.createItemTag("tools/wire_cutters");
     public static final TagKey<Item> WRENCHES = TagUtil.createItemTag("tools/wrenches");
     public static final TagKey<Item> WRENCH = TagUtil.createItemTag("tools/wrench"); // Compat with other mods
+
+    // Tool Crafting Tags
+    public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("tools/crafting_crowbars");
+    public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("tools/crafting_files");
+    public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("tools/crafting_hammers");
+    public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("tools/crafting_knives");
+    public static final TagKey<Item> CRAFTING_MALLETS = TagUtil.createModItemTag("tools/crafting_mallets");
+    public static final TagKey<Item> CRAFTING_MORTARS = TagUtil.createModItemTag("tools/crafting_mortars");
+    public static final TagKey<Item> CRAFTING_SAWS = TagUtil.createModItemTag("tools/crafting_saws");
+    public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("tools/crafting_screwdrivers");
+    public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
+    public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("tools/crafting_wrenches");
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
