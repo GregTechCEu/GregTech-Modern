@@ -102,6 +102,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
+            hasCircuitSlot = false;
+            setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
@@ -110,7 +112,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
             return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
         } else {
-            hasCircuitSlot = false;
             return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
         }
     }
@@ -158,7 +159,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public void addedToController(IMultiController controller) {
-        if (!controller.allowCircuitSlots() && hasCircuitSlot) {
+        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 clearInventory(circuitInventory.storage);
             } else {
