@@ -312,7 +312,7 @@ public class RecyclingRecipes {
         if (prefix == TagPrefix.nugget || prefix == TagPrefix.ingot || prefix == TagPrefix.block) {
             if (outputs.size() == 1) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.get(0).getItem());
-                if (!entry.isEmpty() && inputStack != null) {
+                if (!entry.isEmpty()) {
                     Material mat = inputStack.material();
                     if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
                         return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material();

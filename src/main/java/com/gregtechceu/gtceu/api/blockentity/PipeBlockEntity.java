@@ -50,6 +50,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Persisted
     @Getter
     @Setter
+    @NotNull
     private Material frameMaterial = GTMaterials.NULL;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +25,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     @Setter
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
     @NotNull
-    public transient Supplier<Material> material = () -> null;
+    public transient Supplier<Material> material = () -> GTMaterials.NULL;
     @Setter
     public transient String texture = "minecraft:missingno";
 

@@ -1026,7 +1026,7 @@ public class TagPrefix {
         return this.blockProperties(new BlockProperties(renderType, properties));
     }
 
-    public long getMaterialAmount(Material material) {
+    public long getMaterialAmount(@NotNull Material material) {
         if (material == GTMaterials.NULL || !isAmountModified(material)) {
             return this.materialAmount;
         }
@@ -1043,7 +1043,8 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemParentTags() {
-        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, null)).toArray(TagKey[]::new);
+        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, GTMaterials.NULL))
+                .toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")

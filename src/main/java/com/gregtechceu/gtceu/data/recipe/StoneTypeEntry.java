@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.Item;
 
@@ -117,8 +118,8 @@ public class StoneTypeEntry {
         public Item button = null;
         public Item wall = null;
         public Item pressurePlate = null;
-        @Nullable
-        private Material material = null;
+        @NotNull
+        private Material material = GTMaterials.NULL;
         private long materialAmount = GTValues.M;
         public boolean addStoneOreDict = false;
         public boolean addPolishedStoneOreDict = false;
