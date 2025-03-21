@@ -96,44 +96,6 @@ public class GTItems {
     static {
         REGISTRATE.creativeModeTab(() -> ITEM);
     }
-    public static ItemEntry<Item> CREDIT_COPPER = REGISTRATE.item("copper_credit", Item::new).lang("Copper Credit")
-            .register();
-    public static ItemEntry<Item> CREDIT_CUPRONICKEL = REGISTRATE.item("cupronickel_credit", Item::new)
-            .lang("Cupronickel Credit").defaultModel()
-            .register();
-    public static ItemEntry<Item> CREDIT_SILVER = REGISTRATE.item("silver_credit", Item::new).lang("Silver Credit")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .register();
-    public static ItemEntry<Item> CREDIT_GOLD = REGISTRATE.item("gold_credit", Item::new).lang("Gold Credit")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .register();
-    public static ItemEntry<Item> CREDIT_PLATINUM = REGISTRATE.item("platinum_credit", Item::new)
-            .lang("Platinum Credit").properties(p -> p.rarity(Rarity.RARE))
-            .register();
-    public static ItemEntry<Item> CREDIT_OSMIUM = REGISTRATE.item("osmium_credit", Item::new).lang("Osmium Credit")
-            .properties(p -> p.rarity(Rarity.RARE))
-            .register();
-    public static ItemEntry<Item> CREDIT_NAQUADAH = REGISTRATE.item("naquadah_credit", Item::new)
-            .lang("Naquadah Credit").properties(p -> p.rarity(Rarity.EPIC))
-            .register();
-    public static ItemEntry<Item> CREDIT_NEUTRONIUM = REGISTRATE.item("neutronium_credit", Item::new)
-            .lang("Neutronium Credit").properties(p -> p.rarity(Rarity.EPIC))
-            .register();
-    public static ItemEntry<Item> COIN_GOLD_ANCIENT = REGISTRATE.item("ancient_gold_coin", Item::new)
-            .lang("Ancient Gold Coin").properties(p -> p.rarity(Rarity.RARE))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
-            .register();
-    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("doge_coin", Item::new).lang("Doge Coin")
-            .properties(p -> p.rarity(Rarity.EPIC))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
-            .register();
-    public static ItemEntry<ComponentItem> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", ComponentItem::create)
-            .lang("Chocolate Coin")
-            .properties(p -> p.rarity(Rarity.EPIC))
-            .onRegister(attach(new FoodStats(GTFoods.CHOCOLATE, false,
-                    () -> ChemicalHelper.get(TagPrefix.foil, GTMaterials.Gold))))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
-            .register();
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
             .lang("Compressed Clay")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
@@ -165,10 +127,9 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
-    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[14];
+    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
     public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
-    public static final ItemEntry<Item> SHAPE_MOLD_CREDIT;
     public static final ItemEntry<Item> SHAPE_MOLD_BOTTLE;
     public static final ItemEntry<Item> SHAPE_MOLD_INGOT;
     public static final ItemEntry<Item> SHAPE_MOLD_BALL;
@@ -190,51 +151,47 @@ public class GTItems {
                 .lang("Casting Mold (Gear)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[2] = SHAPE_MOLD_CREDIT = REGISTRATE.item("credit_casting_mold", Item::new)
-                .lang("Casting Mold (Coinage)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_MOLDS[3] = SHAPE_MOLD_BOTTLE = REGISTRATE.item("bottle_casting_mold", Item::new)
+        SHAPE_MOLDS[2] = SHAPE_MOLD_BOTTLE = REGISTRATE.item("bottle_casting_mold", Item::new)
                 .lang("Casting Mold (Bottle)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[4] = SHAPE_MOLD_INGOT = REGISTRATE.item("ingot_casting_mold", Item::new)
+        SHAPE_MOLDS[3] = SHAPE_MOLD_INGOT = REGISTRATE.item("ingot_casting_mold", Item::new)
                 .lang("Casting Mold (Ingot)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[5] = SHAPE_MOLD_BALL = REGISTRATE.item("ball_casting_mold", Item::new)
+        SHAPE_MOLDS[4] = SHAPE_MOLD_BALL = REGISTRATE.item("ball_casting_mold", Item::new)
                 .lang("Casting Mold (Ball)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[6] = SHAPE_MOLD_BLOCK = REGISTRATE.item("block_casting_mold", Item::new)
+        SHAPE_MOLDS[5] = SHAPE_MOLD_BLOCK = REGISTRATE.item("block_casting_mold", Item::new)
                 .lang("Casting Mold (Block)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[7] = SHAPE_MOLD_NUGGET = REGISTRATE.item("nugget_casting_mold", Item::new)
+        SHAPE_MOLDS[6] = SHAPE_MOLD_NUGGET = REGISTRATE.item("nugget_casting_mold", Item::new)
                 .lang("Casting Mold (Nugget)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[8] = SHAPE_MOLD_CYLINDER = REGISTRATE.item("cylinder_casting_mold", Item::new)
+        SHAPE_MOLDS[7] = SHAPE_MOLD_CYLINDER = REGISTRATE.item("cylinder_casting_mold", Item::new)
                 .lang("Casting Mold (Cylinder)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[9] = SHAPE_MOLD_ANVIL = REGISTRATE.item("anvil_casting_mold", Item::new)
+        SHAPE_MOLDS[8] = SHAPE_MOLD_ANVIL = REGISTRATE.item("anvil_casting_mold", Item::new)
                 .lang("Casting Mold (Anvil)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[10] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", Item::new)
+        SHAPE_MOLDS[9] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", Item::new)
                 .lang("Casting Mold (Name)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[11] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", Item::new)
+        SHAPE_MOLDS[10] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", Item::new)
                 .lang("Casting Mold (Small Gear)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[12] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
+        SHAPE_MOLDS[11] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
                 .lang("Casting Mold (Rotor)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[13] = SHAPE_MOLD_PILL = REGISTRATE.item("pill_casting_mold", Item::new)
+        SHAPE_MOLDS[12] = SHAPE_MOLD_PILL = REGISTRATE.item("pill_casting_mold", Item::new)
                 .lang("Casting Mold (Pill)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
