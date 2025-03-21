@@ -260,12 +260,12 @@ public class BatteryRecipes {
                 .circuitMeta(1)
                 .outputItems(ENERGIUM_DUST, 9)
                 .duration(600).EUt(VA[MV]).save(provider);
-        
+
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_energium_dust")
-            .inputItems(ENERGIUM_DUST, 9)
-            .outputItems(dust, Redstone, 5)
-            .outputItems(dust, Ruby, 4)
-            .duration(1200).EUt(VA[ULV]).save(provider);
+                .inputItems(ENERGIUM_DUST, 9)
+                .outputItems(dust, Redstone, 5)
+                .outputItems(dust, Ruby, 4)
+                .duration(1200).EUt(VA[ULV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_water")
                 .inputItems(ENERGIUM_DUST, 9)
@@ -290,11 +290,11 @@ public class BatteryRecipes {
                 .inputFluids(RedSteel.getFluid(L / 2))
                 .outputItems(ENERGIUM_CRYSTAL)
                 .duration(150).EUt(192).save(provider);
-        
+
         MACERATOR_RECIPES.recipeBuilder("recycle_energy_crystal")
                 .inputItems(ENERGIUM_CRYSTAL)
                 .outputItems(ENERGIUM_DUST, 9)
-	            .duration(500).EUt(VA[ULV]).save(provider);
+                .duration(500).EUt(VA[ULV]).save(provider);
 
         // Lapotron Crystal
         MIXER_RECIPES.recipeBuilder("lapotron_dust")
@@ -303,12 +303,12 @@ public class BatteryRecipes {
                 .circuitMeta(2)
                 .outputItems(dust, Lapotron, 5)
                 .duration(200).EUt(VA[HV]).save(provider);
-        
+
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_lapotron_dust")
-            .inputItems(dust, Lapotron, 5)
-            .outputItems(ENERGIUM_DUST, 3)
-            .outputItems(dust, Lapis, 2)
-            .duration(800).EUt(VA[ULV]).save(provider);
+                .inputItems(dust, Lapotron, 5)
+                .outputItems(ENERGIUM_DUST, 3)
+                .outputItems(dust, Lapis, 2)
+                .duration(800).EUt(VA[ULV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("lapotron_gem_water")
                 .inputItems(dust, Lapotron, 15)
@@ -333,11 +333,11 @@ public class BatteryRecipes {
                 .inputFluids(BlueSteel.getFluid(L / 2))
                 .outputItems(gem, Lapotron)
                 .duration(150).EUt(192).save(provider);
-	    
-	    MACERATOR_RECIPES.recipeBuilder("recycle_lapotron_crystal")
-		        .inputItems(LAPOTRON_CRYSTAL)
-		        .outputItems(dust, Lapotron, 15)
-		        .duration(1000).EUt(VA[ULV]).save(provider);
+
+        MACERATOR_RECIPES.recipeBuilder("recycle_lapotron_crystal")
+                .inputItems(LAPOTRON_CRYSTAL)
+                .outputItems(dust, Lapotron, 15)
+                .duration(1000).EUt(VA[ULV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("lapotron_crystal")
                 .inputItems(gem, Lapotron)
