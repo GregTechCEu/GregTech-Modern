@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -127,7 +128,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != null) {
+        if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
@@ -138,7 +139,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
-            if (cable != null && cable.getFrameMaterial() == null && cable.getNodeData().getLossPerBlock() > 0) {
+            if (cable != null && cable.getFrameMaterial() == GTMaterials.NULL &&
+                    cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();
                 double amperage = cable.getAverageAmperage();
                 if (voltage > 0L && amperage > 0L) {

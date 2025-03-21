@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
@@ -49,7 +50,7 @@ public abstract class MaterialPipeBlock<
             if (blockState.getBlock() instanceof MaterialPipeBlock<?, ?, ?> block) {
                 if (blockPos != null && level != null &&
                         level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                    if (pipe.getFrameMaterial() != null) {
+                    if (pipe.getFrameMaterial() != GTMaterials.NULL) {
                         if (index == 3) {
                             return pipe.getFrameMaterial().getMaterialRGB();
                         } else if (index == 4) {
@@ -86,7 +87,7 @@ public abstract class MaterialPipeBlock<
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
                 .getPipeBlock()).material;
-        if (pipeType == null || material == null) {
+        if (pipeType == null || material == GTMaterials.NULL) {
             return getFallbackType();
         }
         return createProperties(pipeType, material);

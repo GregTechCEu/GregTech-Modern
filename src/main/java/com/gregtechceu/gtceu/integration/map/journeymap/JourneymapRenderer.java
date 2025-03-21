@@ -157,7 +157,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         Material firstMaterial = GTMaterials.NULL;
         if (!vein.definition().indicatorGenerators().isEmpty()) {
             var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
-            firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
+            firstMaterial = blockOrMaterial == null ? GTMaterials.NULL : blockOrMaterial.map(
                     state -> {
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
                         return matStack.material();
@@ -167,7 +167,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         if (firstMaterial == GTMaterials.NULL && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         }
-        if (firstMaterial == GTMaterials.NULL || firstMaterial == null) {
+        if (firstMaterial == GTMaterials.NULL) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;
@@ -232,7 +232,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material != null) {
+        if (material != GTMaterials.NULL) {
             color = material.getMaterialARGB();
         }
 

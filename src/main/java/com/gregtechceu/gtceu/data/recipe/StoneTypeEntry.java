@@ -60,7 +60,7 @@ public class StoneTypeEntry {
                            @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
-                           @Nullable Material material, long materialAmount,
+                           @NotNull Material material, long materialAmount,
                            boolean addStoneOreDict, boolean addPolishedStoneOreDict,
                            boolean addSlabOreDict,
                            boolean addStairOreDict, boolean addButtonOreDict,

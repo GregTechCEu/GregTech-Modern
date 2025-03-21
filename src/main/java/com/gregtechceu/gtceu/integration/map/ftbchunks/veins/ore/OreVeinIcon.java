@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
@@ -71,7 +72,7 @@ public class OreVeinIcon implements MapIcon {
                 firstMaterial = blockOrMaterial.right().get();
             }
         }
-        if (firstMaterial == null) {
+        if (firstMaterial == GTMaterials.NULL) {
             firstMaterial = veinMetadata.definition().veinGenerator().getAllMaterials().get(0);
         }
         return firstMaterial;

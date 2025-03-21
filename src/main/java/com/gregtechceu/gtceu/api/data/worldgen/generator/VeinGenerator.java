@@ -74,7 +74,7 @@ public abstract class VeinGenerator {
                 .filter(entry -> entry.getKey()
                         .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(),
                                 Function.identity()) !=
-                        null)
+                        GTMaterials.NULL)
                 .map(entry -> Map.entry(entry.getValue(), entry.getKey()
                         .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(),
                                 Function.identity())))

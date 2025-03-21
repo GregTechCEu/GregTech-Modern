@@ -136,7 +136,7 @@ public class RecyclingRecipes {
         }
 
         boolean recycle = true;
-        if (entry != null && entry.tagPrefix() == TagPrefix.ingot) {
+        if (!entry.isEmpty() && entry.tagPrefix() == TagPrefix.ingot) {
             recycle = false;
         }
 
@@ -307,7 +307,7 @@ public class RecyclingRecipes {
         builder.save(provider);
     }
 
-    private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @Nullable MaterialStack inputStack,
+    private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @NotNull MaterialStack inputStack,
                                                   @NotNull List<ItemStack> outputs) {
         if (prefix == TagPrefix.nugget || prefix == TagPrefix.ingot || prefix == TagPrefix.block) {
             if (outputs.size() == 1) {
@@ -350,7 +350,7 @@ public class RecyclingRecipes {
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
             Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
-            if (arcSmelt != null) {
+            if (arcSmelt != GTMaterials.NULL) {
                 return new MaterialStack(arcSmelt, amount);
             }
         }

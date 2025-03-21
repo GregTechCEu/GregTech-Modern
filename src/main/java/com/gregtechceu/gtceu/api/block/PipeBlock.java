@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -319,7 +320,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return InteractionResult.FAIL;
         }
 
-        if (pipeBlockEntity.getFrameMaterial() == null && pipeType.getThickness() < 1) {
+        if (pipeBlockEntity.getFrameMaterial() == GTMaterials.NULL && pipeType.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
             if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
@@ -371,7 +372,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != null) {
+        if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
                     .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
@@ -383,7 +384,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
+        if (pipeNode != null && pipeNode.getFrameMaterial() != GTMaterials.NULL) {
             return false;
         }
         return false;
@@ -392,7 +393,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
+        if (pipeNode != null && pipeNode.getFrameMaterial() != GTMaterials.NULL) {
             return MaterialBlock.FRAME_COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
@@ -403,7 +404,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         var pipeNode = getPipeTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
-            if (pipeNode.getFrameMaterial() != null) {
+            if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
                 return Shapes.block();
             }
             connections = pipeNode.getVisualConnections();
@@ -468,7 +469,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
-            if (pipeTile.getFrameMaterial() != null) {
+            if (pipeTile.getFrameMaterial() != GTMaterials.NULL) {
                 drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
                         .getDefaultState().getDrops(builder));
             }

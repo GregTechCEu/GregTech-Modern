@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.tags.TagKey;
@@ -78,7 +79,7 @@ public class TagType {
     }
 
     public TagKey<Item> getTag(TagPrefix prefix, Material material) {
-        if (filter != null && material != null && !filter.test(material)) return null;
+        if (filter != null && material != GTMaterials.NULL && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
 }

@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -657,9 +658,9 @@ public interface GTRecipeSchema {
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
             for (var fluidIng : inputs) {
                 for (var stack : fluidIng.getIngredient().getStacks()) {
-                    var matStack = ChemicalHelper.getMaterial(stack.getFluid());
-                    if (matStack != null) {
-                        fluidMaterialStacks.add(new MaterialStack(matStack,
+                    var mat = ChemicalHelper.getMaterial(stack.getFluid());
+                    if (mat != GTMaterials.NULL) {
+                        fluidMaterialStacks.add(new MaterialStack(mat,
                                 ((long) stack.getAmount() * GTValues.M) / GTValues.L));
                     }
                 }

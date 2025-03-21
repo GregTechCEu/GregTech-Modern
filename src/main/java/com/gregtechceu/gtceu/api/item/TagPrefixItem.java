@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
@@ -120,7 +121,7 @@ public class TagPrefixItem extends Item {
     }
 
     public int getItemBurnTime() {
-        DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
+        DustProperty property = material == GTMaterials.NULL ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;

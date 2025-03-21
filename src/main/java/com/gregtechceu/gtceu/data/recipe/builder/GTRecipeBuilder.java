@@ -379,7 +379,7 @@ public class GTRecipeBuilder {
             return inputItems(machine, count);
         } else {
             GTCEu.LOGGER.error("Input item is not one of:\n" +
-                            "Item, Supplier<Item>, ItemStack, Ingredient, " +
+                    "Item, Supplier<Item>, ItemStack, Ingredient, " +
                     "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
             return this;
         }

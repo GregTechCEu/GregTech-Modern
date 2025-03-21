@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -90,7 +91,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                     ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
             ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing, pos,
                     level, modelState);
-            if (pipeNode.getFrameMaterial() != null) {
+            if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
                 ResourceLocation rl = MaterialIconType.frameGt
                         .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.fluid;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
@@ -52,7 +53,7 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
 
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material != null) {
+        if (material != GTMaterials.NULL) {
             color = material.getMaterialARGB();
         }
         color = (color & 0xFF) << 24 | (color >> 8 & 0xFF) << 16 | (color >> 16 & 0xFF) << 8;

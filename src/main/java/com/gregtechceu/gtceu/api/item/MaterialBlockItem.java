@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -90,7 +91,7 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
 
     public int getItemBurnTime() {
         var material = getBlock().material;
-        DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
+        DustProperty property = material == GTMaterials.NULL ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * getBlock().tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;

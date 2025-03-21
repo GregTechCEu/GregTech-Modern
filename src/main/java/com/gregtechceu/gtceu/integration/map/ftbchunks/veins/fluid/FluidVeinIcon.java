@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 
@@ -57,7 +58,7 @@ public class FluidVeinIcon implements MapIcon {
     public int getColor() {
         var color = IClientFluidTypeExtensions.of(fluidInfo.fluid()).getTintColor();
         var material = ChemicalHelper.getMaterial(fluidInfo.fluid());
-        if (material != null) {
+        if (material != GTMaterials.NULL) {
             color = material.getMaterialARGB();
         }
         return color;

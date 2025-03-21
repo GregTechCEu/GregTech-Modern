@@ -117,7 +117,7 @@ public class MaterialRecipeHandler {
 
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (smeltingResult != null) {
+                if (smeltingResult != GTMaterials.NULL) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dustPrefix, mat), ChemicalHelper.get(ingot, smeltingResult));
                 }
@@ -130,7 +130,7 @@ public class MaterialRecipeHandler {
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, mat);
                 if (ingotStack.isEmpty() && oreProperty != null) {
                     Material smeltingResult = oreProperty.getDirectSmeltResult();
-                    if (smeltingResult != null) {
+                    if (smeltingResult != GTMaterials.NULL) {
                         ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     }
                 }
@@ -149,7 +149,7 @@ public class MaterialRecipeHandler {
 
                     processEBFRecipe(mat, blastProperty, ingotStack, provider);
 
-                    if (ingotProperty.getMagneticMaterial() != null) {
+                    if (ingotProperty.getMagneticMaterial() != GTMaterials.NULL) {
                         processEBFRecipe(ingotProperty.getMagneticMaterial(), blastProperty, ingotStack, provider);
                     }
                 }
@@ -165,7 +165,7 @@ public class MaterialRecipeHandler {
             // Some Ores with Direct Smelting Results have neither ingot nor gem properties
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (smeltingResult != null) {
+                if (smeltingResult != GTMaterials.NULL) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",

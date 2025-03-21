@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -25,7 +26,6 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -538,8 +538,8 @@ public class VanillaRecipeHelper {
      * @param material the material to check
      * @return if the material is a wood
      */
-    public static boolean isMaterialWood(@Nullable Material material) {
-        return material != null && material.hasProperty(PropertyKey.WOOD);
+    public static boolean isMaterialWood(@NotNull Material material) {
+        return material != GTMaterials.NULL && material.hasProperty(PropertyKey.WOOD);
     }
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {
