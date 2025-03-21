@@ -98,7 +98,7 @@ public class TooltipsHandler {
         }
 
         var material = ChemicalHelper.getMaterial(fluid);
-        if (material != null) {
+        if (material != GTMaterials.NULL) {
             var formula = material.getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));

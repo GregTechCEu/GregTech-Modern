@@ -27,7 +27,7 @@ public record MaterialStack(@NotNull Material material, long amount) {
         var cached = PARSE_CACHE.get(trimmed);
 
         if (cached != null) {
-            return cached.copy();
+            return cached;
         }
 
         var count = 1;
@@ -40,7 +40,7 @@ public record MaterialStack(@NotNull Material material, long amount) {
 
         cached = new MaterialStack(GTMaterials.get(copy), count);
         PARSE_CACHE.put(trimmed, cached);
-        return cached.copy();
+        return cached;
     }
 
     public boolean isEmpty() {
