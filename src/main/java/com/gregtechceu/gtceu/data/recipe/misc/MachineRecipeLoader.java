@@ -38,6 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -788,10 +789,12 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Concrete.getFluid(L))
-                .outputItems(GTBlocks.PLASTCRETE.asStack(2)).duration(200).save(provider);
+                .outputItems(GTBlocks.PLASTCRETE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft)).duration(200)
+                .save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("cleanroom_glass").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Glass.getFluid(L))
-                .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(2)).duration(200).save(provider);
+                .outputItems(GTBlocks.CLEANROOM_GLASS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(200).save(provider);
 
         // If these recipes are changed, change the values in MaterialInfoLoader.java
 
@@ -1430,7 +1433,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase();
+            var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
             var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
             var exportHatch4x = FLUID_EXPORT_HATCH_4X[tier];
@@ -1457,7 +1460,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase();
+            var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
             var inputBuffer = DUAL_IMPORT_HATCH[tier];
             var outputBuffer = DUAL_EXPORT_HATCH[tier];

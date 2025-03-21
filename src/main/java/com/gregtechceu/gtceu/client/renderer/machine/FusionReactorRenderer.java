@@ -39,7 +39,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-            if (machine.getColor() == -1 && delta < 0) {
+            if (!machine.recipeLogic.isWorking() && delta <= 0) {
                 return;
             }
             if (GTCEu.Mods.isShimmerLoaded()) {
@@ -56,7 +56,7 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
                                  MultiBufferSource buffer) {
         var color = machine.getColor();
         var alpha = 1f;
-        if (color != -1) {
+        if (machine.recipeLogic.isWorking()) {
             lastColor = color;
             delta = FADEOUT;
         } else {
