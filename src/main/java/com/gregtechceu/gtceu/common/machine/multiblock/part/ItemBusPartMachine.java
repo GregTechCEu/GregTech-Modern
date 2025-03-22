@@ -68,6 +68,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
     @Persisted
+    @DescSynced
     private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
