@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -74,6 +75,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (itemHandlers.size() < inputsSize) return false;
 
         var itemInventory = itemHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(ItemStack.class::isInstance)
                         .map(ItemStack.class::cast)
@@ -105,6 +107,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (fluidHandlers.size() < inputsSize) return false;
 
         var fluidInventory = fluidHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(FluidStack.class::isInstance)
                         .map(FluidStack.class::cast)

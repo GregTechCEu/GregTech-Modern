@@ -36,6 +36,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var recipeHandlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         for (var handler : recipeHandlers) {
+            if (!handler.shouldSearchContent()) continue;
             for (var content : handler.getContents()) {
                 if (!(content instanceof ItemStack stack)) continue;
                 if (stack.isEmpty()) continue;

@@ -160,7 +160,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
         getMainNode().addService(ICraftingProvider.class, this);
         this.circuitInventorySimulated = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit)
+                .shouldSearchContent(false);
         this.shareInventory = new NotifiableItemStackHandler(this, 9, IO.IN, IO.NONE);
         this.shareTank = new NotifiableFluidTank(this, 9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE);
         this.internalRecipeHandler = new InternalSlotRecipeHandler(this, internalInventory);
