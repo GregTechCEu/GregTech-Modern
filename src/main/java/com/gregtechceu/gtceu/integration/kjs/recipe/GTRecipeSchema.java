@@ -114,7 +114,7 @@ public interface GTRecipeSchema {
                             id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
                 }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -139,7 +139,7 @@ public interface GTRecipeSchema {
                             id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
                 }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();

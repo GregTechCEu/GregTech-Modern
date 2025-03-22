@@ -208,8 +208,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return null;
     }
 
-    public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
-        if (!holder.hasCapabilityProxies()) return null;
+    public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
+        if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
         var iterator = getLookup().getRecipeIterator(holder, canHandle);
         boolean any = false;
         while (iterator.hasNext()) {
