@@ -52,10 +52,7 @@ public final class WireCombiningHandler {
     private static void generateWireCombiningRecipe(@NotNull Consumer<FinishedRecipe> provider, int index,
                                                     @NotNull Material material) {
         TagPrefix prefix = WIRE_DOUBLING_ORDER[index];
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.WIRE)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.WIRE)) {
             return;
         }
         var wireStack = new UnificationEntry(prefix, material);
@@ -82,10 +79,7 @@ public final class WireCombiningHandler {
     }
 
     private static void processWireCompression(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!wireGtSingle.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.WIRE)) {
+        if (!material.shouldGenerateRecipesFor(wireGtSingle) || !material.hasProperty(PropertyKey.WIRE)) {
             return;
         }
 
@@ -110,10 +104,7 @@ public final class WireCombiningHandler {
 
     private static void processCableStripping(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix prefix,
                                               @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.WIRE)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.WIRE)) {
             return;
         }
 

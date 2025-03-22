@@ -62,7 +62,7 @@ public final class ToolRecipeHandler {
     }
 
     private static void processTool(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!plate.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(plate)) {
             return;
         }
 
@@ -140,8 +140,9 @@ public final class ToolRecipeHandler {
                     "PhP", " P ", " P ",
                     'P', plate);
         } else {
-            GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
-                    ", skipping mining hammer, spade, saw, axe, hoe, pickaxe, scythe, shovel, sword, hammer, file, knife, wrench recipes");
+            GTCEu.LOGGER.info(
+                    "Did not find plate for {}, skipping mining hammer, spade, saw, axe, hoe, pickaxe, scythe, shovel, sword, hammer, file, knife, wrench recipes",
+                    material.getName());
         }
 
         if (material.hasFlag(GENERATE_ROD)) {
@@ -161,11 +162,11 @@ public final class ToolRecipeHandler {
                             'S', rod);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
-                            .info("Did not find bolt for " + material.getName() + ", skipping wirecutter recipe");
+                            .info("Did not find bolt for {}, skipping wirecutter recipe", material.getName());
                 }
             } else {
-                GTCEu.LOGGER.info("Did not find plate for " + material.getName() +
-                        ", skipping wirecutter, butchery knife recipes");
+                GTCEu.LOGGER.info("Did not find plate for {}, skipping wirecutter, butchery knife recipes",
+                        material.getName());
             }
 
             addToolRecipe(provider, material, GTToolType.SCREWDRIVER, true,
@@ -184,7 +185,7 @@ public final class ToolRecipeHandler {
 
     private static void processElectricTool(@NotNull Consumer<FinishedRecipe> provider, @NotNull ToolProperty property,
                                             @NotNull Material material) {
-        if (!plate.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(plate)) {
             return;
         }
 

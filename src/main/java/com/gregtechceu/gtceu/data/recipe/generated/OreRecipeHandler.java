@@ -73,7 +73,7 @@ public final class OreRecipeHandler {
 
     private static void processOre(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix orePrefix,
                                    @NotNull OreProperty property, @NotNull Material material) {
-        if (!orePrefix.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(orePrefix)) {
             return;
         }
 
@@ -154,7 +154,7 @@ public final class OreRecipeHandler {
 
     private static void processRawOre(@NotNull Consumer<FinishedRecipe> provider, @NotNull OreProperty property,
                                       @NotNull Material material) {
-        if (!rawOre.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(rawOre)) {
             return;
         }
 
@@ -250,7 +250,7 @@ public final class OreRecipeHandler {
 
     private static void processCrushedOre(@NotNull Consumer<FinishedRecipe> provider, @NotNull OreProperty property,
                                           @NotNull Material material) {
-        if (!crushed.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(crushed)) {
             return;
         }
 
@@ -336,7 +336,7 @@ public final class OreRecipeHandler {
 
     private static void processCrushedCentrifuged(@NotNull Consumer<FinishedRecipe> provider,
                                                   @NotNull OreProperty property, @NotNull Material material) {
-        if (!crushedRefined.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(crushedRefined)) {
             return;
         }
 
@@ -368,7 +368,7 @@ public final class OreRecipeHandler {
     private static void processCrushedPurified(@NotNull Consumer<FinishedRecipe> provider,
                                                @NotNull OreProperty property,
                                                @NotNull Material material) {
-        if (!crushedPurified.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(crushedPurified)) {
             return;
         }
 
@@ -452,7 +452,7 @@ public final class OreRecipeHandler {
 
     private static void processDirtyDust(@NotNull Consumer<FinishedRecipe> provider, @NotNull OreProperty property,
                                          @NotNull Material material) {
-        if (!dustImpure.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(dustImpure)) {
             return;
         }
 
@@ -486,7 +486,7 @@ public final class OreRecipeHandler {
 
     private static void processPureDust(@NotNull Consumer<FinishedRecipe> provider, @NotNull OreProperty property,
                                         @NotNull Material material) {
-        if (!dustPure.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(dustPure)) {
             return;
         }
 

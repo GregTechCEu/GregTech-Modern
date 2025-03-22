@@ -61,10 +61,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processDust(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!dust.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(dust) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -250,10 +247,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processSmallDust(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!dustSmall.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(dustSmall) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -281,10 +275,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processTinyDust(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!dustTiny.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(dustTiny) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -312,10 +303,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processIngot(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!ingot.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(ingot) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -437,10 +425,7 @@ public final class MaterialRecipeHandler {
 
     private static void processGemConversion(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix prefix,
                                              @Nullable TagPrefix lowerPrefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.GEM)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.GEM)) {
             return;
         }
 
@@ -492,10 +477,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processNugget(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!nugget.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(nugget) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -561,10 +543,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processFrame(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!frameGt.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(frameGt) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -585,10 +564,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processBlock(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!block.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(block) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 

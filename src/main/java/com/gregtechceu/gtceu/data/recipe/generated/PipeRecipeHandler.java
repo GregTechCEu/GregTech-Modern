@@ -49,10 +49,7 @@ public final class PipeRecipeHandler {
                                                @NotNull PropertyKey<?> propertyKey,
                                                @NotNull TagPrefix prefix, @NotNull TagPrefix unrestrictive,
                                                @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -72,10 +69,7 @@ public final class PipeRecipeHandler {
 
     private static void processPipeTiny(@NotNull Consumer<FinishedRecipe> provider, @NotNull PropertyKey<?> propertyKey,
                                         @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -107,10 +101,7 @@ public final class PipeRecipeHandler {
     private static void processPipeSmall(@NotNull Consumer<FinishedRecipe> provider,
                                          @NotNull PropertyKey<?> propertyKey,
                                          @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -142,10 +133,7 @@ public final class PipeRecipeHandler {
     private static void processPipeNormal(@NotNull Consumer<FinishedRecipe> provider,
                                           @NotNull PropertyKey<?> propertyKey,
                                           @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -177,10 +165,7 @@ public final class PipeRecipeHandler {
     private static void processPipeLarge(@NotNull Consumer<FinishedRecipe> provider,
                                          @NotNull PropertyKey<?> propertyKey,
                                          @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -211,10 +196,7 @@ public final class PipeRecipeHandler {
 
     private static void processPipeHuge(@NotNull Consumer<FinishedRecipe> provider, @NotNull PropertyKey<?> propertyKey,
                                         @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -246,10 +228,7 @@ public final class PipeRecipeHandler {
     private static void processPipeQuadruple(@NotNull Consumer<FinishedRecipe> provider,
                                              @NotNull PropertyKey<?> propertyKey,
                                              @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 
@@ -272,10 +251,7 @@ public final class PipeRecipeHandler {
     private static void processPipeNonuple(@NotNull Consumer<FinishedRecipe> provider,
                                            @NotNull PropertyKey<?> propertyKey,
                                            @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(propertyKey)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(propertyKey)) {
             return;
         }
 

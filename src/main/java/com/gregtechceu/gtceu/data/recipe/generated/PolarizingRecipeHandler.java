@@ -42,10 +42,7 @@ public final class PolarizingRecipeHandler {
 
     private static void processPolarizing(@NotNull Consumer<FinishedRecipe> provider, @NotNull IngotProperty property,
                                           @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 

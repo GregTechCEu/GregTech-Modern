@@ -31,8 +31,8 @@ public final class PartsRecipeHandler {
     private PartsRecipeHandler() {}
 
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        processStick(provider, material);
-        processLongStick(provider, material);
+        processRod(provider, material);
+        processLongRod(provider, material);
         processPlate(provider, material);
         processPlateDouble(provider, material);
         processPlateDense(provider, material);
@@ -46,16 +46,13 @@ public final class PartsRecipeHandler {
         processGear(provider, gear, material);
         processGear(provider, gearSmall, material);
         processRing(provider, material);
-        processSpringSmall(provider, material);
-        processSpring(provider, material);
+        processSpring(provider, spring, material);
+        processSpring(provider, springSmall, material);
         processRound(provider, material);
     }
 
     private static void processBolt(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!bolt.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(bolt) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -93,10 +90,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processScrew(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!screw.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(screw) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -117,10 +111,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processFoil(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!foil.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(foil) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -167,10 +158,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processFineWire(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!wireFine.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(wireFine) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -200,10 +188,7 @@ public final class PartsRecipeHandler {
 
     private static void processGear(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix prefix,
                                     @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -296,10 +281,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processLens(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!lens.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.GEM)) {
+        if (!material.shouldGenerateRecipesFor(lens) || !material.hasProperty(PropertyKey.GEM)) {
             return;
         }
 
@@ -319,10 +301,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processPlate(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!plate.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(plate) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -341,10 +320,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processPlateDouble(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!plateDouble.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(plateDouble) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -375,10 +351,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processPlateDense(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!plateDense.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+        if (!material.shouldGenerateRecipesFor(plateDense) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -404,10 +377,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processRing(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!ring.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(ring) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -435,52 +405,41 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processSpringSmall(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!springSmall.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
-            return;
-        }
-
-        VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.getName()),
-                ChemicalHelper.get(springSmall, material),
-                " s ", "fRx", 'R', new UnificationEntry(rod, material));
-
-        BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_rod_to_small_spring")
-                .duration((int) (material.getMass() / 2)).EUt(VA[ULV])
-                .inputItems(rod, material)
-                .outputItems(springSmall, material, 2)
-                .circuitMeta(1)
-                .save(provider);
-    }
-
-    private static void processSpring(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!spring.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+    private static void processSpring(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix prefix,
+                                      @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
-        BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_long_rod_to_spring")
-                .inputItems(rodLong, material)
-                .outputItems(spring, material)
-                .circuitMeta(1)
-                .duration(200)
-                .EUt(16)
-                .save(provider);
+        boolean isSmall = prefix == springSmall;
+        if (isSmall) {
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.getName()),
+                    ChemicalHelper.get(springSmall, material),
+                    " s ", "fRx", 'R', new UnificationEntry(rod, material));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.getName()),
-                ChemicalHelper.get(spring, material),
-                " s ", "fRx", " R ", 'R', new UnificationEntry(rodLong, material));
+            BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_rod_to_small_spring")
+                    .duration((int) (material.getMass() / 2)).EUt(VA[ULV])
+                    .inputItems(rod, material)
+                    .outputItems(springSmall, material, 2)
+                    .circuitMeta(1)
+                    .save(provider);
+        } else {
+            BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_long_rod_to_spring")
+                    .inputItems(rodLong, material)
+                    .outputItems(spring, material)
+                    .circuitMeta(1)
+                    .duration(200)
+                    .EUt(16)
+                    .save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.getName()),
+                    ChemicalHelper.get(spring, material),
+                    " s ", "fRx", " R ", 'R', new UnificationEntry(rodLong, material));
+        }
     }
 
     private static void processRotor(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!rotor.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(rotor) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -523,11 +482,8 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processStick(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!rod.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+    private static void processRod(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(rod) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -565,11 +521,8 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processLongStick(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!rodLong.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.DUST)) {
+    private static void processLongRod(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(rodLong) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
@@ -639,10 +592,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processTurbine(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!turbineBlade.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(turbineBlade) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
@@ -674,10 +624,7 @@ public final class PartsRecipeHandler {
     }
 
     private static void processRound(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!round.shouldGenerateRecipes(material)) {
-            return;
-        }
-        if (!material.hasProperty(PropertyKey.INGOT)) {
+        if (!material.shouldGenerateRecipesFor(round) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 

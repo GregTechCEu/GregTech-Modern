@@ -83,7 +83,7 @@ public final class WireRecipeHandler {
     }
 
     private static void processWires(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        if (!wireGtSingle.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(wireGtSingle)) {
             return;
         }
 
@@ -137,12 +137,10 @@ public final class WireRecipeHandler {
     private static void generateCableCovering(@NotNull Consumer<FinishedRecipe> provider,
                                               @NotNull WireProperties property,
                                               @NotNull TagPrefix prefix, @NotNull Material material) {
-        if (!prefix.shouldGenerateRecipes(material)) {
+        if (!material.shouldGenerateRecipesFor(prefix) || property.isSuperconductor()) {
+            // Superconductors have no Cables, so exit early
             return;
         }
-
-        // Superconductors have no Cables, so exit early
-        if (property.isSuperconductor()) return;
 
         int cableAmount = (int) (prefix.getMaterialAmount(material) * 2 / M);
         TagPrefix cablePrefix = TagPrefix.get("cable" + prefix.name().substring(4));
