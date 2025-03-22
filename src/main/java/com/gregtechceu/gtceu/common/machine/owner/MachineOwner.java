@@ -22,9 +22,9 @@ import java.util.function.Function;
 public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, ArgonautsOwner {
 
     private static Function<UUID, MachineOwner> machineOwnerGenerator;
-    public static UUID EMPTY = new UUID(0, 0);
-    protected static Map<UUID, MachineOwner> MACHINE_OWNERS = new Object2ObjectOpenHashMap<>();
-    protected static Map<UUID, PlayerOwner> PLAYER_OWNERS = new Object2ObjectOpenHashMap<>();
+    public static final UUID EMPTY = new UUID(0, 0);
+    protected static final Map<UUID, MachineOwner> MACHINE_OWNERS = new Object2ObjectOpenHashMap<>();
+    protected static final Map<UUID, PlayerOwner> PLAYER_OWNERS = new Object2ObjectOpenHashMap<>();
 
     @Getter
     protected final @NotNull UUID playerUUID;
