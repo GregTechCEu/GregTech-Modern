@@ -74,11 +74,20 @@ public class RecipeHandlerList {
         }
     }
 
-    public void setDistinct(boolean distinct) {
+    public final void setDistinctAndNotify(boolean distinct) {
+        setDistinct(distinct, true);
+    }
+
+    public final void setDistinct(boolean distinct) {
+        setDistinct(distinct, false);
+    }
+
+    protected void setDistinct(boolean distinct, boolean notify) {
         if (isDistinct != distinct) {
             isDistinct = distinct;
             for (var rht : allHandlerTraits) {
                 rht.setDistinct(isDistinct);
+                if (notify) rht.notifyListeners();
             }
         }
     }

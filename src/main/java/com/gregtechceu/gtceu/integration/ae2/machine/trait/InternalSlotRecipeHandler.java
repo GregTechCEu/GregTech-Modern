@@ -12,24 +12,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InternalSlotRecipeHandler {
+public final class InternalSlotRecipeHandler {
 
     @Getter
     private final List<RecipeHandlerList> slotHandlers;
 
     public InternalSlotRecipeHandler(MEPatternBufferPartMachine buffer, InternalSlot[] slots) {
-        this.slotHandlers = new ObjectArrayList<>(slots.length);
+        this.slotHandlers = new ArrayList<>(slots.length);
         for (int i = 0; i < slots.length; i++) {
-            InternalSlot slot = slots[i];
-            var rhl = new SlotRHL(buffer, slot, i);
-            rhl.setDistinct(true);
+            var rhl = new SlotRHL(buffer, slots[i], i);
             slotHandlers.add(rhl);
         }
     }
@@ -47,6 +44,14 @@ public class InternalSlotRecipeHandler {
             addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
                     itemRecipeHandler, fluidRecipeHandler);
         }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public void setDistinct(boolean ignored, boolean notify) {}
     }
 
     @Getter
@@ -58,6 +63,7 @@ public class InternalSlotRecipeHandler {
         private final int size = 81;
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
 
         private SlotItemRecipeHandler(MEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
             super(buffer);
@@ -92,6 +98,7 @@ public class InternalSlotRecipeHandler {
         private final int size = 81;
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
 
         private SlotFluidRecipeHandler(MEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
             super(buffer);

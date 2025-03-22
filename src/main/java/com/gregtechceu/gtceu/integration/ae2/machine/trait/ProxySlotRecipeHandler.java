@@ -15,23 +15,22 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 import net.minecraft.world.item.crafting.Ingredient;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ProxySlotRecipeHandler {
+public final class ProxySlotRecipeHandler {
 
     @Getter
     private final List<RecipeHandlerList> proxySlotHandlers;
 
     public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine, int slots) {
-        proxySlotHandlers = new ObjectArrayList<>(slots);
+        proxySlotHandlers = new ArrayList<>(slots);
         for (int i = 0; i < slots; ++i) {
             var rhl = new ProxyRHL(machine);
-            rhl.setDistinct(true);
             proxySlotHandlers.add(rhl);
         }
     }
@@ -84,6 +83,14 @@ public class ProxySlotRecipeHandler {
             slotItem.setProxy(null);
             slotFluid.setProxy(null);
         }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public void setDistinct(boolean ignored, boolean notify) {}
     }
 
     @Getter
@@ -94,6 +101,7 @@ public class ProxySlotRecipeHandler {
 
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
+        private final boolean isDistinct = true;
 
         public ProxyItemRecipeHandler(MetaMachine machine) {
             super(machine);
@@ -148,6 +156,7 @@ public class ProxySlotRecipeHandler {
 
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
+        private final boolean isDistinct = true;
 
         public ProxyFluidRecipeHandler(MetaMachine machine) {
             super(machine);

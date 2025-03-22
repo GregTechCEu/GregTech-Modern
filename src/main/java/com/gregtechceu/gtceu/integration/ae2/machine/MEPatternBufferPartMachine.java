@@ -181,7 +181,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 }
             }));
         }
-        setDistinct(true);
     }
 
     @Override
@@ -201,6 +200,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public void setWorkingEnabled(boolean ignored) {}
+
+    @Override
+    public boolean isDistinct() {
+        return true;
+    }
+
+    @Override
+    public void setDistinct(boolean ignored) {}
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
