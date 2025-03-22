@@ -136,7 +136,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public void setDistinct(boolean distinct) {
-        isDistinct = (io == IO.OUT && distinct);
+        isDistinct = (io != IO.OUT && distinct);
         getHandlerList().setDistinct(isDistinct);
     }
 
