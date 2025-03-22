@@ -32,6 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -96,6 +97,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
      *
      * @return true if cover can be attached, false otherwise
      */
+    @MustBeInvokedByOverriders
     public boolean canAttach() {
         var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
         return machine == null || !machine.hasFrontFacing() || coverHolder.getFrontFacing() != attachedSide ||
