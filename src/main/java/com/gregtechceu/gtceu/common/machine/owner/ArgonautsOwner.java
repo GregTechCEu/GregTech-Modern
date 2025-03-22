@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
-public class ArgonautsOwner extends MachineOwner {
+public non-sealed class ArgonautsOwner extends MachineOwner {
 
     private static final Component displayName = Component.translatable("gtceu.ownership.name.argonauts");
 

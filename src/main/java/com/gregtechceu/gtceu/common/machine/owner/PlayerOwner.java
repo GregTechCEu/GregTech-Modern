@@ -6,7 +6,7 @@ import net.minecraftforge.common.UsernameCache;
 import java.util.List;
 import java.util.UUID;
 
-public class PlayerOwner extends MachineOwner {
+public non-sealed class PlayerOwner extends MachineOwner {
 
     private static final Component displayName = Component.translatable("gtceu.ownership.name.player");
 

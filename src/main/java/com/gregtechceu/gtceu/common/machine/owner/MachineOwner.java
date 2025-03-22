@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
-public abstract class MachineOwner {
+public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, ArgonautsOwner {
 
     private static Function<UUID, MachineOwner> machineOwnerGenerator;
     public static UUID EMPTY = new UUID(0, 0);

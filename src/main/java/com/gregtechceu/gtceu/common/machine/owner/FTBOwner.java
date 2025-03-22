@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class FTBOwner extends MachineOwner {
+public non-sealed class FTBOwner extends MachineOwner {
 
     private static final Component displayName = Component.translatable("gtceu.ownership.name.ftb");
 
