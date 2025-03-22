@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -295,19 +296,26 @@ public class RecipeHelper {
 
         for (List<RecipeCondition> conditions : or.values()) {
             boolean passed = conditions.isEmpty();
+            MutableComponent component = Component.translatable("gtceu.recipe_logic.condition_fails")
+                    .append(": ");
             for (RecipeCondition condition : conditions) {
                 passed = condition.check(recipe, recipeLogic);
                 if (passed) break;
+                else component.append(condition.getTooltips());
             }
 
-            if (!passed) return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails"));
+            if (!passed) {
+                return ActionResult.fail(component);
+            }
         }
         return ActionResult.SUCCESS;
     }
 
     /**
-     * Trims the recipe outputs and tick outputs based on the performing Machine's trim limit.
+     * Creates a copy of the recipe matching the trim limits -
+     * Returns the recipe itself if no valid trim limits are passed
      */
+    @Contract(pure = true)
     public static GTRecipe trimRecipeOutputs(GTRecipe recipe, Object2IntMap<RecipeCapability<?>> trimLimits) {
         // Fast return early if no trimming desired
         if (trimLimits.isEmpty() || trimLimits.values().intStream().allMatch(integer -> integer == -1)) {

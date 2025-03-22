@@ -9,6 +9,8 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,7 @@ public class RecipeHandlerList {
     @Getter
     private final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> handlerMap = new Reference2ObjectOpenHashMap<>();
     private final List<IRecipeHandler<?>> allHandlers = new ArrayList<>();
-    private final List<IRecipeHandlerTrait<?>> allHandlerTraits = new ArrayList<>();
+    private final List<NotifiableRecipeHandlerTrait<?>> allHandlerTraits = new ArrayList<>();
 
     @Getter
     private final IO handlerIO;
@@ -61,7 +63,7 @@ public class RecipeHandlerList {
         for (var handler : handlers) {
             getHandlerMap().computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
             allHandlers.add(handler);
-            if (handler instanceof IRecipeHandlerTrait<?> rht) allHandlerTraits.add(rht);
+            if (handler instanceof NotifiableRecipeHandlerTrait<?> rht) allHandlerTraits.add(rht);
         }
         if (handlerIO == IO.OUT) sort();
     }
@@ -76,9 +78,7 @@ public class RecipeHandlerList {
         if (isDistinct != distinct) {
             isDistinct = distinct;
             for (var rht : allHandlerTraits) {
-                if (rht instanceof NotifiableRecipeHandlerTrait<?> nrht) {
-                    nrht.setDistinct(distinct);
-                }
+                rht.setDistinct(isDistinct);
             }
         }
     }
@@ -87,12 +87,12 @@ public class RecipeHandlerList {
         return getHandlerMap().containsKey(cap);
     }
 
-    public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
+    public @NotNull List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
         return getHandlerMap().getOrDefault(cap, Collections.emptyList());
     }
 
     public boolean isValid(IO extIO) {
-        if (this == NO_DATA) return false;
+        if (this == NO_DATA || handlerIO == IO.NONE) return false;
         return (extIO == IO.BOTH || handlerIO == IO.BOTH || extIO == handlerIO);
     }
 
@@ -108,15 +108,15 @@ public class RecipeHandlerList {
         return sum;
     }
 
+    @Contract(pure = true)
     public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
                                                                Map<RecipeCapability<?>, List<Object>> contents,
                                                                boolean simulate) {
         if (getHandlerMap().isEmpty()) return contents;
         var copy = new Reference2ObjectOpenHashMap<>(contents);
-        for (var it = copy.reference2ObjectEntrySet().iterator(); it.hasNext();) {
+        for (var it = copy.reference2ObjectEntrySet().fastIterator(); it.hasNext();) {
             var entry = it.next();
-            var handlerList = getHandlerMap().get(entry.getKey());
-            if (handlerList == null) continue;
+            var handlerList = getCapability(entry.getKey());
             for (var handler : handlerList) {
                 var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
                 if (left == null) {

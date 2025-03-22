@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class InternalSlotRecipeHandler {
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             return new ArrayList<>(slot.getItems());
         }
 
@@ -107,7 +108,7 @@ public class InternalSlotRecipeHandler {
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             return new ArrayList<>(slot.getFluids());
         }
 

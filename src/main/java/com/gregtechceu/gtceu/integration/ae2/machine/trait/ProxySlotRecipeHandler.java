@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -122,7 +123,7 @@ public class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             if (proxy == null) return Collections.emptyList();
             return proxy.getContents();
         }
@@ -177,7 +178,7 @@ public class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             if (proxy == null) return Collections.emptyList();
             return proxy.getContents();
         }

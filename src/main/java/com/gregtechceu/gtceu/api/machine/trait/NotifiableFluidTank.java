@@ -86,7 +86,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     // TODO Kross: See if this can be decoupled from CustomFluidTank
-    // Commented lines throughout this class are remnants of that
     public void onContentsChanged() {
         isEmpty = null;
         notifyListeners();
@@ -104,7 +103,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 
         FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
-        // boolean changed = false;
         // Store the FluidStack in each slot after an operation
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
@@ -150,7 +148,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     if ((visited[tank] == null && ingredient.test(stored)) || ingredient.test(visited[tank])) {
                         var drained = storages[tank].drain(ingredient.getAmount(), action);
                         if (drained.getAmount() > 0) {
-                            // changed = action.execute();
                             visited[tank] = drained.copy();
                             visited[tank].setAmount(amount - drained.getAmount());
                             ingredient.shrink(drained.getAmount());
@@ -162,7 +159,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     if (visited[tank] == null || visited[tank].isFluidEqual(output)) {
                         int filled = storages[tank].fill(output, action);
                         if (filled > 0) {
-                            // changed = action.execute();
                             visited[tank] = output.copy();
                             visited[tank].setAmount(filled);
                             ingredient.shrink(filled);
@@ -180,7 +176,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 }
             }
         }
-        // if (changed) onContentsChanged();
         return left.isEmpty() ? null : left;
     }
 
@@ -238,7 +233,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         List<FluidStack> ingredients = new ArrayList<>();
         for (int i = 0; i < getTanks(); ++i) {
             FluidStack stack = getFluidInTank(i);
@@ -246,7 +241,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 ingredients.add(stack);
             }
         }
-        return Arrays.asList(ingredients.toArray());
+        return new ArrayList<>(ingredients);
     }
 
     @Override
@@ -306,7 +301,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
         storages[tank].setFluid(fluidStack);
-        // onContentsChanged();
     }
 
     @Override
@@ -351,9 +345,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         } else {
             copied.shrink(existingStorage.fill(copied.copy(), action));
         }
-        int filled = resource.getAmount() - copied.getAmount();
-        // if (filled > 0 && action.execute()) onContentsChanged();
-        return filled;
+        return resource.getAmount() - copied.getAmount();
     }
 
     @NotNull
@@ -375,7 +367,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             if (copied.isEmpty()) break;
         }
         copied.setAmount(resource.getAmount() - copied.getAmount());
-        // if (!copied.isEmpty() && action.execute()) onContentsChanged();
         return copied;
     }
 
@@ -408,7 +399,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             }
             if (maxDrain <= 0) break;
         }
-        // if (totalDrained != null && !totalDrained.isEmpty() && action.execute()) onContentsChanged();
         return totalDrained == null ? FluidStack.EMPTY : totalDrained;
     }
 

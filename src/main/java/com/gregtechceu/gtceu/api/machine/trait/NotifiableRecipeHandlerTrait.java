@@ -47,7 +47,7 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
         listeners.forEach(Runnable::run);
     }
 
-    public void setDistinct(boolean distinct) {
+    protected void setDistinct(boolean distinct) {
         isDistinct = distinct;
         notifyListeners();
     }

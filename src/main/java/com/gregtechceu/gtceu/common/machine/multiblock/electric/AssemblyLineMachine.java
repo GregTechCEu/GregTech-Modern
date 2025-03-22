@@ -15,9 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
@@ -30,60 +33,13 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
         if (recipe == null) return false;
         if (!super.beforeWorking(recipe)) return false;
-        if (!ConfigHolder.INSTANCE.machines.orderedAssemblyLineItems) return true;
 
-        var recipeInputs = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-        var handlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
-        if (handlers.size() < recipeInputs.size()) return false;
+        var config = ConfigHolder.INSTANCE.machines;
+        if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return true;
+        if (!checkItemInputs(recipe)) return false;
 
-        var itemInputInventory = handlers.stream()
-                .map(container -> container.getContents().stream()
-                        .filter(ItemStack.class::isInstance)
-                        .map(ItemStack.class::cast)
-                        .filter(s -> !s.isEmpty())
-                        .findFirst())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .limit(recipeInputs.size())
-                .toList();
-
-        if (itemInputInventory.size() < recipeInputs.size()) return false;
-
-        for (int i = 0; i < recipeInputs.size(); i++) {
-            var itemStack = itemInputInventory.get(i);
-            Ingredient recipeStack = ItemRecipeCapability.CAP.of(recipeInputs.get(i).content);
-            if (!recipeStack.test(itemStack)) {
-                return false;
-            }
-        }
-
-        if (!ConfigHolder.INSTANCE.machines.orderedAssemblyLineFluids) return true;
-
-        recipeInputs = recipe.inputs.get(FluidRecipeCapability.CAP);
-        handlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
-        if (handlers.size() < recipeInputs.size()) return false;
-
-        var itemFluidInventory = handlers.stream()
-                .map(container -> container.getContents().stream()
-                        .filter(FluidStack.class::isInstance)
-                        .map(FluidStack.class::cast)
-                        .filter(f -> !f.isEmpty())
-                        .findFirst())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .limit(recipeInputs.size())
-                .toList();
-
-        if (itemFluidInventory.size() < recipeInputs.size()) return false;
-
-        for (int i = 0; i < recipeInputs.size(); i++) {
-            var fluidStack = (FluidStack) itemFluidInventory.get(i);
-            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(recipeInputs.get(i).content);
-            if (!recipeStack.test(fluidStack) || recipeStack.getAmount() > fluidStack.getAmount()) {
-                return false;
-            }
-        }
-        return true;
+        if (!config.orderedAssemblyLineFluids) return true;
+        return checkFluidInputs(recipe);
     }
 
     @Override
@@ -94,5 +50,66 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     private Function<BlockPos, Integer> multiblockPartSorter() {
         return RelativeDirection.RIGHT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
+    }
+
+    private boolean checkItemInputs(@NotNull GTRecipe recipe) {
+        var itemInputs = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
+        if (itemInputs.isEmpty()) return true;
+        int inputsSize = itemInputs.size();
+        var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
+        if (itemHandlers.size() < inputsSize) return false;
+
+        var itemInventory = itemHandlers.stream()
+                .map(container -> container.getContents().stream()
+                        .filter(ItemStack.class::isInstance)
+                        .map(ItemStack.class::cast)
+                        .filter(s -> !s.isEmpty())
+                        .findFirst())
+                .dropWhile(Optional::isEmpty)
+                .limit(inputsSize)
+                .map(o -> o.orElse(ItemStack.EMPTY))
+                .toList();
+
+        if (itemInventory.size() < inputsSize) return false;
+
+        for (int i = 0; i < inputsSize; i++) {
+            var itemStack = itemInventory.get(i);
+            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
+            if (!recipeStack.test(itemStack)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkFluidInputs(@NotNull GTRecipe recipe) {
+        var fluidInputs = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
+        if (fluidInputs.isEmpty()) return true;
+        int inputsSize = fluidInputs.size();
+        var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
+        if (fluidHandlers.size() < inputsSize) return false;
+
+        var fluidInventory = fluidHandlers.stream()
+                .map(container -> container.getContents().stream()
+                        .filter(FluidStack.class::isInstance)
+                        .map(FluidStack.class::cast)
+                        .filter(f -> !f.isEmpty())
+                        .findFirst())
+                .dropWhile(Optional::isEmpty)
+                .limit(inputsSize)
+                .map(o -> o.orElse(FluidStack.EMPTY))
+                .toList();
+
+        if (fluidInventory.size() < inputsSize) return false;
+
+        for (int i = 0; i < inputsSize; i++) {
+            var fluidStack = fluidInventory.get(i);
+            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            if (!recipeStack.test(fluidStack) || recipeStack.getAmount() > fluidStack.getAmount()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

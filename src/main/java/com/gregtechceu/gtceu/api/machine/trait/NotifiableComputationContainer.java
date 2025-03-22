@@ -184,7 +184,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
-        int sum = left.stream().reduce(0, Integer::sum);
+        int sum = left.stream().mapToInt(Integer::intValue).sum();
         if (io == IO.IN) {
             int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= sum) {
@@ -220,7 +220,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         return List.of(lastOutputCwu);
     }
 

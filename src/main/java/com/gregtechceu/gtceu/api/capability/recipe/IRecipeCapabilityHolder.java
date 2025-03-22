@@ -38,9 +38,11 @@ public interface IRecipeCapabilityHolder {
         if (handler == RecipeHandlerList.NO_DATA) return;
         IO io = handler.getHandlerIO();
         getCapabilitiesProxy().computeIfAbsent(io, i -> new ArrayList<>()).add(handler);
-        var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>());
-        for (var entry : handler.getHandlerMap().entrySet()) {
-            inner.computeIfAbsent(entry.getKey(), c -> new ArrayList<>()).addAll(entry.getValue());
+        var entrySet = handler.getHandlerMap().entrySet();
+        var inner = getCapabilitiesFlat().computeIfAbsent(io, i -> new Reference2ObjectOpenHashMap<>(entrySet.size()));
+        for (var entry : entrySet) {
+            var entryList = entry.getValue();
+            inner.computeIfAbsent(entry.getKey(), c -> new ArrayList<>(entryList.size())).addAll(entryList);
         }
     }
 }

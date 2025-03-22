@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.List;
@@ -47,6 +48,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return -1;
     }
 
+    @NotNull
     List<Object> getContents();
 
     double getTotalContentAmount();
