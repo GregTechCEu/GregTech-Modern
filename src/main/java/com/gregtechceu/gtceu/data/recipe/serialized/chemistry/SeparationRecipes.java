@@ -466,7 +466,7 @@ public class SeparationRecipes {
         ELECTROLYZER_RECIPES.recipeBuilder("apatite_electrolysis")
                 .inputItems(dust, Apatite, 9)
                 .outputItems(dust, Calcium, 5)
-                .outputItems(dust, Phosphorus, 3)
+                .outputItems(dust, Phosphate, 3)
                 .outputFluids(Chlorine.getFluid(1000))
                 .duration(288).EUt(60).save(provider);
 
