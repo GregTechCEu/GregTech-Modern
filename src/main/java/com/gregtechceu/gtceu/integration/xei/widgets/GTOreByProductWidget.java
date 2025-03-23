@@ -21,6 +21,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,45 +49,50 @@ public class GTOreByProductWidget extends WidgetGroup {
     );
 
     protected final static ImmutableList<Integer> ITEM_OUTPUT_LOCATIONS = ImmutableList.of(
-            46, 3,      // smelt result
-            3, 47,      // ore -> crushed
-            3, 65,      // byproduct
-            23, 92,     // crushed -> impure
-            23, 110,    // byproduct
-            50, 101,    // impure -> dust
-            50, 119,    // byproduct
-            64, 25,     // crushed -> crushed purified (wash)
-            82, 25,     // byproduct
-            97, 92,     // crushed/crushed purified -> centrifuged
-            97, 110,    // byproduct
-            70, 101,    // centrifuged -> dust
-            70, 119,    // byproduct
-            137, 47,    // crushed purified -> purified
-            155, 47,    // byproduct
-            133, 92,    // purified -> dust
-            133, 110,   // byproduct
-            3, 105,     // crushed cauldron
-            3, 145,     // -> purified crushed
-            23, 145,    // impure cauldron
-            63, 145,    // -> dust
-            84, 145,    // purified cauldron
-            124, 145,   // -> dust
-            64, 48,     // crushed -> crushed purified (chem bath)
-            82, 48,     // byproduct
-            155, 92,    // purified -> dust (electro separator)
-            155, 110,   // byproduct 1
-            155, 128,   // byproduct 2
-            119, 3,     // sifter outputs...
-            137, 3,
-            155, 3,
-            119, 21,
-            137, 21,
-            155, 21);
+            46, 3,      // smelt result: 0
+            3, 47,      // ore -> crushed: 2
+            3, 65,      // byproduct: 4
+            23, 92,     // crushed -> impure: 6
+            23, 110,    // byproduct: 8
+            50, 101,    // impure -> dust: 10
+            50, 119,    // byproduct: 12
+            64, 25,     // crushed -> crushed purified (wash): 14
+            82, 25,     // byproduct: 16
+            97, 92,     // crushed/crushed purified -> centrifuged: 18
+            97, 110,    // byproduct: 20
+            70, 101,    // centrifuged -> dust: 22
+            70, 119,    // byproduct: 24
+            137, 47,    // crushed purified -> purified: 26
+            155, 47,    // byproduct: 28
+            133, 92,    // purified -> dust: 30
+            133, 110,   // byproduct: 32
+            3, 105,     // crushed cauldron: 34
+            3, 145,     // -> purified crushed: 36
+            23, 145,    // impure cauldron: 38
+            63, 145,    // -> dust: 40
+            84, 145,    // purified cauldron: 42
+            124, 145,   // -> dust: 44
+            64, 48,     // crushed -> crushed purified (chem bath): 46
+            82, 48,     // byproduct: 48
+            155, 92,    // purified -> dust (electro separator): 50
+            155, 110,   // byproduct 1: 52
+            155, 128,   // byproduct 2: 54
+            119, 3,     // sifter outputs... : 56
+            137, 3,     // 58
+            155, 3,     // 60
+            119, 21,    // 62
+            137, 21,    // 64
+            155, 21     // 66
+    );
 
     protected final static ImmutableList<Integer> FLUID_LOCATIONS = ImmutableList.of(
             42, 25, // washer in
             42, 48  // chem bath in
     );
+
+    // Used to set intermediates as both input and output
+    protected final static ImmutableSet<Integer> FINAL_OUTPUT_INDICES = ImmutableSet.of(
+            0, 4, 8, 10, 12, 16, 20, 22, 24, 28, 30, 32, 40, 44, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66);
 
     public GTOreByProductWidget(Material material) {
         super(0, 0, 176, 166);
@@ -149,7 +155,7 @@ public class GTOreByProductWidget extends WidgetGroup {
                     ITEM_OUTPUT_LOCATIONS.get(i + 1))
                     .setCanTakeItems(false)
                     .setCanPutItems(false)
-                    .setIngredientIO(IngredientIO.OUTPUT)
+                    .setIngredientIO(FINAL_OUTPUT_INDICES.contains(i) ? IngredientIO.OUTPUT : IngredientIO.BOTH)
                     .setXEIChance(xeiChance)
                     .setOnAddedTooltips(
                             (slot, tooltips) -> recipeWrapper.getTooltip(slotIndex + itemInputs.size(), tooltips))

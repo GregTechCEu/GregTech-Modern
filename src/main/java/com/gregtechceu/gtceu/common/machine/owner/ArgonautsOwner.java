@@ -63,6 +63,16 @@ public final class ArgonautsOwner implements IMachineOwner {
     }
 
     @Override
+    public UUID getUUID() {
+        return guild.id();
+    }
+
+    @Override
+    public String getName() {
+        return guild.displayName().getString();
+    }
+
+    @Override
     public void displayInfo(List<Component> compList) {
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
         compList.add(Component.translatable("behavior.portable_scanner.guild_name", guild.displayName().getString()));

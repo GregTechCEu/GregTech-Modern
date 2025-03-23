@@ -27,6 +27,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -330,7 +331,7 @@ public class MetaTileEntityLoader {
         };
         for (int i = 0; i < multiHatchMaterials.length; i++) {
             var tier = GTMachineUtils.MULTI_HATCH_TIERS[i];
-            var tierName = VN[tier].toLowerCase();
+            var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
             var material = multiHatchMaterials[i];
 
@@ -909,9 +910,9 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(DRUM.get(tier))
+                        .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -928,9 +929,10 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("fluid_export_hatch_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(DRUM.get(tier))
+                        .recipeBuilder(
+                                "fluid_export_hatch_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(DRUM.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -947,9 +949,10 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("item_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(CRATE.get(tier))
+                        .recipeBuilder(
+                                "item_import_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -966,9 +969,10 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("item_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.get(tier))
-                        .inputItems(CRATE.get(tier))
+                        .recipeBuilder(
+                                "item_export_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
+                        .inputItems(HULL.getIngredient(tier))
+                        .inputItems(CRATE.getIngredient(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -985,7 +989,8 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 8 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("dual_import_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .recipeBuilder(
+                                "dual_import_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
                         .inputItems(PIPE_NONUPLE.get(tier))
@@ -1006,7 +1011,8 @@ public class MetaTileEntityLoader {
             for (; j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 8 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
-                        .recipeBuilder("dual_export_bus_" + VN[tier].toLowerCase() + "_" + fluidMap[j].getName())
+                        .recipeBuilder(
+                                "dual_export_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
                         .inputItems(GTMachines.ITEM_IMPORT_BUS[tier])
                         .inputItems(GTMachines.FLUID_IMPORT_HATCH[tier])
                         .inputItems(PIPE_NONUPLE.get(tier))

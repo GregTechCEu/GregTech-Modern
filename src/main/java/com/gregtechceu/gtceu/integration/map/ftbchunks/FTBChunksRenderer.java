@@ -55,4 +55,10 @@ public class FTBChunksRenderer extends GenericMapRenderer {
     public void setLayerActive(String name, boolean active) {
         FTBChunksOptions.toggleLayer(name, active);
     }
+
+    @Override
+    public void clear() {
+        oreElements.clear();
+        fluidElements.clear();
+    }
 }

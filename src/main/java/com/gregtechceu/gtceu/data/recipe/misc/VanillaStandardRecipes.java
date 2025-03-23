@@ -394,13 +394,6 @@ public class VanillaStandardRecipes {
                 .duration(10).EUt(VA[ULV])
                 .save(provider);
 
-        LATHE_RECIPES.recipeBuilder("lathe_logs")
-                .inputItems(ItemTags.LOGS)
-                .outputItems(rodLong, Wood, 4)
-                .outputItems(dust, Wood, 2)
-                .duration(160).EUt(VA[ULV])
-                .save(provider);
-
         LATHE_RECIPES.recipeBuilder("lathe_saplings")
                 .inputItems(ItemTags.SAPLINGS)
                 .outputItems(new ItemStack(Items.STICK))
@@ -871,6 +864,23 @@ public class VanillaStandardRecipes {
      * Adds polished stone variant autoclave recipes
      */
     private static void miscRecipes(Consumer<FinishedRecipe> provider) {
+        if (ConfigHolder.INSTANCE.recipes.hardToolArmorRecipes) {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING))
+                    .inputItems(rodLong, Wood, 2)
+                    .inputItems(ring, Iron)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        } else {
+            ASSEMBLER_RECIPES.recipeBuilder("fishing_rod")
+                    .inputItems(new ItemStack(Items.STRING, 2))
+                    .inputItems(rod, Wood, 3)
+                    .outputItems(new ItemStack(Items.FISHING_ROD, 1))
+                    .circuitMeta(16)
+                    .duration(100).EUt(4).save(provider);
+        }
+
         ASSEMBLER_RECIPES.recipeBuilder("book_from_leather")
                 .inputItems(new ItemStack(Items.PAPER, 3))
                 .inputItems(new ItemStack(Items.LEATHER))

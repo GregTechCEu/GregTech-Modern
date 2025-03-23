@@ -31,7 +31,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -71,8 +70,9 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     @Nullable
     protected ISubscription exportItemSubs;
 
-    public SteamMinerMachine(IMachineBlockEntity holder, int speed, int maximumRadius, int fortune, int energyPerTick) {
-        super(holder, false, fortune, speed, maximumRadius);
+    public SteamMinerMachine(IMachineBlockEntity holder, boolean isHighPressure, int speed, int maximumRadius,
+                             int fortune, int energyPerTick) {
+        super(holder, isHighPressure, fortune, speed, maximumRadius);
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
         this.importItems = createImportItemHandler();
@@ -112,6 +112,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     public void onMachineRemoved() {
+        getRecipeLogic().onRemove();
         clearInventory(exportItems.storage);
     }
 
@@ -119,6 +120,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateAutoOutputSubscription();
+        getRecipeLogic().updateTickSubscription();
     }
 
     @Override
@@ -169,22 +171,23 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         int rowSize = (int) Math.sqrt(inventorySize);
 
         ModularUI builder = new ModularUI(175, 176, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(false));
-        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(false), 7,
+                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure()));
+        builder.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
+                GuiTextures.SLOT_STEAM.get(isHighPressure()), 7,
                 94, true));
 
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 builder.widget(new SlotWidget(exportItems, index, 142 - rowSize * 9 + x * 18, 18 + y * 18, true, false)
-                        .setBackgroundTexture(GuiTextures.SLOT_STEAM.get(false)));
+                        .setBackgroundTexture(GuiTextures.SLOT_STEAM.get(isHighPressure())));
             }
         }
 
         builder.widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()));
-        builder.widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                .setPredicate(recipeLogic::isWaiting));
-        builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(false)));
+        builder.widget(new PredicatedImageWidget(79, 42, 18, 18, GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure()))
+                .setPredicate(() -> !drainInput(true)));
+        builder.widget(new ImageWidget(7, 16, 105, 75, GuiTextures.DISPLAY_STEAM.get(isHighPressure())));
         builder.widget(new ComponentPanelWidget(10, 19, this::addDisplayText)
                 .setMaxWidthLimit(84));
         builder.widget(new ComponentPanelWidget(70, 19, this::addDisplayText2)
@@ -201,15 +204,21 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         if (this.getRecipeLogic().isDone())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
+                    .withStyle(ChatFormatting.GREEN));
         else if (this.getRecipeLogic().isWorking())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.working")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
+                    .withStyle(ChatFormatting.GOLD));
         else if (!this.isWorkingEnabled())
             textList.add(Component.translatable("gtceu.multiblock.work_paused"));
         if (getRecipeLogic().isInventoryFull())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                    .withStyle(ChatFormatting.RED));
+        if (isVentingBlocked())
+            textList.add(Component.translatable("gtceu.multiblock.large_miner.vent")
+                    .withStyle(ChatFormatting.RED));
+        else if (!drainInput(true))
+            textList.add(Component.translatable("gtceu.multiblock.large_miner.steam")
+                    .withStyle(ChatFormatting.RED));
     }
 
     void addDisplayText2(List<Component> textList) {
@@ -240,7 +249,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
 
     @Override
     public float getVentingDamage() {
-        return 0;
+        return isHighPressure() ? 12F : 6F;
     }
 
     @NotNull

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
@@ -51,6 +52,12 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
                                            boolean cryoProof, boolean plasmaProof, boolean allowPartialFill) {
         return new ThermalFluidStats(capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof,
                 allowPartialFill);
+    }
+
+    public static ThermalFluidStats create(int capacity, @NotNull FluidPipeProperties properties,
+                                           boolean allowPartialFill) {
+        return new ThermalFluidStats(capacity, properties.getMaxFluidTemperature(), properties.isGasProof(),
+                properties.isAcidProof(), properties.isCryoProof(), properties.isPlasmaProof(), allowPartialFill);
     }
 
     @Override

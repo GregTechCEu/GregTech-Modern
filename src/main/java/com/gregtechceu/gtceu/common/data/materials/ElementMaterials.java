@@ -46,6 +46,7 @@ public class ElementMaterials {
         Americium = new Material.Builder(GTCEu.id("americium"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(1449))
+                .plasma()
                 .color(0x287869).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .element(GTElements.Am)
@@ -843,6 +844,7 @@ public class ElementMaterials {
         Tin = new Material.Builder(GTCEu.id("tin"))
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(505))
+                .plasma()
                 .ore()
                 .color(0xfafeff).secondaryColor(0x4e676c)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,

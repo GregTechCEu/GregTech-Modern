@@ -382,7 +382,7 @@ public class MixerRecipes {
         MIXER_RECIPES.recipeBuilder("tungstencarbide").duration(200).EUt(VA[EV])
                 .inputItems(dust, Tungsten)
                 .inputItems(dust, Carbon)
-                .circuitMeta(1)
+                .circuitMeta(2)
                 .outputItems(dust, TungstenCarbide, 2)
                 .save(provider);
 

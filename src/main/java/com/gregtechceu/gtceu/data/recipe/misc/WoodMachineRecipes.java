@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -171,7 +170,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
                             .planks(Items.BAMBOO_PLANKS, "bamboo_planks")
-                            .logTag(TagUtil.createItemTag("bamboo_blocks", true))
+                            .logTag(ItemTags.BAMBOO_BLOCKS)
                             .log(Items.BAMBOO_BLOCK).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_BAMBOO_BLOCK)
                             .door(Items.BAMBOO_DOOR, "bamboo_door")
@@ -230,7 +229,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
                             .planks(Items.CRIMSON_PLANKS, "crimson_planks")
-                            .logTag(TagUtil.createItemTag("crimson_stems", true))
+                            .logTag(ItemTags.CRIMSON_STEMS)
                             .log(Items.CRIMSON_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_CRIMSON_STEM)
                             .wood(Items.CRIMSON_HYPHAE)
@@ -249,7 +248,7 @@ public class WoodMachineRecipes {
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "warped")
                             .planks(Items.WARPED_PLANKS, "warped_planks")
-                            .logTag(TagUtil.createItemTag("warped_stems", true))
+                            .logTag(ItemTags.WARPED_STEMS)
                             .log(Items.WARPED_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_WARPED_STEM)
                             .wood(Items.WARPED_HYPHAE)
@@ -437,6 +436,42 @@ public class WoodMachineRecipes {
         // noinspection ConstantValue can be null if someone does an oopsie and doesn't set it.
         if (entry.planks == null) {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
+        }
+
+        if (entry.strippedLog != null) {
+            // strip log
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_log")
+                    .inputItems(entry.log)
+                    .outputItems(entry.strippedLog)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+
+            // lathe stripped log
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_log")
+                    .inputItems(entry.strippedLog)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+        }
+
+        if (entry.strippedWood != null) {
+            // strip wood
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_wood")
+                    .inputItems(entry.wood)
+                    .outputItems(entry.strippedWood)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+
+            // lathe stripped wood
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_wood")
+                    .inputItems(entry.strippedWood)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
         }
 
         if (entry.generateLogToPlankRecipe) {

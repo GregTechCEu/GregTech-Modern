@@ -1,12 +1,12 @@
-
 mixin {
-    add sourceSets.main, "gtceu.refmap.json"
+    var refmap = add sourceSets.main, "gtceu.refmap.json"
+    slimJar.from refmap
     config 'gtceu.mixins.json'
 }
 
-neoForge {
-    // Specify the version of NeoForge to use.
-    version = forge.versions.minecraftForge.get()
+legacyForge {
+    // Specify Forge version
+    version = libs.versions.minecraftForge.get()
 
     parchment {
         minecraftVersion = libs.versions.minecraft.get()
@@ -17,7 +17,7 @@ neoForge {
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
     addModdingDependenciesTo(sourceSets.test)
-    addModdingDependenciesTo(sourceSets.extra)
+//    addModdingDependenciesTo(sourceSets.extra)
 
     mods {
         // define mod <-> source bindings

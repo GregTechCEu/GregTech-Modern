@@ -225,9 +225,6 @@ public class GTMaterials {
         plate.setIgnored(BorosilicateGlass);
         foil.setIgnored(BorosilicateGlass);
 
-        dustSmall.setIgnored(Lapotron);
-        dustTiny.setIgnored(Lapotron);
-
         dye.setIgnored(DyeBlack, Items.BLACK_DYE);
         dye.setIgnored(DyeRed, Items.RED_DYE);
         dye.setIgnored(DyeGreen, Items.GREEN_DYE);

@@ -87,6 +87,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
     @Persisted
+    @DescSynced
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int mBLeftToTransferLastSecond;
