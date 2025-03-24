@@ -9,7 +9,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import lombok.NoArgsConstructor;
@@ -118,7 +117,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     public CraftingComponent getCraftingComponent(String id) {
         if (!GTCraftingComponents.VALUES.containsKey(id)) {
             GTCEu.LOGGER.error("No such crafting component: {}", id);
-            return new CraftingComponent("empty", Items.AIR);
+            return GTCraftingComponents.EMPTY;
         }
         return GTCraftingComponents.VALUES.get(id);
     }

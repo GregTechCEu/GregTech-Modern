@@ -17,10 +17,8 @@ public class CraftingComponent {
     private final Object[] values = new Object[V.length];
     @Setter
     private @NotNull Object fallback;
-    private final @NotNull String id;
 
     public CraftingComponent(@NotNull String id, @NotNull Object fallback) {
-        this.id = id;
         checkType(fallback);
         this.fallback = fallback;
         if (GTCraftingComponents.VALUES.containsKey(id)) {

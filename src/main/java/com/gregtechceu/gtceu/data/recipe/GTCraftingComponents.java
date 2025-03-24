@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 
@@ -24,6 +26,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 public class GTCraftingComponents {
 
     public static Map<String, CraftingComponent> VALUES = new Object2ReferenceArrayMap<>();
+
+    public static CraftingComponent EMPTY = new CraftingComponent("empty", ItemStack.EMPTY);
 
     public static CraftingComponent CIRCUIT;
     public static CraftingComponent BETTER_CIRCUIT;
