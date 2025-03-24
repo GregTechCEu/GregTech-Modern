@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,10 +17,16 @@ public class CraftingComponent {
     private final Object[] values = new Object[V.length];
     @Setter
     private @NotNull Object fallback;
+    private final @NotNull String id;
 
-    public CraftingComponent(@NotNull Object fallback) {
+    public CraftingComponent(@NotNull String id, @NotNull Object fallback) {
+        this.id = id;
         checkType(fallback);
         this.fallback = fallback;
+        if(GTCraftingComponents.VALUES.containsKey(id)) {
+            GTCEu.LOGGER.error("Duplicate crafting component id: {}, overriding", id);
+        }
+        GTCraftingComponents.VALUES.put(id, this);
     }
 
     public @NotNull Object get(int tier) {

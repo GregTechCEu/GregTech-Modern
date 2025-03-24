@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -10,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import lombok.NoArgsConstructor;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.Map;
@@ -80,35 +83,43 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         }
     }
 
-    public CraftingComponent create(Object fallback, Map<Number, Object> map) {
-        var m = new CraftingComponent(fallback);
+    public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
+        var m = new CraftingComponent(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }
         return m;
     }
 
-    public CraftingComponent createItem(Object fallback, Map<Number, ItemStack> map) {
-        var m = new CraftingComponent(fallback);
+    public CraftingComponent createItem(String id, Object fallback, Map<Number, ItemStack> map) {
+        var m = new CraftingComponent(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }
         return m;
     }
 
-    public CraftingComponent createTag(Object fallback, Map<Number, ResourceLocation> map) {
-        var m = new CraftingComponent(fallback);
+    public CraftingComponent createTag(String id, Object fallback, Map<Number, ResourceLocation> map) {
+        var m = new CraftingComponent(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
         }
         return m;
     }
 
-    public CraftingComponent createUnificationEntry(Object fallback, Map<Number, UnificationEntry> map) {
-        var m = new CraftingComponent(fallback);
+    public CraftingComponent createUnificationEntry(String id, Object fallback, Map<Number, UnificationEntry> map) {
+        var m = new CraftingComponent(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }
         return m;
+    }
+
+    public CraftingComponent getCraftingComponent(String id) {
+        if (!GTCraftingComponents.VALUES.containsKey(id)) {
+            GTCEu.LOGGER.error("No such crafting component: {}", id);
+            return new CraftingComponent("empty", Items.AIR);
+        }
+        return GTCraftingComponents.VALUES.get(id);
     }
 }

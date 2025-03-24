@@ -33,7 +33,6 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipes.EBF_GASES;
 
 public class MaterialRecipeHandler {
 
@@ -194,7 +193,8 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidIngredient gas = EBF_GASES.get(gasTier).copy();
+            FluidIngredient gas = gasTier.getFluid().copy();
+
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)

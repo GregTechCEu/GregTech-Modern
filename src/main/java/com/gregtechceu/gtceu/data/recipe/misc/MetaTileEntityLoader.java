@@ -911,8 +911,8 @@ public class MetaTileEntityLoader {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.getIngredient(tier))
-                        .inputItems(DRUM.getIngredient(tier))
+                        .inputItems(HULL.get(tier))
+                        .inputItems(DRUM.get(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -931,8 +931,8 @@ public class MetaTileEntityLoader {
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
                                 "fluid_export_hatch_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.getIngredient(tier))
-                        .inputItems(DRUM.getIngredient(tier))
+                        .inputItems(HULL.get(tier))
+                        .inputItems(DRUM.get(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -951,8 +951,8 @@ public class MetaTileEntityLoader {
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
                                 "item_import_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.getIngredient(tier))
-                        .inputItems(CRATE.getIngredient(tier))
+                        .inputItems(HULL.get(tier))
+                        .inputItems(CRATE.get(tier))
                         .circuitMeta(1)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
@@ -971,8 +971,8 @@ public class MetaTileEntityLoader {
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
                                 "item_export_bus_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
-                        .inputItems(HULL.getIngredient(tier))
-                        .inputItems(CRATE.getIngredient(tier))
+                        .inputItems(HULL.get(tier))
+                        .inputItems(CRATE.get(tier))
                         .circuitMeta(2)
                         .inputFluids(fluidMap[j].getFluid(fluidAmount >> j))
                         .outputItems(machine)
