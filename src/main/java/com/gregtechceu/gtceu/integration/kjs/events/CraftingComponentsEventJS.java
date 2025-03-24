@@ -83,7 +83,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
-        var m = new CraftingComponent(id, fallback);
+        var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }
@@ -91,7 +91,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     public CraftingComponent createItem(String id, Object fallback, Map<Number, ItemStack> map) {
-        var m = new CraftingComponent(id, fallback);
+        var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }
@@ -99,7 +99,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     public CraftingComponent createTag(String id, Object fallback, Map<Number, ResourceLocation> map) {
-        var m = new CraftingComponent(id, fallback);
+        var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
         }
@@ -107,7 +107,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     public CraftingComponent createUnificationEntry(String id, Object fallback, Map<Number, UnificationEntry> map) {
-        var m = new CraftingComponent(id, fallback);
+        var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());
         }

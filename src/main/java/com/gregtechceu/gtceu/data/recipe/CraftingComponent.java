@@ -18,13 +18,18 @@ public class CraftingComponent {
     @Setter
     private @NotNull Object fallback;
 
-    public CraftingComponent(@NotNull String id, @NotNull Object fallback) {
+    protected CraftingComponent(@NotNull Object fallback) {
         checkType(fallback);
         this.fallback = fallback;
+    }
+
+    public static CraftingComponent of(@NotNull String id, @NotNull Object fallback) {
+        var ret = new CraftingComponent(fallback);
         if (GTCraftingComponents.VALUES.containsKey(id)) {
             GTCEu.LOGGER.error("Duplicate crafting component id: {}, overriding", id);
         }
-        GTCraftingComponents.VALUES.put(id, this);
+        GTCraftingComponents.VALUES.put(id, ret);
+        return ret;
     }
 
     public @NotNull Object get(int tier) {
