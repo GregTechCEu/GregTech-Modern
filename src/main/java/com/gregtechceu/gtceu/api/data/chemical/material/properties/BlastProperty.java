@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.fluids.FluidStack;
-
 
 public class BlastProperty implements IMaterialProperty {
 
@@ -117,7 +116,6 @@ public class BlastProperty implements IMaterialProperty {
         }
     }
 
-
     public enum GasTier {
 
         // Tiers used by GTCEu
@@ -128,8 +126,6 @@ public class BlastProperty implements IMaterialProperty {
         // Tiers reserved for addons
         HIGHER(() -> FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
         HIGHEST(() -> FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
-
-
 
         public static final GasTier[] VALUES = values();
         private Supplier<FluidIngredient> fluid;
@@ -145,7 +141,6 @@ public class BlastProperty implements IMaterialProperty {
         public FluidIngredient getFluid() {
             return fluid.get();
         }
-
     }
 
     public static class Builder {

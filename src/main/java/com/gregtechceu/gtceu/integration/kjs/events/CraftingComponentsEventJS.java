@@ -3,16 +3,16 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
-
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import lombok.NoArgsConstructor;
-import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.Map;

@@ -195,7 +195,6 @@ public class MaterialRecipeHandler {
         if (gasTier != null) {
             FluidIngredient gas = gasTier.getFluid().copy();
 
-
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
                     .duration(duration)

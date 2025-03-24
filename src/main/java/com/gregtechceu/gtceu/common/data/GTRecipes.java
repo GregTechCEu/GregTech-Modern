@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -16,8 +14,6 @@ import net.minecraft.world.level.block.ComposterBlock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 

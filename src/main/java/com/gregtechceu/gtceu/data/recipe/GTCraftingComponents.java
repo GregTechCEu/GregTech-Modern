@@ -12,10 +12,10 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
-import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
+
+import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 
 import java.util.Map;
 
@@ -116,7 +116,8 @@ public class GTCraftingComponents {
                 .add(OpV, CustomTags.MAX_CIRCUITS)
                 .add(MAX, CustomTags.MAX_CIRCUITS);
 
-        WIRE_ELECTRIC = new CraftingComponent("wire_single", new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold))
+        WIRE_ELECTRIC = new CraftingComponent("wire_single",
+                new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold))
                 .add(ULV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold))
                 .add(LV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold))
                 .add(MV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Silver))
@@ -128,7 +129,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium))
                 .add(UHV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium));
 
-        WIRE_QUAD = new CraftingComponent("wire_quad", new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead))
+        WIRE_QUAD = new CraftingComponent("wire_quad",
+                new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead))
                 .add(ULV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead))
                 .add(LV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper))
@@ -164,7 +166,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Europium));
 
-        CABLE = new CraftingComponent("cable_single", new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy))
+        CABLE = new CraftingComponent("cable_single",
+                new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper))
@@ -176,7 +179,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium));
 
-        CABLE_DOUBLE = new CraftingComponent("cable_double", new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy))
+        CABLE_DOUBLE = new CraftingComponent("cable_double",
+                new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper))
@@ -188,7 +192,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium));
 
-        CABLE_QUAD = new CraftingComponent("cable_quad", new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy))
+        CABLE_QUAD = new CraftingComponent("cable_quad",
+                new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper))
@@ -200,7 +205,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium));
 
-        CABLE_OCT = new CraftingComponent("cable_oct", new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy))
+        CABLE_OCT = new CraftingComponent("cable_oct",
+                new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Copper))
@@ -224,7 +230,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium));
 
-        CABLE_TIER_UP = new CraftingComponent("cable_tier_up_single", new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy))
+        CABLE_TIER_UP = new CraftingComponent("cable_tier_up_single",
+                new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold))
@@ -262,7 +269,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium));
 
-        CABLE_TIER_UP_OCT = new CraftingComponent("cable_tier_up_oct", new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy))
+        CABLE_TIER_UP_OCT = new CraftingComponent("cable_tier_up_oct",
+                new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Gold))
@@ -274,7 +282,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Europium))
                 .add(UHV, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Europium));
 
-        CABLE_TIER_UP_HEX = new CraftingComponent("cable_tier_up_hex", new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy))
+        CABLE_TIER_UP_HEX = new CraftingComponent("cable_tier_up_hex",
+                new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy))
                 .add(ULV, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold))
@@ -324,7 +333,8 @@ public class GTCraftingComponents {
                     .add(MAX, GTBlocks.MACHINE_CASING_MAX.asStack());
         }
 
-        PIPE_NORMAL = new CraftingComponent("normal_pipe", new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze))
+        PIPE_NORMAL = new CraftingComponent("normal_pipe",
+                new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze))
                 .add(ULV, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze))
                 .add(LV, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze))
                 .add(MV, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel))
@@ -336,7 +346,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah))
                 .add(UHV, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah));
 
-        PIPE_LARGE = new CraftingComponent("large_pipe", new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze))
+        PIPE_LARGE = new CraftingComponent("large_pipe",
+                new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze))
                 .add(ULV, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze))
                 .add(LV, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze))
                 .add(MV, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel))
@@ -348,7 +359,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Naquadah))
                 .add(UHV, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Neutronium));
 
-        PIPE_NONUPLE = new CraftingComponent("nonuple_pipe", new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Titanium))
+        PIPE_NONUPLE = new CraftingComponent("nonuple_pipe",
+                new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Titanium))
                 .add(EV, new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.Titanium))
                 .add(IV, new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.TungstenSteel))
                 .add(LuV, new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.NiobiumTitanium))
@@ -422,7 +434,8 @@ public class GTCraftingComponents {
                 .add(UV, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack())
                 .add(UHV, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack());
 
-        SAWBLADE = new CraftingComponent("sawblade", new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze))
+        SAWBLADE = new CraftingComponent("sawblade",
+                new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze))
                 .add(ULV, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze))
                 .add(LV, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.CobaltBrass))
                 .add(MV, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.VanadiumSteel))
@@ -573,7 +586,8 @@ public class GTCraftingComponents {
                     .add(OpV, GTItems.FIELD_GENERATOR_OpV.asStack());
         }
 
-        COIL_HEATING = new CraftingComponent("coil_heating", new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper))
+        COIL_HEATING = new CraftingComponent("coil_heating",
+                new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper))
                 .add(ULV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper))
                 .add(LV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Cupronickel))
@@ -585,7 +599,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.NaquadahAlloy))
                 .add(UHV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Trinium));
 
-        COIL_HEATING_DOUBLE = new CraftingComponent("coil_heating_double", new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper))
+        COIL_HEATING_DOUBLE = new CraftingComponent("coil_heating_double",
+                new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper))
                 .add(ULV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper))
                 .add(LV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Cupronickel))
@@ -597,7 +612,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NaquadahAlloy))
                 .add(UHV, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Trinium));
 
-        COIL_ELECTRIC = new CraftingComponent("coil_electric", new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Tin))
+        COIL_ELECTRIC = new CraftingComponent("coil_electric",
+                new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Tin))
                 .add(ULV, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Tin))
                 .add(MV, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper))
@@ -609,7 +625,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Europium));
 
-        STICK_MAGNETIC = new CraftingComponent("rod_magnetic", new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic))
+        STICK_MAGNETIC = new CraftingComponent("rod_magnetic",
+                new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic))
                 .add(ULV, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic))
                 .add(LV, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic))
                 .add(MV, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic))
@@ -621,7 +638,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.block, GTMaterials.NeodymiumMagnetic))
                 .add(UHV, new UnificationEntry(TagPrefix.block, GTMaterials.SamariumMagnetic));
 
-        STICK_DISTILLATION = new CraftingComponent("rod_distillation", new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze))
+        STICK_DISTILLATION = new CraftingComponent("rod_distillation",
+                new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze))
                 .add(ULV, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze))
                 .add(LV, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.spring, GTMaterials.Cupronickel))
@@ -633,7 +651,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.spring, GTMaterials.NaquadahAlloy))
                 .add(UHV, new UnificationEntry(TagPrefix.spring, GTMaterials.Trinium));
 
-        STICK_ELECTROMAGNETIC = new CraftingComponent("rod_electromagnetic", new UnificationEntry(TagPrefix.rod, GTMaterials.Iron))
+        STICK_ELECTROMAGNETIC = new CraftingComponent("rod_electromagnetic",
+                new UnificationEntry(TagPrefix.rod, GTMaterials.Iron))
                 .add(ULV, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron))
                 .add(LV, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron))
                 .add(MV, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel))
@@ -645,7 +664,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.rod, GTMaterials.VanadiumGallium))
                 .add(UHV, new UnificationEntry(TagPrefix.rod, GTMaterials.VanadiumGallium));
 
-        STICK_RADIOACTIVE = new CraftingComponent("rod_radioactive", new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235))
+        STICK_RADIOACTIVE = new CraftingComponent("rod_radioactive",
+                new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235))
                 .add(EV, new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235))
                 .add(IV, new UnificationEntry(TagPrefix.rod, GTMaterials.Plutonium241))
                 .add(LuV, new UnificationEntry(TagPrefix.rod, GTMaterials.NaquadahEnriched))
@@ -747,7 +767,8 @@ public class GTCraftingComponents {
                 .add(UV, new UnificationEntry(TagPrefix.springSmall, GTMaterials.YttriumBariumCuprate))
                 .add(UHV, new UnificationEntry(TagPrefix.springSmall, GTMaterials.Europium));
 
-        SPRING_TRANSFORMER = new CraftingComponent("spring_transformer", new UnificationEntry(TagPrefix.spring, GTMaterials.Tin))
+        SPRING_TRANSFORMER = new CraftingComponent("spring_transformer",
+                new UnificationEntry(TagPrefix.spring, GTMaterials.Tin))
                 .add(ULV, new UnificationEntry(TagPrefix.spring, GTMaterials.Tin))
                 .add(LV, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper))
                 .add(MV, new UnificationEntry(TagPrefix.spring, GTMaterials.Gold))

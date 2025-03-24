@@ -23,7 +23,7 @@ public class CraftingComponent {
         this.id = id;
         checkType(fallback);
         this.fallback = fallback;
-        if(GTCraftingComponents.VALUES.containsKey(id)) {
+        if (GTCraftingComponents.VALUES.containsKey(id)) {
             GTCEu.LOGGER.error("Duplicate crafting component id: {}, overriding", id);
         }
         GTCraftingComponents.VALUES.put(id, this);
