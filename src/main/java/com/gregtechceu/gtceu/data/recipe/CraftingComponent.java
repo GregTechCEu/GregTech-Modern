@@ -24,10 +24,11 @@ public class CraftingComponent {
     }
 
     public static CraftingComponent of(@NotNull String id, @NotNull Object fallback) {
-        var ret = new CraftingComponent(fallback);
         if (GTCraftingComponents.VALUES.containsKey(id)) {
-            GTCEu.LOGGER.error("Duplicate crafting component id: {}, overriding", id);
+            GTCEu.LOGGER.error("Duplicate crafting component id: {}, returning empty", id);
+            return GTCraftingComponents.EMPTY;
         }
+        var ret = new CraftingComponent(fallback);
         GTCraftingComponents.VALUES.put(id, ret);
         return ret;
     }
