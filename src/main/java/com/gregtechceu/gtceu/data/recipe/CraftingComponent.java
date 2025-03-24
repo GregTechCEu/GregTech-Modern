@@ -1,18 +1,27 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.GTValues.V;
 
 public class CraftingComponent {
+
+    public static Map<String, CraftingComponent> ALL_COMPONENTS = new Object2ReferenceOpenHashMap<>();
+
+    public static CraftingComponent EMPTY = CraftingComponent.of("empty", ItemStack.EMPTY);
 
     private final Object[] values = new Object[V.length];
     @Setter
@@ -24,13 +33,17 @@ public class CraftingComponent {
     }
 
     public static CraftingComponent of(@NotNull String id, @NotNull Object fallback) {
-        if (GTCraftingComponents.VALUES.containsKey(id)) {
+        if (ALL_COMPONENTS.containsKey(id)) {
             GTCEu.LOGGER.error("Duplicate crafting component id: {}, returning empty", id);
-            return GTCraftingComponents.EMPTY;
+            return EMPTY;
         }
         var ret = new CraftingComponent(fallback);
-        GTCraftingComponents.VALUES.put(id, ret);
+        ALL_COMPONENTS.put(id, ret);
         return ret;
+    }
+
+    public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix, @NotNull Material material) {
+        return of(id, new UnificationEntry(prefix, material));
     }
 
     public @NotNull Object get(int tier) {
@@ -44,6 +57,10 @@ public class CraftingComponent {
         checkType(value);
         values[tier] = value;
         return this;
+    }
+
+    public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
+        return add(tier, new UnificationEntry(prefix, material));
     }
 
     public void remove(int tier) {

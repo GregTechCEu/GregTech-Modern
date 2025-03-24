@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
-import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -115,10 +114,10 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     public CraftingComponent getCraftingComponent(String id) {
-        if (!GTCraftingComponents.VALUES.containsKey(id)) {
+        if (!CraftingComponent.ALL_COMPONENTS.containsKey(id)) {
             GTCEu.LOGGER.error("No such crafting component: {}", id);
-            return GTCraftingComponents.EMPTY;
+            return CraftingComponent.EMPTY;
         }
-        return GTCraftingComponents.VALUES.get(id);
+        return CraftingComponent.ALL_COMPONENTS.get(id);
     }
 }
