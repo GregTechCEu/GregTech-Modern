@@ -437,9 +437,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
         });
-        typeWrappers.registerSimple(CraftingComponent.class, o-> {
-            if(o instanceof CraftingComponent comp) return comp;
-            if(o instanceof CharSequence str) return CraftingComponent.getByID(str.toString());
+        typeWrappers.registerSimple(CraftingComponent.class, o -> {
+            if (o instanceof CraftingComponent comp) return comp;
+            if (o instanceof CharSequence str) return CraftingComponent.getByID(str.toString());
             return null;
         });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
