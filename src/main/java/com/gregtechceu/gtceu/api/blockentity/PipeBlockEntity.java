@@ -55,7 +55,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -173,8 +172,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Override
     public @NotNull Material getFrameMaterial() {
         // backwards compat
-        //noinspection ConstantValue
-        if(frameMaterial == null) {
+        // noinspection ConstantValue
+        if (frameMaterial == null) {
             frameMaterial = GTMaterials.NULL;
         }
         return frameMaterial;
@@ -473,7 +472,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Override
     public void load(CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
-        //TagFixer.fixMaterialTag(tag);
         super.load(tag);
     }
 }
