@@ -58,7 +58,8 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "sameDestroyTarget", at = @At("RETURN"), cancellable = true)
     private void gtceu$sameDestroyTarget(BlockPos pos, CallbackInfoReturnable<Boolean> cir,
                                          @Local ItemStack itemstack) {
-        cir.setReturnValue(pos.equals(this.destroyBlockPos) && ItemStack.isSameItem(itemstack, this.destroyingItem) &&
-                !this.destroyingItem.shouldCauseBlockBreakReset(itemstack));
+        boolean gtmTarget = pos.equals(this.destroyBlockPos) && ItemStack.isSameItem(itemstack, this.destroyingItem) &&
+                !this.destroyingItem.shouldCauseBlockBreakReset(itemstack);
+        cir.setReturnValue(gtmTarget || cir.getReturnValue());
     }
 }

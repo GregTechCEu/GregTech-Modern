@@ -488,10 +488,12 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 Set<String> oldKeys = new HashSet<>(oldTag.getAllKeys());
                 newKeys.remove(ItemStack.TAG_DAMAGE);
                 oldKeys.remove(ItemStack.TAG_DAMAGE);
+                newKeys.remove(CHARGE_KEY);
+                oldKeys.remove(CHARGE_KEY);
                 if (!newKeys.equals(oldKeys)) {
                     return true;
                 }
-                return newKeys.stream().anyMatch(key -> !Objects.equals(newTag.get(key), oldTag.get(key)));
+                return !newKeys.stream().allMatch((key) -> Objects.equals(newTag.get(key), oldTag.get(key)));
             }
             return newTag != null || oldTag != null;
         }
