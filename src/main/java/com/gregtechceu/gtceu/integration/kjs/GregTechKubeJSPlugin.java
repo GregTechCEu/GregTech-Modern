@@ -439,7 +439,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         });
         typeWrappers.registerSimple(CraftingComponent.class, o -> {
             if (o instanceof CraftingComponent comp) return comp;
-            if (o instanceof CharSequence str) return CraftingComponent.getByID(str.toString());
+            if (o instanceof CharSequence str) return CraftingComponent.ALL_COMPONENTS.get(str.toString());
             return null;
         });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
