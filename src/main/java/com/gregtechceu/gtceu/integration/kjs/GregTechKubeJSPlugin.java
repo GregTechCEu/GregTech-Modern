@@ -55,6 +55,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
@@ -435,6 +436,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
+        });
+        typeWrappers.registerSimple(CraftingComponent.class, o-> {
+            if(o instanceof CraftingComponent comp) return comp;
+            if(o instanceof CharSequence str) return CraftingComponent.getByID(str.toString());
+            return null;
         });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
                 GTRecipeComponents.FluidIngredientJS::of);

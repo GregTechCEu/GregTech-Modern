@@ -112,12 +112,4 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         }
         return m;
     }
-
-    public CraftingComponent getCraftingComponent(String id) {
-        if (!CraftingComponent.ALL_COMPONENTS.containsKey(id)) {
-            GTCEu.LOGGER.error("No such crafting component: {}", id);
-            return CraftingComponent.EMPTY;
-        }
-        return CraftingComponent.ALL_COMPONENTS.get(id);
-    }
 }

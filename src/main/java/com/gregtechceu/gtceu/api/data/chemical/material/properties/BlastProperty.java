@@ -139,7 +139,7 @@ public class BlastProperty implements IMaterialProperty {
         }
 
         public FluidIngredient getFluid() {
-            return fluid.get();
+            return fluid.get().copy();
         }
     }
 

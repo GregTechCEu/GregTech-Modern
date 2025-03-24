@@ -193,7 +193,7 @@ public class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidIngredient gas = gasTier.getFluid().copy();
+            FluidIngredient gas = gasTier.getFluid();
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)

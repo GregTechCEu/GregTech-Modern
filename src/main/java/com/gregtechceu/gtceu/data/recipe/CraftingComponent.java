@@ -19,9 +19,9 @@ import static com.gregtechceu.gtceu.api.GTValues.V;
 
 public class CraftingComponent {
 
-    public static Map<String, CraftingComponent> ALL_COMPONENTS = new Object2ReferenceOpenHashMap<>();
+    public static final Map<String, CraftingComponent> ALL_COMPONENTS = new Object2ReferenceOpenHashMap<>();
 
-    public static CraftingComponent EMPTY = CraftingComponent.of("empty", ItemStack.EMPTY);
+    public static final CraftingComponent EMPTY = CraftingComponent.of("empty", ItemStack.EMPTY);
 
     private final Object[] values = new Object[V.length];
     @Setter
@@ -77,5 +77,13 @@ public class CraftingComponent {
         } else if (!(o instanceof ItemStack || o instanceof UnificationEntry)) {
             throw new IllegalArgumentException("Object is not of type ItemStack, UnificationEntry or TagKey<Item>");
         }
+    }
+
+    public static CraftingComponent getByID(String id) {
+        if (!CraftingComponent.ALL_COMPONENTS.containsKey(id)) {
+            GTCEu.LOGGER.error("No such crafting component: {}", id);
+            return CraftingComponent.EMPTY;
+        }
+        return CraftingComponent.ALL_COMPONENTS.get(id);
     }
 }
