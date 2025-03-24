@@ -580,15 +580,6 @@ public class MiscRecipeLoader {
                 .duration(200)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("chocolate_coin")
-                .inputItems(dust, Cocoa)
-                .inputItems(foil, Gold)
-                .inputItems(dust, Sugar)
-                .inputFluids(Milk.getFluid(500))
-                .outputItems(COIN_CHOCOLATE)
-                .duration(60).EUt(15)
-                .save(provider);
-
         // XP set to 0.35, similar to vanilla food smelting
         VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", CustomTags.DOUGHS, new ItemStack(Items.BREAD),
                 0.35f);
