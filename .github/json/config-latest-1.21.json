@@ -17,6 +17,7 @@
   "template": "## What's Changed\n#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
   "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
   "empty_template": "",
+  "ignore_labels": ["ignore changelog"],
   "tag_resolver": {
     "method": "semver",
     "filter": {
