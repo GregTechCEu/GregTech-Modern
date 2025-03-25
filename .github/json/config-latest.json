@@ -19,5 +19,5 @@
   "empty_template": "",
   "ignore_labels": ["ignore changelog"],
   "max_pull_requests": 1000,
-  "max_back_track_time_days": 30
+  "max_back_track_time_days": 60
 }
