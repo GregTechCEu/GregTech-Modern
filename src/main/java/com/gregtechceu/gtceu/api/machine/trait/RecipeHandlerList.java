@@ -12,12 +12,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeHandlerList {
 
@@ -41,13 +36,19 @@ public class RecipeHandlerList {
     @Getter
     private boolean isDistinct = false;
 
-    public RecipeHandlerList(IO handlerIO) {
+    protected RecipeHandlerList(IO handlerIO) {
         this.handlerIO = handlerIO;
     }
 
-    public static RecipeHandlerList of(IO io, IRecipeHandler<?> handler) {
+    public static RecipeHandlerList of(IO io, IRecipeHandler<?>... handlers) {
         RecipeHandlerList rhl = new RecipeHandlerList(io);
-        rhl.addHandler(handler);
+        rhl.addHandlers(handlers);
+        return rhl;
+    }
+
+    public static RecipeHandlerList of(IO io, Iterable<IRecipeHandler<?>> handlers) {
+        RecipeHandlerList rhl = new RecipeHandlerList(io);
+        rhl.addHandlers(handlers);
         return rhl;
     }
 
@@ -59,7 +60,7 @@ public class RecipeHandlerList {
         addHandlers(Arrays.asList(handlers));
     }
 
-    public void addHandlers(List<IRecipeHandler<?>> handlers) {
+    public void addHandlers(Iterable<IRecipeHandler<?>> handlers) {
         for (var handler : handlers) {
             getHandlerMap().computeIfAbsent(handler.getCapability(), c -> new ArrayList<>()).add(handler);
             allHandlers.add(handler);

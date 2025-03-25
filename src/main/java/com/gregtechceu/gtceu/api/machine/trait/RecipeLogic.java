@@ -357,8 +357,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             progress = 0;
             duration = recipe.duration;
             isActive = true;
-        } else {
-            setWaiting(handledIO.reason());
         }
     }
 

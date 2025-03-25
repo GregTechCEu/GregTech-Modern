@@ -3426,6 +3426,8 @@
   "gtceu.recipe_logic.insufficient_fuel": "Insufficient Fuel",
   "gtceu.recipe_logic.insufficient_in": "Insufficient Inputs",
   "gtceu.recipe_logic.insufficient_out": "Insufficient Outputs",
+  "gtceu.recipe_logic.no_capabilities": "Machine has no Capabilities",
+  "gtceu.recipe_logic.no_contents": "Recipe has no Contents",
   "gtceu.recipe_memory_widget.tooltip.0": "§7Left click to automatically input this recipe into the crafting grid",
   "gtceu.recipe_memory_widget.tooltip.1": "§7Shift click to lock/unlock this recipe",
   "gtceu.recipe_type.show_recipes": "Show Recipes",

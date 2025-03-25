@@ -222,17 +222,15 @@ public class RecipeHelper {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
-        if (!result.isSuccess()) {
-            if (result.capability() == null) return result.result();
-            if (!simulated) {
-                GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
-                        Component.translatable(io.tooltip).getString(), recipe, holder);
-            }
-            String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
-            return ActionResult.fail(Component.translatable(key)
-                    .append(": ").append(result.capability().getName()));
+        if (result.isSuccess() || result.capability() == null) return result.result();
+
+        if (!simulated) {
+            GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
+                    Component.translatable(io.tooltip).getString(), recipe, holder);
         }
-        return result.result();
+        String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
+        return ActionResult.fail(Component.translatable(key)
+                .append(": ").append(result.capability().getName()));
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -379,45 +377,5 @@ public class RecipeHelper {
         }
 
         return outputs;
-    }
-
-    public static ActionResult checkRecipeValidity(GTRecipe recipe) {
-        var result = checkItemValid(recipe.inputs, "input");
-        if (!result.isSuccess()) return result;
-
-        result = checkItemValid(recipe.outputs, "output");
-        if (!result.isSuccess()) return result;
-
-        result = checkItemValid(recipe.tickInputs, "tickInput");
-        if (!result.isSuccess()) return result;
-
-        result = checkItemValid(recipe.outputs, "tickOutput");
-        return result;
-    }
-
-    private static ActionResult checkItemValid(Map<RecipeCapability<?>, List<Content>> contents, String name) {
-        for (Content content : contents.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList())) {
-            var items = ItemRecipeCapability.CAP.of(content.content).getItems();
-            if (items.length == 0) {
-                return ActionResult
-                        .fail(Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
-            } else if (Arrays.stream(items).anyMatch(ItemStack::isEmpty)) {
-                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.invalid_stack"));
-            }
-        }
-        return ActionResult.SUCCESS;
-    }
-
-    private static ActionResult checkFluidValid(Map<RecipeCapability<?>, List<Content>> contents, String name) {
-        for (Content content : contents.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList())) {
-            var fluids = FluidRecipeCapability.CAP.of(content.content).getStacks();
-            if (fluids.length == 0) {
-                return ActionResult
-                        .fail(Component.translatable("gtceu.recipe_logic.no_" + name + "_ingredients"));
-            } else if (Arrays.stream(fluids).anyMatch(FluidStack::isEmpty)) {
-                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.invalid_stack"));
-            }
-        }
-        return ActionResult.SUCCESS;
     }
 }

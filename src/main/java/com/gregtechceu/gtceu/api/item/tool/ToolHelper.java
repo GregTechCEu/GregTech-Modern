@@ -415,8 +415,7 @@ public class ToolHelper {
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
                         GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
                         Collections.emptyList());
-                RecipeHandlerList dummyInputs = new RecipeHandlerList(IO.IN);
-                dummyInputs.addHandlers(
+                RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
                         new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
                                 GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
                         new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,

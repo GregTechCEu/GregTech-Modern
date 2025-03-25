@@ -30,8 +30,7 @@ public final class ProxySlotRecipeHandler {
     public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine, int slots) {
         proxySlotHandlers = new ArrayList<>(slots);
         for (int i = 0; i < slots; ++i) {
-            var rhl = new ProxyRHL(machine);
-            proxySlotHandlers.add(rhl);
+            proxySlotHandlers.add(new ProxyRHL(machine));
         }
     }
 

@@ -60,20 +60,6 @@ public class GTCommands {
                                             context.getSource().getPlayerOrException());
                                     return 1;
                                 }))
-                        .then(literal("check_recipes_valid")
-                                .executes(context -> {
-                                    for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()
-                                            .getRecipes()) {
-                                        if (recipe instanceof GTRecipe gtRecipe &&
-                                                !RecipeHelper.checkRecipeValidity(gtRecipe).isSuccess()) {
-                                            context.getSource().sendSuccess(
-                                                    () -> Component
-                                                            .literal("Recipe %s is invalid".formatted(gtRecipe.id)),
-                                                    false);
-                                        }
-                                    }
-                                    return 1;
-                                }))
                         .then(literal("dump_data")
                                 .then(literal("bedrock_fluid_veins")
                                         .executes(context -> dumpDataRegistry(context,

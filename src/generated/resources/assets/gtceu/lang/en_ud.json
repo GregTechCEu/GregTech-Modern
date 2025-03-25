@@ -3426,6 +3426,8 @@
   "gtceu.recipe_logic.insufficient_fuel": "ןǝnℲ ʇuǝıɔıɟɟnsuI",
   "gtceu.recipe_logic.insufficient_in": "sʇnduI ʇuǝıɔıɟɟnsuI",
   "gtceu.recipe_logic.insufficient_out": "sʇndʇnO ʇuǝıɔıɟɟnsuI",
+  "gtceu.recipe_logic.no_capabilities": "sǝıʇıןıqɐdɐƆ ou sɐɥ ǝuıɥɔɐW",
+  "gtceu.recipe_logic.no_contents": "sʇuǝʇuoƆ ou sɐɥ ǝdıɔǝᴚ",
   "gtceu.recipe_memory_widget.tooltip.0": "pıɹb buıʇɟɐɹɔ ǝɥʇ oʇuı ǝdıɔǝɹ sıɥʇ ʇnduı ʎןןɐɔıʇɐɯoʇnɐ oʇ ʞɔıןɔ ʇɟǝꞀㄥ§",
   "gtceu.recipe_memory_widget.tooltip.1": "ǝdıɔǝɹ sıɥʇ ʞɔoןun/ʞɔoן oʇ ʞɔıןɔ ʇɟıɥSㄥ§",
   "gtceu.recipe_type.show_recipes": "sǝdıɔǝᴚ ʍoɥS",

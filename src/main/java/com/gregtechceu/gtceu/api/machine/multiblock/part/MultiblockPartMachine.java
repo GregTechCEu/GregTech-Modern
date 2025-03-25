@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -22,6 +23,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -99,15 +101,19 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     protected RecipeHandlerList getHandlerList() {
         if (handlerList == null) {
-            var handlerTraits = traits.stream()
-                    .filter(IRecipeHandlerTrait.class::isInstance)
-                    .map(IRecipeHandlerTrait.class::cast)
-                    .toList();
-            if (handlerTraits.isEmpty()) {
+            List<IRecipeHandler<?>> handlers = new ArrayList<>();
+            IO handlerIO = null;
+            for (var trait : traits) {
+                if (trait instanceof IRecipeHandlerTrait<?> rht) {
+                    if (handlerIO == null) handlerIO = rht.getHandlerIO();
+                    handlers.add(rht);
+                }
+            }
+
+            if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
             } else {
-                handlerList = new RecipeHandlerList(handlerTraits.get(0).getHandlerIO());
-                handlerList.addHandlers(handlerTraits.toArray(new IRecipeHandler[0]));
+                handlerList = RecipeHandlerList.of(handlerIO, handlers);
             }
         }
         return handlerList;
