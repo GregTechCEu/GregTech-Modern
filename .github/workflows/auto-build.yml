@@ -36,13 +36,13 @@ jobs:
       - name: Build
         run: ./gradlew build --build-cache
       - name: Publish to Maven
-        if: github.repository_owner == 'GregTechCEu' && env.PUBLISH == true
+        if: ${{ github.repository_owner == 'GregTechCEu' && env.PUBLISH == 'true' }}
         run: ./gradlew publish --build-cache
       - name: Rename Jars
-        if: env.PUBLISH == true
+        if: ${{ env.PUBLISH == 'true' }}
         run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
       - name: Upload Artifacts
-        if: env.PUBLISH == true
+        if: ${{ env.PUBLISH == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
@@ -51,7 +51,7 @@ jobs:
           retention-days: 90
       - name: Changelog
         id: changelog
-        if: env.PUBLISH == true
+        if: ${{ env.PUBLISH == 'true' }}
         uses: mikepenz/release-changelog-builder-action@v5
         with:
           configuration: ./.github/json/config-latest.json
@@ -60,7 +60,7 @@ jobs:
           fetchViaCommits: true
           failOnError: false
       - name: Release Latest
-        if: env.PUBLISH == true
+        if: ${{ env.PUBLISH == 'true' }}
         uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
         with:
           tag_name: latest-${{ github.ref_name }}
