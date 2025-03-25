@@ -14,7 +14,7 @@
     }
   ],
   "sort": "ASC",
-  "template": "## What's Changed since #{{FROM_TAG}}\n#{{CHANGELOG}}\n#{{UNCATEGORIZED}}\n[Full changelog here](#{{RELEASE_DIFF}})",
+  "template": "## What's Changed since #{{FROM_TAG}}\n#{{CHANGELOG}}\n#{{UNCATEGORIZED}}\n#{{CHANGES}} lines changed - see the [full diff here](#{{RELEASE_DIFF}})",
   "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in [##{{NUMBER}}](#{{URL}})",
   "empty_template": "",
   "ignore_labels": ["ignore changelog"],
