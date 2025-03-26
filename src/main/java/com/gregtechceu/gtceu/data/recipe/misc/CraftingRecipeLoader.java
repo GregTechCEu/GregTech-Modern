@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 
 public class CraftingRecipeLoader {
 
@@ -226,66 +225,10 @@ public class CraftingRecipeLoader {
                 " S ", " h ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_bottle", SHAPE_MOLD_BOTTLE.asStack(), "   ",
                 " S ", "  h", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_credit", SHAPE_MOLD_CREDIT.asStack(), "h  ",
-                " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_gear", SHAPE_MOLD_GEAR.asStack(), "   ", " Sh",
                 "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_plate", SHAPE_MOLD_PLATE.asStack(), " h ",
                 " S ", "   ", 'S', SHAPE_EMPTY.asStack());
-
-        ///////////////////////////////////////////////////
-        // Credits //
-        ///////////////////////////////////////////////////
-        VanillaRecipeHelper.addShapelessRecipe(provider, "chocolate_coin", COIN_CHOCOLATE.asStack(),
-                new UnificationEntry(dust, Cocoa), new UnificationEntry(foil, Gold),
-                new FluidContainerIngredient(Milk.getFluidTag(), 1000),
-                new UnificationEntry(dust, Sugar));
-        ASSEMBLER_RECIPES.recipeBuilder("chocolate_coin")
-                .inputItems(dust, Cocoa)
-                .inputItems(foil, Gold)
-                .inputItems(dust, Sugar)
-                .inputFluids(Milk.getFluid(500))
-                .outputItems(COIN_CHOCOLATE)
-                .duration(60).EUt(15)
-                .save(provider);
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_copper", CREDIT_COPPER.asStack(8),
-                CREDIT_CUPRONICKEL.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_cupronickel_alt", CREDIT_CUPRONICKEL.asStack(),
-                CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack(),
-                CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack(), CREDIT_COPPER.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_cupronickel", CREDIT_CUPRONICKEL.asStack(8),
-                CREDIT_SILVER.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_silver_alt", CREDIT_SILVER.asStack(),
-                CREDIT_CUPRONICKEL.asStack(), CREDIT_CUPRONICKEL.asStack(), CREDIT_CUPRONICKEL.asStack(),
-                CREDIT_CUPRONICKEL.asStack(), CREDIT_CUPRONICKEL.asStack(), CREDIT_CUPRONICKEL.asStack(),
-                CREDIT_CUPRONICKEL.asStack(), CREDIT_CUPRONICKEL.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_silver", CREDIT_SILVER.asStack(8),
-                CREDIT_GOLD.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_gold_alt", CREDIT_GOLD.asStack(),
-                CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack(),
-                CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack(), CREDIT_SILVER.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_gold", CREDIT_GOLD.asStack(8),
-                CREDIT_PLATINUM.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_platinum_alt", CREDIT_PLATINUM.asStack(),
-                CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack(),
-                CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack(), CREDIT_GOLD.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_platinum", CREDIT_PLATINUM.asStack(8),
-                CREDIT_OSMIUM.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_osmium_alt", CREDIT_OSMIUM.asStack(),
-                CREDIT_PLATINUM.asStack(), CREDIT_PLATINUM.asStack(), CREDIT_PLATINUM.asStack(),
-                CREDIT_PLATINUM.asStack(), CREDIT_PLATINUM.asStack(), CREDIT_PLATINUM.asStack(),
-                CREDIT_PLATINUM.asStack(), CREDIT_PLATINUM.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_osmium", CREDIT_OSMIUM.asStack(8),
-                CREDIT_NAQUADAH.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_naquadah_alt", CREDIT_NAQUADAH.asStack(),
-                CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack(),
-                CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack(), CREDIT_OSMIUM.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_naquadah", CREDIT_NAQUADAH.asStack(8),
-                CREDIT_NEUTRONIUM.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "credit_darmstadtium", CREDIT_NEUTRONIUM.asStack(),
-                CREDIT_NAQUADAH.asStack(), CREDIT_NAQUADAH.asStack(), CREDIT_NAQUADAH.asStack(),
-                CREDIT_NAQUADAH.asStack(), CREDIT_NAQUADAH.asStack(), CREDIT_NAQUADAH.asStack(),
-                CREDIT_NAQUADAH.asStack(), CREDIT_NAQUADAH.asStack());
         ///////////////////////////////////////////////////
         // Armors //
         ///////////////////////////////////////////////////

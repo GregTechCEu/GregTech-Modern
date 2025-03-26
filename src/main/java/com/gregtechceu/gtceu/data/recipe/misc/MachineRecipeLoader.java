@@ -38,6 +38,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -74,20 +75,6 @@ public class MachineRecipeLoader {
                 .inputItems(dust, Fireclay)
                 .outputItems(COMPRESSED_FIRECLAY)
                 .duration(80).EUt(4)
-                .save(provider);
-
-        FORMING_PRESS_RECIPES.recipeBuilder("credit_cupronickel")
-                .duration(100).EUt(16)
-                .notConsumable(SHAPE_MOLD_CREDIT)
-                .inputItems(plate, Cupronickel, 1)
-                .outputItems(CREDIT_CUPRONICKEL, 4)
-                .save(provider);
-
-        FORMING_PRESS_RECIPES.recipeBuilder("doge_coin")
-                .duration(100).EUt(16)
-                .notConsumable(SHAPE_MOLD_CREDIT)
-                .inputItems(plate, Brass, 1)
-                .outputItems(COIN_DOGE, 4)
                 .save(provider);
 
         for (ItemEntry<Item> shapeMold : SHAPE_MOLDS) {
@@ -1497,7 +1484,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase();
+            var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
             var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
             var exportHatch4x = FLUID_EXPORT_HATCH_4X[tier];
@@ -1524,7 +1511,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase();
+            var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
             var inputBuffer = DUAL_IMPORT_HATCH[tier];
             var outputBuffer = DUAL_EXPORT_HATCH[tier];
