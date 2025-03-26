@@ -1,5 +1,5 @@
 ---
-title: Crafting Components
+title: "Crafting Components"
 ---
 
 # Crafting Components
@@ -32,7 +32,7 @@ GTCEuServerEvents.craftingComponents(event => {
     )) // (2)
     event.modifyTag(CraftingComponent.CASING, GTValues.EV, 'minecraft:logs') // (3)
     event.modifyMaterialEntry(CraftingComponent.PLATE, GTValues.UEV, new UnificationEntry('plate', 'gtceu:infinity')) // (4)
-    event.removeTier("sensor", 3) // (6)
+    event.removeTier("sensor", 3) // (5)
 })
 ```
 1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of `minecraft:dirt`.
