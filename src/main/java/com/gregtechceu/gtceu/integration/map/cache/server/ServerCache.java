@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectO
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
 import com.gregtechceu.gtceu.integration.map.cache.WorldCache;
-import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -83,7 +82,6 @@ public class ServerCache extends WorldCache {
         }
 
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
-        GTClientCache.instance.notifyNewVeins(foundVeins);
     }
 
     public void prospectByOreMaterial(ResourceKey<Level> dim, Material material, BlockPos origin, ServerPlayer player,
@@ -97,7 +95,6 @@ public class ServerCache extends WorldCache {
             }
         }
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
-        GTClientCache.instance.notifyNewVeins(foundVeins);
     }
 
     public void prospectByDepositName(ResourceKey<Level> dim, String depositName, BlockPos origin, ServerPlayer player,
@@ -111,7 +108,6 @@ public class ServerCache extends WorldCache {
             }
         }
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
-        GTClientCache.instance.notifyNewVeins(foundVeins);
     }
 
     public void prospectAllInChunk(ResourceKey<Level> dim, ChunkPos pos, ServerPlayer player) {
@@ -123,7 +119,6 @@ public class ServerCache extends WorldCache {
             }
         }
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
-        GTClientCache.instance.notifyNewVeins(foundVeins);
     }
 
     public void removeAllInChunk(ResourceKey<Level> dim, ChunkPos pos) {

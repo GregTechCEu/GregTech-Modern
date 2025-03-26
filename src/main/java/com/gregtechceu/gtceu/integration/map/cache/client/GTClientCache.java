@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.List;
 
 public class GTClientCache extends WorldCache implements IClientCache {
 
@@ -27,14 +26,14 @@ public class GTClientCache extends WorldCache implements IClientCache {
 
     private final FluidCache fluids = new FluidCache();
 
-    public void notifyNewVeins(List<GeneratedVeinMetadata> veins) {
-        if (veins.isEmpty()) return;
+    public void notifyNewVeins(GeneratedVeinMetadata... veins) {
+        if (veins.length == 0) return;
 
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) return;
 
-        veins.forEach(vein -> {
+        for (var vein : veins) {
             var veinId = vein.id().toString();
             var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
@@ -46,7 +45,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
                         Component.literal("(%d, %d, %d)".formatted(center.getX(), center.getY(), center.getZ())))));
             }
             player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.name", name));
-        });
+        }
     }
 
     public void addFluid(ResourceKey<Level> dim, int chunkX, int chunkZ, ProspectorMode.FluidInfo fluid) {
@@ -59,7 +58,11 @@ public class GTClientCache extends WorldCache implements IClientCache {
         if (renderer != null) {
             renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
         }
-        return super.addVein(dim, gridX, gridZ, vein);
+        boolean added = super.addVein(dim, gridX, gridZ, vein);
+        if (added) {
+            notifyNewVeins(vein);
+        }
+        return added;
     }
 
     @Override
