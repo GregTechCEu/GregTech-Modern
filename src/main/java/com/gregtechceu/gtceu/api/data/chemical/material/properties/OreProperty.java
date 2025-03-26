@@ -59,6 +59,7 @@ public class OreProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
+    @NotNull
     private Material directSmeltResult = GTMaterials.NULL;
 
     /**
@@ -68,6 +69,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Setter
+    @NotNull
     private Material washedIn = GTMaterials.NULL;
 
     /**
@@ -141,9 +143,9 @@ public class OreProperty implements IMaterialProperty {
     public void verifyProperty(MaterialProperties properties) {
         properties.ensureSet(PropertyKey.DUST, true);
 
-        if (directSmeltResult != GTMaterials.NULL && directSmeltResult != null)
+        if (directSmeltResult != GTMaterials.NULL)
             directSmeltResult.getProperties().ensureSet(PropertyKey.DUST, true);
-        if (washedIn != GTMaterials.NULL && washedIn != null)
+        if (washedIn != GTMaterials.NULL)
             washedIn.getProperties().ensureSet(PropertyKey.FLUID, true);
         separatedInto.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));
         oreByProducts.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));

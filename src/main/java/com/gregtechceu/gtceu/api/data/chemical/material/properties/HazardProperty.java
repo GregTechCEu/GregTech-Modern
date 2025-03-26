@@ -196,9 +196,6 @@ public class HazardProperty implements IMaterialProperty {
                 prefix = entry.tagPrefix();
             }
         }
-        if (material == GTMaterials.NULL) {
-            return material;
-        }
         HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property == null) {
             return GTMaterials.NULL;

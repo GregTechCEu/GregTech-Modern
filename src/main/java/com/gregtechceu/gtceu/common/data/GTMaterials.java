@@ -15,6 +15,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -268,8 +270,11 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
+    @NotNull
     public static Material get(String name) {
-        return GTCEuAPI.materialManager.getMaterial(name);
+        var mat = GTCEuAPI.materialManager.getMaterial(name);
+        // mat could be null here due to the registry grabbing a material that isn't in the map
+        return mat == null ? GTMaterials.NULL : mat;
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {

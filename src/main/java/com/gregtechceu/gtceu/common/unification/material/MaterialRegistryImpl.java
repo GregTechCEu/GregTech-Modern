@@ -18,6 +18,7 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     private final java.lang.String modid;
 
     private boolean isRegistryClosed = false;
+    @NotNull
     private Material fallbackMaterial = GTMaterials.NULL;
 
     protected MaterialRegistryImpl(@NotNull java.lang.String modid) {

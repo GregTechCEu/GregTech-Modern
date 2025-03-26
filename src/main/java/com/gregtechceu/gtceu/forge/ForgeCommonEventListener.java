@@ -535,7 +535,7 @@ public class ForgeCommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material == null) {
+                if (type == null || material == GTMaterials.NULL) {
                     mapping.warn();
                     return;
                 }

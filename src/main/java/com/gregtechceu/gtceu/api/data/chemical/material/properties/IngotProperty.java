@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 public class IngotProperty implements IMaterialProperty {
 
@@ -13,6 +14,7 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
+    @NotNull
     private Material smeltingInto = GTMaterials.NULL;
 
     /**
@@ -20,6 +22,7 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
+    @NotNull
     private Material arcSmeltingInto = GTMaterials.NULL;
 
     /**
@@ -29,6 +32,7 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
+    @NotNull
     private Material macerateInto = GTMaterials.NULL;
 
     /**
@@ -36,6 +40,7 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
+    @NotNull
     private Material magneticMaterial = GTMaterials.NULL;
 
     @Override
@@ -47,16 +52,16 @@ public class IngotProperty implements IMaterialProperty {
                             " has both Ingot and Gem Property, which is not allowed!");
         }
 
-        if (smeltingInto == GTMaterials.NULL || smeltingInto == null) smeltingInto = properties.getMaterial();
+        if (smeltingInto == GTMaterials.NULL) smeltingInto = properties.getMaterial();
         else smeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (arcSmeltingInto == GTMaterials.NULL || arcSmeltingInto == null) arcSmeltingInto = properties.getMaterial();
+        if (arcSmeltingInto == GTMaterials.NULL) arcSmeltingInto = properties.getMaterial();
         else arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (macerateInto == GTMaterials.NULL || macerateInto == null) macerateInto = properties.getMaterial();
+        if (macerateInto == GTMaterials.NULL) macerateInto = properties.getMaterial();
         else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (magneticMaterial != GTMaterials.NULL && magneticMaterial != null)
+        if (magneticMaterial != GTMaterials.NULL)
             magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
     }
 }

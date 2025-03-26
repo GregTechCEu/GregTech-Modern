@@ -429,8 +429,7 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(600))
                 .ore()
                 .color(0x7e6f82).secondaryColor(0x290633)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING,
-                        GENERATE_SPRING_SMALL,
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
                 .cableProperties(V[ULV], 2, 2)
@@ -848,8 +847,7 @@ public class ElementMaterials {
                 .plasma()
                 .ore()
                 .color(0xfafeff).secondaryColor(0x4e676c)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING,
-                        GENERATE_SPRING_SMALL,
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
                 .element(GTElements.Sn)
                 .cableProperties(V[LV], 1, 1)

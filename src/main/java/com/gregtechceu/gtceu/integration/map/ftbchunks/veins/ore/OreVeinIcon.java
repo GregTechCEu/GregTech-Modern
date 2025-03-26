@@ -32,6 +32,7 @@ import dev.ftb.mods.ftblibrary.ui.ContextMenuItem;
 import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -59,12 +60,13 @@ public class OreVeinIcon implements MapIcon {
         return name == null ? name = OreRenderLayer.getName(veinMetadata).getString() : name;
     }
 
+    @NotNull
     public Material getMaterial() {
-        Material firstMaterial = null;
+        Material firstMaterial = GTMaterials.NULL;
         if (!veinMetadata.definition().indicatorGenerators().isEmpty()) {
             var blockOrMaterial = veinMetadata.definition().indicatorGenerators().get(0).block();
             if (blockOrMaterial == null) {
-                return null;
+                return GTMaterials.NULL;
             } else if (blockOrMaterial.left().isPresent()) {
                 var entry = ChemicalHelper.getMaterialEntry(blockOrMaterial.left().get().getBlock());
                 firstMaterial = entry.material();
