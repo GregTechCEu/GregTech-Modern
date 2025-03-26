@@ -14,10 +14,4 @@ public class MemoizedBlockSupplier<T extends Block> extends MemoizedSupplier<T> 
     protected MemoizedBlockSupplier(Supplier<T> delegate) {
         super(delegate);
     }
-
-    @Override
-    public String toString() {
-        return "SupplierMemoizer.memoizeBlockSupplier(" +
-                (initialized ? "<supplier that returned " + value + ">" : delegate) + ")";
-    }
 }

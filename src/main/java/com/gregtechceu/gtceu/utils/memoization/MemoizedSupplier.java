@@ -28,6 +28,6 @@ public class MemoizedSupplier<T> implements Supplier<T> {
 
     @Override
     public String toString() {
-        return "MemoizedSupplier(" + (initialized ? "<supplier that returned " + value + ">" : delegate) + ")";
+        return getClass().getSimpleName() + "(" + (initialized ? value : "Uninitialized") + ")";
     }
 }
