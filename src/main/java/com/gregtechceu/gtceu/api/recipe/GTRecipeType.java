@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
@@ -275,8 +275,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipeBuilder(GTCEu.id(id), append);
     }
 
-    public GTRecipeBuilder recipeBuilder(UnificationEntry entry, Object... append) {
-        return recipeBuilder(GTCEu.id(entry.tagPrefix + (entry.material == null ? "" : "_" + entry.material.getName())),
+    public GTRecipeBuilder recipeBuilder(MaterialEntry entry, Object... append) {
+        return recipeBuilder(
+                GTCEu.id(entry.tagPrefix() +
+                        (entry.material().isNull() ? "" : "_" + entry.material().getName())),
                 append);
     }
 

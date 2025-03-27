@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -57,25 +57,25 @@ public class WireCombiningHandler {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_doubling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 1], material),
-                    new UnificationEntry(wirePrefix, material),
-                    new UnificationEntry(wirePrefix, material));
+                    new MaterialEntry(wirePrefix, material),
+                    new MaterialEntry(wirePrefix, material));
         }
 
         if (wireIndex > 0) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_splitting", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex - 1], material, 2),
-                    new UnificationEntry(wirePrefix, material));
+                    new MaterialEntry(wirePrefix, material));
         }
 
         if (wireIndex < 3) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_quadrupling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 2], material),
-                    new UnificationEntry(wirePrefix, material),
-                    new UnificationEntry(wirePrefix, material),
-                    new UnificationEntry(wirePrefix, material),
-                    new UnificationEntry(wirePrefix, material));
+                    new MaterialEntry(wirePrefix, material),
+                    new MaterialEntry(wirePrefix, material),
+                    new MaterialEntry(wirePrefix, material),
+                    new MaterialEntry(wirePrefix, material));
         }
     }
 

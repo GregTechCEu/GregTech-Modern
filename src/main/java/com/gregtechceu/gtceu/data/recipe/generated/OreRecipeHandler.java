@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -53,7 +53,8 @@ public class OreRecipeHandler {
 
     private static void processMetalSmelting(TagPrefix crushedPrefix, Material material, OreProperty property,
                                              Consumer<FinishedRecipe> provider) {
-        Material smeltingResult = property.getDirectSmeltResult() != null ? property.getDirectSmeltResult() : material;
+        Material smeltingResult = !property.getDirectSmeltResult().isNull() ?
+                property.getDirectSmeltResult() : material;
 
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
@@ -95,7 +96,7 @@ public class OreRecipeHandler {
         ItemStack ingotStack;
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
         if (byproductStack.isEmpty()) byproductStack = ChemicalHelper.get(dust, byproductMaterial);
-        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                 property.getDirectSmeltResult();
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
         int amountOfCrushedOre = property.getOreMultiplier();
@@ -153,7 +154,7 @@ public class OreRecipeHandler {
         ItemStack crushedStack = ChemicalHelper.get(crushed, material,
                 material.getProperty(PropertyKey.ORE).getOreMultiplier());
         ItemStack ingotStack;
-        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                 property.getDirectSmeltResult();
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial,
@@ -301,7 +302,7 @@ public class OreRecipeHandler {
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
-        if (property.getWashedIn().getFirst() != null) {
+        if (!property.getWashedIn().getFirst().isNull()) {
             Material washingByproduct = GTUtil.selectItemInList(3, material, property.getOreByProducts(),
                     Material.class);
             Pair<Material, Integer> washedInTuple = property.getWashedIn();
@@ -318,7 +319,7 @@ public class OreRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material.getName()),
-                impureDustStack, 'h', new UnificationEntry(crushedPrefix, material));
+                impureDustStack, 'h', new MaterialEntry(crushedPrefix, material));
 
         processMetalSmelting(crushedPrefix, material, property, provider);
     }
@@ -346,7 +347,7 @@ public class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
                 String.format("centrifuged_ore_to_dust_%s", material.getName()), dustStack,
-                'h', new UnificationEntry(centrifugedPrefix, material));
+                'h', new MaterialEntry(centrifugedPrefix, material));
 
         processMetalSmelting(centrifugedPrefix, material, property, provider);
     }
@@ -377,7 +378,7 @@ public class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material.getName()),
                 dustStack,
-                'h', new UnificationEntry(purifiedPrefix, material));
+                'h', new MaterialEntry(purifiedPrefix, material));
 
         if (!crushedCentrifugedStack.isEmpty()) {
             THERMAL_CENTRIFUGE_RECIPES

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
@@ -427,22 +427,22 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (repair.getItem() instanceof IGTTool gtTool) {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(repair.getItem());
-        if (entry == null || entry.material == null) return false;
-        if (entry.material == getToolMaterial(toRepair)) {
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
+        if (entry.isEmpty()) return false;
+        if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
-                return entry.tagPrefix == TagPrefix.planks;
+            if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
+                return entry.tagPrefix() == TagPrefix.planks;
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix == TagPrefix.plate) {
+            if (entry.tagPrefix() == TagPrefix.plate) {
                 return true;
             }
-            if (entry.material.hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix == TagPrefix.ingot;
+            if (entry.material().hasProperty(PropertyKey.INGOT)) {
+                return entry.tagPrefix() == TagPrefix.ingot;
             }
-            if (entry.material.hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix == TagPrefix.gem;
+            if (entry.material().hasProperty(PropertyKey.GEM)) {
+                return entry.tagPrefix() == TagPrefix.gem;
             }
         }
         return false;

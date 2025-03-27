@@ -284,7 +284,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         public Collection<Fluid> getFluids() {
             ArrayList<Fluid> list = Lists.newArrayList();
             for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
-
                 list.add(holder.value());
             }
             return list;

@@ -46,7 +46,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         }
         var materialName = compound.getString("Material");
         var material = GTMaterials.get(materialName);
-        if (material == null || !material.hasProperty(PropertyKey.INGOT)) {
+        if (material.isNull() || !material.hasProperty(PropertyKey.INGOT)) {
             return defaultMaterial;
         }
         return material;
