@@ -277,7 +277,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("RecipeCapability", RecipeCapability.class);
         event.add("ChanceLogic", ChanceLogic.class);
         event.add("CleanroomType", CleanroomType.class);
-        event.add("CraftingComponent", GTCraftingComponents.class);
+        event.add("CraftingComponent", CraftingComponent.class);
         event.add("GTCraftingComponents", GTCraftingComponents.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
