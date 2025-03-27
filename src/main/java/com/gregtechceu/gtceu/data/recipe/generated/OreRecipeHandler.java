@@ -329,7 +329,7 @@ public final class OreRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material.getName()),
-                impureDustStack, 'h', new UnificationEntry(crushed, material));
+                impureDustStack, 'h', new MaterialEntry(crushed, material));
 
         processMetalSmelting(provider, property, crushed, material);
     }
@@ -360,7 +360,7 @@ public final class OreRecipeHandler {
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
                 String.format("centrifuged_ore_to_dust_%s", material.getName()), dustStack,
-                'h', new UnificationEntry(crushedRefined, material));
+                'h', new MaterialEntry(crushedRefined, material));
 
         processMetalSmelting(provider, property, crushedRefined, material);
     }

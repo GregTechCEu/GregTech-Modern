@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
@@ -622,7 +621,7 @@ public final class MaterialRecipeHandler {
 
                 VanillaRecipeHelper.addShapelessRecipe(provider,
                         String.format("block_decompress_%s", material.getName()),
-                        ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material).copyWithCount(size),
+                        ChemicalHelper.get(blockEntry.tagPrefix(), blockEntry.material()).copyWithCount(size),
                         new MaterialEntry(block, material));
             }
 

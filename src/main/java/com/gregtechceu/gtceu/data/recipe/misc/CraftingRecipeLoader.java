@@ -98,8 +98,8 @@ public class CraftingRecipeLoader {
 
         // TODO clipboard
         // VanillaRecipeHelper.addShapedRecipe(provider, "clipboard", CLIPBOARD.asStack(), " Sd", "BWR", "PPP", 'P',
-        // Items.PAPER, 'R', new UnificationEntry(springSmall, Iron), 'B', new UnificationEntry(bolt, Iron), 'S', new
-        // UnificationEntry(screw, Iron), 'W', new UnificationEntry(plate, Wood));
+        // Items.PAPER, 'R', new MaterialEntry(springSmall, Iron), 'B', new MaterialEntry(bolt, Iron), 'S', new
+        // MaterialEntry(screw, Iron), 'W', new MaterialEntry(plate, Wood));
 
         VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "treated_wood_planks",
                 GTBlocks.TREATED_WOOD_PLANK.asStack(8),
@@ -295,21 +295,21 @@ public class CraftingRecipeLoader {
                                        int outputAmount) {
         VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
-                'X', new UnificationEntry(plate, material));
+                'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
-                'X', new UnificationEntry(plate, material));
+                'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
-                'X', new UnificationEntry(plate, material));
+                'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
-                'X', new UnificationEntry(plateDouble, material));
+                'X', new MaterialEntry(plateDouble, material));
     }
 
     // private static void registerFacadeRecipe(Consumer<FinishedRecipe> provider, Material material, int facadeAmount)
     // {
-    // OreIngredient ingredient = new OreIngredient(new UnificationEntry(plate, material).toString());
+    // OreIngredient ingredient = new OreIngredient(new MaterialEntry(plate, material).toString());
     // ForgeRegistries.RECIPES.register(new FacadeRecipe(null, ingredient, facadeAmount).setRegistryName("facade_" +
     // material));
     // }
