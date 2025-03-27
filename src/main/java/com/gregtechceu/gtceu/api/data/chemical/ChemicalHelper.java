@@ -73,7 +73,7 @@ public class ChemicalHelper {
 
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
         Material entryMaterial = entry.material();
-        if (entryMaterial != GTMaterials.NULL) {
+        if (!entryMaterial.isNull()) {
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         return MaterialStack.EMPTY;
@@ -224,7 +224,7 @@ public class ChemicalHelper {
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-        if (materialEntry.material() == GTMaterials.NULL) return new ArrayList<>();
+        if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             var items = new ArrayList<Supplier<? extends ItemLike>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {

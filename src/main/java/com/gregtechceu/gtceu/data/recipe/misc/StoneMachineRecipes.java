@@ -425,7 +425,7 @@ public class StoneMachineRecipes {
     }
 
     public static void registerStoneMaterialInfo(@NotNull StoneTypeEntry entry) {
-        if (entry.material != GTMaterials.NULL && entry.stone != null) {
+        if (!entry.material.isNull() && entry.stone != null) {
             if (entry.addStoneOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.stone);
             }
@@ -435,7 +435,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.polishedStone != null) {
+        if (!entry.material.isNull() && entry.polishedStone != null) {
             if (entry.addStoneOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.polishedStone);
             }
@@ -445,7 +445,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.smeltStone != null) {
+        if (!entry.material.isNull() && entry.smeltStone != null) {
             if (entry.addStoneOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.smeltStone);
             }
@@ -455,7 +455,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.chiselStone != null) {
+        if (!entry.material.isNull() && entry.chiselStone != null) {
             if (entry.addStoneOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.chiselStone);
             }
@@ -465,7 +465,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.crackedStone != null) {
+        if (!entry.material.isNull() && entry.crackedStone != null) {
             if (entry.addStoneOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.crackedStone);
             }
@@ -475,7 +475,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.slab != null) {
+        if (!entry.material.isNull() && entry.slab != null) {
             if (entry.addSlabOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.slab, entry.material, entry.slab);
             }
@@ -485,7 +485,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.stair != null) {
+        if (!entry.material.isNull() && entry.stair != null) {
             if (entry.addStairOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.stairs, entry.material, entry.stair);
             }
@@ -495,7 +495,7 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.wall != null) {
+        if (!entry.material.isNull() && entry.wall != null) {
             if (entry.addWallOreDict) {
                 ItemMaterialData.registerMaterialInfoItems(TagPrefix.fence, entry.material, entry.wall);
             }
@@ -505,12 +505,12 @@ public class StoneMachineRecipes {
             }
         }
 
-        if (entry.material != GTMaterials.NULL && entry.pressurePlate != null && entry.addPressurePlateMaterialInfo) {
+        if (!entry.material.isNull() && entry.pressurePlate != null && entry.addPressurePlateMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 4)));
         }
 
-        if (entry.material != GTMaterials.NULL && entry.button != null && entry.addButtonMaterialInfo) {
+        if (!entry.material.isNull() && entry.button != null && entry.addButtonMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.button,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 6)));
         }

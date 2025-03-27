@@ -57,7 +57,7 @@ public class MaterialRegistryImpl extends MaterialRegistry {
     @NotNull
     @Override
     public Material getFallbackMaterial() {
-        if (this.fallbackMaterial == GTMaterials.NULL) {
+        if (this.fallbackMaterial.isNull()) {
             this.fallbackMaterial = MaterialRegistryManager.getInstance().getDefaultFallback();
         }
         return this.fallbackMaterial;

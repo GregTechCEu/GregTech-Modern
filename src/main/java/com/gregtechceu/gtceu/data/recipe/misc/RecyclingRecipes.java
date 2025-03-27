@@ -114,7 +114,7 @@ public class RecyclingRecipes {
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL &&
+        if (!entry.isEmpty() && entry.material().isNull() &&
                 entry.tagPrefix().unificationEnabled()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
@@ -152,14 +152,14 @@ public class RecyclingRecipes {
                                                    @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
+        if (!entry.isEmpty() && !entry.material().isNull()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-            if (ms.isEmpty() || ms.material() == GTMaterials.NULL) {
+            if (ms.isEmpty() || ms.material().isNull()) {
                 return;
             }
             Material m = ms.material();
@@ -238,7 +238,7 @@ public class RecyclingRecipes {
                                              List<MaterialStack> materials, @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (!entry.isEmpty() && entry.material() != GTMaterials.NULL) {
+        if (!entry.isEmpty() && !entry.material().isNull()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
@@ -350,7 +350,7 @@ public class RecyclingRecipes {
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
             Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
-            if (arcSmelt != GTMaterials.NULL) {
+            if (!arcSmelt.isNull()) {
                 return new MaterialStack(arcSmelt, amount);
             }
         }

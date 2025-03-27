@@ -472,14 +472,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
-        if (input.material() == GTMaterials.NULL) {
+        if (input.material().isNull()) {
             GTCEu.LOGGER.error("MaterialEntry material is null, id: {}, TagPrefix: {}", id, input.tagPrefix());
         }
         return inputItems(input.tagPrefix(), input.material(), count);
     }
 
     public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
-        if (material == GTMaterials.NULL) {
+        if (material.isNull()) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, tagPrefix, "null", count);
@@ -590,7 +590,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
-        if (material == GTMaterials.NULL) {
+        if (material.isNull()) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, orePrefix, "null", count);
@@ -606,14 +606,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry) {
-        if (entry.material() == GTMaterials.NULL) {
+        if (entry.material().isNull()) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
         return outputItems(entry.tagPrefix(), entry.material());
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry, int count) {
-        if (entry.material() == GTMaterials.NULL) {
+        if (entry.material().isNull()) {
             GTCEu.LOGGER.error("Unification Entry material is null, id: {}, TagPrefix: {}", id, entry.tagPrefix());
         }
         return outputItems(entry.tagPrefix(), entry.material(), count);
@@ -963,7 +963,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (matStack != GTMaterials.NULL) {
+        if (!matStack.isNull()) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -974,7 +974,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         for (var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
-            if (matStack != GTMaterials.NULL) {
+            if (!matStack.isNull()) {
                 if (chance == maxChance) {
                     tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
                 }

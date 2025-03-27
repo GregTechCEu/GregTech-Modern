@@ -58,7 +58,7 @@ public class FluidVeinIcon implements MapIcon {
     public int getColor() {
         var color = IClientFluidTypeExtensions.of(fluidInfo.fluid()).getTintColor();
         var material = ChemicalHelper.getMaterial(fluidInfo.fluid());
-        if (material != GTMaterials.NULL) {
+        if (!material.isNull()) {
             color = material.getMaterialARGB();
         }
         return color;

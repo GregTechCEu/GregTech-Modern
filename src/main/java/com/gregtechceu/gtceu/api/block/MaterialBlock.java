@@ -193,7 +193,7 @@ public class MaterialBlock extends AppearanceBlock {
                 continue;
             }
             BlockEntity te = level.getBlockEntity(blockPos);
-            if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() != GTMaterials.NULL) {
+            if (te instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -202,7 +202,7 @@ public class MaterialBlock extends AppearanceBlock {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
-            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() == GTMaterials.NULL) {
+            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -231,7 +231,7 @@ public class MaterialBlock extends AppearanceBlock {
         BlockEntity te = level.getBlockEntity(pos);
         if (te instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
-            if (mat != GTMaterials.NULL) {
+            if (!mat.isNull()) {
                 pipeTile.setFrameMaterial(GTMaterials.NULL);
                 Block.popResource(level, pos, this.asItem().getDefaultInstance());
                 ToolHelper.damageItem(stack, player);

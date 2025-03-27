@@ -320,7 +320,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return InteractionResult.FAIL;
         }
 
-        if (pipeBlockEntity.getFrameMaterial() == GTMaterials.NULL && pipeType.getThickness() < 1) {
+        if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
             if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
@@ -372,7 +372,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
+        if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
                     .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
@@ -384,7 +384,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && pipeNode.getFrameMaterial() != GTMaterials.NULL) {
+        if (pipeNode != null && !pipeNode.getFrameMaterial().isNull()) {
             return false;
         }
         return false;
@@ -393,7 +393,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && pipeNode.getFrameMaterial() != GTMaterials.NULL) {
+        if (pipeNode != null && !pipeNode.getFrameMaterial().isNull()) {
             return MaterialBlock.FRAME_COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
@@ -404,7 +404,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         var pipeNode = getPipeTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
-            if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
+            if (!pipeNode.getFrameMaterial().isNull()) {
                 return Shapes.block();
             }
             connections = pipeNode.getVisualConnections();
@@ -469,7 +469,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         BlockEntity tileEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (tileEntity instanceof IPipeNode<?, ?> pipeTile) {
-            if (pipeTile.getFrameMaterial() != GTMaterials.NULL) {
+            if (!pipeTile.getFrameMaterial().isNull()) {
                 drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
                         .getDefaultState().getDrops(builder));
             }

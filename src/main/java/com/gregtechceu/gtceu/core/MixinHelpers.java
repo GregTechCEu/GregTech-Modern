@@ -66,7 +66,7 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material();
-                if (material != GTMaterials.NULL) {
+                if (!material.isNull()) {
                     var materialTags = entry.tagPrefix().getAllItemTags(material);
                     for (TagKey<Item> materialTag : materialTags) {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();

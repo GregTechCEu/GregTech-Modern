@@ -61,7 +61,7 @@ public abstract class VeinGenerator {
                     var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
                     return matStack.material();
                 }, Function.identity()))
-                .filter(mat -> mat != GTMaterials.NULL)
+                .filter(mat -> !mat.isNull())
                 .toList();
     }
 

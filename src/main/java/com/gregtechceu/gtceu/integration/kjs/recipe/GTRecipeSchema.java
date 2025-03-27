@@ -659,7 +659,7 @@ public interface GTRecipeSchema {
             for (var fluidIng : inputs) {
                 for (var stack : fluidIng.getIngredient().getStacks()) {
                     var mat = ChemicalHelper.getMaterial(stack.getFluid());
-                    if (mat != GTMaterials.NULL) {
+                    if (!mat.isNull()) {
                         fluidMaterialStacks.add(new MaterialStack(mat,
                                 ((long) stack.getAmount() * GTValues.M) / GTValues.L));
                     }

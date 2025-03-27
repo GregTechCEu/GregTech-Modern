@@ -52,16 +52,16 @@ public class IngotProperty implements IMaterialProperty {
                             " has both Ingot and Gem Property, which is not allowed!");
         }
 
-        if (smeltingInto == GTMaterials.NULL) smeltingInto = properties.getMaterial();
+        if (smeltingInto.isNull()) smeltingInto = properties.getMaterial();
         else smeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (arcSmeltingInto == GTMaterials.NULL) arcSmeltingInto = properties.getMaterial();
+        if (arcSmeltingInto.isNull()) arcSmeltingInto = properties.getMaterial();
         else arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (macerateInto == GTMaterials.NULL) macerateInto = properties.getMaterial();
+        if (macerateInto.isNull()) macerateInto = properties.getMaterial();
         else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (magneticMaterial != GTMaterials.NULL)
+        if (!magneticMaterial.isNull())
             magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
     }
 }

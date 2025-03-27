@@ -50,7 +50,7 @@ public abstract class MaterialPipeBlock<
             if (blockState.getBlock() instanceof MaterialPipeBlock<?, ?, ?> block) {
                 if (blockPos != null && level != null &&
                         level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                    if (pipe.getFrameMaterial() != GTMaterials.NULL) {
+                    if (!pipe.getFrameMaterial().isNull()) {
                         if (index == 3) {
                             return pipe.getFrameMaterial().getMaterialRGB();
                         } else if (index == 4) {
@@ -87,7 +87,7 @@ public abstract class MaterialPipeBlock<
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
                 .getPipeBlock()).material;
-        if (pipeType == null || material == GTMaterials.NULL) {
+        if (pipeType == null || material.isNull()) {
             return getFallbackType();
         }
         return createProperties(pipeType, material);

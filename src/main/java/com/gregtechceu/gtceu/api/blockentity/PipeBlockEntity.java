@@ -427,7 +427,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
             } else {
-                if (frameMaterial != GTMaterials.NULL) {
+                if (!frameMaterial.isNull()) {
                     Block.popResource(getLevel(), getPipePos(),
                             GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
                     frameMaterial = GTMaterials.NULL;

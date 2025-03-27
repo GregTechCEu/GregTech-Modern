@@ -74,7 +74,7 @@ public class OreVeinIcon implements MapIcon {
                 firstMaterial = blockOrMaterial.right().get();
             }
         }
-        if (firstMaterial == GTMaterials.NULL) {
+        if (firstMaterial.isNull()) {
             firstMaterial = veinMetadata.definition().veinGenerator().getAllMaterials().get(0);
         }
         return firstMaterial;

@@ -136,16 +136,16 @@ public class OreProperty implements IMaterialProperty {
     @NotNull
     public final Material getOreByProduct(int index, @NotNull Material fallback) {
         Material material = getOreByProduct(index);
-        return material != GTMaterials.NULL ? material : fallback;
+        return !material.isNull() ? material : fallback;
     }
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
         properties.ensureSet(PropertyKey.DUST, true);
 
-        if (directSmeltResult != GTMaterials.NULL)
+        if (!directSmeltResult.isNull())
             directSmeltResult.getProperties().ensureSet(PropertyKey.DUST, true);
-        if (washedIn != GTMaterials.NULL)
+        if (!washedIn.isNull())
             washedIn.getProperties().ensureSet(PropertyKey.FLUID, true);
         separatedInto.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));
         oreByProducts.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));

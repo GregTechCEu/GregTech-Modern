@@ -128,7 +128,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != GTMaterials.NULL) {
+        if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
@@ -139,7 +139,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
-            if (cable != null && cable.getFrameMaterial() == GTMaterials.NULL &&
+            if (cable != null && cable.getFrameMaterial().isNull() &&
                     cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();
                 double amperage = cable.getAverageAmperage();

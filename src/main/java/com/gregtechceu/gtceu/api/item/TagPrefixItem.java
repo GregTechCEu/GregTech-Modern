@@ -121,7 +121,7 @@ public class TagPrefixItem extends Item {
     }
 
     public int getItemBurnTime() {
-        DustProperty property = material == GTMaterials.NULL ? null : material.getProperty(PropertyKey.DUST);
+        DustProperty property = material.isNull() ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;

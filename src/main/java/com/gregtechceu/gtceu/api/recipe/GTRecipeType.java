@@ -279,7 +279,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeBuilder recipeBuilder(MaterialEntry entry, Object... append) {
         return recipeBuilder(
                 GTCEu.id(entry.tagPrefix() +
-                        (entry.material() == GTMaterials.NULL ? "" : "_" + entry.material().getName())),
+                        (entry.material().isNull() ? "" : "_" + entry.material().getName())),
                 append);
     }
 

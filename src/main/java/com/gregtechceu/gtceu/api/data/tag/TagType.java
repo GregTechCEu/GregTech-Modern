@@ -80,7 +80,7 @@ public class TagType {
     }
 
     public TagKey<Item> getTag(TagPrefix prefix, @NotNull Material material) {
-        if (filter != null && material != GTMaterials.NULL && !filter.test(material)) return null;
+        if (filter != null && !material.isNull() && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
 }

@@ -1027,7 +1027,7 @@ public class TagPrefix {
     }
 
     public long getMaterialAmount(@NotNull Material material) {
-        if (material == GTMaterials.NULL || !isAmountModified(material)) {
+        if (material.isNull() || !isAmountModified(material)) {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));

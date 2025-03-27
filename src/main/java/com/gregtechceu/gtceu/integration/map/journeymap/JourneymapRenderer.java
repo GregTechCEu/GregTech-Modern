@@ -164,10 +164,10 @@ public class JourneymapRenderer extends GenericMapRenderer {
                     },
                     Function.identity());
         }
-        if (firstMaterial == GTMaterials.NULL && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
+        if (firstMaterial.isNull() && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         }
-        if (firstMaterial == GTMaterials.NULL) {
+        if (firstMaterial.isNull()) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;
@@ -232,7 +232,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material != GTMaterials.NULL) {
+        if (!material.isNull()) {
             color = material.getMaterialARGB();
         }
 
