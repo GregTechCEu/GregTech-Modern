@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 
 public record MaterialStackWrapper(Supplier<Material> material, long amount) {
 
+    public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> GTMaterials.NULL, 0);
+
     private static final Map<String, MaterialStackWrapper> PARSE_CACHE = new WeakHashMap<>();
 
     public static MaterialStackWrapper fromString(CharSequence str) {
@@ -19,7 +21,7 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
         var cached = PARSE_CACHE.get(trimmed);
 
         if (cached != null) {
-            return cached.isEmpty() ? null : cached.copy();
+            return cached.copy();
         }
 
         var count = 1;
@@ -37,14 +39,16 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
     }
 
     public MaterialStackWrapper copy() {
+        if (isEmpty()) return EMPTY;
         return new MaterialStackWrapper(material, amount);
     }
 
     public boolean isEmpty() {
-        return this.material == null || this.amount < 1;
+        return this.amount < 1 || this.material.get().isNull();
     }
 
     public MaterialStack toMatStack() {
+        if (isEmpty()) return MaterialStack.EMPTY;
         return new MaterialStack(this.material.get(), this.amount);
     }
 }

@@ -533,6 +533,10 @@ public class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
+    public boolean isNull() {
+        return this == GTMaterials.NULL;
+    }
+
     @RemapPrefixForJS("kjs$")
     public static class Builder extends BuilderBase<Material> {
 
@@ -1022,7 +1026,7 @@ public class Material implements Comparable<Material> {
         }
 
         /**
-         * Add {@link TagPrefixes} to be ignored by this Material.<br>
+         * Added {@link TagPrefix} to be ignored by this Material.<br>
          */
         public Builder ignoredTagPrefixes(TagPrefix... prefixes) {
             if (this.ignoredTagPrefixes == null) {

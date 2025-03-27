@@ -72,8 +72,8 @@ public class ServerCache extends WorldCache {
             if (nearbyVein.definition().indicatorGenerators().stream()
                     .anyMatch(generator -> generator.block() != null && Objects.requireNonNull(generator.block())
                             .map(state -> {
-                                MaterialStack mat = ChemicalHelper.getMaterial(state.getBlock().asItem());
-                                if (mat == null) return false;
+                                MaterialStack mat = ChemicalHelper.getMaterialStack(state.getBlock().asItem());
+                                if (mat.isEmpty()) return false;
                                 return mat.material() == material;
                             },
                                     mat -> mat == material))) {

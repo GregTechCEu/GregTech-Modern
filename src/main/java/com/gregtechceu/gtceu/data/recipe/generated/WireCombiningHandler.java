@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -55,7 +55,7 @@ public final class WireCombiningHandler {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.WIRE)) {
             return;
         }
-        var wireStack = new UnificationEntry(prefix, material);
+        var wireStack = new MaterialEntry(prefix, material);
         if (index < WIRE_DOUBLING_ORDER.length - 1) {
             VanillaRecipeHelper.addShapelessRecipe(provider,
                     String.format("%s_wire_%s_doubling", material.getName(), prefix),

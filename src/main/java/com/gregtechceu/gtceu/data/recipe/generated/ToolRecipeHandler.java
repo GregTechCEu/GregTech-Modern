@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -67,8 +67,8 @@ public final class ToolRecipeHandler {
         }
 
         ItemStack stick = new ItemStack(Items.STICK);
-        UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
-        UnificationEntry ingot = new UnificationEntry(
+        MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
+        MaterialEntry ingot = new MaterialEntry(
                 material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
 
         if (material.hasFlag(GENERATE_PLATE)) {
@@ -146,7 +146,7 @@ public final class ToolRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_ROD)) {
-            UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
+            MaterialEntry rod = new MaterialEntry(TagPrefix.rod, material);
 
             if (material.hasFlag(GENERATE_PLATE)) {
                 addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
@@ -158,7 +158,7 @@ public final class ToolRecipeHandler {
                     addToolRecipe(provider, material, GTToolType.WIRE_CUTTER, false,
                             "PfP", "hPd", "STS",
                             'P', plate,
-                            'T', new UnificationEntry(TagPrefix.screw, material),
+                            'T', new MaterialEntry(TagPrefix.screw, material),
                             'S', rod);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
@@ -194,9 +194,9 @@ public final class ToolRecipeHandler {
         TagPrefix toolPrefix;
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            final UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
-            final UnificationEntry steelPlate = new UnificationEntry(TagPrefix.plate, GTMaterials.Steel);
-            final UnificationEntry steelRing = new UnificationEntry(TagPrefix.ring, GTMaterials.Steel);
+            final MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
+            final MaterialEntry steelPlate = new MaterialEntry(TagPrefix.plate, GTMaterials.Steel);
+            final MaterialEntry steelRing = new MaterialEntry(TagPrefix.ring, GTMaterials.Steel);
 
             // drill
             if (property.hasType(GTToolType.DRILL_LV)) {
@@ -236,7 +236,7 @@ public final class ToolRecipeHandler {
                         "hXW", "XRX", "WXd",
                         'X', plate,
                         'R', steelRing,
-                        'W', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel));
+                        'W', new MaterialEntry(TagPrefix.screw, GTMaterials.Steel));
             }
 
             // electric wire cutters
@@ -252,7 +252,7 @@ public final class ToolRecipeHandler {
                         "XfX", "X X", "SRS",
                         'X', plate,
                         'R', steelRing,
-                        'S', new UnificationEntry(screw, GTMaterials.Steel));
+                        'S', new MaterialEntry(screw, GTMaterials.Steel));
             }
 
             // buzzsaw
@@ -291,7 +291,7 @@ public final class ToolRecipeHandler {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                         ChemicalHelper.get(toolPrefix, material),
                         "fR", " h",
-                        'R', new UnificationEntry(TagPrefix.rodLong, material));
+                        'R', new MaterialEntry(TagPrefix.rodLong, material));
             } else {
                 GTCEu.LOGGER.info("Did not find long rod for " + material.getName() +
                         ", skipping electric screwdriver recipe");
@@ -315,7 +315,7 @@ public final class ToolRecipeHandler {
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
-                    'H', new UnificationEntry(toolHead, material),
+                    'H', new MaterialEntry(toolHead, material),
                     'U', powerUnitStack);
         }
     }
@@ -343,7 +343,7 @@ public final class ToolRecipeHandler {
         for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
             ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getKey().getTextColor());
             Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D',
-                    new UnificationEntry(TagPrefix.dye, color.getValue()));
+                    new MaterialEntry(TagPrefix.dye, color.getValue()));
 
             if (mirrored) { // todo mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider,

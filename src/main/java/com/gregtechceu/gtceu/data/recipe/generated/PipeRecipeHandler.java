@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -43,6 +43,10 @@ public final class PipeRecipeHandler {
         processRestrictivePipe(provider, PropertyKey.ITEM_PIPE, pipeNormalRestrictive, pipeNormalItem, material);
         processRestrictivePipe(provider, PropertyKey.ITEM_PIPE, pipeLargeRestrictive, pipeLargeItem, material);
         processRestrictivePipe(provider, PropertyKey.ITEM_PIPE, pipeHugeRestrictive, pipeHugeItem, material);
+
+        addDuctRecipes(provider, Steel, 2);
+        addDuctRecipes(provider, StainlessSteel, 4);
+        addDuctRecipes(provider, TungstenSteel, 8);
     }
 
     private static void processRestrictivePipe(@NotNull Consumer<FinishedRecipe> provider,
@@ -64,7 +68,7 @@ public final class PipeRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider,
                 FormattingUtil.toLowerCaseUnder(prefix + "_" + material.getName()),
                 ChemicalHelper.get(prefix, material), "PR", "Rh",
-                'P', new UnificationEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
+                'P', new MaterialEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
     }
 
     private static void processPipeTiny(@NotNull Consumer<FinishedRecipe> provider, @NotNull PropertyKey<?> propertyKey,
@@ -94,7 +98,7 @@ public final class PipeRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_%s_pipe", material.getName()),
                     pipeStack.copyWithCount(2), " s ", "hXw",
-                    'X', new UnificationEntry(plate, material));
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -126,7 +130,7 @@ public final class PipeRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_%s_pipe", material.getName()),
                     pipeStack, "wXh",
-                    'X', new UnificationEntry(plate, material));
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -158,7 +162,7 @@ public final class PipeRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("medium_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h",
-                    'X', new UnificationEntry(plate, material));
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -190,7 +194,7 @@ public final class PipeRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("large_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h", "XXX",
-                    'X', new UnificationEntry(plate, material));
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -221,7 +225,7 @@ public final class PipeRecipeHandler {
         } else if (plateDouble.doGenerateItem(material)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("huge_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h", "XXX",
-                    'X', new UnificationEntry(plateDouble, material));
+                    'X', new MaterialEntry(plateDouble, material));
         }
     }
 
@@ -271,7 +275,22 @@ public final class PipeRecipeHandler {
                 .save(provider);
     }
 
-    private static int getVoltageMultiplier(@NotNull Material material) {
+    private static void addDuctRecipes(Consumer<FinishedRecipe> provider, Material material, int outputAmount) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
+                GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
+                'X', new MaterialEntry(plate, material));
+        VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
+                GTBlocks.DUCT_PIPES[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
+                'X', new MaterialEntry(plate, material));
+        VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
+                GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                'X', new MaterialEntry(plate, material));
+        VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
+                GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                'X', new MaterialEntry(plateDouble, material));
+    }
+
+    private static int getVoltageMultiplier(Material material) {
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
     }
 }

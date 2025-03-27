@@ -20,6 +20,11 @@ public class CoverSolarPanel extends CoverBehavior {
     private final long EUt;
     protected TickableSubscription subscription;
 
+    public CoverSolarPanel(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
+        super(definition, coverHolder, attachedSide);
+        this.EUt = 1;
+    }
+
     public CoverSolarPanel(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         super(definition, coverHolder, attachedSide);
         this.EUt = GTValues.V[tier];

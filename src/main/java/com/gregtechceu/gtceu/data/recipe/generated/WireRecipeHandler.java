@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -130,7 +130,7 @@ public final class WireRecipeHandler {
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material.getName()),
                     ChemicalHelper.get(wireGtSingle, material), "Xx",
-                    'X', new UnificationEntry(plate, material));
+                    'X', new MaterialEntry(plate, material));
         }
     }
 
@@ -159,7 +159,7 @@ public final class WireRecipeHandler {
                     .EUt(VA[ULV]).duration(100)
                     .inputItems(prefix, material)
                     .outputItems(cablePrefix, material)
-                    .inputFluids(Rubber.getFluid(L * insulationAmount));
+                    .inputFluids(Rubber, L * insulationAmount);
 
             if (voltageTier == EV) {
                 builder.inputItems(foil, PolyvinylChloride, insulationAmount);
@@ -213,7 +213,7 @@ public final class WireRecipeHandler {
                                              @NotNull Material material) {
         int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
-        ingredients[0] = new UnificationEntry(wirePrefix, material);
+        ingredients[0] = new MaterialEntry(wirePrefix, material);
         for (int i = 1; i <= insulationAmount; i++) {
             ingredients[i] = ChemicalHelper.get(plate, Rubber);
         }

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -81,6 +82,12 @@ public class TagPrefix {
         return PREFIXES.get(name);
     }
 
+    public boolean isEmpty() {
+        return this == NULL_PREFIX;
+    }
+
+    public static final TagPrefix NULL_PREFIX = new TagPrefix("null");
+
     public static final TagPrefix ore = oreTagPrefix("stone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(
@@ -127,7 +134,8 @@ public class TagPrefix {
             .langValue("Deepslate %s Ore")
             .registerOre(
                     Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F),
+                            .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F)
+                            .sound(SoundType.DEEPSLATE),
                     new ResourceLocation("block/deepslate"), false, false, true);
 
     // TODO figure out a composition for tuff
@@ -135,7 +143,8 @@ public class TagPrefix {
             .langValue("Tuff %s Ore")
             .registerOre(
                     Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
+                            .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
+                            .sound(SoundType.TUFF),
                     new ResourceLocation("block/tuff"));
 
     public static final TagPrefix oreSand = oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
@@ -755,7 +764,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateBlock(true)
-            .blockProperties(() -> RenderType::translucent, p -> p.noOcclusion())
+            .blockProperties(() -> RenderType::translucent, BlockBehaviour.Properties::noOcclusion)
             .generationCondition(material -> material.hasProperty(PropertyKey.DUST) &&
                     material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
@@ -1131,8 +1140,8 @@ public class TagPrefix {
         return this;
     }
 
-    public long getMaterialAmount(@Nullable Material material) {
-        if (material == null || !isAmountModified(material)) {
+    public long getMaterialAmount(@NotNull Material material) {
+        if (material.isNull() || !isAmountModified(material)) {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));
@@ -1148,7 +1157,8 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemParentTags() {
-        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, null)).toArray(TagKey[]::new);
+        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, GTMaterials.NULL))
+                .toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
@@ -1238,7 +1248,7 @@ public class TagPrefix {
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
-            ChemicalHelper.registerUnificationItems(this, material, items);
+            ItemMaterialData.registerMaterialInfoItems(this, material, items);
         }
     }
 

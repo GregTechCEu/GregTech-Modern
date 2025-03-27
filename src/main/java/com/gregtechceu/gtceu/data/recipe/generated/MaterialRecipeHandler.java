@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -119,7 +119,7 @@ public final class MaterialRecipeHandler {
 
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (smeltingResult != null) {
+                if (!smeltingResult.isNull()) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dust, material), ChemicalHelper.get(ingot, smeltingResult));
                 }
@@ -132,7 +132,7 @@ public final class MaterialRecipeHandler {
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, material);
                 if (ingotStack.isEmpty() && oreProperty != null) {
                     Material smeltingResult = oreProperty.getDirectSmeltResult();
-                    if (smeltingResult != null) {
+                    if (!smeltingResult.isNull()) {
                         ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     }
                 }
@@ -151,7 +151,7 @@ public final class MaterialRecipeHandler {
 
                     processEBFRecipe(material, blastProperty, ingotStack, provider);
 
-                    if (ingotProperty.getMagneticMaterial() != null) {
+                    if (!ingotProperty.getMagneticMaterial().isNull()) {
                         processEBFRecipe(ingotProperty.getMagneticMaterial(), blastProperty, ingotStack, provider);
                     }
                 }
@@ -167,7 +167,7 @@ public final class MaterialRecipeHandler {
             // Some Ores with Direct Smelting Results have neither ingot nor gem properties
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (smeltingResult != null) {
+                if (!smeltingResult.isNull()) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
@@ -196,7 +196,7 @@ public final class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            FluidIngredient gas = CraftingComponent.EBF_GASES.get(gasTier).copy();
+            FluidIngredient gas = gasTier.getFluid();
 
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
@@ -257,9 +257,9 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
-                smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new UnificationEntry(dust, material));
+                smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material.getName()),
-                dustStack, "XX", "XX", 'X', new UnificationEntry(dustSmall, material));
+                dustStack, "XX", "XX", 'X', new MaterialEntry(dustSmall, material));
 
         PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_small_dust")
                 .inputItems(dustSmall, material, 4)
@@ -285,9 +285,9 @@ public final class MaterialRecipeHandler {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
-                tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new UnificationEntry(dust, material));
+                tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material.getName()),
-                dustStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(dustTiny, material));
+                dustStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(dustTiny, material));
 
         PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_tiny_dust")
                 .inputItems(dustTiny, material, 9)
@@ -309,7 +309,7 @@ public final class MaterialRecipeHandler {
 
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("mortar_grind_%s", material.getName()),
-                    ChemicalHelper.get(dust, material), "X", "m", 'X', new UnificationEntry(ingot, material));
+                    ChemicalHelper.get(dust, material), "X", "m", 'X', new MaterialEntry(ingot, material));
         }
 
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
@@ -319,7 +319,7 @@ public final class MaterialRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_%s", material.getName()),
                     ChemicalHelper.get(rod, magMaterial),
                     "f ", " X",
-                    'X', new UnificationEntry(ingot, material));
+                    'X', new MaterialEntry(ingot, material));
             if (!material.hasFlag(NO_WORKING)) {
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_to_rod")
                         .inputItems(ingot, material)
@@ -396,7 +396,7 @@ public final class MaterialRecipeHandler {
                             .save(provider);
 
                     VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_%s", material.getName()),
-                            plateStack, "h", "I", "I", 'I', new UnificationEntry(ingot, material));
+                            plateStack, "h", "I", "I", 'I', new MaterialEntry(ingot, material));
                 }
             }
 
@@ -437,7 +437,7 @@ public final class MaterialRecipeHandler {
                     String.format("gem_to_dust_%s_%s", material.getName(),
                             FormattingUtil.toLowerCaseUnder(prefix.name)),
                     crushedStack,
-                    "X", "m", 'X', new UnificationEntry(prefix, material));
+                    "X", "m", 'X', new MaterialEntry(prefix, material));
         }
 
         if (lowerPrefix == null) {
@@ -453,7 +453,7 @@ public final class MaterialRecipeHandler {
                 String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnder(lowerPrefix.name),
                         material.getName()),
                 prevStack,
-                'h', new UnificationEntry(prefix, material));
+                'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
                 .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(prefix.name) +
@@ -490,12 +490,12 @@ public final class MaterialRecipeHandler {
                 if (!ingot.isIgnored(material)) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
                             String.format("nugget_disassembling_%s", material.getName()),
-                            nuggetStack.copyWithCount(9), new UnificationEntry(ingot, material));
+                            nuggetStack.copyWithCount(9), new MaterialEntry(ingot, material));
                 }
                 if (!nugget.isIgnored(material)) {
                     VanillaRecipeHelper.addShapedRecipe(provider,
                             String.format("nugget_assembling_%s", material.getName()),
-                            ingotStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(nugget, material));
+                            ingotStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(nugget, material));
                 }
             }
 
@@ -531,12 +531,12 @@ public final class MaterialRecipeHandler {
                 if (!gem.isIgnored(material)) {
                     VanillaRecipeHelper.addShapelessRecipe(provider,
                             String.format("nugget_disassembling_%s", material.getName()),
-                            nuggetStack.copyWithCount(9), new UnificationEntry(gem, material));
+                            nuggetStack.copyWithCount(9), new MaterialEntry(gem, material));
                 }
                 if (!nugget.isIgnored(material)) {
                     VanillaRecipeHelper.addShapedRecipe(provider,
                             String.format("nugget_assembling_%s", material.getName()),
-                            gemStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(nugget, material));
+                            gemStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(nugget, material));
                 }
             }
         }
@@ -552,7 +552,7 @@ public final class MaterialRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("frame_%s", material.getName()),
                     ChemicalHelper.get(frameGt, material, 2),
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",
-                    'S', new UnificationEntry(rod, material));
+                    'S', new MaterialEntry(rod, material));
 
             ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_frame")
                     .inputItems(rod, material, 4)
@@ -595,13 +595,13 @@ public final class MaterialRecipeHandler {
             }
         }
 
-        UnificationEntry blockEntry;
+        MaterialEntry blockEntry;
         if (material.hasProperty(PropertyKey.GEM)) {
-            blockEntry = new UnificationEntry(gem, material);
+            blockEntry = new MaterialEntry(gem, material);
         } else if (material.hasProperty(PropertyKey.INGOT)) {
-            blockEntry = new UnificationEntry(ingot, material);
+            blockEntry = new MaterialEntry(ingot, material);
         } else {
-            blockEntry = new UnificationEntry(dust, material);
+            blockEntry = new MaterialEntry(dust, material);
         }
 
         // do not allow handcrafting or uncrafting, extruding or alloy smelting of blacklisted blocks
@@ -623,7 +623,7 @@ public final class MaterialRecipeHandler {
                 VanillaRecipeHelper.addShapelessRecipe(provider,
                         String.format("block_decompress_%s", material.getName()),
                         ChemicalHelper.get(blockEntry.tagPrefix, blockEntry.material).copyWithCount(size),
-                        new UnificationEntry(block, material));
+                        new MaterialEntry(block, material));
             }
 
             if (material.hasProperty(PropertyKey.INGOT)) {
