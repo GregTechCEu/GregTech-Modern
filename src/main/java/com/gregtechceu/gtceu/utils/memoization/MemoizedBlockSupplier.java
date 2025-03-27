@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils.memoization;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
