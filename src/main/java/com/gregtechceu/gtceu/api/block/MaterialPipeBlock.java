@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;

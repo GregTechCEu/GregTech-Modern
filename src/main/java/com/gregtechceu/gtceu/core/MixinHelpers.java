@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExte
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;

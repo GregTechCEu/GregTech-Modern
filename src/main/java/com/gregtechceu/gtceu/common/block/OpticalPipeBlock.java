@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;

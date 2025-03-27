@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 

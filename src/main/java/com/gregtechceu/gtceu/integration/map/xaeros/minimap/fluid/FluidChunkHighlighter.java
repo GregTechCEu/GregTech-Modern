@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.map.xaeros.minimap.fluid;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 

@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;

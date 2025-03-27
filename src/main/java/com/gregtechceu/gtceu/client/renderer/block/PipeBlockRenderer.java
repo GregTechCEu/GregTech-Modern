@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
