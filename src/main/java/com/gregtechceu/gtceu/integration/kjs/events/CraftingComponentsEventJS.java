@@ -48,11 +48,11 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         }
     }
 
-    public void modifyUnificationEntry(CraftingComponent craftingComponent, int tier, UnificationEntry item) {
+    public void modifyMaterialEntry(CraftingComponent craftingComponent, int tier, MaterialEntry item) {
         craftingComponent.add(tier, item);
     }
 
-    public void modifyUnificationEntry(CraftingComponent craftingComponent, Map<Number, UnificationEntry> map) {
+    public void modifyMaterialEntry(CraftingComponent craftingComponent, Map<Number, MaterialEntry> map) {
         for (var val : map.entrySet()) {
             craftingComponent.add(val.getKey().intValue(), val.getValue());
         }
@@ -66,8 +66,8 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         craftingComponent.setFallback(TagKey.create(Registries.ITEM, tag));
     }
 
-    public void setFallbackUnificationEntry(CraftingComponent craftingComponent, UnificationEntry unificationEntry) {
-        craftingComponent.setFallback(unificationEntry);
+    public void setFallbackMaterialEntry(CraftingComponent craftingComponent, MaterialEntry materialEntry) {
+        craftingComponent.setFallback(materialEntry);
     }
 
     public void removeTier(CraftingComponent craftingComponent, int tier) {
@@ -108,7 +108,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return m;
     }
 
-    public CraftingComponent createUnificationEntry(String id, Object fallback, Map<Number, UnificationEntry> map) {
+    public CraftingComponent createMaterialEntry(String id, Object fallback, Map<Number, MaterialEntry> map) {
         var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
             m.add(val.getKey().intValue(), val.getValue());

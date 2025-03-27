@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,7 +43,7 @@ public class CraftingComponent {
     }
 
     public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix, @NotNull Material material) {
-        return of(id, new UnificationEntry(prefix, material));
+        return of(id, new MaterialEntry(prefix, material));
     }
 
     public @NotNull Object get(int tier) {
@@ -60,7 +60,7 @@ public class CraftingComponent {
     }
 
     public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
-        return add(tier, new UnificationEntry(prefix, material));
+        return add(tier, new MaterialEntry(prefix, material));
     }
 
     public void remove(int tier) {
@@ -74,8 +74,8 @@ public class CraftingComponent {
             if (!tag.isFor(BuiltInRegistries.ITEM.key())) {
                 throw new IllegalArgumentException("TagKey must be of type TagKey<Item>");
             }
-        } else if (!(o instanceof ItemStack || o instanceof UnificationEntry)) {
-            throw new IllegalArgumentException("Object is not of type ItemStack, UnificationEntry or TagKey<Item>");
+        } else if (!(o instanceof ItemStack || o instanceof MaterialEntry)) {
+            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
         }
     }
 

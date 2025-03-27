@@ -32,8 +32,6 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.HULL;
-import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.PUMP;
 
 public class MetaTileEntityLoader {
 
@@ -1189,7 +1187,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cleanroom", GTMultiMachines.CLEANROOM.asStack(), "FFF",
                 "RHR",
                 "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R',
-                new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.getIngredient(HV), 'M',
+                new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.get(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
         if (ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
