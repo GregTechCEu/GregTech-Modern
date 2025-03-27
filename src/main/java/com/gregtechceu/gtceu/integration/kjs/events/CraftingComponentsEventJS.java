@@ -80,6 +80,10 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         }
     }
 
+    public CraftingComponent create(String id, Object fallback) {
+        return CraftingComponent.of(id, fallback);
+    }
+
     public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
         var m = CraftingComponent.of(id, fallback);
         for (var val : map.entrySet()) {
