@@ -52,7 +52,7 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
 
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material != null) {
+        if (!material.isNull()) {
             color = material.getMaterialARGB();
         }
         color = (color & 0xFF) << 24 | (color >> 8 & 0xFF) << 16 | (color >> 16 & 0xFF) << 8;

@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -77,8 +78,8 @@ public class TagType {
         return type;
     }
 
-    public TagKey<Item> getTag(TagPrefix prefix, Material material) {
-        if (filter != null && material != null && !filter.test(material)) return null;
+    public TagKey<Item> getTag(TagPrefix prefix, @NotNull Material material) {
+        if (filter != null && !material.isNull() && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
 }

@@ -47,12 +47,12 @@ public class TooltipsHandler {
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
-        if (unificationEntry != null && unificationEntry.material != null) {
-            if (unificationEntry.material.getChemicalFormula() != null &&
-                    !unificationEntry.material.getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
-                        .withStyle(ChatFormatting.YELLOW));
+        var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
+        if (!materialEntry.isEmpty()) {
+            var formula = materialEntry.material().getChemicalFormula();
+            if (formula != null && !formula.isEmpty()) {
+                tooltips.add(1, Component.literal(formula).withStyle(ChatFormatting.YELLOW));
+            }
         }
         if (stack.getItem() instanceof BucketItem bucket) {
             var fluid = bucket.getFluid();
@@ -78,7 +78,7 @@ public class TooltipsHandler {
         }
 
         Material material = HazardProperty.getValidHazardMaterial(stack);
-        if (material == null) {
+        if (material.isNull()) {
             return;
         }
         GTUtil.appendHazardTooltips(material, tooltips);
@@ -98,9 +98,11 @@ public class TooltipsHandler {
         }
 
         var material = ChemicalHelper.getMaterial(fluid);
-        if (material != null) {
-            if (material.getChemicalFormula() != null && !material.getChemicalFormula().isEmpty())
-                tooltips.accept(Component.literal(material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+        if (!material.isNull()) {
+            var formula = material.getChemicalFormula();
+            if (formula != null && !formula.isEmpty()) {
+                tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));
+            }
 
             if (material.hasProperty(PropertyKey.INGOT)) {
                 if (GTUtil.isShiftDown() && amount >= GTValues.L) {

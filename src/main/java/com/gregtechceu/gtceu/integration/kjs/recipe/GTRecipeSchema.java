@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -87,6 +89,12 @@ public interface GTRecipeSchema {
         @Getter
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
+
+        public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
+        public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
+        public boolean itemMaterialInfo = false;
+        public boolean fluidMaterialInfo = false;
+        public boolean removeMaterialInfo = false;
 
         @HideFromJS
         @Override
@@ -218,20 +226,31 @@ public interface GTRecipeSchema {
             return inputItems(inputs);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input) {
+        public GTRecipeJS itemInput(MaterialEntry input) {
             return inputItems(input);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input, int count) {
+        public GTRecipeJS itemInput(MaterialEntry input, int count) {
             return inputItems(input, count);
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
+            for (var stack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks.add(new MaterialStack(matStack.material(), matStack.amount() * stack.count));
+                }
+            }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(itemStack);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks
+                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
+                }
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("Input items is empty, id: %s", id);
                 }
@@ -268,15 +287,16 @@ public interface GTRecipeSchema {
             return inputItems(orePrefix, material, 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input) {
-            return inputItems(input.tagPrefix, input.material, 1);
+        public GTRecipeJS inputItems(MaterialEntry input) {
+            return inputItems(input.tagPrefix(), input.material(), 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input, int count) {
-            return inputItems(input.tagPrefix, input.material, count);
+        public GTRecipeJS inputItems(MaterialEntry input, int count) {
+            return inputItems(input.tagPrefix(), input.material(), count);
         }
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
+            itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 
@@ -292,12 +312,12 @@ public interface GTRecipeSchema {
             return outputItems(outputs);
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material());
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry, int count) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry, int count) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material(), count);
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
@@ -635,6 +655,15 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            for (var fluidIng : inputs) {
+                for (var stack : fluidIng.getIngredient().getStacks()) {
+                    var mat = ChemicalHelper.getMaterial(stack.getFluid());
+                    if (!mat.isNull()) {
+                        fluidMaterialStacks.add(new MaterialStack(mat,
+                                ((long) stack.getAmount() * GTValues.M) / GTValues.L));
+                    }
+                }
+            }
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
@@ -877,6 +906,22 @@ public interface GTRecipeSchema {
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item) {
+            this.itemMaterialInfo = item;
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item, boolean fluid) {
+            this.itemMaterialInfo = item;
+            this.fluidMaterialInfo = fluid;
+            return this;
+        }
+
+        public GTRecipeJS removePreviousMaterialInfo() {
+            this.removeMaterialInfo = true;
             return this;
         }
 

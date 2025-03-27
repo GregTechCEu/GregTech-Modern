@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -83,6 +84,12 @@ public class TagPrefix {
     public static TagPrefix get(String name) {
         return PREFIXES.get(name);
     }
+
+    public boolean isEmpty() {
+        return this == NULL_PREFIX;
+    }
+
+    public static final TagPrefix NULL_PREFIX = new TagPrefix("null");
 
     public static final TagPrefix ore = oreTagPrefix("stone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
@@ -726,7 +733,7 @@ public class TagPrefix {
             .miningToolTag(GTToolType.WRENCH.harvestTags.get(0))
             .unificationEnabled(true)
             .generateBlock(true)
-            .blockProperties(() -> RenderType::translucent, p -> p.noOcclusion())
+            .blockProperties(() -> RenderType::translucent, BlockBehaviour.Properties::noOcclusion)
             .generationCondition(material -> material.hasProperty(PropertyKey.DUST) &&
                     material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
@@ -793,7 +800,8 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     // Wires and cables
-    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Wire").miningToolTag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
             .materialAmount(GTValues.M * 8).materialIconType(MaterialIconType.wire).unificationEnabled(true);
     public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal")
@@ -1018,8 +1026,8 @@ public class TagPrefix {
         return this.blockProperties(new BlockProperties(renderType, properties));
     }
 
-    public long getMaterialAmount(@Nullable Material material) {
-        if (material == null || !isAmountModified(material)) {
+    public long getMaterialAmount(@NotNull Material material) {
+        if (material.isNull() || !isAmountModified(material)) {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));
@@ -1035,7 +1043,8 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public TagKey<Item>[] getItemParentTags() {
-        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, null)).toArray(TagKey[]::new);
+        return tags.stream().filter(TagType::isParentTag).map(type -> type.getTag(this, GTMaterials.NULL))
+                .toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
@@ -1142,7 +1151,7 @@ public class TagPrefix {
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
-            ChemicalHelper.registerUnificationItems(this, material, items);
+            ItemMaterialData.registerMaterialInfoItems(this, material, items);
         }
     }
 

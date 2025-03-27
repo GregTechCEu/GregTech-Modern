@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -267,9 +267,8 @@ public class CommonProxy {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
-            // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
-            ChemicalHelper.reinitializeUnification();
+            ItemMaterialData.reinitializeMaterialData();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions

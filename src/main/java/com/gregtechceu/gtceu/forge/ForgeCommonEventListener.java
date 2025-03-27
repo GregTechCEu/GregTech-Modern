@@ -249,7 +249,7 @@ public class ForgeCommonEventListener {
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
             Material material = HazardProperty.getValidHazardMaterial(stack);
-            if (material == null || !material.hasProperty(PropertyKey.HAZARD)) {
+            if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
                 continue;
             }
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
@@ -535,7 +535,7 @@ public class ForgeCommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material == null) {
+                if (type == null || material.isNull()) {
                     mapping.warn();
                     return;
                 }
