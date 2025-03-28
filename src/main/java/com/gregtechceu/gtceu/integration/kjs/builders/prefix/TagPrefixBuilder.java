@@ -40,6 +40,11 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
     public abstract KJSTagPrefix create(String id);
 
+    public TagPrefixBuilder idPattern(String idPattern) {
+        base.idPattern(idPattern);
+        return this;
+    }
+
     public TagPrefixBuilder langValue(String langValue) {
         base.langValue(langValue);
         return this;

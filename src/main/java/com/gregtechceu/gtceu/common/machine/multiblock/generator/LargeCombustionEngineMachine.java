@@ -128,7 +128,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
      * Recipe is rejected if the machine's intakes are obstructed or if it doesn't have lubricant<br>
      * Recipe is parallelized up to {@code desiredEUt / recipeEUt} times.
      * EUt is further multiplied by the production boost of the engine.
-     * 
+     *
      * @param machine a {@link LargeCombustionEngineMachine}
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Combustion Engine
@@ -140,7 +140,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         long EUt = RecipeHelper.getOutputEUt(recipe);
         // has lubricant
         if (EUt > 0 && !engineMachine.isIntakesObstructed() &&
-                engineMachine.getLubricantRecipe().matchRecipe(engineMachine).isSuccess()) {
+                RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
             int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
             double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
@@ -162,7 +162,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         if (runningTimer % 72 == 0) {
             // insufficient lubricant
-            if (!getLubricantRecipe().handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches())) {
+            if (!RecipeHelper.handleRecipeIO(this, getLubricantRecipe(), IO.IN, this.recipeLogic.getChanceCaches())
+                    .isSuccess()) {
                 recipeLogic.interruptRecipe();
                 return false;
             }
@@ -170,8 +171,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // check boost fluid
         if (isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
-            this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() &&
-                    boosterRecipe.handleRecipeIO(IO.IN, this, this.recipeLogic.getChanceCaches());
+            this.isOxygenBoosted = RecipeHelper.matchRecipe(this, boosterRecipe).isSuccess() &&
+                    RecipeHelper.handleRecipeIO(this, boosterRecipe, IO.IN, this.recipeLogic.getChanceCaches())
+                            .isSuccess();
         }
 
         runningTimer++;

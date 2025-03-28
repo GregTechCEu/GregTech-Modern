@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
@@ -60,7 +63,7 @@ public class SupplierMemoizer {
     /**
      * A variant of the memoized supplier that stores a block explicitly.
      * Use this to save blocks to
-     * {@link com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper#registerUnificationItems(com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry, Supplier[])}
+     * {@link ItemMaterialData#registerMaterialInfoItems(MaterialEntry, Supplier[])}
      */
     public static class MemoizedBlockSupplier<T extends Block> extends MemoizedSupplier<T> {
 
