@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api;
 
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
@@ -12,6 +14,12 @@ import static net.minecraft.ChatFormatting.*;
  * Made for static imports, this Class is just a Helper.
  */
 public class GTValues {
+
+    /**
+     * Default fallback value used for Map keys.
+     * Currently only used in {@link CraftingComponent}.
+     */
+    public static final int FALLBACK = -1;
 
     /**
      * <p/>

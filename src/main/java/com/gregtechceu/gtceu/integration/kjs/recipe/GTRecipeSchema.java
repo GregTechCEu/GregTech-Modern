@@ -109,14 +109,14 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
+                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                if (map.get(capability) != null &&
+                        map.get(capability).length + obj.length > recipeType.getMaxInputs(capability)) {
+                    ConsoleJS.SERVER.warn(String.format(
+                            "Trying to add more inputs than RecipeType can support, id: %s, Max %s%sInputs: %s",
+                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
+                }
                 for (Object object : obj) {
-                    var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
-                    if (map.get(capability) != null &&
-                            map.get(capability).length >= recipeType.getMaxInputs(capability)) {
-                        ConsoleJS.SERVER.warn(String.format(
-                                "Trying to add more inputs than RecipeType can support, id: %s, Max %s%sInputs: %s",
-                                id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
-                    }
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
                 }
             }
@@ -134,14 +134,14 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
+                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                if (map.get(capability) != null &&
+                        map.get(capability).length + obj.length > recipeType.getMaxOutputs(capability)) {
+                    ConsoleJS.SERVER.warn(String.format(
+                            "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
+                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
+                }
                 for (Object object : obj) {
-                    var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
-                    if (map.get(capability) != null &&
-                            map.get(capability).length >= recipeType.getMaxOutputs(capability)) {
-                        ConsoleJS.SERVER.warn(String.format(
-                                "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
-                                id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
-                    }
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
                 }
             }
@@ -787,6 +787,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS environmentalHazard(MedicalCondition condition) {
             return environmentalHazard(condition, false);
+        }
+
+        public GTRecipeJS daytime(boolean isNight) {
+            return addCondition(new DaytimeCondition().setReverse(isNight));
+        }
+
+        public GTRecipeJS daytime() {
+            return daytime(false);
         }
 
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

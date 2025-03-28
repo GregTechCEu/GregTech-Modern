@@ -130,7 +130,8 @@ public class TagPrefix {
             .langValue("Deepslate %s Ore")
             .registerOre(
                     Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F),
+                            .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F)
+                            .sound(SoundType.DEEPSLATE),
                     new ResourceLocation("block/deepslate"), false, false, true);
 
     // TODO figure out a composition for tuff
@@ -138,7 +139,8 @@ public class TagPrefix {
             .langValue("Tuff %s Ore")
             .registerOre(
                     Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
+                            .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
+                            .sound(SoundType.TUFF),
                     new ResourceLocation("block/tuff"));
 
     public static final TagPrefix oreSand = oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)

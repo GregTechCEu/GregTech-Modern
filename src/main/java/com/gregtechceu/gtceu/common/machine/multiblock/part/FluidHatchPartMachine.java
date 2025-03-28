@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -23,6 +24,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -32,11 +34,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -65,6 +69,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Nullable
     protected ISubscription tankSubs;
     @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean circuitSlotEnabled;
+    @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
 
@@ -75,6 +84,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
+        this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io);
     }
 
@@ -126,6 +136,30 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             tankSubs.unsubscribe();
             tankSubs = null;
         }
+    }
+
+    @Override
+    public void addedToController(IMultiController controller) {
+        if (!controller.allowCircuitSlots()) {
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                clearInventory(circuitInventory.storage);
+            } else {
+                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+            }
+            setCircuitSlotEnabled(false);
+        }
+        super.addedToController(controller);
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        for (var c : controllers) {
+            if (!c.allowCircuitSlots()) {
+                return;
+            }
+        }
+        setCircuitSlotEnabled(true);
     }
 
     //////////////////////////////////////
@@ -180,7 +214,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         super.attachConfigurators(configuratorPanel);
-        if (this.io == IO.IN) {
+        if (isCircuitSlotEnabled() && this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }

@@ -17,6 +17,7 @@ jobs:
       MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
       SNAPSHOT: true
+      CI: true
     permissions:
       contents: write
     steps:
@@ -29,6 +30,7 @@ jobs:
       - name: Version Suffix
         id: suffix
         run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
+      - run: git fetch origin 1.20.1
       - name: Build
         run: ./gradlew build --build-cache
       - name: Publish to Maven

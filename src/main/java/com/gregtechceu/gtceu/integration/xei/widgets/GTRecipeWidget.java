@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -250,6 +252,9 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (isShiftClick) {
             oc = OverclockingLogic.PERFECT_OVERCLOCK;
+        }
+        if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+            oc = FusionReactorMachine.FUSION_OC;
         }
         setRecipeTextWidget(oc);
         setRecipeWidget();

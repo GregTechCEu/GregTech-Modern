@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -55,9 +57,11 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     default boolean checkPatternWithLock() {
         var lock = getPatternLock();
         lock.lock();
-        var result = checkPattern();
-        lock.unlock();
-        return result;
+        try {
+            return checkPattern();
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -68,9 +72,11 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     default boolean checkPatternWithTryLock() {
         var lock = getPatternLock();
         if (lock.tryLock()) {
-            var result = checkPattern();
-            lock.unlock();
-            return result;
+            try {
+                return checkPattern();
+            } finally {
+                lock.unlock();
+            }
         } else {
             return false;
         }
@@ -140,6 +146,15 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     List<IMultiPart> getParts();
 
     /**
+     * The instance of {@link IParallelHatch} attached to this Controller.
+     * <p>
+     * Note that this will return a singular instance, and will not account for multiple attached IParallelHatches
+     * 
+     * @return an {@link Optional} of the attached IParallelHatch, empty if one is not attached
+     */
+    Optional<IParallelHatch> getParallelHatch();
+
+    /**
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
@@ -181,5 +196,9 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
             return InteractionResult.SUCCESS;
         }
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    default boolean allowCircuitSlots() {
+        return true;
     }
 }

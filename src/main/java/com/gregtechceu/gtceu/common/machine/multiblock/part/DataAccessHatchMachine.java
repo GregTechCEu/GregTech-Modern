@@ -71,15 +71,13 @@ public class DataAccessHatchMachine extends TieredPartMachine
             @Override
             public void onContentsChanged() {
                 super.onContentsChanged();
-                rebuildData(!getControllers().isEmpty() && getControllers().get(0) instanceof DataBankMachine);
+                rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine);
             }
 
             @NotNull
             @Override
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                var controller = DataAccessHatchMachine.this.getControllers().isEmpty() ? null :
-                        DataAccessHatchMachine.this.getControllers().get(0);
-                boolean isDataBank = controller instanceof DataBankMachine;
+                boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
                 if (ResearchManager.isStackDataItem(stack, isDataBank) &&
                         ResearchManager.hasResearchTag(stack)) {
                     return super.insertItem(slot, stack, simulate);

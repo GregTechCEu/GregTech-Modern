@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -16,23 +14,10 @@ import net.minecraft.world.level.block.ComposterBlock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
-
-    public static final Map<BlastProperty.GasTier, FluidIngredient> EBF_GASES = new EnumMap<>(
-            BlastProperty.GasTier.class);
-
-    static {
-        EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000));
-        EBF_GASES.put(BlastProperty.GasTier.MID, FluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100));
-        EBF_GASES.put(BlastProperty.GasTier.HIGH, FluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHER, FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25));
-        EBF_GASES.put(BlastProperty.GasTier.HIGHEST, FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
-    }
 
     public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 

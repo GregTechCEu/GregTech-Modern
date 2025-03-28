@@ -390,7 +390,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .where('K', wallPredicate // very center floor, needed for height check
                         .or(getValidFloorBlocks()))
                 .where('W', wallPredicate.or(basePredicate)// walls
-                        .or(doorPredicate().setMaxGlobalLimited(4)))
+                        .or(doorPredicate().setMaxGlobalLimited(8)))
                 .where('A', wallPredicate.or(basePredicate)) // floor edges
                 .build();
     }

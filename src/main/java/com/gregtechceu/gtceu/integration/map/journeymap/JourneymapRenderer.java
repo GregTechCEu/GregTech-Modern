@@ -117,6 +117,13 @@ public class JourneymapRenderer extends GenericMapRenderer {
         JourneyMapPlugin.getOptions().toggleLayer(name, active);
     }
 
+    @Override
+    public void clear() {
+        var api = JourneyMapPlugin.getJmApi();
+        markers.forEach((id, marker) -> api.remove(marker));
+        markers.clear();
+    }
+
     private MarkerOverlay createMarker(String name, String id, ResourceKey<Level> dim, GeneratedVeinMetadata vein) {
         BlockPos center = vein.center();
 

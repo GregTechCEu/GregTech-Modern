@@ -8,16 +8,21 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,11 +40,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @DescSynced
     @RequireRerender
-    protected final Set<BlockPos> controllerPositions;
+    @UpdateListener(methodName = "onControllersUpdated")
+    protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
+    protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
 
     public MultiblockPartMachine(IMachineBlockEntity holder) {
         super(holder);
-        this.controllerPositions = new HashSet<>();
     }
 
     //////////////////////////////////////
@@ -61,35 +67,50 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         return !controllerPositions.isEmpty();
     }
 
-    @Override
-    public List<IMultiController> getControllers() {
-        List<IMultiController> result = new ArrayList<>();
-        for (var blockPos : controllerPositions) {
+    // Not sure if necessary, but added to match the Controller class
+    @SuppressWarnings("unused")
+    public void onControllersUpdated(Set<BlockPos> newPositions, Set<BlockPos> old) {
+        controllers.clear();
+        for (BlockPos blockPos : newPositions) {
             if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
-                result.add(controller);
+                controllers.add(controller);
             }
         }
-        return result;
+    }
+
+    @Override
+    @UnmodifiableView
+    public SortedSet<IMultiController> getControllers() {
+        // Necessary to rebuild the set of controllers on client-side
+        if (controllers.size() != controllerPositions.size()) {
+            onControllersUpdated(controllerPositions, Collections.emptySet());
+        }
+        return Collections.unmodifiableSortedSet(controllers);
     }
 
     @Override
     public List<IRecipeHandlerTrait> getRecipeHandlers() {
-        return traits.stream().filter(IRecipeHandlerTrait.class::isInstance).map(IRecipeHandlerTrait.class::cast)
+        return traits.stream()
+                .filter(IRecipeHandlerTrait.class::isInstance)
+                .map(IRecipeHandlerTrait.class::cast)
                 .toList();
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        var level = getLevel();
-        for (BlockPos pos : controllerPositions) {
-            if (level instanceof ServerLevel && level.isLoaded(pos) &&
-                    MetaMachine.getMachine(level, pos) instanceof IMultiController controller) {
-                removedFromController(controller);
-                controller.onPartUnload();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            // Need to copy if > 1 so that we can call removedFromController safely without CME
+            Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
+            for (IMultiController controller : toIter) {
+                if (serverLevel.isLoaded(controller.self().getPos())) {
+                    removedFromController(controller);
+                    controller.onPartUnload();
+                }
             }
         }
         controllerPositions.clear();
+        controllers.clear();
     }
 
     //////////////////////////////////////
@@ -99,10 +120,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @Override
     public void removedFromController(IMultiController controller) {
         controllerPositions.remove(controller.self().getPos());
+        controllers.remove(controller);
     }
 
     @Override
     public void addedToController(IMultiController controller) {
         controllerPositions.add(controller.self().getPos());
+        controllers.add(controller);
     }
 }

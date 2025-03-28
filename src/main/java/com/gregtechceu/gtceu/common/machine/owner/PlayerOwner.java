@@ -3,16 +3,14 @@ package com.gregtechceu.gtceu.common.machine.owner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
-import lombok.Getter;
 
 import java.util.List;
 import java.util.UUID;
 
 public final class PlayerOwner implements IMachineOwner {
 
-    @Getter
     private UUID playerUUID;
 
     public PlayerOwner() {}
@@ -39,6 +37,16 @@ public final class PlayerOwner implements IMachineOwner {
     @Override
     public boolean isPlayerFriendly(Player player) {
         return true;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return playerUUID;
+    }
+
+    @Override
+    public String getName() {
+        return UsernameCache.getLastKnownUsername(playerUUID);
     }
 
     @Override

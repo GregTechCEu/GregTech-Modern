@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
@@ -35,6 +37,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
+import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.*;
@@ -58,6 +61,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -75,10 +79,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.*;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -87,6 +88,7 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -140,7 +142,18 @@ public class ForgeCommonEventListener {
         } else if (itemStack.getItem() instanceof PotionItem) {
             LazyOptional<IFluidHandlerItem> handler = LazyOptional.of(() -> {
                 var fluidHandler = new FluidHandlerItemStack.SwapEmpty(itemStack, new ItemStack(Items.GLASS_BOTTLE),
-                        PotionFluidHelper.BOTTLE_AMOUNT);
+                        PotionFluidHelper.BOTTLE_AMOUNT) {
+
+                    @Override
+                    protected void setFluid(FluidStack fluid) {
+                        // do nada
+                    }
+
+                    @Override
+                    public @NotNull FluidStack getFluid() {
+                        return PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT);
+                    }
+                };
                 fluidHandler.fill(PotionFluidHelper.getFluidFromPotionItem(itemStack, PotionFluidHelper.BOTTLE_AMOUNT),
                         IFluidHandler.FluidAction.EXECUTE);
                 return fluidHandler;
@@ -247,6 +260,25 @@ public class ForgeCommonEventListener {
                 continue;
             }
             tracker.progressRelatedCondition(material);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
+        if (event.getEntity() instanceof Player player) {
+            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
+                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+                MobEffectInstance effect = event.getEffectInstance();
+                Integer cost = QuarkTechSuite.potionRemovalCost.get(effect.getEffect());
+                if (cost != null) {
+                    cost = cost * (effect.getAmplifier() + 1);
+                    if (helmet.canUse(cost)) {
+                        helmet.discharge(cost, helmet.getTier(), true, false, false);
+                        event.setResult(Event.Result.DENY);
+                    }
+                }
+            }
         }
     }
 
@@ -488,6 +520,31 @@ public class ForgeCommonEventListener {
             }
             if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
                 mapping.remap(GTMachines.STEAM_MINER.first().getItem());
+            }
+            if (mapping.getKey().equals(GTCEu.id("tungstensteel_fluid_cell"))) {
+                mapping.remap(GTItems.FLUID_CELL_LARGE_TUNGSTEN_STEEL.get().asItem());
+            }
+            if (mapping.getKey().equals(GTCEu.id("avanced_nanomuscle_chestplate"))) {
+                mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
+            }
+            String path = mapping.getKey().getPath();
+            if (path.matches("[lhi]v_.+_wirecutter")) {
+                String suffix = "_wirecutter";
+                String typeString = path.substring(0, 2) + suffix; // [lhi]v_wirecutter -- tooltype name
+                String matString = path.substring(3, path.length() - suffix.length()); // material name
+
+                GTToolType type = GTToolType.getTypes().get(typeString);
+                Material material = GTMaterials.get(matString);
+                if (type == null || material == null) {
+                    mapping.warn();
+                    return;
+                }
+                var tool = GTMaterialItems.TOOL_ITEMS.get(material, type);
+                if (tool == null) {
+                    mapping.warn();
+                    return;
+                }
+                mapping.remap(tool.asItem());
             }
         });
         event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {

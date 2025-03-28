@@ -402,21 +402,24 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addParallelsLine(int numParallels) {
+            return addParallelsLine(numParallels, false);
+        }
+
         /**
          * Adds a line indicating how many parallels this multi can potentially perform.
          * <br>
          * Added if structure is formed and the number of parallels is greater than one.
          */
-        public Builder addParallelsLine(int numParallels) {
+        public Builder addParallelsLine(int numParallels, boolean exact) {
             if (!isStructureFormed)
                 return this;
             if (numParallels > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(numParallels))
                         .withStyle(ChatFormatting.DARK_PURPLE);
-
-                textList.add(Component.translatable(
-                        "gtceu.multiblock.parallel",
-                        parallels)
+                String key = "gtceu.multiblock.parallel";
+                if (exact) key += ".exact";
+                textList.add(Component.translatable(key, parallels)
                         .withStyle(ChatFormatting.GRAY));
             }
             return this;

@@ -96,6 +96,7 @@ public class ClientCacheManager {
         for (IClientCache cache : caches.keySet()) {
             cache.clear();
         }
+        GroupingMapRenderer.getInstance().clear();
     }
 
     public static void saveCaches() {

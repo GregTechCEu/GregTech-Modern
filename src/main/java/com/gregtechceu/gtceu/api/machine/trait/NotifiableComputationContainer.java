@@ -63,7 +63,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.requestCWUt(cwut, simulate, seen);
                 } else if (machine instanceof IMultiPart part) {
-                    if (part.getControllers().isEmpty()) {
+                    if (!part.isFormed()) {
                         return 0;
                     }
                     for (IMultiController controller : part.getControllers()) {
@@ -104,7 +104,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.getMaxCWUt(seen);
                 } else if (machine instanceof IMultiPart part) {
-                    if (part.getControllers().isEmpty()) {
+                    if (!part.isFormed()) {
                         return 0;
                     }
                     for (IMultiController controller : part.getControllers()) {
@@ -147,7 +147,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.canBridge(seen);
                 } else if (machine instanceof IMultiPart part) {
-                    if (part.getControllers().isEmpty()) {
+                    if (!part.isFormed()) {
                         return false;
                     }
                     for (IMultiController controller : part.getControllers()) {

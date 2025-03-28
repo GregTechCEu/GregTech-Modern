@@ -28,6 +28,7 @@ public class JourneyMapPlugin implements IClientPlugin {
         active = true;
         jmApi = jmClientApi;
         jmClientApi.subscribe(GTCEu.MOD_ID, EnumSet.of(ClientEvent.Type.REGISTRY));
+        JourneymapEventListener.init();
     }
 
     @Override

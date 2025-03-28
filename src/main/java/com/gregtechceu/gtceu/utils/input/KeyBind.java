@@ -67,7 +67,11 @@ public enum KeyBind {
             }
         }
         if (!updating.isEmpty()) {
-            GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
+            try {
+                GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
+            } catch (NullPointerException exception) {
+                GTCEu.LOGGER.error("Keys pressed packet failed to send with an exception", exception);
+            }
         }
     }
 

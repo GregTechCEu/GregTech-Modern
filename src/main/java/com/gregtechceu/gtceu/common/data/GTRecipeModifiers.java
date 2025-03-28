@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -92,10 +91,7 @@ public class GTRecipeModifiers {
      */
     public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
-            int parallels = controller.getParts().stream()
-                    .filter(IParallelHatch.class::isInstance)
-                    .map(IParallelHatch.class::cast)
-                    .findAny()
+            int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
 
