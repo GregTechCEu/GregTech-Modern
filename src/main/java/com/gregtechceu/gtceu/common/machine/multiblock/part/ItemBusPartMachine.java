@@ -60,6 +60,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    private boolean hasCircuitSlot = true;
     @Getter
     @Setter
     @Persisted
@@ -101,6 +102,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
+            hasCircuitSlot = false;
+            setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
@@ -156,7 +159,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public void addedToController(IMultiController controller) {
-        if (!controller.allowCircuitSlots()) {
+        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 clearInventory(circuitInventory.storage);
             } else {
@@ -170,6 +173,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
+        if (!hasCircuitSlot) return;
         for (var c : controllers) {
             if (!c.allowCircuitSlots()) {
                 return;
@@ -232,7 +236,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
         } else if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
-            if (isCircuitSlotEnabled()) {
+            if (hasCircuitSlot && isCircuitSlotEnabled()) {
                 configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
         }

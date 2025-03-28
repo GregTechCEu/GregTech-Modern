@@ -32,6 +32,7 @@ import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -389,6 +390,7 @@ public class GTRecipeComponents {
 
     public static class FluidIngredientJS implements InputFluid, OutputFluid {
 
+        @Getter
         private final FluidIngredient ingredient;
 
         public FluidIngredientJS(FluidIngredient ingredient) {

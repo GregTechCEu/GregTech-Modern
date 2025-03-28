@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -33,25 +33,25 @@ public class MiscRecipeLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
-                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
+                "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
-                'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
+                'P', new MaterialEntry(plate, WroughtIron), 'W', new MaterialEntry(wireGtSingle, RedAlloy));
         // Machine Memory Card Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
-                "PWP", "SLS", "PPP", 'P', new UnificationEntry(plate, Steel), 'W',
-                new UnificationEntry(wireGtSingle, Copper), 'S', new UnificationEntry(screw, RedAlloy), 'L',
+                "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
+                new MaterialEntry(wireGtSingle, Copper), 'S', new MaterialEntry(screw, RedAlloy), 'L',
                 CustomTags.LV_CIRCUITS);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Copper),
-                new UnificationEntry(dust, Tin),
-                new UnificationEntry(dust, Tin),
-                new UnificationEntry(dust, Lead));
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Copper),
+                new MaterialEntry(dust, Tin),
+                new MaterialEntry(dust, Tin),
+                new MaterialEntry(dust, Lead));
 
         MIXER_RECIPES.recipeBuilder("fermented_spider_eye_brown").duration(100).EUt(VA[ULV])
                 .inputItems(dust, Sugar)
@@ -201,6 +201,7 @@ public class MiscRecipeLoader {
                 .inputItems(rotor, Steel)
                 .inputItems(cableGtSingle, Copper, 2)
                 .outputItems(POWER_THRUSTER)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
@@ -210,6 +211,7 @@ public class MiscRecipeLoader {
                 .inputItems(rotor, Chromium)
                 .inputItems(cableGtSingle, Gold, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
+                .addMaterialInfo(true)
                 .save(provider);
 
         // QuarkTech Suite
@@ -225,6 +227,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 32)
                 .inputFluids(Titanium.getFluid(L * 10))
                 .outputItems(QUANTUM_HELMET)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
@@ -239,6 +242,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 48)
                 .inputFluids(Titanium.getFluid(L * 16))
                 .outputItems(QUANTUM_CHESTPLATE)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
@@ -253,6 +257,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 40)
                 .inputFluids(Titanium.getFluid(L * 14))
                 .outputItems(QUANTUM_LEGGINGS)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
@@ -267,6 +272,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
                 .outputItems(QUANTUM_BOOTS)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
@@ -283,6 +289,7 @@ public class MiscRecipeLoader {
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
                 .inputItems(screw, HSSS, 8)
                 .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
+                .addMaterialInfo(true, true)
                 .save(provider);
 
         // TODO Central monitor
@@ -427,6 +434,7 @@ public class MiscRecipeLoader {
                 .inputItems(block, Neutronium, 64)
                 .inputItems(block, Neutronium, 64)
                 .outputItems(NAN_CERTIFICATE)
+                .addMaterialInfo(true)
                 .duration(Integer.MAX_VALUE).EUt(VA[ULV]).save(provider);
 
         // Fertilizer
@@ -610,7 +618,8 @@ public class MiscRecipeLoader {
                 .inputItems(rod, Iron)
                 .inputItems(ring, Iron, 2)
                 .outputItems(IRON_MINECART_WHEELS)
-                .duration(100).EUt(20).save(provider);
+                .duration(100).EUt(20)
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("steel_minecart_wheels")
                 .inputItems(rod, Steel)

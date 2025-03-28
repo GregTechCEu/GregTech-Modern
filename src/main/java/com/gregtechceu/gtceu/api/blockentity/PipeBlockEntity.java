@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -49,6 +50,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -101,10 +103,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @RequireRerender
     @DescSynced
     @Persisted
-    @Getter
     @Setter
-    @Nullable
-    private Material frameMaterial = null;
+    @NotNull
+    private Material frameMaterial = GTMaterials.NULL;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -166,6 +167,16 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             connections = connections & (connections - 1);
         }
         return count;
+    }
+
+    @Override
+    public @NotNull Material getFrameMaterial() {
+        // backwards compat
+        // noinspection ConstantValue
+        if (frameMaterial == null) {
+            frameMaterial = GTMaterials.NULL;
+        }
+        return frameMaterial;
     }
 
     @Override
@@ -416,10 +427,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
             } else {
-                if (frameMaterial != null) {
+                if (!frameMaterial.isNull()) {
                     Block.popResource(getLevel(), getPipePos(),
                             GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                    frameMaterial = null;
+                    frameMaterial = GTMaterials.NULL;
                     playerIn.swing(hand);
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
