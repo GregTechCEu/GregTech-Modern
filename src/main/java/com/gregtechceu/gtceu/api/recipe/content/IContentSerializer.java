@@ -45,14 +45,6 @@ public interface IContentSerializer<T> {
         buf.writeVarInt(content.chance);
         buf.writeVarInt(content.maxChance);
         buf.writeVarInt(content.tierChanceBoost);
-        buf.writeBoolean(content.slotName != null);
-        if (content.slotName != null) {
-            buf.writeUtf(content.slotName);
-        }
-        buf.writeBoolean(content.uiName != null);
-        if (content.uiName != null) {
-            buf.writeUtf(content.uiName);
-        }
     }
 
     default Content fromNetworkContent(FriendlyByteBuf buf) {
@@ -60,15 +52,7 @@ public interface IContentSerializer<T> {
         int chance = buf.readVarInt();
         int maxChance = buf.readVarInt();
         int tierChanceBoost = buf.readVarInt();
-        String slotName = null;
-        if (buf.readBoolean()) {
-            slotName = buf.readUtf();
-        }
-        String uiName = null;
-        if (buf.readBoolean()) {
-            uiName = buf.readUtf();
-        }
-        return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
+        return new Content(inner, chance, maxChance, tierChanceBoost);
     }
 
     Codec<T> codec();
@@ -90,10 +74,6 @@ public interface IContentSerializer<T> {
         json.addProperty("chance", content.chance);
         json.addProperty("maxChance", content.maxChance);
         json.addProperty("tierChanceBoost", content.tierChanceBoost);
-        if (content.slotName != null)
-            json.addProperty("slotName", content.slotName);
-        if (content.uiName != null)
-            json.addProperty("uiName", content.uiName);
         return json;
     }
 
@@ -104,9 +84,7 @@ public interface IContentSerializer<T> {
         int maxChance = jsonObject.has("maxChance") ? jsonObject.get("maxChance").getAsInt() :
                 ChanceLogic.getMaxChancedValue();
         int tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsInt() : 0;
-        String slotName = jsonObject.has("slotName") ? jsonObject.get("slotName").getAsString() : null;
-        String uiName = jsonObject.has("uiName") ? jsonObject.get("uiName").getAsString() : null;
-        return new Content(inner, chance, maxChance, tierChanceBoost, slotName, uiName);
+        return new Content(inner, chance, maxChance, tierChanceBoost);
     }
 
     default Tag toNbt(T content) {

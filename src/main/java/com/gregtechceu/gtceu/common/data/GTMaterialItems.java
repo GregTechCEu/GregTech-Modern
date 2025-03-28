@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
@@ -37,7 +37,7 @@ public class GTMaterialItems {
             .builder();
 
     // Reference Maps
-    public static final Map<UnificationEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
+    public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
     static {
         purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);

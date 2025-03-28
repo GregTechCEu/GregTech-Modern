@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -192,7 +193,7 @@ public class MaterialBlock extends AppearanceBlock {
                 continue;
             }
             BlockEntity te = level.getBlockEntity(blockPos);
-            if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() != null) {
+            if (te instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -201,7 +202,7 @@ public class MaterialBlock extends AppearanceBlock {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
-            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() == null) {
+            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -230,8 +231,8 @@ public class MaterialBlock extends AppearanceBlock {
         BlockEntity te = level.getBlockEntity(pos);
         if (te instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
-            if (mat != null) {
-                pipeTile.setFrameMaterial(null);
+            if (!mat.isNull()) {
+                pipeTile.setFrameMaterial(GTMaterials.NULL);
                 Block.popResource(level, pos, this.asItem().getDefaultInstance());
                 ToolHelper.damageItem(stack, player);
                 ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);

@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -56,11 +56,6 @@ import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote GTBlock
- */
 @SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -130,7 +125,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             var machine = getMachine(pLevel, pPos);
             if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {
-                    setMachineOwner(machine, sPlayer);
+                    machine.setOwnerUUID(sPlayer.getUUID());
                     machine.markDirty();
                 }
             }
@@ -289,8 +284,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean shouldOpenUi = true;
 
-        if (machine != null && machine.holder.getOwner() == null && player instanceof ServerPlayer) {
-            setMachineOwner(machine, (ServerPlayer) player);
+        if (machine != null && machine.getOwnerUUID() == null && player instanceof ServerPlayer sPlayer) {
+            machine.setOwnerUUID(sPlayer.getUUID());
             machine.markDirty();
         }
 
@@ -321,7 +316,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (result != InteractionResult.PASS) return result;
         }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-                IMachineOwner.canOpenOwnerMachine(player, machine.getHolder())) {
+                MachineOwner.canOpenOwnerMachine(player, machine)) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;

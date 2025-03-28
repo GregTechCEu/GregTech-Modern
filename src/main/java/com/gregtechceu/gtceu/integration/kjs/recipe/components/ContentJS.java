@@ -35,12 +35,6 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
         object.addProperty("chance", value.chance);
         object.addProperty("maxChance", value.maxChance);
         object.addProperty("tierChanceBoost", value.tierChanceBoost);
-        if (value.slotName != null) {
-            object.addProperty("slotName", value.slotName);
-        }
-        if (value.uiName != null) {
-            object.addProperty("uiName", value.uiName);
-        }
         return object;
     }
 
@@ -52,9 +46,7 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
             int chance = GsonHelper.getAsInt(json, "chance", ChanceLogic.getMaxChancedValue());
             int maxChance = GsonHelper.getAsInt(json, "maxChance", ChanceLogic.getMaxChancedValue());
             int tierChanceBoost = GsonHelper.getAsInt(json, "tierChanceBoost", 0);
-            String slotName = GsonHelper.getAsString(json, "slotName", null);
-            String uiName = GsonHelper.getAsString(json, "uiName", null);
-            return new Content(content, chance, maxChance, tierChanceBoost, slotName, uiName);
+            return new Content(content, chance, maxChance, tierChanceBoost);
         }
         return null;
     }
@@ -73,14 +65,14 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
         return isInput(recipe, original, match) ? new Content(
                 baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with),
-                original.chance, original.maxChance, original.tierChanceBoost, original.slotName, original.uiName) :
+                original.chance, original.maxChance, original.tierChanceBoost) :
                 original;
     }
 
     @Override
     public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
         return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with),
-                original.chance, original.maxChance, original.tierChanceBoost, original.slotName, original.uiName) :
+                original.chance, original.maxChance, original.tierChanceBoost) :
                 original;
     }
 }
