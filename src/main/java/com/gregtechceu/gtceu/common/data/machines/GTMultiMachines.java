@@ -42,7 +42,6 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -54,7 +53,6 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Aluminium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
@@ -500,41 +498,6 @@ public class GTMultiMachines {
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
-            .register();
-
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "1.7.0")
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.8.0")
-    public static final MultiblockMachineDefinition EVAPORATION_PLANT = REGISTRATE
-            .multiblock("evaporation_plant", WorkableElectricMultiblockMachine::new)
-            .langValue("Evaporation Tower")
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(DUMMY_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
-            .appearanceBlock(CASING_STAINLESS_EVAPORATION)
-            .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
-                    .aisle("FYF", "YYY", "FYF")
-                    .aisle("YSY", "Y#Y", "YYY")
-                    .aisle("XXX", "X#X", "XXX").setRepeatable(2, 5)
-                    .aisle(" Z ", "ZZZ", " Z ")
-                    .where('S', Predicates.controller(blocks(definition.getBlock())))
-                    .where('Y', blocks(CASING_STAINLESS_EVAPORATION.get())
-                            .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                    .setMaxGlobalLimited(2))
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
-                            .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
-                    .where('X', blocks(CASING_STAINLESS_EVAPORATION.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMinLayerLimited(1)
-                                    .setMaxLayerLimited(1)))
-                    .where('Z', blocks(CASING_STAINLESS_EVAPORATION.get()))
-                    .where('F', Predicates.frames(Aluminium))
-                    .where('#', Predicates.air())
-                    .where(' ', Predicates.any())
-                    .build())
-            .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_stainless_evaporation"),
-                    GTCEu.id("block/multiblock/evaporation_plant"))
             .register();
 
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE

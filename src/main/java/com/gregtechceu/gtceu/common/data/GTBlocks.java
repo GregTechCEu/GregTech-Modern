@@ -73,7 +73,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -247,12 +246,6 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<Block> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    @Deprecated(forRemoval = true, since = "1.7.0")
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.8.0")
-    public static final BlockEntry<Block> CASING_STAINLESS_EVAPORATION = createCasingBlock(
-            "stainless_evaporation_casing",
-            GTCEu.id("block/casings/solid/machine_casing_stainless_evaporation"));
-
     public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {

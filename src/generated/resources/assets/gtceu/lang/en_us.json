@@ -5453,6 +5453,7 @@
   "tagprefix.marble": "Marble %s Ore",
   "tagprefix.netherrack": "Nether %s Ore",
   "tagprefix.nugget": "%s Nugget",
+  "tagprefix.null": "%s Null",
   "tagprefix.pipe_huge_fluid": "Huge %s Fluid Pipe",
   "tagprefix.pipe_huge_item": "Huge %s Item Pipe",
   "tagprefix.pipe_huge_restrictive": "Huge Restrictive %s Item Pipe",
