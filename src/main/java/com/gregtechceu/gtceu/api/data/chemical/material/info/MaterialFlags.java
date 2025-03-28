@@ -43,6 +43,7 @@ public class MaterialFlags {
     /**
      * Add to material to disable it's unification fully
      */
+    // TODO(Onion) rename to DISABLE_MATERIAL_RECIPES
     public static final MaterialFlag NO_UNIFICATION = new MaterialFlag.Builder("no_unification").build();
 
     /**

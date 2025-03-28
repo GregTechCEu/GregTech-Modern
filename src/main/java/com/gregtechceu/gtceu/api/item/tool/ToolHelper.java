@@ -432,7 +432,7 @@ public class ToolHelper {
                         be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
-                    if (prefix == null) {
+                    if (prefix.isEmpty()) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
                                 drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
