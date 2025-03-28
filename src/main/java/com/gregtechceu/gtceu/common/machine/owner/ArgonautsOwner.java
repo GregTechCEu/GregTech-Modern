@@ -1,99 +1,82 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
-import net.minecraft.nbt.CompoundTag;
+import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import earth.terrarium.argonauts.api.client.guild.GuildClientApi;
 import earth.terrarium.argonauts.api.guild.Guild;
-import earth.terrarium.argonauts.common.handlers.guild.GuildHandler;
-import lombok.Getter;
+import earth.terrarium.argonauts.api.guild.GuildApi;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public final class ArgonautsOwner implements IMachineOwner {
+@SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
+public non-sealed class ArgonautsOwner extends MachineOwner {
 
-    @Getter
-    private Guild guild;
-    @Getter
-    private UUID playerUUID;
-    private MinecraftServer server;
+    private static final Component displayName = Component.translatable("gtceu.ownership.name.argonauts");
 
-    public ArgonautsOwner() {}
+    public ArgonautsOwner(UUID playerUUID) {
+        super(playerUUID);
+    }
 
-    public ArgonautsOwner(Guild guild, UUID player) {
-        this.guild = guild;
-        this.playerUUID = player;
-        this.server = ServerLifecycleHooks.getCurrentServer();
+    public @Nullable Guild getPlayerGuild(UUID playerUUID) {
+        if (GTCEu.isClientThread()) {
+            return GuildClientApi.API.getPlayerGuild(playerUUID);
+        } else {
+            return GuildApi.API.getPlayerGuild(ServerLifecycleHooks.getCurrentServer(), playerUUID);
+        }
+    }
+
+    public @Nullable Guild getGuild() {
+        return getPlayerGuild(playerUUID);
     }
 
     @Override
-    public void save(CompoundTag tag) {
-        tag.putUUID("guildUUID", guild.id());
-        tag.putUUID("playerUUID", playerUUID);
+    public boolean isPlayerInTeam(UUID playerUUID) {
+        if (this.playerUUID.equals(playerUUID)) return true;
+        var otherGuild = getPlayerGuild(playerUUID);
+        return otherGuild != null && otherGuild.equals(getGuild());
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        this.playerUUID = tag.getUUID("playerUUID");
-        this.server = ServerLifecycleHooks.getCurrentServer();
-        var handler = GuildHandler.read(server);
-        this.guild = GuildHandler.API.get(server, tag.getUUID("guildUUID"));
-    }
-
-    @Override
-    public boolean isPlayerInTeam(Player player) {
-        if (player.getUUID().equals(this.playerUUID)) return true;
-        var otherGuild = GuildHandler.read(server).get(server, player.getUUID());
-        if (otherGuild != null && otherGuild.equals(this.guild)) return true;
-
-        return false;
-    }
-
-    @Override
-    public boolean isPlayerFriendly(Player player) {
-        if (guild.isPublic()) return true;
-
-        if (guild.members().isMember(player.getUUID())) return true;
-        if (guild.members().isInvited(player.getUUID())) return true;
-        if (guild.members().isAllied(player.getUUID())) return true;
-        return false;
+    public boolean isPlayerFriendly(UUID playerUUID) {
+        var guild = getGuild();
+        if (guild == null) {
+            return this.playerUUID.equals(playerUUID);
+        }
+        return guild.isPublic() || guild.members().isMember(playerUUID) || guild.members().isAllied(playerUUID);
     }
 
     @Override
     public UUID getUUID() {
-        return guild.id();
+        var guild = getGuild();
+        return guild != null ? guild.id() : EMPTY;
     }
 
     @Override
     public String getName() {
-        return guild.displayName().getString();
+        var guild = getGuild();
+        return guild != null ? guild.displayName().getString() :
+                Component.translatable("gtceu.tooltip.status.trinary.unknown").getString();
+    }
+
+    @Override
+    public Component getTypeDisplayName() {
+        return displayName;
     }
 
     @Override
     public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
-        compList.add(Component.translatable("behavior.portable_scanner.guild_name", guild.displayName().getString()));
-        var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
-        final String[] playerName = new String[1];
-        boolean isOnline;
-        if (serverPlayer != null) {
-            playerName[0] = serverPlayer.getDisplayName().getString();
-            isOnline = true;
-        } else {
-            var cache = ServerLifecycleHooks.getCurrentServer().getProfileCache();
-            if (cache != null) {
-                cache.get(playerUUID).ifPresent(value -> playerName[0] = value.getName());
-            }
-            isOnline = false;
-        }
-        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName[0], isOnline));
+        super.displayInfo(compList);
+        compList.add(Component.translatable("behavior.portable_scanner.guild_name", getName()));
+        MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
     @Override
-    public MachineOwnerType type() {
-        return MachineOwnerType.ARGONAUTS;
+    public boolean equals(Object object) {
+        return object instanceof ArgonautsOwner && super.equals(object);
     }
 }

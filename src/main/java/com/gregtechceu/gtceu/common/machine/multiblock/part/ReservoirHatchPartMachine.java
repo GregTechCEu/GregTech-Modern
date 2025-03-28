@@ -101,12 +101,5 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
 
         @Override
         public void deserializeNBT(CompoundTag nbt) {}
-
-        @Override
-        public CustomFluidTank copy() {
-            var storage = new InfiniteWaterTank(capacity);
-            storage.setFluid(fluid.copy());
-            return storage;
-        }
     }
 }

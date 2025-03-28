@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
@@ -27,7 +26,6 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
@@ -57,19 +55,6 @@ public class GTCommands {
                                 .executes(context -> {
                                     GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE,
                                             context.getSource().getPlayerOrException());
-                                    return 1;
-                                }))
-                        .then(literal("check_recipes_valid")
-                                .executes(context -> {
-                                    for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager()
-                                            .getRecipes()) {
-                                        if (recipe instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
-                                            context.getSource().sendSuccess(
-                                                    () -> Component
-                                                            .literal("recipe %s is invalid".formatted(gtRecipe.id)),
-                                                    false);
-                                        }
-                                    }
                                     return 1;
                                 }))
                         .then(literal("dump_data")

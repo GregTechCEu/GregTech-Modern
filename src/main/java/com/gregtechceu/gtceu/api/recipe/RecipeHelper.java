@@ -1,20 +1,25 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,14 +47,6 @@ public class RecipeHelper {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) return EUt;
         return -getOutputEUt(recipe);
-    }
-
-    public static void setInputEUt(GTRecipe recipe, long eut) {
-        recipe.getTickInputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
-    }
-
-    public static void setOutputEUt(GTRecipe recipe, long eut) {
-        recipe.getTickOutputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
@@ -176,5 +173,209 @@ public class RecipeHelper {
                 .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
                 .map(ingredient -> ingredient.getStacks()[0])
                 .collect(Collectors.toList());
+    }
+
+    public static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+        return matchRecipe(holder, recipe, false);
+    }
+
+    public static ActionResult matchTickRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+        return recipe.hasTick() ? matchRecipe(holder, recipe, true) : ActionResult.SUCCESS;
+    }
+
+    private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
+        if (!holder.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
+
+        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs,
+                Collections.emptyMap(), tick, true);
+        if (!result.isSuccess()) return result;
+
+        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs,
+                Collections.emptyMap(), tick, true);
+        return result;
+    }
+
+    public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
+                                              Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
+                false);
+    }
+
+    public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
+                                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
+                true, false);
+    }
+
+    /**
+     * Checks if all the contents of the recipe are located in the holder.
+     *
+     * @param simulated checks that the recipe ingredients are in the holder if true,
+     *                  process the recipe contents if false
+     */
+    public static ActionResult handleRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
+                                            Map<RecipeCapability<?>, List<Content>> contents,
+                                            Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                            boolean isTick, boolean simulated) {
+        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
+        var result = runner.handle(contents);
+
+        if (result.isSuccess() || result.capability() == null) return result.result();
+
+        if (!simulated) {
+            GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
+                    Component.translatable(io.tooltip).getString(), recipe, holder);
+        }
+        String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
+        return ActionResult.fail(Component.translatable(key)
+                .append(": ").append(result.capability().getName()));
+    }
+
+    public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+        var match = matchRecipe(holder, recipe);
+        if (!match.isSuccess()) return match;
+
+        return matchTickRecipe(holder, recipe);
+    }
+
+    public static void preWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+        handlePre(holder, recipe, IO.IN);
+        handlePre(holder, recipe, IO.OUT);
+    }
+
+    public static void postWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+        handlePost(holder, recipe, IO.IN);
+        handlePost(holder, recipe, IO.OUT);
+    }
+
+    public static void handlePre(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
+        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
+        for (var cap : map.keySet()) {
+            var handlers = holder.getCapabilitiesFlat(io, cap);
+            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
+            for (var handler : handlers) {
+                handler.preWorking(holder, io, recipe);
+            }
+        }
+    }
+
+    public static void handlePost(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
+        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
+        for (var cap : map.keySet()) {
+            var handlers = holder.getCapabilitiesFlat(io, cap);
+            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
+            for (var handler : handlers) {
+                handler.postWorking(holder, io, recipe);
+            }
+        }
+    }
+
+    /**
+     * Check whether all conditions of a recipe are valid
+     *
+     * @param recipe      the recipe to test
+     * @param recipeLogic the logic to test against the conditions
+     * @return the list of failed conditions, or success if all conditions are satisfied
+     */
+    public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        if (recipe.conditions.isEmpty()) return ActionResult.SUCCESS;
+        Map<RecipeConditionType<?>, List<RecipeCondition>> or = new Reference2ObjectArrayMap<>();
+        for (RecipeCondition condition : recipe.conditions) {
+            if (condition.isOr()) {
+                or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
+            } else if (!condition.check(recipe, recipeLogic)) {
+                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
+                        .append(": ")
+                        .append(condition.getTooltips()));
+            }
+        }
+
+        for (List<RecipeCondition> conditions : or.values()) {
+            boolean passed = conditions.isEmpty();
+            MutableComponent component = Component.translatable("gtceu.recipe_logic.condition_fails")
+                    .append(": ");
+            for (RecipeCondition condition : conditions) {
+                passed = condition.check(recipe, recipeLogic);
+                if (passed) break;
+                else component.append(condition.getTooltips());
+            }
+
+            if (!passed) {
+                return ActionResult.fail(component);
+            }
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    /**
+     * Creates a copy of the recipe matching the trim limits -
+     * Returns the recipe itself if no valid trim limits are passed
+     */
+    @Contract(pure = true)
+    public static GTRecipe trimRecipeOutputs(GTRecipe recipe, Object2IntMap<RecipeCapability<?>> trimLimits) {
+        // Fast return early if no trimming desired
+        if (trimLimits.isEmpty() || trimLimits.values().intStream().allMatch(integer -> integer == -1)) {
+            return recipe;
+        }
+
+        GTRecipe copy = recipe.copy();
+
+        copy.outputs.clear();
+        copy.outputs.putAll(doTrim(recipe.outputs, trimLimits));
+        copy.tickOutputs.clear();
+        copy.tickOutputs.putAll(doTrim(recipe.tickOutputs, trimLimits));
+
+        return copy;
+    }
+
+    /**
+     * Returns the maximum possible recipe outputs from a recipe, divided into regular and chanced outputs
+     * Takes into account any specific output limiters, ie macerator slots, to trim down the output list
+     * Trims from chanced outputs first, then regular outputs
+     *
+     * @param trimLimits The limit(s) on the number of outputs
+     * @return All recipe outputs, limited by some factor(s)
+     */
+    @Contract(pure = true)
+    public static Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
+                                                                 Object2IntMap<RecipeCapability<?>> trimLimits) {
+        Map<RecipeCapability<?>, List<Content>> outputs = new Reference2ObjectOpenHashMap<>(current.size());
+
+        for (var entry : current.entrySet()) {
+            var cap = entry.getKey();
+            var contents = entry.getValue();
+            if (contents.isEmpty()) continue;
+            int N = trimLimits.getOrDefault(cap, -1);
+            if (N == 0) continue; // Skip this cap if limit is 0
+
+            List<Content> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
+            if (N == -1) { // Add all if limit is -1/not in map
+                list.addAll(contents);
+                continue;
+            }
+
+            int added = 0;
+            List<Content> chanced = new ArrayList<>();
+            // Add non-chanced contents with priority and store chanced contents for later
+            for (var content : contents) {
+                if (added == N) break;
+                if (0 < content.chance && content.chance < content.maxChance) {
+                    chanced.add(content);
+                } else {
+                    list.add(content);
+                    added++;
+                }
+            }
+
+            // Add as many chanced contents as needed
+            if (added < N) {
+                int rem = Math.min(chanced.size(), N - added);
+                list.addAll(chanced.subList(0, rem));
+            }
+        }
+
+        return outputs;
     }
 }

@@ -1,97 +1,91 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
-import dev.ftb.mods.ftbteams.FTBTeamsAPIImpl;
+import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import dev.ftb.mods.ftbteams.api.Team;
-import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public final class FTBOwner implements IMachineOwner {
+public non-sealed class FTBOwner extends MachineOwner {
 
-    @Getter
-    private Team team;
-    @Getter
-    private UUID playerUUID;
+    private static final Component displayName = Component.translatable("gtceu.ownership.name.ftb");
 
-    public FTBOwner() {}
-
-    public FTBOwner(Team team, UUID player) {
-        this.team = team;
-        this.playerUUID = player;
+    public FTBOwner(UUID playerUUID) {
+        super(playerUUID);
     }
 
-    @Override
-    public void save(CompoundTag tag) {
-        if (team != null)
-            tag.putUUID("teamUUID", team.getTeamId());
-        tag.putUUID("playerUUID", playerUUID);
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        try {
-            if (tag.contains("teamUUID"))
-                this.team = FTBTeamsAPIImpl.INSTANCE.getManager().getTeamByID(tag.getUUID("teamUUID")).orElse(null);
-            else this.team = null;
-        } catch (NullPointerException e) {
-            this.team = null;
+    public @Nullable Team getPlayerTeam(UUID playerUUID) {
+        if (FTBTeamsAPI.api().isManagerLoaded()) {
+            return FTBTeamsAPI.api().getManager().getPlayerTeamForPlayerID(playerUUID).orElse(null);
+        } else if (FTBTeamsAPI.api().isClientManagerLoaded()) {
+            return FTBTeamsAPI.api().getClientManager().getTeams().stream()
+                    .filter(t -> t.getMembers().contains(playerUUID))
+                    .findFirst().orElse(null);
+        } else {
+            return null;
         }
+    }
 
-        this.playerUUID = tag.getUUID("playerUUID");
+    public @Nullable Team getTeam() {
+        return getPlayerTeam(playerUUID);
     }
 
     @Override
-    public boolean isPlayerInTeam(Player player) {
-        if (player.getUUID().equals(this.playerUUID)) return true;
-        if (FTBTeamsAPIImpl.INSTANCE.getManager().arePlayersInSameTeam(player.getUUID(), this.playerUUID)) return true;
-
-        return false;
+    public boolean isPlayerInTeam(UUID playerUUID) {
+        if (this.playerUUID.equals(playerUUID)) return true;
+        if (FTBTeamsAPI.api().isManagerLoaded()) {
+            return FTBTeamsAPI.api().getManager().arePlayersInSameTeam(playerUUID, this.playerUUID);
+        } else if (FTBTeamsAPI.api().isClientManagerLoaded()) {
+            var ownTeam = getPlayerTeam(this.playerUUID);
+            if (ownTeam == null) {
+                return false;
+            }
+            var otherTeam = getPlayerTeam(playerUUID);
+            return otherTeam != null && ownTeam.getTeamId().equals(otherTeam.getTeamId());
+        } else {
+            return true;
+        }
     }
 
     @Override
-    public boolean isPlayerFriendly(Player player) {
-        if (team.getRankForPlayer(player.getUUID()).isAllyOrBetter()) return true;
-        return false;
+    public boolean isPlayerFriendly(UUID playerUUID) {
+        var team = getTeam();
+        if (team == null) {
+            return this.playerUUID.equals(playerUUID);
+        }
+        return team.getRankForPlayer(playerUUID).isAllyOrBetter();
     }
 
     @Override
     public UUID getUUID() {
-        return team.getId();
+        var team = getTeam();
+        return team != null ? team.getId() : EMPTY;
     }
 
     @Override
     public String getName() {
-        return team.getName().getString();
+        var team = getTeam();
+        return team != null ? team.getName().getString() :
+                Component.translatable("gtceu.tooltip.status.trinary.unknown").getString();
+    }
+
+    @Override
+    public Component getTypeDisplayName() {
+        return displayName;
     }
 
     @Override
     public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
-        compList.add(Component.translatable("behavior.portable_scanner.team_name", team.getName()));
-        var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
-        final String[] playerName = new String[1];
-        boolean isOnline;
-        if (serverPlayer != null) {
-            playerName[0] = serverPlayer.getDisplayName().getString();
-            isOnline = true;
-        } else {
-            var cache = ServerLifecycleHooks.getCurrentServer().getProfileCache();
-            if (cache != null) {
-                cache.get(playerUUID).ifPresent(value -> playerName[0] = value.getName());
-            }
-            isOnline = false;
-        }
-        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName[0], isOnline));
+        super.displayInfo(compList);
+        compList.add(Component.translatable("behavior.portable_scanner.team_name", getName()));
+        MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
     @Override
-    public MachineOwnerType type() {
-        return MachineOwnerType.FTB;
+    public boolean equals(Object object) {
+        return object instanceof FTBOwner && super.equals(object);
     }
 }

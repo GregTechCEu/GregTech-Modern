@@ -1,12 +1,17 @@
 package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
@@ -14,8 +19,21 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         super(metaTileEntityId, LDItemPipeType.INSTANCE);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static class ItemHandlerWrapper implements IItemHandler {
+    @Override
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (isRemote() || getIoType() != IO.IN || side != getFrontFacing()) {
+            return null;
+        }
+        var endpoint = getLink();
+        if (endpoint == null) {
+            return null;
+        }
+        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
+                .map(ItemHandlerWrapper::new)
+                .orElse(null);
+    }
+
+    public static class ItemHandlerWrapper implements IItemHandlerModifiable {
 
         private final IItemHandler delegate;
 
@@ -54,6 +72,13 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return delegate.isItemValid(slot, stack);
+        }
+
+        @Override
+        public void setStackInSlot(int i, @NotNull ItemStack itemStack) {
+            if (delegate instanceof IItemHandlerModifiable modifiable) {
+                modifiable.setStackInSlot(i, itemStack);
+            }
         }
     }
 }
