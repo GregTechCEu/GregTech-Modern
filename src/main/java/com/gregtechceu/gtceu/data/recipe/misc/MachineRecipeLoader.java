@@ -747,8 +747,7 @@ public class MachineRecipeLoader {
                 .inputItems(frameGt, Iridium).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                 .duration(50).addMaterialInfo(true).save(provider);
-      
+                .duration(50).addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
                 .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)
