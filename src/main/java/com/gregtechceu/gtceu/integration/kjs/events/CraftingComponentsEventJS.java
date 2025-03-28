@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
 import net.minecraft.core.registries.Registries;
@@ -11,90 +11,108 @@ import net.minecraft.world.item.ItemStack;
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({ "unused", "unchecked" })
 @NoArgsConstructor
 public class CraftingComponentsEventJS extends StartupEventJS {
 
-    public void modify(CraftingComponent.Component component, int tier, Object value) {
-        component.appendIngredients(Map.of(tier, value));
+    public void modify(CraftingComponent craftingComponent, int tier, Object value) {
+        craftingComponent.add(tier, value);
     }
 
-    public void modify(CraftingComponent.Component component, Map<Number, Object> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        component.appendIngredients(newMap);
+    public void modify(CraftingComponent craftingComponent, Map<Number, Object> map) {
+        for (var val : map.entrySet()) {
+            craftingComponent.add(val.getKey().intValue(), val.getValue());
+        }
     }
 
-    public void modifyItem(CraftingComponent.Component component, int tier, ItemStack item) {
-        component.appendIngredients(Map.of(tier, item));
+    public void modifyItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
+        craftingComponent.add(tier, item);
     }
 
-    public void modifyItem(CraftingComponent.Component component, Map<Number, ItemStack> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        component.appendIngredients(newMap);
+    public void modifyItem(CraftingComponent craftingComponent, Map<Number, ItemStack> map) {
+        for (var val : map.entrySet()) {
+            craftingComponent.add(val.getKey().intValue(), val.getValue());
+        }
     }
 
-    public void modifyTag(CraftingComponent.Component component, int tier, ResourceLocation tag) {
-        component.appendIngredients(Map.of(tier, TagKey.create(Registries.ITEM, tag)));
+    public void modifyTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
+        craftingComponent.add(tier, TagKey.create(Registries.ITEM, tag));
     }
 
-    public void modifyTag(CraftingComponent.Component component, Map<Number, ResourceLocation> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), TagKey.create(Registries.ITEM, entry.getValue())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        component.appendIngredients(newMap);
+    public void modifyTag(CraftingComponent craftingComponent, Map<Number, ResourceLocation> map) {
+        for (var val : map.entrySet()) {
+            craftingComponent.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
+        }
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, int tier, UnificationEntry item) {
-        component.appendIngredients(Map.of(tier, item));
+    public void modifyMaterialEntry(CraftingComponent craftingComponent, int tier, MaterialEntry item) {
+        craftingComponent.add(tier, item);
     }
 
-    public void modifyUnificationEntry(CraftingComponent.Component component, Map<Number, UnificationEntry> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        component.appendIngredients(newMap);
+    public void modifyMaterialEntry(CraftingComponent craftingComponent, Map<Number, MaterialEntry> map) {
+        for (var val : map.entrySet()) {
+            craftingComponent.add(val.getKey().intValue(), val.getValue());
+        }
     }
 
-    public CraftingComponent.Component create(Map<Number, Object> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new CraftingComponent.Component(newMap);
+    public void setFallbackItem(CraftingComponent craftingComponent, ItemStack stack) {
+        craftingComponent.setFallback(stack);
     }
 
-    public CraftingComponent.Component createItem(Map<Number, ItemStack> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new CraftingComponent.Component(newMap);
+    public void setFallbackTag(CraftingComponent craftingComponent, ResourceLocation tag) {
+        craftingComponent.setFallback(TagKey.create(Registries.ITEM, tag));
     }
 
-    public CraftingComponent.Component createTag(Map<Number, ResourceLocation> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), TagKey.create(Registries.ITEM, entry.getValue())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new CraftingComponent.Component(newMap);
+    public void setFallbackMaterialEntry(CraftingComponent craftingComponent, MaterialEntry materialEntry) {
+        craftingComponent.setFallback(materialEntry);
     }
 
-    public CraftingComponent.Component createUnificationEntry(Map<Number, UnificationEntry> map) {
-        Map<Integer, Object> newMap = map.entrySet()
-                .stream()
-                .map(entry -> Map.entry(entry.getKey().intValue(), entry.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        return new CraftingComponent.Component(newMap);
+    public void removeTier(CraftingComponent craftingComponent, int tier) {
+        craftingComponent.remove(tier);
+    }
+
+    public void removeTiers(CraftingComponent craftingComponent, List<Number> tiers) {
+        for (var tier : tiers) {
+            craftingComponent.remove(tier.intValue());
+        }
+    }
+
+    public CraftingComponent create(String id, Object fallback) {
+        return CraftingComponent.of(id, fallback);
+    }
+
+    public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
+        var m = CraftingComponent.of(id, fallback);
+        for (var val : map.entrySet()) {
+            m.add(val.getKey().intValue(), val.getValue());
+        }
+        return m;
+    }
+
+    public CraftingComponent createItem(String id, Object fallback, Map<Number, ItemStack> map) {
+        var m = CraftingComponent.of(id, fallback);
+        for (var val : map.entrySet()) {
+            m.add(val.getKey().intValue(), val.getValue());
+        }
+        return m;
+    }
+
+    public CraftingComponent createTag(String id, Object fallback, Map<Number, ResourceLocation> map) {
+        var m = CraftingComponent.of(id, fallback);
+        for (var val : map.entrySet()) {
+            m.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
+        }
+        return m;
+    }
+
+    public CraftingComponent createMaterialEntry(String id, Object fallback, Map<Number, MaterialEntry> map) {
+        var m = CraftingComponent.of(id, fallback);
+        for (var val : map.entrySet()) {
+            m.add(val.getKey().intValue(), val.getValue());
+        }
+        return m;
     }
 }

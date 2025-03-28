@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
@@ -31,9 +32,9 @@ import dev.ftb.mods.ftblibrary.ui.ContextMenuItem;
 import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class OreVeinIcon implements MapIcon {
 
@@ -59,18 +60,21 @@ public class OreVeinIcon implements MapIcon {
         return name == null ? name = OreRenderLayer.getName(veinMetadata).getString() : name;
     }
 
+    @NotNull
     public Material getMaterial() {
-        Material firstMaterial = null;
+        Material firstMaterial = GTMaterials.NULL;
         if (!veinMetadata.definition().indicatorGenerators().isEmpty()) {
             var blockOrMaterial = veinMetadata.definition().indicatorGenerators().get(0).block();
-            firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
-                    state -> {
-                        var matStack = ChemicalHelper.getMaterial(state.getBlock());
-                        return matStack == null ? null : matStack.material();
-                    },
-                    Function.identity());
+            if (blockOrMaterial == null) {
+                return GTMaterials.NULL;
+            } else if (blockOrMaterial.left().isPresent()) {
+                var entry = ChemicalHelper.getMaterialEntry(blockOrMaterial.left().get().getBlock());
+                firstMaterial = entry.material();
+            } else if (blockOrMaterial.right().isPresent()) {
+                firstMaterial = blockOrMaterial.right().get();
+            }
         }
-        if (firstMaterial == null) {
+        if (firstMaterial.isNull()) {
             firstMaterial = veinMetadata.definition().veinGenerator().getAllMaterials().get(0);
         }
         return firstMaterial;

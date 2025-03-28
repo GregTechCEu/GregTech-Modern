@@ -1284,6 +1284,8 @@ public class LangHandler {
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
         provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
         provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
+        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1399,6 +1401,10 @@ public class LangHandler {
         provider.add("gtceu.direction.tooltip.right", "Right");
         provider.add("gtceu.direction.tooltip.back", "Back");
         provider.add("gtceu.direction.tooltip.front", "Front");
+
+        provider.add("gtceu.tooltip.status.trinary.false", "False");
+        provider.add("gtceu.tooltip.status.trinary.true", "True");
+        provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
     }
 
     /**

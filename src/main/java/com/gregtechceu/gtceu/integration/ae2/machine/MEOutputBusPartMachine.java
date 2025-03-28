@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -120,7 +121,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine implements IMachine
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             return Collections.emptyList();
         }
 
