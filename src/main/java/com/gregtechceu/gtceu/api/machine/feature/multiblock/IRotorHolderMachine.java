@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -33,6 +35,7 @@ public interface IRotorHolderMachine extends IMultiPart {
         return 100;
     }
 
+    @NotNull
     Material getRotorMaterial();
 
     ItemStack getRotorStack();

@@ -36,6 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,11 +57,11 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Persisted
     @DescSynced
     public int rotorSpeed;
-    @Getter
     @Setter
     @Persisted
     @DescSynced
     @RequireRerender
+    @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
     protected TickableSubscription rotorSpeedSubs;
@@ -89,7 +90,7 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Override
     public int tintColor(int index) {
         if (index == 2) {
-            return rotorMaterial.getMaterialARGB();
+            return getRotorMaterial().getMaterialARGB();
         }
         return super.tintColor(index);
     }
@@ -119,6 +120,16 @@ public class RotorHolderPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ****** Rotor Holder ******//
     //////////////////////////////////////
+
+    @Override
+    public @NotNull Material getRotorMaterial() {
+        // handles clients trying to get the material before server data sync
+        // noinspection ConstantValue
+        if (rotorMaterial == null) {
+            return GTMaterials.NULL;
+        }
+        return rotorMaterial;
+    }
 
     private void onRotorInventoryChanged() {
         var stack = getRotorStack();

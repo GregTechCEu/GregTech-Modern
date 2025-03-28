@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
@@ -59,7 +58,7 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
                             modelState, -101, 0, true, false));
                     var material = rotorHolderMachine.getRotorMaterial();
-                    if (material != null && material != GTMaterials.NULL) {
+                    if (!material.isNull()) {
                         boolean emissive = material.hasProperty(PropertyKey.ORE) &&
                                 material.getProperty(PropertyKey.ORE).isEmissive();
                         if (rotorHolderMachine.isRotorSpinning()) {
