@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -46,7 +48,6 @@ import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -78,8 +79,6 @@ public interface GTRecipeSchema {
         public int maxChance = ChanceLogic.getMaxChancedValue();
         @Setter
         public int tierChanceBoost = 0;
-        @Setter
-        public boolean isFuel = false;
         @Getter
         private ResourceLocation idWithoutType;
         @Setter
@@ -87,6 +86,12 @@ public interface GTRecipeSchema {
         @Getter
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
+
+        public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
+        public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
+        public boolean itemMaterialInfo = false;
+        public boolean fluidMaterialInfo = false;
+        public boolean removeMaterialInfo = false;
 
         @HideFromJS
         @Override
@@ -117,7 +122,7 @@ public interface GTRecipeSchema {
                             id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
                 }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -142,7 +147,7 @@ public interface GTRecipeSchema {
                             id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
                 }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -218,20 +223,31 @@ public interface GTRecipeSchema {
             return inputItems(inputs);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input) {
+        public GTRecipeJS itemInput(MaterialEntry input) {
             return inputItems(input);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input, int count) {
+        public GTRecipeJS itemInput(MaterialEntry input, int count) {
             return inputItems(input, count);
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
+            for (var stack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks.add(new MaterialStack(matStack.material(), matStack.amount() * stack.count));
+                }
+            }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(itemStack);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks
+                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
+                }
                 if (itemStack.isEmpty()) {
                     GTCEu.LOGGER.error("Input items is empty, id: %s", id);
                 }
@@ -268,15 +284,16 @@ public interface GTRecipeSchema {
             return inputItems(orePrefix, material, 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input) {
-            return inputItems(input.tagPrefix, input.material, 1);
+        public GTRecipeJS inputItems(MaterialEntry input) {
+            return inputItems(input.tagPrefix(), input.material(), 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input, int count) {
-            return inputItems(input.tagPrefix, input.material, count);
+        public GTRecipeJS inputItems(MaterialEntry input, int count) {
+            return inputItems(input.tagPrefix(), input.material(), count);
         }
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
+            itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 
@@ -292,12 +309,12 @@ public interface GTRecipeSchema {
             return outputItems(outputs);
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material());
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry, int count) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry, int count) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material(), count);
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
@@ -635,6 +652,15 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            for (var fluidIng : inputs) {
+                for (var stack : fluidIng.getIngredient().getStacks()) {
+                    var mat = ChemicalHelper.getMaterial(stack.getFluid());
+                    if (!mat.isNull()) {
+                        fluidMaterialStacks.add(new MaterialStack(mat,
+                                ((long) stack.getAmount() * GTValues.M) / GTValues.L));
+                    }
+                }
+            }
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
@@ -880,6 +906,22 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        public GTRecipeJS addMaterialInfo(boolean item) {
+            this.itemMaterialInfo = item;
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item, boolean fluid) {
+            this.itemMaterialInfo = item;
+            this.fluidMaterialInfo = fluid;
+            return this;
+        }
+
+        public GTRecipeJS removePreviousMaterialInfo() {
+            this.removeMaterialInfo = true;
+            return this;
+        }
+
         /*
          * KubeJS overrides
          */
@@ -977,7 +1019,6 @@ public interface GTRecipeSchema {
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
             .defaultOptional();
-    RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false);
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs").defaultOptional();
@@ -997,8 +1038,7 @@ public interface GTRecipeSchema {
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS,
             ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS,
-            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS,
-            IS_FUEL, CATEGORY)
+            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS, CATEGORY)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
             .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);
 }

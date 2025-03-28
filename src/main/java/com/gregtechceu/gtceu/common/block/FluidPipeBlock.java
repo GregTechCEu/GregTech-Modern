@@ -126,7 +126,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != null) {
+        if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);

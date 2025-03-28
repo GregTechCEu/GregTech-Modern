@@ -49,7 +49,7 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
         return (blockState, level, blockPos, index) -> {
             if (blockPos != null && level != null &&
                     level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                if (pipe.getFrameMaterial() != null) {
+                if (!pipe.getFrameMaterial().isNull()) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();
                     } else if (index == 4) {

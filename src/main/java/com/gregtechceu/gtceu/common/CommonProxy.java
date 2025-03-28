@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
@@ -174,6 +175,7 @@ public class CommonProxy {
         GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
+        MachineOwner.init();
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
@@ -267,9 +269,8 @@ public class CommonProxy {
             // Clear old data
             GTDynamicDataPack.clearServer();
 
-            // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
-            ChemicalHelper.reinitializeUnification();
+            ItemMaterialData.reinitializeMaterialData();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions
