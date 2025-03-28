@@ -12,11 +12,13 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.Util;
 import net.minecraft.data.recipes.FinishedRecipe;
 
-import com.google.common.collect.ImmutableMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -44,35 +46,47 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
  * <br>
  * - Material Foil: At IV, an extra foil of the Material is needed to make the cable with SiR.
  */
-public class WireRecipeHandler {
+public final class WireRecipeHandler {
 
-    private static final Map<TagPrefix, Integer> INSULATION_AMOUNT = ImmutableMap.of(
-            cableGtSingle, 1,
-            cableGtDouble, 1,
-            cableGtQuadruple, 2,
-            cableGtOctal, 3,
-            cableGtHex, 5);
+    private static final Reference2IntMap<TagPrefix> INSULATION_AMOUNT = Util.make(new Reference2IntOpenHashMap<>(),
+            map -> {
+                map.put(cableGtSingle, 1);
+                map.put(cableGtDouble, 1);
+                map.put(cableGtQuadruple, 2);
+                map.put(cableGtOctal, 3);
+                map.put(cableGtHex, 5);
+            });
 
     private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    private WireRecipeHandler() {}
+
+    public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        WireProperties property = material.getProperty(PropertyKey.WIRE);
+        if (property == null) {
+            return;
+        }
+
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
         // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
         // Wiremill: 1x Wire -> Fine
         // Extruder: Ingot -> 1x Wire
         // Wire Cutter: Plate -> 1x Wire
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
+        processWires(provider, material);
 
         // Generate Cable Covering Recipes
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtDouble.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtQuadruple.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtOctal.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
-        wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        generateCableCovering(provider, property, wireGtSingle, material);
+        generateCableCovering(provider, property, wireGtDouble, material);
+        generateCableCovering(provider, property, wireGtQuadruple, material);
+        generateCableCovering(provider, property, wireGtOctal, material);
+        generateCableCovering(provider, property, wireGtHex, material);
     }
 
-    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
-                                    Consumer<FinishedRecipe> provider) {
+    private static void processWires(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(wireGtSingle)) {
+            return;
+        }
+
         TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
                 material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
@@ -120,27 +134,30 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property,
-                                             Consumer<FinishedRecipe> provider) {
-        // Superconductors have no Cables, so exit early
-        if (property.isSuperconductor()) return;
+    private static void generateCableCovering(@NotNull Consumer<FinishedRecipe> provider,
+                                              @NotNull WireProperties property,
+                                              @NotNull TagPrefix prefix, @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(prefix) || property.isSuperconductor()) {
+            // Superconductors have no Cables, so exit early
+            return;
+        }
 
-        int cableAmount = (int) (wirePrefix.getMaterialAmount(material) * 2 / M);
-        TagPrefix cablePrefix = TagPrefix.get("cable" + wirePrefix.name().substring(4));
+        int cableAmount = (int) (prefix.getMaterialAmount(material) * 2 / M);
+        TagPrefix cablePrefix = TagPrefix.get("cable" + prefix.name().substring(4));
         int voltageTier = GTUtil.getTierByVoltage(property.getVoltage());
-        int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
+        int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
 
         // Generate hand-crafting recipes for ULV and LV cables
         if (voltageTier <= LV) {
-            generateManualRecipe(wirePrefix, material, cablePrefix, cableAmount, provider);
+            generateManualRecipe(provider, prefix, cablePrefix, cableAmount, material);
         }
 
         // Rubber Recipe (ULV-EV cables)
         if (voltageTier <= EV) {
             GTRecipeBuilder builder = ASSEMBLER_RECIPES
-                    .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_rubber")
+                    .recipeBuilder("cover_" + material.getName() + "_" + prefix + "_rubber")
                     .EUt(VA[ULV]).duration(100)
-                    .inputItems(wirePrefix, material)
+                    .inputItems(prefix, material)
                     .outputItems(cablePrefix, material)
                     .inputFluids(Rubber, L * insulationAmount);
 
@@ -152,9 +169,9 @@ public class WireRecipeHandler {
 
         // Silicone Rubber Recipe (all cables)
         GTRecipeBuilder builder = ASSEMBLER_RECIPES
-                .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_silicone")
+                .recipeBuilder("cover_" + material.getName() + "_" + prefix + "_silicone")
                 .EUt(VA[ULV]).duration(100)
-                .inputItems(wirePrefix, material)
+                .inputItems(prefix, material)
                 .outputItems(cablePrefix, material);
 
         // Apply a Polyphenylene Sulfate Foil if LuV or above.
@@ -172,9 +189,9 @@ public class WireRecipeHandler {
 
         // Styrene Butadiene Rubber Recipe (all cables)
         builder = ASSEMBLER_RECIPES
-                .recipeBuilder("cover_" + material.getName() + "_" + wirePrefix + "_styrene_butadiene")
+                .recipeBuilder("cover_" + material.getName() + "_" + prefix + "_styrene_butadiene")
                 .EUt(VA[ULV]).duration(100)
-                .inputItems(wirePrefix, material)
+                .inputItems(prefix, material)
                 .outputItems(cablePrefix, material);
 
         // Apply a Polyphenylene Sulfate Foil if LuV or above.
@@ -191,9 +208,10 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix,
-                                             int cableAmount, Consumer<FinishedRecipe> provider) {
-        int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
+    private static void generateManualRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix wirePrefix,
+                                             @NotNull TagPrefix cablePrefix, int cableAmount,
+                                             @NotNull Material material) {
+        int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new MaterialEntry(wirePrefix, material);
         for (int i = 1; i <= insulationAmount; i++) {
@@ -211,7 +229,7 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static int getVoltageMultiplier(Material material) {
+    private static int getVoltageMultiplier(@NotNull Material material) {
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
     }
 }

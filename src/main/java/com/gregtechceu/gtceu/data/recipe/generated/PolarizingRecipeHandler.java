@@ -11,47 +11,61 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 
-public class PolarizingRecipeHandler {
+public final class PolarizingRecipeHandler {
 
     private static final TagPrefix[] POLARIZING_PREFIXES = new TagPrefix[] {
             rod, rodLong, plate, ingot, plateDense, plateDouble, rotor,
             bolt, screw, wireFine, foil, ring, dust, nugget, block,
-            dustTiny, dustSmall };
+            dustTiny, dustSmall
+    };
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        for (TagPrefix orePrefix : POLARIZING_PREFIXES) {
-            orePrefix.executeHandler(provider, PropertyKey.INGOT, PolarizingRecipeHandler::processPolarizing);
+    private PolarizingRecipeHandler() {}
+
+    public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        IngotProperty property = material.getProperty(PropertyKey.INGOT);
+        if (property == null) {
+            return;
+        }
+
+        for (TagPrefix prefix : POLARIZING_PREFIXES) {
+            processPolarizing(provider, property, prefix, material);
         }
     }
 
-    public static void processPolarizing(TagPrefix polarizingPrefix, Material material, IngotProperty property,
-                                         Consumer<FinishedRecipe> provider) {
+    private static void processPolarizing(@NotNull Consumer<FinishedRecipe> provider, @NotNull IngotProperty property,
+                                          @NotNull TagPrefix prefix, @NotNull Material material) {
+        if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
+            return;
+        }
+
         Material magneticMaterial = property.getMagneticMaterial();
 
-        if (!magneticMaterial.isNull() && (polarizingPrefix.doGenerateBlock(magneticMaterial) ||
-                polarizingPrefix.doGenerateItem(magneticMaterial))) {
-            ItemStack magneticStack = ChemicalHelper.get(polarizingPrefix, magneticMaterial);
-            POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + polarizingPrefix.name) // polarizing
-                    .inputItems(polarizingPrefix, material)
+        if (!magneticMaterial.isNull() && (prefix.doGenerateBlock(magneticMaterial) ||
+                prefix.doGenerateItem(magneticMaterial))) {
+            ItemStack magneticStack = ChemicalHelper.get(prefix, magneticMaterial);
+            POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + prefix.name) // polarizing
+                    .inputItems(prefix, material)
                     .outputItems(magneticStack)
-                    .duration((int) ((int) material.getMass() * polarizingPrefix.getMaterialAmount(material) / M))
+                    .duration((int) ((int) material.getMass() * prefix.getMaterialAmount(material) / M))
                     .EUt(getVoltageMultiplier(material))
                     .save(provider);
 
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "demagnetize_" + magneticMaterial.getName() + "_" + polarizingPrefix,
-                    ChemicalHelper.getTag(polarizingPrefix, magneticMaterial),
-                    ChemicalHelper.get(polarizingPrefix, material)); // de-magnetizing
+                    "demagnetize_" + magneticMaterial.getName() + "_" + prefix,
+                    ChemicalHelper.getTag(prefix, magneticMaterial),
+                    ChemicalHelper.get(prefix, material)); // de-magnetizing
         }
     }
 
-    private static int getVoltageMultiplier(Material material) {
+    private static int getVoltageMultiplier(@NotNull Material material) {
         if (material == GTMaterials.Steel || material == GTMaterials.Iron) return VH[LV];
         if (material == GTMaterials.Neodymium) return VH[HV];
         if (material == GTMaterials.Samarium) return VH[IV];

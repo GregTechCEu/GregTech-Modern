@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -15,6 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +25,15 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CENTRIFUGE_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTROLYZER_RECIPES;
 
-public class DecompositionRecipeHandler {
+public final class DecompositionRecipeHandler {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            var prefix = material.hasProperty(PropertyKey.DUST) ? dust : null;
-            processDecomposition(prefix, material, provider);
-        }
+    private DecompositionRecipeHandler() {}
+
+    public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+        processDecomposition(provider, material);
     }
 
-    private static void processDecomposition(TagPrefix decomposePrefix, Material material,
-                                             Consumer<FinishedRecipe> provider) {
+    private static void processDecomposition(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         if (material.getMaterialComponents().isEmpty() ||
                 (!material.hasFlag(DECOMPOSITION_BY_ELECTROLYZING) &&
                         !material.hasFlag(DECOMPOSITION_BY_CENTRIFUGING)) ||
@@ -60,7 +57,8 @@ public class DecompositionRecipeHandler {
         }
 
         // only reduce items
-        if (decomposePrefix != null) {
+        boolean hasDust = material.hasProperty(PropertyKey.DUST);
+        if (hasDust) {
             // calculate lowest common denominator
             LongList materialAmounts = new LongArrayList();
             materialAmounts.add(totalInputAmount);
@@ -115,8 +113,8 @@ public class DecompositionRecipeHandler {
         builder.outputFluids(fluidOutputs.toArray(FluidStack[]::new));
 
         // finish builder
-        if (decomposePrefix != null) {
-            builder.inputItems(decomposePrefix, material, GTMath.saturatedCast(totalInputAmount));
+        if (hasDust) {
+            builder.inputItems(dust, material, GTMath.saturatedCast(totalInputAmount));
         } else {
             builder.inputFluids(material.getFluid(1000));
         }

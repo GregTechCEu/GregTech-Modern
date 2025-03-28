@@ -662,10 +662,7 @@ public class GTMaterials {
     public static Material DiethylenetriaminePentaacetonitrile;
     public static Material DiethylenetriaminepentaaceticAcid;
     public static Material SodiumNitrite;
-
-    public static Material AcidicBromineSolution;
-    public static Material ConcentratedBromineSolution;
-    public static Material HydrogenIodide;
+    public static Material HydrogenPeroxide;
 
     /**
      * Organic chemistry
@@ -887,6 +884,7 @@ public class GTMaterials {
     public static Material UUMatter;
     public static Material PCBCoolant;
     public static Material Sculk;
+    public static Material Wax;
 
     /**
      * Second Degree Compounds
@@ -950,12 +948,6 @@ public class GTMaterials {
     public static Material Dichloroethane;
     public static Material Diethylenetriamine;
 
-    public static Material RawBrine;
-    public static Material DebrominatedBrine;
-    public static Material BrominatedChlorineVapor;
-    public static Material AcidicBromineExhaust;
-    public static Material Wax;
-
     /**
      * Third Degree Materials
      */
@@ -974,11 +966,6 @@ public class GTMaterials {
     public static Material Brick;
     public static Material Fireclay;
     public static Material Diorite;
-
-    public static Material HotBrine;
-    public static Material HotChlorinatedBrominatedBrine;
-    public static Material HotDebrominatedBrine;
-    public static Material HotAlkalineDebrominatedBrine;
 
     /**
      * Fourth Degree Materials

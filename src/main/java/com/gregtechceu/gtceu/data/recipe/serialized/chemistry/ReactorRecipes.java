@@ -737,5 +737,12 @@ public class ReactorRecipes {
                 .outputFluids(PolychlorinatedBiphenyl.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(200).EUt(VH[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("hydrogen_peroxide")
+                .inputFluids(Hydrogen.getFluid(2000))
+                .inputFluids(Oxygen.getFluid(2000))
+                .circuitMeta(1)
+                .outputFluids(HydrogenPeroxide.getFluid(1000))
+                .duration(3000).EUt(VHA[HV]).save(provider);
     }
 }

@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.data.recipe.MaterialInfoLoader;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeAddition;
 import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
@@ -45,17 +48,24 @@ public class GTRecipes {
         MaterialInfoLoader.init();
 
         // com.gregtechceu.gtceu.data.recipe.generated.*
-        DecompositionRecipeHandler.init(consumer);
-        MaterialRecipeHandler.init(consumer);
-        OreRecipeHandler.init(consumer);
-        PartsRecipeHandler.init(consumer);
-        PipeRecipeHandler.init(consumer);
-        PolarizingRecipeHandler.init(consumer);
-        RecyclingRecipeHandler.init(consumer);
-        ToolRecipeHandler.init(consumer);
-        WireCombiningHandler.init(consumer);
-        WireRecipeHandler.init(consumer);
+        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            if (material.hasFlag(MaterialFlags.NO_UNIFICATION)) {
+                continue;
+            }
 
+            DecompositionRecipeHandler.run(consumer, material);
+            MaterialRecipeHandler.run(consumer, material);
+            OreRecipeHandler.run(consumer, material);
+            PartsRecipeHandler.run(consumer, material);
+            PipeRecipeHandler.run(consumer, material);
+            PolarizingRecipeHandler.run(consumer, material);
+            RecyclingRecipeHandler.run(consumer, material);
+            ToolRecipeHandler.run(consumer, material);
+            WireCombiningHandler.run(consumer, material);
+            WireRecipeHandler.run(consumer, material);
+        }
+
+        CustomToolRecipes.init(consumer);
         AirScrubberRecipes.init(consumer);
         ChemistryRecipes.init(consumer);
         MetaTileEntityMachineRecipeLoader.init(consumer);

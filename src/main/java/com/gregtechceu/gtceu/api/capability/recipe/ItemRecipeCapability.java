@@ -245,9 +245,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         int maxMultiplier = multiplier;
 
         OverlayedItemHandler itemHandler = new OverlayedItemHandler(new CombinedInvWrapper(
-                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP),
-                        Collections::emptyList)
-                        .stream()
+                holder.getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).stream()
                         .filter(IItemHandlerModifiable.class::isInstance)
                         .map(IItemHandlerModifiable.class::cast)
                         .toArray(IItemHandlerModifiable[]::new)));
@@ -382,11 +380,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 ItemStackHashStrategy.comparingAllButCount());
         Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
 
-        List<IRecipeHandler<?>> recipeHandlerList = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .filter(handler -> !handler.isProxy()).toList();
+        var recipeHandlerList = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
 
         for (IRecipeHandler<?> container : recipeHandlerList) {
 

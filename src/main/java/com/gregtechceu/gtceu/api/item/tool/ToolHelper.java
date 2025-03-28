@@ -12,7 +12,9 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -64,8 +66,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -412,22 +412,24 @@ public class ToolHelper {
                 // Stack lists can be immutable going into Recipe#matches barring no rewrites
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> caps = Tables
-                        .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction, caps);
-                caps.put(IO.IN, EURecipeCapability.CAP, List.of(new InfiniteEnergyContainer(be.getMetaMachine(),
-                        GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
-                caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1,
-                        IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
-                caps.put(IO.OUT, ItemRecipeCapability.CAP,
-                        List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
-                be.getMetaMachine().reinitializeCapabilities(caps);
+                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
+                        Collections.emptyList());
+                RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
+                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
+                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
+                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
-                GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine,
-                        be.getMetaMachine().recipeLogic.getChanceCaches())) {
+                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
+                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
+                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
+                GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
+                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
+                        be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {

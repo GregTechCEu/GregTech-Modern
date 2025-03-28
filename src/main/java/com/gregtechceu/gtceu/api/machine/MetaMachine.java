@@ -26,6 +26,8 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -71,9 +73,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -88,6 +88,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
  *           All fundamental features will be implemented here.
  *           To add additional features, you can see {@link IMachineFeature}
  */
+@SuppressWarnings("removal")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighlight,
@@ -96,6 +97,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    @Setter
+    @Getter
+    @Persisted
+    @DescSynced
+    @Nullable
+    private UUID ownerUUID;
     @Getter
     public final IMachineBlockEntity holder;
     @Getter
@@ -652,6 +659,18 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (cover == null) return false;
 
         return cover.canConnectRedstone();
+    }
+
+    //////////////////////////////////////
+    // ****** Ownership ********//
+    //////////////////////////////////////
+
+    public @Nullable MachineOwner getOwner() {
+        return MachineOwner.getOwner(ownerUUID);
+    }
+
+    public @Nullable PlayerOwner getPlayerOwner() {
+        return MachineOwner.getPlayerOwner(ownerUUID);
     }
 
     //////////////////////////////////////

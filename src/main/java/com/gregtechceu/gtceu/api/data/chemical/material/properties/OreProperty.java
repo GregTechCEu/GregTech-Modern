@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class OreProperty implements IMaterialProperty {
@@ -123,7 +124,31 @@ public class OreProperty implements IMaterialProperty {
         this.separatedInto.addAll(Arrays.asList(materials));
     }
 
-    public void setOreByProducts(Material... materials) {
+    /**
+     * Set the ore byproducts for this property
+     *
+     * @param materials the materials to use as byproducts
+     */
+    public void setOreByProducts(@NotNull Material @NotNull... materials) {
+        setOreByProducts(Arrays.asList(materials));
+    }
+
+    /**
+     * Set the ore byproducts for this property
+     *
+     * @param materials the materials to use as byproducts
+     */
+    public void setOreByProducts(@NotNull Collection<@NotNull Material> materials) {
+        this.oreByProducts.clear();
+        this.oreByProducts.addAll(materials);
+    }
+
+    /**
+     * Add ore byproducts to this property
+     *
+     * @param materials the materials to add as byproducts
+     */
+    public void addOreByProducts(@NotNull Material @NotNull... materials) {
         this.oreByProducts.addAll(Arrays.asList(materials));
     }
 

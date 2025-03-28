@@ -225,42 +225,42 @@ public class GTUtil {
         return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
-    public static ItemStack copy(ItemStack... stacks) {
-        for (ItemStack stack : stacks)
-            if (!stack.isEmpty()) return stack.copy();
+    /**
+     * Copies first non-empty ItemStack from stacks.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copy();
+            }
+        }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack copyAmount(int amount, ItemStack... stacks) {
-        ItemStack stack = copy(stacks);
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (amount > 64) amount = 64;
-        else if (amount == -1) amount = 111;
-        else if (amount < 0) amount = 0;
-        stack.setCount(amount);
-        return stack;
-    }
-
-    public static FluidStack copyAmount(int amount, FluidStack fluidStack) {
-        if (fluidStack == null) return null;
-        FluidStack stack = fluidStack.copy();
-        stack.setAmount(amount);
-        return stack;
-    }
-
-    public static <M> M selectItemInList(int index, M replacement, List<M> list, Class<M> minClass) {
-        if (list.isEmpty())
-            return replacement;
-
-        M maybeResult;
-        if (list.size() <= index) {
-            maybeResult = list.get(list.size() - 1);
-        } else if (index < 0) {
-            maybeResult = list.get(0);
-        } else maybeResult = list.get(index);
-
-        if (maybeResult != null) return maybeResult;
-        return replacement;
+    /**
+     * Copies first non-empty ItemStack from stacks, with new stack size.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(int newCount, @NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copyWithCount(newCount);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {

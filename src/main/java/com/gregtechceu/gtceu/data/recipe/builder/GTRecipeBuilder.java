@@ -95,17 +95,11 @@ public class GTRecipeBuilder {
     @Setter
     public boolean perTick;
     @Setter
-    public String slotName;
-    @Setter
-    public String uiName;
-    @Setter
     public int chance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int maxChance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int tierChanceBoost = 0;
-    @Setter
-    public boolean isFuel = false;
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
     private boolean removePreviousMatInfo = false;
@@ -141,7 +135,6 @@ public class GTRecipeBuilder {
         this.conditions.addAll(toCopy.conditions);
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
-        this.isFuel = toCopy.isFuel;
         this.recipeCategory = toCopy.recipeCategory;
     }
 
@@ -172,10 +165,7 @@ public class GTRecipeBuilder {
         copy.duration = this.duration;
         copy.chance = this.chance;
         copy.perTick = this.perTick;
-        copy.isFuel = this.isFuel;
         copy.recipeCategory = this.recipeCategory;
-        copy.uiName = this.uiName;
-        copy.slotName = this.slotName;
         copy.onSave = this.onSave;
         return copy;
     }
@@ -191,7 +181,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         t.computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost, slotName, uiName));
+                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
         return this;
     }
 
@@ -203,7 +193,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
         return this;
     }
 
@@ -214,7 +204,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost, slotName, uiName));
+                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
         return this;
     }
 
@@ -226,7 +216,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
         return this;
     }
 
@@ -237,7 +227,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost, slotName, uiName));
+                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
         return this;
     }
 
@@ -249,7 +239,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
         return this;
     }
 
@@ -260,7 +250,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost, slotName, uiName));
+                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
         return this;
     }
 
@@ -272,7 +262,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost, slotName, uiName)).toList());
+                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
         return this;
     }
 
@@ -1272,9 +1262,6 @@ public class GTRecipeBuilder {
             }
             json.add("recipeConditions", array);
         }
-        if (isFuel) {
-            json.addProperty("isFuel", true);
-        }
     }
 
     public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
@@ -1440,7 +1427,7 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, isFuel, recipeCategory);
+                conditions, List.of(), data, duration, recipeCategory);
     }
 
     //////////////////////////////////////
