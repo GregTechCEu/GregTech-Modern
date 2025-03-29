@@ -38,6 +38,7 @@ import me.shedaniel.rei.forge.REIPluginClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author KilaBash
@@ -154,10 +155,10 @@ public class GTREIPlugin implements REIClientPlugin {
 
     private static String toUpperAllWords(String text) {
         StringBuilder result = new StringBuilder();
-        result.append(text.substring(0, 1).toUpperCase());
+        result.append(text.substring(0, 1).toUpperCase(Locale.ROOT));
         for (int i = 1; i < text.length(); i++) {
             if (" ".equals(text.substring(i - 1, i)))
-                result.append(text.substring(i, i + 1).toUpperCase());
+                result.append(text.substring(i, i + 1).toUpperCase(Locale.ROOT));
             else
                 result.append(text.charAt(i));
         }

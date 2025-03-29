@@ -127,7 +127,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 

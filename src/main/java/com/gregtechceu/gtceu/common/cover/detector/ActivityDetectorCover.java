@@ -19,7 +19,8 @@ public class ActivityDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return super.canAttach() &&
+                GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
     }
 
     @Override

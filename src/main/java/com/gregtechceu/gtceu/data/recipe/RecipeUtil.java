@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
 
-public class RecipeHelper {
+public class RecipeUtil {
 
     public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
                                             @Nullable ItemStack output) {

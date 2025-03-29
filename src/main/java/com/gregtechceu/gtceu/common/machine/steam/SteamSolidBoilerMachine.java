@@ -115,10 +115,10 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
     public static ItemStack getBurningFuelRemainder(ItemStack fuelStack) {
         float remainderChance;
         ItemStack remainder;
-        var materialStack = ChemicalHelper.getMaterial(fuelStack);
-        if (materialStack == null)
+        var materialStack = ChemicalHelper.getMaterialStack(fuelStack);
+        if (materialStack.isEmpty()) {
             return ItemStack.EMPTY;
-        else if (materialStack.material() == GTMaterials.Charcoal) {
+        } else if (materialStack.material() == GTMaterials.Charcoal) {
             remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.3f;
         } else if (materialStack.material() == GTMaterials.Coal) {
@@ -127,7 +127,9 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
         } else if (materialStack.material() == GTMaterials.Coke) {
             remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.5f;
-        } else return ItemStack.EMPTY;
+        } else {
+            return ItemStack.EMPTY;
+        }
         return GTValues.RNG.nextFloat() <= remainderChance ? remainder : ItemStack.EMPTY;
     }
 
