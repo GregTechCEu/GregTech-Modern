@@ -164,6 +164,7 @@ public class MachineRecipeLoader {
                 .notConsumable(SHAPE_EXTRUDER_CELL)
                 .outputItems(FLUID_CELL_GLASS_VIAL, 4)
                 .duration(128).EUt(VA[LV])
+                .addMaterialInfo(true)
                 .save(provider);
 
         COMPRESSOR_RECIPES.recipeBuilder("nether_quartz_plate")
