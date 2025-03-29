@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
@@ -497,14 +496,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             return newTag != null || oldTag != null;
         }
         return !ItemStack.isSameItem(oldStack, newStack);
-    }
-
-    default boolean definition$canContinueUsing(ItemStack oldStack, ItemStack newStack) {
-        if (oldStack == newStack) {
-            return true;
-        } else {
-            return !oldStack.isEmpty() && !newStack.isEmpty() && ItemStack.isSameItem(newStack, oldStack);
-        }
     }
 
     default boolean definition$hasCraftingRemainingItem(ItemStack stack) {

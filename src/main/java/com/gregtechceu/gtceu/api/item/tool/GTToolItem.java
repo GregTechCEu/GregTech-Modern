@@ -195,11 +195,6 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         return definition$shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
 
-    @Override
-    public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack) {
-        return definition$canContinueUsing(oldStack, newStack);
-    }
-
     public boolean isDamaged(ItemStack stack) {
         return definition$isDamaged(stack);
     }
