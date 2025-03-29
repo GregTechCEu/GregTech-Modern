@@ -1,19 +1,8 @@
-artifacts {
-    archives tasks.reobfJar
-    archives tasks.reobfSlimJar
-    archives tasks.sourcesJar
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = project.maven_group
-            artifactId = project.archivesBaseName
-            version = project.version
-
+            artifactId = base.archivesName.get()
             from components.java
-
-            artifact sourcesJar
         }
     }
 
@@ -21,10 +10,10 @@ publishing {
     repositories {
         // Add repositories to publish to here.
         maven {
-            url "https://maven.gtceu.com"
+            url = "https://maven.gtceu.com"
             credentials {
-                username System.getenv("MAVEN_USER")
-                password System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }

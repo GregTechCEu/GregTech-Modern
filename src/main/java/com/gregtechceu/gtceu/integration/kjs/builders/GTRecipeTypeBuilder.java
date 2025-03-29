@@ -43,7 +43,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     protected SoundEntry sound;
     protected boolean hasResearchSlot;
     protected int maxTooltips;
-    protected boolean isFuelRecipeType;
 
     private GTRecipeType smallRecipeMap;
     private Supplier<ItemStack> iconSupplier;
@@ -62,7 +61,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.sound = null;
         this.hasResearchSlot = false;
         this.maxTooltips = 3;
-        this.isFuelRecipeType = false;
         this.smallRecipeMap = null;
         this.iconSupplier = null;
         this.uiBuilder = null;
@@ -145,11 +143,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
-    public GTRecipeTypeBuilder setFuelRecipeType(boolean isFuelRecipeType) {
-        this.isFuelRecipeType = isFuelRecipeType;
-        return this;
-    }
-
     public GTRecipeTypeBuilder setSmallRecipeMap(GTRecipeType smallRecipeMap) {
         this.smallRecipeMap = smallRecipeMap;
         return this;
@@ -177,7 +170,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setSound(sound);
         type.setHasResearchSlot(hasResearchSlot);
         type.setMaxTooltips(maxTooltips);
-        type.setFuelRecipeType(isFuelRecipeType);
         type.setSmallRecipeMap(smallRecipeMap);
         type.setIconSupplier(iconSupplier);
         type.setUiBuilder(uiBuilder);

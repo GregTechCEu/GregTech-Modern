@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -114,69 +113,67 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             currentTemperature -= getCoolDownRate();
         }
 
-        if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
+        if (getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
             var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
-            if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
-                inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));
-            }
-            if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                inputTanks
-                        .addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-            }
-            for (IRecipeHandler<?> tank : inputTanks) {
-                drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
-                if (drainWater == null) break;
-            }
-            var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                    maxDrain - drainWater.get(0).getAmount();
-
-            boolean hasDrainedWater = drained > 0;
-            steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
-
-            if (hasDrainedWater) {
-                // fill steam
-                var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
-                List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
-                if (getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
-                    outputTanks.addAll(
-                            Objects.requireNonNull(getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP)));
-                }
-                if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                    outputTanks.addAll(
-                            Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-                }
-                for (IRecipeHandler<?> tank : outputTanks) {
-                    fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
-                    if (fillSteam == null) break;
-                }
-            }
-
-            // check explosion
-            if (this.hasNoWater && hasDrainedWater) {
-                doExplosion(2f);
-                var center = getPos().below().relative(getFrontFacing().getOpposite());
-                if (GTValues.RNG.nextInt(100) > 80) {
-                    doExplosion(center, 2f);
-                }
-                for (Direction x : Direction.Plane.HORIZONTAL) {
-                    for (Direction y : Direction.Plane.HORIZONTAL) {
-                        if (GTValues.RNG.nextInt(100) > 80) {
-                            doExplosion(center.relative(x).relative(y), 2f);
-                        }
+            inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
+            inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
+            if (currentTemperature < 100) {
+                steamGenerated = 0;
+                for (IRecipeHandler<?> tank : inputTanks) {
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, true);
+                    this.hasNoWater = !(drainWater == null || drainWater.isEmpty() ||
+                            drainWater.get(0).getAmount() > 0);
+                    if (!this.hasNoWater) {
+                        break;
                     }
                 }
             } else {
-                this.hasNoWater = !hasDrainedWater;
+                for (IRecipeHandler<?> tank : inputTanks) {
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
+                    if (drainWater == null || drainWater.isEmpty()) {
+                        break;
+                    }
+                }
+                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
+                        maxDrain - drainWater.get(0).getAmount();
+
+                boolean hasDrainedWater = drained > 0;
+                steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
+
+                if (hasDrainedWater) {
+                    // fill steam
+                    var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
+                    List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
+                    outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
+                    outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
+                    for (IRecipeHandler<?> tank : outputTanks) {
+                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
+                        if (fillSteam == null) break;
+                    }
+                }
+
+                // check explosion
+                if (this.hasNoWater && hasDrainedWater) {
+                    doExplosion(2f);
+                    var center = getPos().below().relative(getFrontFacing().getOpposite());
+                    if (GTValues.RNG.nextInt(100) > 80) {
+                        doExplosion(center, 2f);
+                    }
+                    for (Direction x : Direction.Plane.HORIZONTAL) {
+                        for (Direction y : Direction.Plane.HORIZONTAL) {
+                            if (GTValues.RNG.nextInt(100) > 80) {
+                                doExplosion(center.relative(x).relative(y), 2f);
+                            }
+                        }
+                    }
+                } else {
+                    this.hasNoWater = !hasDrainedWater;
+                }
             }
-        } else {
-            if (currentTemperature < 100) {
-                steamGenerated = 0;
-            }
-            this.hasNoWater = false;
         }
         updateSteamSubscription();
     }

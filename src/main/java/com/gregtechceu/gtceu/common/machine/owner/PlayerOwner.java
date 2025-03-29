@@ -1,67 +1,62 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.common.UsernameCache;
 
-import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-public final class PlayerOwner implements IMachineOwner {
+public non-sealed class PlayerOwner extends MachineOwner {
 
-    @Getter
-    private UUID playerUUID;
+    private static final Component displayName = Component.translatable("gtceu.ownership.name.player");
 
-    public PlayerOwner() {}
+    public PlayerOwner(UUID playerUUID) {
+        super(playerUUID);
+    }
 
-    public PlayerOwner(UUID player) {
-        this.playerUUID = player;
+    @UnmodifiableView
+    @Override
+    public @NotNull Set<UUID> getMembers() {
+        return Set.of(getUUID());
     }
 
     @Override
-    public void save(CompoundTag tag) {
-        tag.putUUID("UUID", playerUUID);
+    public boolean isPlayerInTeam(UUID playerUUID) {
+        return this.playerUUID.equals(playerUUID);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        this.playerUUID = tag.getUUID("UUID");
+    public boolean isPlayerFriendly(UUID playerUUID) {
+        return this.playerUUID.equals(playerUUID);
     }
 
     @Override
-    public boolean isPlayerInTeam(Player player) {
-        return true;
+    public UUID getUUID() {
+        return playerUUID;
     }
 
     @Override
-    public boolean isPlayerFriendly(Player player) {
-        return true;
+    public String getName() {
+        return UsernameCache.getLastKnownUsername(playerUUID);
+    }
+
+    @Override
+    public Component getTypeDisplayName() {
+        return displayName;
     }
 
     @Override
     public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", type().getName()));
-        var serverPlayer = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID);
-        final String[] playerName = new String[1];
-        boolean isOnline;
-        if (serverPlayer != null) {
-            playerName[0] = serverPlayer.getDisplayName().getString();
-            isOnline = true;
-        } else {
-            var cache = ServerLifecycleHooks.getCurrentServer().getProfileCache();
-            if (cache != null) {
-                cache.get(playerUUID).ifPresent(value -> playerName[0] = value.getName());
-            }
-            isOnline = false;
-        }
-        compList.add(Component.translatable("behavior.portable_scanner.player_name", playerName[0], isOnline));
+        super.displayInfo(compList);
+        MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
     @Override
-    public MachineOwnerType type() {
-        return MachineOwnerType.PLAYER;
+    public boolean equals(Object object) {
+        return object instanceof PlayerOwner && super.equals(object);
     }
 }

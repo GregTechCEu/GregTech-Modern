@@ -84,7 +84,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
      */
     public static List<Content> makeEUContent(Long eu) {
         return List.of(
-                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
+                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0));
     }
 
     /**

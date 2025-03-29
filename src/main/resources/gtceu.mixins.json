@@ -19,7 +19,6 @@
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
         "ftbchunks.FTBChunksClientMixin",
-        "journeymap.FullscreenMixin",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",

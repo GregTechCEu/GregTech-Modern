@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -8,9 +9,8 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -18,12 +18,11 @@ import java.util.function.BooleanSupplier;
  * @date 2023/2/22
  * @implNote ToggleButtonWidget
  */
-@Accessors(chain = true)
 public class ToggleButtonWidget extends SwitchWidget {
 
     private final IGuiTexture texture;
-    @Setter
     private String tooltipText;
+    private boolean isMultiLang;
 
     public ToggleButtonWidget(int xPosition, int yPosition, int width, int height, BooleanSupplier isPressedCondition,
                               BooleanConsumer setPressedExecutor) {
@@ -32,8 +31,7 @@ public class ToggleButtonWidget extends SwitchWidget {
 
     public ToggleButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture,
                               BooleanSupplier isPressedCondition, BooleanConsumer setPressedExecutor) {
-        super(xPosition, yPosition, width, height,
-                (clickData, aBoolean) -> setPressedExecutor.accept(aBoolean.booleanValue()));
+        super(xPosition, yPosition, width, height, null);
         texture = buttonTexture;
         if (buttonTexture instanceof ResourceTexture resourceTexture) {
             setTexture(resourceTexture.getSubTexture(0, 0, 1, 0.5), resourceTexture.getSubTexture(0, 0.5, 1, 0.5));
@@ -42,6 +40,10 @@ public class ToggleButtonWidget extends SwitchWidget {
         }
 
         setSupplier(isPressedCondition::getAsBoolean);
+        setOnPressCallback((cd, bool) -> {
+            setPressedExecutor.accept(bool.booleanValue());
+            this.updateHoverTooltips();
+        });
     }
 
     public ToggleButtonWidget setShouldUseBaseBackground() {
@@ -53,11 +55,26 @@ public class ToggleButtonWidget extends SwitchWidget {
         return this;
     }
 
-    @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public ToggleButtonWidget setTooltipText(String tooltipText) {
+        this.tooltipText = tooltipText;
+        updateHoverTooltips();
+        return this;
+    }
+
+    public ToggleButtonWidget isMultiLang() {
+        isMultiLang = true;
+        updateHoverTooltips();
+        return this;
+    }
+
+    protected void updateHoverTooltips() {
         if (tooltipText != null) {
-            setHoverTooltips(tooltipText + (isPressed ? ".enabled" : ".disabled"));
+            if (!isMultiLang) {
+                setHoverTooltips(tooltipText + (isPressed ? ".enabled" : ".disabled"));
+            } else {
+                setHoverTooltips(
+                        List.copyOf(LangHandler.getMultiLang(tooltipText + (isPressed ? ".enabled" : ".disabled"))));
+            }
         }
     }
 }
