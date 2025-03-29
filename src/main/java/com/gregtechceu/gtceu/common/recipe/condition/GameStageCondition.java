@@ -56,7 +56,7 @@ public class GameStageCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        //IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
+        // IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
         MachineOwner owner = recipeLogic.machine.self().getOwner();
         if (owner instanceof PlayerOwner) {
             var uuid = owner.getUUID();
@@ -65,8 +65,8 @@ public class GameStageCondition extends RecipeCondition {
                 return playerData.hasStage(stageName);
         } else if (owner instanceof FTBOwner ftbOwner) {
             var team = ftbOwner.getTeam();
-            if(team == null) return false;
-            for(var player : team.getMembers()) {
+            if (team == null) return false;
+            for (var player : team.getMembers()) {
                 var playerData = GameStageSaveHandler.getPlayerData(player);
                 if (playerData != null && playerData.hasStage(stageName)) {
                     return true;
