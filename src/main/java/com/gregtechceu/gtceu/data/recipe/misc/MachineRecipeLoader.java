@@ -754,6 +754,39 @@ public class MachineRecipeLoader {
                 .outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50)
                 .addMaterialInfo(true, true).save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_firebox")
+                .inputItems(rod, Bronze, 3)
+                .inputItems(frameGt, Bronze)
+                .inputItems(plate, Bronze, 3)
+                .outputItems(GTBlocks.FIREBOX_BRONZE, 2)
+                .duration(100)
+                .EUt(VA[LV])
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_firebox")
+                .inputItems(rod, Steel, 3)
+                .inputItems(frameGt, Steel)
+                .inputItems(plate, Steel, 3)
+                .outputItems(GTBlocks.FIREBOX_STEEL, 2)
+                .duration(200)
+                .EUt(VA[LV])
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_firebox")
+                .inputItems(rod, Titanium, 3)
+                .inputItems(frameGt, Titanium)
+                .inputItems(plate, Titanium, 3)
+                .outputItems(GTBlocks.FIREBOX_TITANIUM, 2)
+                .duration(300)
+                .EUt(VA[HV])
+                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_firebox")
+                .inputItems(rod, TungstenSteel, 3)
+                .inputItems(frameGt, TungstenSteel)
+                .inputItems(plate, TungstenSteel, 3)
+                .outputItems(GTBlocks.FIREBOX_TUNGSTENSTEEL, 2)
+                .duration(400)
+                .EUt(VA[EV])
+                .save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV])
                 .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32)
                 .inputFluids(Trinium, GTValues.L * 24).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
@@ -821,6 +854,38 @@ public class MachineRecipeLoader {
                         GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("casing_grate_casing")
+                .inputItems(Items.IRON_BARS, 6)
+                .inputItems(frameGt, Steel)
+                .inputItems(ELECTRIC_MOTOR_MV)
+                .inputItems(rotor, Steel)
+                .outputItems(GTBlocks.CASING_GRATE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .duration(800)
+                .EUt(VA[IV])
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("assembly_line_casing")
+                .inputItems(gear, Ruridit, 2)
+                .inputItems(plate, Steel, 4)
+                .inputItems(ROBOT_ARM_IV, 2)
+                .inputItems(frameGt, TungstenSteel)
+                .outputItems(GTBlocks.CASING_ASSEMBLY_LINE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .duration(650)
+                .EUt(VA[IV])
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("assembly_control_casing")
+                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
+                .inputItems(CustomTags.EV_CIRCUITS, 4)
+                .inputItems(SENSOR_IV)
+                .inputItems(EMITTER_IV)
+                .inputItems(ELECTRIC_MOTOR_IV)
+                .inputItems(frameGt, TungstenSteel)
+                .outputItems(GTBlocks.CASING_ASSEMBLY_CONTROL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .duration(650)
+                .EUt(VA[IV])
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("plascrete").EUt(48).inputItems(frameGt, Steel)
                 .inputItems(plate, Polyethylene, 6).inputFluids(Concrete, L)
