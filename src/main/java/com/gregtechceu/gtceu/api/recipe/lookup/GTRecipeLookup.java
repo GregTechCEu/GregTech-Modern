@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -43,7 +45,7 @@ public class GTRecipeLookup {
      */
     @Nullable
     public GTRecipe findRecipe(final IRecipeCapabilityHolder holder) {
-        return find(holder, recipe -> recipe.matchRecipe(holder).isSuccess());
+        return find(holder, recipe -> RecipeHelper.matchRecipe(holder, recipe).isSuccess());
     }
 
     /**
@@ -56,22 +58,26 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> prepareRecipeFind(@NotNull IRecipeCapabilityHolder holder) {
         // First, check if items and fluids are valid.
         int totalSize = 0;
-        for (Map.Entry<RecipeCapability<?>, List<IRecipeHandler<?>>> entries : holder.getCapabilitiesProxy().row(IO.IN)
-                .entrySet()) {
-            int size = 0;
-            if (!entries.getKey().isRecipeSearchFilter()) {
-                continue;
-            }
-            for (IRecipeHandler<?> entry : entries.getValue()) {
-                if (entry.getSize() != -1) {
-                    size += entry.getSize();
+        List<RecipeHandlerList> handlers = holder.getCapabilitiesForIO(IO.IN);
+
+        for (var handler : handlers) {
+            for (var entries : handler.getHandlerMap().entrySet()) {
+                int size = 0;
+                if (!entries.getKey().isRecipeSearchFilter()) {
+                    continue;
                 }
+                for (IRecipeHandler<?> entry : entries.getValue()) {
+                    if (entry.getSize() != -1) {
+                        size += entry.getSize();
+                    }
+                }
+                if (size == Integer.MAX_VALUE) {
+                    return null;
+                }
+                totalSize += size;
             }
-            if (size == Integer.MAX_VALUE) {
-                return null;
-            }
-            totalSize += size;
         }
+
         if (totalSize == 0) {
             return null;
         }
@@ -424,21 +430,18 @@ public class GTRecipeLookup {
      */
     @NotNull
     protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
-        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(
-                r.getCapabilitiesProxy().row(IO.IN).values().size());
-        r.getCapabilitiesProxy().row(IO.IN).forEach((cap, handlers) -> {
-            if (cap.isRecipeSearchFilter() && !handlers.isEmpty()) {
-                for (IRecipeHandler<?> handler : handlers) {
-                    if (handler.isProxy()) {
-                        continue;
-                    }
-                    List<Object> compressed = cap.compressIngredients(handler.getContents());
-                    for (Object content : compressed) {
-                        list.add(cap.convertToMapIngredient(content));
-                    }
-                }
+        var handlerMap = r.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
+        int size = handlerMap.values().size();
+        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
+        for (var entry : handlerMap.entrySet()) {
+            var cap = entry.getKey();
+            var handlers = entry.getValue();
+            if (!cap.isRecipeSearchFilter()) continue;
+            for (var handler : handlers) {
+                var compressed = cap.compressIngredients(handler.getContents());
+                list.addAll(cap.convertCompressedIngredients(compressed));
             }
-        });
+        }
         return list;
     }
 

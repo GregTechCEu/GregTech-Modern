@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -270,9 +270,11 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    @Nullable
+    @NotNull
     public static Material get(String name) {
-        return GTCEuAPI.materialManager.getMaterial(name);
+        var mat = GTCEuAPI.materialManager.getMaterial(name);
+        // mat could be null here due to the registry grabbing a material that isn't in the map
+        return mat == null ? GTMaterials.NULL : mat;
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
@@ -660,10 +662,7 @@ public class GTMaterials {
     public static Material DiethylenetriaminePentaacetonitrile;
     public static Material DiethylenetriaminepentaaceticAcid;
     public static Material SodiumNitrite;
-
-    public static Material AcidicBromineSolution;
-    public static Material ConcentratedBromineSolution;
-    public static Material HydrogenIodide;
+    public static Material HydrogenPeroxide;
 
     /**
      * Organic chemistry
@@ -885,6 +884,7 @@ public class GTMaterials {
     public static Material UUMatter;
     public static Material PCBCoolant;
     public static Material Sculk;
+    public static Material Wax;
 
     /**
      * Second Degree Compounds
@@ -948,12 +948,6 @@ public class GTMaterials {
     public static Material Dichloroethane;
     public static Material Diethylenetriamine;
 
-    public static Material RawBrine;
-    public static Material DebrominatedBrine;
-    public static Material BrominatedChlorineVapor;
-    public static Material AcidicBromineExhaust;
-    public static Material Wax;
-
     /**
      * Third Degree Materials
      */
@@ -972,11 +966,6 @@ public class GTMaterials {
     public static Material Brick;
     public static Material Fireclay;
     public static Material Diorite;
-
-    public static Material HotBrine;
-    public static Material HotChlorinatedBrominatedBrine;
-    public static Material HotDebrominatedBrine;
-    public static Material HotAlkalineDebrominatedBrine;
 
     /**
      * Fourth Degree Materials

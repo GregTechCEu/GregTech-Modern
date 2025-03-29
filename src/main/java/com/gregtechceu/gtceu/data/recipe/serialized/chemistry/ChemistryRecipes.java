@@ -33,7 +33,6 @@ public class ChemistryRecipes {
         PolymerRecipes.init(provider);
         ReactorRecipes.init(provider);
         SeparationRecipes.init(provider);
-        BrineRecipes.init(provider);
         AntidoteRecipes.init(provider);
 
         // A Few Random Recipes
@@ -144,6 +143,16 @@ public class ChemistryRecipes {
                 .inputFluids(Nitrogen.getFluid(2000))
                 .outputItems(dust, ActivatedCarbon)
                 .duration(640).EUt(64)
+                .save(provider);
+
+        // 4 kelp -> 1 iodine
+        CHEMICAL_RECIPES.recipeBuilder("iodine")
+                .inputItems(Items.DRIED_KELP_BLOCK, 3)
+                .inputFluids(Hydrogen.getFluid(2000))
+                .inputFluids(HydrogenPeroxide.getFluid(1000))
+                .outputItems(dust, Iodine, 1)
+                .outputFluids(Water.getFluid(2000))
+                .duration(200).EUt(VA[MV])
                 .save(provider);
     }
 }

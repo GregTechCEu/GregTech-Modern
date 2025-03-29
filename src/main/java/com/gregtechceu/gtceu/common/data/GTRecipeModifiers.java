@@ -84,7 +84,7 @@ public class GTRecipeModifiers {
      * <p>
      * Looks for the Parallel Hatch on a Multiblock and attempts to parallelize the recipe up to the set amount
      * </p>
-     * 
+     *
      * @param machine an {@link IMultiController} machine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Parallel Multiblock
@@ -111,7 +111,7 @@ public class GTRecipeModifiers {
      * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.
      * Then, EUt is multiplied by {@code 1 - (0.1 × coilTier)}
      * </p>
-     * 
+     *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Cracking
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Cracker
@@ -143,7 +143,7 @@ public class GTRecipeModifiers {
      * Recipe is OC'd via {@link OverclockingLogic#heatingCoilOC}.<br>
      * Then, EUt is multiplied by {@code 0.95×} for every {@code 900K} over the required temperature.
      * </p>
-     * 
+     *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Blasting
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Blast Furnace
@@ -181,7 +181,7 @@ public class GTRecipeModifiers {
      * Then, duration is multiplied by {@code 1.333×} for Cupronickel Coils
      * or {@code 2 / (tier + 1)} for higher tiercoils.
      * </p>
-     * 
+     *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Pyrolysis
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Pyrolyse Oven
@@ -216,7 +216,7 @@ public class GTRecipeModifiers {
      * <li>Multiplies the recipe contents by the parallel amount</li>
      * </ol>
      * </p>
-     * 
+     *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for parallel smelting
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Multi Smelter

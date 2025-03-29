@@ -259,11 +259,11 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!WaypointManager.isActive()) return true;
         var clickedItem = getClickedVein(mouseX, mouseY);
         if (clickedItem == null) {
             return super.mouseClicked(mouseX, mouseY, button);
         }
+        if (!WaypointManager.isActive()) return true;
         MutableComponent veinName = Component.literal(clickedItem.name());
         veinName.setStyle(veinName.getStyle().withColor(clickedItem.color));
         WaypointManager.setWaypoint(new ChunkPos(clickedItem.position).toString(),

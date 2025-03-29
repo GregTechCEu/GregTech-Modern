@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.block.AppearanceBlock;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -12,11 +13,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class BatteryBlock extends AppearanceBlock {
 
     @Getter
@@ -39,6 +43,7 @@ public class BatteryBlock extends AppearanceBlock {
         }
     }
 
+    @MethodsReturnNonnullByDefault
     public enum BatteryPartType implements StringRepresentable, IBatteryData {
 
         EMPTY_TIER_I,
@@ -78,13 +83,11 @@ public class BatteryBlock extends AppearanceBlock {
         }
 
         // must be separately named because of reobf issue
-        @NotNull
         @Override
         public String getBatteryName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
-        @NotNull
         @Override
         public String getSerializedName() {
             return getBatteryName();
