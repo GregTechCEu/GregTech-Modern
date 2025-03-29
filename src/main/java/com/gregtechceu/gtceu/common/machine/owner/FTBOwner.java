@@ -4,9 +4,12 @@ import net.minecraft.network.chat.Component;
 
 import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import dev.ftb.mods.ftbteams.api.Team;
+import dev.ftb.mods.ftbteams.data.PlayerTeam;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public non-sealed class FTBOwner extends MachineOwner {
@@ -31,6 +34,17 @@ public non-sealed class FTBOwner extends MachineOwner {
 
     public @Nullable Team getTeam() {
         return getPlayerTeam(playerUUID);
+    }
+
+    public Set<UUID> getMembers() {
+        var team = getTeam();
+        if (team == null) return Collections.emptySet();
+        if (team.isPlayerTeam()) {
+            return ((PlayerTeam) team).getEffectiveTeam().getMembers();
+        } else if (team.isPartyTeam() || team.isServerTeam()) {
+            return team.getMembers();
+        }
+        return Collections.emptySet();
     }
 
     @Override
