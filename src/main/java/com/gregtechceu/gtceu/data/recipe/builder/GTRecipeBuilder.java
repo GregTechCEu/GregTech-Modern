@@ -387,10 +387,10 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("Input items is empty, id: {}", id);
         } else {
             var matStack = ItemMaterialData.getMaterialInfo(input.getItem());
-            if (matStack != null) {
-                tempItemMaterialStacks.addAll(matStack.getMaterials());
-            } else {
-                if (chance == maxChance) {
+            if (chance == maxChance && chance != 0) {
+                if (matStack != null) {
+                    tempItemMaterialStacks.addAll(matStack.getMaterials());
+                } else {
                     tempItemStacks.add(input);
                 }
             }
@@ -404,10 +404,10 @@ public class GTRecipeBuilder {
                 GTCEu.LOGGER.error("Input item is empty, id: {}", id);
             } else {
                 var matStack = ItemMaterialData.getMaterialInfo(itemStack.getItem());
-                if (matStack != null) {
-                    tempItemMaterialStacks.addAll(matStack.getMaterials());
-                } else {
-                    if (chance == maxChance) {
+                if (chance == maxChance && chance != 0) {
+                    if (matStack != null) {
+                        tempItemMaterialStacks.addAll(matStack.getMaterials());
+                    } else {
                         tempItemStacks.add(itemStack);
                     }
                 }
@@ -434,10 +434,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(Item input) {
         var matStack = ItemMaterialData.getMaterialInfo(input);
-        if (matStack != null) {
-            tempItemMaterialStacks.addAll(matStack.getMaterials());
-        } else {
-            if (chance == maxChance) {
+        if (chance == maxChance && chance != 0) {
+            if (matStack != null) {
+                tempItemMaterialStacks.addAll(matStack.getMaterials());
+            } else {
                 tempItemStacks.add(new ItemStack(input));
             }
         }
@@ -952,7 +952,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (!matStack.isNull()) {
+        if (!matStack.isNull() && chance != 0 && chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -964,7 +964,7 @@ public class GTRecipeBuilder {
         for (var input : inputs) {
             var matStack = ChemicalHelper.getMaterial(input.getFluid());
             if (!matStack.isNull()) {
-                if (chance == maxChance) {
+                if (chance == maxChance && chance != 0) {
                     tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
                 }
             }
