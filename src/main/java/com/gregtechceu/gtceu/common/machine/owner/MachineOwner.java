@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -56,6 +57,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
     }
 
+    @UnmodifiableView
     public abstract @NotNull Set<UUID> getMembers();
 
     public boolean isPlayerInTeam(Player player) {
