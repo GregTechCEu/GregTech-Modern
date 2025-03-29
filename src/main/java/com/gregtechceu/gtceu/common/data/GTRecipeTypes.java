@@ -20,11 +20,10 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
-import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.RecipeUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -110,7 +109,7 @@ public class GTRecipeTypes {
                     recipeBuilder.inputFluids(GTMaterials.Oxygen.getFluid(recipeBuilder.duration));
                 }
             })
-            .addCustomRecipeLogic(new ArcFurnaceLogic());
+            .addCustomRecipeLogic(ArcFurnaceLogic.INSTANCE);
 
     public final static GTRecipeType ASSEMBLER_RECIPES = register("assembler", ELECTRIC).setMaxIOSize(9, 1, 1, 0)
             .setEUIO(IO.IN)
@@ -137,7 +136,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(128).EUt(4))
             .setSlotOverlay(false, false, GuiTextures.BREWER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new BreweryLogic())
+            .addCustomRecipeLogic(BreweryLogic.INSTANCE)
             .setSound(GTSoundEntries.CHEMICAL);
 
     public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
@@ -148,7 +147,7 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new MaceratorLogic())
+            .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR);
 
     public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
@@ -159,7 +158,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setSlotOverlay(true, true, GuiTextures.DARK_CANISTER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_CANNER, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new CannerLogic())
+            .addCustomRecipeLogic(CannerLogic.INSTANCE)
             .setSound(GTSoundEntries.BATH);
 
     public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
@@ -311,7 +310,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType FORMING_PRESS_RECIPES = register("forming_press", ELECTRIC)
             .setMaxIOSize(6, 1, 0, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_COMPRESS, LEFT_TO_RIGHT)
-            .addCustomRecipeLogic(new FormingPressLogic())
+            .addCustomRecipeLogic(FormingPressLogic.INSTANCE)
             .setSound(GTSoundEntries.COMPRESSOR);
 
     public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
@@ -512,7 +511,7 @@ public class GTRecipeTypes {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-                if (requiredCoil != null && requiredCoil.getMaterial() != null) {
+                if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
                     return LocalizationUtils.format("gtceu.recipe.coil.tier",
                             I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
                 }
@@ -557,12 +556,12 @@ public class GTRecipeTypes {
                                         BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath())
                                 .EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
 
-                        int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
+                        int ratio = RecipeUtil.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR_INV);
                         boolean shouldDivide = ratio != 1;
 
-                        boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
-                                RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
+                        boolean fluidsDivisible = RecipeUtil.isFluidStackDivisibleForDistillery(input, ratio) &&
+                                RecipeUtil.isFluidStackDivisibleForDistillery(output, ratio);
 
                         FluidIngredient dividedInputFluid = input.copy();
                         dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
@@ -607,11 +606,6 @@ public class GTRecipeTypes {
                     }
                 }
             });
-
-    public static final GTRecipeType EVAPORATION_RECIPES = register("evaporation", ELECTRIC).setMaxIOSize(0, 1, 1, 6)
-            .setEUIO(IO.IN)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.MOTOR);
 
     public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven", MULTIBLOCK).setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
@@ -664,9 +658,8 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
             .setOffsetVoltageText(true)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                    FormattingUtil.formatNumberReadable2F(data.getLong("eu_to_start"), false),
-                    FusionReactorMachine.getFusionTier(data.getLong("eu_to_start"))));
+            .setMaxTooltips(4)
+            .setUiBuilder(FusionReactorMachine::addEUToStartLabel);
 
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);

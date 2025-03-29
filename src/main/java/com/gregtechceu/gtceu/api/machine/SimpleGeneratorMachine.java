@@ -122,7 +122,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 

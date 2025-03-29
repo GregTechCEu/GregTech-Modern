@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -182,12 +179,12 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, @Nullable String slotName,
+    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
                                            boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
-        int sum = left.stream().reduce(0, Integer::sum);
+        int sum = left.stream().mapToInt(Integer::intValue).sum();
         if (io == IO.IN) {
             int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= sum) {
@@ -223,7 +220,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         return List.of(lastOutputCwu);
     }
 
@@ -248,10 +245,9 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         } else if (machine instanceof IOpticalComputationProvider provider) {
             return provider;
         } else if (machine instanceof IRecipeCapabilityHolder recipeCapabilityHolder) {
-            if (recipeCapabilityHolder.getCapabilitiesProxy().contains(IO.IN, CWURecipeCapability.CAP) &&
-                    !recipeCapabilityHolder.getCapabilitiesProxy().get(IO.IN, CWURecipeCapability.CAP).isEmpty()) {
-                var provider = (IOpticalComputationProvider) recipeCapabilityHolder.getCapabilitiesProxy()
-                        .get(IO.IN, CWURecipeCapability.CAP).get(0);
+            var cwuCap = recipeCapabilityHolder.getCapabilitiesFlat(IO.IN, CWURecipeCapability.CAP);
+            if (!cwuCap.isEmpty()) {
+                var provider = (IOpticalComputationProvider) cwuCap.get(0);
                 if (provider != this) {
                     return provider;
                 }

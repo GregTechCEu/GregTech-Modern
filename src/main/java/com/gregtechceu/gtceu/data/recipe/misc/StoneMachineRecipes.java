@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -24,8 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.GTValues.ULV;
-import static com.gregtechceu.gtceu.api.GTValues.VA;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 
 public class StoneMachineRecipes {
@@ -49,13 +48,13 @@ public class StoneMachineRecipes {
                             .button(Items.STONE_BUTTON)
                             .pressurePlate(Items.STONE_PRESSURE_PLATE)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_stone")
                             .stone(Items.SMOOTH_STONE)
                             .slab(Items.SMOOTH_STONE_SLAB)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "stone_brick")
                             .stone(Items.STONE_BRICKS)
@@ -65,7 +64,7 @@ public class StoneMachineRecipes {
                             .stair(Items.STONE_BRICK_STAIRS)
                             .wall(Items.STONE_BRICK_WALL)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "andesite")
                             .stone(Items.ANDESITE)
@@ -74,14 +73,14 @@ public class StoneMachineRecipes {
                             .stair(Items.ANDESITE_STAIRS)
                             .wall(Items.ANDESITE_WALL)
                             .material(GTMaterials.Andesite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_andesite")
                             .stone(Items.POLISHED_ANDESITE)
                             .slab(Items.POLISHED_ANDESITE_SLAB)
                             .stair(Items.POLISHED_ANDESITE_STAIRS)
                             .material(GTMaterials.Andesite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "granite")
                             .stone(Items.GRANITE)
@@ -90,14 +89,14 @@ public class StoneMachineRecipes {
                             .stair(Items.GRANITE_STAIRS)
                             .wall(Items.GRANITE_WALL)
                             .material(GTMaterials.Granite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_granite")
                             .stone(Items.POLISHED_GRANITE)
                             .slab(Items.POLISHED_GRANITE_SLAB)
                             .stair(Items.POLISHED_GRANITE_STAIRS)
                             .material(GTMaterials.Granite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "diorite")
                             .stone(Items.DIORITE)
@@ -106,14 +105,14 @@ public class StoneMachineRecipes {
                             .stair(Items.DIORITE_STAIRS)
                             .wall(Items.DIORITE_WALL)
                             .material(GTMaterials.Diorite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_diorite")
                             .stone(Items.POLISHED_DIORITE)
                             .slab(Items.POLISHED_DIORITE_SLAB)
                             .stair(Items.POLISHED_DIORITE_STAIRS)
                             .material(GTMaterials.Diorite)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "sandstone")
                             .stone(Items.SANDSTONE)
@@ -123,20 +122,20 @@ public class StoneMachineRecipes {
                             .stair(Items.SANDSTONE_STAIRS)
                             .wall(Items.SANDSTONE_WALL)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_sandstone")
                             .stone(Items.SMOOTH_SANDSTONE)
                             .slab(Items.SMOOTH_SANDSTONE_SLAB)
                             .stair(Items.SMOOTH_SANDSTONE_STAIRS)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cut_sandstone")
                             .stone(Items.CUT_SANDSTONE)
                             .slab(Items.CUT_STANDSTONE_SLAB)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "red_sandstone")
                             .stone(Items.RED_SANDSTONE)
@@ -146,20 +145,20 @@ public class StoneMachineRecipes {
                             .stair(Items.RED_SANDSTONE_STAIRS)
                             .wall(Items.RED_SANDSTONE_WALL)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_red_sandstone")
                             .stone(Items.SMOOTH_RED_SANDSTONE)
                             .slab(Items.SMOOTH_RED_SANDSTONE_SLAB)
                             .stair(Items.SMOOTH_RED_SANDSTONE_STAIRS)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cut_red_sandstone")
                             .stone(Items.CUT_RED_SANDSTONE)
                             .slab(Items.CUT_RED_SANDSTONE_SLAB)
                             .material(GTMaterials.QuartzSand)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cobblestone")
                             .stone(Items.COBBLESTONE)
@@ -167,7 +166,7 @@ public class StoneMachineRecipes {
                             .stair(Items.COBBLESTONE_STAIRS)
                             .wall(Items.COBBLESTONE_WALL)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "mossy_cobblestone")
                             .stone(Items.MOSSY_COBBLESTONE)
@@ -175,7 +174,7 @@ public class StoneMachineRecipes {
                             .stair(Items.MOSSY_COBBLESTONE_STAIRS)
                             .wall(Items.MOSSY_COBBLESTONE_WALL)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "mossy_stone_brick")
                             .stone(Items.MOSSY_STONE_BRICKS)
@@ -183,7 +182,7 @@ public class StoneMachineRecipes {
                             .stair(Items.MOSSY_STONE_BRICK_STAIRS)
                             .wall(Items.MOSSY_STONE_BRICK_WALL)
                             .material(GTMaterials.Stone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "blackstone")
                             .stone(Items.BLACKSTONE)
@@ -192,7 +191,7 @@ public class StoneMachineRecipes {
                             .stair(Items.BLACKSTONE_STAIRS)
                             .wall(Items.BLACKSTONE_WALL)
                             .material(GTMaterials.Blackstone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_blackstone")
                             .stone(Items.POLISHED_BLACKSTONE)
@@ -204,7 +203,7 @@ public class StoneMachineRecipes {
                             .wall(Items.POLISHED_BLACKSTONE_WALL)
                             .pressurePlate(Items.POLISHED_BLACKSTONE_PRESSURE_PLATE)
                             .material(GTMaterials.Blackstone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_blackstone_brick")
                             .stone(Items.POLISHED_BLACKSTONE_BRICKS)
@@ -213,7 +212,7 @@ public class StoneMachineRecipes {
                             .button(Items.POLISHED_BLACKSTONE_BUTTON)
                             .wall(Items.POLISHED_BLACKSTONE_BRICK_WALL)
                             .material(GTMaterials.Blackstone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "brick")
                             .stone(Items.BRICKS)
@@ -221,7 +220,7 @@ public class StoneMachineRecipes {
                             .stair(Items.BRICK_STAIRS)
                             .wall(Items.BRICK_WALL)
                             .material(GTMaterials.Brick, 4 * GTValues.M)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "mud_brick")
                             .stone(Items.MUD_BRICKS)
@@ -229,7 +228,7 @@ public class StoneMachineRecipes {
                             .stair(Items.MUD_BRICK_STAIRS)
                             .wall(Items.MUD_BRICK_WALL)
                             .material(GTMaterials.Clay) // maybe?
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "nether_bricks")
                             .stone(Items.NETHER_BRICKS)
@@ -239,7 +238,7 @@ public class StoneMachineRecipes {
                             .stair(Items.NETHER_BRICK_STAIRS)
                             .wall(Items.NETHER_BRICK_WALL)
                             .material(GTMaterials.Netherrack, 4 * GTValues.M)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "red_nether_brick")
                             .stone(Items.RED_NETHER_BRICKS)
@@ -247,7 +246,7 @@ public class StoneMachineRecipes {
                             .stair(Items.RED_NETHER_BRICK_STAIRS)
                             .wall(Items.RED_NETHER_BRICK_WALL)
                             .material(GTMaterials.Netherrack)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "quartz")
                             .stone(Items.QUARTZ_BLOCK)
@@ -256,70 +255,70 @@ public class StoneMachineRecipes {
                             // .slab(Items.QUARTZ_SLAB) TODO: Fix plate conflict
                             .stair(Items.QUARTZ_STAIRS)
                             .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "smooth_quartz")
                             .stone(Items.SMOOTH_QUARTZ)
                             .slab(Items.SMOOTH_QUARTZ_SLAB)
                             .stair(Items.SMOOTH_QUARTZ_STAIRS)
                             .material(GTMaterials.NetherQuartz, 4 * GTValues.M)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "cut_copper")
                             .stone(Items.CUT_COPPER)
                             .slab(Items.CUT_COPPER_SLAB)
                             .stair(Items.CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "exposed_cut_copper")
                             .stone(Items.EXPOSED_CUT_COPPER)
                             .slab(Items.EXPOSED_CUT_COPPER_SLAB)
                             .stair(Items.EXPOSED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "oxidized_cut_copper")
                             .stone(Items.OXIDIZED_CUT_COPPER)
                             .slab(Items.OXIDIZED_CUT_COPPER_SLAB)
                             .stair(Items.OXIDIZED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "weathered_cut_copper")
                             .stone(Items.WEATHERED_CUT_COPPER)
                             .slab(Items.WEATHERED_CUT_COPPER_SLAB)
                             .stair(Items.WEATHERED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "waxed_cut_copper")
                             .stone(Items.WAXED_CUT_COPPER)
                             .slab(Items.WAXED_CUT_COPPER_SLAB)
                             .stair(Items.WAXED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "waxed_exposed_cut_copper")
                             .stone(Items.WAXED_EXPOSED_CUT_COPPER)
                             .slab(Items.WAXED_EXPOSED_CUT_COPPER_SLAB)
                             .stair(Items.WAXED_EXPOSED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "waxed_oxidized_cut_copper")
                             .stone(Items.WAXED_OXIDIZED_CUT_COPPER)
                             .slab(Items.WAXED_OXIDIZED_CUT_COPPER_SLAB)
                             .stair(Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "waxed_weathered_cut_copper")
                             .stone(Items.WAXED_WEATHERED_CUT_COPPER)
                             .slab(Items.WAXED_WEATHERED_CUT_COPPER_SLAB)
                             .stair(Items.WAXED_WEATHERED_CUT_COPPER_STAIRS)
                             .material(GTMaterials.Copper, 9 * GTValues.M / 4)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "purpur")
                             .stone(Items.PURPUR_BLOCK)
@@ -327,7 +326,7 @@ public class StoneMachineRecipes {
                             .slab(Items.PURPUR_SLAB)
                             .stair(Items.PURPUR_STAIRS)
                             // .material() // TODO purpur material?
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "end_stone")
                             .stone(Items.END_STONE)
@@ -336,7 +335,7 @@ public class StoneMachineRecipes {
                             .stair(Items.END_STONE_BRICK_STAIRS)
                             .wall(Items.END_STONE_BRICK_WALL)
                             .material(GTMaterials.Endstone)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "prismarine")
                             .stone(Items.PRISMARINE)
@@ -344,26 +343,26 @@ public class StoneMachineRecipes {
                             .stair(Items.PRISMARINE_STAIRS)
                             .wall(Items.PRISMARINE_WALL)
                             // .material() // TODO prismarine material?
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "dark_prismarine")
                             .stone(Items.DARK_PRISMARINE)
                             .slab(Items.DARK_PRISMARINE_SLAB)
                             .stair(Items.DARK_PRISMARINE_STAIRS)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "prismarine_brick")
                             .stone(Items.PRISMARINE_BRICKS)
                             .slab(Items.PRISMARINE_BRICK_SLAB)
                             .stair(Items.PRISMARINE_BRICK_STAIRS)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "bamboo_mosaic")
                             .stone(Items.BAMBOO_MOSAIC)
                             .slab(Items.BAMBOO_MOSAIC_SLAB)
                             .stair(Items.BAMBOO_MOSAIC_STAIRS)
                             .material(GTMaterials.Wood)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "deepslate")
                             .stone(Items.DEEPSLATE)
@@ -377,7 +376,7 @@ public class StoneMachineRecipes {
                             .stair(Items.COBBLED_DEEPSLATE_STAIRS)
                             .wall(Items.COBBLED_DEEPSLATE_WALL)
                             .material(GTMaterials.Deepslate)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "polished_deepslate")
                             .stone(Items.POLISHED_DEEPSLATE)
@@ -386,7 +385,7 @@ public class StoneMachineRecipes {
                             .stair(Items.POLISHED_DEEPSLATE_STAIRS)
                             .wall(Items.POLISHED_DEEPSLATE_WALL)
                             .material(GTMaterials.Deepslate)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "deepslate_bricks")
                             .stone(Items.DEEPSLATE_BRICKS)
@@ -396,7 +395,7 @@ public class StoneMachineRecipes {
                             .stair(Items.DEEPSLATE_BRICK_STAIRS)
                             .wall(Items.DEEPSLATE_BRICK_WALL)
                             .material(GTMaterials.Deepslate)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "deepslate_tile")
                             .stone(Items.DEEPSLATE_TILES)
@@ -405,13 +404,13 @@ public class StoneMachineRecipes {
                             .stair(Items.DEEPSLATE_TILE_STAIRS)
                             .wall(Items.DEEPSLATE_TILE_WALL)
                             .material(GTMaterials.Deepslate)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new StoneTypeEntry.Builder(mcModID, "basalt")
                             .stone(Items.BASALT)
                             .polishedStone(Items.POLISHED_BASALT)
                             .material(GTMaterials.Basalt)
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build()
 
             );
@@ -419,100 +418,100 @@ public class StoneMachineRecipes {
         return DEFAULT_ENTRIES;
     }
 
-    public static void registerUnificationInfo() {
+    public static void registerMaterialInfo() {
         for (StoneTypeEntry entry : getDefaultEntries()) {
-            registerStoneUnificationInfo(entry);
+            registerStoneMaterialInfo(entry);
         }
     }
 
-    public static void registerStoneUnificationInfo(@NotNull StoneTypeEntry entry) {
-        if (entry.material != null && entry.stone != null) {
+    public static void registerStoneMaterialInfo(@NotNull StoneTypeEntry entry) {
+        if (!entry.material.isNull() && entry.stone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.stone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.stone);
             }
-            if (entry.addStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.stone,
+            if (entry.addStoneMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.stone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.polishedStone != null) {
+        if (!entry.material.isNull() && entry.polishedStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.polishedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.polishedStone);
             }
-            if (entry.addPolishedStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.polishedStone,
+            if (entry.addPolishedStoneMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.polishedStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.smeltStone != null) {
+        if (!entry.material.isNull() && entry.smeltStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.smeltStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.smeltStone);
             }
-            if (entry.addSmeltStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.smeltStone,
+            if (entry.addSmeltStoneMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.smeltStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.chiselStone != null) {
+        if (!entry.material.isNull() && entry.chiselStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.chiselStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.chiselStone);
             }
-            if (entry.addChiselStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.chiselStone,
+            if (entry.addChiselStoneMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.chiselStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.crackedStone != null) {
+        if (!entry.material.isNull() && entry.crackedStone != null) {
             if (entry.addStoneOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.block, entry.material, entry.crackedStone);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.block, entry.material, entry.crackedStone);
             }
-            if (entry.addCrackedStoneUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.crackedStone,
+            if (entry.addCrackedStoneMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.crackedStone,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.slab != null) {
+        if (!entry.material.isNull() && entry.slab != null) {
             if (entry.addSlabOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.slab, entry.material, entry.slab);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.slab, entry.material, entry.slab);
             }
-            if (entry.addSlabUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.slab,
+            if (entry.addSlabMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.slab,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 2)));
             }
         }
 
-        if (entry.material != null && entry.stair != null) {
+        if (!entry.material.isNull() && entry.stair != null) {
             if (entry.addStairOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.stairs, entry.material, entry.stair);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.stairs, entry.material, entry.stair);
             }
-            if (entry.addStairUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.stair,
+            if (entry.addStairMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.stair,
                         new ItemMaterialInfo(new MaterialStack(entry.material, (3 * entry.materialAmount) / 4)));
             }
         }
 
-        if (entry.material != null && entry.wall != null) {
+        if (!entry.material.isNull() && entry.wall != null) {
             if (entry.addWallOreDict) {
-                ChemicalHelper.registerUnificationItems(TagPrefix.fence, entry.material, entry.wall);
+                ItemMaterialData.registerMaterialInfoItems(TagPrefix.fence, entry.material, entry.wall);
             }
-            if (entry.addWallUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.wall,
+            if (entry.addWallMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.wall,
                         new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
             }
         }
 
-        if (entry.material != null && entry.pressurePlate != null && entry.addPressurePlateUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.pressurePlate,
+        if (!entry.material.isNull() && entry.pressurePlate != null && entry.addPressurePlateMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 4)));
         }
 
-        if (entry.material != null && entry.button != null && entry.addButtonUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.button,
+        if (!entry.material.isNull() && entry.button != null && entry.addButtonMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.button,
                     new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 6)));
         }
     }
@@ -577,6 +576,7 @@ public class StoneMachineRecipes {
                     .outputItems(entry.slab, 2)
                     .duration(40)
                     .EUt(8)
+                    .addMaterialInfo(true)
                     .save(provider);
 
             if (entry.chiselStone != null) {
@@ -624,9 +624,9 @@ public class StoneMachineRecipes {
             if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes && entry.slab != null) {
                 VanillaRecipeHelper.addShapedRecipe(provider, entry.stoneName + "_pressure_plate",
                         new ItemStack(entry.pressurePlate, 2), "ShS", "LCL", "SdS",
-                        'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
+                        'S', new MaterialEntry(TagPrefix.screw, GTMaterials.Iron),
                         'L', entry.slab,
-                        'C', new UnificationEntry(TagPrefix.spring, GTMaterials.Iron));
+                        'C', new MaterialEntry(TagPrefix.spring, GTMaterials.Iron));
 
                 ASSEMBLER_RECIPES.recipeBuilder(entry.stoneName + "_pressure_plate")
                         .inputItems(TagPrefix.spring, GTMaterials.Iron)
@@ -654,6 +654,7 @@ public class StoneMachineRecipes {
                     .outputItems(entry.stair, 4)
                     .duration(80)
                     .EUt(8)
+                    .addMaterialInfo(true)
                     .save(provider);
         }
 
@@ -670,6 +671,7 @@ public class StoneMachineRecipes {
                     .outputItems(entry.wall)
                     .duration(100)
                     .EUt(8)
+                    .addMaterialInfo(true)
                     .save(provider);
         }
     }

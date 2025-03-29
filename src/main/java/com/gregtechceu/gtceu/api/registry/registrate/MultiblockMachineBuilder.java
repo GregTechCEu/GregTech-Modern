@@ -369,8 +369,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder regressWhenWaiting(boolean dampingWhenWaiting) {
-        return (MultiblockMachineBuilder) super.regressWhenWaiting(dampingWhenWaiting);
+    public MultiblockMachineBuilder regressWhenWaiting(boolean regressWhenWaiting) {
+        return (MultiblockMachineBuilder) super.regressWhenWaiting(regressWhenWaiting);
     }
 
     @Override

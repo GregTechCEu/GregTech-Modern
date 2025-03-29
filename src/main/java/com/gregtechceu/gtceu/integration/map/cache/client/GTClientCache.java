@@ -11,8 +11,10 @@ import com.gregtechceu.gtceu.integration.map.cache.fluid.FluidCache;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
@@ -24,9 +26,26 @@ public class GTClientCache extends WorldCache implements IClientCache {
 
     private final FluidCache fluids = new FluidCache();
 
-    public void notifyNewVeins(int amount) {
-        if (amount <= 0) return;
-        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("message.gtceu.new_veins", amount));
+    public void notifyNewVeins(GeneratedVeinMetadata... veins) {
+        if (veins.length == 0) return;
+
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (player == null) return;
+
+        for (var vein : veins) {
+            var veinId = vein.id().toString();
+            var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
+            var material = OreRenderLayer.getMaterial(vein);
+
+            if (!material.isNull()) {
+                var center = vein.center();
+                name.setStyle(name.getStyle().withColor(material.getMaterialRGB()).withHoverEvent(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        Component.literal("(%d, %d, %d)".formatted(center.getX(), center.getY(), center.getZ())))));
+            }
+            player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.name", name));
+        }
     }
 
     public void addFluid(ResourceKey<Level> dim, int chunkX, int chunkZ, ProspectorMode.FluidInfo fluid) {
@@ -39,7 +58,11 @@ public class GTClientCache extends WorldCache implements IClientCache {
         if (renderer != null) {
             renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
         }
-        return super.addVein(dim, gridX, gridZ, vein);
+        boolean added = super.addVein(dim, gridX, gridZ, vein);
+        if (added) {
+            notifyNewVeins(vein);
+        }
+        return added;
     }
 
     @Override

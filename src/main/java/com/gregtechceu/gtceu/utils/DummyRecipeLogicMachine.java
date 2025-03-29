@@ -1,16 +1,13 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Dummy machine used for searching recipes outside of a machine.
@@ -18,14 +15,17 @@ import java.util.List;
 public class DummyRecipeLogicMachine extends WorkableTieredMachine implements IRecipeLogicMachine {
 
     public DummyRecipeLogicMachine(IMachineBlockEntity be, int tier, Int2IntFunction tankScalingFunction,
-                                   Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy,
+                                   Collection<RecipeHandlerList> handlers,
                                    Object... args) {
         super(be, tier, tankScalingFunction, args);
-        reinitializeCapabilities(capabilitiesProxy);
+        reinitializeHandlers(handlers);
     }
 
-    public void reinitializeCapabilities(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> caps) {
+    public void reinitializeHandlers(Collection<RecipeHandlerList> handlers) {
         this.capabilitiesProxy.clear();
-        this.capabilitiesProxy.putAll(caps);
+        this.capabilitiesFlat.clear();
+        for (RecipeHandlerList handlerList : handlers) {
+            this.addHandlerList(handlerList);
+        }
     }
 }
