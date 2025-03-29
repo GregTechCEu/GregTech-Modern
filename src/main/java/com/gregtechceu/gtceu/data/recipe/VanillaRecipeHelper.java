@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
@@ -22,14 +23,10 @@ import net.minecraft.world.level.ItemLike;
 
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -193,21 +190,33 @@ public class VanillaRecipeHelper {
         addStrictShapedRecipe(provider, regName, result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
         addShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                        @NotNull ItemStack result, @NotNull Object... recipe) {
         addShapedRecipe(provider, false, regName, result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                              @NotNull ItemStack result, @NotNull Object... recipe) {
         addStrictShapedRecipe(provider, false, regName, result, recipe);
@@ -218,7 +227,7 @@ public class VanillaRecipeHelper {
      * <p/>
      * For Enums - {@link Enum#name()} is called.
      * <p/>
-     * For {@link UnificationEntry} - {@link UnificationEntry#toString()} is called.
+     * For {@link MaterialEntry} - {@link MaterialEntry#toString()} is called.
      * <p/>
      * Base tool names are as follows:
      * <ul>
@@ -234,11 +243,12 @@ public class VanillaRecipeHelper {
      * <li>{@code 'x'} - {@code craftingToolWireCutter}</li>
      * </ul>
      *
-     * @param regName the registry name for the recipe
-     * @param result  the output for the recipe
-     * @param recipe  the contents of the recipe
+     * @param setMaterialInfoData whether to add material decomposition information to the recipe output
+     * @param regName             the registry name for the recipe
+     * @param result              the output for the recipe
+     * @param recipe              the contents of the recipe
      */
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean isStrict,
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
         var builder = new ShapedRecipeBuilder(regName).output(result);
@@ -279,11 +289,11 @@ public class VanillaRecipeHelper {
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                } else if (content instanceof MaterialEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -294,26 +304,35 @@ public class VanillaRecipeHelper {
         }
         builder.save(provider);
 
-        if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        if (setMaterialInfoData) {
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull String regName, @NotNull ItemStack result, @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                        @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, false, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
     }
 
-    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    /**
+     * @see #addShapedRecipe(Consumer, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                              @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                              @NotNull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, true, regName, result, recipe);
+        addShapedRecipe(provider, setMaterialInfoData, true, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
@@ -321,7 +340,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull ResourceLocation regName,
                                                      @NotNull Ingredient chargeIngredient, @NotNull ItemStack result,
@@ -360,11 +379,11 @@ public class VanillaRecipeHelper {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                } else if (content instanceof MaterialEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -375,20 +394,20 @@ public class VanillaRecipeHelper {
         }
         builder.save(provider);
 
-        if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        if (setMaterialInfoData) {
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull String regName, @NotNull Ingredient chargeIngredient,
                                                      @NotNull ItemStack result, @NotNull Object... recipe) {
-        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge,
+        addShapedEnergyTransferRecipe(provider, setMaterialInfoData, overrideCharge, transferMaxCharge,
                 GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean isStrict,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
@@ -430,11 +449,11 @@ public class VanillaRecipeHelper {
                     }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
-                } else if (content instanceof UnificationEntry entry) {
-                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                } else if (content instanceof MaterialEntry entry) {
+                    TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                     if (tag != null) {
                         builder.define(sign, tag);
-                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
+                    } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
                 } else if (content instanceof ItemProviderEntry<?> entry) {
                     builder.define(sign, entry.asStack());
                 }
@@ -446,22 +465,22 @@ public class VanillaRecipeHelper {
 
         builder.save(provider);
 
-        if (withUnificationData) {
-            ChemicalHelper.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+        if (setMaterialInfoData) {
+            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      @NotNull String regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
-        addShapedFluidContainerRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
+        addShapedFluidContainerRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
     }
 
-    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
+    public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
 
                                                      @NotNull Object... recipe) {
-        addShapedFluidContainerRecipe(provider, withUnificationData, false, regName, result, recipe);
+        addShapedFluidContainerRecipe(provider, setMaterialInfoData, false, regName, result, recipe);
     }
 
     public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
@@ -500,11 +519,11 @@ public class VanillaRecipeHelper {
                 builder.requires((TagKey<Item>) key);
             } else if (content instanceof ItemLike itemLike) {
                 builder.requires(itemLike);
-            } else if (content instanceof UnificationEntry entry) {
-                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+            } else if (content instanceof MaterialEntry entry) {
+                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
                 if (tag != null) {
                     builder.requires(tag);
-                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
+                } else builder.requires(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
@@ -518,13 +537,13 @@ public class VanillaRecipeHelper {
      * @param material the material to check
      * @return if the material is a wood
      */
-    public static boolean isMaterialWood(@Nullable Material material) {
-        return material != null && material.hasProperty(PropertyKey.WOOD);
+    public static boolean isMaterialWood(@NotNull Material material) {
+        return !material.isNull() && material.hasProperty(PropertyKey.WOOD);
     }
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {
         Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();
-        Object2LongMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
+        Reference2LongOpenHashMap<Material> materialStacksExploded = new Reference2LongOpenHashMap<>();
 
         int itr = 0;
         while (recipe[itr] instanceof String s) {
@@ -564,8 +583,8 @@ public class VanillaRecipeHelper {
                 continue; // todo can this be improved?
             } else if (ingredient instanceof ItemLike) {
                 itemLike = (ItemLike) ingredient;
-            } else if (ingredient instanceof UnificationEntry entry) {
-                ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
+            } else if (ingredient instanceof MaterialEntry entry) {
+                ItemStack stack = ChemicalHelper.get(entry.tagPrefix(), entry.material());
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
             } else if (ingredient instanceof ItemProviderEntry<?> entry) {
@@ -573,7 +592,7 @@ public class VanillaRecipeHelper {
             } else continue; // throw out bad entries
 
             // First try to get ItemMaterialInfo
-            ItemMaterialInfo info = ChemicalHelper.getMaterialInfo(itemLike);
+            ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
                     if (!(ms.material() instanceof MarkerMaterial)) {
@@ -584,27 +603,24 @@ public class VanillaRecipeHelper {
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
-            MaterialStack materialStack = ChemicalHelper.getMaterial(itemLike);
-            if (materialStack != null && !(materialStack.material() instanceof MarkerMaterial)) {
+            MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
+            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
                 addMaterialStack(materialStacksExploded, inputCountMap, materialStack, lastChar);
             }
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
-            if (prefix != null && !prefix.secondaryMaterials().isEmpty()) {
+            if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
                     addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
                 }
             }
         }
 
-        return new ItemMaterialInfo(materialStacksExploded.entrySet().stream()
-                .map(e -> new MaterialStack(e.getKey(), e.getValue() / outputCount))
-                .sorted(Comparator.comparingLong(m -> -m.amount()))
-                .collect(Collectors.toList()));
+        return new ItemMaterialInfo(materialStacksExploded);
     }
 
-    private static void addMaterialStack(@NotNull Object2LongMap<Material> materialStacksExploded,
+    private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<Material> materialStacksExploded,
                                          @NotNull Char2IntFunction inputCountMap, @NotNull MaterialStack ms, char c) {
         long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
         materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);

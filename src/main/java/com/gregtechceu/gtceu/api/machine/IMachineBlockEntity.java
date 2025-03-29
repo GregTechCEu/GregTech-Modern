@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
@@ -12,10 +11,8 @@ import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * A simple compound Interface for all my TileEntities.
@@ -89,15 +86,5 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
     default void loadCustomPersistedData(CompoundTag tag) {
         IAutoPersistBlockEntity.super.loadCustomPersistedData(tag);
         getMetaMachine().loadCustomPersistedData(tag);
-    }
-
-    default void setOwner(IMachineOwner owner) {}
-
-    default IMachineOwner getOwner() {
-        return null;
-    }
-
-    default ServerPlayer getPlayer() {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.getOwner().getUUID());
     }
 }

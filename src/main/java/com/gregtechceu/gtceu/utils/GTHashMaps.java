@@ -87,7 +87,7 @@ public final class GTHashMaps {
     }
 
     @NotNull
-    private static Object2IntMap<ItemStack> createItemStackMap(boolean linked) {
+    public static Object2IntMap<ItemStack> createItemStackMap(boolean linked) {
         ItemStackHashStrategy strategy = ItemStackHashStrategy.comparingAllButCount();
         return linked ? new Object2IntLinkedOpenCustomHashMap<>(strategy) : new Object2IntOpenCustomHashMap<>(strategy);
     }

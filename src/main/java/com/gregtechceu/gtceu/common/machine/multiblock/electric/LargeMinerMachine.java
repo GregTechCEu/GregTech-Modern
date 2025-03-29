@@ -139,17 +139,18 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
-            for (var handler : part.getRecipeHandlers()) {
-                // If IO not compatible
-                if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                var handlerIO = io == IO.BOTH ? handler.getHandlerIO() : io;
-                if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP &&
-                        handler instanceof IEnergyContainer container) {
-                    energyContainers.add(container);
-                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP &&
-                        handler instanceof IFluidHandler fluidHandler) {
-                            fluidTanks.add(fluidHandler);
-                        }
+
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                if (!handlerList.isValid(io)) continue;
+                handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(IEnergyContainer.class::isInstance)
+                        .map(IEnergyContainer.class::cast)
+                        .forEach(energyContainers::add);
+                handlerList.getCapability(FluidRecipeCapability.CAP).stream()
+                        .filter(IFluidHandler.class::isInstance)
+                        .map(IFluidHandler.class::cast)
+                        .forEach(fluidTanks::add);
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);

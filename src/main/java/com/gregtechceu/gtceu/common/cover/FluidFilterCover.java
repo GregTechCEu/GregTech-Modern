@@ -60,7 +60,7 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public boolean canAttach() {
-        return coverHolder.getFluidHandlerCap(attachedSide, false) != null;
+        return super.canAttach() && coverHolder.getFluidHandlerCap(attachedSide, false) != null;
     }
 
     public FluidFilter getFluidFilter() {

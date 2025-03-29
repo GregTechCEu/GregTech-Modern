@@ -588,13 +588,15 @@ public class ReactorRecipes {
                 .inputItems(Items.APPLE)
                 .inputItems(ingot, Gold, 8)
                 .outputItems(Items.GOLDEN_APPLE)
-                .duration(50).EUt(VA[LV]).save(provider);
+                .duration(50).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("notch_apple")
                 .inputItems(Items.APPLE)
                 .inputItems(block, Gold, 8)
                 .outputItems(Items.ENCHANTED_GOLDEN_APPLE)
-                .duration(50).EUt(VA[LV]).save(provider);
+                .duration(50).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("magma_cream")
                 .inputItems(Items.BLAZE_POWDER)
@@ -735,5 +737,12 @@ public class ReactorRecipes {
                 .outputFluids(PolychlorinatedBiphenyl.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(200).EUt(VH[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("hydrogen_peroxide")
+                .inputFluids(Hydrogen.getFluid(2000))
+                .inputFluids(Oxygen.getFluid(2000))
+                .circuitMeta(1)
+                .outputFluids(HydrogenPeroxide.getFluid(1000))
+                .duration(3000).EUt(VHA[HV]).save(provider);
     }
 }

@@ -457,6 +457,15 @@ public class LangHandler {
         provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
         provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
 
+        var detectorLatchDescription = """
+                Change the redstone behavior of this Cover.
+                §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
+                §eLatched§7 - output 15 until above max, then output 0 until below min""";
+        multilineLang(provider, "cover.advanced_detector.latch.enabled",
+                "Behavior: Latched\n\n" + detectorLatchDescription);
+        multilineLang(provider, "cover.advanced_detector.latch.disabled",
+                "Behavior: Continuous\n\n" + detectorLatchDescription);
+
         provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
         provider.add("cover.advanced_energy_detector.min", "Min");
         provider.add("cover.advanced_energy_detector.max", "Max");
@@ -1084,10 +1093,10 @@ public class LangHandler {
         provider.add("gtceu.jei.materials.average_neutrons", "Average neutrons: %d");
         provider.add("gtceu.item_filter.empty_item", "Empty (No Item)");
         provider.add("gtceu.item_filter.footer", "§eClick with item to override");
-        provider.add("gtceu.cable.voltage", "Max Voltage: §a%d §a(%s§a)");
-        provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
-        provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
-        provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
+        provider.add("gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
+        provider.add("gtceu.cable.amperage", "§eMax Amperage:§r §e%d");
+        provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
+        provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
         provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
@@ -1277,6 +1286,8 @@ public class LangHandler {
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
         provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
         provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
+        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1392,6 +1403,10 @@ public class LangHandler {
         provider.add("gtceu.direction.tooltip.right", "Right");
         provider.add("gtceu.direction.tooltip.back", "Back");
         provider.add("gtceu.direction.tooltip.front", "Front");
+
+        provider.add("gtceu.tooltip.status.trinary.false", "False");
+        provider.add("gtceu.tooltip.status.trinary.true", "True");
+        provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
     }
 
     /**
