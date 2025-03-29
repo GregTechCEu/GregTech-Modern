@@ -583,10 +583,6 @@ public class MetaTileEntityLoader {
                 'B',
                 new MaterialEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel), 'C', CustomTags.EV_CIRCUITS,
                 'F', GTItems.ELECTRIC_PUMP_HV);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "evaporation_plant",
-                GTMultiMachines.EVAPORATION_PLANT.asStack(), "CBC", "FMF", "CBC", 'M', GTMachines.HULL[HV].asStack(),
-                'B', new MaterialEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal), 'C', CustomTags.HV_CIRCUITS,
-                'F', GTItems.ELECTRIC_PUMP_HV);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "cracking_unit", GTMultiMachines.CRACKER.asStack(), "CEC",
                 "PHP",
                 "CEC", 'C', GTBlocks.COIL_CUPRONICKEL.asStack(), 'E', GTItems.ELECTRIC_PUMP_HV.asStack(), 'P',
