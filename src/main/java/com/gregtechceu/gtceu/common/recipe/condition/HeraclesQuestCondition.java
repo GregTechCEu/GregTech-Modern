@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
-import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
-import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -18,8 +15,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.ftb.mods.ftbteams.api.Team;
-import earth.terrarium.argonauts.api.guild.Guild;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
@@ -66,38 +61,14 @@ public class HeraclesQuestCondition extends RecipeCondition {
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         MachineOwner owner = recipeLogic.machine.self().getOwner();
-
-        if (owner instanceof PlayerOwner) {
-            var player = owner.getPlayerUUID();
-            QuestsProgress questsProgress = QuestProgressHandler.getProgress(ServerLifecycleHooks.getCurrentServer(),
-                    player);
+        if (owner == null) return false;
+        for (var player : owner.getMembers()) {
+            QuestsProgress questsProgress = QuestProgressHandler
+                    .getProgress(ServerLifecycleHooks.getCurrentServer(), player);
             var progress = questsProgress.getProgress(questId);
-            return progress != null && progress.isComplete() && QuestHandler.get(questId).tasks().isEmpty();
-        } else if (owner instanceof FTBOwner ftbOwner) {
-            Team team = ftbOwner.getTeam();
-            if (team == null) return false;
-            for (var player : team.getMembers()) {
-                QuestsProgress questsProgress = QuestProgressHandler
-                        .getProgress(ServerLifecycleHooks.getCurrentServer(), player);
-                var progress = questsProgress.getProgress(questId);
-                if (progress != null && progress.isComplete() && QuestHandler.get(questId).tasks().isEmpty()) {
-                    return true;
-                }
+            if (progress != null && (progress.isComplete() || QuestHandler.get(questId).tasks().isEmpty())) {
+                return true;
             }
-            return false;
-        } else if (owner instanceof ArgonautsOwner argoOwner) {
-            Guild g = argoOwner.getGuild();
-            if (g == null) return false;
-            for (var member : g.members()) {
-                var player = member.profile().getId();
-                QuestsProgress questsProgress = QuestProgressHandler
-                        .getProgress(ServerLifecycleHooks.getCurrentServer(), player);
-                var progress = questsProgress.getProgress(questId);
-                if (progress != null && progress.isComplete() && QuestHandler.get(questId).tasks().isEmpty()) {
-                    return true;
-                }
-            }
-            return false;
         }
         return false;
     }
