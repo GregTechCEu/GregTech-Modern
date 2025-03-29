@@ -16,7 +16,7 @@ public class ItemDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getItemHandler() != null;
+        return super.canAttach() && getItemHandler() != null;
     }
 
     @Override

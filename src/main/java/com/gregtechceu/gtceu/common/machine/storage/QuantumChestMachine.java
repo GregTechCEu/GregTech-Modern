@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -169,6 +170,26 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         lockedItem.deserializeNBT(tag.getCompound("lockedItem"));
         stored = ItemStack.of(tag.getCompound("stored"));
         storedAmount = tag.getLong("storedAmount");
+    }
+
+    //////////////////////////////////////
+    // ****** Capability ********//
+    //////////////////////////////////////
+
+    @Override
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getItemHandlerCap(side, useCoverCapability);
+    }
+
+    @Override
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getFluidHandlerCap(side, useCoverCapability);
     }
 
     //////////////////////////////////////

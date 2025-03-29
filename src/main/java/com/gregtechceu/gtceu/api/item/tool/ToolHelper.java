@@ -122,6 +122,7 @@ public class ToolHelper {
     public static final String TORCH_PLACING_KEY = "TorchPlacing";
     public static final String TORCH_PLACING_CACHE_SLOT_KEY = "TorchPlacing$Slot";
     public static final String TREE_FELLING_KEY = "TreeFelling";
+    public static final String DISABLE_TREE_FELLING_KEY = "DisableTreeFelling";
     public static final String DISABLE_SHIELDS_KEY = "DisableShields";
     public static final String RELOCATE_MINED_BLOCKS_KEY = "RelocateMinedBlocks";
     public static final String RELOCATE_MOB_DROPS_KEY = "RelocateMobDrops";
