@@ -3,7 +3,11 @@ package com.gregtechceu.gtceu.common.machine.owner;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.UsernameCache;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
+
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public non-sealed class PlayerOwner extends MachineOwner {
@@ -12,6 +16,12 @@ public non-sealed class PlayerOwner extends MachineOwner {
 
     public PlayerOwner(UUID playerUUID) {
         super(playerUUID);
+    }
+
+    @UnmodifiableView
+    @Override
+    public @NotNull Set<UUID> getMembers() {
+        return Set.of(getUUID());
     }
 
     @Override

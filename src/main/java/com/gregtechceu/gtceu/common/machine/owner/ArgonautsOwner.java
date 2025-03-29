@@ -8,7 +8,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import earth.terrarium.argonauts.api.client.guild.GuildClientApi;
 import earth.terrarium.argonauts.api.guild.Guild;
 import earth.terrarium.argonauts.api.guild.GuildApi;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
@@ -33,10 +35,12 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
         return getPlayerGuild(playerUUID);
     }
 
-    public Set<UUID> getMembers() {
+    @UnmodifiableView
+    @Override
+    public @NotNull Set<UUID> getMembers() {
         var guild = getGuild();
         if (guild == null) return Collections.emptySet();
-        Set<UUID> members = new HashSet<>();
+        Set<UUID> members = new HashSet<>(guild.members().size());
         for (var member : guild.members().allMembers()) {
             members.add(member.profile().getId());
         }

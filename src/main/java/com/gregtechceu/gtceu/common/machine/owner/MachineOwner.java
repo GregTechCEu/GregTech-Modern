@@ -56,6 +56,8 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
         compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
     }
 
+    public abstract @NotNull Set<UUID> getMembers();
+
     public boolean isPlayerInTeam(Player player) {
         return isPlayerInTeam(player.getUUID());
     }
