@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -15,8 +16,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -56,7 +57,9 @@ import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
@@ -240,8 +243,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTElements", GTElements.class);
         event.add("GTMaterials", GTMaterials.class);
         event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
+        event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
-        event.add("UnificationEntry", UnificationEntry.class);
+        event.add("MaterialEntry", MaterialEntry.class);
         event.add("GTMaterialFlags", MaterialFlags.class);
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
@@ -263,7 +267,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         event.add("GTItems", GTItems.class);
         event.add("GTMaterialItems", GTMaterialItems.class);
-        event.add("TagPrefix", TagPrefix.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);
@@ -277,6 +280,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ChanceLogic", ChanceLogic.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("CraftingComponent", CraftingComponent.class);
+        event.add("GTCraftingComponents", GTCraftingComponents.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
@@ -343,15 +347,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        typeWrappers.registerSimple(UnificationEntry.class, o -> {
-            if (o instanceof UnificationEntry entry) return entry;
+        typeWrappers.registerSimple(MaterialEntry.class, o -> {
+            if (o instanceof MaterialEntry entry) return entry;
             if (o instanceof CharSequence chars) {
                 var values = chars.toString().split(":");
-                if (values.length == 1) {
-                    return new UnificationEntry(TagPrefix.get(values[0]));
-                }
                 if (values.length >= 2) {
-                    return new UnificationEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
+                    return new MaterialEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
                 }
             }
             return null;
@@ -435,6 +436,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
         });
+        typeWrappers.registerSimple(CraftingComponent.class, o -> {
+            if (o instanceof CraftingComponent comp) return comp;
+            if (o instanceof CharSequence str) return CraftingComponent.ALL_COMPONENTS.get(str.toString());
+            return null;
+        });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
                 GTRecipeComponents.FluidIngredientJS::of);
     }
@@ -457,9 +463,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
                     builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
-                    builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
                     builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
@@ -517,12 +520,27 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
                 }
 
+                builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
+                builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
+                gtRecipe.itemMaterialStacks = null;
+                gtRecipe.fluidMaterialStacks = null;
+
+                builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
+                if (gtRecipe.removeMaterialInfo)
+                    builder.removePreviousMaterialInfo();
+
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
             }
         })));
 
         PowerlessJetpack.FUELS.clear();
+        // Must run recycling recipes very last
+        RecyclingRecipes.init(builtRecipe -> recipesByName.put(builtRecipe.getId(),
+                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+        ItemMaterialData.resolveItemMaterialInfos(builtRecipe -> recipesByName.put(builtRecipe.getId(),
+                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {

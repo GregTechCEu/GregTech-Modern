@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -153,7 +154,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
     private static NativeImage createOreImage(GeneratedVeinMetadata vein) {
         var material = OreRenderLayer.getMaterial(vein);
-        if (material == null) {
+        if (material.isNull()) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;
@@ -218,7 +219,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material != null) {
+        if (!material.isNull()) {
             color = material.getMaterialARGB();
         }
 

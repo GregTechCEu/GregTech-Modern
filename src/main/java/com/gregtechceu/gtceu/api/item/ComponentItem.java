@@ -241,6 +241,18 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                // this will cancel the left click animation
+                return interactionItem.onEntitySwing(stack, entity);
+            }
+        }
+        // normal behavior
+        return super.onEntitySwing(stack, entity);
+    }
+
+    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
                                                   InteractionHand usedHand) {
         for (IItemComponent component : components) {

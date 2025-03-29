@@ -32,9 +32,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -226,12 +228,11 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         @Override
         public String getSerializedName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
-        @Nullable
-        public static IndicatorPlacement getByName(String name) {
-            return IndicatorPlacement.valueOf(name.toUpperCase());
+        public static @NotNull IndicatorPlacement getByName(String name) {
+            return IndicatorPlacement.valueOf(name.toUpperCase(Locale.ROOT));
         }
     }
 }

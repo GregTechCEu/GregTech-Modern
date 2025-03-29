@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -86,9 +86,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void onLoad() {
         super.onLoad();
-        // Fine, we use it to provide eu cap for recipe, simulating an EU machine.
-        capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP,
-                List.of(new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
+        // Simulate an EU machine via a SteamEnergyHandler
+        this.addHandlerList(RecipeHandlerList.of(IO.IN, new SteamEnergyRecipeHandler(steamTank, getConversionRate())));
     }
 
     @Override
@@ -135,7 +134,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
      * Recipe is rejected if tier is greater than LV or if machine cannot vent.<br>
      * Duration is multiplied by {@code 2} if the machine is low pressure
      * </p>
-     * 
+     *
      * @param machine a {@link SimpleSteamMachine}
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Steam Machine
