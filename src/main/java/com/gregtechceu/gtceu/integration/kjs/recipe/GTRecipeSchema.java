@@ -825,12 +825,13 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
             if (questId.isEmpty()) {
-                throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe {}", this.id));
+                throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe %s", this.id));
             }
-            if (QuestObjectBase.parseCodeString(questId) == 0L) {
-                throw new RecipeExceptionJS(String.format("Quest {} not found for recipe {}", questId, this.id));
+            long qID = QuestObjectBase.parseCodeString(questId);
+            if (qID == 0L) {
+                throw new RecipeExceptionJS(String.format("Quest %s not found for recipe %s", questId, this.id));
             }
-            return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
+            return addCondition(new FTBQuestCondition(isReverse, qID));
         }
 
         public GTRecipeJS ftbQuest(String questId) {

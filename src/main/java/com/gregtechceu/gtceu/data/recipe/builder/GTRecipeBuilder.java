@@ -1130,11 +1130,12 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
             return this;
         }
-        if (QuestObjectBase.parseCodeString(questId) == 0L) {
+        long qID = QuestObjectBase.parseCodeString(questId);
+        if (qID == 0L) {
             GTCEu.LOGGER.error("Quest {} not found for recipe {}", questId, this.id);
             return this;
         }
-        return addCondition(new FTBQuestCondition(questId).setReverse(isReverse));
+        return addCondition(new FTBQuestCondition(isReverse, qID));
     }
 
     public GTRecipeBuilder ftbQuest(String questId) {
