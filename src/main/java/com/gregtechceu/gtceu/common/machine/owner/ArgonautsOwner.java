@@ -10,11 +10,7 @@ import earth.terrarium.argonauts.api.guild.Guild;
 import earth.terrarium.argonauts.api.guild.GuildApi;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
 public non-sealed class ArgonautsOwner extends MachineOwner {
@@ -40,9 +36,11 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
     public Set<UUID> getMembers() {
         var guild = getGuild();
         if (guild == null) return Collections.emptySet();
-        return guild.members().allMembers().stream()
-                .map(member -> member.profile().getId())
-                .collect(Collectors.toSet());
+        Set<UUID> members = new HashSet<>();
+        for (var member : guild.members().allMembers()) {
+            members.add(member.profile().getId());
+        }
+        return members;
     }
 
     @Override
