@@ -5,10 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
-import com.gregtechceu.gtceu.common.machine.owner.ArgonautsOwner;
-import com.gregtechceu.gtceu.common.machine.owner.FTBOwner;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,7 +15,6 @@ import net.minecraft.util.GsonHelper;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import earth.terrarium.argonauts.api.guild.Guild;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,33 +52,13 @@ public class GameStageCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        // IMachineOwner owner = recipeLogic.machine.self().getHolder().getOwner();
         MachineOwner owner = recipeLogic.machine.self().getOwner();
-        if (owner instanceof PlayerOwner) {
-            var uuid = owner.getUUID();
-            var playerData = GameStageSaveHandler.getPlayerData(uuid);
-            if (playerData != null)
-                return playerData.hasStage(stageName);
-        } else if (owner instanceof FTBOwner ftbOwner) {
-            var team = ftbOwner.getTeam();
-            if (team == null) return false;
-            for (var player : team.getMembers()) {
-                var playerData = GameStageSaveHandler.getPlayerData(player);
-                if (playerData != null && playerData.hasStage(stageName)) {
-                    return true;
-                }
+        if (owner == null) return false;
+        for (var player : owner.getMembers()) {
+            var playerData = GameStageSaveHandler.getPlayerData(player);
+            if (playerData != null && playerData.hasStage(stageName)) {
+                return true;
             }
-            return false;
-        } else if (owner instanceof ArgonautsOwner argoOwner) {
-            Guild g = argoOwner.getGuild();
-            if (g == null) return false;
-            for (var member : g.members()) {
-                var playerData = GameStageSaveHandler.getPlayerData(member.profile().getId());
-                if (playerData != null && playerData.hasStage(stageName)) {
-                    return true;
-                }
-            }
-            return false;
         }
         return false;
     }
