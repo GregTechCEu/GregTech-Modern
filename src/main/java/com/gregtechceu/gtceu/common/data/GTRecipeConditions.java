@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -48,10 +49,14 @@ public final class GTRecipeConditions {
                     new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
-    public static final RecipeConditionType<FTBQuestCondition> FTB_QUEST = GTRegistries.RECIPE_CONDITIONS
-            .register("ftb_quest", new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
+    public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
 
     public static void init() {
+        if (GTCEu.Mods.isFTBQuestsLoaded()) {
+            FTB_QUEST = GTRegistries.RECIPE_CONDITIONS
+                    .register("ftb_quest", new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
+        }
+
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
                 (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
