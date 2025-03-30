@@ -1125,11 +1125,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder gameStage(String stageName) {
-        if (!GTCEu.Mods.isGameStagesLoaded()) {
-            GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
-            return this;
-        }
-        return addCondition(new GameStageCondition(stageName));
+        return gameStage(stageName, false);
     }
 
     public GTRecipeBuilder gameStage(String stageName, boolean isReverse) {
