@@ -85,12 +85,28 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     //////////////////////////////////////
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-
+    public void onStructureFormed() {
+        super.onStructureFormed();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
         }
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        if (temperatureSubs != null) {
+            temperatureSubs.unsubscribe();
+            temperatureSubs = null;
+        }
+        super.onUnload();
     }
 
     protected void updateSteamSubscription() {
