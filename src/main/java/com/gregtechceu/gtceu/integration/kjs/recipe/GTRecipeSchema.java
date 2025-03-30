@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -824,6 +825,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isFTBQuestsLoaded()) {
+                throw new RecipeExceptionJS("FTBQuests is not loaded!");
+            }
             if (questId.isEmpty()) {
                 throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe %s", this.id));
             }

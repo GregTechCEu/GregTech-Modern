@@ -1126,6 +1126,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder ftbQuest(String questId, boolean isReverse) {
+        if (!GTCEu.Mods.isFTBQuestsLoaded()) {
+            GTCEu.LOGGER.error("FTBQuests is not loaded!");
+            return this;
+        }
         if (questId.isEmpty()) {
             GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
             return this;
