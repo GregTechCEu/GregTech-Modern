@@ -1125,6 +1125,10 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
+        if (!GTCEu.Mods.isHeraclesLoaded()) {
+            GTCEu.LOGGER.error("Heracles not loaded!");
+            return this;
+        }
         if (questId.isEmpty()) {
             GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
             return this;

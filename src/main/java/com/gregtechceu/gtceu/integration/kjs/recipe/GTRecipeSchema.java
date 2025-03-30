@@ -824,6 +824,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS heraclesQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isHeraclesLoaded()) {
+                throw new RecipeExceptionJS("Heracles not loaded!");
+            }
             if (questId.isEmpty()) {
                 throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe %s", this.id));
             }

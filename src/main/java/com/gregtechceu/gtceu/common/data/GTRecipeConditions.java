@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -48,11 +49,14 @@ public final class GTRecipeConditions {
                     new RecipeConditionType<>(EnvironmentalHazardCondition::new, EnvironmentalHazardCondition.CODEC));
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
-    public static final RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST = GTRegistries.RECIPE_CONDITIONS
-            .register("heracles_quest",
-                    new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
+    public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
 
     public static void init() {
+        if (GTCEu.Mods.isHeraclesLoaded()) {
+            HERACLES_QUEST = GTRegistries.RECIPE_CONDITIONS
+                    .register("heracles_quest",
+                            new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
+        }
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
                 (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
