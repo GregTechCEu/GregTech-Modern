@@ -11,3 +11,4 @@ To prepare the first batch of it you will need [Tin and Copper](../Ore-Generatio
 ![Ingot crushing recipe](./assets/ingot_crushed.png)
 ![Bronze dust recipe](./assets/bronze_recipe.png)
 
+After you get the steam [alloy smelter](Steam-Usage.md) you can get bronze faster and without needing a mortar.
