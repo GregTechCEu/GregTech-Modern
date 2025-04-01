@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
@@ -56,9 +55,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public final TreeMap<RecipeCapability<?>, Integer> maxOutputs = new TreeMap<>(RecipeCapability.COMPARATOR);
     @Setter
     private GTRecipeBuilder recipeBuilder;
-    @Getter
-    @Setter
-    private ChanceBoostFunction chanceFunction = ChanceBoostFunction.OVERCLOCK;
     @Getter
     @Setter
     private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);

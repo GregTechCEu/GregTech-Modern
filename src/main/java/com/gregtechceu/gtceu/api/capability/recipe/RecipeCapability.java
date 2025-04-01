@@ -202,7 +202,7 @@ public abstract class RecipeCapability<T> {
                                 @NotNull GTRecipeType recipeType,
                                 @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {}
+                                @Nullable Object storage) {}
 
     /**
      * Create a cache map for chanced outputs

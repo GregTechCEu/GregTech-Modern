@@ -325,7 +325,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @NotNull GTRecipeType recipeType,
                                 @UnknownNullability("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {
+                                @Nullable Object storage) {
         if (widget instanceof TankWidget tank) {
             if (storage instanceof CycleFluidEntryHandler cycleHandler) {
                 tank.setFluidTank(cycleHandler, index);
@@ -337,8 +337,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (isXEI) tank.setShowAmount(false);
             if (content != null) {
-                float chance = (float) recipeType.getChanceFunction()
-                        .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
+                float chance = (float) content.chance / content.maxChance;
                 tank.setXEIChance(chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
@@ -349,7 +348,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
-                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
+                            tooltips);
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
