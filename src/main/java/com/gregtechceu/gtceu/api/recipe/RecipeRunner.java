@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
@@ -68,9 +67,6 @@ class RecipeRunner {
      * Populates the content match list to know if conditions are satisfied.
      */
     private void fillContentMatchList(Map<RecipeCapability<?>, List<Content>> entries) {
-        ChanceBoostFunction function = recipe.getType().getChanceFunction();
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) continue;
@@ -99,7 +95,7 @@ class RecipeRunner {
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
+                chancedContents = logic.roll(chancedContents, cache,
                         recipe.parallels);
 
                 for (Content cont : chancedContents) {
