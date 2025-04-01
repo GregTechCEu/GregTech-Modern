@@ -296,11 +296,12 @@ public class GTRecipeWidget extends WidgetGroup {
 
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
-                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltips.add(
-                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", baseChanceFloat));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base",
+                                        baseChanceFloat));
                     }
 
                     String key = "gtceu.gui.content.chance_tier_boost_" +
@@ -310,7 +311,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                                        FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltips.add(
@@ -320,11 +321,12 @@ public class GTRecipeWidget extends WidgetGroup {
                 } else {
                     if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                         tooltips.add(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
-                                        FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                                 .withStyle(ChatFormatting.YELLOW));
                     } else {
                         tooltips.add(
-                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", baseChanceFloat));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                                        baseChanceFloat));
                     }
                 }
             }
