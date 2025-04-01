@@ -77,8 +77,6 @@ public interface GTRecipeSchema {
         public int chance = ChanceLogic.getMaxChancedValue();
         @Setter
         public int maxChance = ChanceLogic.getMaxChancedValue();
-        @Setter
-        public int tierChanceBoost = 0;
         @Getter
         private ResourceLocation idWithoutType;
         @Setter

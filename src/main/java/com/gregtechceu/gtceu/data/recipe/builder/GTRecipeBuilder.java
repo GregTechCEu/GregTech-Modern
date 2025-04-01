@@ -98,8 +98,6 @@ public class GTRecipeBuilder {
     public int chance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int maxChance = ChanceLogic.getMaxChancedValue();
-    @Setter
-    public int tierChanceBoost = 0;
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
     private boolean removePreviousMatInfo = false;
@@ -181,7 +179,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         t.computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
+                .add(new Content(capability.of(obj), chance, maxChance));
         return this;
     }
 
@@ -193,7 +191,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
+                .map(o -> new Content(o, chance, maxChance)).toList());
         return this;
     }
 
@@ -204,7 +202,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
+                .add(new Content(capability.of(obj), chance, maxChance));
         return this;
     }
 
@@ -216,7 +214,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
+                .map(o -> new Content(o, chance, maxChance)).toList());
         return this;
     }
 
@@ -227,7 +225,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability));
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
+                .add(new Content(capability.of(obj), chance, maxChance));
         return this;
     }
 
@@ -239,7 +237,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickInput : input).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
+                .map(o -> new Content(o, chance, maxChance)).toList());
         return this;
     }
 
@@ -250,7 +248,7 @@ public class GTRecipeBuilder {
                     id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability));
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>())
-                .add(new Content(capability.of(obj), chance, maxChance, tierChanceBoost));
+                .add(new Content(capability.of(obj), chance, maxChance));
         return this;
     }
 
@@ -262,7 +260,7 @@ public class GTRecipeBuilder {
         }
         (perTick ? tickOutput : output).computeIfAbsent(capability, c -> new ArrayList<>()).addAll(Arrays.stream(obj)
                 .map(capability::of)
-                .map(o -> new Content(o, chance, maxChance, tierChanceBoost)).toList());
+                .map(o -> new Content(o, chance, maxChance)).toList());
         return this;
     }
 
@@ -709,76 +707,64 @@ public class GTRecipeBuilder {
         return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }
 
-    public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(ItemStack stack, int chance) {
         if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                     ChanceLogic.getMaxChancedValue(), chance, new Throwable());
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         inputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(FluidStack stack, int chance) {
         if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                     ChanceLogic.getMaxChancedValue(), chance, new Throwable());
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         inputFluids(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance) {
         if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                     ChanceLogic.getMaxChancedValue(), chance, new Throwable());
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         outputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance) {
         if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
                     ChanceLogic.getMaxChancedValue(), chance, new Throwable());
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         outputFluids(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-        return chancedOutput(ChemicalHelper.get(tag, mat), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
     }
 
     public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction, int tierChanceBoost) {

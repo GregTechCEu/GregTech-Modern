@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -336,9 +335,6 @@ public class MultiblockDisplayText {
             if (!isStructureFormed || !isActive)
                 return this;
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
-                var function = recipe.getType().getChanceFunction();
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
@@ -351,7 +347,7 @@ public class MultiblockDisplayText {
                     double countD = count;
                     if (item.chance < item.maxChance) {
                         countD = countD * recipe.parallels *
-                                function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                                item.chance / item.maxChance;
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                     }
                     if (count < maxDurationSec) {
@@ -372,7 +368,7 @@ public class MultiblockDisplayText {
                     double amountD = amount;
                     if (fluid.chance < fluid.maxChance) {
                         amountD = amountD * recipe.parallels *
-                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                                fluid.chance / fluid.maxChance;
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                     }
                     if (amount < maxDurationSec) {

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -51,9 +50,6 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
             data.putBoolean("Working", recipeLogic.isWorking());
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
-                var function = recipe.getType().getChanceFunction();
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
@@ -69,7 +65,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (item.chance < item.maxChance) {
                         int count = stack.getCount();
                         double countD = (double) count * recipe.parallels *
-                                function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                                item.chance / item.maxChance;
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                         itemTag.putInt("Count", count);
                     }
@@ -92,7 +88,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (fluid.chance < fluid.maxChance) {
                         int amount = stack.getAmount();
                         double amountD = (double) amount * recipe.parallels *
-                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                                fluid.chance / fluid.maxChance;
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                         fluidTag.putInt("Amount", amount);
                     }
