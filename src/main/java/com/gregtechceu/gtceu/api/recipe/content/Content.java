@@ -150,7 +150,7 @@ public class Content {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        var func = function == null ? ChanceBoostFunction.OVERCLOCK : function;
+        var func = function == null ? ChanceBoostFunction.NONE : function;
         int chance = func.getBoostedChance(this, recipeTier, chanceTier);
         float chanceFloat = 1f * chance / this.maxChance;
         String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
