@@ -74,7 +74,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7000, 1000)
+                        .chancedOutput(gemStack, 7000, 0)
                         .duration(1200).EUt(24)
                         .save(provider);
 
