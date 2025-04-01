@@ -1312,12 +1312,12 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.chance_nc", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
+        //TODO: EDIT LANG ENTRIES
         provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
         provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
-        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier"); //KILL
+        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier"); //KILL
+        //ENDTODO
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
 
         provider.add("gtceu.chance_logic.or", "OR");
