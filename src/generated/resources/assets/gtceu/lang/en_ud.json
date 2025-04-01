@@ -2306,6 +2306,8 @@
   "gtceu.gui.content.chance_boosted_logic": ")%s( %s%% :ɹǝı⟘ ʇɐ ǝɔuɐɥƆ",
   "gtceu.gui.content.chance_nc": "ɹ§pǝɯnsuoƆ ʇoNɔ§",
   "gtceu.gui.content.chance_nc_short": "ɹ§ƆNɔ§",
+  "gtceu.gui.content.chance_no_boost": "%s%% :ǝɔuɐɥƆ",
+  "gtceu.gui.content.chance_no_boost_logic": ")%s( %s%% :ǝɔuɐɥƆ",
   "gtceu.gui.content.chance_tier_boost_minus": "ɹǝıʇ/%s%%- :ǝɔuɐɥƆ snuoᗺ",
   "gtceu.gui.content.chance_tier_boost_plus": "ɹǝıʇ/%s%%+ :ǝɔuɐɥƆ snuoᗺ",
   "gtceu.gui.content.count_range": "x%s-%s",

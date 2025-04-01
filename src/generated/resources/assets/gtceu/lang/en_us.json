@@ -2306,6 +2306,8 @@
   "gtceu.gui.content.chance_boosted_logic": "Chance at Tier: %s%% (%s)",
   "gtceu.gui.content.chance_nc": "§cNot Consumed§r",
   "gtceu.gui.content.chance_nc_short": "§cNC§r",
+  "gtceu.gui.content.chance_no_boost": "Chance: %s%%",
+  "gtceu.gui.content.chance_no_boost_logic": "Chance: %s%% (%s)",
   "gtceu.gui.content.chance_tier_boost_minus": "Bonus Chance: -%s%%/tier",
   "gtceu.gui.content.chance_tier_boost_plus": "Bonus Chance: +%s%%/tier",
   "gtceu.gui.content.count_range": "%s-%sx",
