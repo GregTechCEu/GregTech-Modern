@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -38,6 +39,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Persisted
     @DescSynced
     protected VirtualTank visualTank;
+
+    @Getter
     @Persisted
     @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
@@ -115,8 +118,8 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     }
 
     //////////////////////////////////////
-    // *********** GUI ************ //
-    /// ///////////////////////////////////
+    //  ************ GUI ************   //
+    //////////////////////////////////////
 
     @Override
     protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
@@ -128,10 +131,5 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Override
     protected String getUITitle() {
         return "cover.ender_fluid_link.title";
-    }
-
-    @Override
-    protected FilterHandler<FluidStack, FluidFilter> getFilterHandler() {
-        return filterHandler;
     }
 }

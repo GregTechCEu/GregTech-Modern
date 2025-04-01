@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.machine.owner.IMachineOwner;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -78,9 +77,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     protected VirtualEntryWidget virtualEntryWidget;
     @DescSynced
     boolean isAnyChanged = false;
-    @Persisted
-    @DescSynced
-    private IMachineOwner owner;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -99,10 +95,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Override
     public void onAttached(@NotNull ItemStack itemStack, @NotNull ServerPlayer player) {
         super.onAttached(itemStack, player);
-        if (coverHolder instanceof MachineCoverContainer mcc) {
-            var owner = mcc.getMachine().getHolder().getOwner();
-            if (owner != null) this.owner = owner;
-        }
     }
 
     @Override
@@ -157,7 +149,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     public UUID getOwner() {
-        return permission == Permissions.PRIVATE ? owner.getPlayerUUID() : null;
+        if (permission == Permissions.PRIVATE && coverHolder instanceof MachineCoverContainer mcc) {
+            var owner = mcc.getMachine().getOwner();
+            return owner != null ? owner.getPlayerUUID() : null;
+        }
+        return null;
     }
 
     protected boolean isSubscriptionActive() {
