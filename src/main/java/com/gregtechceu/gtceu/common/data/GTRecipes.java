@@ -17,6 +17,8 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
+import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
+import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Set;
@@ -92,12 +94,13 @@ public class GTRecipes {
         // Config-dependent recipes
         RecipeAddition.init(consumer);
 
+        AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
+
         // Must run recycling recipes very last
-        if (!GTCEu.Mods.isKubeJSLoaded()) {
+        if (!(GTCEu.Mods.isKubeJSLoaded() && KJSCallWrapper.hasRecipesListeners())) {
             RecyclingRecipes.init(consumer);
             ItemMaterialData.resolveItemMaterialInfos(consumer);
         }
-        AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
     }
 
     /*
@@ -110,5 +113,12 @@ public class GTRecipes {
 
         RecipeRemoval.init(RECIPE_FILTERS::add);
         AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
+    }
+
+    private static class KJSCallWrapper {
+
+        private static boolean hasRecipesListeners() {
+            return ServerEvents.RECIPES.hasListeners() && RecipesEventJS.instance != null;
+        }
     }
 }
