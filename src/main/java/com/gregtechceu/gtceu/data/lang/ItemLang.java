@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
+import static com.gregtechceu.gtceu.data.lang.LangHandler.replace;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ItemLang {
@@ -53,7 +54,9 @@ public class ItemLang {
         provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {}
+    private static void initItemNames(RegistrateLangProvider provider) {
+        replace(provider, "item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
+    }
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
