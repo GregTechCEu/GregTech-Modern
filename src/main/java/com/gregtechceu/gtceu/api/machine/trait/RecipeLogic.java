@@ -267,7 +267,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             setWaiting(conditionResult.reason());
         }
         if (isWaiting()) {
-            doDamping();
+            regressRecipe();
         }
         if (last == Status.WORKING && getStatus() != Status.WORKING) {
             RecipeHelper.postWorking(machine, lastRecipe);
@@ -276,8 +276,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    protected void doDamping() {
-        if (progress > 0 && machine.dampingWhenWaiting()) {
+    protected void regressRecipe() {
+        if (progress > 0 && machine.regressWhenWaiting()) {
             if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
                 this.progress = 1;
             } else {

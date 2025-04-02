@@ -103,7 +103,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 

@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -74,7 +73,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         if (rotationState != RotationState.NONE) {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);
-            if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+            if (definition.isAllowExtendedFacing()) {
                 defaultState = defaultState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, Direction.NORTH);
             }
             registerDefaultState(defaultState);
@@ -87,8 +86,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         RotationState rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
             pBuilder.add(rotationState.property);
-            if (MachineDefinition.getBuilt() instanceof MultiblockMachineDefinition multi &&
-                    multi.isAllowExtendedFacing()) {
+            if (MachineDefinition.getBuilt().isAllowExtendedFacing()) {
                 pBuilder.add(IMachineBlock.UPWARDS_FACING_PROPERTY);
             }
         }
@@ -174,7 +172,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                     state = state.setValue(rotationState.property, Direction.DOWN);
                 }
             }
-            if (getDefinition() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+            if (getDefinition().isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
                 if (frontFacing == Direction.UP) {
                     state = state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection());

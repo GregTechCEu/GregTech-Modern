@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.Quad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -157,7 +158,10 @@ public class MachineRenderer extends TextureOverrideRenderer
     @OnlyIn(Dist.CLIENT)
     public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand) {
-        quads.addAll(getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand));
+        var rotation = machine == null || !machine.allowExtendedFacing() ?
+                ModelFactory.getRotation(frontFacing) :
+                GTMatrixUtils.createRotationState(frontFacing, machine.getUpwardsFacing());
+        quads.addAll(getRotatedModel(rotation).getQuads(definition.defaultBlockState(), side, rand));
     }
 
     /**

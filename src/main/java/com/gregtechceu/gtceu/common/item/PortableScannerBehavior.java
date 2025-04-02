@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -208,8 +207,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     machine.getOwner().displayInfo(list);
                 }
 
-                if (machine.getDefinition() instanceof MultiblockMachineDefinition multi &&
-                        multi.isAllowExtendedFacing()) {
+                if (machine.getDefinition().isAllowExtendedFacing()) {
                     list.add(Component.translatable("behavior.portable_scanner.divider"));
 
                     list.add(Component.translatable("behavior.portable_scanner.machine_front_facing",

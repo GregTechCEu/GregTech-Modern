@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -48,6 +49,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
@@ -168,6 +170,26 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
         else this.storedAmount = tag.getLong("storedAmount");
         if (storedAmount == 0 && !stored.isEmpty()) this.storedAmount = stored.getAmount();
+    }
+
+    //////////////////////////////////////
+    // ****** Capability ********//
+    //////////////////////////////////////
+
+    @Override
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getItemHandlerCap(side, useCoverCapability);
+    }
+
+    @Override
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getFluidHandlerCap(side, useCoverCapability);
     }
 
     //////////////////////////////////////
