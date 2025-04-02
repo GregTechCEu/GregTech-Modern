@@ -129,7 +129,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             currentTemperature -= getCoolDownRate();
         }
 
-        if (getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
+        if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
             var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
