@@ -97,7 +97,7 @@ public class GTRecipes {
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
 
         // Must run recycling recipes very last
-        if (!(GTCEu.Mods.isKubeJSLoaded() && ServerEvents.RECIPES.hasListeners() && RecipesEventJS.instance != null)) {
+        if (!(GTCEu.Mods.isKubeJSLoaded() && KJSCallWrapper.hasRecipesListeners())) {
             RecyclingRecipes.init(consumer);
             ItemMaterialData.resolveItemMaterialInfos(consumer);
         }
@@ -113,5 +113,12 @@ public class GTRecipes {
 
         RecipeRemoval.init(RECIPE_FILTERS::add);
         AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(RECIPE_FILTERS::add));
+    }
+
+    private static class KJSCallWrapper {
+
+        private static boolean hasRecipesListeners() {
+            return ServerEvents.RECIPES.hasListeners() && RecipesEventJS.instance != null;
+        }
     }
 }
