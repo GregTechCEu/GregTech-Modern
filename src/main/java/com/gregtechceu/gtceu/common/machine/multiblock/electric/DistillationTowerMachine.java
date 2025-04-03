@@ -196,7 +196,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
             var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
-                    Collections.emptyMap(), false, false);
+                    Collections.emptyMap(), false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);

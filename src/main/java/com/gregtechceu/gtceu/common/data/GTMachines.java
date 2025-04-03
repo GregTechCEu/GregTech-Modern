@@ -514,6 +514,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE
             .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
+            .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
@@ -530,6 +531,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
+            .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
@@ -558,6 +560,7 @@ public class GTMachines {
                     .langValue("Super Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -574,6 +577,7 @@ public class GTMachines {
                     .langValue("Quantum Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -590,6 +594,7 @@ public class GTMachines {
                     .langValue("Super Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
@@ -606,6 +611,7 @@ public class GTMachines {
                     .langValue("Quantum Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(TANK_TOOLTIPS)

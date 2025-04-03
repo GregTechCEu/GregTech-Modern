@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({ "unused", "unchecked" })
+@SuppressWarnings({ "unused" })
 @NoArgsConstructor
 public class CraftingComponentsEventJS extends StartupEventJS {
 
