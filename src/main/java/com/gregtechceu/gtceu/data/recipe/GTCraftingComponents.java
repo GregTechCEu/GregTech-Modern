@@ -48,7 +48,6 @@ public class GTCraftingComponents {
     public static CraftingComponent SENSOR;
     public static CraftingComponent GRINDER;
     public static CraftingComponent SAWBLADE;
-    public static CraftingComponent DIAMOND;
     public static CraftingComponent PISTON;
     public static CraftingComponent EMITTER;
     public static CraftingComponent CONVEYOR;
