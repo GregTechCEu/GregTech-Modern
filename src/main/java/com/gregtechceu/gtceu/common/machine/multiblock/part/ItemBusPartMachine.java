@@ -57,7 +57,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
-    private boolean hasCircuitSlot = true;
+    protected boolean hasCircuitSlot = true;
     @Getter
     @Setter
     @Persisted

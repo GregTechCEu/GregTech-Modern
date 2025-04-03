@@ -75,7 +75,7 @@ public class SizedIngredient extends Ingredient {
             }
             return copied;
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
-            return circuit.copy();
+            return circuit;
         } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
             var copied = new IntProviderIngredient(intProviderIngredient.inner, intProviderIngredient.countProvider);
             if (intProviderIngredient.itemStacks != null) {

@@ -53,19 +53,15 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     }
 
     @Override
-    public ItemStack[] getItems() {
+    public ItemStack @NotNull [] getItems() {
         if (stacks == null) {
             stacks = new ItemStack[] { ((StrictNBTIngredientAccessor) this).getStack() };
         }
         return stacks;
     }
 
-    public IntCircuitIngredient copy() {
-        return new IntCircuitIngredient(this.configuration);
-    }
-
     @Override
-    public JsonElement toJson() {
+    public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
         json.addProperty("configuration", configuration);
