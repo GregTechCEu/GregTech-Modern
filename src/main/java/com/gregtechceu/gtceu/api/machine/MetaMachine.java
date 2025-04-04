@@ -584,6 +584,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return !hasFrontFacing() || getFrontFacing() != direction;
     }
 
+    public static Direction getFrontFacing(@Nullable MetaMachine machine) {
+        return machine == null ? Direction.NORTH : machine.getFrontFacing();
+    }
+
     public Direction getFrontFacing() {
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
@@ -639,6 +643,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             notifyBlockUpdate();
             markDirty();
         }
+    }
+
+    public static Direction getUpwardFacing(@Nullable MetaMachine machine) {
+        return machine == null || !machine.allowExtendedFacing() ? Direction.NORTH :
+                machine.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY);
     }
 
     public Direction getUpwardsFacing() {

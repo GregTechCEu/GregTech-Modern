@@ -107,22 +107,24 @@ public class MachineRenderer extends TextureOverrideRenderer
             var machine = (level == null || pos == null) ? null : machineBlock.getMachine(level, pos);
             if (machine != null) {
                 var definition = machine.getDefinition();
-                var modelState = ModelFactory.getRotation(frontFacing);
+                var machineModelState = GTMatrixUtils.createRotationState(frontFacing,
+                        MetaMachine.getUpwardFacing(machine));
+                var blockModelState = ModelFactory.getRotation(frontFacing);
                 var modelFacing = side == null ? null : ModelFactory.modelFacing(side, frontFacing);
                 var quads = new LinkedList<BakedQuad>();
                 // render machine additional quads
-                renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
+                renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, machineModelState);
 
                 // render auto IO
                 if (machine instanceof IAutoOutputItem autoOutputItem) {
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                                modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState,
+                                modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
                                 -1, 0, true, true));
                         if (autoOutputItem.isAutoOutputItems()) {
                             quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                    modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState,
+                                    modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
                                     -101, 15, true, true));
                         }
                     }
@@ -131,11 +133,11 @@ public class MachineRenderer extends TextureOverrideRenderer
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                                modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState,
+                                modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
                                 -1, 0, true, true));
                         if (autoOutputFluid.isAutoOutputFluids()) {
                             quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                    modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState,
+                                    modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
                                     -101, 15, true, true));
                         }
                     }
@@ -144,7 +146,7 @@ public class MachineRenderer extends TextureOverrideRenderer
                 // render covers
                 int start = quads.size();
                 ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, pos,
-                        level, modelState);
+                        level, blockModelState);
                 var iterator = quads.listIterator(start);
                 while (iterator.hasNext()) {
                     iterator.set(Quad.from(iterator.next(), coverOverlayOffset()).rebake());
@@ -157,11 +159,9 @@ public class MachineRenderer extends TextureOverrideRenderer
 
     @OnlyIn(Dist.CLIENT)
     public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
-                                Direction frontFacing, @Nullable Direction side, RandomSource rand) {
-        var rotation = machine == null || !machine.allowExtendedFacing() ?
-                ModelFactory.getRotation(frontFacing) :
-                GTMatrixUtils.createRotationState(frontFacing, machine.getUpwardsFacing());
-        quads.addAll(getRotatedModel(rotation).getQuads(definition.defaultBlockState(), side, rand));
+                                ModelState modelState, @Nullable Direction side, RandomSource rand) {
+        quads.addAll(getRotatedModel(MetaMachine.getFrontFacing(machine))
+                .getQuads(definition.defaultBlockState(), side, rand));
     }
 
     /**
@@ -182,7 +182,7 @@ public class MachineRenderer extends TextureOverrideRenderer
                               @Nullable Direction modelFacing, ModelState modelState) {
         if (!(machine instanceof IMultiPart part) || !part.replacePartModelWhenFormed() ||
                 !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
-            renderBaseModel(quads, definition, machine, frontFacing, side, rand);
+            renderBaseModel(quads, definition, machine, modelState, side, rand);
         }
     }
 

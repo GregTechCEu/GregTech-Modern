@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -110,10 +111,21 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
+            transformation = null;
+            cachedModel = null;
             if (overrideSupplier != null) override = overrideSupplier.get();
             for (ResourceLocation value : override.values()) {
                 register.accept(value);
             }
+        }
+    }
+
+    @Override
+    public void updateModelWithoutReloadingResource(ResourceLocation modelLocation) {
+        super.updateModelWithoutReloadingResource(modelLocation);
+        if (LDLib.isClient()) {
+            transformation = null;
+            cachedModel = null;
         }
     }
 }
