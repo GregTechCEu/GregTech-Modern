@@ -46,11 +46,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote MachineRenderer
- */
 public class MachineRenderer extends TextureOverrideRenderer
                              implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
 
