@@ -87,7 +87,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                 consumable = energyStorage.receiveEnergy(consumable, false);
 
-                // Only able to actually consume less then our buffered amount
+                // Only able to consume less then our buffered amount
                 if (consumable <= receive) {
                     feBuffer = receive - consumable;
                     return 0;
@@ -95,13 +95,13 @@ public class EUToFEProvider extends CapabilityCompatProvider {
 
                 long newPower = consumable - receive;
 
-                // Able to actually consume buffered amount plus an even amount of packets (no buffer needed)
+                // Able to consume buffered amount plus an even amount of packets (no buffer needed)
                 if (newPower % maxPacket == 0) {
                     feBuffer = 0;
                     return newPower / maxPacket;
                 }
 
-                // Able to actually consume buffered amount plus some amount of power with a packet remainder
+                // Able to consume buffered amount plus some amount of power with a packet remainder
                 int ampsToConsume = GTMath.saturatedCast((newPower / maxPacket) + 1);
                 feBuffer = GTMath.saturatedCast((maxPacket * ampsToConsume) - newPower);
                 return ampsToConsume;
@@ -121,7 +121,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
                 if (consumable == 0)
                     return 0;
 
-                // Able to actually consume an even amount of packets
+                // Able to consume an even amount of packets
                 if (consumable % maxPacket == 0) {
                     feBuffer = 0;
                     return consumable / maxPacket;
