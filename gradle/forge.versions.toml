@@ -36,6 +36,7 @@ xaerosMinimap = "5773012"
 journeyMap = "5789363"
 resourcefullib = "5659871"
 argonauts = "5263580"
+heracles = "5406935"
 ae2wtlib = "5217955"
 spark = "4738952"
 observable = "5643037"
@@ -88,6 +89,7 @@ xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.re
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }
+heracles            = { module = "curse.maven:heracles-845831", version.ref = "heracles" }
 ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }

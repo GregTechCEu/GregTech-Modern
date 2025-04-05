@@ -824,6 +824,20 @@ public interface GTRecipeSchema {
             return daytime(false);
         }
 
+        public GTRecipeJS heraclesQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isHeraclesLoaded()) {
+                throw new RecipeExceptionJS("Heracles not loaded!");
+            }
+            if (questId.isEmpty()) {
+                throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe %s", this.id));
+            }
+            return addCondition(new HeraclesQuestCondition(isReverse, questId));
+        }
+
+        public GTRecipeJS heraclesQuest(String questId) {
+            return heraclesQuest(questId, false);
+        }
+
         public GTRecipeJS gameStage(String stageName) {
             return gameStage(stageName, false);
         }
