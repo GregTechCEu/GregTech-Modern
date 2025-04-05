@@ -70,6 +70,8 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
@@ -78,6 +80,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -88,6 +91,7 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
@@ -203,6 +207,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
             event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
         }
+        var ns = event.namespace(GTCEu.MOD_ID);
+        ns.put("shaped", new WrappingRecipeSchemaType(ns, GTCEu.id("shaped"),
+                GTShapedRecipeSchema.SCHEMA, RecipeSerializer.SHAPED_RECIPE));
     }
 
     @Override
@@ -449,8 +456,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager,
                                      Map<ResourceLocation, Recipe<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
-        RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
-            if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
+        for (RecipeJS addedRecipe : event.addedRecipes) {
+            if (addedRecipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
                 // get the recipe ID without the leading type path
                 GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
                         .recipeBuilder(gtRecipe.idWithoutType());
@@ -532,7 +539,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                         GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
             }
-        })));
+        }
 
         PowerlessJetpack.FUELS.clear();
         // Must run recycling recipes very last
