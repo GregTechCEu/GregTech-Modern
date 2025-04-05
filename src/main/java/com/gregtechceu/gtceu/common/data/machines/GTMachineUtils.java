@@ -474,6 +474,7 @@ public class GTMachineUtils {
                                                                   Supplier<? extends Block> fireBox,
                                                                   ResourceLocation texture, BoilerFireboxType firebox,
                                                                   int maxTemperature, int heatSpeed) {
+        // spotless:off
         return REGISTRATE
                 .multiblock("%s_large_boiler".formatted(name),
                         holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
@@ -482,8 +483,8 @@ public class GTMachineUtils {
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
                 .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .partAppearance((controller, part,
-                                 side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ?
+                .partAppearance((controller, part, side) ->
+                        controller.self().getPos().below().getY() == part.self().getPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     TraceabilityPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
@@ -522,6 +523,7 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.multiblock.large_boiler.explosion_tooltip")
                                 .withStyle(ChatFormatting.DARK_RED))
                 .register();
+        // spotless:on
     }
 
     public static MultiblockMachineDefinition registerLargeCombustionEngine(String name, int tier,
