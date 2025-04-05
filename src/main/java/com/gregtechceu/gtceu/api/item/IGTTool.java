@@ -475,7 +475,27 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default boolean definition$shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return oldStack.getItem() != newStack.getItem() || oldStack.getDamageValue() < newStack.getDamageValue();
+        if (!oldStack.is(newStack.getItem())) {
+            return true;
+        }
+        if (newStack.isDamageableItem() && oldStack.isDamageableItem()) {
+            CompoundTag newTag = newStack.getTag();
+            CompoundTag oldTag = oldStack.getTag();
+            if (newTag != null && oldTag != null) {
+                Set<String> newKeys = new HashSet<>(newTag.getAllKeys());
+                Set<String> oldKeys = new HashSet<>(oldTag.getAllKeys());
+                newKeys.remove(ItemStack.TAG_DAMAGE);
+                oldKeys.remove(ItemStack.TAG_DAMAGE);
+                newKeys.remove(CHARGE_KEY);
+                oldKeys.remove(CHARGE_KEY);
+                if (!newKeys.equals(oldKeys)) {
+                    return true;
+                }
+                return !newKeys.stream().allMatch((key) -> Objects.equals(newTag.get(key), oldTag.get(key)));
+            }
+            return newTag != null || oldTag != null;
+        }
+        return !ItemStack.isSameItem(oldStack, newStack);
     }
 
     default boolean definition$hasCraftingRemainingItem(ItemStack stack) {
