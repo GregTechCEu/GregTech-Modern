@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.client.model;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -102,9 +103,9 @@ public class PipeModel {
     public final AABB coreCube;
     public final Map<Direction, AABB> sideCubes;
 
-    public SupplierMemoizer.MemoizedSupplier<ResourceLocation> sideTexture, endTexture;
+    public MemoizedSupplier<ResourceLocation> sideTexture, endTexture;
     @Nullable
-    public SupplierMemoizer.MemoizedSupplier<@Nullable ResourceLocation> secondarySideTexture, secondaryEndTexture;
+    public MemoizedSupplier<@Nullable ResourceLocation> secondarySideTexture, secondaryEndTexture;
     @Setter
     public ResourceLocation sideOverlayTexture, endOverlayTexture;
 
@@ -115,11 +116,11 @@ public class PipeModel {
     public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture,
                      @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture,
                      @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
-        this.sideTexture = SupplierMemoizer.memoize(sideTexture);
-        this.endTexture = SupplierMemoizer.memoize(endTexture);
-        this.secondarySideTexture = secondarySideTexture != null ? SupplierMemoizer.memoize(secondarySideTexture) :
+        this.sideTexture = GTMemoizer.memoize(sideTexture);
+        this.endTexture = GTMemoizer.memoize(endTexture);
+        this.secondarySideTexture = secondarySideTexture != null ? GTMemoizer.memoize(secondarySideTexture) :
                 null;
-        this.secondaryEndTexture = secondaryEndTexture != null ? SupplierMemoizer.memoize(secondaryEndTexture) : null;
+        this.secondaryEndTexture = secondaryEndTexture != null ? GTMemoizer.memoize(secondaryEndTexture) : null;
         this.thickness = thickness;
         double min = (1d - thickness) / 2;
         double max = min + thickness;
@@ -280,18 +281,18 @@ public class PipeModel {
     @OnlyIn(Dist.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         itemModelCache.clear();
-        sideTexture.forget();
+        sideTexture.invalidate();
         register.accept(sideTexture.get());
-        endTexture.forget();
+        endTexture.invalidate();
         register.accept(endTexture.get());
         if (secondarySideTexture != null) {
-            secondarySideTexture.forget();
+            secondarySideTexture.invalidate();
             if (secondarySideTexture.get() != null) {
                 register.accept(secondarySideTexture.get());
             }
         }
         if (secondaryEndTexture != null) {
-            secondaryEndTexture.forget();
+            secondaryEndTexture.invalidate();
             if (secondaryEndTexture.get() != null) {
                 register.accept(secondaryEndTexture.get());
             }

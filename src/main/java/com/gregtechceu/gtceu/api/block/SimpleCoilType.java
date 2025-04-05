@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -37,7 +37,7 @@ public class SimpleCoilType implements ICoilType, StringRepresentable {
         this.level = level;
         this.energyDiscount = energyDiscount;
         this.tier = tier;
-        this.material = SupplierMemoizer.memoize(material);
+        this.material = GTMemoizer.memoize(material);
         this.texture = texture;
     }
 

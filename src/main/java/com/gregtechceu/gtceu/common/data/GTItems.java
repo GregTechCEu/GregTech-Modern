@@ -33,7 +33,7 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -2526,7 +2526,7 @@ public class GTItems {
                                                                                   @NotNull Material mat) {
         return builder -> {
             builder.onRegister(item -> {
-                Supplier<ItemLike> supplier = SupplierMemoizer.memoize(() -> item);
+                Supplier<ItemLike> supplier = GTMemoizer.memoize(() -> item);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 GTMaterialItems.toUnify.put(entry, supplier);
                 ItemMaterialData.registerMaterialInfoItems(entry, supplier);

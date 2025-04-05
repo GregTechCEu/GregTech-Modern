@@ -25,7 +25,7 @@ import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
@@ -1393,7 +1393,7 @@ public class GTBlocks {
                                                                                     @NotNull Material mat) {
         return builder -> {
             builder.onRegister(block -> {
-                Supplier<Block> blockSupplier = SupplierMemoizer.memoizeBlockSupplier(() -> block);
+                Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 GTMaterialItems.toUnify.put(entry, blockSupplier);
                 ItemMaterialData.registerMaterialInfoItems(entry, blockSupplier);
