@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
