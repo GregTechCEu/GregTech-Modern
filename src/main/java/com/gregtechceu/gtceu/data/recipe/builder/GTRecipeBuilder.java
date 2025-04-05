@@ -1124,6 +1124,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder daytime() {
         return daytime(false);
     }
+
     public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
         if (!GTCEu.Mods.isHeraclesLoaded()) {
             GTCEu.LOGGER.error("Heracles not loaded!");
