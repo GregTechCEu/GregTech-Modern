@@ -50,6 +50,7 @@ public record MaterialStack(@NotNull Material material, long amount) {
     @Override
     public String toString() {
         String string = "";
+        if (this.isEmpty()) return "";
         if (material.getChemicalFormula() == null || material.getChemicalFormula().isEmpty()) {
             string += "?";
         } else if (material.getMaterialComponents().size() > 1) {
