@@ -5408,6 +5408,8 @@
   "recipe.condition.gamestage.locked_stage": "%s :ǝbɐʇs ʇɐ pǝʞɔoꞀ",
   "recipe.condition.gamestage.unlocked_stage": "%s :ǝbɐʇs ʇɐ pǝʞɔoןu∩",
   "recipe.condition.pos_y.tooltip": "%d =< ʎ =< %d :ןǝʌǝꞀ ʎ",
+  "recipe.condition.quest.completed.tooltip": "pǝʇǝןdɯoɔ %s sǝɹınbǝᴚ",
+  "recipe.condition.quest.not_completed.tooltip": "pǝʇǝןdɯoɔ ʇou %s sǝɹınbǝᴚ",
   "recipe.condition.rain.tooltip": "%d :ןǝʌǝꞀ uıɐᴚ",
   "recipe.condition.rock_breaker.tooltip": "punoɹɐ sʞɔoןq pınןℲ",
   "recipe.condition.steam_vent.tooltip": "ʇuǝʌ ɯɐǝʇs uɐǝןƆ",
