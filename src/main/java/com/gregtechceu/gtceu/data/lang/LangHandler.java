@@ -65,6 +65,8 @@ public class LangHandler {
         provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
         provider.add("recipe.condition.quest.completed.tooltip", "Requires %s completed");
         provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
+        provider.add("recipe.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
+        provider.add("recipe.condition.gamestage.locked_stage", "Locked at stage: %s");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");

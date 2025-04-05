@@ -64,7 +64,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
             tag.putBoolean("special", true);
             tag.putLong("amount", qtm.getStoredAmount());
             return List.of(new ViewGroup<>(List.of(tag)));
-        } else if (machine instanceof MEPatternBufferPartMachine buffer) {
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferPartMachine buffer) {
             var tank = buffer.getShareTank();
             List<CompoundTag> list = new ArrayList<>(tank.getTanks());
             for (var storage : tank.getStorages()) {
@@ -74,7 +74,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
                 list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
             }
             return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
-        } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, buffer.holder, b);

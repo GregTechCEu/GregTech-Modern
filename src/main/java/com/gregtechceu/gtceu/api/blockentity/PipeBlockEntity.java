@@ -290,6 +290,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             connections = withSideConnection(connections, side, connected);
 
             updateNetworkConnection(side, connected);
+            // notify neighbor of change so Auto Output updates its ticking status
+            getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
             setChanged();
 
             if (!fromNeighbor && tile instanceof IPipeNode<?, ?> pipeTile) {

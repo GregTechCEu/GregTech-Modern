@@ -824,6 +824,17 @@ public interface GTRecipeSchema {
             return daytime(false);
         }
 
+        public GTRecipeJS gameStage(String stageName) {
+            return gameStage(stageName, false);
+        }
+
+        public GTRecipeJS gameStage(String stageName, boolean isReverse) {
+            if (!GTCEu.Mods.isGameStagesLoaded()) {
+                throw new RecipeExceptionJS("GameStages is not loaded, ignoring recipe condition");
+            }
+            return addCondition(new GameStageCondition(isReverse, stageName));
+        }
+
         public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
             if (!GTCEu.Mods.isFTBQuestsLoaded()) {
                 throw new RecipeExceptionJS("FTBQuests is not loaded!");

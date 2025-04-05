@@ -50,6 +50,7 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<DaytimeCondition> DAYTIME = GTRegistries.RECIPE_CONDITIONS
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
     public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
+    public static RecipeConditionType<GameStageCondition> GAMESTAGE;
 
     public static void init() {
         if (GTCEu.Mods.isFTBQuestsLoaded()) {
@@ -57,6 +58,11 @@ public final class GTRecipeConditions {
                     .register("ftb_quest", new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
         }
 
+        if (GTCEu.Mods.isGameStagesLoaded()) {
+            GAMESTAGE = GTRegistries.RECIPE_CONDITIONS
+                    .register("game_stage",
+                            new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+        }
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
                 (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));

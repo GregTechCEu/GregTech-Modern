@@ -36,7 +36,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -621,35 +620,8 @@ public class ToolHelper {
 
     // encompasses all vanilla special case tool checks for harvesting
     public static boolean isToolEffective(BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
-        Block block = state.getBlock();
         if (toolClasses.stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is))) {
             return isCorrectTierForDrops(state, harvestLevel);
-        }
-
-        if (toolClasses.contains(GTToolType.PICKAXE)) {
-            if (Blocks.OBSIDIAN == block && harvestLevel >= 3) return true;
-            if (state.is(BlockTags.NEEDS_IRON_TOOL) && harvestLevel >= 2) return true;
-            if (state.is(BlockTags.NEEDS_STONE_TOOL) && harvestLevel >= 1) return true;
-            if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) return true;
-        }
-        if (toolClasses.contains(GTToolType.SHOVEL)) {
-            if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) return true;
-            if (block == Blocks.SNOW_BLOCK || block == Blocks.SNOW) return true;
-        }
-        if (toolClasses.contains(GTToolType.AXE)) {
-            if (state.is(BlockTags.MINEABLE_WITH_AXE)) return true;
-        }
-        if (toolClasses.contains(GTToolType.SWORD)) {
-            if (block instanceof WebBlock) return true;
-        }
-        if (toolClasses.contains(GTToolType.SCYTHE)) {}
-        if (toolClasses.contains(GTToolType.FILE)) {
-            if (block instanceof IronBarsBlock) {
-                return true;
-            }
-        }
-        if (toolClasses.contains(GTToolType.CROWBAR)) {
-            return block instanceof BaseRailBlock;
         }
         return false;
     }
