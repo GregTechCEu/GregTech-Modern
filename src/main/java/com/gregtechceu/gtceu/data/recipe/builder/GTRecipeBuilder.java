@@ -1124,6 +1124,18 @@ public class GTRecipeBuilder {
         return daytime(false);
     }
 
+    public GTRecipeBuilder gameStage(String stageName) {
+        return gameStage(stageName, false);
+    }
+
+    public GTRecipeBuilder gameStage(String stageName, boolean isReverse) {
+        if (!GTCEu.Mods.isGameStagesLoaded()) {
+            GTCEu.LOGGER.warn("GameStages is not loaded, ignoring recipe condition");
+            return this;
+        }
+        return addCondition(new GameStageCondition(isReverse, stageName));
+    }
+
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {

@@ -38,6 +38,8 @@ argonauts = "5263580"
 ae2wtlib = "5217955"
 spark = "4738952"
 observable = "5643037"
+gamestages = "15.0.2"
+bookshelf = "20.2.13"
 ftblibrary-cm = "5567591"
 ftbteams-cm = "5267190"
 ftbchunks-cm = "5956390"
@@ -86,6 +88,8 @@ argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "
 ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
+gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
+bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }

@@ -5405,6 +5405,8 @@
   "recipe.condition.dimension.tooltip": "%s :uoısuǝɯıᗡ",
   "recipe.condition.dimension_marker.tooltip": ":uoısuǝɯıᗡ",
   "recipe.condition.eu_to_start.tooltip": "%d%s :ʇɹɐʇS oʇ ∩Ǝ",
+  "recipe.condition.gamestage.locked_stage": "%s :ǝbɐʇs ʇɐ pǝʞɔoꞀ",
+  "recipe.condition.gamestage.unlocked_stage": "%s :ǝbɐʇs ʇɐ pǝʞɔoןu∩",
   "recipe.condition.pos_y.tooltip": "%d =< ʎ =< %d :ןǝʌǝꞀ ʎ",
   "recipe.condition.rain.tooltip": "%d :ןǝʌǝꞀ uıɐᴚ",
   "recipe.condition.rock_breaker.tooltip": "punoɹɐ sʞɔoןq pınןℲ",

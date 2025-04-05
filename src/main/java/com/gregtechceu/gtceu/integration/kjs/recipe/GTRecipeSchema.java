@@ -823,6 +823,17 @@ public interface GTRecipeSchema {
             return daytime(false);
         }
 
+        public GTRecipeJS gameStage(String stageName) {
+            return gameStage(stageName, false);
+        }
+
+        public GTRecipeJS gameStage(String stageName, boolean isReverse) {
+            if (!GTCEu.Mods.isGameStagesLoaded()) {
+                throw new RecipeExceptionJS("GameStages is not loaded, ignoring recipe condition");
+            }
+            return addCondition(new GameStageCondition(isReverse, stageName));
+        }
+
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {

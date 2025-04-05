@@ -188,5 +188,9 @@ public class GTCEu {
         public static boolean isArgonautsLoaded() {
             return isModLoaded(GTValues.MODID_ARGONAUTS);
         }
+
+        public static boolean isGameStagesLoaded() {
+            return isModLoaded(GTValues.MODID_GAMESTAGES);
+        }
     }
 }

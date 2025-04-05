@@ -63,6 +63,8 @@ public class LangHandler {
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
         provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
         provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
+        provider.add("recipe.condition.gamestage.locked_stage", "Locked at stage: %s");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
