@@ -478,7 +478,7 @@ public class GTMachineUtils {
                 .multiblock("%s_large_boiler".formatted(name),
                         holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
                 .langValue("Large %s Boiler".formatted(FormattingUtil.toEnglishName(name)))
-                .rotationState(RotationState.ALL)
+                .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
                 .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
