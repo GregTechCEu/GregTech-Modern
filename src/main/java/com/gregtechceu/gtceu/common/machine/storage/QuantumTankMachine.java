@@ -277,6 +277,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             } else {
                 setOutputFacingFluids(null);
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
 
