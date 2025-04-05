@@ -584,7 +584,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return !hasFrontFacing() || getFrontFacing() != direction;
     }
 
-    public static Direction getFrontFacing(@Nullable MetaMachine machine) {
+    public static @NotNull Direction getFrontFacing(@Nullable MetaMachine machine) {
         return machine == null ? Direction.NORTH : machine.getFrontFacing();
     }
 
@@ -645,7 +645,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
     }
 
-    public static Direction getUpwardFacing(@Nullable MetaMachine machine) {
+    public static @NotNull Direction getUpwardFacing(@Nullable MetaMachine machine) {
         return machine == null || !machine.allowExtendedFacing() ? Direction.NORTH :
                 machine.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY);
     }
