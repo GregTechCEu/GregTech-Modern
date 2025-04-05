@@ -181,6 +181,8 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
+
+        GTCraftingComponents.init();
     }
 
     private static void initMaterials() {
@@ -272,7 +274,6 @@ public class CommonProxy {
 
             long startTime = System.currentTimeMillis();
             ItemMaterialData.reinitializeMaterialData();
-            GTCraftingComponents.init();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions
