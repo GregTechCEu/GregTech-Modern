@@ -98,7 +98,7 @@ public class MaterialIconSet {
     }
 
     public static void init() {
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_SET.registryKey);
         }
     }

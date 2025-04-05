@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
@@ -19,6 +20,7 @@ import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -125,6 +127,15 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
         }
         if (this instanceof IOverclockMachine overclockMachine) {
             configuratorPanel.attachConfigurators(new OverclockFancyConfigurator(overclockMachine));
+        }
+        if (this instanceof MetaMachine machine) {
+            for (var direction : Direction.values()) {
+                if (machine.getCoverContainer().hasCover(direction)) {
+                    var configurator = machine.getCoverContainer().getCoverAtSide(direction).getConfigurator();
+                    if (configurator != null)
+                        configuratorPanel.attachConfigurators(configurator);
+                }
+            }
         }
     }
 

@@ -26,7 +26,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static final GTOreProcessingEmiCategory CATEGORY = new GTOreProcessingEmiCategory();
 
     public GTOreProcessingEmiCategory() {
-        super(GTCEu.id("ore_processing_diagram"), EmiStack.of(Items.IRON_ORE));
+        super(GTCEu.id("ore_processing_diagram"), EmiStack.of(Items.RAW_IRON));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

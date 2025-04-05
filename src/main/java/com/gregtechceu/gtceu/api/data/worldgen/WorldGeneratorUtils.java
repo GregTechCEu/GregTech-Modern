@@ -148,4 +148,8 @@ public class WorldGeneratorUtils {
 
         return Optional.empty();
     }
+
+    public static void invalidateOreVeinCache() {
+        oreVeinCache.clear();
+    }
 }

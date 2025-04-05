@@ -8,18 +8,17 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -29,9 +28,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
@@ -56,9 +52,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -175,6 +169,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         if (toolProperty.isMagnetic()) {
             behaviourTag.putBoolean(RELOCATE_MINED_BLOCKS_KEY, true);
+            behaviourTag.putBoolean(RELOCATE_MOB_DROPS_KEY, true);
         }
 
         return stack;
@@ -386,7 +381,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
-                            if (getBehaviorsTag(stack).getBoolean(TREE_FELLING_KEY) && state.is(BlockTags.LOGS)) {
+                            var tag = getBehaviorsTag(stack);
+                            if (tag.getBoolean(TREE_FELLING_KEY) &&
+                                    !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
+                                    state.is(BlockTags.LOGS)) {
                                 TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
@@ -427,22 +425,22 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (repair.getItem() instanceof IGTTool gtTool) {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(repair.getItem());
-        if (entry == null || entry.material == null) return false;
-        if (entry.material == getToolMaterial(toRepair)) {
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
+        if (entry.isEmpty()) return false;
+        if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
-                return entry.tagPrefix == TagPrefix.planks;
+            if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
+                return entry.tagPrefix() == TagPrefix.planks;
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix == TagPrefix.plate) {
+            if (entry.tagPrefix() == TagPrefix.plate) {
                 return true;
             }
-            if (entry.material.hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix == TagPrefix.ingot;
+            if (entry.material().hasProperty(PropertyKey.INGOT)) {
+                return entry.tagPrefix() == TagPrefix.ingot;
             }
-            if (entry.material.hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix == TagPrefix.gem;
+            if (entry.material().hasProperty(PropertyKey.GEM)) {
+                return entry.tagPrefix() == TagPrefix.gem;
             }
         }
         return false;
@@ -477,7 +475,27 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default boolean definition$shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return oldStack.getItem() != newStack.getItem() || oldStack.getDamageValue() < newStack.getDamageValue();
+        if (!oldStack.is(newStack.getItem())) {
+            return true;
+        }
+        if (newStack.isDamageableItem() && oldStack.isDamageableItem()) {
+            CompoundTag newTag = newStack.getTag();
+            CompoundTag oldTag = oldStack.getTag();
+            if (newTag != null && oldTag != null) {
+                Set<String> newKeys = new HashSet<>(newTag.getAllKeys());
+                Set<String> oldKeys = new HashSet<>(oldTag.getAllKeys());
+                newKeys.remove(ItemStack.TAG_DAMAGE);
+                oldKeys.remove(ItemStack.TAG_DAMAGE);
+                newKeys.remove(CHARGE_KEY);
+                oldKeys.remove(CHARGE_KEY);
+                if (!newKeys.equals(oldKeys)) {
+                    return true;
+                }
+                return !newKeys.stream().allMatch((key) -> Objects.equals(newTag.get(key), oldTag.get(key)));
+            }
+            return newTag != null || oldTag != null;
+        }
+        return !ItemStack.isSameItem(oldStack, newStack);
     }
 
     default boolean definition$hasCraftingRemainingItem(ItemStack stack) {
@@ -582,22 +600,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+        var heldItem = player.getItemInHand(hand);
         // TODO: relocate to keybind action when keybind PR happens
-        if (player.isShiftKeyDown() && getMaxAoEDefinition(stack) != AoESymmetrical.none()) {
-            ItemStack heldItem = player.getItemInHand(hand);
-            if (player instanceof ServerPlayer serverPlayer) {
-                HeldItemUIFactory.INSTANCE.openUI(serverPlayer, hand);
-            }
-            return InteractionResultHolder.success(heldItem);
-        }
-
-        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+        for (var behavior : getToolStats().getBehaviors()) {
             if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(stack);
+                return InteractionResultHolder.success(heldItem);
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResultHolder.pass(heldItem);
     }
 
     default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {
@@ -632,10 +642,12 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // electric info
         if (this.isElectric()) {
+
             tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
                     FormattingUtil.formatNumbers(getCharge(stack)),
                     FormattingUtil.formatNumbers(getMaxCharge(stack)),
                     GTValues.VNF[getElectricTier()]));
+            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier());
         }
 
         // durability info
@@ -647,9 +659,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 tooltip.add(Component.translatable("item.gtceu.tool.tooltip.crafting_uses", FormattingUtil
                         .formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
             }
-
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.max_uses",
+                    FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack))));
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.general_uses",
                     FormattingUtil.formatNumbers(damageRemaining)));
+
         }
 
         // attack info
@@ -677,7 +691,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // behaviors
         boolean addedBehaviorNewLine = false;
-        AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
+        AoESymmetrical aoeDefinition = getAoEDefinition(stack);
 
         if (aoeDefinition != AoESymmetrical.none()) {
             addedBehaviorNewLine = tooltip.add(Component.literal(""));
@@ -743,6 +757,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
         if (this.isElectric()) {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
+
         }
     }
 
@@ -762,13 +777,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                         !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
         }
 
-        // Block Mending and Unbreaking on Electric tools
-        if (isElectric() &&
-                (enchantment instanceof MendingEnchantment || enchantment instanceof DigDurabilityEnchantment)) {
-            return false;
-        }
-
-        if (enchantment.category == null) return true;
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
         // the Minecraft method takes an Item, and does not respect NBT nor meta.
         switch (enchantment.category) {
@@ -827,45 +835,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     @Override
-    default ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        CompoundTag tag = getBehaviorsTag(holder.getHeld());
-        AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
-        return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
-                .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
-                .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
-                .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(15, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new LabelWidget(23, 65,
-                        () -> Integer.toString(1 +
-                                2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(58, 65,
-                        () -> Integer.toString(
-                                1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(93, 65, () -> Integer
-                        .toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
+    default ModularUI createUI(Player player, HeldItemUIFactory.HeldItemHolder holder) {
+        for (var behavior : getToolStats().getBehaviors()) {
+            if (!(behavior instanceof IToolUIBehavior uiBehavior) || !uiBehavior.openUI(player, holder.getHand())) {
+                continue;
+            }
+            return uiBehavior.createUI(player, holder);
+        }
+        return new ModularUI(holder, player);
     }
 
     default Set<GTToolType> getToolClasses(ItemStack stack) {
@@ -885,7 +862,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
                 @Override
                 public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
-                                                                  @org.jetbrains.annotations.Nullable Direction arg) {
+                                                                  @Nullable Direction arg) {
                     return item.getCapability(stack, capability);
                 }
             });
@@ -897,7 +874,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                     @Override
                     public @NotNull <
                             T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
-                                                             @org.jetbrains.annotations.Nullable Direction arg) {
+                                                             @Nullable Direction arg) {
                         return componentCapability.getCapability(stack, capability);
                     }
                 });

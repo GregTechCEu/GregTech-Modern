@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import java.util.Objects;
 
-public class ItemPipeProperties implements IMaterialProperty<ItemPipeProperties> {
+public class ItemPipeProperties implements IMaterialProperty {
 
     /**
      * Items will try to take the path with the lowest priority

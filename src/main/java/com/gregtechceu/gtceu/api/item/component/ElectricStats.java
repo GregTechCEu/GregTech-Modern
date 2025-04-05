@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
@@ -27,9 +28,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -46,14 +51,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public final boolean chargeable;
     public final boolean dischargeable;
 
-    protected ElectricStats(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    protected ElectricStats(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         this.maxCharge = maxCharge;
-        this.tier = (int) tier;
+        this.tier = tier;
         this.chargeable = chargeable;
         this.dischargeable = dischargeable;
     }
 
-    public static ElectricStats create(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
+    public static ElectricStats create(long maxCharge, int tier, boolean chargeable, boolean dischargeable) {
         return new ElectricStats(maxCharge, tier, chargeable, dischargeable);
     }
 
@@ -97,31 +102,46 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
-            var inventoryPlayer = player.getInventory();
             long transferLimit = electricItem.getTransferLimit();
 
-            for (int i = 0; i < inventoryPlayer.getContainerSize(); i++) {
-                var itemInSlot = inventoryPlayer.getItem(i);
-                var slotElectricItem = GTCapabilityHelper.getElectricItem(itemInSlot);
-                if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
-                    long chargedAmount = chargeElectricItem(transferLimit, electricItem, slotElectricItem);
+            if (GTCEu.Mods.isCuriosLoaded()) {
+                IItemHandler curios = CuriosApi.getCuriosInventory(player)
+                        .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
+                        .orElse(EmptyHandler.INSTANCE);
+                for (int i = 0; i < curios.getSlots(); i++) {
+                    var itemInSlot = curios.getStackInSlot(i);
+                    long chargedAmount = chargeItemStack(transferLimit, electricItem, itemInSlot);
                     if (chargedAmount > 0L) {
                         transferLimit -= chargedAmount;
-                        if (transferLimit == 0L) break;
                     }
-                } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative) {
-                    var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(itemInSlot);
-                    if (feEnergyItem != null && feEnergyItem.canReceive() &&
-                            feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
-                        long chargedAmount = chargeForgeEnergyItem(transferLimit, electricItem, feEnergyItem);
-                        if (chargedAmount > 0L) {
-                            transferLimit -= chargedAmount;
-                            if (transferLimit == 0L) break;
-                        }
-                    }
+                    if (transferLimit == 0L) break;
                 }
             }
+
+            var inventoryPlayer = player.getInventory();
+            for (int i = 0; i < inventoryPlayer.getContainerSize(); i++) {
+                var itemInSlot = inventoryPlayer.getItem(i);
+                long chargedAmount = chargeItemStack(transferLimit, electricItem, itemInSlot);
+                if (chargedAmount > 0L) {
+                    transferLimit -= chargedAmount;
+                }
+                if (transferLimit == 0L) break;
+            }
         }
+    }
+
+    private static long chargeItemStack(long maxDischargeAmount, IElectricItem source, ItemStack target) {
+        var slotElectricItem = GTCapabilityHelper.getElectricItem(target);
+        if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
+            return chargeElectricItem(maxDischargeAmount, source, slotElectricItem);
+        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+            var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(target);
+            if (feEnergyItem != null && feEnergyItem.canReceive() &&
+                    feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
+                return chargeForgeEnergyItem(maxDischargeAmount, source, feEnergyItem);
+            }
+        }
+        return 0;
     }
 
     private static long chargeElectricItem(long maxDischargeAmount, IElectricItem source, IElectricItem target) {
@@ -168,7 +188,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    private static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
+    public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
         double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
@@ -180,11 +200,11 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         long maxChargeTime;
         String unit;
 
-        if (durationMax.getSeconds() <= 180) {
+        if (durationCurrent.getSeconds() <= 60) {
             maxChargeTime = durationMax.getSeconds();
             currentChargeTime = durationCurrent.toSeconds();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (durationMax.toMinutes() <= 180) {
+        } else if (durationCurrent.toMinutes() <= 60) {
             maxChargeTime = durationMax.toMinutes();
             currentChargeTime = durationCurrent.toMinutes();
             unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
@@ -231,7 +251,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    public static ElectricStats createElectricItem(long maxCharge, long tier) {
+    public static ElectricStats createElectricItem(long maxCharge, int tier) {
         return ElectricStats.create(maxCharge, tier, true, false);
     }
 

@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -13,10 +15,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
-import com.gregtechceu.gtceu.common.recipe.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
@@ -40,16 +45,18 @@ import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
+import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,8 +79,6 @@ public interface GTRecipeSchema {
         public int maxChance = ChanceLogic.getMaxChancedValue();
         @Setter
         public int tierChanceBoost = 0;
-        @Setter
-        public boolean isFuel = false;
         @Getter
         private ResourceLocation idWithoutType;
         @Setter
@@ -81,6 +86,12 @@ public interface GTRecipeSchema {
         @Getter
         private final Collection<GTRecipeBuilder.ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
         private boolean generatingRecipes = true;
+
+        public List<MaterialStack> itemMaterialStacks = new ArrayList<>();
+        public List<MaterialStack> fluidMaterialStacks = new ArrayList<>();
+        public boolean itemMaterialInfo = false;
+        public boolean fluidMaterialInfo = false;
+        public boolean removeMaterialInfo = false;
 
         @HideFromJS
         @Override
@@ -103,8 +114,15 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
+                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                if (map.get(capability) != null &&
+                        map.get(capability).length + obj.length > recipeType.getMaxInputs(capability)) {
+                    ConsoleJS.SERVER.warn(String.format(
+                            "Trying to add more inputs than RecipeType can support, id: %s, Max %s%sInputs: %s",
+                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
+                }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -121,8 +139,15 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
+                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                if (map.get(capability) != null &&
+                        map.get(capability).length + obj.length > recipeType.getMaxOutputs(capability)) {
+                    ConsoleJS.SERVER.warn(String.format(
+                            "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
+                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
+                }
                 for (Object object : obj) {
-                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost, null, null));
+                    map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
                 }
             }
             save();
@@ -130,8 +155,13 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS addCondition(RecipeCondition condition) {
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
             setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
+            save();
+            return this;
+        }
+
+        public GTRecipeJS category(GTRecipeCategory category) {
+            setValue(CATEGORY, category.registryKey);
             save();
             return this;
         }
@@ -141,6 +171,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS EUt(long eu) {
+            if (eu == 0) {
+                throw new RecipeExceptionJS(String.format("EUt can't be explicitly set to 0, id: %s", id));
+            }
             var lastPerTick = perTick;
             perTick = true;
             if (eu > 0) {
@@ -161,6 +194,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS CWUt(int cwu) {
+            if (cwu == 0) {
+                throw new RecipeExceptionJS(String.format("CWUt can't be explicitly set to 0, id: %s", id));
+            }
             var lastPerTick = perTick;
             perTick = true;
             if (cwu > 0) {
@@ -187,22 +223,33 @@ public interface GTRecipeSchema {
             return inputItems(inputs);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input) {
+        public GTRecipeJS itemInput(MaterialEntry input) {
             return inputItems(input);
         }
 
-        public GTRecipeJS itemInput(UnificationEntry input, int count) {
+        public GTRecipeJS itemInput(MaterialEntry input, int count) {
             return inputItems(input, count);
         }
 
         public GTRecipeJS inputItems(InputItem... inputs) {
+            for (var stack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks.add(new MaterialStack(matStack.material(), matStack.amount() * stack.count));
+                }
+            }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS inputItems(ItemStack... inputs) {
             for (ItemStack itemStack : inputs) {
+                var matStack = ChemicalHelper.getMaterialStack(itemStack);
+                if (!matStack.isEmpty()) {
+                    itemMaterialStacks
+                            .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
+                }
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
+                    GTCEu.LOGGER.error("Input items is empty, id: %s", id);
                 }
             }
             return input(ItemRecipeCapability.CAP,
@@ -237,15 +284,16 @@ public interface GTRecipeSchema {
             return inputItems(orePrefix, material, 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input) {
-            return inputItems(input.tagPrefix, input.material, 1);
+        public GTRecipeJS inputItems(MaterialEntry input) {
+            return inputItems(input.tagPrefix(), input.material(), 1);
         }
 
-        public GTRecipeJS inputItems(UnificationEntry input, int count) {
-            return inputItems(input.tagPrefix, input.material, count);
+        public GTRecipeJS inputItems(MaterialEntry input, int count) {
+            return inputItems(input.tagPrefix(), input.material(), count);
         }
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
+            itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 
@@ -261,18 +309,18 @@ public interface GTRecipeSchema {
             return outputItems(outputs);
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material());
         }
 
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry, int count) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+        public GTRecipeJS itemOutput(MaterialEntry materialEntry, int count) {
+            return outputItems(materialEntry.tagPrefix(), materialEntry.material(), count);
         }
 
         public GTRecipeJS outputItems(ExtendedOutputItem... outputs) {
             for (ExtendedOutputItem itemStack : outputs) {
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
+                    throw new RecipeExceptionJS(String.format("Output items is empty, id: %s", id));
                 }
             }
             return output(ItemRecipeCapability.CAP, (Object[]) outputs);
@@ -343,14 +391,17 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
+            if (configuration < 0 || configuration > IntCircuitBehaviour.CIRCUIT_MAX) {
+                throw new RecipeExceptionJS(String.format("Circuit configuration must be in the bounds 0 - 32"));
+            }
             return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -365,9 +416,9 @@ public interface GTRecipeSchema {
         public GTRecipeJS chancedFluidInput(GTRecipeComponents.FluidIngredientJS stack, int chance,
                                             int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -381,9 +432,9 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedOutput(ExtendedOutputItem stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -410,10 +461,9 @@ public interface GTRecipeSchema {
 
             String[] split = fraction.split("/");
             if (split.length > 2) {
-                GTCEu.LOGGER.error(
-                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                        fraction, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                        fraction, new Throwable()));
             }
 
             int chance;
@@ -423,10 +473,9 @@ public interface GTRecipeSchema {
                 try {
                     chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
-                    GTCEu.LOGGER.error(
-                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                            fraction, new Throwable());
-                    return this;
+                    throw new RecipeExceptionJS(String.format(
+                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                            fraction, new Throwable()));
                 }
                 return chancedOutput(stack, chance, tierChanceBoost);
             }
@@ -434,21 +483,20 @@ public interface GTRecipeSchema {
                 chance = Integer.parseInt(split[0]);
                 maxChance = Integer.parseInt(split[1]);
             } catch (NumberFormatException e) {
-                GTCEu.LOGGER.error(
-                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                        fraction, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                        fraction, new Throwable()));
             }
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Max Chance cannot be less or equal to Chance or more than %s, Actual: %s, id: %s",
+                        ChanceLogic.getMaxChancedValue(), maxChance, id, new Throwable()));
             }
 
             int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
@@ -481,9 +529,9 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS chancedFluidOutput(FluidStackJS stack, int chance, int tierChanceBoost) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -502,10 +550,9 @@ public interface GTRecipeSchema {
 
             String[] split = fraction.split("/");
             if (split.length > 2) {
-                GTCEu.LOGGER.error(
-                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                        fraction, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                        fraction, new Throwable()));
             }
 
             int chance;
@@ -515,10 +562,9 @@ public interface GTRecipeSchema {
                 try {
                     chance = (int) Double.parseDouble(split[0]);
                 } catch (NumberFormatException e) {
-                    GTCEu.LOGGER.error(
-                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                            fraction, new Throwable());
-                    return this;
+                    throw new RecipeExceptionJS(String.format(
+                            "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                            fraction, new Throwable()));
                 }
                 return chancedFluidOutput(stack, chance, tierChanceBoost);
             }
@@ -527,21 +573,20 @@ public interface GTRecipeSchema {
                 chance = Integer.parseInt(split[0]);
                 maxChance = Integer.parseInt(split[1]);
             } catch (NumberFormatException e) {
-                GTCEu.LOGGER.error(
-                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"{}\".",
-                        fraction, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
+                        fraction, e));
             }
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), chance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(
+                        String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
+                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
             }
             if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
-                GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                        ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
-                return this;
+                throw new RecipeExceptionJS(String.format(
+                        "Max Chance cannot be less or equal to Chance or more than %s, Actual: %s, id: %s",
+                        ChanceLogic.getMaxChancedValue(), maxChance, id, new Throwable()));
             }
 
             int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
@@ -607,19 +652,20 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            for (var fluidIng : inputs) {
+                for (var stack : fluidIng.getIngredient().getStacks()) {
+                    var mat = ChemicalHelper.getMaterial(stack.getFluid());
+                    if (!mat.isNull()) {
+                        fluidMaterialStacks.add(new MaterialStack(mat,
+                                ((long) stack.getAmount() * GTValues.M) / GTValues.L));
+                    }
+                }
+            }
             return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
         public GTRecipeJS outputFluids(FluidStackJS... outputs) {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
-        }
-
-        public GTRecipeJS inputStress(float stress) {
-            return input(StressRecipeCapability.CAP, stress);
-        }
-
-        public GTRecipeJS outputStress(float stress) {
-            return output(StressRecipeCapability.CAP, stress);
         }
 
         //////////////////////////////////////
@@ -761,14 +807,6 @@ public interface GTRecipeSchema {
             return posY(min, max, false);
         }
 
-        public GTRecipeJS rpm(float rpm, boolean reverse) {
-            return addCondition(new RPMCondition(rpm).setReverse(reverse));
-        }
-
-        public GTRecipeJS rpm(float rpm) {
-            return rpm(rpm, false);
-        }
-
         public GTRecipeJS environmentalHazard(MedicalCondition condition, boolean reverse) {
             return addCondition(new EnvironmentalHazardCondition(condition).setReverse(reverse));
         }
@@ -777,17 +815,24 @@ public interface GTRecipeSchema {
             return environmentalHazard(condition, false);
         }
 
+        public GTRecipeJS daytime(boolean isNight) {
+            return addCondition(new DaytimeCondition().setReverse(isNight));
+        }
+
+        public GTRecipeJS daytime() {
+            return daytime(false);
+        }
+
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {
-                GTCEu.LOGGER.error("Assembly Line Research Entry cannot be empty.", new IllegalArgumentException());
-                return false;
+                throw new RecipeExceptionJS(
+                        String.format("Assembly Line Research Entry cannot be empty.", new IllegalArgumentException()));
             }
 
             if (!generatingRecipes) {
-                GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()",
-                        new IllegalArgumentException());
-                return false;
+                throw new RecipeExceptionJS(String.format("Cannot generate recipes when using researchWithoutRecipe()",
+                        new IllegalArgumentException()));
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
@@ -861,9 +906,37 @@ public interface GTRecipeSchema {
             return this;
         }
 
+        public GTRecipeJS addMaterialInfo(boolean item) {
+            this.itemMaterialInfo = item;
+            return this;
+        }
+
+        public GTRecipeJS addMaterialInfo(boolean item, boolean fluid) {
+            this.itemMaterialInfo = item;
+            this.fluidMaterialInfo = fluid;
+            return this;
+        }
+
+        public GTRecipeJS removePreviousMaterialInfo() {
+            this.removeMaterialInfo = true;
+            return this;
+        }
+
         /*
          * KubeJS overrides
          */
+
+        @Override
+        public ResourceLocation getOrCreateId() {
+            if (id == null) {
+                String prefix = type.id.getNamespace() + ":";
+                String path = "%s/%s".formatted(type.id.getPath(), "kjs_custom");
+                id = type.event.takeId(this, prefix, path);
+                String pathWithoutType = StringUtils.substringAfter(id.getPath(), '/');
+                idWithoutType = new ResourceLocation(id.getNamespace(), pathWithoutType);
+            }
+            return id;
+        }
 
         @Override
         public @Nullable Recipe<?> createRecipe() {
@@ -932,7 +1005,7 @@ public interface GTRecipeSchema {
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS) value).getFluidStack();
-            return FluidIngredient.of(fluid.getAmount(), fluid.getFluid()).toJson();
+            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
 
         @Override
@@ -946,7 +1019,7 @@ public interface GTRecipeSchema {
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
             .defaultOptional();
-    RecipeKey<Boolean> IS_FUEL = BooleanComponent.BOOLEAN.key("isFuel").optional(false);
+    RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs").defaultOptional();
     RecipeKey<CapabilityMap> ALL_TICK_INPUTS = GTRecipeComponents.TICK_IN.key("tickInputs").defaultOptional();
@@ -965,8 +1038,7 @@ public interface GTRecipeSchema {
 
     RecipeSchema SCHEMA = new RecipeSchema(GTRecipeJS.class, GTRecipeJS::new, DURATION, DATA, CONDITIONS,
             ALL_INPUTS, ALL_TICK_INPUTS, ALL_OUTPUTS, ALL_TICK_OUTPUTS,
-            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS,
-            IS_FUEL)
+            INPUT_CHANCE_LOGICS, OUTPUT_CHANCE_LOGICS, TICK_INPUT_CHANCE_LOGICS, TICK_OUTPUT_CHANCE_LOGICS, CATEGORY)
             .constructor((recipe, schemaType, keys, from) -> recipe.id(from.getValue(recipe, ID)), ID)
             .constructor(DURATION, CONDITIONS, ALL_INPUTS, ALL_OUTPUTS, ALL_TICK_INPUTS, ALL_TICK_OUTPUTS);
 }

@@ -8,10 +8,11 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.List;
 public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     private final NotifiableFluidTank steamTank;
-    private final double conversionRate; // energy units per millibucket
+    private final double conversionRate; // mB steam per EU
 
     public SteamEnergyRecipeHandler(NotifiableFluidTank steamTank, double conversionRate) {
         this.steamTank = steamTank;
@@ -33,24 +34,23 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
-                                        boolean simulate) {
-        long sum = left.stream().reduce(0L, Long::sum);
-        long realSum = (long) Math.ceil(sum * conversionRate);
-        if (realSum > 0) {
-            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) :
-                    FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, boolean simulate) {
+        long eut = left.stream().reduce(0L, Long::sum);
+        int totalSteam = GTMath.saturatedCast((long) Math.ceil(eut * conversionRate));
+        if (totalSteam > 0) {
+            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                    FluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
             var list = new ArrayList<FluidIngredient>();
             list.add(steam);
-            var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
+            var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
             if (leftSteam == null || leftSteam.isEmpty()) return null;
-            sum = (long) (leftSteam.get(0).getAmount() / conversionRate);
+            eut = (long) (leftSteam.get(0).getAmount() / conversionRate);
         }
-        return sum <= 0 ? null : Collections.singletonList(sum);
+        return eut <= 0 ? null : Collections.singletonList(eut);
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         List<FluidStack> tankContents = new ArrayList<>();
         for (int i = 0; i < steamTank.getTanks(); ++i) {
             FluidStack stack = steamTank.getFluidInTank(i);
@@ -58,7 +58,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long sum = tankContents.stream().mapToLong(FluidStack::getAmount).sum();
         long realSum = (long) Math.ceil(sum * conversionRate);
         return List.of(realSum);
     }
@@ -72,7 +72,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long sum = tankContents.stream().mapToLong(FluidStack::getAmount).sum();
         return (long) Math.ceil(sum * conversionRate);
     }
 
@@ -87,7 +87,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     public long getStored() {
         FluidStack stack = steamTank.getFluidInTank(0);
-        if (stack != FluidStack.empty()) {
+        if (stack != FluidStack.EMPTY) {
             return stack.getAmount();
         }
         return 0;

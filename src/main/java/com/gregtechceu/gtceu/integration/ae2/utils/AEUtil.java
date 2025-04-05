@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -26,11 +27,11 @@ public class AEUtil {
         if (key instanceof AEFluidKey fluidKey) {
             return toFluidStack(fluidKey, stack.amount());
         }
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     public static FluidStack toFluidStack(AEFluidKey key, long amount) {
-        return FluidStack.create(key.getFluid(), amount, key.getTag());
+        return key.toStack(GTMath.saturatedCast(amount));
     }
 
     public static ItemStack[] toItemStacks(GenericStack stack) {

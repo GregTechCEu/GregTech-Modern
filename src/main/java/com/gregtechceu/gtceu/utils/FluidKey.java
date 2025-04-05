@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 
@@ -15,7 +14,7 @@ public class FluidKey {
     public final Fluid fluid;
     // Don't make this final, so we can clear the NBT if we remove the only key, resulting in an NBT of {}. Thanks Forge
     public CompoundTag tag;
-    private final long amount;
+    private final int amount;
 
     public FluidKey(FluidStack fluidStack) {
         this.fluid = fluidStack.getFluid();
@@ -24,7 +23,7 @@ public class FluidKey {
     }
 
     public FluidKey copy() {
-        return new FluidKey(FluidStack.create(getFluid(), this.amount, tag));
+        return new FluidKey(new FluidStack(getFluid(), this.amount, tag));
     }
 
     @Override

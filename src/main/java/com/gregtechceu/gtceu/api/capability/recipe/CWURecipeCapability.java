@@ -33,7 +33,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
 
     @Override
     public Integer copyWithModifier(Integer content, ContentModifier modifier) {
-        return modifier.apply(content).intValue();
+        return modifier.apply(content);
     }
 
     @Override

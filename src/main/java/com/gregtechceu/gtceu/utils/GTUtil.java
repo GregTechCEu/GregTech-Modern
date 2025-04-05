@@ -10,12 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -38,10 +34,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
-import com.google.common.math.LongMath;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -197,22 +195,17 @@ public class GTUtil {
      *         tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
-        // Yes, yes we do need UHV+.
-        return (byte) Math.min(GTValues.MAX, nearestLesser(GTValues.V, voltage) + 1);
-    }
-
-    public static int getFakeVoltageTier(long voltage) {
-        long a = voltage;
-        int b = 0;
-        while (a / 4L >= 8L) {
-            b++;
-            a /= 4L;
+        if (voltage > Integer.MAX_VALUE) {
+            return GTValues.MAX;
         }
-        return b;
+        return getOCTierByVoltage(voltage);
     }
 
-    public static long getVoltageFromFakeTier(int tier) {
-        return LongMath.pow(4L, tier + 1) * 2;
+    public static byte getOCTierByVoltage(long voltage) {
+        if (voltage <= GTValues.V[GTValues.ULV]) {
+            return GTValues.ULV;
+        }
+        return (byte) ((62 - Long.numberOfLeadingZeros(voltage - 1)) >> 1);
     }
 
     /**
@@ -222,45 +215,52 @@ public class GTUtil {
      *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
-        return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
+        if (voltage < GTValues.V[GTValues.LV]) {
+            return GTValues.ULV;
+        }
+        if (voltage == GTValues.VEX[GTValues.MAX_TRUE]) {
+            return GTValues.MAX_TRUE;
+        }
+
+        return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
-    public static ItemStack copy(ItemStack... stacks) {
-        for (ItemStack stack : stacks)
-            if (!stack.isEmpty()) return stack.copy();
+    /**
+     * Copies first non-empty ItemStack from stacks.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copy();
+            }
+        }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack copyAmount(int amount, ItemStack... stacks) {
-        ItemStack stack = copy(stacks);
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (amount > 64) amount = 64;
-        else if (amount == -1) amount = 111;
-        else if (amount < 0) amount = 0;
-        stack.setCount(amount);
-        return stack;
-    }
-
-    public static FluidStack copyAmount(int amount, FluidStack fluidStack) {
-        if (fluidStack == null) return null;
-        FluidStack stack = fluidStack.copy();
-        stack.setAmount(amount);
-        return stack;
-    }
-
-    public static <M> M selectItemInList(int index, M replacement, List<M> list, Class<M> minClass) {
-        if (list.isEmpty())
-            return replacement;
-
-        M maybeResult;
-        if (list.size() <= index) {
-            maybeResult = list.get(list.size() - 1);
-        } else if (index < 0) {
-            maybeResult = list.get(0);
-        } else maybeResult = list.get(index);
-
-        if (maybeResult != null) return maybeResult;
-        return replacement;
+    /**
+     * Copies first non-empty ItemStack from stacks, with new stack size.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(int newCount, @NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copyWithCount(newCount);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
@@ -301,7 +301,7 @@ public class GTUtil {
     }
 
     public static boolean isShiftDown() {
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
@@ -310,7 +310,7 @@ public class GTUtil {
     }
 
     public static boolean isCtrlDown() {
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
@@ -319,7 +319,7 @@ public class GTUtil {
     }
 
     public static boolean isAltDown() {
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
             return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
                     InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
@@ -341,28 +341,28 @@ public class GTUtil {
         return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
     }
 
-    public static long getPumpBiomeModifier(Holder<Biome> biome) {
+    public static int getPumpBiomeModifier(Holder<Biome> biome) {
         if (biome.is(BiomeTags.IS_NETHER)) {
             return -1;
         }
 
         if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
                 biome.is(BiomeTags.IS_RIVER)) {
-            return FluidHelper.getBucket();
+            return FluidType.BUCKET_VOLUME;
         } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
-            return FluidHelper.getBucket() * 4 / 5;
+            return FluidType.BUCKET_VOLUME * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
-            return FluidHelper.getBucket() * 35 / 100;
+            return FluidType.BUCKET_VOLUME * 35 / 100;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
-            return FluidHelper.getBucket() * 3 / 10;
+            return FluidType.BUCKET_VOLUME * 3 / 10;
         } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
-            return FluidHelper.getBucket() / 4;
+            return FluidType.BUCKET_VOLUME / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
-            return FluidHelper.getBucket() * 175 / 1000;
+            return FluidType.BUCKET_VOLUME * 175 / 1000;
         } else if (biome.is(CustomTags.IS_SANDY)) {
-            return FluidHelper.getBucket() * 170 / 1000;
+            return FluidType.BUCKET_VOLUME * 170 / 1000;
         }
-        return FluidHelper.getBucket() / 10;
+        return FluidType.BUCKET_VOLUME / 10;
     }
 
     /**
@@ -408,22 +408,8 @@ public class GTUtil {
         return null;
     }
 
-    /**
-     * Get fluidstack from a container.
-     *
-     * @param ingredient the fluidstack or fluid container item
-     * @return the fluidstack in container
-     */
-    @Nullable
-    public static FluidStack getFluidFromContainer(Object ingredient) {
-        if (ingredient instanceof FluidStack) {
-            return (FluidStack) ingredient;
-        } else if (ingredient instanceof ItemStack itemStack) {
-            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
-            if (fluidHandler != null)
-                return fluidHandler.drain(Integer.MAX_VALUE, false);
-        }
-        return null;
+    public static int getFluidColor(FluidStack fluid) {
+        return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {
@@ -443,7 +429,7 @@ public class GTUtil {
         }
 
         ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.isJAVDLoaded() &&
+        if (GTCEu.Mods.isJAVDLoaded() &&
                 world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
             return !world.isDay();
         } else return world.isDay();
@@ -515,15 +501,21 @@ public class GTUtil {
     }
 
     public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
-        list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        if (!effects.isEmpty()) {
+            list.add(Component.translatable("gtceu.tooltip.potion.header"));
+        }
         effects.forEach(pair -> {
             var effect = pair.getFirst();
             float probability = pair.getSecond();
             list.add(Component.translatable("gtceu.tooltip.potion.each",
-                    Component.translatable(effect.getDescriptionId()),
-                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1)),
-                    effect.getDuration(),
-                    100 * probability));
+                    Component.translatable(effect.getDescriptionId())
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
+                    Component.literal(String.valueOf(effect.getDuration()))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)),
+                    Component.literal(String.valueOf(100 * probability))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
     }
 }

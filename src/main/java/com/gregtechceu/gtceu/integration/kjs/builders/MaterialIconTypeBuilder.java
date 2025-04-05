@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class MaterialIconTypeBuilder extends BuilderBase<MaterialIconType> {
 
-    public MaterialIconTypeBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public MaterialIconTypeBuilder(ResourceLocation id) {
+        super(id);
     }
 
     @Override

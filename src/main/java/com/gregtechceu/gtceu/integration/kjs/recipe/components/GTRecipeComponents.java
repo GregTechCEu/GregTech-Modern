@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -33,6 +32,7 @@ import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -181,7 +181,7 @@ public class GTRecipeComponents {
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCondition value) {
             JsonObject object = new JsonObject();
-            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getClass()));
+            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
             object.add("data", value.serialize());
             return object;
         }
@@ -190,24 +190,24 @@ public class GTRecipeComponents {
         public RecipeCondition read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             }
             if (from instanceof JsonPrimitive primitive) {
                 var conditionKey = primitive.getAsString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             } else if (from instanceof JsonObject jsonObject) {
                 var conditionKey = GsonHelper.getAsString(jsonObject, "type", "");
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    RecipeCondition condition = RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    RecipeCondition condition = type.factory.createDefault();
                     if (condition != null) {
-                        return condition.deserialize(GsonHelper.getAsJsonObject(jsonObject, "data", new JsonObject()));
+                        return condition.deserialize(jsonObject);
                     }
                 }
             } else if (from instanceof Tag tag) {
@@ -359,10 +359,6 @@ public class GTRecipeComponents {
             false);
     public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
             true);
-    public static final ContentJS<Float> SU_IN = new ContentJS<>(NumberComponent.ANY_FLOAT, GTRecipeCapabilities.SU,
-            false);
-    public static final ContentJS<Float> SU_OUT = new ContentJS<>(NumberComponent.ANY_FLOAT, GTRecipeCapabilities.SU,
-            true);
     public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
             false);
     public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
@@ -385,7 +381,6 @@ public class GTRecipeComponents {
         VALID_CAPS.put(GTRecipeCapabilities.ITEM, Pair.of(ITEM_IN, ITEM_OUT));
         VALID_CAPS.put(GTRecipeCapabilities.FLUID, Pair.of(FLUID_IN, FLUID_OUT));
         VALID_CAPS.put(GTRecipeCapabilities.EU, Pair.of(EU_IN, EU_OUT));
-        VALID_CAPS.put(GTRecipeCapabilities.SU, Pair.of(SU_IN, SU_OUT));
         VALID_CAPS.put(GTRecipeCapabilities.CWU, Pair.of(CWU_IN, CWU_OUT));
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
@@ -395,6 +390,7 @@ public class GTRecipeComponents {
 
     public static class FluidIngredientJS implements InputFluid, OutputFluid {
 
+        @Getter
         private final FluidIngredient ingredient;
 
         public FluidIngredientJS(FluidIngredient ingredient) {
@@ -409,7 +405,7 @@ public class GTRecipeComponents {
         @Override
         public FluidIngredientJS kjs$copy(long amount) {
             FluidIngredient ingredient1 = ingredient.copy();
-            ingredient1.setAmount(amount);
+            ingredient1.setAmount((int) amount);
             return new FluidIngredientJS(ingredient1);
         }
 
@@ -417,7 +413,7 @@ public class GTRecipeComponents {
         public boolean matches(FluidLike other) {
             if (other instanceof FluidStackJS fluidStack) {
                 return ingredient
-                        .test(FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getNbt()));
+                        .test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getNbt()));
             }
             return other.matches(this);
         }
@@ -431,7 +427,8 @@ public class GTRecipeComponents {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));
             } else if (o instanceof FluidStackJS fluidStackJS) {
                 return new FluidIngredientJS(FluidIngredient.of(
-                        FluidStack.create(fluidStackJS.getFluid(), fluidStackJS.getAmount(), fluidStackJS.getNbt())));
+                        new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(),
+                                fluidStackJS.getNbt())));
             }
 
             var list = ListJS.of(o);
@@ -439,13 +436,13 @@ public class GTRecipeComponents {
                 List<FluidStack> stacks = new ArrayList<>();
                 for (var object : list) {
                     FluidStackJS stackJS = FluidStackJS.of(object);
-                    stacks.add(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt()));
+                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
                 }
                 return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
             } else {
                 FluidStackJS stackJS = FluidStackJS.of(o);
                 return new FluidIngredientJS(FluidIngredient
-                        .of(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt())));
+                        .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
             }
         }
     }

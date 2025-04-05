@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import lombok.Getter;
 
-public class DustProperty implements IMaterialProperty<DustProperty> {
+public class DustProperty implements IMaterialProperty {
 
     /**
      * Tool level needed to harvest block of this Material.

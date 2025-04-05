@@ -1,12 +1,17 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
@@ -14,11 +19,25 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         super(holder, LDFluidPipeType.INSTANCE);
     }
 
-    public static class FluidHandlerWrapper implements IFluidTransfer {
+    @Override
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (isRemote() || getIoType() != IO.IN || side != getFrontFacing()) {
+            return null;
+        }
+        var endpoint = getLink();
+        if (endpoint == null) {
+            return null;
+        }
+        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
+                .map(LDFluidEndpointMachine.FluidHandlerWrapper::new)
+                .orElse(null);
+    }
 
-        private final IFluidTransfer delegate;
+    public static class FluidHandlerWrapper implements IFluidHandlerModifiable {
 
-        public FluidHandlerWrapper(IFluidTransfer delegate) {
+        private final IFluidHandler delegate;
+
+        public FluidHandlerWrapper(IFluidHandler delegate) {
             this.delegate = delegate;
         }
 
@@ -35,11 +54,13 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
         @Override
         public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-            delegate.setFluidInTank(tank, fluidStack);
+            if (delegate instanceof IFluidHandlerModifiable modifiable) {
+                modifiable.setFluidInTank(tank, fluidStack);
+            }
         }
 
         @Override
-        public long getTankCapacity(int tank) {
+        public int getTankCapacity(int tank) {
             return delegate.getTankCapacity(tank);
         }
 
@@ -49,19 +70,16 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return delegate.fill(resource, simulate, notifyChanges);
-        }
-
-        @Override
         public boolean supportsFill(int tank) {
-            return delegate.supportsFill(tank);
+            if (delegate instanceof IFluidHandlerModifiable modifiable) {
+                return modifiable.supportsFill(tank);
+            }
+            return true;
         }
 
-        @NotNull
         @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return FluidStack.empty();
+        public int fill(FluidStack resource, FluidAction action) {
+            return delegate.fill(resource, action);
         }
 
         @Override
@@ -69,15 +87,14 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
             return false;
         }
 
-        @NotNull
         @Override
-        public Object createSnapshot() {
-            return delegate.createSnapshot();
+        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
         }
 
         @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            delegate.restoreFromSnapshot(snapshot);
+        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
         }
     }
 }

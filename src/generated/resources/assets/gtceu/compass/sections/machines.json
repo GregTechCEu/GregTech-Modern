@@ -1,7 +1,0 @@
-{
-  "button_texture": {
-    "type": "item",
-    "res": "gtceu:lv_chemical_reactor"
-  },
-  "priority": 11
-}

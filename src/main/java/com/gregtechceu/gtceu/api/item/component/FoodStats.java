@@ -28,14 +28,26 @@ public class FoodStats implements IEdibleItem, IInteractionItem, IAddInformation
     protected final FoodProperties properties;
 
     protected final boolean isDrink;
-
     @Nullable
     protected final Supplier<ItemStack> containerItem;
+
+    public FoodStats(FoodProperties properties, boolean isDrink, boolean hasPotionEffects,
+                     @Nullable Supplier<ItemStack> containerItem) {
+        this.properties = properties;
+        this.isDrink = isDrink;
+        this.containerItem = containerItem;
+    }
 
     public FoodStats(FoodProperties properties, boolean isDrink, @Nullable Supplier<ItemStack> containerItem) {
         this.properties = properties;
         this.isDrink = isDrink;
         this.containerItem = containerItem;
+    }
+
+    public FoodStats(FoodProperties properties) {
+        this.properties = properties;
+        this.isDrink = false;
+        this.containerItem = null;
     }
 
     @Override

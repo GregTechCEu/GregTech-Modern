@@ -20,6 +20,7 @@ import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,9 +45,14 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState, modelData,
                 renderType);
         // expand the overlay quads ever so slightly to combat z-fighting.
-        quads.addAll(overlayModel.getRotatedModel(frontFacing)
-                .getQuads(definition.defaultBlockState(), side, rand)
-                .stream()
+        var overlayQuads = new LinkedList<>(overlayModel.getRotatedModel(frontFacing)
+                .getQuads(definition.defaultBlockState(), side, rand));
+        if (machine != null) {
+            renderCovers(overlayQuads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
+                    machine.getLevel(),
+                    modelState);
+        }
+        quads.addAll(overlayQuads.stream()
                 .map(quad -> Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake())
                 .toList());
     }

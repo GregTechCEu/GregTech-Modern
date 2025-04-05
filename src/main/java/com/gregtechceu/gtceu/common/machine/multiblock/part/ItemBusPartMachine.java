@@ -3,23 +3,25 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -28,12 +30,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -55,17 +57,25 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    private boolean hasCircuitSlot = true;
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean circuitSlotEnabled;
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
-    protected final ItemHandlerProxyRecipeTrait combinedInventory;
+    @Persisted
+    @DescSynced
+    private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
-        this.circuitInventory = createCircuitItemHandler(io);
-        this.combinedInventory = createCombinedItemHandler(io);
+        this.circuitSlotEnabled = true;
+        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
 
     //////////////////////////////////////
@@ -90,15 +100,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
+            hasCircuitSlot = false;
+            setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        }
-    }
-
-    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
-        } else {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
         }
     }
 
@@ -117,9 +121,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
+        getHandlerList().setDistinct(isDistinct);
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
-
-        combinedInventory.recomputeEnabledState();
     }
 
     @Override
@@ -132,15 +135,34 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public boolean isDistinct() {
-        return getInventory().isDistinct() && circuitInventory.isDistinct();
+    public void setDistinct(boolean distinct) {
+        isDistinct = (io != IO.OUT && distinct);
+        getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
     @Override
-    public void setDistinct(boolean isDistinct) {
-        getInventory().setDistinct(isDistinct);
-        circuitInventory.setDistinct(isDistinct);
-        combinedInventory.setDistinct(isDistinct);
+    public void addedToController(IMultiController controller) {
+        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                clearInventory(circuitInventory.storage);
+            } else {
+                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+            }
+            setCircuitSlotEnabled(false);
+        }
+        super.addedToController(controller);
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        if (!hasCircuitSlot) return;
+        for (var c : controllers) {
+            if (!c.allowCircuitSlots()) {
+                return;
+            }
+        }
+        setCircuitSlotEnabled(true);
     }
 
     //////////////////////////////////////
@@ -161,8 +183,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     protected void updateInventorySubscription() {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
-                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()),
-                        getFrontFacing().getOpposite()) != null) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -194,9 +215,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IDistinctPart.super.attachConfigurators(configuratorPanel);
-        if (this.io == IO.IN) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        if (this.io == IO.OUT) {
+            IDistinctPart.super.superAttachConfigurators(configuratorPanel);
+        } else if (this.io == IO.IN) {
+            IDistinctPart.super.attachConfigurators(configuratorPanel);
+            if (hasCircuitSlot && isCircuitSlotEnabled()) {
+                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
         }
     }
 

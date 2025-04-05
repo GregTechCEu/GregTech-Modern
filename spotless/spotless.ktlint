@@ -1,0 +1,10 @@
+[{*.kt, *.kts}]
+ktlint_code_style = intellij_idea
+insert_final_newline = true
+max_line_length = 120
+
+ij_kotlin_imports_layout = com.gregtechceu.**,|,com.lowdragmc.**,|,net.**,|,*,|,java.**,javax.**,kotlin.**,|,^
+ij_kotlin_packages_to_use_import_on_demand = java.util.*,com.gregtechceu.**
+ktlint_standard_class-naming = disabled
+ktlint_standard_function-naming = disabled
+ktlint_standard_no-wildcard-imports = disabled

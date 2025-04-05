@@ -8,8 +8,8 @@
 	},
 	"elements": [
 		{
-			"from": [0.001, 0.001, 0.001],
-			"to": [15.999, 15.999, 15.999],
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
 			"faces": {
 				"north": {"texture": "#1", "cullface": "north"},
 				"east": {"texture": "#1", "cullface": "east"},
@@ -20,8 +20,8 @@
 			}
 		},
 		{
-			"from": [-0.002, -0.002, -0.002],
-			"to": [16.002, 16.002, -0.002],
+			"from": [0, 0, 0],
+			"to": [16, 16, 0],
 			"faces": {
 				"north": {"texture": "#2", "cullface": "north"}
 			}

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -56,9 +57,11 @@ public abstract class VeinGenerator {
         return getAllEntries().stream()
                 .sorted(Comparator.comparingInt(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
-                .map(either -> either.map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ?
-                        ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()))
-                .filter(Objects::nonNull)
+                .map(either -> either.map(state -> {
+                    var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
+                    return matStack.material();
+                }, Function.identity()))
+                .filter(mat -> !mat.isNull())
                 .toList();
     }
 
@@ -69,12 +72,12 @@ public abstract class VeinGenerator {
     public List<Map.Entry<Integer, Material>> getValidMaterialsChances() {
         return getAllEntries().stream()
                 .filter(entry -> entry.getKey()
-                        .map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity()) !=
-                        null)
+                        .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(),
+                                Function.identity()) !=
+                        GTMaterials.NULL)
                 .map(entry -> Map.entry(entry.getValue(), entry.getKey()
-                        .map(state -> ChemicalHelper.getMaterial(state.getBlock()) != null ?
-                                ChemicalHelper.getMaterial(state.getBlock()).material() : null, Function.identity())))
+                        .map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(),
+                                Function.identity())))
                 .collect(Collectors.toList());
     }
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -306,9 +306,9 @@ public class CircuitRecipes {
         // Vacuum Tube
         VanillaRecipeHelper.addShapedRecipe(provider, "vacuum_tube", VACUUM_TUBE.asStack(),
                 "PTP", "WWW",
-                'P', new UnificationEntry(bolt, Steel),
+                'P', new MaterialEntry(bolt, Steel),
                 'T', GLASS_TUBE.asStack(),
-                'W', new UnificationEntry(wireGtSingle, Copper));
+                'W', new MaterialEntry(wireGtSingle, Copper));
 
         ASSEMBLER_RECIPES.recipeBuilder("vacuum_tube_plain")
                 .inputItems(GLASS_TUBE)
@@ -357,43 +357,43 @@ public class CircuitRecipes {
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireGtSingle, Copper),
-                'C', new UnificationEntry(dust, Coal));
+                'W', new MaterialEntry(wireGtSingle, Copper),
+                'C', new MaterialEntry(dust, Coal));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "resistor_wire_fine", RESISTOR.asStack(2),
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireFine, Copper),
-                'C', new UnificationEntry(dust, Coal));
+                'W', new MaterialEntry(wireFine, Copper),
+                'C', new MaterialEntry(dust, Coal));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "resistor_wire_charcoal", RESISTOR.asStack(2),
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireGtSingle, Copper),
-                'C', new UnificationEntry(dust, Charcoal));
+                'W', new MaterialEntry(wireGtSingle, Copper),
+                'C', new MaterialEntry(dust, Charcoal));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "resistor_wire_fine_charcoal", RESISTOR.asStack(2),
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireFine, Copper),
-                'C', new UnificationEntry(dust, Charcoal));
+                'W', new MaterialEntry(wireFine, Copper),
+                'C', new MaterialEntry(dust, Charcoal));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "resistor_wire_carbon", RESISTOR.asStack(2),
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireGtSingle, Copper),
-                'C', new UnificationEntry(dust, Carbon));
+                'W', new MaterialEntry(wireGtSingle, Copper),
+                'C', new MaterialEntry(dust, Carbon));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "resistor_wire_fine_carbon", RESISTOR.asStack(2),
                 "SPS", "WCW", " P ",
                 'P', new ItemStack(Items.PAPER),
                 'S', STICKY_RESIN.asStack(),
-                'W', new UnificationEntry(wireFine, Copper),
-                'C', new UnificationEntry(dust, Carbon));
+                'W', new MaterialEntry(wireFine, Copper),
+                'C', new MaterialEntry(dust, Carbon));
 
         ASSEMBLER_RECIPES.recipeBuilder("resistor_coal")
                 .inputItems(dust, Coal)
@@ -768,16 +768,16 @@ public class CircuitRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "coated_board", COATED_BOARD.asStack(3),
                 "RRR", "PPP", "RRR",
                 'R', STICKY_RESIN.asStack(),
-                'P', new UnificationEntry(plate, Wood));
+                'P', new MaterialEntry(plate, Wood));
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "coated_board_1x", COATED_BOARD.asStack(),
-                new UnificationEntry(plate, Wood),
+                new MaterialEntry(plate, Wood),
                 STICKY_RESIN.asStack(),
                 STICKY_RESIN.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "basic_circuit_board", BASIC_CIRCUIT_BOARD.asStack(),
                 "WWW", "WBW", "WWW",
-                'W', new UnificationEntry(wireGtSingle, Copper),
+                'W', new MaterialEntry(wireGtSingle, Copper),
                 'B', COATED_BOARD.asStack());
 
         // Basic Circuit Board
@@ -799,7 +799,7 @@ public class CircuitRecipes {
         // Good Circuit Board
         VanillaRecipeHelper.addShapedRecipe(provider, "good_circuit_board", GOOD_CIRCUIT_BOARD.asStack(),
                 "WWW", "WBW", "WWW",
-                'W', new UnificationEntry(wireGtSingle, Silver),
+                'W', new MaterialEntry(wireGtSingle, Silver),
                 'B', PHENOLIC_BOARD.asStack());
 
         CHEMICAL_RECIPES.recipeBuilder("good_circuit_board_persulfate").EUt(VA[LV]).duration(300)
@@ -1005,10 +1005,10 @@ public class CircuitRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "electronic_circuit_lv", ELECTRONIC_CIRCUIT_LV.asStack(),
                 "RPR", "VBV", "CCC",
                 'R', RESISTOR.asStack(),
-                'P', new UnificationEntry(plate, Steel),
+                'P', new MaterialEntry(plate, Steel),
                 'V', VACUUM_TUBE.asStack(),
                 'B', BASIC_CIRCUIT_BOARD.asStack(),
-                'C', new UnificationEntry(cableGtSingle, RedAlloy));
+                'C', new MaterialEntry(cableGtSingle, RedAlloy));
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
@@ -1021,8 +1021,8 @@ public class CircuitRecipes {
         // MV
         VanillaRecipeHelper.addShapedRecipe(provider, "electronic_circuit_mv", ELECTRONIC_CIRCUIT_MV.asStack(),
                 "DPD", "CBC", "WCW",
-                'W', new UnificationEntry(wireGtSingle, Copper),
-                'P', new UnificationEntry(plate, Steel),
+                'W', new MaterialEntry(wireGtSingle, Copper),
+                'P', new MaterialEntry(plate, Steel),
                 'C', ELECTRONIC_CIRCUIT_LV.asStack(),
                 'B', GOOD_CIRCUIT_BOARD.asStack(),
                 'D', DIODE.asStack());
@@ -1277,7 +1277,7 @@ public class CircuitRecipes {
                 .inputItems(SMD_CAPACITOR, 32)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 32)
-                .outputItems(NANO_MAINFRAME_LUV)
+                .outputItems(NANO_MAINFRAME_LuV)
                 .solderMultiplier(4)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1289,7 +1289,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 32)
-                .outputItems(NANO_MAINFRAME_LUV)
+                .outputItems(NANO_MAINFRAME_LuV)
                 .solderMultiplier(4)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1362,7 +1362,7 @@ public class CircuitRecipes {
                 .inputItems(NOR_MEMORY_CHIP, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireFine, Platinum, 32)
-                .outputItems(QUANTUM_COMPUTER_LUV)
+                .outputItems(QUANTUM_COMPUTER_LuV)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1374,7 +1374,7 @@ public class CircuitRecipes {
                 .inputItems(NOR_MEMORY_CHIP, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireFine, Platinum, 32)
-                .outputItems(QUANTUM_COMPUTER_LUV)
+                .outputItems(QUANTUM_COMPUTER_LuV)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1382,7 +1382,7 @@ public class CircuitRecipes {
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("quantum_mainframe_zpm").EUt(VA[IV]).duration(800)
                 .inputItems(frameGt, HSSG, 2)
-                .inputItems(QUANTUM_COMPUTER_LUV, 2)
+                .inputItems(QUANTUM_COMPUTER_LuV, 2)
                 .inputItems(SMD_INDUCTOR, 24)
                 .inputItems(SMD_CAPACITOR, 48)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
@@ -1394,7 +1394,7 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("quantum_mainframe_zpm_asmd").EUt(VA[IV]).duration(400)
                 .inputItems(frameGt, HSSG, 2)
-                .inputItems(QUANTUM_COMPUTER_LUV, 2)
+                .inputItems(QUANTUM_COMPUTER_LuV, 2)
                 .inputItems(ADVANCED_SMD_INDUCTOR, 6)
                 .inputItems(ADVANCED_SMD_CAPACITOR, 12)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
@@ -1436,7 +1436,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)
                 .inputItems(wireFine, NiobiumTitanium, 16)
-                .outputItems(CRYSTAL_ASSEMBLY_LUV, 2)
+                .outputItems(CRYSTAL_ASSEMBLY_LuV, 2)
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
@@ -1444,7 +1444,7 @@ public class CircuitRecipes {
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("crystal_computer_zpm").EUt(9600).duration(400)
                 .inputItems(ELITE_CIRCUIT_BOARD)
-                .inputItems(CRYSTAL_ASSEMBLY_LUV, 2)
+                .inputItems(CRYSTAL_ASSEMBLY_LuV, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(NOR_MEMORY_CHIP, 32)
                 .inputItems(NAND_MEMORY_CHIP, 64)
@@ -1494,7 +1494,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 8)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount)
+                .outputItems(WETWARE_PROCESSOR_LuV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1504,14 +1504,14 @@ public class CircuitRecipes {
                 .inputItems(HIGHLY_ADVANCED_SOC)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
                 .inputItems(bolt, Naquadah, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount * 2)
+                .outputItems(WETWARE_PROCESSOR_LuV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
         // ZPM
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("wetware_processor_assembly_zpm").EUt(38400).duration(400)
                 .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(WETWARE_PROCESSOR_LUV, 2)
+                .inputItems(WETWARE_PROCESSOR_LuV, 2)
                 .inputItems(ADVANCED_SMD_INDUCTOR, 6)
                 .inputItems(ADVANCED_SMD_CAPACITOR, 12)
                 .inputItems(RANDOM_ACCESS_MEMORY, 24)

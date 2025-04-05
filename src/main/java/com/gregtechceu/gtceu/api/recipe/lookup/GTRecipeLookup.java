@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +45,7 @@ public class GTRecipeLookup {
      */
     @Nullable
     public GTRecipe findRecipe(final IRecipeCapabilityHolder holder) {
-        return find(holder, recipe -> recipe.matchRecipe(holder).isSuccess());
+        return find(holder, recipe -> RecipeHelper.matchRecipe(holder, recipe).isSuccess());
     }
 
     /**
@@ -55,22 +58,26 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> prepareRecipeFind(@NotNull IRecipeCapabilityHolder holder) {
         // First, check if items and fluids are valid.
         int totalSize = 0;
-        for (Map.Entry<RecipeCapability<?>, List<IRecipeHandler<?>>> entries : holder.getCapabilitiesProxy().row(IO.IN)
-                .entrySet()) {
-            int size = 0;
-            if (!entries.getKey().isRecipeSearchFilter()) {
-                continue;
-            }
-            for (IRecipeHandler<?> entry : entries.getValue()) {
-                if (entry.getSize() != -1) {
-                    size += entry.getSize();
+        List<RecipeHandlerList> handlers = holder.getCapabilitiesForIO(IO.IN);
+
+        for (var handler : handlers) {
+            for (var entries : handler.getHandlerMap().entrySet()) {
+                int size = 0;
+                if (!entries.getKey().isRecipeSearchFilter()) {
+                    continue;
                 }
+                for (IRecipeHandler<?> entry : entries.getValue()) {
+                    if (entry.getSize() != -1) {
+                        size += entry.getSize();
+                    }
+                }
+                if (size == Integer.MAX_VALUE) {
+                    return null;
+                }
+                totalSize += size;
             }
-            if (size == Integer.MAX_VALUE) {
-                return null;
-            }
-            totalSize += size;
         }
+
         if (totalSize == 0) {
             return null;
         }
@@ -159,9 +166,9 @@ public class GTRecipeLookup {
      * @return a recipe
      */
     @Nullable
-    private GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
-                                                     @NotNull Branch branchRoot,
-                                                     @NotNull Predicate<GTRecipe> canHandle) {
+    public GTRecipe recurseIngredientTreeFindRecipe(@NotNull List<List<AbstractMapIngredient>> ingredients,
+                                                    @NotNull Branch branchRoot,
+                                                    @NotNull Predicate<GTRecipe> canHandle) {
         // Try each ingredient as a starting point, adding it to the skip-list.
         // The skip-list is a packed long, where each 1 bit represents an index to skip
         for (int i = 0; i < ingredients.size(); i++) {
@@ -423,21 +430,18 @@ public class GTRecipeLookup {
      */
     @NotNull
     protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
-        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(
-                r.getCapabilitiesProxy().row(IO.IN).values().size());
-        r.getCapabilitiesProxy().row(IO.IN).forEach((cap, handlers) -> {
-            if (cap.isRecipeSearchFilter() && !handlers.isEmpty()) {
-                for (IRecipeHandler<?> handler : handlers) {
-                    if (handler.isProxy()) {
-                        continue;
-                    }
-                    List<Object> compressed = cap.compressIngredients(handler.getContents());
-                    for (Object content : compressed) {
-                        list.add(cap.convertToMapIngredient(content));
-                    }
-                }
+        var handlerMap = r.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
+        int size = handlerMap.values().size();
+        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
+        for (var entry : handlerMap.entrySet()) {
+            var cap = entry.getKey();
+            var handlers = entry.getValue();
+            if (!cap.isRecipeSearchFilter()) continue;
+            for (var handler : handlers) {
+                var compressed = cap.compressIngredients(handler.getContents());
+                list.addAll(cap.convertCompressedIngredients(compressed));
             }
-        });
+        }
         return list;
     }
 
@@ -448,6 +452,7 @@ public class GTRecipeLookup {
     public void removeAllRecipes() {
         this.lookup.getNodes().clear();
         this.lookup.getSpecialNodes().clear();
+        this.recipeType.getCategoryMap().clear();
     }
 
     /**
@@ -460,8 +465,19 @@ public class GTRecipeLookup {
         if (recipe == null) {
             return false;
         }
+
+        // Add combustion fuels to the Powerless Jetpack
+        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
+            Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
+            FluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
+            PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
+        }
         List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
-        return recurseIngredientTreeAdd(recipe, items, lookup, 0, 0);
+        if (recurseIngredientTreeAdd(recipe, items, lookup, 0, 0)) {
+            recipe.recipeCategory.addRecipe(recipe);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -500,7 +516,7 @@ public class GTRecipeLookup {
                         // handle the existing branch
                         if (v.left().isEmpty() || v.left().get() != recipe) {
                             // the recipe already there was not the one being added, so there is a conflict
-                            if (ConfigHolder.INSTANCE.dev.debug || Platform.isDevEnv()) {
+                            if (ConfigHolder.INSTANCE.dev.debug || GTCEu.isDev()) {
                                 GTCEu.LOGGER.warn(
                                         "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
                                         BuiltInRegistries.RECIPE_TYPE.getKey(this.recipeType));

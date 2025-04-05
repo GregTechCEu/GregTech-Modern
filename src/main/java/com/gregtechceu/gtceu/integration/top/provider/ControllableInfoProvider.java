@@ -12,11 +12,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcjty.theoneprobe.api.CompoundText;
+import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import org.jetbrains.annotations.Nullable;
-
-import static mcjty.theoneprobe.api.TextStyleClass.WARNING;
 
 public class ControllableInfoProvider extends CapabilityInfoProvider<IControllable> {
 
@@ -34,7 +33,9 @@ public class ControllableInfoProvider extends CapabilityInfoProvider<IControllab
     @Override
     protected void addProbeInfo(IControllable capability, IProbeInfo probeInfo, Player player, BlockEntity blockEntity,
                                 IProbeHitData data) {
+        IProbeInfo horizontalPane = probeInfo
+                .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
         if (!capability.isWorkingEnabled())
-            probeInfo.text(CompoundText.create().text("gtceu.top.working_disabled").style(WARNING));
+            horizontalPane.text(CompoundText.create().warning("gtceu.top.working_disabled"));
     }
 }

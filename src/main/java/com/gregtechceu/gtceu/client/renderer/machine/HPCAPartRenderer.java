@@ -75,7 +75,7 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                 renderType);
         if (machine instanceof HPCAComponentPartMachine hpcaComponent) {
             ResourceLocation texture, emissiveTexture = null;
-            var controller = hpcaComponent.getControllers().isEmpty() ? null : hpcaComponent.getControllers().get(0);
+            var controller = hpcaComponent.isFormed() ? hpcaComponent.getControllers().first() : null;
             if (controller != null && (controller instanceof IWorkable workable && workable.isActive())) {
                 if (hpcaComponent.isDamaged()) {
                     texture = damagedActiveTexture;

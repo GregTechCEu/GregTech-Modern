@@ -1,58 +1,71 @@
-name: auto-build
+name: Latest Build
 
 on:
   push:
-    branches:
-      - '1.20.1'
+    branches: ['1.20.1', '1.21']
+    paths: ['src/**', '**/*.gradle', 'gradle.properties']
+
+concurrency:
+  group: auto-build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
+      GITHUB_TOKEN: ${{ github.token }}
+      PUBLISH: ${{ !contains(github.event.commits[0].message, '[no-snapshot]') }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
       MAVEN_USER: ${{ secrets.MAVEN_USER }}
       SNAPSHOT: true
+      CI: true
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Setup Build
         uses: ./.github/actions/build_setup
-
+      - name: Get Mod Version
+        id: ver
+        run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
+      - name: Version Suffix
+        id: suffix
+        run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
+      - run: git fetch origin 1.20.1
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
-
+        run: ./gradlew build --build-cache
       - name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
+        if: ${{ github.repository_owner == 'GregTechCEu' && env.PUBLISH == 'true' }}
+        run: ./gradlew publish --build-cache
+      - name: Rename Jars
+        if: ${{ env.PUBLISH == 'true' }}
+        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
+      - name: Upload Artifacts
+        if: ${{ env.PUBLISH == 'true' }}
+        uses: actions/upload-artifact@v4
         with:
-          arguments: publish
-
-      - name: Get Version
-        id: var
-        run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|-SNAPSHOT.jar' '{print $2}')
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT.jar"
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-slim.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-slim.jar"
-          mv "build/libs/gtceu-$MESSAGE-SNAPSHOT-dev-shadow.jar" "build/libs/gtceu-$MESSAGE-build_${{ github.run_number }}-SNAPSHOT-dev-shadow.jar"
-          echo "version=$MESSAGE-build_${{ github.run_number }}" >> $GITHUB_OUTPUT
-
-      - name: Release
-        id: release
-        uses: Kir-Antipov/mc-publish@v3.3.0
+          name: build-artifacts
+          path: build/libs/*
+          if-no-files-found: error
+          retention-days: 90
+      - name: Changelog
+        id: changelog
+        if: ${{ env.PUBLISH == 'true' }}
+        uses: mikepenz/release-changelog-builder-action@v5
         with:
-          name: ${{ steps.var.outputs.version }}
-          github-tag: ${{ steps.var.outputs.version }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            build/libs/!(*-@(dev|sources|javadoc)).jar
-
-      - name: Print Output
-        run: |
-          echo "Release tag: ${{ steps.release.outputs.github-tag }}"
-          echo "Release URL: ${{ steps.release.outputs.github-url }}"
-          echo "Released files: ${{ steps.release.outputs.github-files }}"
+          configuration: "./.github/json/config-latest${{ contains(github.ref_name, '1.21') && '-1.21' || '' }}.json"
+          toTag: ${{ github.ref }}
+          fetchViaCommits: true
+          failOnError: false
+      - name: Release Latest
+        if: ${{ env.PUBLISH == 'true' }}
+        uses: andelf/nightly-release@46e2d5f80828ecc5c2c3c819eb31186a7cf2156c
+        with:
+          tag_name: latest-${{ github.ref_name }}
+          name: '${{ github.ref_name }}-${{ steps.ver.outputs.version}} SNAPSHOT ${{ env.VERSION_SUFFIX }}'
+          prerelease: true
+          body: |
+            The latest build of GTM for Minecraft ${{ github.ref_name }}.
+            Please report any [issues](https://github.com/GregTechCEu/GregTech-Modern/issues).
+            ${{ steps.changelog.outputs.changelog }}
+          files: build/libs/*.jar

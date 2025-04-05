@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.top.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -18,8 +20,6 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import java.util.Optional;
-
 public class ParallelProvider implements IProbeInfoProvider {
 
     @Override
@@ -33,21 +33,27 @@ public class ParallelProvider implements IProbeInfoProvider {
         BlockEntity blockEntity = level.getBlockEntity(iProbeHitData.getPos());
         if (blockEntity instanceof MetaMachineBlockEntity machineBlockEntity) {
             int parallel = 0;
+            boolean exact = false;
             if (machineBlockEntity.getMetaMachine() instanceof IParallelHatch parallelHatch) {
                 parallel = parallelHatch.getCurrentParallel();
             } else if (machineBlockEntity.getMetaMachine() instanceof IMultiController controller) {
-                Optional<IParallelHatch> parallelHatch = controller.getParts().stream()
-                        .filter(IParallelHatch.class::isInstance)
-                        .map(IParallelHatch.class::cast)
-                        .findAny();
-                if (parallelHatch.isPresent()) {
-                    parallel = parallelHatch.get().getCurrentParallel();
+                if (controller instanceof IRecipeLogicMachine rlm &&
+                        rlm.getRecipeLogic().isActive() &&
+                        rlm.getRecipeLogic().getLastRecipe() != null) {
+                    parallel = rlm.getRecipeLogic().getLastRecipe().parallels;
+                    exact = true;
+                } else {
+                    parallel = controller.getParallelHatch()
+                            .map(IParallelHatch::getCurrentParallel)
+                            .orElse(0);
                 }
             }
-            if (parallel > 0) {
-                iProbeInfo.text(Component.translatable(
-                        "gtceu.multiblock.parallel",
-                        Component.literal(parallel + "").withStyle(ChatFormatting.DARK_PURPLE)));
+            if (parallel > 1) {
+                Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
+                        .withStyle(ChatFormatting.DARK_PURPLE);
+                String key = "gtceu.multiblock.parallel";
+                if (exact) key += ".exact";
+                iProbeInfo.text(Component.translatable(key, parallels));
             }
         }
     }

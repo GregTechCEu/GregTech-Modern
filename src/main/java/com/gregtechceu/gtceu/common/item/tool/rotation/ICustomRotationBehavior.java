@@ -21,7 +21,7 @@ public interface ICustomRotationBehavior {
     }
 
     /** Whether to draw an X on a provided side in the 9-sectioned highlight grid. */
-    default boolean showXOnSide(BlockState state, Direction facing) {
+    default boolean showSideTip(BlockState state, Direction side) {
         return false;
     }
 }

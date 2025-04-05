@@ -112,12 +112,17 @@ public class MultiblockWorldSavedData extends SavedData {
 
     private void searchingTask() {
         try {
+            if (!GTCEu.canGetServerLevel()) return;
             IN_SERVICE.set(true);
             for (var controller : controllers) {
-                controller.asyncCheckPattern(periodID);
+                try {
+                    controller.asyncCheckPattern(periodID);
+                } catch (Throwable e) {
+                    GTCEu.LOGGER.error("Error while assembling multiblock {}: {}", controller, e.getMessage());
+                }
             }
         } catch (Throwable e) {
-            GTCEu.LOGGER.error("asyncThreadLogic error: {}", e.getMessage());
+            GTCEu.LOGGER.error("Error while assembling multiblocks: {}", e.getMessage());
         } finally {
             IN_SERVICE.set(false);
         }
@@ -125,7 +130,7 @@ public class MultiblockWorldSavedData extends SavedData {
     }
 
     public static boolean isThreadService() {
-        return IN_SERVICE.get();
+        return IN_SERVICE.get() && GTCEu.canGetServerLevel();
     }
 
     public void releaseExecutorService() {

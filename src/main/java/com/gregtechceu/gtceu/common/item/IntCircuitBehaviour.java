@@ -1,9 +1,15 @@
 package com.gregtechceu.gtceu.common.item;
 
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -11,16 +17,17 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +43,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.INTEGRATED_CIRCUIT.asStack();
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -63,7 +70,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     public static boolean isIntegratedCircuit(ItemStack itemStack) {
-        boolean isCircuit = GTItems.INTEGRATED_CIRCUIT.isIn(itemStack);
+        boolean isCircuit = GTItems.PROGRAMMED_CIRCUIT.isIn(itemStack);
         if (isCircuit && !itemStack.hasTag()) {
             var compound = new CompoundTag();
             compound.putInt("Configuration", 0);
@@ -103,7 +110,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         label.setTextColor(0x404040);
         var modular = new ModularUI(184, 132, holder, entityPlayer)
                 .widget(label);
-        SlotWidget slotwidget = new SlotWidget(new ItemStackTransfer(stack(getCircuitConfiguration(holder.getHeld()))),
+        SlotWidget slotwidget = new SlotWidget(
+                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))),
                 0, 82, 20, false, false);
         slotwidget.setBackground(GuiTextures.SLOT);
         modular.widget(slotwidget);
@@ -115,7 +123,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                         new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
                         data -> {
                             setCircuitConfiguration(holder, finalIdx);
-                            slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0);
+                            slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
                         }));
                 idx++;
             }
@@ -126,10 +134,31 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
                     new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
                     data -> {
                         setCircuitConfiguration(holder, finalIdx);
-                        slotwidget.setHandlerSlot(new ItemStackTransfer(stack(finalIdx)), 0);
+                        slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
                     }));
         }
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        var stack = context.getItemInHand();
+        int circuitSetting = getCircuitConfiguration(stack);
+        BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
+        if (entity instanceof MetaMachineBlockEntity machineEntity && context.isSecondaryUseActive()) {
+            if (machineEntity.metaMachine instanceof IHasCircuitSlot circuitMachine &&
+                    circuitMachine.getCircuitInventory().getSlots() > 0) {
+                setCircuitConfig(circuitMachine.getCircuitInventory(), circuitSetting);
+            }
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit)
+                stack.shrink(1);
+            return InteractionResult.SUCCESS;
+        }
+        return IItemUIFactory.super.useOn(context);
+    }
+
+    void setCircuitConfig(NotifiableItemStackHandler circuit, int value) {
+        circuit.setStackInSlot(0, IntCircuitBehaviour.stack(value));
     }
 }

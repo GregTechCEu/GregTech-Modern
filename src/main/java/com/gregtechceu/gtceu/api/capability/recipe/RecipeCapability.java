@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.codec.DispatchedMapCodec;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -15,9 +17,11 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +33,10 @@ import java.util.*;
  */
 public abstract class RecipeCapability<T> {
 
+    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
+    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
+            RecipeCapability.DIRECT_CODEC,
+            RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;
@@ -44,6 +52,10 @@ public abstract class RecipeCapability<T> {
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
+    }
+
+    public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
+        return Content.codec(capability).listOf();
     }
 
     /**
@@ -109,6 +121,14 @@ public abstract class RecipeCapability<T> {
         return new ArrayList<>(ingredients);
     }
 
+    public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
+        List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
+        for (var ingredient : ingredients) {
+            ret.add(convertToMapIngredient(ingredient));
+        }
+        return ret;
+    }
+
     /**
      * Does the recipe test if this capability is workable? if not, you should test validity somewhere else.
      */
@@ -123,10 +143,11 @@ public abstract class RecipeCapability<T> {
      * @param recipe     the recipe from which we get the input to product ratio
      * @param holder     the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
      * @param multiplier the maximum possible multiplied we can get from the input inventory
-     *                   see {@link ParallelLogic#getMaxRecipeMultiplier(GTRecipe, IRecipeCapabilityHolder, int)}
+     *                   see {@link ParallelLogic#limitByInput}
      * @return the amount of times a {@link GTRecipe} outputs can be merged into an inventory without voiding products.
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
+    // TODO: kross - make it so caps check both regular outputs and tick outputs
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
         return Integer.MAX_VALUE;
     }
@@ -181,12 +202,7 @@ public abstract class RecipeCapability<T> {
                                 @NotNull GTRecipeType recipeType,
                                 @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
-                                @Nullable Object storage) {}
-
-    // TODO
-    public double calculateAmount(List<T> left) {
-        return 1;
-    }
+                                @Nullable Object storage, int recipeTier, int chanceTier) {}
 
     /**
      * Create a cache map for chanced outputs

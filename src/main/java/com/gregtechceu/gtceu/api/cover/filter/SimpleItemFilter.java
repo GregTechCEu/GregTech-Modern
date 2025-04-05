@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
-import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -72,7 +71,15 @@ public class SimpleItemFilter implements ItemFilter {
         };
     }
 
+    @Override
+    public boolean isBlank() {
+        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty);
+    }
+
     public CompoundTag saveFilter() {
+        if (isBlank()) {
+            return null;
+        }
         var tag = new CompoundTag();
         tag.putBoolean("isBlackList", isBlackList);
         tag.putBoolean("matchNbt", ignoreNbt);
@@ -100,7 +107,7 @@ public class SimpleItemFilter implements ItemFilter {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
 
-                var handler = new ItemStackTransfer(matches[index]);
+                var handler = new CustomItemStackHandler(matches[index]);
 
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
 
@@ -125,9 +132,9 @@ public class SimpleItemFilter implements ItemFilter {
                 group.addWidget(slot);
             }
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, 9, 18, 18,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
                 GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 2, (18) + 9, 18, 18,
+        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
                 GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
         return group;
     }
@@ -152,9 +159,9 @@ public class SimpleItemFilter implements ItemFilter {
         int totalCount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
+            if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
-            } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
+            } else if (ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

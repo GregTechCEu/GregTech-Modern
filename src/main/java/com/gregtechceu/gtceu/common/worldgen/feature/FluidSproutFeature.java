@@ -46,7 +46,7 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
         if (config.fluid().isSame(Fluids.EMPTY)) {
             return false;
         }
-        int surfaceHeight = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, blockpos.getX(), blockpos.getZ());
+        int surfaceHeight = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, blockpos.getX(), blockpos.getZ());
         if (blockpos.getY() >= surfaceHeight) {
             return false;
         }
@@ -126,6 +126,7 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
         int sectionZ = SectionPos.sectionRelative(currentZ);
         levelchunksection.setBlockState(sectionX, sectionY, sectionZ,
                 config.fluid().defaultFluidState().createLegacyBlock(), false);
+        level.getChunk(mutablePos).markPosForPostprocessing(mutablePos);
         placedAmount.add(1);
     }
 

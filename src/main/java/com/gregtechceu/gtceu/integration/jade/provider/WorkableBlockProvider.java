@@ -55,23 +55,8 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
 
         // show as total computation instead
         if (capData.getBoolean("Research")) {
-            String current, max;
-            if (currentProgress >= 1e6) {
-                current = FormattingUtil.DECIMAL_FORMAT_1F.format(currentProgress / 1e6) + "M";
-            } else if (currentProgress >= 1e3) {
-                current = FormattingUtil.DECIMAL_FORMAT_1F.format(currentProgress / 1e3) + "K";
-            } else {
-                current = String.valueOf(currentProgress);
-            }
-
-            if (maxProgress >= 1e6) {
-                max = FormattingUtil.DECIMAL_FORMAT_1F.format(maxProgress / 1e6) + "M";
-            } else if (maxProgress >= 1e3) {
-                max = FormattingUtil.DECIMAL_FORMAT_1F.format(maxProgress / 1e3) + "K";
-            } else {
-                max = String.valueOf(maxProgress);
-            }
-
+            String current = FormattingUtil.formatNumberReadable(currentProgress);
+            String max = FormattingUtil.formatNumberReadable(maxProgress);
             text = Component.translatable("gtceu.jade.progress_computation", current, max);
 
             tooltip.add(

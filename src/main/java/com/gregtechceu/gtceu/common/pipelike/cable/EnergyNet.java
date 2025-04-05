@@ -57,14 +57,14 @@ public class EnergyNet extends PipeNet<WireProperties> {
 
     @Override
     protected void writeNodeData(WireProperties nodeData, CompoundTag tagCompound) {
-        tagCompound.putInt("voltage", nodeData.getVoltage());
+        tagCompound.putLong("voltage", nodeData.getVoltage());
         tagCompound.putInt("amperage", nodeData.getAmperage());
         tagCompound.putInt("loss", nodeData.getLossPerBlock());
     }
 
     @Override
     protected WireProperties readNodeData(CompoundTag tagCompound) {
-        int voltage = tagCompound.getInt("voltage");
+        long voltage = tagCompound.getLong("voltage");
         int amperage = tagCompound.getInt("amperage");
         int lossPerBlock = tagCompound.getInt("loss");
         return new WireProperties(voltage, amperage, lossPerBlock);

@@ -4,16 +4,18 @@ on:
   pull_request:
     paths: ['**']
 
+# Cancel previous jobs if PR gets another push
+concurrency:
+  group: PR-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
+      VERSION_SUFFIX: "PR-${{ github.event.number }}"
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
       - name: Check Path Filter
         uses: dorny/paths-filter@v3
         id: filter
@@ -21,25 +23,30 @@ jobs:
           filters: |
             code:
               - 'src/**'
-              - '**.gradle'
+              - '*.gradle'
               - 'gradle.properties'
-              - 'gradlew**'
+              - 'gradlew*'
               - 'gradle/**'
-
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
-
       - name: Build
         if: steps.filter.outputs.code == 'true'
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assemble
-          
-      - name: Upload Artifact
+        run: ./gradlew assemble --build-cache
+      - name: Rename Jars
+        if: steps.filter.outputs.code == 'true'
+        run: for file in build/libs/*; do mv "$file" "${file/.jar/-${{ env.VERSION_SUFFIX }}.jar}"; done;
+      - name: Upload All Artifacts
         if: steps.filter.outputs.code == 'true'
         uses: actions/upload-artifact@v4.0.0
         with:
-          name: build output
+          name: Full Package
           path: build/libs/*
-          retention-days: 30
+          retention-days: 15
+      - name: Upload Main Jar
+        if: steps.filter.outputs.code == 'true'
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: Main Jar
+          path: build/libs/*[0-9]-PR-*.jar
+          retention-days: 15

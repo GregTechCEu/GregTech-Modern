@@ -186,6 +186,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(wireFine, Aluminium, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_MV)
+                .addMaterialInfo(true)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_hv").duration(200).EUt(VA[HV])
@@ -197,7 +198,7 @@ public class AssemblerRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ev").duration(200).EUt(VA[EV])
                 .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireFine, TungstenSteel, 16)
+                .inputItems(wireFine, Platinum, 16)
                 .circuitMeta(1)
                 .outputItems(VOLTAGE_COIL_EV)
                 .save(provider);
@@ -237,6 +238,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(plateDouble, TungstenCarbide, 2)
                 .inputFluids(TinAlloy.getFluid(L * 32))
                 .outputItems(NEUTRON_REFLECTOR)
+                .addMaterialInfo(true)
                 .save(provider);
 
         // hazmat pieces

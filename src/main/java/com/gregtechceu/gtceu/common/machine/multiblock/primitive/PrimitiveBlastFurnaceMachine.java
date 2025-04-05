@@ -1,17 +1,22 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -21,6 +26,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,23 +41,72 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
+    private TickableSubscription hurtSubscription;
+
     public PrimitiveBlastFurnaceMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
+                IO.NONE);
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
+                IO.NONE);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        unsubscribe(hurtSubscription);
+    }
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        this.hurtSubscription = subscribeServerTick(this::hurtEntities);
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        unsubscribe(hurtSubscription);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        if (recipeLogic.isWorking()) {
+        if (isFormed) {
             var pos = this.getPos();
             var facing = this.getFrontFacing().getOpposite();
             float xPos = facing.getStepX() * 0.76F + pos.getX() + 0.5F;
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
-            float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
+            var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
+            var sign = up.getAxisDirection().getStep();
+            var shouldX = up.getAxis() == Direction.Axis.X;
+            var shouldY = up.getAxis() == Direction.Axis.Y;
+            var shouldZ = up.getAxis() == Direction.Axis.Z;
+            var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
+                    0.1F * GTValues.RNG.nextFloat()) * sign;
+            if (getOffsetTimer() % 20 == 0) {
+                getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
+                        shouldX ? speed * 2 : 0,
+                        shouldY ? speed * 2 : 0,
+                        shouldZ ? speed * 2 : 0);
+            }
+            if (isActive()) {
+                getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
+                        shouldX ? speed : 0,
+                        shouldY ? speed : 0,
+                        shouldZ ? speed : 0);
+            }
         }
     }
 
@@ -111,5 +166,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
             getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
+    }
+
+    private void hurtEntities() {
+        BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
+        getLevel().getEntities(null,
+                new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
     }
 }

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -127,15 +127,21 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
             tag.remove("taped");
             this.isTaped = false;
         }
+        stack.setTag(null);
     }
 
     @Override
     public void saveToItem(CompoundTag tag) {
-        IDropSaveMachine.super.saveToItem(tag);
         if (isTaped) {
+            IDropSaveMachine.super.saveToItem(tag);
             tag.putBoolean("taped", isTaped);
             tag.put("inventory", inventory.storage.serializeNBT());
         }
+    }
+
+    @Override
+    public boolean saveBreak() {
+        return isTaped;
     }
 
     @Override

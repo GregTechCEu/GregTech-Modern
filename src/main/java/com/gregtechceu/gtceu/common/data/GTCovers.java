@@ -57,6 +57,9 @@ public class GTCovers {
     public final static CoverDefinition SHUTTER = register(
             "shutter", ShutterCover::new,
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_shutter")));
+    public final static CoverDefinition COVER_STORAGE = register(
+            "storage", StorageCover::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/storage_cover")));
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
@@ -126,6 +129,9 @@ public class GTCovers {
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_maintenance_detector")));
 
     // Solar Panels
+    public final static CoverDefinition SOLAR_PANEL_BASIC = register(
+            "solar_panel", CoverSolarPanel::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_solar_panel")));
     public final static CoverDefinition[] SOLAR_PANEL = registerTiered(
             "solar_panel", CoverSolarPanel::new,
             tier -> new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_solar_panel")), ALL_TIERS_WITH_ULV);

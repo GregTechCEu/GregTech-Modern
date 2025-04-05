@@ -98,4 +98,9 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
     public boolean canConnectRedstone() {
         return true;
     }
+
+    @Override
+    public boolean canPipePassThrough() {
+        return false;
+    }
 }

@@ -23,4 +23,8 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
     default boolean isBlackList() {
         return false;
     }
+
+    default boolean isBlank() {
+        return false;
+    }
 }

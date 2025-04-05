@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.util.Map;
@@ -85,5 +86,10 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
     @Override
     public BlockState defaultValue() {
         return Blocks.AIR.defaultBlockState();
+    }
+
+    @Override
+    public Codec<BlockState> codec() {
+        return BlockState.CODEC;
     }
 }

@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.fluids.FluidConstants;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
+
+import java.util.Collection;
 
 /**
  * Interface for FluidHandlerItemStacks which handle GT's unique fluid mechanics
@@ -27,21 +30,23 @@ public interface IThermalFluidHandlerItemStack {
         if (stack == null || stack.getFluid() == null) return false;
 
         Fluid fluid = stack.getFluid();
-        var temp = FluidHelper.getTemperature(stack);
-        if (temp > getMaxFluidTemperature()) return false;
-        // fluids less than 120K are cryogenic
-        if (temp < 120 && !isCryoProof()) return false;
-        if (FluidHelper.isLighterThanAir(stack) && !isGasProof()) return false;
 
-        // TODO custom fluid
-        // for (RegistryEntry<Fluid> entry : GTRegistries.REGISTRATE.getAll(Registry.FLUID_REGISTRY)) {
-        // if (entry.get() == fluid) {
-        // FluidType fluidType = ((MaterialFluid) fluid).getFluidType();
-        // if (fluidType == FluidTypes.ACID && !isAcidProof()) return false;
-        // if (fluidType == FluidTypes.PLASMA && !isPlasmaProof()) return false;
-        // }
-        // }
-        return true;
+        FluidType fluidType = fluid.getFluidType();
+        if (fluidType.isLighterThanAir() && !isGasProof()) return false;
+
+        if (fluid instanceof IAttributedFluid attributedFluid) {
+            Collection<FluidAttribute> attributes = attributedFluid.getAttributes();
+            if (attributes.contains(FluidAttributes.ACID) && !isAcidProof()) return false;
+
+            FluidState fluidState = attributedFluid.getState();
+            if (fluidState == FluidState.PLASMA && !isPlasmaProof()) return false;
+            if (fluidState == FluidState.GAS && !isGasProof()) return false;
+        }
+
+        int temperature = fluidType.getTemperature(stack);
+        if (temperature < FluidConstants.CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
+
+        return temperature <= getMaxFluidTemperature();
     }
 
     /**
@@ -56,6 +61,7 @@ public interface IThermalFluidHandlerItemStack {
      *
      * @return true if this fluid container allows gases, otherwise false
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isGasProof();
 
     /**

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -93,8 +94,10 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
         performFlying(player, jetpackEnabled, hoverMode, item);
 
-        if (player.isOnFire())
-            player.extinguishFire();
+        if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
+            ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
+            if (player.isOnFire()) player.extinguishFire();
+        }
 
         // Charging mechanics
         if (canShare && !world.isClientSide) {

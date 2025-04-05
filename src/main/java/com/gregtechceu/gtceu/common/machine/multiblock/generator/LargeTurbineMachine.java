@@ -11,9 +11,10 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -41,15 +42,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     public static final int MIN_DURABILITY_TO_WARN = 10;
 
-    private final int BASE_EU_OUTPUT;
+    private final long BASE_EU_OUTPUT;
     @Getter
     private final int tier;
-    private int excessVoltage;
 
     public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
-        this.BASE_EU_OUTPUT = (int) GTValues.V[tier] * 2;
+        this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
     }
 
     @Nullable
@@ -66,18 +66,20 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     public long getOverclockVoltage() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor())
-            return (long) BASE_EU_OUTPUT * rotorHolder.getTotalPower() / 100;
+            return BASE_EU_OUTPUT * rotorHolder.getTotalPower() / 100;
         return 0;
     }
 
-    protected long boostProduction(long production) {
+    /**
+     * @return EUt multiplier that should be applied to the turbine's output
+     */
+    protected double productionBoost() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
             int maxSpeed = rotorHolder.getMaxRotorHolderSpeed();
             int currentSpeed = rotorHolder.getRotorSpeed();
-            if (currentSpeed >= maxSpeed)
-                return production;
-            return (long) (production * Math.pow(1.0 * currentSpeed / maxSpeed, 2));
+            if (currentSpeed >= maxSpeed) return 1;
+            return Math.pow(1.0 * currentSpeed / maxSpeed, 2);
         }
         return 0;
     }
@@ -85,42 +87,47 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (!(machine instanceof LargeTurbineMachine turbineMachine))
-            return null;
-
-        var rotorHolder = turbineMachine.getRotorHolder();
-        var EUt = RecipeHelper.getOutputEUt(recipe);
-
-        if (rotorHolder == null || EUt <= 0)
-            return null;
-
-        var turbineMaxVoltage = (int) turbineMachine.getOverclockVoltage();
-        if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
-            turbineMachine.excessVoltage -= turbineMaxVoltage;
-            return null;
+    /**
+     * Recipe Modifier for <b>Large Turbine Multiblocks</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Recipe is fast parallelized up to {@code (baseEUt * power) / recipeEUt} times.
+     * Duration is then multiplied by the holder efficiency.
+     * </p>
+     * 
+     * @param machine a {@link LargeTurbineMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Turbine Multiblock and recipe
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof LargeTurbineMachine turbineMachine)) {
+            return RecipeModifier.nullWrongType(LargeTurbineMachine.class, machine);
         }
 
+        var rotorHolder = turbineMachine.getRotorHolder();
+        if (rotorHolder == null) return ModifierFunction.NULL;
+
+        long EUt = RecipeHelper.getOutputEUt(recipe);
+        long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
+        if (EUt <= 0 || turbineMaxVoltage <= EUt || holderEfficiency <= 0) return ModifierFunction.NULL;
+
         // get the amount of parallel required to match the desired output voltage
-        var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
+        int maxParallel = (int) (turbineMaxVoltage / EUt);
+        int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, maxParallel);
+        double eutMultiplier = turbineMachine.productionBoost() * actualParallel;
 
-        // this is necessary to prevent over-consumption of fuel
-        turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
-        var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-
-        long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
-
-        result.init(-eut, recipe.duration, parallelResult.getSecond(), params.getOcAmount());
-
-        return recipe;
+        return ModifierFunction.builder()
+                .inputModifier(ContentModifier.multiplier(actualParallel))
+                .outputModifier(ContentModifier.multiplier(actualParallel))
+                .eutMultiplier(eutMultiplier)
+                .parallels(actualParallel)
+                .durationMultiplier(holderEfficiency)
+                .build();
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 
@@ -147,12 +154,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                         rotorHolder.getTotalEfficiency()));
 
                 long maxProduction = getOverclockVoltage();
-                long currentProduction = isActive() ? boostProduction((int) maxProduction) : 0;
+                long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
+                        RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0;
                 String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                            FormattingUtil.formatNumbers(currentProduction), voltageName));
+                            FormattingUtil.formatNumbers(currentProduction),
+                            FormattingUtil.formatNumbers(maxProduction)));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();

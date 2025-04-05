@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "#elevatorid:elevators",
+      "required": false
+    },
+    {
+      "id": "enderio:travel_anchor",
+      "required": false
+    },
+    {
+      "id": "rftoolsutility:matter_transmitter",
+      "required": false
+    },
+    {
+      "id": "rftoolsutility:matter_receiver",
+      "required": false
+    },
+    {
+      "id": "rftoolsutility:dialing_device",
+      "required": false
+    },
+    {
+      "id": "travelanchors:travel_anchor",
+      "required": false
+    }
+  ]
+}

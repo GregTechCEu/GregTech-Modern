@@ -6,16 +6,14 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSave
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -59,8 +57,7 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                var copied = match.copy(new ContentModifier(match.duration, 0));
-                if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -74,17 +71,17 @@ public class FluidDrillLogic extends RecipeLogic {
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
-                    .outputFluids(FluidStack.create(veinFluid,
+                    .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .buildRawRecipe();
-            if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
+            if (RecipeHelper.matchContents(getMachine(), recipe).isSuccess()) {
                 return recipe;
             }
         }
         return null;
     }
 
-    public long getFluidToProduce() {
+    public int getFluidToProduce() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             return getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()));
@@ -92,7 +89,7 @@ public class FluidDrillLogic extends RecipeLogic {
         return 0;
     }
 
-    private long getFluidToProduce(FluidVeinWorldEntry entry) {
+    private int getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
             int depletedYield = definition.getDepletedYield();
@@ -107,7 +104,7 @@ public class FluidDrillLogic extends RecipeLogic {
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
-            return produced * FluidHelper.getBucket() / 1000;
+            return produced;
         }
         return 0;
     }
@@ -116,20 +113,24 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
+            RecipeHelper.postWorking(this.machine, lastRecipe);
+            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            var copied = match.copy(new ContentModifier(match.duration, 0));
-            if (match.matchRecipe(this.machine).isSuccess() && copied.matchTickRecipe(this.machine).isSuccess()) {
+            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }
         }
-        setStatus(Status.IDLE);
+        if (suspendAfterFinish) {
+            setStatus(Status.SUSPEND);
+            suspendAfterFinish = false;
+        } else {
+            setStatus(Status.IDLE);
+        }
         progress = 0;
         duration = 0;
     }

@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class GTMaterials {
         HigherDegreeMaterials.register();
 
         // Gregicality Multiblocks
-        GCyMMaterials.register();
+        GCYMMaterials.register();
 
         /*
          * Register info for cyclical references
@@ -100,7 +100,7 @@ public class GTMaterials {
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
-        gem.setIgnored(Echo, Items.ECHO_SHARD);
+        gem.setIgnored(EchoShard, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -123,6 +123,8 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
+        ingot.setIgnored(Netherite, Items.NETHERITE_INGOT);
+        ingot.setIgnored(Brick, Items.BRICK);
         ingot.setIgnored(Wax, Items.HONEYCOMB);
 
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
@@ -133,6 +135,7 @@ public class GTMaterials {
         block.setIgnored(Iron, Blocks.IRON_BLOCK);
         block.setIgnored(Gold, Blocks.GOLD_BLOCK);
         block.setIgnored(Copper, Blocks.COPPER_BLOCK);
+        block.setIgnored(Netherite, Items.NETHERITE_BLOCK);
         block.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
         block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
@@ -174,9 +177,10 @@ public class GTMaterials {
         rock.setIgnored(Endstone, Blocks.END_STONE);
         rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
         rock.setIgnored(Basalt, Blocks.BASALT);
-        rock.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
+        rock.setIgnored(Blackstone, Blocks.BLACKSTONE);
+        block.setIgnored(Sculk, Blocks.SCULK);
         block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
@@ -221,9 +225,6 @@ public class GTMaterials {
         plate.setIgnored(BorosilicateGlass);
         foil.setIgnored(BorosilicateGlass);
 
-        dustSmall.setIgnored(Lapotron);
-        dustTiny.setIgnored(Lapotron);
-
         dye.setIgnored(DyeBlack, Items.BLACK_DYE);
         dye.setIgnored(DyeRed, Items.RED_DYE);
         dye.setIgnored(DyeGreen, Items.GREEN_DYE);
@@ -251,7 +252,7 @@ public class GTMaterials {
         rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
         block.modifyMaterialAmount(Amethyst, 4);
-        block.modifyMaterialAmount(Echo, 4);
+        block.modifyMaterialAmount(EchoShard, 4);
         block.modifyMaterialAmount(Glowstone, 4);
         block.modifyMaterialAmount(NetherQuartz, 4);
         block.modifyMaterialAmount(CertusQuartz, 4);
@@ -269,9 +270,11 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    @Nullable
+    @NotNull
     public static Material get(String name) {
-        return GTCEuAPI.materialManager.getMaterial(name);
+        var mat = GTCEuAPI.materialManager.getMaterial(name);
+        // mat could be null here due to the registry grabbing a material that isn't in the map
+        return mat == null ? GTMaterials.NULL : mat;
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
@@ -513,6 +516,7 @@ public class GTMaterials {
     public static Material AluminiumSulfite;
     public static Material Tantalite;
     public static Material Coke;
+    public static Material Netherite;
 
     public static Material SolderingAlloy;
     public static Material Spessartine;
@@ -658,10 +662,7 @@ public class GTMaterials {
     public static Material DiethylenetriaminePentaacetonitrile;
     public static Material DiethylenetriaminepentaaceticAcid;
     public static Material SodiumNitrite;
-
-    public static Material AcidicBromineSolution;
-    public static Material ConcentratedBromineSolution;
-    public static Material HydrogenIodide;
+    public static Material HydrogenPeroxide;
 
     /**
      * Organic chemistry
@@ -883,6 +884,7 @@ public class GTMaterials {
     public static Material UUMatter;
     public static Material PCBCoolant;
     public static Material Sculk;
+    public static Material Wax;
 
     /**
      * Second Degree Compounds
@@ -893,7 +895,7 @@ public class GTMaterials {
     public static Material Olivine;
     public static Material Opal;
     public static Material Amethyst;
-    public static Material Echo;
+    public static Material EchoShard;
     public static Material Lapis;
     public static Material Blaze;
     public static Material Apatite;
@@ -907,6 +909,7 @@ public class GTMaterials {
     public static Material Marble;
     public static Material Deepslate;
     public static Material GraniteRed;
+    public static Material Blackstone;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;
     public static Material Pollucite;
@@ -945,12 +948,6 @@ public class GTMaterials {
     public static Material Dichloroethane;
     public static Material Diethylenetriamine;
 
-    public static Material RawBrine;
-    public static Material DebrominatedBrine;
-    public static Material BrominatedChlorineVapor;
-    public static Material AcidicBromineExhaust;
-    public static Material Wax;
-
     /**
      * Third Degree Materials
      */
@@ -970,11 +967,6 @@ public class GTMaterials {
     public static Material Fireclay;
     public static Material Diorite;
 
-    public static Material HotBrine;
-    public static Material HotChlorinatedBrominatedBrine;
-    public static Material HotDebrominatedBrine;
-    public static Material HotAlkalineDebrominatedBrine;
-
     /**
      * Fourth Degree Materials
      */
@@ -986,7 +978,7 @@ public class GTMaterials {
     public static Material RadAway;
 
     /**
-     * GCyM Materials
+     * GCYM Materials
      */
     public static Material TantalumCarbide;
     public static Material HSLASteel;

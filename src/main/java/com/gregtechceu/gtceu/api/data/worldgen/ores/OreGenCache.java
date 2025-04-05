@@ -11,11 +11,13 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,6 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OreGenCache {
 
+    @Getter
     private final OreGenerator oreGenerator = new OreGenerator();
 
     private final int oreGenerationCacheSize = ConfigHolder.INSTANCE != null ?
@@ -42,16 +45,19 @@ public class OreGenCache {
 
     private final Cache<ChunkPos, List<GeneratedVeinMetadata>> veinMetadataByOrigin = CacheBuilder.newBuilder()
             .maximumSize(veinMetadataCacheSize)
+            .expireAfterAccess(30, TimeUnit.SECONDS)
             .softValues()
             .build();
 
     private final Cache<ChunkPos, List<GeneratedVein>> generatedVeinsByOrigin = CacheBuilder.newBuilder()
             .maximumSize(oreGenerationCacheSize)
+            .expireAfterAccess(30, TimeUnit.SECONDS)
             .softValues()
             .build();
 
     private final Cache<ChunkPos, List<GeneratedIndicators>> indicatorsByOrigin = CacheBuilder.newBuilder()
             .maximumSize(oreIndicatorCacheSize)
+            .expireAfterAccess(30, TimeUnit.SECONDS)
             .softValues()
             .build();
 
@@ -61,7 +67,7 @@ public class OreGenCache {
             return veinMetadataByOrigin
                     .get(chunkPos, () -> oreGenerator.generateMetadata(level, generator, chunkPos));
         } catch (ExecutionException e) {
-            GTCEu.LOGGER.error("Cannot create vein position in chunk " + chunkPos, e);
+            GTCEu.LOGGER.error("Cannot create vein position in chunk {}", chunkPos, e);
             return List.of();
         }
     }
@@ -81,7 +87,7 @@ public class OreGenCache {
                                         getOrCreateVeinMetadata(level, generator, chunkPos), chunkPos))
                         .stream();
             } catch (ExecutionException e) {
-                GTCEu.LOGGER.error("Cannot create vein in chunk " + chunkPos, e);
+                GTCEu.LOGGER.error("Cannot create vein in chunk {}", chunkPos, e);
                 return Stream.empty();
             }
         }).filter(Objects::nonNull).toList();
@@ -103,7 +109,7 @@ public class OreGenCache {
                                         getOrCreateVeinMetadata(level, generator, chunkPos), chunkPos))
                         .stream();
             } catch (ExecutionException e) {
-                GTCEu.LOGGER.error("Cannot create vein in chunk " + chunkPos, e);
+                GTCEu.LOGGER.error("Cannot create vein in chunk {}", chunkPos, e);
                 return Stream.empty();
             }
         }).filter(Objects::nonNull).toList();

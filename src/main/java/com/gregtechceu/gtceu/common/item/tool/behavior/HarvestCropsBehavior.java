@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -93,15 +91,27 @@ public class HarvestCropsBehavior implements IToolBehavior {
     }
 
     private static boolean harvestBlockRoutine(ItemStack stack, BlockPos pos, Player player) {
-        BlockState blockState = player.level().getBlockState(pos);
-        Block block = blockState.getBlock();
-        CropBlock blockCrops = (CropBlock) block;
-        if (blockCrops.isMaxAge(blockState)) {
-            NonNullList<ItemStack> drops = NonNullList.create();
-            drops.addAll(Block.getDrops(blockState, (ServerLevel) player.level(), pos, null));
-            dropListOfItems(player.level(), pos, drops);
-            player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
-            player.level().setBlock(pos, blockCrops.getStateForAge(0), Block.UPDATE_ALL);
+        var level = player.level();
+        var blockState = level.getBlockState(pos);
+        var block = blockState.getBlock();
+        var cropBlock = (CropBlock) block;
+        final var seed = cropBlock.getCloneItemStack(level, pos, blockState).getItem();
+        if (cropBlock.isMaxAge(blockState)) {
+            var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
+            var iterator = drops.listIterator();
+            while (iterator.hasNext()) {
+                var drop = iterator.next();
+                if (drop.is(seed)) {
+                    drop.shrink(1);
+                    if (drop.isEmpty()) {
+                        iterator.remove();
+                    }
+                    break;
+                }
+            }
+            dropListOfItems(level, pos, drops);
+            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
+            level.setBlock(pos, cropBlock.getStateForAge(0), Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(stack, player);
             }

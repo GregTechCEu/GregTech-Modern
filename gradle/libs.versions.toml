@@ -1,0 +1,26 @@
+[versions]
+minecraft = "1.20.1"
+forge = "47.3.0"
+minecraftForge = "1.20.1-47.3.0"
+parchment = "2023.09.03" # https://parchmentmc.org/docs/getting-started
+shadow = "8.3.5"
+spotless = "7.0.2"
+# TODO: Update to stable MDG when https://github.com/neoforged/ModDevGradle/issues/227 is fixed
+modDevGradle = "2.0.64-beta"
+machete = "2.0.1"
+lombok = "8.11"
+jetbrains-annotations = "26.0.1"
+mixin = "0.8.7"
+
+[libraries]
+minecraft               = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+minecraftForge          = { module = "net.minecraftforge:forge", version.ref = "minecraftForge" }
+jetbrains-annotations   = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+mixin                   = { module = "org.spongepowered:mixin", version.ref = "mixin" }
+
+[plugins]
+modDevGradle            = { id = "net.neoforged.moddev.legacyforge", version.ref = "modDevGradle" }
+shadow                  = { id = "com.gradleup.shadow", version.ref = "shadow" }
+spotless                = { id = "com.diffplug.spotless", version.ref = "spotless" }
+machete                 = { id = "io.github.p03w.machete", version.ref = "machete" }
+lombok                  = { id = "io.freefair.lombok", version.ref = "lombok" }

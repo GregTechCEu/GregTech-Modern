@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.Container;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
@@ -25,12 +24,13 @@ public class BlockableSlotWidget extends SlotWidget {
         super(inventory, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
     }
 
-    public BlockableSlotWidget(IItemTransfer itemHandler, int slotIndex, int xPosition, int yPosition,
+    public BlockableSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition,
                                boolean canTakeItems, boolean canPutItems) {
-        super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
+        super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems,
+                canPutItems);
     }
 
-    public BlockableSlotWidget(IItemTransfer itemHandler, int slotIndex, int xPosition, int yPosition) {
+    public BlockableSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition) {
         super(itemHandler, slotIndex, xPosition, yPosition);
     }
 

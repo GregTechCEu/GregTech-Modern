@@ -35,8 +35,8 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient boolean shouldDropAsItem = false;
 
-    public OreTagPrefixBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public OreTagPrefixBuilder(ResourceLocation id) {
+        super(id);
     }
 
     @Override

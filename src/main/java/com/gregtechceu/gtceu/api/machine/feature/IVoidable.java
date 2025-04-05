@@ -4,9 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
 import net.minecraft.util.StringRepresentable;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public interface IVoidable extends IMachineFeature {
 
@@ -14,8 +13,7 @@ public interface IVoidable extends IMachineFeature {
         return self().getDefinition().getRecipeOutputLimits().containsKey(capability);
     }
 
-    // -1 or empty is taken into account as a skip case.
-    default Map<RecipeCapability<?>, Integer> getOutputLimits() {
+    default Object2IntMap<RecipeCapability<?>> getOutputLimits() {
         return self().getDefinition().getRecipeOutputLimits();
     }
 

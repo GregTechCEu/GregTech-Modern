@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -32,9 +32,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -114,7 +116,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     }
 
     private static void validateSurfaceRockMaterial(Material material) {
-        if (GTBlocks.SURFACE_ROCK_BLOCKS.get(material) == null)
+        if (GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material) == null)
             throw new IllegalArgumentException("No surface rock registered for material " + material.getName());
     }
 
@@ -169,6 +171,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         };
     }
 
+    @Nullable
+    @Override
+    public Either<BlockState, Material> block() {
+        return block;
+    }
+
     @Override
     public int getSearchRadiusModifier(int veinRadius) {
         return Math.max(0, radius.getMaxValue() - veinRadius);
@@ -214,17 +222,17 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         private static BlockState getBlockState(Either<BlockState, Material> block, Direction direction) {
             return block.map(
                     state -> state,
-                    material -> GTBlocks.SURFACE_ROCK_BLOCKS.get(material).get().getStateForDirection(direction));
+                    material -> GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material).get()
+                            .getStateForDirection(direction));
         }
 
         @Override
         public String getSerializedName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
-        @Nullable
-        public static IndicatorPlacement getByName(String name) {
-            return IndicatorPlacement.valueOf(name.toUpperCase());
+        public static @NotNull IndicatorPlacement getByName(String name) {
+            return IndicatorPlacement.valueOf(name.toUpperCase(Locale.ROOT));
         }
     }
 }

@@ -72,7 +72,8 @@ public enum RelativeDirection {
             case LEFT -> {
                 Direction facing;
                 if (frontAxis == Direction.Axis.Y) {
-                    facing = upwardsFacing.getClockWise();
+                    facing = frontFacing.getStepY() > 0 ? upwardsFacing.getClockWise() :
+                            upwardsFacing.getCounterClockWise();
                 } else {
                     facing = switch (upwardsFacing) {
                         case NORTH -> frontFacing.getCounterClockWise();
@@ -86,7 +87,8 @@ public enum RelativeDirection {
             case RIGHT -> {
                 Direction facing;
                 if (frontAxis == Direction.Axis.Y) {
-                    facing = upwardsFacing.getCounterClockWise();
+                    facing = frontFacing.getStepY() > 0 ? upwardsFacing.getCounterClockWise() :
+                            upwardsFacing.getClockWise();
                 } else {
                     facing = switch (upwardsFacing) {
                         case NORTH -> frontFacing.getClockWise();

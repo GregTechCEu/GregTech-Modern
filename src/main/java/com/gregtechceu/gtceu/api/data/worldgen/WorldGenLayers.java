@@ -59,7 +59,7 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
 
     public static void registerAll() {
         AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
-        if (GTCEu.isKubeJSLoaded()) {
+        if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.WORLD_GEN_LAYER.registryKey);
         }
     }

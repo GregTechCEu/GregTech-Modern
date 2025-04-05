@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
+import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -12,21 +13,19 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.logic.OCParams;
-import com.gregtechceu.gtceu.api.recipe.logic.OCResult;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -48,6 +47,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -76,8 +77,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public final NotifiableFluidTank waterTank;
     @Persisted
     @DescSynced
+    @Getter
     private int currentTemperature;
     @Persisted
+    @Getter
     private int timeBeforeCoolingDown;
     @Getter
     private boolean hasNoWater;
@@ -102,11 +105,11 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     protected NotifiableFluidTank createSteamTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.OUT);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.OUT);
     }
 
     protected NotifiableFluidTank createWaterTank(@SuppressWarnings("unused") Object... args) {
-        return new NotifiableFluidTank(this, 1, 16 * FluidHelper.getBucket(), IO.IN);
+        return new NotifiableFluidTank(this, 1, 16 * FluidType.BUCKET_VOLUME, IO.IN);
     }
 
     @Override
@@ -144,10 +147,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     protected void updateAutoOutputSubscription() {
-        if (Direction.stream()
-                .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .anyMatch(direction -> FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(direction),
-                        direction.getOpposite()) != null)) {
+        if (Direction.stream().filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
+                .anyMatch(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), direction))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -159,8 +160,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (getOffsetTimer() % 5 == 0) {
             steamTank.exportToNearby(Direction.stream()
                     .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                    .filter(direction -> FluidTransferHelper.getFluidTransfer(getLevel(),
-                            getPos().relative(direction), direction.getOpposite()) != null)
+                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), direction))
                     .toArray(Direction[]::new));
             updateAutoOutputSubscription();
         }
@@ -198,13 +198,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
-                long fillAmount = (long) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) /
-                        2);
-                boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, false).isEmpty();
+                int fillAmount = (int) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) / 2);
+                boolean hasDrainedWater = !waterTank.drainInternal(1, FluidAction.EXECUTE).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
                     filledSteam = steamTank.fillInternal(
-                            GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), false);
+                            GTMaterials.Steam.getFluid(fillAmount),
+                            FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     doExplosion(2.0f);
@@ -229,7 +229,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                     }
 
                     // bypass capability check for special case behavior
-                    steamTank.drainInternal(FluidHelper.getBucket() * 4, false);
+                    steamTank.drainInternal(FluidType.BUCKET_VOLUME * 4, FluidAction.EXECUTE);
                 }
             } else this.hasNoWater = false;
         }
@@ -255,18 +255,24 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected abstract long getBaseSteamOutput();
 
-    @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe, @NotNull OCParams params,
-                                          @NotNull OCResult result) {
-        if (machine instanceof SteamBoilerMachine boilerMachine) {
-            recipe = recipe.copy();
-            result.init(0, recipe.duration, params.getOcAmount());
-            if (boilerMachine.isHighPressure)
-                result.setDuration(result.getDuration() / 2);
-            // recipe.duration *= 12; // maybe?
-            return recipe;
+    /**
+     * Recipe Modifier for <b>Steam Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
+     * <p>
+     * Duration is multiplied by {@code 0.5} if the machine is high pressure
+     * 
+     * @param machine a {@link SteamBoilerMachine}
+     * @param recipe  recipe
+     * @return A {@link ModifierFunction} for the given Steam Boiler
+     */
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
+            return RecipeModifier.nullWrongType(SteamBoilerMachine.class, machine);
         }
-        return null;
+        if (!boilerMachine.isHighPressure) return ModifierFunction.IDENTITY;
+
+        return ModifierFunction.builder()
+                .durationMultiplier(0.5)
+                .build();
     }
 
     @Override
@@ -309,7 +315,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                 GuiTextures.PROGRESS_BAR_BOILER_HEAT)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature",
-                                (int) (currentTemperature + 274.15), (int) (getMaxTemperature() + 274.15))))
+                                currentTemperature + 274, getMaxTemperature() + 274)))
                 .widget(new TankWidget(waterTank.getStorages()[0], 83, 26, 10, 54, false, true)
                         .setShowAmount(false)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)

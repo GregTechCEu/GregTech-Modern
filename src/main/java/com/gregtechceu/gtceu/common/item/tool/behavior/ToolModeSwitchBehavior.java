@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +29,10 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
 
     @Override
     public void addBehaviorNBT(@NotNull ItemStack stack, @NotNull CompoundTag tag) {
-        tag.putByte("Mode", (byte) ModeType.BOTH.ordinal());
+        var toolTypes = ToolHelper.getToolTypes(stack);
+        if (toolTypes.contains(GTToolType.WRENCH)) {
+            tag.putByte("Mode", (byte) WrenchModeType.BOTH.ordinal());
+        }
         IToolBehavior.super.addBehaviorNBT(stack, tag);
     }
 
@@ -37,10 +42,14 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         var itemStack = player.getItemInHand(hand);
         var tagCompound = getBehaviorsTag(itemStack);
         if (player.isShiftKeyDown()) {
-            tagCompound.putByte("Mode", (byte) ((tagCompound.getByte("Mode") + 1) % ModeType.values().length));
 
-            player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode",
-                    ModeType.values()[tagCompound.getByte("Mode")].getName()), true);
+            var toolTypes = ToolHelper.getToolTypes(itemStack);
+            if (toolTypes.contains(GTToolType.WRENCH)) {
+                tagCompound.putByte("Mode",
+                        (byte) ((tagCompound.getByte("Mode") + 1) % WrenchModeType.values().length));
+                player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode",
+                        WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
+            }
             return InteractionResultHolder.success(itemStack);
         }
 
@@ -51,20 +60,24 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
         var tagCompound = getBehaviorsTag(stack);
-        tooltip.add(Component.translatable("metaitem.machine_configuration.mode",
-                ModeType.values()[tagCompound.getByte("Mode")].getName()));
+
+        var toolTypes = ToolHelper.getToolTypes(stack);
+        if (toolTypes.contains(GTToolType.WRENCH)) {
+            tooltip.add(Component.translatable("metaitem.machine_configuration.mode",
+                    WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
+        }
     }
 
-    public static enum ModeType {
+    @Getter
+    public enum WrenchModeType {
 
         ITEM(Component.translatable("gtceu.mode.item")),
         FLUID(Component.translatable("gtceu.mode.fluid")),
         BOTH(Component.translatable("gtceu.mode.both"));
 
-        @Getter
         private final Component name;
 
-        private ModeType(Component name) {
+        WrenchModeType(Component name) {
             this.name = name;
         }
     }

@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.integration.ae2.machine.feature;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.core.Direction;
+
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.util.AECableType;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 /**
@@ -28,6 +31,10 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
      */
     default boolean shouldSyncME() {
         return self().getOffsetTimer() % ME_UPDATE_INTERVAL == 0;
+    }
+
+    default AECableType getCableConnectionType(Direction dir) {
+        return AECableType.SMART;
     }
 
     /**

@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -27,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -82,7 +82,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.aeFluidHandler = new ExportOnlyAEStockingFluidList(this, CONFIG_SIZE);
         return this.aeFluidHandler;
     }
@@ -304,34 +304,34 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
 
         @Override
-        public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (this.stock != null && this.config != null) {
                 // Extract the items from the real net to either validate (simulate)
                 // or extract (modulate) when this is called
-                if (!isOnline()) return FluidStack.empty();
+                if (!isOnline()) return FluidStack.EMPTY;
                 MEStorage aeNetwork = getMainNode().getGrid().getStorageService().getInventory();
 
-                Actionable action = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+                Actionable actionable = action.simulate() ? Actionable.SIMULATE : Actionable.MODULATE;
                 var key = config.what();
-                long extracted = aeNetwork.extract(key, maxDrain, action, actionSource);
+                long extracted = aeNetwork.extract(key, maxDrain, actionable, actionSource);
 
                 if (extracted > 0) {
                     FluidStack resultStack = key instanceof AEFluidKey fluidKey ?
-                            AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.empty();
-                    if (!simulate) {
+                            AEUtil.toFluidStack(fluidKey, extracted) : FluidStack.EMPTY;
+                    if (action.execute()) {
                         // may as well update the display here
                         this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
                         if (this.stock.amount() == 0) {
                             this.stock = null;
                         }
-                        if (notifyChanges && this.onContentsChanged != null) {
+                        if (this.onContentsChanged != null) {
                             this.onContentsChanged.run();
                         }
                     }
                     return resultStack;
                 }
             }
-            return FluidStack.empty();
+            return FluidStack.EMPTY;
         }
     }
 }

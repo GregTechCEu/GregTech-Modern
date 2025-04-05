@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
 import net.minecraft.world.item.Item;
@@ -33,6 +34,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new MultiblockStructureProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new MaintenanceBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ExhaustVentBlockProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new SteamBoilerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new AutoOutputBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new CableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new MachineModeProvider(), BlockEntity.class);
@@ -40,11 +42,13 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new TransformerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new PrimitivePumpBlockProvider(), BlockEntity.class);
-        if (GTCEu.isAE2Loaded()) {
-            registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
+        if (GTCEu.Mods.isAE2Loaded()) {
             registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
+            registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
         }
 
+        registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachineBlockEntity.class);
+        registration.registerFluidStorage(GTFluidStorageProvider.INSTANCE, MetaMachineBlockEntity.class);
         registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }
 
@@ -59,6 +63,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new MultiblockStructureProvider(), Block.class);
         registration.registerBlockComponent(new MaintenanceBlockProvider(), Block.class);
         registration.registerBlockComponent(new ExhaustVentBlockProvider(), Block.class);
+        registration.registerBlockComponent(new SteamBoilerBlockProvider(), Block.class);
         registration.registerBlockComponent(new AutoOutputBlockProvider(), Block.class);
         registration.registerBlockComponent(new CableBlockProvider(), Block.class);
         registration.registerBlockComponent(new MachineModeProvider(), Block.class);
@@ -66,16 +71,18 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
         registration.registerBlockComponent(new TransformerBlockProvider(), Block.class);
         registration.registerBlockComponent(new PrimitivePumpBlockProvider(), Block.class);
-        if (GTCEu.isAE2Loaded()) {
-            registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);
+        if (GTCEu.Mods.isAE2Loaded()) {
             registration.registerBlockComponent(new MEPatternBufferProvider(), Block.class);
+            registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);
         }
 
+        registration.registerItemStorageClient(GTItemStorageProvider.INSTANCE);
+        registration.registerFluidStorageClient(GTFluidStorageProvider.INSTANCE);
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
 
     static {
-        GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+        GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
             if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
                 return;
             HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),

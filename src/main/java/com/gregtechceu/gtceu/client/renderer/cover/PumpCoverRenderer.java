@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,7 +36,7 @@ public class PumpCoverRenderer implements ICoverRenderer {
     public final static ResourceLocation PUMP_OVERLAY_IN = GTCEu.id("block/cover/overlay_pump_inverted");
 
     protected PumpCoverRenderer() {
-        if (LDLib.isClient()) {
+        if (GTCEu.isClientSide()) {
             registerEvent();
         }
     }

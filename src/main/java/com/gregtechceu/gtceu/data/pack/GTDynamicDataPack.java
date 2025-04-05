@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
@@ -66,7 +64,7 @@ public class GTDynamicDataPack implements PackResources {
 
     public static void addRecipe(FinishedRecipe recipe) {
         JsonObject recipeJson = recipe.serializeRecipe();
-        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
+        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
         ResourceLocation recipeId = recipe.getId();
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeJson);

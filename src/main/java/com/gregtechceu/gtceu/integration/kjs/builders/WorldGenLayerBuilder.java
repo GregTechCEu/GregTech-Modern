@@ -21,8 +21,8 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
     public transient List<ResourceLocation> dimensions = new ObjectArrayList<>();
 
-    public WorldGenLayerBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public WorldGenLayerBuilder(ResourceLocation id) {
+        super(id);
     }
 
     @Override

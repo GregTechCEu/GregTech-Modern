@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -26,7 +28,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import com.google.common.collect.Multimap;
@@ -53,7 +59,7 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
         this.material = material;
         this.electricTier = toolType.electricTier;
         this.toolStats = toolStats;
-        if (Platform.isClient()) {
+        if (GTCEu.isClientSide()) {
             ToolItemRenderer.create(this, toolType);
         }
         definition$init();
@@ -86,7 +92,43 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        return definition$onItemUse(context);
+        Level level = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
+        BlockState blockstate = level.getBlockState(blockpos);
+        if (context.getClickedFace() == Direction.DOWN) {
+            return InteractionResult.PASS;
+        } else {
+            Player player = context.getPlayer();
+            BlockState modifiedState = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+            BlockState resultState = null;
+            if (modifiedState != null && level.isEmptyBlock(blockpos.above())) {
+                level.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+                resultState = modifiedState;
+            } else if (blockstate.getBlock() instanceof CampfireBlock &&
+                    blockstate.getValue(CampfireBlock.LIT)) {
+                        if (!level.isClientSide()) {
+                            level.levelEvent(null, 1009, blockpos, 0);
+                        }
+
+                        CampfireBlock.dowse(context.getPlayer(), level, blockpos, blockstate);
+                        resultState = blockstate.setValue(CampfireBlock.LIT, false);
+                    }
+
+            if (resultState != null) {
+                if (!level.isClientSide) {
+                    level.setBlock(blockpos, resultState, Block.UPDATE_ALL_IMMEDIATE);
+                    level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, resultState));
+                    if (player != null) {
+                        context.getItemInHand().hurtAndBreak(1, player,
+                                (breaker) -> breaker.broadcastBreakEvent(context.getHand()));
+                    }
+                }
+
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            } else {
+                return InteractionResult.PASS;
+            }
+        }
     }
 
     @Override

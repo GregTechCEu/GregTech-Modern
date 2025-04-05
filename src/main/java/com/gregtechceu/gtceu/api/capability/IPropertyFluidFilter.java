@@ -6,11 +6,10 @@ import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -26,7 +25,8 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     @Override
     default boolean test(@NotNull FluidStack stack) {
         Fluid fluid = stack.getFluid();
-        if (FluidHelper.getTemperature(stack) < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
+        FluidType fluidType = fluid.getFluidType();
+        if (fluidType.getTemperature() < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
 
         if (fluid instanceof IAttributedFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
@@ -41,7 +41,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             // plasma ignores temperature requirements
             if (state == FluidState.PLASMA) return true;
         } else {
-            if (FluidHelper.isLighterThanAir(stack) && !canContain(FluidState.GAS)) {
+            if (fluidType.isLighterThanAir() && !canContain(FluidState.GAS)) {
                 return false;
             }
             if (!canContain(FluidState.LIQUID)) {
@@ -49,7 +49,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             }
         }
 
-        return FluidHelper.getTemperature(stack) <= getMaxFluidTemperature();
+        return fluidType.getTemperature() <= getMaxFluidTemperature();
     }
 
     /**

@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.gson.JsonElement;
+import dev.latvian.mods.kubejs.core.IngredientKJS;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
@@ -25,7 +26,7 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
     public SizedIngredient ingredient;
 
     public ExtendedOutputItem(Ingredient ingredient, int count) {
-        super(ingredient.kjs$getFirst().kjs$withCount(count), Double.NaN, null);
+        super(((IngredientKJS) ingredient).kjs$getFirst().copyWithCount(count), Double.NaN, null);
         // reset the ingredient if it's an int provider.
         if (ingredient instanceof IntProviderIngredient intProvider) {
             intProvider.setItemStacks(null);

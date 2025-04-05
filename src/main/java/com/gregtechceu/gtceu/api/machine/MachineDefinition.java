@@ -45,6 +45,10 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Getter
     private final ResourceLocation id;
+    // This is only stored here for KJS use.
+    @Getter
+    @Setter
+    private String langValue;
     @Setter
     private Supplier<? extends Block> blockSupplier;
     @Setter
@@ -85,6 +89,13 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+    @Getter
+    @Setter
+    private boolean regressWhenWaiting = true;
+    /** Whether this machine can be rotated or face upwards. */
+    @Getter
+    @Setter
+    private boolean allowExtendedFacing;
 
     @Getter
     @Setter
@@ -92,6 +103,12 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private MachineRenderer renderer;
     @Setter
     private VoxelShape shape;
+    @Getter
+    @Setter
+    private boolean renderWorldPreview;
+    @Getter
+    @Setter
+    private boolean renderXEIPreview;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter
     @Setter

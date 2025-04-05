@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
-import com.lowdragmc.lowdraglib.LDLib;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
@@ -107,7 +107,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default boolean isRemote() {
         var level = getPipeLevel();
         if (level == null) {
-            return LDLib.isRemote();
+            return GTCEu.isClientThread();
         }
         return level.isClientSide;
     }
@@ -174,6 +174,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         return 0xFFFFFF;
     }
 
-    @Nullable
+    @NotNull
     Material getFrameMaterial();
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
@@ -54,19 +55,22 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                     modelState));
             if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
                 var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
-                if (!rotorHolderMachine.getControllers().isEmpty()) {
+                if (rotorHolderMachine.isFormed()) {
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING),
-                            modelState, -101, 15, true, false));
+                            modelState, -101, 0, true, false));
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
-                            modelState, -101, 15, true, false));
-                    if (rotorHolderMachine.hasRotor()) {
+                            modelState, -101, 0, true, false));
+                    var material = rotorHolderMachine.getRotorMaterial();
+                    if (!material.isNull()) {
+                        boolean emissive = material.hasProperty(PropertyKey.ORE) &&
+                                material.getProperty(PropertyKey.ORE).isEmissive();
                         if (rotorHolderMachine.isRotorSpinning()) {
                             quads.add(
                                     StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
-                                            modelState, 2, 0, true, true));
+                                            modelState, 2, emissive ? 12 : 5, true, true));
                         } else {
                             quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE),
-                                    modelState, 2, 0, true, true));
+                                    modelState, 2, emissive ? 12 : 5, true, true));
                         }
                     }
                 }

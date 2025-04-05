@@ -1,26 +1,25 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 
 public class DummyCraftingContainer extends TransientCraftingContainer {
 
-    private final IItemTransfer itemTransfer;
+    private final IItemHandlerModifiable itemHandler;
 
-    public DummyCraftingContainer(IItemTransfer itemHandler) {
+    public DummyCraftingContainer(IItemHandlerModifiable itemHandler) {
         super(null, 0, 0);
-        this.itemTransfer = itemHandler;
+        this.itemHandler = itemHandler;
     }
 
     @Override
     public int getContainerSize() {
-        return this.itemTransfer.getSlots();
+        return this.itemHandler.getSlots();
     }
 
     @Override
@@ -35,35 +34,35 @@ public class DummyCraftingContainer extends TransientCraftingContainer {
 
     @Override
     public @NotNull ItemStack getItem(int slot) {
-        return slot >= this.getContainerSize() ? ItemStack.EMPTY : this.itemTransfer.getStackInSlot(slot);
+        return slot >= this.getContainerSize() ? ItemStack.EMPTY : this.itemHandler.getStackInSlot(slot);
     }
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
-        return this.itemTransfer.extractItem(slot, Integer.MAX_VALUE, false, false);
+        return this.itemHandler.extractItem(slot, Integer.MAX_VALUE, false);
     }
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int count) {
-        return this.itemTransfer.extractItem(slot, count, false, true);
+        return this.itemHandler.extractItem(slot, count, false);
     }
 
     @Override
     public void setItem(int slot, @NotNull ItemStack stack) {
-        this.itemTransfer.setStackInSlot(slot, stack);
+        this.itemHandler.setStackInSlot(slot, stack);
     }
 
     @Override
     public void clearContent() {
-        for (int i = 0; i < this.itemTransfer.getSlots(); ++i) {
-            this.itemTransfer.setStackInSlot(i, ItemStack.EMPTY);
+        for (int i = 0; i < this.itemHandler.getSlots(); ++i) {
+            this.itemHandler.setStackInSlot(i, ItemStack.EMPTY);
         }
     }
 
     @Override
     public void fillStackedContents(@NotNull StackedContents helper) {}
 
-    private static NonNullList<ItemStack> createInventory(IItemTransfer itemHandler) {
+    private static NonNullList<ItemStack> createInventory(IItemHandlerModifiable itemHandler) {
         NonNullList<ItemStack> inv = NonNullList.create();
 
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {

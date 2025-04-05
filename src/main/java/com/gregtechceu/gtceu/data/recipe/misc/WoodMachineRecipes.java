@@ -3,17 +3,16 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
-
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,7 +63,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.OAK_STAIRS, "oak_stairs")
                             .boat(Items.OAK_BOAT, "oak_boat")
                             .chestBoat(Items.OAK_CHEST_BOAT, "oak_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.OAK_SIGN, "oak_sign")
+                            .hangingSign(Items.OAK_HANGING_SIGN, "oak_hanging_sign")
+                            .button(Items.OAK_BUTTON, "oak_button")
+                            .pressurePlate(Items.OAK_PRESSURE_PLATE, "oak_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "spruce")
                             .planks(Items.SPRUCE_PLANKS, "spruce_planks")
@@ -81,7 +83,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.SPRUCE_STAIRS, "spruce_stairs")
                             .boat(Items.SPRUCE_BOAT, "spruce_boat")
                             .chestBoat(Items.SPRUCE_CHEST_BOAT, "spruce_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.SPRUCE_SIGN, "spruce_sign")
+                            .hangingSign(Items.SPRUCE_HANGING_SIGN, "spruce_hanging_sign")
+                            .button(Items.SPRUCE_BUTTON, "spruce_button")
+                            .pressurePlate(Items.SPRUCE_PRESSURE_PLATE, "spruce_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "birch")
                             .planks(Items.BIRCH_PLANKS, "birch_planks")
@@ -97,7 +103,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.BIRCH_STAIRS, "birch_stairs")
                             .boat(Items.BIRCH_BOAT, "birch_boat")
                             .chestBoat(Items.BIRCH_CHEST_BOAT, "birch_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.BIRCH_SIGN, "birch_sign")
+                            .hangingSign(Items.BIRCH_HANGING_SIGN, "birch_hanging_sign")
+                            .button(Items.BIRCH_BUTTON, "birch_button")
+                            .pressurePlate(Items.BIRCH_PRESSURE_PLATE, "birch_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "jungle")
                             .planks(Items.JUNGLE_PLANKS, "jungle_planks")
@@ -113,7 +123,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.JUNGLE_STAIRS, "jungle_stairs")
                             .boat(Items.JUNGLE_BOAT, "jungle_boat")
                             .chestBoat(Items.JUNGLE_CHEST_BOAT, "jungle_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.JUNGLE_SIGN, "jungle_sign")
+                            .hangingSign(Items.JUNGLE_HANGING_SIGN, "jungle_hanging_sign")
+                            .button(Items.JUNGLE_BUTTON, "jungle_button")
+                            .pressurePlate(Items.JUNGLE_PRESSURE_PLATE, "jungle_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "acacia")
                             .planks(Items.ACACIA_PLANKS, "acacia_planks")
@@ -129,7 +143,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.ACACIA_STAIRS, "acacia_stairs")
                             .boat(Items.ACACIA_BOAT, "acacia_boat")
                             .chestBoat(Items.ACACIA_CHEST_BOAT, "acacia_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.ACACIA_SIGN, "acacia_sign")
+                            .hangingSign(Items.ACACIA_HANGING_SIGN, "acacia_hanging_sign")
+                            .button(Items.ACACIA_BUTTON, "acacia_button")
+                            .pressurePlate(Items.ACACIA_PRESSURE_PLATE, "acacia_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "dark_oak")
                             .planks(Items.DARK_OAK_PLANKS, "dark_oak_planks")
@@ -145,11 +163,15 @@ public class WoodMachineRecipes {
                             .stairs(Items.DARK_OAK_STAIRS, "dark_oak_stairs")
                             .boat(Items.DARK_OAK_BOAT, "dark_oak_boat")
                             .chestBoat(Items.DARK_OAK_CHEST_BOAT, "dark_oak_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.DARK_OAK_SIGN, "dark_oak_sign")
+                            .hangingSign(Items.DARK_OAK_HANGING_SIGN, "dark_oak_hanging_sign")
+                            .button(Items.DARK_OAK_BUTTON, "dark_oak_button")
+                            .pressurePlate(Items.DARK_OAK_PRESSURE_PLATE, "dark_oak_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "bamboo")
                             .planks(Items.BAMBOO_PLANKS, "bamboo_planks")
-                            .logTag(TagUtil.createItemTag("bamboo_blocks", true))
+                            .logTag(ItemTags.BAMBOO_BLOCKS)
                             .log(Items.BAMBOO_BLOCK).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_BAMBOO_BLOCK)
                             .door(Items.BAMBOO_DOOR, "bamboo_door")
@@ -160,7 +182,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.BAMBOO_STAIRS, "bamboo_stairs")
                             .boat(Items.BAMBOO_RAFT, "bamboo_raft")
                             .chestBoat(Items.BAMBOO_CHEST_RAFT, "bamboo_chest_raft")
-                            .registerAllUnificationInfo()
+                            .sign(Items.BAMBOO_SIGN, "bamboo_sign")
+                            .hangingSign(Items.BAMBOO_HANGING_SIGN, "bamboo_hanging_sign")
+                            .button(Items.BAMBOO_BUTTON, "bamboo_button")
+                            .pressurePlate(Items.BAMBOO_PRESSURE_PLATE, "bamboo_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "cherry")
                             .planks(Items.CHERRY_PLANKS, "cherry_planks")
@@ -176,7 +202,11 @@ public class WoodMachineRecipes {
                             .stairs(Items.CHERRY_STAIRS, "cherry_stairs")
                             .boat(Items.CHERRY_BOAT, "cherry_boat")
                             .chestBoat(Items.CHERRY_CHEST_BOAT, "cherry_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.CHERRY_SIGN, "cherry_sign")
+                            .hangingSign(Items.CHERRY_HANGING_SIGN, "cherry_hanging_sign")
+                            .button(Items.CHERRY_BUTTON, "cherry_button")
+                            .pressurePlate(Items.CHERRY_PRESSURE_PLATE, "cherry_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "mangrove")
                             .planks(Items.MANGROVE_PLANKS, "mangrove_planks")
@@ -192,11 +222,15 @@ public class WoodMachineRecipes {
                             .stairs(Items.MANGROVE_STAIRS, "mangrove_stairs")
                             .boat(Items.MANGROVE_BOAT, "mangrove_boat")
                             .chestBoat(Items.MANGROVE_CHEST_BOAT, "mangrove_chest_boat")
-                            .registerAllUnificationInfo()
+                            .sign(Items.MANGROVE_SIGN, "mangrove_sign")
+                            .hangingSign(Items.MANGROVE_HANGING_SIGN, "mangrove_hanging_sign")
+                            .button(Items.MANGROVE_BUTTON, "mangrove_button")
+                            .pressurePlate(Items.MANGROVE_PRESSURE_PLATE, "mangrove_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "crimson")
                             .planks(Items.CRIMSON_PLANKS, "crimson_planks")
-                            .logTag(TagUtil.createItemTag("crimson_stems", true))
+                            .logTag(ItemTags.CRIMSON_STEMS)
                             .log(Items.CRIMSON_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_CRIMSON_STEM)
                             .wood(Items.CRIMSON_HYPHAE)
@@ -207,11 +241,15 @@ public class WoodMachineRecipes {
                             .fence(Items.CRIMSON_FENCE, "crimson_fence")
                             .fenceGate(Items.CRIMSON_FENCE_GATE, "crimson_fence_gate")
                             .stairs(Items.CRIMSON_STAIRS, "crimson_stairs")
-                            .registerAllUnificationInfo()
+                            .sign(Items.CRIMSON_SIGN, "crimson_sign")
+                            .hangingSign(Items.CRIMSON_HANGING_SIGN, "crimson_hanging_sign")
+                            .button(Items.CRIMSON_BUTTON, "crimson_button")
+                            .pressurePlate(Items.CRIMSON_PRESSURE_PLATE, "crimson_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(mcModId, "warped")
                             .planks(Items.WARPED_PLANKS, "warped_planks")
-                            .logTag(TagUtil.createItemTag("warped_stems", true))
+                            .logTag(ItemTags.WARPED_STEMS)
                             .log(Items.WARPED_STEM).removeCharcoalRecipe()
                             .strippedLog(Items.STRIPPED_WARPED_STEM)
                             .wood(Items.WARPED_HYPHAE)
@@ -222,7 +260,11 @@ public class WoodMachineRecipes {
                             .fence(Items.WARPED_FENCE, "warped_fence")
                             .fenceGate(Items.WARPED_FENCE_GATE, "warped_fence_gate")
                             .stairs(Items.WARPED_STAIRS, "warped_stairs")
-                            .registerAllUnificationInfo()
+                            .sign(Items.WARPED_SIGN, "warped_sign")
+                            .hangingSign(Items.WARPED_HANGING_SIGN, "warped_hanging_sign")
+                            .button(Items.WARPED_BUTTON, "warped_button")
+                            .pressurePlate(Items.WARPED_PRESSURE_PLATE, "warped_pressure_plate")
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(GTCEu.MOD_ID, "rubber")
                             .planks(GTBlocks.RUBBER_PLANK.asItem(), null)
@@ -236,10 +278,14 @@ public class WoodMachineRecipes {
                             .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
                             .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
                             .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
-                            // .boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
-                            .generateLogToPlankRecipe(false) // rubber log does not have a tag
+                            .boat(GTItems.RUBBER_BOAT.asItem(), null)
+                            .chestBoat(GTItems.RUBBER_CHEST_BOAT.asItem(), null)
+                            .sign(GTBlocks.RUBBER_SIGN.asItem(), null)
+                            .hangingSign(GTBlocks.RUBBER_HANGING_SIGN.asItem(), null)
+                            .button(GTBlocks.RUBBER_BUTTON.asItem(), null)
+                            .pressurePlate(GTBlocks.RUBBER_PRESSURE_PLATE.asItem(), null)
                             .registerAllTags()
-                            .registerAllUnificationInfo()
+                            .registerAllMaterialInfo()
                             .build(),
                     new WoodTypeEntry.Builder(GTCEu.MOD_ID, "treated")
                             .planks(GTBlocks.TREATED_WOOD_PLANK.asItem(), null)
@@ -249,18 +295,23 @@ public class WoodMachineRecipes {
                             .fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
                             .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
                             .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
-                            // .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                            .boat(GTItems.TREATED_WOOD_BOAT.asItem(), null)
+                            .chestBoat(GTItems.TREATED_WOOD_CHEST_BOAT.asItem(), null)
+                            .sign(GTBlocks.TREATED_WOOD_SIGN.asItem(), null)
+                            .hangingSign(GTBlocks.TREATED_WOOD_HANGING_SIGN.asItem(), null)
+                            .button(GTBlocks.TREATED_WOOD_BUTTON.asItem(), null)
+                            .pressurePlate(GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asItem(), null)
                             .material(TreatedWood)
                             .generateLogToPlankRecipe(false)
-                            .registerAllUnificationInfo()
+                            .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                             .build());
         }
         return DEFAULT_ENTRIES;
     }
 
-    public static void registerUnificationInfo() {
+    public static void registerMaterialInfo() {
         for (WoodTypeEntry entry : getDefaultEntries()) {
-            registerWoodUnificationInfo(entry);
+            registerWoodMaterialInfo(entry);
         }
     }
 
@@ -281,31 +332,31 @@ public class WoodMachineRecipes {
     }
 
     /**
-     * Adds all standard unification info and ore dictionary for a wood type
+     * Adds all standard unification info and tag for a wood type
      *
      * @param entry the entry to register for
      */
-    public static void registerWoodUnificationInfo(@NotNull WoodTypeEntry entry) {
+    public static void registerWoodMaterialInfo(@NotNull WoodTypeEntry entry) {
         for (var log_ : entry.getLogs()) {
             if (log_ != null && entry.addLogOreDict) {
-                ChemicalHelper.registerUnificationItems(log, entry.material, log_);
+                ItemMaterialData.registerMaterialInfoItems(log, entry.material, log_);
             }
         }
 
         if (entry.addPlanksOreDict) {
-            ChemicalHelper.registerUnificationItems(planks, entry.material, entry.planks);
+            ItemMaterialData.registerMaterialInfoItems(planks, entry.material, entry.planks);
         }
-        if (entry.addPlanksUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.planks,
+        if (entry.addPlanksMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.planks,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M)));
         }
 
         if (entry.door != null) {
             if (entry.addDoorsOreDict) {
-                ChemicalHelper.registerUnificationItems(door, entry.material, entry.door);
+                ItemMaterialData.registerMaterialInfoItems(door, entry.material, entry.door);
             }
-            if (entry.addDoorsUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.door, ConfigHolder.INSTANCE.recipes.hardWoodRecipes ?
+            if (entry.addDoorsMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.door, ConfigHolder.INSTANCE.recipes.hardWoodRecipes ?
                         new ItemMaterialInfo(new MaterialStack(entry.material, M * 2),
                                 new MaterialStack(GTMaterials.Iron, M / 9)) : // screw
                         new ItemMaterialInfo(new MaterialStack(entry.material, M * 2)));
@@ -314,56 +365,63 @@ public class WoodMachineRecipes {
 
         if (entry.slab != null) {
             if (entry.addSlabsOreDict) {
-                ChemicalHelper.registerUnificationItems(slab, entry.material, entry.slab);
+                ItemMaterialData.registerMaterialInfoItems(slab, entry.material, entry.slab);
             }
-            if (entry.addSlabsUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.slab,
+            if (entry.addSlabsMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.slab,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M / 2)));
             }
         }
 
         if (entry.fence != null) {
             if (entry.addFencesOreDict) {
-                ChemicalHelper.registerUnificationItems(fence, entry.material, entry.fence);
+                ItemMaterialData.registerMaterialInfoItems(fence, entry.material, entry.fence);
             }
-            if (entry.addFencesUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.fence,
+            if (entry.addFencesMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.fence,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M)));
             }
         }
 
         if (entry.fenceGate != null) {
             if (entry.addFenceGatesOreDict) {
-                ChemicalHelper.registerUnificationItems(fenceGate, entry.material, entry.fenceGate);
+                ItemMaterialData.registerMaterialInfoItems(fenceGate, entry.material, entry.fenceGate);
             }
-            if (entry.addFenceGatesUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.fenceGate,
+            if (entry.addFenceGatesMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.fenceGate,
                         new ItemMaterialInfo(new MaterialStack(entry.material, M * 3)));
             }
         }
 
         if (entry.stairs != null) {
             if (entry.addStairsOreDict) {
-                ChemicalHelper.registerUnificationItems(stairs, entry.material, entry.stairs);
+                ItemMaterialData.registerMaterialInfoItems(stairs, entry.material, entry.stairs);
             }
-            if (entry.addStairsUnificationInfo) {
-                ChemicalHelper.registerMaterialInfo(entry.stairs,
+            if (entry.addStairsMaterialInfo) {
+                ItemMaterialData.registerMaterialInfo(entry.stairs,
                         new ItemMaterialInfo(new MaterialStack(entry.material, (3 * M) / 2)));
             }
         }
 
-        if (entry.boat != null && entry.addBoatsUnificationInfo) {
-            ChemicalHelper.registerMaterialInfo(entry.boat,
+        if (entry.boat != null && entry.addBoatsMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.boat,
                     new ItemMaterialInfo(new MaterialStack(entry.material, M * 5)));
         }
 
-        /*
-         * TODO should this really be included?
-         * if (entry.chestBoat != null && entry.addChestBoatsUnificationInfo) {
-         * ChemicalHelper.registerMaterialInfo(entry.chestBoat,
-         * new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
-         * }
-         */
+        if (entry.chestBoat != null && entry.addChestBoatsMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.chestBoat,
+                    new ItemMaterialInfo(new MaterialStack(entry.material, M * 13)));
+        }
+
+        if (entry.button != null && entry.addButtonsMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.button,
+                    new ItemMaterialInfo(new MaterialStack(entry.material, M / 6)));
+        }
+
+        if (entry.pressurePlate != null && entry.addPressurePlatesMaterialInfo) {
+            ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
+                    new ItemMaterialInfo(new MaterialStack(entry.material, M)));
+        }
     }
 
     /**
@@ -379,6 +437,42 @@ public class WoodMachineRecipes {
         // noinspection ConstantValue can be null if someone does an oopsie and doesn't set it.
         if (entry.planks == null) {
             throw new IllegalStateException("Could not find planks form of WoodTypeEntry '" + name + "'.");
+        }
+
+        if (entry.strippedLog != null) {
+            // strip log
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_log")
+                    .inputItems(entry.log)
+                    .outputItems(entry.strippedLog)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+
+            // lathe stripped log
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_log")
+                    .inputItems(entry.strippedLog)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+        }
+
+        if (entry.strippedWood != null) {
+            // strip wood
+            LATHE_RECIPES.recipeBuilder("strip_" + name + "_wood")
+                    .inputItems(entry.wood)
+                    .outputItems(entry.strippedWood)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
+
+            // lathe stripped wood
+            LATHE_RECIPES.recipeBuilder("lathe_stripped_" + name + "_wood")
+                    .inputItems(entry.strippedWood)
+                    .outputItems(rodLong, Wood, 4)
+                    .outputItems(dust, Wood, 1)
+                    .duration(160).EUt(VA[ULV])
+                    .save(provider);
         }
 
         if (entry.generateLogToPlankRecipe) {
@@ -405,6 +499,8 @@ public class WoodMachineRecipes {
                     .EUt(VA[ULV])
                     .save(provider);
         }
+        ItemMaterialData.registerMaterialInfo(entry.planks,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
         // door
         if (entry.door != null) {
@@ -416,8 +512,8 @@ public class WoodMachineRecipes {
                             "PTd", "PRS", "PPs",
                             'P', entry.planks,
                             'T', entry.trapdoor,
-                            'R', new UnificationEntry(ring, Iron),
-                            'S', new UnificationEntry(screw, Iron));
+                            'R', new MaterialEntry(ring, Iron),
+                            'S', new MaterialEntry(screw, Iron));
 
                     // plank -> door assembling
                     ASSEMBLER_RECIPES.recipeBuilder(name + "_door")
@@ -425,14 +521,15 @@ public class WoodMachineRecipes {
                             .inputItems(new ItemStack(entry.planks, 4))
                             .inputFluids(Iron.getFluid(GTValues.L / 9))
                             .outputItems(entry.door)
-                            .duration(400).EUt(4).save(provider);
+                            .duration(400).EUt(4)
+                            .addMaterialInfo(true, true).save(provider);
                 } else {
                     VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.door),
                             "PTd", "PRS", "PPs",
                             'P', entry.planks,
                             'T', ItemTags.WOODEN_TRAPDOORS,
-                            'R', new UnificationEntry(ring, Iron),
-                            'S', new UnificationEntry(screw, Iron));
+                            'R', new MaterialEntry(ring, Iron),
+                            'S', new MaterialEntry(screw, Iron));
 
                     // plank -> door assembling
                     ASSEMBLER_RECIPES.recipeBuilder(name + "_door")
@@ -454,7 +551,154 @@ public class WoodMachineRecipes {
                         .outputItems(new ItemStack(entry.door, 3))
                         .circuitMeta(6)
                         .duration(600).EUt(4)
+                        .addMaterialInfo(true)
                         .save(provider);
+            }
+        }
+
+        // sign
+        if (entry.sign != null && entry.slab != null) {
+            final boolean hasSignRecipe = entry.signRecipeName != null;
+            String recipeName = hasSignRecipe ? entry.signRecipeName : name + "_sign";
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.sign),
+                        "LLL", "RPR", "sSd",
+                        'P', entry.planks,
+                        'R', new MaterialEntry(screw, Iron),
+                        'L', entry.slab,
+                        'S', entry.getStick());
+
+                // plank -> sign assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_iron")
+                        .circuitMeta(4)
+                        .inputItems(new ItemStack(entry.slab, 1))
+                        .inputItems(entry.getStick(), 1)
+                        .inputFluids(Iron.getFluid(GTValues.L / 9))
+                        .outputItems(entry.sign, 3)
+                        .duration(200).EUt(4).save(provider);
+
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.sign, 2),
+                        "LLL", "RPR", "sSd",
+                        'P', entry.planks,
+                        'R', new MaterialEntry(screw, Steel),
+                        'L', entry.slab,
+                        'S', entry.getStick());
+
+                // plank -> sign assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_steel")
+                        .circuitMeta(4)
+                        .inputItems(new ItemStack(entry.slab, 1))
+                        .inputItems(entry.getStick(), 1)
+                        .inputFluids(Steel.getFluid(GTValues.L / 9))
+                        .outputItems(entry.sign, 5)
+                        .duration(200).EUt(4).save(provider);
+            } else {
+                if (!hasSignRecipe) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_stick", new ItemStack(entry.sign, 3),
+                            "PPP", "PPP", " S ",
+                            'P', entry.planks,
+                            'S', entry.getStick());
+                }
+
+                ASSEMBLER_RECIPES.recipeBuilder(name + "_sign")
+                        .inputItems(new ItemStack(entry.planks), 6)
+                        .inputItems(entry.getStick())
+                        .outputItems(new ItemStack(entry.sign), 3)
+                        .circuitMeta(4)
+                        .duration(100).EUt(4).save(provider);
+            }
+
+            // hanging sign
+            if (entry.hangingSign != null && entry.strippedLog != null) {
+                final boolean hasHangingSignRecipe = entry.hangingSignRecipeName != null;
+                String recipeNameHanging = hasHangingSignRecipe ? entry.hangingSignRecipeName : name + "_hanging_sign";
+
+                if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging, new ItemStack(entry.hangingSign),
+                            "LLL", "C C", "RSR",
+                            'C', Items.CHAIN,
+                            'R', new MaterialEntry(ring, Iron),
+                            'S', new ItemStack(entry.sign),
+                            'L', new ItemStack(entry.slab));
+
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging + "_steel",
+                            new ItemStack(entry.hangingSign, 2),
+                            "LLL", "C C", "RSR",
+                            'C', Items.CHAIN,
+                            'R', new MaterialEntry(ring, Steel),
+                            'S', new ItemStack(entry.sign),
+                            'L', new ItemStack(entry.slab));
+
+                    ASSEMBLER_RECIPES.recipeBuilder(name + "_hanging_sign")
+                            .inputItems(entry.slab, 3)
+                            .inputItems(entry.sign)
+                            .inputItems(Items.CHAIN, 2)
+                            .outputItems(entry.hangingSign)
+                            .circuitMeta(5)
+                            .duration(150).EUt(4).save(provider);
+                } else {
+                    if (!hasHangingSignRecipe) {
+                        VanillaRecipeHelper.addShapedRecipe(provider, recipeNameHanging,
+                                new ItemStack(entry.hangingSign, 6),
+                                "C C", "LLL", "LLL",
+                                'C', Items.CHAIN,
+                                'L', entry.strippedLog);
+                    }
+
+                    ASSEMBLER_RECIPES.recipeBuilder(name + "_hanging_sign")
+                            .inputItems(entry.strippedLog, 6)
+                            .inputItems(new ItemStack(Items.CHAIN, 2))
+                            .outputItems(entry.hangingSign, 6)
+                            .circuitMeta(5)
+                            .duration(100).EUt(4).save(provider);
+                }
+            }
+        }
+
+        // trapdoor
+        if (entry.trapdoor != null) {
+            final boolean hasTrapdoorRecipe = entry.trapdoorRecipeName != null;
+            String recipeName = hasTrapdoorRecipe ? entry.trapdoorRecipeName : name + "_trapdoor";
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_iron", new ItemStack(entry.trapdoor),
+                        "BPS", "PdP", "SPB",
+                        'P', entry.planks,
+                        'B', new MaterialEntry(bolt, Iron),
+                        'S', entry.getStick());
+
+                // plank -> trapdoor assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_iron")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks, 2))
+                        .inputFluids(Iron.getFluid(GTValues.L / 9))
+                        .outputItems(entry.trapdoor)
+                        .duration(200).EUt(4).save(provider);
+
+                VanillaRecipeHelper.addShapedRecipe(provider, recipeName + "_steel", new ItemStack(entry.trapdoor, 2),
+                        "BPS", "PdP", "SPB",
+                        'P', entry.planks,
+                        'B', new MaterialEntry(bolt, Steel),
+                        'S', entry.getStick());
+
+                // plank -> trapdoor assembling
+                ASSEMBLER_RECIPES.recipeBuilder(recipeName + "_steel")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks, 2))
+                        .inputFluids(Steel.getFluid(GTValues.L / 9))
+                        .outputItems(entry.trapdoor, 2)
+                        .duration(200).EUt(4).save(provider);
+            } else {
+                if (!hasTrapdoorRecipe) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeName, new ItemStack(entry.trapdoor, 2),
+                            "PPP", "PPP",
+                            'P', entry.planks);
+                }
+
+                ASSEMBLER_RECIPES.recipeBuilder(name + "_trapdoor")
+                        .circuitMeta(3)
+                        .inputItems(new ItemStack(entry.planks), 6)
+                        .outputItems(new ItemStack(entry.trapdoor), 4)
+                        .duration(100).EUt(4).save(provider);
             }
         }
 
@@ -471,10 +715,11 @@ public class WoodMachineRecipes {
 
             // plank -> stairs assembling
             ASSEMBLER_RECIPES.recipeBuilder(name + "_stairs")
-                    .inputItems(new ItemStack(entry.planks, 6))
+                    .inputItems(new ItemStack(entry.planks, 3))
                     .outputItems(new ItemStack(entry.stairs, 4))
                     .circuitMeta(7)
-                    .EUt(1).duration(100).save(provider);
+                    .EUt(4).duration(100)
+                    .addMaterialInfo(true).save(provider);
         }
 
         // slab
@@ -493,6 +738,7 @@ public class WoodMachineRecipes {
                     .inputItems(entry.planks)
                     .outputItems(new ItemStack(entry.slab, 2))
                     .duration(200).EUt(VA[ULV])
+                    .addMaterialInfo(true)
                     .save(provider);
         }
 
@@ -519,8 +765,9 @@ public class WoodMachineRecipes {
             ASSEMBLER_RECIPES.recipeBuilder(name + "_fence")
                     .inputItems(entry.planks)
                     .outputItems(entry.fence)
-                    .circuitMeta(1)
+                    .circuitMeta(13)
                     .duration(100).EUt(4)
+                    .addMaterialInfo(true)
                     .save(provider);
         }
 
@@ -542,7 +789,7 @@ public class WoodMachineRecipes {
                         "IdI", "SPS", "SPS",
                         'P', entry.planks,
                         'S', entry.getStick(),
-                        'I', new UnificationEntry(screw, Iron));
+                        'I', new MaterialEntry(screw, Iron));
             } else {
                 if (!hasFenceGateRecipe) {
                     VanillaRecipeHelper.addShapedRecipe(provider, name + "_fence_gate", new ItemStack(entry.fenceGate),
@@ -558,7 +805,8 @@ public class WoodMachineRecipes {
                     .inputItems(Tags.Items.RODS_WOODEN, 2)
                     .outputItems(entry.fenceGate)
                     .circuitMeta(2)
-                    .duration(100).EUt(4).save(provider);
+                    .duration(100).EUt(4)
+                    .addMaterialInfo(true).save(provider);
         }
 
         // boat
@@ -566,7 +814,6 @@ public class WoodMachineRecipes {
             final boolean hasBoatRecipe = entry.boatRecipeName != null;
             if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
                 if (entry.slab != null) {
-
                     VanillaRecipeHelper.addShapedRecipe(provider, hasBoatRecipe ? entry.boatRecipeName : name + "_boat",
                             new ItemStack(entry.boat),
                             "PHP", "PkP", "SSS",
@@ -587,38 +834,90 @@ public class WoodMachineRecipes {
                     .inputItems(new ItemStack(entry.planks, 5))
                     .outputItems(entry.boat)
                     .circuitMeta(15)
-                    .duration(100).EUt(4).save(provider);
+                    .duration(100).EUt(4)
+                    .addMaterialInfo(true).save(provider);
 
             // chest boat
             if (entry.chestBoat != null) {
                 final boolean hasChestBoatRecipe = entry.chestBoatRecipeName != null;
+                String recipeName = hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat";
                 if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
-                    if (entry.boat != null) {
-
-                        VanillaRecipeHelper.addShapedRecipe(provider,
-                                hasChestBoatRecipe ? entry.chestBoatRecipeName : name + "_chest_boat",
-                                new ItemStack(entry.chestBoat),
-                                " B ", "SCS", " w ",
-                                'B', entry.boat,
-                                'S', new UnificationEntry(bolt, Wood),
-                                'C', Tags.Items.CHESTS_WOODEN);
-                    }
+                    VanillaRecipeHelper.addShapedRecipe(provider, recipeName,
+                            new ItemStack(entry.chestBoat),
+                            " B ", "SCS", " w ",
+                            'B', entry.boat,
+                            'S', new MaterialEntry(bolt, Wood),
+                            'C', Tags.Items.CHESTS_WOODEN);
                 } else {
-                    if (!hasChestBoatRecipe) {
-                        VanillaRecipeHelper.addShapelessRecipe(provider, name + "_chest_boat",
-                                new ItemStack(entry.chestBoat),
-                                entry.boat, Tags.Items.CHESTS);
-                    }
+                    VanillaRecipeHelper.addShapelessRecipe(provider, recipeName,
+                            new ItemStack(entry.chestBoat),
+                            entry.boat, Tags.Items.CHESTS_WOODEN);
                 }
 
-                // plank -> boat assembling
+                // boat -> chest boat assembling
                 ASSEMBLER_RECIPES.recipeBuilder(name + "_chest_boat")
                         .inputItems(new ItemStack(entry.boat))
-                        .inputItems(Tags.Items.CHESTS)
+                        .inputItems(Tags.Items.CHESTS_WOODEN)
                         .outputItems(entry.chestBoat)
                         .circuitMeta(16)
-                        .duration(100).EUt(4).save(provider);
+                        .duration(100).EUt(4)
+                        .addMaterialInfo(true).save(provider);
             }
+        }
+
+        // button
+        if (entry.button != null) {
+            final boolean hasButtonRecipe = entry.buttonRecipeName != null;
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, name + "_button", new ItemStack(entry.button, 6), "sP",
+                        'P', new ItemStack(entry.pressurePlate));
+            } else {
+                if (!hasButtonRecipe) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, name + "_button", new ItemStack(entry.button), "P",
+                            'P', new ItemStack(entry.planks));
+                }
+            }
+
+            // plank -> button cutting
+            CUTTER_RECIPES.recipeBuilder(name + "_button")
+                    .inputItems(new ItemStack(entry.pressurePlate))
+                    .outputItems(entry.button, 12)
+                    .duration(250).EUt(VA[ULV]).save(provider);
+
+            ItemMaterialData.registerMaterialInfo(entry.button,
+                    new ItemMaterialInfo(new MaterialStack(entry.material, M / 9)));
+        }
+
+        // preesure plate
+        if (entry.pressurePlate != null) {
+            final boolean hasPressurePlateRecipe = entry.pressurePlateRecipeName != null;
+            if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) {
+                VanillaRecipeHelper.addShapedRecipe(provider, name + "_pressure_plate",
+                        new ItemStack(entry.pressurePlate, 2), "SrS", "LCL", "SdS",
+                        'S', new MaterialEntry(bolt, GTMaterials.Wood),
+                        'L', entry.slab.asItem(),
+                        'C', new MaterialEntry(spring, GTMaterials.Iron));
+
+                ASSEMBLER_RECIPES.recipeBuilder(name + "_pressure_plate")
+                        .inputItems(new ItemStack(entry.slab, 2))
+                        .inputItems(spring, Iron)
+                        .outputItems(entry.pressurePlate)
+                        .circuitMeta(7)
+                        .duration(100).EUt(VA[ULV]).save(provider);
+            } else {
+                if (!hasPressurePlateRecipe) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, name + "_pressure_plate",
+                            new ItemStack(entry.pressurePlate), "PP",
+                            'P', new ItemStack(entry.planks));
+                }
+
+                // slab -> pressure plate cutting
+                CUTTER_RECIPES.recipeBuilder(name + "_pressure_plate")
+                        .inputItems(new ItemStack(entry.slab))
+                        .outputItems(entry.pressurePlate, 8)
+                        .duration(250).EUt(VA[ULV]).save(provider);
+            }
+
         }
     }
 
@@ -626,12 +925,6 @@ public class WoodMachineRecipes {
      * Standard recipes for GT woods
      */
     private static void registerGTWoodRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks",
-                GTBlocks.TREATED_WOOD_PLANK.asStack(8),
-                "PPP", "PBP", "PPP",
-                'P', ItemTags.PLANKS,
-                'B', FluidUtil.getFilledBucket(FluidHelperImpl.toFluidStack(Creosote.getFluid(1000))));
-
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
                 ChemicalHelper.get(rod, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
                 "L", "L",
@@ -643,35 +936,13 @@ public class WoodMachineRecipes {
                     'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(),
-                GTBlocks.RUBBER_PLANK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(),
-                GTBlocks.TREATED_WOOD_PLANK.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_pressure_plate", GTBlocks.RUBBER_PRESSURE_PLATE.asStack(),
-                "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate",
-                GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_wood",
+                GTBlocks.RUBBER_WOOD.asStack(3),
+                "LL", "LL", 'L', GTBlocks.RUBBER_LOG.asStack());
 
-        // add Recipes for rubber log
-        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
-                    GTBlocks.RUBBER_PLANK.asStack(2), GTBlocks.RUBBER_LOG.asItem());
-        } else {
-            VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_planks",
-                    GTBlocks.RUBBER_PLANK.asStack(4), GTBlocks.RUBBER_LOG.asItem());
-        }
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_planks_saw",
-                GTBlocks.RUBBER_PLANK.asStack(ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 4 : 6),
-                "s", "L", 'L', GTBlocks.RUBBER_LOG.asItem());
-
-        CUTTER_RECIPES.recipeBuilder("rubber_planks")
-                .inputItems(GTBlocks.RUBBER_LOG.asItem())
-                .outputItems(GTBlocks.RUBBER_PLANK.asStack(6))
-                .outputItems(dust, Wood, 2)
-                .duration(200)
-                .EUt(VA[ULV])
-                .save(provider);
+        VanillaRecipeHelper.addShapedRecipe(provider, "stripped_rubber_wood",
+                GTBlocks.STRIPPED_RUBBER_WOOD.asStack(3),
+                "LL", "LL", 'L', GTBlocks.STRIPPED_RUBBER_LOG.asStack());
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
@@ -712,6 +983,9 @@ public class WoodMachineRecipes {
                     if (entry.boatRecipeName != null) {
                         registry.accept(new ResourceLocation(entry.modid, entry.boatRecipeName));
                     }
+                    if (entry.chestBoatRecipeName != null) {
+                        registry.accept(new ResourceLocation(entry.modid, entry.chestBoatRecipeName));
+                    }
                 }
             }
             if (entry.fence != null) {
@@ -724,6 +998,41 @@ public class WoodMachineRecipes {
                 // hard plank -> fence gate crafting
                 if (entry.fenceGateRecipeName != null) {
                     registry.accept(new ResourceLocation(entry.modid, entry.fenceGateRecipeName));
+                }
+            }
+            if (entry.trapdoor != null) {
+                // hard plank -> trapdoor crafting
+                if (entry.trapdoorRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.trapdoorRecipeName));
+                }
+            }
+            if (entry.chestBoat != null) {
+                if (entry.chestBoatRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.chestBoatRecipeName));
+                }
+            }
+            if (entry.sign != null) {
+                // hard plank -> sign crafting
+                if (entry.signRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.signRecipeName));
+                }
+            }
+            if (entry.hangingSign != null) {
+                // hard plank -> hanging sign crafting
+                if (entry.hangingSignRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.hangingSignRecipeName));
+                }
+            }
+            if (entry.button != null) {
+                // hard plank -> button crafting
+                if (entry.buttonRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.buttonRecipeName));
+                }
+            }
+            if (entry.pressurePlate != null) {
+                // hard plank -> pressure plate crafting
+                if (entry.pressurePlateRecipeName != null) {
+                    registry.accept(new ResourceLocation(entry.modid, entry.pressurePlateRecipeName));
                 }
             }
         }

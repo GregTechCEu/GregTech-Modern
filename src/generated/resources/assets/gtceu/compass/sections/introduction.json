@@ -1,7 +1,0 @@
-{
-  "button_texture": {
-    "type": "resource",
-    "res": "gtceu:textures/gui/icon/gregtech_logo.png"
-  },
-  "priority": 0
-}

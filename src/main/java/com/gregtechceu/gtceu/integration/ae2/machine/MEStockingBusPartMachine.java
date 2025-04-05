@@ -310,7 +310,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
 
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (slot == 0 && this.stock != null) {
                 if (this.config != null) {
                     // Extract the items from the real net to either validate (simulate)
@@ -331,7 +331,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                             if (this.stock.amount() == 0) {
                                 this.stock = null;
                             }
-                            if (notifyChanges && this.onContentsChanged != null) {
+                            if (this.onContentsChanged != null) {
                                 this.onContentsChanged.run();
                             }
                         }

@@ -1,8 +1,0 @@
-<page>
-  <h1>Hot Ingot</h1>
-  <h3>Source</h3>
-  <text>
-    <style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki.<br></br>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/285765/">TBS</style>, <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style>, <br></br><style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://github.com/blackdragon2447">BlackDragon2447</style><br></br></style>
-  </text>
-  <text>Hot Ingots are usually produced by heating metal powder in an Electric Blast Furnace. There are some exceptions, such as hot silicon ingots produced by mixing silica powder and carbon powder in an electric blast furnace. Not all ingot materials have the corresponding hot ingot form, but only ingot materials with a smelting temperature greater than 1,750 K have the hot ingot form. Hot ingots, with a few exceptions, require a <style color="0xafff00" hover-info="click link" link="gtceu:multiblock/vacuum_freezer" underlined="true">Vacuum Freezer</style> to be turned into <style color="0xafff00" hover-info="click link" link="gtceu:materials/ingot" underlined="true">Normal Ingots</style>, some of the hotter ingots require <style color="0xbbffaa">Liquid Helium</style>, to cool.</text>
-</page>

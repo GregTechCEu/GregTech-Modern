@@ -1,0 +1,32 @@
+{
+  "values": [
+    "gtceu:lv_field_generator",
+    "gtceu:mv_field_generator",
+    "gtceu:hv_field_generator",
+    "gtceu:ev_field_generator",
+    "gtceu:iv_field_generator",
+    "gtceu:luv_field_generator",
+    "gtceu:zpm_field_generator",
+    "gtceu:uv_field_generator",
+    {
+      "id": "gtceu:uhv_field_generator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_field_generator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_field_generator",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_field_generator",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_field_generator",
+      "required": false
+    }
+  ]
+}

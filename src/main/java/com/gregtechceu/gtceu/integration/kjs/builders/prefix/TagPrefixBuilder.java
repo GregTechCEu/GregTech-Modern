@@ -33,12 +33,17 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
-    public TagPrefixBuilder(ResourceLocation id, Object... args) {
-        super(id, args);
+    public TagPrefixBuilder(ResourceLocation id) {
+        super(id);
         this.base = create(id.getPath());
     }
 
     public abstract KJSTagPrefix create(String id);
+
+    public TagPrefixBuilder idPattern(String idPattern) {
+        base.idPattern(idPattern);
+        return this;
+    }
 
     public TagPrefixBuilder langValue(String langValue) {
         base.langValue(langValue);

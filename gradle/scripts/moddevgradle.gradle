@@ -1,0 +1,118 @@
+mixin {
+    var refmap = add sourceSets.main, "gtceu.refmap.json"
+    slimJar.from refmap
+    config 'gtceu.mixins.json'
+}
+
+legacyForge {
+    // Specify Forge version
+    version = libs.versions.minecraftForge.get()
+
+    parchment {
+        minecraftVersion = libs.versions.minecraft.get()
+        mappingsVersion = libs.versions.parchment.get()
+    }
+
+    // This line is optional. Access Transformers are automatically detected
+    accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+
+    addModdingDependenciesTo(sourceSets.test)
+//    addModdingDependenciesTo(sourceSets.extra)
+
+    mods {
+        // define mod <-> source bindings
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.test)
+            sourceSet(sourceSets.extra)
+        }
+    }
+
+    runs {
+        client {
+            client()
+            sourceSet = sourceSets.extra
+            ideName = "Client 1"
+
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        client2 {
+            client()
+            sourceSet = sourceSets.extra
+            ideName = "Client 2"
+
+            programArguments.addAll('--username', 'YoungOnion')
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        // Client with GTM + Jade, EMI, AE2
+        cleanClient {
+            client()
+            sourceSet = sourceSets.main
+            ideName = "Clean Client"
+
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        server {
+            server()
+            sourceSet = sourceSets.main
+            ideName = "Server"
+
+            gameDirectory.set(file('run/server'))
+            programArgument '--nogui'
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            sourceSet = sourceSets.test
+            ideName = "Game Tests"
+
+            gameDirectory.set(file('run/gametest'))
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        data {
+            data()
+            sourceSet = sourceSets.main
+            ideName = "Data Generation"
+
+            gameDirectory.set(file('run/data'))
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll('--mod', project.mod_id)
+            programArguments.addAll('--all')
+            programArguments.addAll('--output', file('src/generated/resources/').getAbsolutePath())
+            programArguments.addAll('--existing', file('src/main/resources/').getAbsolutePath())
+        }
+
+        // applies to all the run configs above
+        configureEach {
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            // Enable assertions for our classes in dev environment
+            jvmArgument('-ea:com.gregtechceu.gtceu...')
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+}
+
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

@@ -1,0 +1,80 @@
+site_name: GregTech Modern Docs
+site_url: https://gregtechceu.github.io/GregTech-Modern
+
+repo_name: GregTech Modern
+repo_url: https://github.com/GregTechCEu/GregTech-Modern
+edit_uri: blob/1.20.1/docs/content/
+
+docs_dir: content
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.indexes
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - toc.follow
+    - content.code.annotate
+    - content.action.view
+
+plugins:
+  - search
+  - awesome-pages
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/bWSWuYvURP
+    - icon: simple/curseforge
+      link: https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern/files
+    - icon: simple/modrinth
+      link: https://modrinth.com/mod/gregtechceu-modern
+    - icon: fontawesome/brands/github
+      link: https://github.com/GregTechCEu/GregTech-Modern
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+  - md_in_html
+  - pymdownx.betterem
+  - pymdownx.caret:
+      insert: false
+  - pymdownx.tilde:
+      delete: false
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg

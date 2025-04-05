@@ -3,15 +3,19 @@ package com.gregtechceu.gtceu.data.tags;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
@@ -30,6 +34,8 @@ public class BlockTagLoader {
                 Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER,
                 Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
         create(provider, CustomTags.ENDSTONE_ORE_REPLACEABLES, Blocks.END_STONE);
+        create(provider, Tags.Blocks.STORAGE_BLOCKS, Blocks.NETHER_BRICKS,
+                GTBlocks.CASING_PRIMITIVE_BRICKS.get(), GTBlocks.CASING_COKE_BRICKS.get());
 
         create(provider, BlockTags.REPLACEABLE,
                 GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
@@ -37,6 +43,24 @@ public class BlockTagLoader {
                 GTMaterials.OilHeavy.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
                 GTMaterials.RawOil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
                 GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
+
+        provider.addTag(BlockTags.MINEABLE_WITH_AXE)
+                .add(TagEntry.element(GTMachines.WOODEN_DRUM.getId()))
+                .add(TagEntry.element(GTMachines.WOODEN_CRATE.getId()));
+
+        // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
+        provider.addTag(CustomTags.MINEABLE_WITH_WRENCH)
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH);
+        provider.addTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
+                .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
+
+        provider.addTag(CustomTags.CLEANROOM_FLOORS)
+                .addOptionalTag(new ResourceLocation("elevatorid:elevators"))
+                .addOptional(new ResourceLocation("enderio:travel_anchor"))
+                .addOptional(new ResourceLocation("rftoolsutility:matter_transmitter"))
+                .addOptional(new ResourceLocation("rftoolsutility:matter_receiver"))
+                .addOptional(new ResourceLocation("rftoolsutility:dialing_device"))
+                .addOptional(new ResourceLocation("travelanchors:travel_anchor"));
     }
 
     private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,
