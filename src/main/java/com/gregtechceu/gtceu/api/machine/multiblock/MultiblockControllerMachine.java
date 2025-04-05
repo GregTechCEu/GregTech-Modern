@@ -264,6 +264,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
         if (playerIn.isShiftKeyDown()) {
@@ -273,6 +274,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             if (!isRemote()) {
                 setFrontFacing(gridSide);
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);

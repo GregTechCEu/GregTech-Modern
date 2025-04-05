@@ -51,6 +51,7 @@ dependencies {
     modCompileOnly(forge.ftbquests)
     modCompileOnly(forge.resourcefullib)
     modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.heracles)
 
     // Maps
     modCompileOnly(forge.ftbchunks)
@@ -85,6 +86,9 @@ dependencies {
     modExtraRuntimeOnly(forge.ftblibrary)
     modExtraRuntimeOnly(forge.ftbteams)
     modExtraRuntimeOnly(forge.ftbquests)
+
+    modExtraRuntimeOnly(forge.heracles)
+    modExtraRuntimeOnly(forge.resourcefullib)
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)

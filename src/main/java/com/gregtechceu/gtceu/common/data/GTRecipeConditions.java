@@ -51,6 +51,7 @@ public final class GTRecipeConditions {
             .register("daytime", new RecipeConditionType<>(DaytimeCondition::new, DaytimeCondition.CODEC));
     public static RecipeConditionType<FTBQuestCondition> FTB_QUEST;
     public static RecipeConditionType<GameStageCondition> GAMESTAGE;
+    public static RecipeConditionType<HeraclesQuestCondition> HERACLES_QUEST;
 
     public static void init() {
         if (GTCEu.Mods.isFTBQuestsLoaded()) {
@@ -62,6 +63,12 @@ public final class GTRecipeConditions {
             GAMESTAGE = GTRegistries.RECIPE_CONDITIONS
                     .register("game_stage",
                             new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+        }
+
+        if (GTCEu.Mods.isHeraclesLoaded()) {
+            HERACLES_QUEST = GTRegistries.RECIPE_CONDITIONS
+                    .register("heracles_quest",
+                            new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
         }
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,

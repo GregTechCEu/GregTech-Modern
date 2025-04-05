@@ -385,6 +385,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
         if (playerIn.isShiftKeyDown()) {
