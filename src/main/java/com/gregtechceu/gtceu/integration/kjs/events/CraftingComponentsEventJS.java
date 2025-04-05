@@ -6,55 +6,123 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.kubejs.event.StartupEventJS;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
+import dev.latvian.mods.kubejs.util.UtilsJS;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({ "unused" })
 @NoArgsConstructor
-public class CraftingComponentsEventJS extends EventJS {
+public class CraftingComponentsEventJS extends StartupEventJS {
 
-    public void modify(CraftingComponent craftingComponent, int tier, Object value) {
-        craftingComponent.add(tier, value);
+    private CraftingComponent context = null;
+
+    // Context setting methods
+    private CraftingComponentsEventJS create(String id, Object fallback) {
+        context = CraftingComponent.of(id, fallback);
+        return this;
     }
 
-    public void modify(CraftingComponent craftingComponent, Map<Number, Object> map) {
+    public CraftingComponentsEventJS createItem(String id, ItemStack stack) {
+        return create(id, stack);
+    }
+
+    public CraftingComponentsEventJS createTag(String id, ResourceLocation tag) {
+        return create(id, TagKey.create(Registries.ITEM, tag));
+    }
+
+    public CraftingComponentsEventJS createMaterialEntry(String id, MaterialEntry entry) {
+        return create(id, entry);
+    }
+
+    public CraftingComponentsEventJS set(CraftingComponent craftingComponent, int tier, Object value) {
+        context = craftingComponent;
+        context.add(tier, value);
+        return this;
+    }
+
+    public CraftingComponentsEventJS setItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
+        return set(craftingComponent, tier, item);
+    }
+
+    public CraftingComponentsEventJS setTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
+        return set(craftingComponent, tier, TagKey.create(Registries.ITEM, tag));
+    }
+
+    public CraftingComponentsEventJS setMaterialEntry(CraftingComponent craftingComponent, int tier,
+                                                      MaterialEntry matEntry) {
+        return set(craftingComponent, tier, matEntry);
+    }
+
+    // Context-chaining methods
+    public CraftingComponentsEventJS set(int tier, Object value) {
+        if (context == null) return this;
+        context.add(tier, value);
+        return this;
+    }
+
+    public CraftingComponentsEventJS setItem(int tier, ItemStack stack) {
+        return set(tier, stack);
+    }
+
+    public CraftingComponentsEventJS setTag(int tier, ResourceLocation tag) {
+        return set(tier, TagKey.create(Registries.ITEM, tag));
+    }
+
+    public CraftingComponentsEventJS setMaterialEntry(int tier, MaterialEntry entry) {
+        return set(tier, entry);
+    }
+
+    // Other utility methods
+    public void modify(CraftingComponent craftingComponent, Map<Integer, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            parseModify(craftingComponent, val.getKey(), val.getValue());
         }
     }
 
-    public void modifyItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
-        craftingComponent.add(tier, item);
+    private static void parseModify(CraftingComponent component, int tier, Object o) {
+        Object obj = ItemStackJS.of(o);
+        if (obj == null || ((ItemStack) obj).isEmpty()) {
+            obj = UtilsJS.getMCID(null, o);
+            if (obj != null) obj = TagKey.create(Registries.ITEM, (ResourceLocation) obj);
+        }
+        if (obj == null) obj = MaterialEntry.of(o);
+        if (obj == null)
+            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
+        component.add(tier, obj);
     }
 
-    public void modifyItem(CraftingComponent craftingComponent, Map<Number, ItemStack> map) {
+    public void modifyItems(CraftingComponent craftingComponent, Map<Integer, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            ItemStack stack = ItemStackJS.of(val.getValue());
+            if (stack.isEmpty()) throw new IllegalArgumentException("Invalid ItemStack passed to modifyItems");
+            craftingComponent.add(val.getKey(), stack);
         }
     }
 
-    public void modifyTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
-        craftingComponent.add(tier, TagKey.create(Registries.ITEM, tag));
-    }
-
-    public void modifyTag(CraftingComponent craftingComponent, Map<Number, ResourceLocation> map) {
+    public void modifyTags(CraftingComponent craftingComponent, Map<Integer, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
+            ResourceLocation rl = UtilsJS.getMCID(null, val.getValue());
+            TagKey<Item> tagKey = null;
+            if (rl != null) {
+                tagKey = TagKey.create(Registries.ITEM, rl);
+            }
+            if (tagKey == null) throw new IllegalArgumentException("Invalid TagKey passed to modifyTags");
+            craftingComponent.add(val.getKey(), tagKey);
         }
     }
 
-    public void modifyMaterialEntry(CraftingComponent craftingComponent, int tier, MaterialEntry item) {
-        craftingComponent.add(tier, item);
-    }
-
-    public void modifyMaterialEntry(CraftingComponent craftingComponent, Map<Number, MaterialEntry> map) {
+    public void modifyMaterialEntries(CraftingComponent craftingComponent, Map<Integer, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            MaterialEntry entry = MaterialEntry.of(val.getValue());
+            if (entry == null)
+                throw new IllegalArgumentException("Invalid MaterialEntry passed to modifyMaterialEntries");
+            craftingComponent.add(val.getKey(), entry);
         }
     }
 
@@ -74,45 +142,9 @@ public class CraftingComponentsEventJS extends EventJS {
         craftingComponent.remove(tier);
     }
 
-    public void removeTiers(CraftingComponent craftingComponent, List<Number> tiers) {
-        for (var tier : tiers) {
-            craftingComponent.remove(tier.intValue());
+    public void removeTiers(CraftingComponent craftingComponent, int[] tiers) {
+        for (int t : tiers) {
+            craftingComponent.remove(t);
         }
-    }
-
-    public CraftingComponent create(String id, Object fallback) {
-        return CraftingComponent.of(id, fallback);
-    }
-
-    public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
-        }
-        return m;
-    }
-
-    public CraftingComponent createItem(String id, Object fallback, Map<Number, ItemStack> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
-        }
-        return m;
-    }
-
-    public CraftingComponent createTag(String id, Object fallback, Map<Number, ResourceLocation> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
-        }
-        return m;
-    }
-
-    public CraftingComponent createMaterialEntry(String id, Object fallback, Map<Number, MaterialEntry> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
-        }
-        return m;
     }
 }

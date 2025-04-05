@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
 
@@ -28,5 +29,16 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
             return tagPrefix.name + "/" + material.getName();
         }
         return tags[0].location().toString();
+    }
+
+    public static @Nullable MaterialEntry of(Object o) {
+        if (o instanceof MaterialEntry entry) return entry;
+        if (o instanceof CharSequence chars) {
+            var values = chars.toString().split(":");
+            if (values.length >= 2) {
+                return new MaterialEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
+            }
+        }
+        return null;
     }
 }

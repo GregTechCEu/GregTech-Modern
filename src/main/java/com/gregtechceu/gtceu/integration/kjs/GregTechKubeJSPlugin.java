@@ -347,16 +347,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
             return null;
         });
-        typeWrappers.registerSimple(MaterialEntry.class, o -> {
-            if (o instanceof MaterialEntry entry) return entry;
-            if (o instanceof CharSequence chars) {
-                var values = chars.toString().split(":");
-                if (values.length >= 2) {
-                    return new MaterialEntry(TagPrefix.get(values[0]), GTMaterials.get(values[1]));
-                }
-            }
-            return null;
-        });
+        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());

@@ -181,8 +181,6 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
-
-        GTCraftingComponents.init();
     }
 
     private static void initMaterials() {
@@ -240,6 +238,7 @@ public class CommonProxy {
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
+            GTCraftingComponents.init();
         });
     }
 
