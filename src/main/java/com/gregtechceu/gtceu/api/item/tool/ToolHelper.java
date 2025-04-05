@@ -66,7 +66,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,7 +127,6 @@ public class ToolHelper {
     public static final String RELOCATE_MOB_DROPS_KEY = "RelocateMobDrops";
 
     // Crafting Symbols
-    @Getter
     private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
 
     private ToolHelper() {/**/}
