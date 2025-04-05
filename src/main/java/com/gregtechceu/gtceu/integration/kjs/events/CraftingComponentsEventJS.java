@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
-import dev.latvian.mods.kubejs.event.StartupEventJS;
+import dev.latvian.mods.kubejs.event.EventJS;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @SuppressWarnings({ "unused" })
 @NoArgsConstructor
-public class CraftingComponentsEventJS extends StartupEventJS {
+public class CraftingComponentsEventJS extends EventJS {
 
     public void modify(CraftingComponent craftingComponent, int tier, Object value) {
         craftingComponent.add(tier, value);
