@@ -77,11 +77,11 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
             return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"),
                     () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(name)), null, null);
         }
-        if(channels == 9) {
+        if (channels == 9) {
             return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_non_side"),
                     () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
                     null, null);
-        } else if(channels == 4) {
+        } else if (channels == 4) {
             return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_quad_side"),
                     () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
                     null, null);
