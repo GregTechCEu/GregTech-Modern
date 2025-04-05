@@ -41,6 +41,7 @@ import net.minecraft.world.item.crafting.Recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -249,7 +250,7 @@ public interface GTRecipeSchema {
                             .add(new MaterialStack(matStack.material(), matStack.amount() * itemStack.getCount()));
                 }
                 if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("Input items is empty, id: %s", id);
+                    throw new RecipeExceptionJS(String.format("Input items is empty, id: %s", id));
                 }
             }
             return input(ItemRecipeCapability.CAP,
@@ -835,6 +836,35 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS heraclesQuest(String questId) {
             return heraclesQuest(questId, false);
+        }
+
+        public GTRecipeJS gameStage(String stageName) {
+            return gameStage(stageName, false);
+        }
+
+        public GTRecipeJS gameStage(String stageName, boolean isReverse) {
+            if (!GTCEu.Mods.isGameStagesLoaded()) {
+                throw new RecipeExceptionJS("GameStages is not loaded, ignoring recipe condition");
+            }
+            return addCondition(new GameStageCondition(isReverse, stageName));
+        }
+
+        public GTRecipeJS ftbQuest(String questId, boolean isReverse) {
+            if (!GTCEu.Mods.isFTBQuestsLoaded()) {
+                throw new RecipeExceptionJS("FTBQuests is not loaded!");
+            }
+            if (questId.isEmpty()) {
+                throw new RecipeExceptionJS(String.format("Quest ID cannot be empty for recipe %s", this.id));
+            }
+            long qID = QuestObjectBase.parseCodeString(questId);
+            if (qID == 0L) {
+                throw new RecipeExceptionJS(String.format("Quest %s not found for recipe %s", questId, this.id));
+            }
+            return addCondition(new FTBQuestCondition(isReverse, qID));
+        }
+
+        public GTRecipeJS ftbQuest(String questId) {
+            return ftbQuest(questId, false);
         }
 
         private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {

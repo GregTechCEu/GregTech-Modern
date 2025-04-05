@@ -73,11 +73,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
     /**
-     * Whether this multi can be rotated or face upwards.
-     */
-    @Setter
-    private boolean allowExtendedFacing = true;
-    /**
      * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
      */
     @Setter
@@ -98,6 +93,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
+        allowExtendedFacing(true);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name,
@@ -384,6 +380,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
+        return (MultiblockMachineBuilder) super.allowExtendedFacing(allowExtendedFacing);
+    }
+
+    @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         if (langValue() != null) {
@@ -402,7 +403,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         definition.setPatternFactory(SupplierMemoizer.memoize(() -> pattern.apply(definition)));
         definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
                 .flatMap(Collection::stream).toList());
-        definition.setAllowExtendedFacing(allowExtendedFacing);
         definition.setAllowFlip(allowFlip);
         if (!recoveryItems.isEmpty()) {
             definition.setRecoveryItems(

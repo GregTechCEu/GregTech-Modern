@@ -189,8 +189,16 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_HERACLES);
         }
 
+        public static boolean isFTBQuestsLoaded() {
+            return isModLoaded(GTValues.MODID_FTB_QUEST);
+        }
+
         public static boolean isArgonautsLoaded() {
             return isModLoaded(GTValues.MODID_ARGONAUTS);
+        }
+
+        public static boolean isGameStagesLoaded() {
+            return isModLoaded(GTValues.MODID_GAMESTAGES);
         }
     }
 }
