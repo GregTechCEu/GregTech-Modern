@@ -17,13 +17,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.math.Transformation;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -34,8 +34,8 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     protected Map<String, ResourceLocation> override;
     @Nullable
     protected Supplier<Map<String, ResourceLocation>> overrideSupplier;
-    protected Transformation transformation = null;
-    protected BakedModel cachedModel = null;
+    @OnlyIn(Dist.CLIENT)
+    protected Map<ModelState, BakedModel> bakedModelCache;
 
     public TextureOverrideRenderer(ResourceLocation model, @NotNull Map<String, ResourceLocation> override) {
         super(model);
@@ -63,6 +63,14 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         }
     }
 
+    @Override
+    public void initRenderer() {
+        if (GTCEu.isClientSide()) {
+            this.bakedModelCache = new ConcurrentHashMap<>();
+        }
+        super.initRenderer();
+    }
+
     public void setTextureOverride(Map<String, ResourceLocation> override) {
         this.override = override;
     }
@@ -86,6 +94,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     }
 
     @SuppressWarnings("removal")
+    @Override
     @OnlyIn(Dist.CLIENT)
     public BakedModel getRotatedModel(Direction frontFacing) {
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
@@ -96,13 +105,12 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public BakedModel getRotatedModel(ModelState rotation) {
-        if (transformation == null || !transformation.equals(rotation.getRotation())) {
-            cachedModel = getModel()
-                    .bake(ModelFactory.getModeBaker(), new SpriteOverrider(override), rotation, modelLocation);
-            transformation = rotation.getRotation();
-        }
-        return cachedModel;
+    public BakedModel getRotatedModel(ModelState modelState) {
+        return bakedModelCache.computeIfAbsent(modelState, state -> getModel().bake(
+                ModelFactory.getModeBaker(),
+                new SpriteOverrider(override),
+                modelState,
+                modelLocation));
     }
 
     @SuppressWarnings("deprecation")
@@ -111,8 +119,9 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
-            transformation = null;
-            cachedModel = null;
+            if (bakedModelCache != null) {
+                bakedModelCache.clear();
+            }
             if (overrideSupplier != null) override = overrideSupplier.get();
             for (ResourceLocation value : override.values()) {
                 register.accept(value);
@@ -124,8 +133,9 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     public void updateModelWithoutReloadingResource(ResourceLocation modelLocation) {
         super.updateModelWithoutReloadingResource(modelLocation);
         if (LDLib.isClient()) {
-            transformation = null;
-            cachedModel = null;
+            if (bakedModelCache != null) {
+                bakedModelCache.clear();
+            }
         }
     }
 }
