@@ -61,6 +61,6 @@ public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer
     }
 
     public float overlayQuadsOffset() {
-        return 0.004f;
+        return 0.002f;
     }
 }
