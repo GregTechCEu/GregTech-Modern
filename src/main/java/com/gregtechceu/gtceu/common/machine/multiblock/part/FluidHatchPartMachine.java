@@ -175,18 +175,21 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
+        updateTankSubscription(newFacing);
+    }
+
+    protected void updateTankSubscription() {
         if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing())) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
             autoIOSubs = null;
         }
     }
-
-    protected void updateTankSubscription() {
+    protected void updateTankSubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing())) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
