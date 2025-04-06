@@ -190,6 +190,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             autoIOSubs = null;
         }
     }
+
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
                 GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
