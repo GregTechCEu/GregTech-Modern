@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
@@ -60,69 +61,59 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     // Context-chaining methods
-    public CraftingComponentsEventJS set(int tier, Object value) {
+    public CraftingComponentsEventJS andSet(int tier, Object value) {
         if (context == null) return this;
         context.add(tier, value);
         return this;
     }
 
-    public CraftingComponentsEventJS setItem(int tier, ItemStack stack) {
-        return set(tier, stack);
+    public CraftingComponentsEventJS andSetItem(int tier, ItemStack stack) {
+        return andSet(tier, stack);
     }
 
-    public CraftingComponentsEventJS setTag(int tier, ResourceLocation tag) {
-        return set(tier, TagKey.create(Registries.ITEM, tag));
+    public CraftingComponentsEventJS andSetTag(int tier, ResourceLocation tag) {
+        return andSet(tier, TagKey.create(Registries.ITEM, tag));
     }
 
-    public CraftingComponentsEventJS setMaterialEntry(int tier, MaterialEntry entry) {
-        return set(tier, entry);
+    public CraftingComponentsEventJS andSetMaterialEntry(int tier, MaterialEntry entry) {
+        return andSet(tier, entry);
     }
 
     // Other utility methods
-    public void modify(CraftingComponent craftingComponent, Map<Integer, Object> map) {
+    public void set(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            parseModify(craftingComponent, val.getKey(), val.getValue());
+            Object obj = parseObject(val.getValue());
+            craftingComponent.add(parseTier(val.getKey()), obj);
         }
     }
 
-    private static void parseModify(CraftingComponent component, int tier, Object o) {
-        Object obj = ItemStackJS.of(o);
-        if (obj == null || ((ItemStack) obj).isEmpty()) {
-            obj = UtilsJS.getMCID(null, o);
-            if (obj != null) obj = TagKey.create(Registries.ITEM, (ResourceLocation) obj);
-        }
-        if (obj == null) obj = MaterialEntry.of(o);
-        if (obj == null)
-            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
-        component.add(tier, obj);
-    }
-
-    public void modifyItems(CraftingComponent craftingComponent, Map<Integer, Object> map) {
+    public void setItems(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            ItemStack stack = ItemStackJS.of(val.getValue());
-            if (stack.isEmpty()) throw new IllegalArgumentException("Invalid ItemStack passed to modifyItems");
-            craftingComponent.add(val.getKey(), stack);
-        }
-    }
-
-    public void modifyTags(CraftingComponent craftingComponent, Map<Integer, Object> map) {
-        for (var val : map.entrySet()) {
-            ResourceLocation rl = UtilsJS.getMCID(null, val.getValue());
-            TagKey<Item> tagKey = null;
-            if (rl != null) {
-                tagKey = TagKey.create(Registries.ITEM, rl);
+            ItemStack stack = parseItemStack(val.getValue());
+            if (stack == null) {
+                throw new IllegalArgumentException("Invalid ItemStack passed to modifyItems");
             }
-            if (tagKey == null) throw new IllegalArgumentException("Invalid TagKey passed to modifyTags");
-            craftingComponent.add(val.getKey(), tagKey);
+            craftingComponent.add(parseTier(val.getKey()), stack);
         }
     }
 
-    public void modifyMaterialEntries(CraftingComponent craftingComponent, Map<Integer, Object> map) {
+    public void setTags(CraftingComponent craftingComponent, Map<Object, Object> map) {
+        for (var val : map.entrySet()) {
+            TagKey<Item> tagKey = parseTag(val.getValue());
+            if (tagKey == null) {
+                throw new IllegalArgumentException("Invalid TagKey passed to modifyTags");
+            }
+            craftingComponent.add(parseTier(val.getKey()), tagKey);
+        }
+    }
+
+    public void setMaterialEntries(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
             MaterialEntry entry = MaterialEntry.of(val.getValue());
-            if (entry == null)
+            if (entry == null) {
                 throw new IllegalArgumentException("Invalid MaterialEntry passed to modifyMaterialEntries");
-            craftingComponent.add(val.getKey(), entry);
+            }
+            craftingComponent.add(parseTier(val.getKey()), entry);
         }
     }
 
@@ -142,9 +133,52 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         craftingComponent.remove(tier);
     }
 
-    public void removeTiers(CraftingComponent craftingComponent, int[] tiers) {
+    public void removeTiers(CraftingComponent craftingComponent, int... tiers) {
         for (int t : tiers) {
             craftingComponent.remove(t);
         }
+    }
+
+    private static ItemStack parseItemStack(Object o) {
+        ItemStack stack = ItemStackJS.of(o);
+        if (stack == null || stack.isEmpty()) return null;
+        return stack;
+    }
+
+    private static TagKey<Item> parseTag(Object o) {
+        ResourceLocation rl = UtilsJS.getMCID(null, o);
+        if (rl != null) return TagKey.create(Registries.ITEM, rl);
+        return null;
+    }
+
+    private static Object parseObject(Object o) {
+        Object obj = parseItemStack(o);
+        if (obj == null) obj = parseTag(o);
+        if (obj == null) obj = MaterialEntry.of(o);
+        if (obj == null) {
+            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
+        }
+        return obj;
+    }
+
+    private static int parseTier(Object o) {
+        RuntimeException err = new IllegalArgumentException(o + " is not a valid tier!");
+        if (o instanceof CharSequence cs) {
+            String str = cs.toString();
+            try {
+                int tier = Integer.parseUnsignedInt(str);
+                if (tier < 0 || tier >= GTValues.TIER_COUNT) throw err;
+                else return tier;
+            } catch (NumberFormatException ignored) {}
+            int rvn = GTValues.RVN.getInt(str);
+            if (rvn == -1) throw err;
+            else return rvn;
+        } else if (o instanceof Number number) {
+            int tier = number.intValue();
+            if (tier < 0 || tier >= GTValues.TIER_COUNT) throw err;
+            else return tier;
+        }
+
+        throw err;
     }
 }
