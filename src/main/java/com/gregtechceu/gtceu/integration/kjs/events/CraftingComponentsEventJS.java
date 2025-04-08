@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.item.ItemStackJS;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import lombok.NoArgsConstructor;
 
@@ -41,7 +42,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return create(id, entry);
     }
 
-    public CraftingComponentsEventJS set(CraftingComponent craftingComponent, int tier, Object value) {
+    private CraftingComponentsEventJS set(CraftingComponent craftingComponent, int tier, Object value) {
         context = craftingComponent;
         context.add(tier, value);
         return this;
@@ -61,7 +62,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     }
 
     // Context-chaining methods
-    public CraftingComponentsEventJS andSet(int tier, Object value) {
+    private CraftingComponentsEventJS andSet(int tier, Object value) {
         if (context == null) return this;
         context.add(tier, value);
         return this;
@@ -82,38 +83,50 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     // Other utility methods
     public void set(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
             Object obj = parseObject(val.getValue());
-            craftingComponent.add(parseTier(val.getKey()), obj);
+            if (obj == null) return;
+            craftingComponent.add(tier, obj);
         }
     }
 
     public void setItems(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
             ItemStack stack = parseItemStack(val.getValue());
             if (stack == null) {
-                throw new IllegalArgumentException("Invalid ItemStack passed to modifyItems");
+                ConsoleJS.STARTUP.errorf("Invalid ItemStack %s passed to modifyItems!", val.getValue());
+                return;
             }
-            craftingComponent.add(parseTier(val.getKey()), stack);
+            craftingComponent.add(tier, stack);
         }
     }
 
     public void setTags(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
             TagKey<Item> tagKey = parseTag(val.getValue());
             if (tagKey == null) {
-                throw new IllegalArgumentException("Invalid TagKey passed to modifyTags");
+                ConsoleJS.STARTUP.error("Invalid TagKey passed to modifyTags");
+                return;
             }
-            craftingComponent.add(parseTier(val.getKey()), tagKey);
+            craftingComponent.add(tier, tagKey);
         }
     }
 
     public void setMaterialEntries(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
             MaterialEntry entry = MaterialEntry.of(val.getValue());
             if (entry == null) {
-                throw new IllegalArgumentException("Invalid MaterialEntry passed to modifyMaterialEntries");
+                ConsoleJS.STARTUP.error("Invalid MaterialEntry passed to modifyMaterialEntries");
+                return;
             }
-            craftingComponent.add(parseTier(val.getKey()), entry);
+            craftingComponent.add(tier, entry);
         }
     }
 
@@ -156,29 +169,27 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         if (obj == null) obj = parseTag(o);
         if (obj == null) obj = MaterialEntry.of(o);
         if (obj == null) {
-            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
+            ConsoleJS.STARTUP.errorf("%s is not of type ItemStack, MaterialEntry or TagKey<Item>", o);
         }
         return obj;
     }
 
     private static int parseTier(Object o) {
-        RuntimeException err = new IllegalArgumentException(o + " is not a valid tier!");
+        int ret = -1;
         if (o instanceof CharSequence cs) {
             String str = cs.toString();
             try {
                 int tier = Integer.parseUnsignedInt(str);
-                if (tier < 0 || tier >= GTValues.TIER_COUNT) throw err;
-                else return tier;
-            } catch (NumberFormatException ignored) {}
-            int rvn = GTValues.RVN.getInt(str);
-            if (rvn == -1) throw err;
-            else return rvn;
+                if (tier >= 0 && tier < GTValues.TIER_COUNT) ret = tier;
+            } catch (NumberFormatException ignored) {
+                ret = GTValues.RVN.getInt(str);
+            }
         } else if (o instanceof Number number) {
             int tier = number.intValue();
-            if (tier < 0 || tier >= GTValues.TIER_COUNT) throw err;
-            else return tier;
+            if (tier >= 0 && tier < GTValues.TIER_COUNT) ret = tier;
         }
 
-        throw err;
+        if (ret == -1) ConsoleJS.STARTUP.errorf("%s is not a valid tier!", o);
+        return ret;
     }
 }
