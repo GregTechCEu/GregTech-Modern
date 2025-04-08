@@ -47,17 +47,18 @@ import static net.minecraft.commands.Commands.*;
  */
 public class GTCommands {
 
+    // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .requires(source -> source.hasPermission(3))
+                        .requires(ctx -> ctx.hasPermission(3))
                         .then(literal("ui_editor")
                                 .executes(context -> {
-                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE,
-                                            context.getSource().getPlayerOrException());
+                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
                                     return 1;
                                 }))
                         .then(literal("dump_data")
+                                .requires(ctx -> ctx.hasPermission(4))
                                 .then(literal("bedrock_fluid_veins")
                                         .executes(context -> dumpDataRegistry(context,
                                                 GTRegistries.BEDROCK_FLUID_DEFINITIONS,
@@ -74,14 +75,16 @@ public class GTCommands {
                                                 GTOreDefinition.FULL_CODEC,
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
-                                .then(argument("vein",
-                                        GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
-                                        .executes(context -> GTCommands.placeVein(context,
-                                                BlockPos.containing(context.getSource().getPosition())))
+                                .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
+                                        .executes(context -> {
+                                            return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));
+                                        })
                                         .then(argument("position", BlockPosArgument.blockPos())
-                                                .executes(context -> GTCommands.placeVein(context,
-                                                        BlockPosArgument.getBlockPos(context, "position")))))));
+                                                .executes(context -> {
+                                                    return GTCommands.placeVein(context, BlockPosArgument.getBlockPos(context, "position"));
+                                                })))));
     }
+    // spotless:on
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
                                             GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {

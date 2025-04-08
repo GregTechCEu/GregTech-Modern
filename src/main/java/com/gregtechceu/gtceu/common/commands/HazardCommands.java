@@ -23,6 +23,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class HazardCommands {
 
+    // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("environmental_hazard")
@@ -31,19 +32,12 @@ public class HazardCommands {
                                 .then(argument("can_spread", BoolArgumentType.bool())
                                         .then(argument("source", BlockPosArgument.blockPos())
                                                 .then(literal("chunk")
-                                                        .then(Commands
-                                                                .argument("strength",
-                                                                        IntegerArgumentType.integer(1))
-                                                                .executes(
-                                                                        HazardCommands::spawnChunkEnvironmentalHazard)))
+                                                        .then(Commands.argument("strength", IntegerArgumentType.integer(1))
+                                                                .executes(HazardCommands::spawnChunkEnvironmentalHazard)))
                                                 .then(literal("local")
-                                                        .then(Commands
-                                                                .argument("from", BlockPosArgument.blockPos())
-                                                                .then(Commands
-                                                                        .argument("to",
-                                                                                BlockPosArgument.blockPos())
-                                                                        .executes(
-                                                                                HazardCommands::spawnLocalEnvironmentalHazard)))))))
+                                                        .then(Commands.argument("from", BlockPosArgument.blockPos())
+                                                                .then(Commands.argument("to", BlockPosArgument.blockPos())
+                                                                        .executes(HazardCommands::spawnLocalEnvironmentalHazard)))))))
                         .then(literal("clear")
                                 .then(argument("source", BlockPosArgument.blockPos())
                                         .executes(context -> {
@@ -52,13 +46,12 @@ public class HazardCommands {
                                         })
                                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                                 .executes(context -> {
-                                                    BlockPos source = BlockPosArgument.getBlockPos(context,
-                                                            "source");
-                                                    MedicalCondition condition = MedicalConditionArgument
-                                                            .getCondition(context, "condition");
+                                                    BlockPos source = BlockPosArgument.getBlockPos(context, "source");
+                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
                                                     return clearEnvironmentalHazard(context, source, condition);
                                                 })))));
     }
+    // spotless:on
 
     private static int spawnChunkEnvironmentalHazard(CommandContext<CommandSourceStack> context) {
         ServerLevel serverLevel = context.getSource().getLevel();
