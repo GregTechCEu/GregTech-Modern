@@ -352,7 +352,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void serverStarting(ServerStartingEvent event) {
-        WorldIDSaveData.init(event.getServer().overworld());
+        ServerLevel mainLevel = event.getServer().overworld();
+        WorldIDSaveData.init(mainLevel);
+        CapeRegistry.registerToServer(mainLevel);
     }
 
     @SubscribeEvent
@@ -372,7 +374,8 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+        Player player = event.getEntity();
+        if (player instanceof ServerPlayer serverPlayer) {
             GTNetwork.NETWORK.sendToPlayer(new SPacketSendWorldID(), serverPlayer);
 
             if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards)
@@ -382,6 +385,8 @@ public class ForgeCommonEventListener {
             var data = EnvironmentalHazardSavedData.getOrCreate(level);
             GTNetwork.NETWORK.sendToPlayer(new SPacketSyncLevelHazards(data.getHazardZones()), serverPlayer);
         }
+        CapeRegistry.detectNewCapes(player);
+        CapeRegistry.loadCurrentCapesOnLogin(player);
     }
 
     @SubscribeEvent
