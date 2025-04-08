@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -1266,7 +1266,7 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public void setIgnoredBlock(Material material, Block... items) {
-        this.setIgnored(material, Arrays.stream(items).map(block -> SupplierMemoizer.memoizeBlockSupplier(() -> block))
+        this.setIgnored(material, Arrays.stream(items).map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
                 .toArray(Supplier[]::new));
     }
 

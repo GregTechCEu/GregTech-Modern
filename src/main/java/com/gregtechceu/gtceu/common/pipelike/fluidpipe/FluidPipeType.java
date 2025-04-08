@@ -19,10 +19,10 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
     TINY("tiny", 0.25f, 1, pipeTinyFluid),
     SMALL("small", 0.375f, 2, pipeSmallFluid),
     NORMAL("normal", 0.5f, 6, pipeNormalFluid),
-    LARGE("large", 0.75f, 12, pipeLargeFluid),
-    HUGE("huge", 0.875f, 24, pipeHugeFluid),
-    QUADRUPLE("quadruple", 0.95f, 2, pipeQuadrupleFluid, 4),
-    NONUPLE("nonuple", 0.95f, 2, pipeNonupleFluid, 9);
+    LARGE("large", 0.625f, 12, pipeLargeFluid),
+    HUGE("huge", 0.75f, 24, pipeHugeFluid),
+    QUADRUPLE("quadruple", 0.875f, 2, pipeQuadrupleFluid, 4),
+    NONUPLE("nonuple", 0.875f, 2, pipeNonupleFluid, 9);
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("fluid");
 
@@ -76,6 +76,15 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         if (material.hasProperty(PropertyKey.WOOD)) {
             return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"),
                     () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(name)), null, null);
+        }
+        if (channels == 9) {
+            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_non_side"),
+                    () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
+                    null, null);
+        } else if (channels == 4) {
+            return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_quad_side"),
+                    () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
+                    null, null);
         }
         return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"),
                 () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(name)),
