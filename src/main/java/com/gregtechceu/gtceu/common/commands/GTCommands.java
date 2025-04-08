@@ -72,8 +72,8 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .requires(ctx -> ctx.hasPermission(3))
                         .then(literal("ui_editor")
+                                .requires(ctx -> ctx.hasPermission(3))
                                 .executes(context -> {
                                     GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
                                     return 1;
@@ -96,6 +96,7 @@ public class GTCommands {
                                                 GTOreDefinition.FULL_CODEC,
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
+                                .requires(ctx -> ctx.hasPermission(3))
                                 .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
                                         .executes(context -> {
                                             return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));

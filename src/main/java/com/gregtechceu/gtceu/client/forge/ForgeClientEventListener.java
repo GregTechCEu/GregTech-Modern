@@ -55,8 +55,8 @@ public class ForgeClientEventListener {
     public static void onPlayerRender(RenderPlayerEvent.Pre event) {
         Player player = event.getEntity();
         AbstractClientPlayerAccessor clientPlayer = (AbstractClientPlayerAccessor) player;
-        if (clientPlayer.getPlayerInfo() != null) {
-            PlayerInfoAccessor playerInfo = ((PlayerInfoAccessor) clientPlayer.getPlayerInfo());
+        if (clientPlayer.gtceu$getPlayerInfo() != null) {
+            PlayerInfoAccessor playerInfo = ((PlayerInfoAccessor) clientPlayer.gtceu$getPlayerInfo());
             Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = playerInfo.getTextureLocations();
 
             UUID uuid = player.getUUID();

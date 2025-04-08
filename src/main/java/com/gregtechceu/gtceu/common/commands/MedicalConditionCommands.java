@@ -44,7 +44,7 @@ public class MedicalConditionCommands {
                                             return queryMedicalConditions(EntityArgument.getPlayer(context, "target"));
                                         })))
                         .then(literal("clear")
-                                .requires(ctx -> ctx.hasPermission(2))
+                                .requires(ctx -> ctx.hasPermission(3))
                                 .executes(ctx -> {
                                     return clearMedicalConditions(
                                             Collections.singleton(ctx.getSource().getPlayerOrException()), null);

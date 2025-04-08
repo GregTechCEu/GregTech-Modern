@@ -10,5 +10,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface AbstractClientPlayerAccessor {
 
     @Invoker("getPlayerInfo")
-    PlayerInfo getPlayerInfo();
+    PlayerInfo gtceu$getPlayerInfo();
 }

@@ -27,7 +27,7 @@ public class HazardCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("environmental_hazard")
-                        .requires(source -> source.hasPermission(2))
+                        .requires(source -> source.hasPermission(3))
                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                 .then(argument("can_spread", BoolArgumentType.bool())
                                         .then(argument("source", BlockPosArgument.blockPos())
