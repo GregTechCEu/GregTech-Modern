@@ -69,8 +69,8 @@ public class MachineRenderer extends TextureOverrideRenderer
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
-                                    @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+                                             @NotNull ModelData modelData, @Nullable RenderType renderType) {
         BlockAndTintGetter level = modelData.get(LEVEL);
         BlockPos pos = modelData.get(POS);
 

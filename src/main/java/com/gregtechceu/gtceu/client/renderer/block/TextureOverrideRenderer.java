@@ -5,22 +5,33 @@ import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
+import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.math.Transformation;
 import lombok.Getter;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static com.ibm.icu.impl.CurrencyData.provider;
 
 @Getter
 public abstract class TextureOverrideRenderer extends BaseBakedModel {
@@ -28,6 +39,10 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
     protected ResourceLocation modelLocation;
     @Nullable
     private BakedModel baseModel;
+
+    @OnlyIn(Dist.CLIENT)
+    protected Map<ModelState, BakedModel> modelCaches;
+
     @NotNull
     protected Map<String, ResourceLocation> override;
     @Nullable
@@ -72,6 +87,51 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
         return override;
     }
 
+    public UnbakedModel getModel() {
+        return Minecraft.getInstance().getModelManager().getModelBakery().getModel(modelLocation);
+    }
+
+    @Override
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+                                             @NotNull ModelData extraData, @Nullable RenderType renderType) {
+        return super.getQuads(state, side, rand);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    protected BakedModel getBlockBakedModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state) {
+        var modelState = provider.getModelState(level, pos, state);
+        if (modelState != null) {
+            return modelCaches.computeIfAbsent(modelState, ms -> getModel().bake(
+                    ModelFactory.getModelBaker(),
+                    this::materialMapping,
+                    ms));
+        }
+        return modelCaches.computeIfAbsent(BlockModelRotation.X0_Y0, ms -> getModel().bake(
+                ModelFactory.getModelBaker(),
+                this::materialMapping,
+                ms));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public BakedModel getRotatedModel(Direction frontFacing) {
+        return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
+                ModelFactory.getModeBaker(),
+                new SpriteOverrider(override),
+                ModelFactory.getRotation(facing),
+                modelLocation));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public BakedModel getRotatedModel(ModelState rotation) {
+        if (transformation == null || !transformation.equals(rotation.getRotation())) {
+            cachedModel = getModel()
+                    .bake(ModelFactory.getModeBaker(), new SpriteOverrider(override), rotation, modelLocation);
+            transformation = rotation.getRotation();
+        }
+        return cachedModel;
+    }
+
     public BakedModel getBaseModel() {
         if (this.baseModel == null) {
             this.baseModel = ModelFactory.getModeBakery()
@@ -84,7 +144,6 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
         return this.baseModel;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onAdditionalModel(Consumer<ResourceLocation> consumer) {
         super.onAdditionalModel(consumer);
