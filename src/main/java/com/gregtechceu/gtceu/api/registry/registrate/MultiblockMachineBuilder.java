@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
@@ -400,7 +400,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         if (pattern == null) {
             throw new IllegalStateException("missing pattern while creating multiblock " + name);
         }
-        definition.setPatternFactory(SupplierMemoizer.memoize(() -> pattern.apply(definition)));
+        definition.setPatternFactory(GTMemoizer.memoize(() -> pattern.apply(definition)));
         definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
                 .flatMap(Collection::stream).toList());
         definition.setAllowFlip(allowFlip);
