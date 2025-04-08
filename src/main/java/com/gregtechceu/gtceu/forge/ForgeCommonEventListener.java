@@ -218,7 +218,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void attachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
+    public static void registerBlockEntityCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
         event.addCapability(GTCEu.id("fe_capability"), new EUToFEProvider(event.getObject()));
     }
 
