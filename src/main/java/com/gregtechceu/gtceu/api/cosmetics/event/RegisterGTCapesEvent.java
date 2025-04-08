@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.cosmetics.event;
 
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.UUID;
@@ -36,8 +38,6 @@ public class RegisterGTCapesEvent extends Event {
      *
      * @param id      An identifier for giving the cape with commands etc.
      * @param texture A ResourceLocation pointing to the cape texture.
-     *
-     * @deprecated use the {@link com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent} event.
      */
     public void registerFreeCape(ResourceLocation id, ResourceLocation texture) {
         CapeRegistry.registerFreeCape(id, texture);

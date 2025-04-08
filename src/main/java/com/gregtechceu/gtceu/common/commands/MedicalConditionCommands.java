@@ -46,16 +46,20 @@ public class MedicalConditionCommands {
                         .then(literal("clear")
                                 .requires(ctx -> ctx.hasPermission(2))
                                 .executes(ctx -> {
-                                    return clearMedicalConditions(Collections.singleton(ctx.getSource().getPlayerOrException()), null);
+                                    return clearMedicalConditions(
+                                            Collections.singleton(ctx.getSource().getPlayerOrException()), null);
                                 })
                                 .then(argument("targets", EntityArgument.players())
                                         .executes(ctx -> {
-                                            return clearMedicalConditions(EntityArgument.getPlayers(ctx, "targets"), null);
+                                            return clearMedicalConditions(EntityArgument.getPlayers(ctx, "targets"),
+                                                    null);
                                         })
                                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                                 .executes(ctx -> {
-                                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "targets");
-                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
+                                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx,
+                                                            "targets");
+                                                    MedicalCondition condition = MedicalConditionArgument
+                                                            .getCondition(ctx, "condition");
                                                     return clearMedicalConditions(targets, condition);
                                                 }))))
                         .then(literal("apply")
@@ -63,14 +67,20 @@ public class MedicalConditionCommands {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                                 .executes(ctx -> {
-                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
-                                                    Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
+                                                    MedicalCondition condition = MedicalConditionArgument
+                                                            .getCondition(ctx, "condition");
+                                                    Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx,
+                                                            "targets");
                                                     return applyMedicalConditions(players, condition, 1);
-                                                }).then(argument("progression_multiplier", FloatArgumentType.floatArg(0))
+                                                })
+                                                .then(argument("progression_multiplier", FloatArgumentType.floatArg(0))
                                                         .executes(ctx -> {
-                                                            MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
-                                                            Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
-                                                            float strength = FloatArgumentType.getFloat(ctx, "progression_multiplier");
+                                                            MedicalCondition condition = MedicalConditionArgument
+                                                                    .getCondition(ctx, "condition");
+                                                            Collection<ServerPlayer> players = EntityArgument
+                                                                    .getPlayers(ctx, "targets");
+                                                            float strength = FloatArgumentType.getFloat(ctx,
+                                                                    "progression_multiplier");
                                                             return applyMedicalConditions(players, condition, strength);
                                                         }))))));
     }

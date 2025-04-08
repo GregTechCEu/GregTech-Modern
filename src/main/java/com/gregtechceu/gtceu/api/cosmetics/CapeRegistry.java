@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.cosmetics;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketNotifyCapeChange;
+
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.MinecraftForge;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +42,6 @@ public class CapeRegistry extends SavedData {
     }
 
     private static void registerDevCapes() {
-
         save();
     }
 
@@ -228,7 +229,8 @@ public class CapeRegistry extends SavedData {
             // sync to the one who's logging in
             for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
                 uuid = otherPlayer.getUUID();
-                GTNetwork.NETWORK.sendToPlayer(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)), serverPlayer);
+                GTNetwork.NETWORK.sendToPlayer(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)),
+                        serverPlayer);
             }
         }
     }

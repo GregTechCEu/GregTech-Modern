@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.cosmetics;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
+
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
@@ -29,7 +30,9 @@ public class GTCapes {
 
     public static void registerGTCapes(RegisterGTCapesEvent event) {
         // TODO add the advancements to unlock these
-        // Reference https://github.com/GregTechCEu/GregTech/blob/master/src/main/java/gregtech/api/util/CapesRegistry.java#L151-L156 for correct advancement IDs
+        // Reference
+        // https://github.com/GregTechCEu/GregTech/blob/master/src/main/java/gregtech/api/util/CapesRegistry.java#L151-L156
+        // for correct advancement IDs
         event.registerCape(GREGTECH_CAPE, GTCEu.id("textures/capes/gregtech_cape.png"));
         event.registerCape(GREEN_CAPE, GTCEu.id("textures/capes/green_cape.png"));
         event.registerCape(YELLOW_CAPE, GTCEu.id("textures/capes/yellow_cape.png"));
@@ -50,7 +53,7 @@ public class GTCapes {
         event.registerFreeCape(PAN_CAPE, GTCEu.id("textures/capes/pan_cape.png"));
         event.registerFreeCape(TRANS_CAPE, GTCEu.id("textures/capes/trans_cape.png"));
     }
-    
+
     public static void giveDevCapes(RegisterGTCapesEvent event) {
         // updated on 8.4.2025 - screret
         event.unlockCapeFor(UUID.fromString("a24a9108-23d2-43fc-8db7-43f809d017db"), GREGTECH_CAPE); // ALongStringOfNumbers
@@ -79,6 +82,5 @@ public class GTCapes {
         event.unlockCapeFor(UUID.fromString("3a27782d-6864-4814-a9fe-7c6931f29a8a"), GREGTECH_CAPE); // YoungOnion
         event.unlockCapeFor(UUID.fromString("56bd41d0-06ef-4ed7-ab48-926ce45651f9"), GREGTECH_CAPE); // Zalgo239
         event.unlockCapeFor(UUID.fromString("2c69579f-a7fa-46ad-814e-9837e01215c1"), GREGTECH_CAPE); // Zorbatron
-
     }
 }

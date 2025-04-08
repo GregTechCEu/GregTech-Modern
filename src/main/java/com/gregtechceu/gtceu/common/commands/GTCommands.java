@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
@@ -11,15 +12,11 @@ import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
-import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,6 +39,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTes
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
@@ -63,8 +63,10 @@ public class GTCommands {
             (ctx, builder) -> {
                 return SharedSuggestionProvider.suggestResource(CapeRegistry.ALL_CAPES.keySet(), builder);
             });
-    private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(Component.translatable("command.gtceu.cape.give.failed"));
-    private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(Component.translatable("command.gtceu.cape.take.failed"));
+    private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
+            Component.translatable("command.gtceu.cape.give.failed"));
+    private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(
+            Component.translatable("command.gtceu.cape.take.failed"));
 
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
@@ -138,7 +140,7 @@ public class GTCommands {
 
     public static int giveCapes(CommandSourceStack source,
                                 Collection<ServerPlayer> targets, Collection<ResourceLocation> capes)
-            throws CommandSyntaxException {
+                                                                                                      throws CommandSyntaxException {
         int successes = 0;
 
         for (var player : targets) {
@@ -159,12 +161,12 @@ public class GTCommands {
         }
         if (targets.size() == 1) {
             source.sendSuccess(() -> Component.translatable(
-                            "command.gtceu.cape.give.success.single", capes.size(),
-                            targets.iterator().next().getDisplayName()),
+                    "command.gtceu.cape.give.success.single", capes.size(),
+                    targets.iterator().next().getDisplayName()),
                     true);
         } else {
             source.sendSuccess(() -> Component.translatable(
-                            "command.gtceu.cape.give.success.multiple", capes.size(), targets.size()),
+                    "command.gtceu.cape.give.success.multiple", capes.size(), targets.size()),
                     true);
         }
         CapeRegistry.save();
@@ -173,7 +175,7 @@ public class GTCommands {
 
     private static int takeCapes(CommandSourceStack source,
                                  Collection<ServerPlayer> targets, Collection<ResourceLocation> capes)
-            throws CommandSyntaxException {
+                                                                                                       throws CommandSyntaxException {
         int successes = 0;
 
         for (var player : targets) {
@@ -189,12 +191,12 @@ public class GTCommands {
         }
         if (targets.size() == 1) {
             source.sendSuccess(() -> Component.translatable(
-                            "command.gtceu.cape.take.success.single", capes.size(),
-                            targets.iterator().next().getDisplayName()),
+                    "command.gtceu.cape.take.success.single", capes.size(),
+                    targets.iterator().next().getDisplayName()),
                     true);
         } else {
             source.sendSuccess(() -> Component.translatable(
-                            "command.gtceu.cape.take.success.multiple", capes.size(), targets.size()),
+                    "command.gtceu.cape.take.success.multiple", capes.size(), targets.size()),
                     true);
         }
         CapeRegistry.save();
