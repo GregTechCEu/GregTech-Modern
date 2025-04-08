@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -32,6 +33,8 @@ import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
+import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
@@ -220,6 +223,12 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void registerBlockEntityCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
         event.addCapability(GTCEu.id("fe_capability"), new EUToFEProvider(event.getObject()));
+    }
+
+    @SubscribeEvent
+    public static void registerCapes(RegisterGTCapesEvent event) {
+        GTCapes.registerGTCapes(event);
+        GTCapes.giveDevCapes(event);
     }
 
     @SubscribeEvent
