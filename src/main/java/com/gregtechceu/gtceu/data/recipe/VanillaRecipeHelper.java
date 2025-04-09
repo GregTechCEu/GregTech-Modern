@@ -392,7 +392,7 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (var it = foundTools.iterator(); it.hasNext(); ) {
+        for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
@@ -463,7 +463,7 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (var it = foundTools.iterator(); it.hasNext(); ) {
+        for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
