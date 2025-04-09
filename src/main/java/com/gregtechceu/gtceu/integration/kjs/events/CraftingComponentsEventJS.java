@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 
 import net.minecraft.core.registries.Registries;
@@ -22,65 +24,41 @@ import java.util.Map;
 @NoArgsConstructor
 public class CraftingComponentsEventJS extends StartupEventJS {
 
-    private CraftingComponent context = null;
-
-    // Context setting methods
-    private CraftingComponentsEventJS create(String id, Object fallback) {
-        context = CraftingComponent.of(id, fallback);
-        return this;
+    private ComponentBuilder create(String id, Object fallback) {
+        return new ComponentBuilder(id, fallback);
     }
 
-    public CraftingComponentsEventJS createItem(String id, ItemStack stack) {
+    public ComponentBuilder createItem(String id, ItemStack stack) {
         return create(id, stack);
     }
 
-    public CraftingComponentsEventJS createTag(String id, ResourceLocation tag) {
+    public ComponentBuilder createTag(String id, ResourceLocation tag) {
         return create(id, TagKey.create(Registries.ITEM, tag));
     }
 
-    public CraftingComponentsEventJS createMaterialEntry(String id, MaterialEntry entry) {
+    public ComponentBuilder createMaterialEntry(String id, MaterialEntry entry) {
         return create(id, entry);
     }
 
-    private CraftingComponentsEventJS set(CraftingComponent craftingComponent, int tier, Object value) {
-        context = craftingComponent;
-        context.add(tier, value);
-        return this;
+    // Set singular
+    private void set(CraftingComponent craftingComponent, int tier, Object value) {
+        craftingComponent.add(tier, value);
     }
 
-    public CraftingComponentsEventJS setItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
-        return set(craftingComponent, tier, item);
+    public void setItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
+        set(craftingComponent, tier, item);
     }
 
-    public CraftingComponentsEventJS setTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
-        return set(craftingComponent, tier, TagKey.create(Registries.ITEM, tag));
+    public void setTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
+        set(craftingComponent, tier, TagKey.create(Registries.ITEM, tag));
     }
 
-    public CraftingComponentsEventJS setMaterialEntry(CraftingComponent craftingComponent, int tier,
-                                                      MaterialEntry matEntry) {
-        return set(craftingComponent, tier, matEntry);
+    public void setMaterialEntry(CraftingComponent craftingComponent, int tier,
+                                 MaterialEntry matEntry) {
+        set(craftingComponent, tier, matEntry);
     }
 
-    // Context-chaining methods
-    private CraftingComponentsEventJS andSet(int tier, Object value) {
-        if (context == null) return this;
-        context.add(tier, value);
-        return this;
-    }
-
-    public CraftingComponentsEventJS andSetItem(int tier, ItemStack stack) {
-        return andSet(tier, stack);
-    }
-
-    public CraftingComponentsEventJS andSetTag(int tier, ResourceLocation tag) {
-        return andSet(tier, TagKey.create(Registries.ITEM, tag));
-    }
-
-    public CraftingComponentsEventJS andSetMaterialEntry(int tier, MaterialEntry entry) {
-        return andSet(tier, entry);
-    }
-
-    // Other utility methods
+    // Set from Map methods
     public void set(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
             int tier = parseTier(val.getKey());
@@ -158,7 +136,9 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return stack;
     }
 
+    @SuppressWarnings("unchecked")
     private static TagKey<Item> parseTag(Object o) {
+        if (o instanceof TagKey<?> key && key.isFor(Registries.ITEM)) return (TagKey<Item>) key;
         ResourceLocation rl = UtilsJS.getMCID(null, o);
         if (rl != null) return TagKey.create(Registries.ITEM, rl);
         return null;
@@ -191,5 +171,35 @@ public class CraftingComponentsEventJS extends StartupEventJS {
 
         if (ret == -1) ConsoleJS.STARTUP.errorf("%s is not a valid tier!", o);
         return ret;
+    }
+
+    public static class ComponentBuilder {
+
+        private final CraftingComponent component;
+
+        private ComponentBuilder(String id, Object fallback) {
+            component = CraftingComponent.of(id, fallback);
+        }
+
+        private ComponentBuilder set(int tier, Object value) {
+            component.add(tier, value);
+            return this;
+        }
+
+        public ComponentBuilder setItem(int tier, ItemStack stack) {
+            return set(tier, stack);
+        }
+
+        public ComponentBuilder setTag(int tier, ResourceLocation tag) {
+            return set(tier, TagKey.create(Registries.ITEM, tag));
+        }
+
+        public ComponentBuilder setMaterialEntry(int tier, MaterialEntry entry) {
+            return set(tier, entry);
+        }
+
+        public ComponentBuilder setMaterialEntry(int tier, TagPrefix prefix, Material mat) {
+            return set(tier, new MaterialEntry(prefix, mat));
+        }
     }
 }
