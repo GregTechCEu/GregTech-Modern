@@ -24,19 +24,19 @@ import java.util.Map;
 @NoArgsConstructor
 public class CraftingComponentsEventJS extends StartupEventJS {
 
-    private ComponentBuilder create(String id, Object fallback) {
-        return new ComponentBuilder(id, fallback);
+    private ComponentWrapper create(String id, Object fallback) {
+        return new ComponentWrapper(id, fallback);
     }
 
-    public ComponentBuilder createItem(String id, ItemStack stack) {
+    public ComponentWrapper createItem(String id, ItemStack stack) {
         return create(id, stack);
     }
 
-    public ComponentBuilder createTag(String id, ResourceLocation tag) {
+    public ComponentWrapper createTag(String id, ResourceLocation tag) {
         return create(id, TagKey.create(Registries.ITEM, tag));
     }
 
-    public ComponentBuilder createMaterialEntry(String id, MaterialEntry entry) {
+    public ComponentWrapper createMaterialEntry(String id, MaterialEntry entry) {
         return create(id, entry);
     }
 
@@ -173,33 +173,37 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return ret;
     }
 
-    public static class ComponentBuilder {
+    public static class ComponentWrapper {
 
         private final CraftingComponent component;
 
-        private ComponentBuilder(String id, Object fallback) {
+        private ComponentWrapper(String id, Object fallback) {
             component = CraftingComponent.of(id, fallback);
         }
 
-        private ComponentBuilder set(int tier, Object value) {
+        private ComponentWrapper set(int tier, Object value) {
             component.add(tier, value);
             return this;
         }
 
-        public ComponentBuilder setItem(int tier, ItemStack stack) {
+        public ComponentWrapper setItem(int tier, ItemStack stack) {
             return set(tier, stack);
         }
 
-        public ComponentBuilder setTag(int tier, ResourceLocation tag) {
+        public ComponentWrapper setTag(int tier, ResourceLocation tag) {
             return set(tier, TagKey.create(Registries.ITEM, tag));
         }
 
-        public ComponentBuilder setMaterialEntry(int tier, MaterialEntry entry) {
+        public ComponentWrapper setMaterialEntry(int tier, MaterialEntry entry) {
             return set(tier, entry);
         }
 
-        public ComponentBuilder setMaterialEntry(int tier, TagPrefix prefix, Material mat) {
+        public ComponentWrapper setMaterialEntry(int tier, TagPrefix prefix, Material mat) {
             return set(tier, new MaterialEntry(prefix, mat));
+        }
+
+        public Object get(int tier) {
+            return component.get(tier);
         }
     }
 }
