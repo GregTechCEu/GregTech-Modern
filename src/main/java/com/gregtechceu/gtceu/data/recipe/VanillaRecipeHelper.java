@@ -349,23 +349,24 @@ public class VanillaRecipeHelper {
                                                      @NotNull Object... recipe) {
         var builder = new ShapedEnergyTransferRecipeBuilder(regName).output(result);
         builder.chargeIngredient(chargeIngredient).overrideCharge(overrideCharge).transferMaxCharge(transferMaxCharge);
-        CharSet set = new CharOpenHashSet();
+        final CharSet tools = ToolHelper.getToolSymbols();
+        CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : ToolHelper.getToolSymbols()) {
-                    if (pattern.indexOf(c) >= 0) {
-                        set.add(c.charValue());
+                for (char c : pattern.toCharArray()) {
+                    if (tools.contains(c)) {
+                        foundTools.add(c);
                     }
                 }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : ToolHelper.getToolSymbols()) {
-                        if (s.indexOf(c) >= 0) {
-                            set.add(c.charValue());
+                    for (char c : s.toCharArray()) {
+                        if (tools.contains(c)) {
+                            foundTools.add(c);
                         }
                     }
                 }
@@ -391,7 +392,8 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (Character c : set) {
+        for (var it = foundTools.iterator(); it.hasNext(); ) {
+            char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
         builder.save(provider);
@@ -414,24 +416,24 @@ public class VanillaRecipeHelper {
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
         var builder = new ShapedFluidContainerRecipeBuilder(regName).output(result);
-        builder.isStrict(isStrict);
-        CharSet set = new CharOpenHashSet();
+        final CharSet tools = ToolHelper.getToolSymbols();
+        CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : ToolHelper.getToolSymbols()) {
-                    if (pattern.indexOf(c) >= 0) {
-                        set.add(c.charValue());
+                for (char c : pattern.toCharArray()) {
+                    if (tools.contains(c)) {
+                        foundTools.add(c);
                     }
                 }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : ToolHelper.getToolSymbols()) {
-                        if (s.indexOf(c) >= 0) {
-                            set.add(c.charValue());
+                    for (char c : s.toCharArray()) {
+                        if (tools.contains(c)) {
+                            foundTools.add(c);
                         }
                     }
                 }
@@ -461,7 +463,8 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (Character c : set) {
+        for (var it = foundTools.iterator(); it.hasNext(); ) {
+            char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
 
@@ -551,8 +554,7 @@ public class VanillaRecipeHelper {
         while (recipe[itr] instanceof String s) {
             for (char c : s.toCharArray()) {
                 if (ToolHelper.getToolFromSymbol(c) != null) continue; // skip tools
-                int count = inputCountMap.getOrDefault(c, 0);
-                inputCountMap.put(c, count + 1);
+                inputCountMap.addTo(c, 1);
             }
             itr++;
         }
