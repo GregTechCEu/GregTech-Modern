@@ -70,22 +70,22 @@ public class ItemMaterialData {
     public static void registerMaterialInfoItems(MaterialEntry materialEntry,
                                                  Supplier<? extends ItemLike>... items) {
         var entryList = MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>());
-        for (Supplier<? extends ItemLike> itemLike : items) {
-            Supplier<? extends Item> item = () -> itemLike.get().asItem();
-            ITEM_MATERIAL_ENTRY.add(Pair.of(item, materialEntry));
-            entryList.add(item);
-            if (itemLike instanceof Block block) {
+        for (Supplier<? extends ItemLike> item : items) {
+            Supplier<? extends Item> itemSupplier = () -> item.get().asItem();
+            ITEM_MATERIAL_ENTRY.add(Pair.of(itemSupplier, materialEntry));
+            entryList.add(itemSupplier);
+            if (item instanceof Block block) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(() -> block);
-            } else if (itemLike instanceof BlockEntry<?> blockEntry) {
+            } else if (item instanceof BlockEntry<?> blockEntry) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(blockEntry);
-            } else if (itemLike instanceof RegistryObject<?> registryObject) {
+            } else if (item instanceof RegistryObject<?> registryObject) {
                 if (registryObject.getKey().isFor(Registries.BLOCK)) {
                     MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                             .add((RegistryObject<Block>) registryObject);
                 }
-            } else if (itemLike instanceof MemoizedBlockSupplier<? extends Block> supplier) {
+            } else if (item instanceof MemoizedBlockSupplier<? extends Block> supplier) {
                 MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> new ArrayList<>())
                         .add(supplier);
             }

@@ -101,9 +101,9 @@ public class GTRecipeBuilder {
     public int maxChance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int tierChanceBoost = 0;
-    protected boolean itemMaterialInfo = false;
-    protected boolean fluidMaterialInfo = false;
-    protected boolean removePreviousMatInfo = false;
+    private boolean itemMaterialInfo = false;
+    private boolean fluidMaterialInfo = false;
+    private boolean removePreviousMatInfo = false;
     public GTRecipeCategory recipeCategory;
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -112,9 +112,9 @@ public class GTRecipeBuilder {
     private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
     private boolean generatingRecipes = true;
 
-    protected List<ItemStack> tempItemStacks = new ArrayList<>();
-    protected List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
-    protected List<MaterialStack> tempFluidStacks = new ArrayList<>();
+    private List<ItemStack> tempItemStacks = new ArrayList<>();
+    private List<MaterialStack> tempItemMaterialStacks = new ArrayList<>();
+    private List<MaterialStack> tempFluidStacks = new ArrayList<>();
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
@@ -1404,7 +1404,7 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
-    protected void addOutputMaterialInfo() {
+    private void addOutputMaterialInfo() {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
@@ -1444,7 +1444,7 @@ public class GTRecipeBuilder {
         }
     }
 
-    protected void removeExistingMaterialInfo() {
+    private void removeExistingMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         if (itemOutputs.size() == 1) {
             var currOutput = itemOutputs.get(0).content;
