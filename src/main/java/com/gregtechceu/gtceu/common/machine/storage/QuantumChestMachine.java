@@ -313,8 +313,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             } else {
                 setOutputFacingItems(null);
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
-
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);

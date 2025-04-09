@@ -6,10 +6,9 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 
@@ -49,7 +48,6 @@ public class GTCraftingComponents {
     public static CraftingComponent SENSOR;
     public static CraftingComponent GRINDER;
     public static CraftingComponent SAWBLADE;
-    public static CraftingComponent DIAMOND;
     public static CraftingComponent PISTON;
     public static CraftingComponent EMITTER;
     public static CraftingComponent CONVEYOR;
@@ -57,11 +55,11 @@ public class GTCraftingComponents {
     public static CraftingComponent COIL_HEATING;
     public static CraftingComponent COIL_HEATING_DOUBLE;
     public static CraftingComponent COIL_ELECTRIC;
-    public static CraftingComponent STICK_MAGNETIC;
-    public static CraftingComponent STICK_DISTILLATION;
+    public static CraftingComponent ROD_MAGNETIC;
+    public static CraftingComponent ROD_DISTILLATION;
     public static CraftingComponent FIELD_GENERATOR;
-    public static CraftingComponent STICK_ELECTROMAGNETIC;
-    public static CraftingComponent STICK_RADIOACTIVE;
+    public static CraftingComponent ROD_ELECTROMAGNETIC;
+    public static CraftingComponent ROD_RADIOACTIVE;
     public static CraftingComponent PIPE_REACTOR;
     public static CraftingComponent POWER_COMPONENT;
     public static CraftingComponent VOLTAGE_COIL;
@@ -72,7 +70,9 @@ public class GTCraftingComponents {
     public static CraftingComponent SMALL_SPRING_TRANSFORMER;
     public static CraftingComponent SPRING_TRANSFORMER;
 
-    public static void initializeComponents() {
+    public static void init() {
+        CraftingComponent.ALL_COMPONENTS.clear();
+
         /*
          * GTCEu must supply values for at least tiers 1 through 8 (through UV)
          */
@@ -426,8 +426,6 @@ public class GTCraftingComponents {
                 .add(UV, toolHeadBuzzSaw, Duranium)
                 .add(UHV, toolHeadBuzzSaw, Duranium);
 
-        DIAMOND = CraftingComponent.of("diamond", gem, Diamond);
-
         MOTOR = CraftingComponent.of("motor", GTItems.ELECTRIC_MOTOR_LV.asStack())
                 .add(LV, GTItems.ELECTRIC_MOTOR_LV.asStack())
                 .add(MV, GTItems.ELECTRIC_MOTOR_MV.asStack())
@@ -601,7 +599,7 @@ public class GTCraftingComponents {
                 .add(UV, wireGtOctal, YttriumBariumCuprate)
                 .add(UHV, wireGtOctal, Europium);
 
-        STICK_MAGNETIC = CraftingComponent.of("rod_magnetic", rod, IronMagnetic)
+        ROD_MAGNETIC = CraftingComponent.of("rod_magnetic", rod, IronMagnetic)
                 .add(ULV, rod, IronMagnetic)
                 .add(LV, rod, IronMagnetic)
                 .add(MV, rod, SteelMagnetic)
@@ -613,7 +611,7 @@ public class GTCraftingComponents {
                 .add(UV, block, NeodymiumMagnetic)
                 .add(UHV, block, SamariumMagnetic);
 
-        STICK_DISTILLATION = CraftingComponent.of("rod_distillation", rod, Blaze)
+        ROD_DISTILLATION = CraftingComponent.of("rod_distillation", rod, Blaze)
                 .add(ULV, rod, Blaze)
                 .add(LV, spring, Copper)
                 .add(MV, spring, Cupronickel)
@@ -625,7 +623,7 @@ public class GTCraftingComponents {
                 .add(UV, spring, NaquadahAlloy)
                 .add(UHV, spring, Trinium);
 
-        STICK_ELECTROMAGNETIC = CraftingComponent.of("rod_electromagnetic", rod, Iron)
+        ROD_ELECTROMAGNETIC = CraftingComponent.of("rod_electromagnetic", rod, Iron)
                 .add(ULV, rod, Iron)
                 .add(LV, rod, Iron)
                 .add(MV, rod, Steel)
@@ -637,7 +635,7 @@ public class GTCraftingComponents {
                 .add(UV, rod, VanadiumGallium)
                 .add(UHV, rod, VanadiumGallium);
 
-        STICK_RADIOACTIVE = CraftingComponent.of("rod_radioactive", rod, Uranium235)
+        ROD_RADIOACTIVE = CraftingComponent.of("rod_radioactive", rod, Uranium235)
                 .add(EV, rod, Uranium235)
                 .add(IV, rod, Plutonium241)
                 .add(LuV, rod, NaquadahEnriched)
@@ -759,7 +757,7 @@ public class GTCraftingComponents {
     private static final class KJSCallWrapper {
 
         private static void craftingComponentModification() {
-            GTCEuStartupEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
+            GTCEuServerEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
         }
     }
 }
