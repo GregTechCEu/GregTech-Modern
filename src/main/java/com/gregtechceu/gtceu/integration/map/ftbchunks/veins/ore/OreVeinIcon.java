@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.ore;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
@@ -60,24 +59,8 @@ public class OreVeinIcon implements MapIcon {
         return name == null ? name = OreRenderLayer.getName(veinMetadata).getString() : name;
     }
 
-    @NotNull
-    public Material getMaterial() {
-        Material firstMaterial = GTMaterials.NULL;
-        if (!veinMetadata.definition().indicatorGenerators().isEmpty()) {
-            var blockOrMaterial = veinMetadata.definition().indicatorGenerators().get(0).block();
-            if (blockOrMaterial == null) {
-                return GTMaterials.NULL;
-            } else if (blockOrMaterial.left().isPresent()) {
-                var entry = ChemicalHelper.getMaterialEntry(blockOrMaterial.left().get().getBlock());
-                firstMaterial = entry.material();
-            } else if (blockOrMaterial.right().isPresent()) {
-                firstMaterial = blockOrMaterial.right().get();
-            }
-        }
-        if (firstMaterial.isNull()) {
-            firstMaterial = veinMetadata.definition().veinGenerator().getAllMaterials().get(0);
-        }
-        return firstMaterial;
+    public @NotNull Material getMaterial() {
+        return OreRenderLayer.getMaterial(veinMetadata);
     }
 
     @Override
@@ -108,7 +91,9 @@ public class OreVeinIcon implements MapIcon {
         var markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
-        var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(Color4I.rgba(getMaterial().getMaterialARGB()));
+        var material = getMaterial();
+        var color = material.isNull() ? Color4I.rgba(0xFFFFFFFF) : Color4I.rgba(material.getMaterialARGB());
+        var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(color);
         var toggleWaypoint = new ContextMenuItem(Component.translatable("button.gtceu.toggle_waypoint.name"),
                 waypointIcon,
                 b -> toggleWaypoint(screen));
@@ -131,8 +116,10 @@ public class OreVeinIcon implements MapIcon {
         if (waypointManager.getAllWaypoints().contains(waypoint)) {
             waypointManager.removeWaypoint(waypoint);
         } else {
+            var material = getMaterial();
+            var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
             waypointManager.addWaypointAt(veinMetadata.center(), getName())
-                    .setColor(getMaterial().getMaterialARGB())
+                    .setColor(color)
                     .setHidden(false);
         }
         screen.refreshWidgets();
@@ -168,11 +155,13 @@ public class OreVeinIcon implements MapIcon {
         }
 
         var iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
-        var firstMaterial = getMaterial();
-        var colors = DrawUtil.floats(firstMaterial.getMaterialARGB());
+        var material = getMaterial();
+        var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
+        var colors = DrawUtil.floats(color);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        var oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+        var iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
+        var oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet,
                 true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance()
@@ -180,9 +169,9 @@ public class OreVeinIcon implements MapIcon {
                     .apply(oreTexture);
             graphics.blit(x, y, 0, w, h, oreSprite, colors[0], colors[1], colors[2], 1);
         }
-        oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary", true);
+        oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, "secondary", true);
         if (oreTexture != null) {
-            var materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
+            var materialSecondaryARGB = material.isNull() ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
             colors = DrawUtil.floats(materialSecondaryARGB);
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -191,8 +180,7 @@ public class OreVeinIcon implements MapIcon {
         }
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        var borderColor = ConfigHolder.INSTANCE.compat.minimap
-                .getBorderColor(firstMaterial.getMaterialARGB() | 0xFF000000);
+        var borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(color | 0xFF000000);
         if ((borderColor & 0xFF000000) != 0) {
             var thickness = iconSize / 16;
             graphics.fill(x, y, x + w, y + h + thickness, borderColor);

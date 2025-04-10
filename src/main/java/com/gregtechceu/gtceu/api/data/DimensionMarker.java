@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.api.data;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.Validator;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -32,12 +33,12 @@ public class DimensionMarker {
     @Nullable
     private final String overrideName; // there may be other uses, so we store it
 
-    private final SupplierMemoizer.MemoizedSupplier<ItemStack> iconSupplier;
+    private final MemoizedSupplier<ItemStack> iconSupplier;
 
     public DimensionMarker(int tier, ResourceLocation itemKey, @Nullable String overrideName) {
         this.tier = tier;
         this.overrideName = overrideName;
-        this.iconSupplier = SupplierMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
+        this.iconSupplier = GTMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
                 .map(Holder::get)
                 .map(this::getStack)
                 .orElse(ItemStack.EMPTY));
@@ -46,7 +47,7 @@ public class DimensionMarker {
     public DimensionMarker(int tier, Supplier<? extends ItemLike> supplier, @Nullable String overrideName) {
         this.tier = tier;
         this.overrideName = overrideName;
-        this.iconSupplier = SupplierMemoizer.memoize(() -> getStack(supplier.get().asItem()));
+        this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));
     }
 
     public ItemStack getIcon() {

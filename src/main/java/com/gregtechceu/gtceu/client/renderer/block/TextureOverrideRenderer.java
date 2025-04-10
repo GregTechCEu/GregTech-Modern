@@ -10,11 +10,13 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.math.Transformation;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +26,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/3/25
- * @implNote CoilRenderer
- */
 @Getter
 public class TextureOverrideRenderer extends CTMModelRenderer {
 
@@ -36,6 +33,8 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     protected Map<String, ResourceLocation> override;
     @Nullable
     protected Supplier<Map<String, ResourceLocation>> overrideSupplier;
+    protected Transformation transformation = null;
+    protected BakedModel cachedModel = null;
 
     public TextureOverrideRenderer(ResourceLocation model, @NotNull Map<String, ResourceLocation> override) {
         super(model);
@@ -85,6 +84,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         return itemModel;
     }
 
+    @SuppressWarnings("removal")
     @OnlyIn(Dist.CLIENT)
     public BakedModel getRotatedModel(Direction frontFacing) {
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
@@ -94,6 +94,17 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
                 modelLocation));
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public BakedModel getRotatedModel(ModelState rotation) {
+        if (transformation == null || !transformation.equals(rotation.getRotation())) {
+            cachedModel = getModel()
+                    .bake(ModelFactory.getModeBaker(), new SpriteOverrider(override), rotation, modelLocation);
+            transformation = rotation.getRotation();
+        }
+        return cachedModel;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     @OnlyIn(Dist.CLIENT)
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {

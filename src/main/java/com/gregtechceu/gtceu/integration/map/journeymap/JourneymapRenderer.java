@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -39,7 +38,6 @@ import lombok.Getter;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -154,31 +152,19 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     private static NativeImage createOreImage(GeneratedVeinMetadata vein) {
-        Material firstMaterial = GTMaterials.NULL;
-        if (!vein.definition().indicatorGenerators().isEmpty()) {
-            var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
-            firstMaterial = blockOrMaterial == null ? GTMaterials.NULL : blockOrMaterial.map(
-                    state -> {
-                        var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
-                        return matStack.material();
-                    },
-                    Function.identity());
-        }
-        if (firstMaterial.isNull() && !vein.definition().veinGenerator().getAllMaterials().isEmpty()) {
-            firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
-        }
-        if (firstMaterial.isNull()) {
+        var material = OreRenderLayer.getMaterial(vein);
+        if (material.isNull()) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;
         }
-        if (MATERIAL_ICONS.containsKey(firstMaterial)) {
-            return MATERIAL_ICONS.get(firstMaterial);
+        if (MATERIAL_ICONS.containsKey(material)) {
+            return MATERIAL_ICONS.get(material);
         }
 
-        int materialABGR = GradientUtil.argbToAbgr(firstMaterial.getMaterialARGB());
+        int materialABGR = GradientUtil.argbToAbgr(material.getMaterialARGB());
 
-        ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), true);
+        ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(), true);
         TextureAtlasSprite baseTexture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(layer1);
         if (baseTexture == null) {
@@ -197,9 +183,9 @@ public class JourneymapRenderer extends GenericMapRenderer {
                         .multiplyBlendWithAlpha(color, materialABGR));
             }
         }
-        if (firstMaterial.getMaterialSecondaryARGB() != -1) {
-            int materialSecondaryABGR = GradientUtil.argbToAbgr(firstMaterial.getMaterialSecondaryARGB());
-            ResourceLocation layer2 = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),
+        if (material.getMaterialSecondaryARGB() != -1) {
+            int materialSecondaryABGR = GradientUtil.argbToAbgr(material.getMaterialSecondaryARGB());
+            ResourceLocation layer2 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(),
                     "secondary", true);
             if (layer2 == null) {
                 return result;
@@ -223,7 +209,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
             return color;
         });
 
-        MATERIAL_ICONS.put(firstMaterial, result);
+        MATERIAL_ICONS.put(material, result);
         return result;
     }
 

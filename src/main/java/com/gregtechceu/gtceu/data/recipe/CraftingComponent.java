@@ -33,9 +33,10 @@ public class CraftingComponent {
     }
 
     public static CraftingComponent of(@NotNull String id, @NotNull Object fallback) {
-        if (ALL_COMPONENTS.containsKey(id)) {
-            GTCEu.LOGGER.error("Duplicate crafting component id: {}, returning empty", id);
-            return EMPTY;
+        var existing = ALL_COMPONENTS.get(id);
+        if (existing != null) {
+            GTCEu.LOGGER.error("Duplicate crafting component id: {}, check components", id);
+            return existing;
         }
         var ret = new CraftingComponent(fallback);
         ALL_COMPONENTS.put(id, ret);
@@ -47,6 +48,7 @@ public class CraftingComponent {
     }
 
     public @NotNull Object get(int tier) {
+        if (this == EMPTY) return ItemStack.EMPTY;
         if (tier < 0 || tier >= values.length)
             throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
         var val = values[tier];
@@ -54,6 +56,7 @@ public class CraftingComponent {
     }
 
     public @NotNull CraftingComponent add(int tier, @NotNull Object value) {
+        if (this == EMPTY) return this;
         checkType(value);
         values[tier] = value;
         return this;
@@ -64,6 +67,7 @@ public class CraftingComponent {
     }
 
     public void remove(int tier) {
+        if (this == EMPTY) return;
         if (tier < 0 || tier >= values.length)
             throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
         values[tier] = null;
@@ -80,10 +84,10 @@ public class CraftingComponent {
     }
 
     public static CraftingComponent getByID(String id) {
-        if (!CraftingComponent.ALL_COMPONENTS.containsKey(id)) {
+        if (!ALL_COMPONENTS.containsKey(id)) {
             GTCEu.LOGGER.error("No such crafting component: {}", id);
-            return CraftingComponent.EMPTY;
+            return EMPTY;
         }
-        return CraftingComponent.ALL_COMPONENTS.get(id);
+        return ALL_COMPONENTS.get(id);
     }
 }
