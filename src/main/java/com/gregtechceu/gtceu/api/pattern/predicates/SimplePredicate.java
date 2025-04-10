@@ -30,6 +30,12 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * A singular predicate-based class used in multiblock structure definition.
+ * <br>
+ * Contains extra methods allowing to determine XEI tooltips and to register multiblock IO, among other things.
+ */
+
 public class SimplePredicate {
 
     public static SimplePredicate ANY = new SimplePredicate("any", x -> true, null);

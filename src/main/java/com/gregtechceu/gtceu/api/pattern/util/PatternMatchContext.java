@@ -6,8 +6,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * Contains an context used for storing temporary data
- * related to current check and shared between all predicates doing it
+ * Contains a context used for storing temporary data
+ * related to current check and shared between all predicates doing it.
+ * @implNote In practice, it is a hashmap with some special methods.
  */
 public class PatternMatchContext {
 
