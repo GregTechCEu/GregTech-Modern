@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class MultiblockState {
 
-    //TODO: Why do those 2 errors use a lang key from another mod that isn't a dependency?
+    // TODO: Why do those 2 errors use a lang key from another mod that isn't a dependency?
     public final static PatternError UNLOAD_ERROR = new PatternStringError("multiblocked.pattern.error.chunk");
     public final static PatternError UNINIT_ERROR = new PatternStringError("multiblocked.pattern.error.init");
 
@@ -59,7 +59,7 @@ public class MultiblockState {
      * Used to check for minimum and maximum amount of matches (e.g. minimum casings)
      * <br>
      * See {@link SimplePredicate#testGlobal(MultiblockState)} for more information.
-     * */
+     */
     @Getter
     private Map<SimplePredicate, Integer> globalCount;
     /**
@@ -68,10 +68,10 @@ public class MultiblockState {
      * Used to check for minimum and maximum amount of matches (e.g. minimum casings)
      * <br>
      * See {@link SimplePredicate#testLayer(MultiblockState)} for more information.
-     * */
+     */
     @Getter
     private Map<SimplePredicate, Integer> layerCount;
-    /** The  condition ({@link TraceabilityPredicate}) that must be matched at this position. */
+    /** The condition ({@link TraceabilityPredicate}) that must be matched at this position. */
     public TraceabilityPredicate predicate;
     /** The IO capability of the block at {@link MultiblockState#pos} */
     public IO io;
@@ -101,7 +101,8 @@ public class MultiblockState {
 
     /**
      * Initializes a new {@link MultiblockState}. Each multi controller has one.
-     * @param world the {@link Level} (dimension + side) the multi is in.
+     * 
+     * @param world         the {@link Level} (dimension + side) the multi is in.
      * @param controllerPos the position of the multi controller.
      */
     public MultiblockState(Level world, BlockPos controllerPos) {
@@ -125,7 +126,8 @@ public class MultiblockState {
     /**
      * Updates the state for checking a new block. Clears obsolete data.
      * Also checks if the position is loaded. If unloaded, updates error.
-     * @param posIn the new position being checked
+     * 
+     * @param posIn     the new position being checked
      * @param predicate the condition ({@link TraceabilityPredicate}) that must be matched at this position.
      * @return whether the block at the position is loaded.
      */
@@ -145,6 +147,7 @@ public class MultiblockState {
 
     /**
      * If the controller isn't loaded, returns null and updates error.
+     * 
      * @return the Controller object
      */
     public IMultiController getController() {
@@ -176,13 +179,14 @@ public class MultiblockState {
      * Returns the {@link BlockState} at {@link MultiblockState#pos}.
      * If null, tries to query it by checking at the in-world pos.
      * If still null, returns error.
+     * 
      * @return blockState
      */
     public BlockState getBlockState() {
         if (this.blockState == null) {
             this.blockState = this.world.getBlockState(this.pos);
         }
-        if (this.blockState == null) { //TODO: Tell the IDE to stop reporting this as useless (it's not)
+        if (this.blockState == null) { // TODO: Tell the IDE to stop reporting this as useless (it's not)
             GTCEu.LOGGER.error("could not get BlockState at " + this.pos + " in MultiblockState");
         }
         return this.blockState;
@@ -192,6 +196,7 @@ public class MultiblockState {
      * Returns the {@link BlockEntity} at {@link MultiblockState#pos}.
      * If not initialized, tries to query it by checking at the in-world coords.
      * Can return null if the block isn't a BlockEntity.
+     * 
      * @return tileEntity
      */
     @Nullable
@@ -214,7 +219,7 @@ public class MultiblockState {
         return this.pos.immutable();
     }
 
-     // TODO: Unused, review method's utility
+    // TODO: Unused, review method's utility
     public BlockState getOffsetState(Direction face) {
         if (pos instanceof BlockPos.MutableBlockPos) {
             ((BlockPos.MutableBlockPos) pos).move(face);
@@ -227,8 +232,9 @@ public class MultiblockState {
 
     /**
      * Adds given {@link BlockPos} to {@link MultiblockState#cache}
+     * 
      * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     * so pos is converted into a <code>long</code> before being added
+     *           so pos is converted into a <code>long</code> before being added
      * @param pos the position to add
      */
     public void addPosCache(BlockPos pos) {
@@ -237,8 +243,9 @@ public class MultiblockState {
 
     /**
      * Checks for the given {@link BlockPos} in the cache
+     * 
      * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     * so pos is converted into a <code>long</code> before being compared
+     *           so pos is converted into a <code>long</code> before being compared
      * @param pos the BlockPos to check
      * @return
      */
@@ -248,8 +255,9 @@ public class MultiblockState {
 
     /**
      * Returns the cache's contents as a list of BlockPos
+     * 
      * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     * so the contents first have to be converted back to {@link BlockPos}
+     *           so the contents first have to be converted back to {@link BlockPos}
      * @return the contents of the cache as a list
      */
     public Collection<BlockPos> getCache() {
@@ -260,7 +268,8 @@ public class MultiblockState {
      * Used to check the multiblock's structure again if a block's {@link BlockState} changes.
      * <br>
      * Unforms the multiblock if the resulting change invalidates the strcture.
-     * @param pos The {@link BlockPos} to check at
+     * 
+     * @param pos   The {@link BlockPos} to check at
      * @param state The new {@link BlockState}
      */
     public void onBlockStateChanged(BlockPos pos, BlockState state) {
