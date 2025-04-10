@@ -326,7 +326,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             tooltips.add(fluidStack.getDisplayName());
             if (!isPhantom && showAmount) {
                 tooltips.add(
-                        Component.translatable("gtceu.fluid.amount", FormattingUtil.formatNumbers(stack.getAmount()),
+                        Component.translatable("gtceu.fluid.amount", FormattingUtil.formatNumbers(fluidStack.getAmount()),
                                 FormattingUtil.formatNumbers(lastTankCapacity)));
             }
             TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add, null);
