@@ -9,14 +9,9 @@ import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import com.gregtechceu.gtceu.client.particle.HazardParticle;
-import com.gregtechceu.gtceu.client.particle.MufflerParticle;
-import com.gregtechceu.gtceu.common.data.GTParticleTypes;
-import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 import com.gregtechceu.gtceu.common.particle.MufflerParticleOptions;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;

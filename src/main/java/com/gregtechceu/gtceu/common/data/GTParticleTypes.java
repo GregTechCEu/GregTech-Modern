@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
-
 import com.gregtechceu.gtceu.common.particle.MufflerParticleOptions;
+
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.eventbus.api.IEventBus;

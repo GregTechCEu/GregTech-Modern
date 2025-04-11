@@ -22,8 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public record MufflerParticleOptions(int color, float scale) implements ParticleOptions {
 
     public static final Codec<MufflerParticleOptions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.INT.fieldOf("color").forGetter(particle -> particle.color),
-                    Codec.FLOAT.fieldOf("scale").forGetter(particle -> particle.scale))
+            Codec.INT.fieldOf("color").forGetter(particle -> particle.color),
+            Codec.FLOAT.fieldOf("scale").forGetter(particle -> particle.scale))
             .apply(instance, MufflerParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<MufflerParticleOptions> DESERIALIZER = new Deserializer<>() {
