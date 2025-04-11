@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -28,7 +29,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraftforge.fluids.FluidStack;
@@ -71,25 +71,17 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     private boolean isIntakesObstructed() {
-        var front = this.getFrontFacing();
-
-        var centerPos = this.getPos().relative(front);
-
-        boolean xAxis = front.getAxis() == Direction.Axis.X;
-        boolean yAxis = front.getAxis() == Direction.Axis.Y;
-        boolean zAxis = front.getAxis() == Direction.Axis.Z;
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 // Skip the controller block itself
                 if (i == 0 && j == 0) continue;
-
-                var blockPos = centerPos.offset(xAxis ? 0 : i, yAxis ? 0 : xAxis ? i : j, zAxis ? 0 : j);
+                var blockPos = RelativeDirection.offsetPos(getPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(),
+                        i, j, 1);
                 var blockState = this.getLevel().getBlockState(blockPos);
                 if (!blockState.isAir())
                     return true;
             }
         }
-
         return false;
     }
 
