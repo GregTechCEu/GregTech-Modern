@@ -71,20 +71,25 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     private boolean isIntakesObstructed() {
-        var facing = this.getFrontFacing();
-        boolean permuteXZ = facing.getAxis() == Direction.Axis.Z;
-        var centerPos = this.getPos().relative(facing);
-        for (int x = -1; x < 2; x++) {
-            for (int y = -1; y < 2; y++) {
+        var front = this.getFrontFacing();
+
+        var centerPos = this.getPos().relative(front);
+
+        boolean xAxis = front.getAxis() == Direction.Axis.X;
+        boolean yAxis = front.getAxis() == Direction.Axis.Y;
+        boolean zAxis = front.getAxis() == Direction.Axis.Z;
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
                 // Skip the controller block itself
-                if (x == 0 && y == 0)
-                    continue;
-                var blockPos = centerPos.offset(permuteXZ ? x : 0, y, permuteXZ ? 0 : x);
+                if (i == 0 && j == 0) continue;
+
+                var blockPos = centerPos.offset(xAxis ? 0 : i, yAxis ? 0 : xAxis ? i : j, zAxis ? 0 : j);
                 var blockState = this.getLevel().getBlockState(blockPos);
                 if (!blockState.isAir())
                     return true;
             }
         }
+
         return false;
     }
 
