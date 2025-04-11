@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -38,8 +37,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -60,6 +57,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    private boolean hasCircuitSlot = true;
     @Getter
     @Setter
     @Persisted
@@ -69,14 +67,15 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
-    protected final ItemHandlerProxyRecipeTrait combinedInventory;
+    @Persisted
+    @DescSynced
+    private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitSlotEnabled = true;
-        this.circuitInventory = createCircuitItemHandler(io);
-        this.combinedInventory = createCombinedItemHandler(io);
+        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
 
     //////////////////////////////////////
@@ -101,15 +100,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
+            hasCircuitSlot = false;
+            setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        }
-    }
-
-    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
-        } else {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
         }
     }
 
@@ -128,9 +121,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
+        getHandlerList().setDistinct(isDistinct);
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
-
-        combinedInventory.recomputeEnabledState();
     }
 
     @Override
@@ -143,20 +135,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     @Override
-    public boolean isDistinct() {
-        return io != IO.OUT && getInventory().isDistinct() && circuitInventory.isDistinct();
-    }
-
-    @Override
-    public void setDistinct(boolean isDistinct) {
-        getInventory().setDistinct(isDistinct);
-        circuitInventory.setDistinct(isDistinct);
-        combinedInventory.setDistinct(isDistinct);
+    public void setDistinct(boolean distinct) {
+        isDistinct = (io != IO.OUT && distinct);
+        getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
     @Override
     public void addedToController(IMultiController controller) {
-        if (!controller.allowCircuitSlots()) {
+        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 clearInventory(circuitInventory.storage);
             } else {
@@ -170,6 +156,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Override
     public void removedFromController(IMultiController controller) {
         super.removedFromController(controller);
+        if (!hasCircuitSlot) return;
         for (var c : controllers) {
             if (!c.allowCircuitSlots()) {
                 return;
@@ -232,7 +219,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             IDistinctPart.super.superAttachConfigurators(configuratorPanel);
         } else if (this.io == IO.IN) {
             IDistinctPart.super.attachConfigurators(configuratorPanel);
-            if (isCircuitSlotEnabled()) {
+            if (hasCircuitSlot && isCircuitSlotEnabled()) {
                 configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
         }

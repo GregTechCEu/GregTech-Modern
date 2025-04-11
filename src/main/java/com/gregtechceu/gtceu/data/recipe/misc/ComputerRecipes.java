@@ -27,19 +27,21 @@ public class ComputerRecipes {
                 .inputItems(TOOL_DATA_STICK, 4)
                 .inputItems(CustomTags.EV_CIRCUITS, 4)
                 .outputItems(DATA_ACCESS_HATCH)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L * 2))
+                .inputFluids(Polytetrafluoroethylene, L * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[EV]).save(provider);
+                .duration(200).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("advanced_data_access_hatch")
                 .inputItems(ITEM_IMPORT_BUS[LuV])
                 .inputItems(TOOL_DATA_ORB, 4)
                 .inputItems(CustomTags.ZPM_CIRCUITS, 4)
                 .outputItems(ADVANCED_DATA_ACCESS_HATCH)
-                .inputFluids(SolderingAlloy.getFluid(L * 4))
-                .inputFluids(Polybenzimidazole.getFluid(L * 4))
+                .inputFluids(SolderingAlloy, L * 4)
+                .inputFluids(Polybenzimidazole, L * 4)
                 .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
-                .duration(400).EUt(6000).save(provider);
+                .duration(400).EUt(6000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)
@@ -50,7 +52,8 @@ public class ComputerRecipes {
                 .inputItems(wireGtSingle, NiobiumTitanium, 2)
                 .outputItems(HIGH_POWER_CASING,
                         ConfigHolder.INSTANCE.recipes.casingsPerCraft)
-                .duration(100).EUt(VA[IV]).save(provider);
+                .duration(100).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computer_casing")
                 .inputItems(frameGt, Iridium)
@@ -61,7 +64,8 @@ public class ComputerRecipes {
                 .inputItems(wireGtSingle, VanadiumGallium, 2)
                 .outputItems(COMPUTER_CASING,
                         ConfigHolder.INSTANCE.recipes.casingsPerCraft)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("advanced_computer_casing")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -70,7 +74,8 @@ public class ComputerRecipes {
                 .inputItems(wireFine, Electrum, 64)
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 4)
                 .outputItems(ADVANCED_COMPUTER_CASING)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computer_heat_vent")
                 .inputItems(frameGt, StainlessSteel)
@@ -81,15 +86,17 @@ public class ComputerRecipes {
                 .inputItems(wireGtSingle, SamariumIronArsenicOxide)
                 .outputItems(COMPUTER_HEAT_VENT,
                         ConfigHolder.INSTANCE.recipes.casingsPerCraft)
-                .duration(100).EUt(VA[EV]).save(provider);
+                .duration(100).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("optical_pipe")
                 .inputItems(wireFine, BorosilicateGlass, 8)
                 .inputItems(foil, Silver, 8)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L))
+                .inputFluids(Polytetrafluoroethylene, L)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .outputItems(OPTICAL_PIPES[0])
-                .duration(100).EUt(VA[IV]).save(provider);
+                .duration(100).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("data_bank")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -99,14 +106,15 @@ public class ComputerRecipes {
                 .inputItems(wireFine, Copper, 64)
                 .inputItems(OPTICAL_PIPES[0].asStack(4))
                 .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 16)
-                .inputFluids(SolderingAlloy.getFluid(L * 2))
-                .inputFluids(Lubricant.getFluid(500))
+                .inputFluids(SolderingAlloy, L * 2)
+                .inputFluids(Lubricant, 500)
                 .outputItems(DATA_BANK)
                 .scannerResearch(b -> b
                         .researchStack(DATA_ACCESS_HATCH.asStack())
                         .duration(2400)
                         .EUt(VA[EV]))
-                .duration(1200).EUt(6000).save(provider);
+                .duration(1200).EUt(6000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("research_station")
                 .inputItems(DATA_BANK)
@@ -117,14 +125,15 @@ public class ComputerRecipes {
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 32)
                 .inputItems(foil, Trinium, 32)
                 .inputItems(OPTICAL_PIPES[0].asStack(16))
-                .inputFluids(SolderingAlloy.getFluid(L * 8))
-                .inputFluids(VanadiumGallium.getFluid(L * 8))
+                .inputFluids(SolderingAlloy, L * 8)
+                .inputFluids(VanadiumGallium, L * 8)
                 .outputItems(RESEARCH_STATION)
                 .scannerResearch(b -> b
                         .researchStack(SCANNER[LuV].asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
-                .duration(1200).EUt(100000).save(provider);
+                .duration(1200).EUt(100000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("object_holder")
                 .inputItems(ITEM_IMPORT_BUS[ZPM])
@@ -134,14 +143,15 @@ public class ComputerRecipes {
                 .inputItems(ELECTRIC_MOTOR_ZPM, 2)
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
-                .inputFluids(SolderingAlloy.getFluid(L * 4))
-                .inputFluids(Polybenzimidazole.getFluid(L * 2))
+                .inputFluids(SolderingAlloy, L * 4)
+                .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(OBJECT_HOLDER)
                 .scannerResearch(b -> b
                         .researchStack(ITEM_IMPORT_BUS[ZPM].asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
-                .duration(1200).EUt(100000).save(provider);
+                .duration(1200).EUt(100000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("network_switch")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -152,14 +162,15 @@ public class ComputerRecipes {
                 .inputItems(foil, Tritanium, 64)
                 .inputItems(foil, Tritanium, 64)
                 .inputItems(OPTICAL_PIPES[0].asStack(8))
-                .inputFluids(SolderingAlloy.getFluid(L * 4))
-                .inputFluids(Polybenzimidazole.getFluid(L * 4))
+                .inputFluids(SolderingAlloy, L * 4)
+                .inputFluids(Polybenzimidazole, L * 4)
                 .outputItems(NETWORK_SWITCH)
                 .stationResearch(b -> b
                         .researchStack(new ItemStack(OPTICAL_PIPES[0]))
                         .CWUt(32)
                         .EUt(VA[ZPM]))
-                .duration(1200).EUt(100000).save(provider);
+                .duration(1200).EUt(100000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("high_performance_computing_array")
                 .inputItems(DATA_BANK)
@@ -169,33 +180,36 @@ public class ComputerRecipes {
                 .inputItems(COVER_SCREEN)
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 64)
                 .inputItems(OPTICAL_PIPES[0].asStack(16))
-                .inputFluids(SolderingAlloy.getFluid(L * 8))
-                .inputFluids(VanadiumGallium.getFluid(L * 8))
-                .inputFluids(PCBCoolant.getFluid(4000))
+                .inputFluids(SolderingAlloy, L * 8)
+                .inputFluids(VanadiumGallium, L * 8)
+                .inputFluids(PCBCoolant, 4000)
                 .outputItems(HIGH_PERFORMANCE_COMPUTING_ARRAY)
                 .scannerResearch(b -> b
                         .researchStack(COVER_SCREEN.asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
-                .duration(1200).EUt(100000).save(provider);
+                .duration(1200).EUt(100000)
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_empty_component")
                 .inputItems(COMPUTER_CASING.asStack())
                 .inputItems(CustomTags.IV_CIRCUITS)
                 .inputItems(TOOL_DATA_STICK)
                 .outputItems(HPCA_EMPTY_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[IV]).save(provider);
+                .duration(200).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_heat_sink_component")
                 .inputItems(HPCA_EMPTY_COMPONENT)
                 .inputItems(plate, Aluminium, 32)
                 .inputItems(screw, StainlessSteel, 8)
                 .outputItems(HPCA_HEAT_SINK_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[IV]).save(provider);
+                .duration(200).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_active_cooler_component")
                 .inputItems(ADVANCED_COMPUTER_CASING.asStack())
@@ -203,9 +217,10 @@ public class ComputerRecipes {
                 .inputItems(pipeTinyFluid, StainlessSteel, 16)
                 .inputItems(screw, StainlessSteel, 8)
                 .outputItems(HPCA_ACTIVE_COOLER_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[IV]).save(provider);
+                .duration(200).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_bridge_component")
                 .inputItems(ADVANCED_COMPUTER_CASING.asStack())
@@ -213,27 +228,30 @@ public class ComputerRecipes {
                 .inputItems(EMITTER_ZPM)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
                 .outputItems(HPCA_BRIDGE_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_computation_component")
                 .inputItems(HPCA_EMPTY_COMPONENT)
                 .inputItems(CustomTags.ZPM_CIRCUITS, 4)
                 .inputItems(FIELD_GENERATOR_LuV)
                 .outputItems(HPCA_COMPUTATION_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_advanced_computation_component")
                 .inputItems(HPCA_COMPUTATION_COMPONENT)
                 .inputItems(CustomTags.UV_CIRCUITS, 4)
                 .inputItems(FIELD_GENERATOR_ZPM)
                 .outputItems(HPCA_ADVANCED_COMPUTATION_COMPONENT)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[ZPM]).save(provider);
+                .duration(200).EUt(VA[ZPM])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("data_receiver_hatch")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -241,10 +259,11 @@ public class ComputerRecipes {
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(SENSOR_IV)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
-                .inputFluids(Polybenzimidazole.getFluid(L * 2))
+                .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(DATA_HATCH_RECEIVER)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("data_transmitter_hatch")
                 .inputItems(COMPUTER_CASING.asStack())
@@ -252,44 +271,49 @@ public class ComputerRecipes {
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(EMITTER_IV)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
-                .inputFluids(Polybenzimidazole.getFluid(L * 2))
+                .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(DATA_HATCH_TRANSMITTER)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_receiver_hatch")
                 .inputItems(DATA_HATCH_RECEIVER)
                 .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(SENSOR_LuV)
-                .inputFluids(Polybenzimidazole.getFluid(L * 2))
+                .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(COMPUTATION_HATCH_RECEIVER)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_transmitter_hatch")
                 .inputItems(DATA_HATCH_TRANSMITTER)
                 .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(EMITTER_LuV)
-                .inputFluids(Polybenzimidazole.getFluid(L * 2))
+                .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(COMPUTATION_HATCH_TRANSMITTER)
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[LuV]).save(provider);
+                .duration(200).EUt(VA[LuV])
+                .addMaterialInfo(true, true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("active_transformer")
                 .inputItems(POWER_TRANSFORMER[LuV])
                 .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 8)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputFluids(PCBCoolant.getFluid(1000))
+                .inputFluids(PCBCoolant, 1000)
                 .outputItems(GTMultiMachines.ACTIVE_TRANSFORMER)
-                .duration(300).EUt(VA[LuV]).save(provider);
+                .duration(300).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("laser_cable")
                 .inputItems(CASING_LAMINATED_GLASS.asStack(1))
                 .inputItems(foil, Osmiridium, 2)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L))
+                .inputFluids(Polytetrafluoroethylene, L)
                 .outputItems(LASER_PIPES[0])
                 .cleanroom(CleanroomType.CLEANROOM)
-                .duration(100).EUt(VA[IV]).save(provider);
+                .duration(100).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
     }
 }

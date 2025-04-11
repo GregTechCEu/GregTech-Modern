@@ -18,7 +18,7 @@ public class EnergyDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getEnergyInfoProvider() != null;
+        return super.canAttach() && getEnergyInfoProvider() != null;
     }
 
     @Override

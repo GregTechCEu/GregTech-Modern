@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     RecipeLogic getRecipeLogic();
 
     default GTRecipe fullModifyRecipe(GTRecipe recipe) {
-        return doModifyRecipe(recipe.trimRecipeOutputs(this.getOutputLimits()));
+        return doModifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()));
     }
 
     /**
@@ -107,7 +108,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
      */
-    default boolean dampingWhenWaiting() {
+    default boolean regressWhenWaiting() {
         return self().getDefinition().isRegressWhenWaiting();
     }
 

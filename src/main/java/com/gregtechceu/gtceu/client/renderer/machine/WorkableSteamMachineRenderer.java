@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
@@ -46,9 +45,9 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
                               Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        Direction upwardsFacing = Direction.NORTH;
-        if (machine instanceof IMultiController multi) {
-            upwardsFacing = multi.self().getUpwardsFacing();
+        var upwardsFacing = Direction.NORTH;
+        if (machine != null && machine.allowExtendedFacing()) {
+            upwardsFacing = machine.getUpwardsFacing();
         }
         if (machine instanceof IWorkable workable) {
             quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),

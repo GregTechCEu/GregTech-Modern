@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
@@ -22,10 +23,13 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -71,9 +75,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -88,6 +90,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
  *           All fundamental features will be implemented here.
  *           To add additional features, you can see {@link IMachineFeature}
  */
+@SuppressWarnings("removal")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighlight,
@@ -96,6 +99,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    @Setter
+    @Getter
+    @Persisted
+    @DescSynced
+    @Nullable
+    private UUID ownerUUID;
     @Getter
     public final IMachineBlockEntity holder;
     @Getter
@@ -373,6 +382,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                               BlockHitResult hitResult) {
+        if (gridSide == getFrontFacing() && allowExtendedFacing()) {
+            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
+                    getUpwardsFacing().getClockWise());
+            playerIn.swing(hand);
+            return InteractionResult.CONSUME;
+        }
         if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
@@ -587,7 +602,19 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public boolean isFacingValid(Direction facing) {
+        if (allowExtendedFacing()) {
+            return true;
+        }
         if (hasFrontFacing() && facing == getFrontFacing()) return false;
+        var coverContainer = getCoverContainer();
+        if (coverContainer.hasCover(facing)) {
+            // noinspection DataFlowIssue
+            var coverDefinition = coverContainer.getCoverAtSide(facing).coverDefinition;
+            var behaviour = coverDefinition.createCoverBehavior(coverContainer, getFrontFacing());
+            if (!behaviour.canAttach()) {
+                return false;
+            }
+        }
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock) {
             return metaMachineBlock.rotationState.test(facing);
@@ -596,14 +623,55 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public void setFrontFacing(Direction facing) {
+        var oldFacing = getFrontFacing();
+
+        if (allowExtendedFacing()) {
+            var newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
+            setUpwardsFacing(newUpwardsFacing);
+        }
+
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock && isFacingValid(facing)) {
             getLevel().setBlockAndUpdate(getPos(),
                     blockState.setValue(metaMachineBlock.rotationState.property, facing));
         }
+
+        if (getLevel() != null && !getLevel().isClientSide) {
+            notifyBlockUpdate();
+            markDirty();
+        }
+    }
+
+    public Direction getUpwardsFacing() {
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) :
+                Direction.NORTH;
+    }
+
+    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+        if (!getDefinition().isAllowExtendedFacing()) {
+            return;
+        }
+        if (upwardsFacing.getAxis() == Direction.Axis.Y) {
+            GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
+            return;
+        }
+        var blockState = getBlockState();
+        if (blockState.getBlock() instanceof MetaMachineBlock &&
+                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+            getLevel().setBlockAndUpdate(getPos(),
+                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+            if (getLevel() != null && !getLevel().isClientSide) {
+                notifyBlockUpdate();
+                markDirty();
+            }
+        }
     }
 
     public void onRotated(Direction oldFacing, Direction newFacing) {}
+
+    public boolean allowExtendedFacing() {
+        return getDefinition().isAllowExtendedFacing();
+    }
 
     public int tintColor(int index) {
         // index < -100 => emission if shimmer is installed.
@@ -652,6 +720,18 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (cover == null) return false;
 
         return cover.canConnectRedstone();
+    }
+
+    //////////////////////////////////////
+    // ****** Ownership ********//
+    //////////////////////////////////////
+
+    public @Nullable MachineOwner getOwner() {
+        return MachineOwner.getOwner(ownerUUID);
+    }
+
+    public @Nullable PlayerOwner getPlayerOwner() {
+        return MachineOwner.getPlayerOwner(ownerUUID);
     }
 
     //////////////////////////////////////

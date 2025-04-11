@@ -101,7 +101,20 @@ public class CustomTags {
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
     public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
-    // Platform-dependent tags
+
+    // Mineability tags
+    public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
+    public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");
+    public static final TagKey<Block> MINEABLE_WITH_SAW = TagUtil.createBlockTag("mineable/saw");
+    public static final TagKey<Block> MINEABLE_WITH_HAMMER = TagUtil.createBlockTag("mineable/hammer");
+    public static final TagKey<Block> MINEABLE_WITH_CROWBAR = TagUtil.createBlockTag("mineable/crowbar");
+    public static final TagKey<Block> MINEABLE_WITH_KNIFE = TagUtil.createBlockTag("mineable/knife");
+    public static final TagKey<Block> MINEABLE_WITH_SHEARS = TagUtil.createBlockTag("mineable/shears");
+    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH = TagUtil
+            .createModBlockTag("mineable/pickaxe_or_wrench");
+    public static final TagKey<Block> MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER = TagUtil
+            .createModBlockTag("mineable/pickaxe_or_wire_cutter");
+
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createBlockTag("needs_gold_tool");
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createBlockTag("needs_netherite_tool");
@@ -116,7 +129,7 @@ public class CustomTags {
     public static final TagKey<Item> DRILLS = TagUtil.createItemTag("tools/drills");
     public static final TagKey<Item> FILES = TagUtil.createItemTag("tools/files");
     public static final TagKey<Item> HAMMERS = TagUtil.createItemTag("tools/hammers");
-    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knife");
+    public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knives");
     public static final TagKey<Item> MALLETS = TagUtil.createItemTag("tools/mallets");
     public static final TagKey<Item> MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
     public static final TagKey<Item> MORTARS = TagUtil.createItemTag("tools/mortars");
@@ -130,6 +143,18 @@ public class CustomTags {
     public static final TagKey<Item> WRENCHES = TagUtil.createItemTag("tools/wrenches");
     public static final TagKey<Item> WRENCH = TagUtil.createItemTag("tools/wrench"); // Compat with other mods
 
+    // Tool Crafting Tags
+    public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("tools/crafting_crowbars");
+    public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("tools/crafting_files");
+    public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("tools/crafting_hammers");
+    public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("tools/crafting_knives");
+    public static final TagKey<Item> CRAFTING_MALLETS = TagUtil.createModItemTag("tools/crafting_mallets");
+    public static final TagKey<Item> CRAFTING_MORTARS = TagUtil.createModItemTag("tools/crafting_mortars");
+    public static final TagKey<Item> CRAFTING_SAWS = TagUtil.createModItemTag("tools/crafting_saws");
+    public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("tools/crafting_screwdrivers");
+    public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
+    public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("tools/crafting_wrenches");
+
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {
             NEEDS_WOOD_TOOL,
@@ -140,15 +165,6 @@ public class CustomTags {
             NEEDS_DURANIUM_TOOL,
             NEEDS_NEUTRONIUM_TOOL,
     };
-
-    // Tool harvest tags
-    public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
-    public static final TagKey<Block> MINEABLE_WITH_SAW = TagUtil.createBlockTag("mineable/saw");
-    public static final TagKey<Block> MINEABLE_WITH_HAMMER = TagUtil.createBlockTag("mineable/hammer");
-    public static final TagKey<Block> MINEABLE_WITH_CROWBAR = TagUtil.createBlockTag("mineable/crowbar");
-    public static final TagKey<Block> MINEABLE_WITH_KNIFE = TagUtil.createBlockTag("mineable/knife");
-    public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");
-    public static final TagKey<Block> MINEABLE_WITH_SHEARS = TagUtil.createBlockTag("mineable/shears");
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
     public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");
@@ -166,4 +182,6 @@ public class CustomTags {
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
+    public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
+    public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
 }
