@@ -3,16 +3,12 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
-import dev.latvian.mods.kubejs.recipe.component.MapRecipeComponent;
-import dev.latvian.mods.kubejs.recipe.component.StringComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TinyMap;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.chars.CharArrayList;
 import it.unimi.dsi.fastutil.chars.CharArraySet;
 import it.unimi.dsi.fastutil.chars.CharList;
@@ -21,6 +17,10 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
 public interface GTShapedRecipeSchema {
 
@@ -32,6 +32,11 @@ public interface GTShapedRecipeSchema {
         public ShapedRecipeJS addMaterialInfo() {
             addMaterialInfo = true;
             return this;
+        }
+
+        @HideFromJS
+        public boolean hasIngredientActions() {
+            return recipeIngredientActions != null && !recipeIngredientActions.isEmpty();
         }
 
         // Adapted from KJS's ShapedRecipeSchema#ShapedRecipeJS
@@ -86,10 +91,6 @@ public interface GTShapedRecipeSchema {
             }
         }
     }
-
-    RecipeKey<OutputItem> RESULT = ItemComponents.OUTPUT.key("result");
-    RecipeKey<String[]> PATTERN = StringComponent.NON_EMPTY.asArray().key("pattern");
-    RecipeKey<TinyMap<Character, InputItem>> KEY = MapRecipeComponent.ITEM_PATTERN_KEY.key("key");
 
     RecipeSchema SCHEMA = new RecipeSchema(ShapedRecipeJS.class, ShapedRecipeJS::new, RESULT, PATTERN, KEY)
             .constructor(RESULT, PATTERN, KEY)

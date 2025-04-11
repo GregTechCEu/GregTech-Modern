@@ -84,7 +84,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -95,6 +94,7 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import dev.latvian.mods.kubejs.recipe.KubeJSRecipeEventHandler;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
@@ -103,6 +103,7 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
@@ -114,7 +115,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema.*;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
 /**
  * @author KilaBash
@@ -217,7 +220,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         }
         var ns = event.namespace(GTCEu.MOD_ID);
         ns.put("shaped", new WrappingRecipeSchemaType(ns, GTCEu.id("shaped"),
-                GTShapedRecipeSchema.SCHEMA, RecipeSerializer.SHAPED_RECIPE));
+                GTShapedRecipeSchema.SCHEMA, KubeJSRecipeEventHandler.SHAPED.get()));
     }
 
     @Override
@@ -523,8 +526,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
         }
         if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
-            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
-                    .get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
+            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
         }
         builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 
@@ -584,8 +586,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         gtRecipe.fluidMaterialStacks = null;
 
         builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
-        if (gtRecipe.removeMaterialInfo)
+        if (gtRecipe.removeMaterialInfo) {
             builder.removePreviousMaterialInfo();
+        }
 
         builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                 GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
@@ -593,6 +596,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     private static void handleGTShaped(GTShapedRecipeSchema.ShapedRecipeJS shaped) {
         if (!shaped.isAddMaterialInfo()) return;
+        // Difficult to deal with ingredient actions, so we just won't support them with decomposition
+        if (shaped.hasIngredientActions()) {
+            ConsoleJS.getCurrent(ConsoleJS.SERVER)
+                    .warnf("Ingredient Actions are not supported with decomposition, check recipe {%s}", shaped.id);
+            return;
+        }
 
         var pattern = shaped.getValue(PATTERN);
         final var tools = ToolHelper.getToolSymbols();
@@ -600,7 +609,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         var entries = key.entries();
 
         // Parse Material Info
-        Char2IntOpenHashMap inputMap = new Char2IntOpenHashMap();
+        Char2IntOpenHashMap inputMap = new Char2IntOpenHashMap(entries.length);
         for (String s : pattern) {
             for (char c : s.toCharArray()) {
                 if (tools.contains(c)) continue; // Skip tools for decomp
@@ -619,6 +628,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (inCount == 0) continue;
             ItemStack[] stacks = entry.value().kjs$asIngredient().getItems();
             if (stacks.length == 0 || stacks[0].isEmpty()) continue;
+            if (stacks[0].getCraftingRemainingItem() != ItemStack.EMPTY) continue;
             var item = stacks[0].getItem();
 
             var info = ItemMaterialData.getMaterialInfo(item);

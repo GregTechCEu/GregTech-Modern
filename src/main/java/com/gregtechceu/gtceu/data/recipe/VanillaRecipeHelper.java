@@ -416,6 +416,7 @@ public class VanillaRecipeHelper {
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {
         var builder = new ShapedFluidContainerRecipeBuilder(regName).output(result);
+        builder.isStrict(isStrict);
         final CharSet tools = ToolHelper.getToolSymbols();
         CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
