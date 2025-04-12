@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,5 +48,18 @@ public class MultiPlayerGameModeMixin {
         BlockState state = level.getBlockState(pos);
 
         state.getBlock().destroy(level, pos, state);
+    }
+
+    @Shadow
+    private ItemStack destroyingItem;
+    @Shadow
+    private BlockPos destroyBlockPos;
+
+    @Inject(method = "sameDestroyTarget", at = @At("RETURN"), cancellable = true)
+    private void gtceu$sameDestroyTarget(BlockPos pos, CallbackInfoReturnable<Boolean> cir,
+                                         @Local ItemStack itemstack) {
+        boolean gtmTarget = pos.equals(this.destroyBlockPos) && ItemStack.isSameItem(itemstack, this.destroyingItem) &&
+                !this.destroyingItem.shouldCauseBlockBreakReset(itemstack);
+        cir.setReturnValue(gtmTarget || cir.getReturnValue());
     }
 }

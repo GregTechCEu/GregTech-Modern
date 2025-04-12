@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
@@ -59,11 +57,10 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                             modelState, -101, 0, true, false));
                     quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
                             modelState, -101, 0, true, false));
-                    var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(rotorHolderMachine.getRotorStack());
-                    if (rotorBehaviour != null) {
-                        Material mat = rotorBehaviour.getPartMaterial(rotorHolderMachine.getRotorStack());
-                        boolean emissive = mat.hasProperty(PropertyKey.ORE) &&
-                                mat.getProperty(PropertyKey.ORE).isEmissive();
+                    var material = rotorHolderMachine.getRotorMaterial();
+                    if (!material.isNull()) {
+                        boolean emissive = material.hasProperty(PropertyKey.ORE) &&
+                                material.getProperty(PropertyKey.ORE).isEmissive();
                         if (rotorHolderMachine.isRotorSpinning()) {
                             quads.add(
                                     StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),

@@ -31,6 +31,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import org.joml.Quaternionf;
 
+import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
+
 /**
  * @author KilaBash
  * @date 2023/3/2
@@ -69,7 +71,8 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
             // Don't need to handle locked items here since they don't get saved to the item
-            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY,
+            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick,
+                    ItemStack.EMPTY,
                     stack.is(CREATIVE_CHEST_ITEM));
 
             poseStack.popPose();
@@ -83,30 +86,42 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof QuantumChestMachine machine) {
+            poseStack.pushPose();
             var level = machine.getLevel();
             var frontFacing = machine.getFrontFacing();
-            float tick = level.getGameTime() + partialTicks;
-            renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(), tick,
-                    machine.getLockedItem(), machine instanceof CreativeChestMachine);
+            var upwardFacing = machine.getUpwardsFacing();
+            var tick = level.getGameTime() + partialTicks;
+            poseStack.translate(.5, .5, .5);
+            rotateMatrix(poseStack.last().pose(),
+                    upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
+                    frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
+            poseStack.translate(-.5, -.5, -.5);
+            renderChest(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(),
+                    tick, machine.getLockedItem(), machine instanceof CreativeChestMachine);
+            poseStack.popPose();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderChest(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, ItemStack stored,
-                            long storedAmount,
-                            float tick, ItemStack locked, boolean isCreative) {
+                            long storedAmount, float tick, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
 
         var itemRenderer = Minecraft.getInstance().getItemRenderer();
         poseStack.pushPose();
-        BakedModel bakedmodel = itemRenderer.getModel(itemStack, Minecraft.getInstance().level, null,
-                Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
         poseStack.translate(0.5D, 0.5d, 0.5D);
+        if (frontFacing.getAxis() == Direction.Axis.Y) {
+            var north = Direction.NORTH.step();
+            var front = frontFacing.step();
+            var rotationAngle = getRotationAngle(north, front);
+            poseStack.mulPose(new Quaternionf().fromAxisAngleRad(getRotationAxis(north, front), rotationAngle));
+        }
         poseStack.mulPose(new Quaternionf().rotateAxis(tick * Mth.TWO_PI / 80, 0, 1, 0));
         poseStack.scale(0.6f, 0.6f, 0.6f);
-        itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, poseStack, buffer, 0xf000f0,
-                OverlayTexture.NO_OVERLAY, bakedmodel);
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, 0xf000f0, OverlayTexture.NO_OVERLAY,
+                poseStack, buffer, Minecraft.getInstance().level,
+                Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
         poseStack.popPose();
 
         poseStack.pushPose();

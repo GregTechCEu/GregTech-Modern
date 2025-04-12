@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.world.item.ItemStack;
@@ -21,22 +22,25 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DrumMachineItem extends MetaMachineItem {
 
-    private Material mat;
+    @NotNull
+    private Material mat = GTMaterials.NULL;
 
-    protected DrumMachineItem(IMachineBlock block, Properties properties, Material mat) {
+    protected DrumMachineItem(IMachineBlock block, Properties properties, @NotNull Material mat) {
         super(block, properties);
         this.mat = mat;
     }
 
-    public static DrumMachineItem create(IMachineBlock block, Properties properties, Material mat) {
+    public static DrumMachineItem create(IMachineBlock block, Properties properties, @NotNull Material mat) {
         return new DrumMachineItem(block, properties, mat);
     }
 
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
         FluidPipeProperties property;
-        if (mat.hasProperty(PropertyKey.FLUID_PIPE))
+        if (mat.hasProperty(PropertyKey.FLUID_PIPE)) {
             property = mat.getProperty(PropertyKey.FLUID_PIPE);
-        else property = null;
+        } else {
+            property = null;
+        }
 
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM && property != null) {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(

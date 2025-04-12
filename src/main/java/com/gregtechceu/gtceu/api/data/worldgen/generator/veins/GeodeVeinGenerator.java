@@ -46,7 +46,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -324,7 +324,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                                      Either<BlockStateProvider, Material> middleLayerProvider,
                                      Either<BlockStateProvider, Material> outerLayerProvider,
                                      List<BlockState> innerPlacements, TagKey<Block> cannotReplace,
-                                     TagKey<Block> invalidBlocks, @Nullable TagPrefix providerMaterialPrefix) {
+                                     TagKey<Block> invalidBlocks, @NotNull TagPrefix providerMaterialPrefix) {
 
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(BlockStateProvider.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("filling_provider")

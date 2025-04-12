@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -9,9 +8,11 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -33,9 +34,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,7 +47,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
 
-    public int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
+    @Getter
+    @Setter
+    private int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
+
+    @Nullable
+    private SteamEnergyRecipeHandler steamEnergy = null;
 
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
     public static final double CONVERSION_RATE = 2.0;
@@ -59,22 +67,23 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        var handlers = capabilitiesProxy.get(IO.IN, FluidRecipeCapability.CAP);
-        if (handlers == null) return;
-        var itr = handlers.iterator();
-        while (itr.hasNext()) {
-            var handler = itr.next();
-            if (handler instanceof NotifiableFluidTank tank) {
-                if (tank.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
-                    itr.remove();
-                    if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
-                        capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
+        for (var part : getParts()) {
+            if (!PartAbility.STEAM.isApplicable(part.self().getDefinition().getBlock())) continue;
+            var handlers = part.getRecipeHandlers();
+            for (var hl : handlers) {
+                if (!hl.isValid(IO.IN)) continue;
+                for (var fluidHandler : hl.getCapability(FluidRecipeCapability.CAP)) {
+                    if (!(fluidHandler instanceof NotifiableFluidTank nft)) continue;
+                    if (nft.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
+                        steamEnergy = new SteamEnergyRecipeHandler(nft, getConversionRate());
+                        addHandlerList(RecipeHandlerList.of(IO.IN, steamEnergy));
+                        return;
                     }
-                    capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP)
-                            .add(new SteamEnergyRecipeHandler(tank, getConversionRate()));
-                    return;
                 }
             }
+        }
+        if (steamEnergy == null) { // No steam hatch found
+            onStructureInvalid();
         }
     }
 
@@ -92,7 +101,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
      * Then, duration is multiplied by {@code 1.5×} and EUt is multiplied by {@code (8/9) × parallels}, up to a cap of
      * 32 EUt
      * </p>
-     * 
+     *
      * @param machine a {@link SteamParallelMultiblockMachine}
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Steam Multiblock Machine and recipe
@@ -121,14 +130,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-            var handlers = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
-            if (handlers != null && handlers.size() > 0 &&
-                    handlers.get(0) instanceof SteamEnergyRecipeHandler steamHandler) {
-                if (steamHandler.getCapacity() > 0) {
-                    long steamStored = steamHandler.getStored();
-                    textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
-                            steamHandler.getCapacity()));
-                }
+            assert steamEnergy != null : "Formed without Steam Hatch";
+            if (steamEnergy.getCapacity() > 0) {
+                long steamStored = steamEnergy.getStored();
+                textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
+                        steamEnergy.getCapacity()));
             }
 
             if (!isWorkingEnabled()) {
@@ -136,8 +142,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
-                if (maxParallels > 1)
-                    textList.add(Component.translatable("gtceu.multiblock.parallel", maxParallels));
+                if (maxParallels > 1) textList.add(Component.translatable("gtceu.multiblock.parallel", maxParallels));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
                 double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
                 double currentInSec = (float) recipeLogic.getProgress() / 20.0f;

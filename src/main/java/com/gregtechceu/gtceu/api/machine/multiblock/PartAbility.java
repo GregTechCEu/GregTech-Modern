@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
+
 import net.minecraft.world.level.block.Block;
 
-import com.google.common.base.Suppliers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
@@ -64,7 +65,7 @@ public class PartAbility {
      */
     private final Int2ObjectMap<Set<Block>> registry = new Int2ObjectOpenHashMap<>();
 
-    private Supplier<Collection<Block>> allBlocks = Suppliers
+    private final Supplier<Collection<Block>> allBlocks = GTMemoizer
             .memoize(() -> registry.values().stream().flatMap(Collection::stream).toList());
 
     @Getter
