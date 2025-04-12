@@ -1,8 +1,15 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.common.block.CableBlock;
+import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -136,11 +143,27 @@ public abstract class LevelRendererMixin {
                                                  double camX, double camY, double camZ, BlockPos pos,
                                                  BlockState state) {
         assert level != null;
+        int rgb = 0;
+        var override = false;
         if (state.getBlock() instanceof MaterialBlock matBlock) {
-            int rgb = matBlock.material.getMaterialRGB();
-            float red = (float) FastColor.ARGB32.red(rgb) / 255f;
-            float green = (float) FastColor.ARGB32.green(rgb) / 255f;
-            float blue = (float) FastColor.ARGB32.blue(rgb) / 255f;
+            override = true;
+            rgb = matBlock.material.getMaterialRGB();
+        } else if (state.getBlock() instanceof MetaMachineBlock &&
+                level.getBlockEntity(pos) instanceof MetaMachineBlockEntity mmbe) {
+                    if (mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                        override = true;
+                        rgb = GTValues.VCM[tiered.getTier()];
+                    }
+                } else
+            if (state.getBlock() instanceof CableBlock &&
+                    level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
+                        override = true;
+                        rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
+                    }
+        if (override) {
+            var red = (float) FastColor.ARGB32.red(rgb) / 255f;
+            var green = (float) FastColor.ARGB32.green(rgb) / 255f;
+            var blue = (float) FastColor.ARGB32.blue(rgb) / 255f;
             renderShape(poseStack, consumer, state.getShape(level, pos, CollisionContext.of(entity)),
                     (double) pos.getX() - camX, (double) pos.getY() - camY, (double) pos.getZ() - camZ,
                     red, green, blue, 1F);
