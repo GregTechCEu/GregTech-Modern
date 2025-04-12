@@ -23,11 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-/**
- * @author lucifer_ll
- * @date 2023/7/13
- * @implNote ChargerRenderer
- */
 public class ChargerRenderer extends TieredHullMachineRenderer {
 
     public final static ResourceLocation CHARGER_IDLE = GTCEu.id("block/machines/charger/overlay_charger_idle");
@@ -53,34 +48,31 @@ public class ChargerRenderer extends TieredHullMachineRenderer {
             state = charger.getState();
         }
 
-        if (side == frontFacing && modelFacing != null) {
-            var bakedFaces = new ArrayList<BakedQuad>();
-            switch (state) {
-                case IDLE -> bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                        ModelFactory.getBlockSprite(CHARGER_IDLE),
-                        modelState, -1, 0, false, true));
-                case RUNNING -> {
-                    bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(CHARGER_RUNNING),
-                            modelState, -1, 0, true, true));
-                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                                ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
-                                modelState, -101, 15, true, false));
-                    }
-                }
-                case FINISHED -> {
-                    bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED),
-                            modelState, -1, 0, true, true));
-                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                                ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
-                                modelState, -101, 15, true, false));
-                    }
+        if (side != frontFacing || modelFacing == null) {
+            return;
+        }
+        switch (state) {
+            case IDLE -> quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE),
+                    modelState, -1, 0, false, true));
+            case RUNNING -> {
+                quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                        ModelFactory.getBlockSprite(CHARGER_RUNNING),
+                        modelState, -1, 0, true, true));
+                if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                            ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
+                            modelState, -101, 15, true, false));
                 }
             }
-            quads.addAll(bakedFaces);
-
+            case FINISHED -> {
+                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED),
+                        modelState, -1, 0, true, true));
+                if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                            ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
+                            modelState, -101, 15, true, false));
+                }
+            }
         }
     }
 
