@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.config;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 
+import net.minecraft.commands.Commands;
+
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
-import net.minecraft.commands.Commands;
 
 /**
  * @author KilaBash

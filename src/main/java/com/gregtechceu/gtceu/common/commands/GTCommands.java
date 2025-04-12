@@ -17,14 +17,10 @@ import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandRuntimeException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
-import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -36,18 +32,19 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
+import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 import static net.minecraft.commands.Commands.*;
 
@@ -58,15 +55,18 @@ import static net.minecraft.commands.Commands.*;
  */
 public class GTCommands {
 
-    public static final SuggestionProvider<CommandSourceStack> ALL_CAPES = SuggestionProviders.register(
-            GTCEu.id("all_capes"),
-            (ctx, builder) -> {
-                return SharedSuggestionProvider.suggestResource(CapeRegistry.ALL_CAPES.keySet(), builder);
-            });
+    public static final SuggestionProvider<CommandSourceStack> OWNED_CAPES = (ctx, builder) -> {
+        return SharedSuggestionProvider.suggestResource(findOwnedCapesFor(ctx), builder);
+    };
+    public static final SuggestionProvider<CommandSourceStack> NOT_OWNED_CAPES = (ctx, builder) -> {
+        return SharedSuggestionProvider.suggestResource(findNotOwnedCapesFor(ctx), builder);
+    };
     private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.cape.give.failed"));
     private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.cape.take.failed"));
+    private static final Dynamic2CommandExceptionType ERROR_USE_FAILED = new Dynamic2CommandExceptionType(
+            (player, cape) -> Component.translatable("command.gtceu.cape.use.failed", player, cape));
 
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
@@ -110,7 +110,7 @@ public class GTCommands {
                                         .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                         .then(argument("targets", EntityArgument.players())
                                                 .then(argument("cape", ResourceLocationArgument.id())
-                                                        .suggests(ALL_CAPES)
+                                                        .suggests(NOT_OWNED_CAPES)
                                                         .executes(ctx -> {
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
                                                             Collection<ResourceLocation> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
@@ -125,7 +125,7 @@ public class GTCommands {
                                         .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                         .then(argument("targets", EntityArgument.players())
                                                 .then(argument("cape", ResourceLocationArgument.id())
-                                                        .suggests(ALL_CAPES)
+                                                        .suggests(OWNED_CAPES)
                                                         .executes(ctx -> {
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
                                                             Collection<ResourceLocation> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
@@ -135,9 +135,78 @@ public class GTCommands {
                                                         .executes(ctx -> {
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
                                                             return takeCapes(ctx.getSource(), players, CapeRegistry.ALL_CAPES.keySet());
-                                                        }))))));
+                                                        }))))
+                                .then(literal("use")
+                                        .then(argument("target", EntityArgument.player())
+                                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
+                                                .then(argument("cape", ResourceLocationArgument.id())
+                                                        .suggests(OWNED_CAPES)
+                                                        .executes(ctx -> {
+                                                            ServerPlayer player = EntityArgument.getPlayer(ctx, "target");
+                                                            ResourceLocation cape = ResourceLocationArgument.getId(ctx, "cape");
+                                                            return setActiveCape(ctx.getSource(), player, cape);
+                                                        }))
+                                                .then(literal("none")
+                                                        .executes(ctx -> {
+                                                            ServerPlayer player = ctx.getSource().getPlayerOrException();
+                                                            return setActiveCape(ctx.getSource(), player, null);
+                                                        })))
+                                        .then(argument("cape", ResourceLocationArgument.id())
+                                                .suggests(OWNED_CAPES)
+                                                .executes(ctx -> {
+                                                    ServerPlayer player = ctx.getSource().getPlayerOrException();
+                                                    ResourceLocation cape = ResourceLocationArgument.getId(ctx, "cape");
+                                                    return setActiveCape(ctx.getSource(), player, cape);
+                                                }))
+                                        .then(literal("none")
+                                                .executes(ctx -> {
+                                                    ServerPlayer player = ctx.getSource().getPlayerOrException();
+                                                    return setActiveCape(ctx.getSource(), player, null);
+                                                })))));
     }
     // spotless:on
+
+    public static Collection<ServerPlayer> findPlayersFrom(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        // go through all variants of the used player target selectors to find the targeted players
+        try {
+            return Collections.singleton(ctx.getSource().getPlayerOrException());
+        } catch (CommandSyntaxException ignored) {
+            try {
+                return EntityArgument.getPlayers(ctx, "targets");
+            } catch (CommandSyntaxException e) {
+                return EntityArgument.getPlayers(ctx, "target");
+            }
+        }
+    }
+
+    public static Collection<ResourceLocation> findOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = findPlayersFrom(ctx);
+        if (players.isEmpty()) {
+            return CapeRegistry.ALL_CAPES.keySet();
+        }
+
+        Set<ResourceLocation> validCapes = new HashSet<>();
+        for (ServerPlayer player : players) {
+            validCapes.addAll(CapeRegistry.getUnlockedCapes(player.getUUID()));
+        }
+        return validCapes;
+    }
+
+    public static Collection<ResourceLocation> findNotOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = findPlayersFrom(ctx);
+        if (players.isEmpty()) {
+            return CapeRegistry.ALL_CAPES.keySet();
+        }
+
+        Set<ResourceLocation> allCapes = CapeRegistry.ALL_CAPES.keySet();
+        Set<ResourceLocation> validCapes = new HashSet<>();
+        for (ServerPlayer player : players) {
+            Set<ResourceLocation> unlockedCapes = new HashSet<>(CapeRegistry.getUnlockedCapes(player.getUUID()));
+            // find all capes this player *doesn't* have
+            validCapes.addAll(Sets.difference(allCapes, unlockedCapes));
+        }
+        return validCapes;
+    }
 
     public static int giveCapes(CommandSourceStack source,
                                 Collection<ServerPlayer> targets, Collection<ResourceLocation> capes)
@@ -202,6 +271,24 @@ public class GTCommands {
         }
         CapeRegistry.save();
         return successes;
+    }
+
+    private static int setActiveCape(CommandSourceStack source, ServerPlayer player, ResourceLocation cape)
+                                                                                                            throws CommandSyntaxException {
+        if (CapeRegistry.setActiveCape(player.getUUID(), cape)) {
+            if (cape != null) {
+                source.sendSuccess(() -> Component.translatable(
+                        "command.gtceu.cape.use.success", player.getDisplayName(), cape),
+                        true);
+            } else {
+                source.sendSuccess(() -> Component.translatable(
+                        "command.gtceu.cape.use.success.none", player.getDisplayName()),
+                        true);
+            }
+            return 1;
+        } else {
+            throw ERROR_USE_FAILED.create(player.getDisplayName(), cape);
+        }
     }
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,

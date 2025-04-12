@@ -14,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -41,10 +42,6 @@ public class CapeRegistry extends SavedData {
         save();
     }
 
-    private static void registerDevCapes() {
-        save();
-    }
-
     public static void registerToServer(ServerLevel level) {
         level.getDataStorage().computeIfAbsent(CapeRegistry.INSTANCE::load, CapeRegistry.INSTANCE::init, "gtceu_capes");
     }
@@ -52,7 +49,6 @@ public class CapeRegistry extends SavedData {
     private CapeRegistry init() {
         clearMaps();
         initCapes();
-        registerDevCapes();
         return this;
     }
 
@@ -124,12 +120,14 @@ public class CapeRegistry extends SavedData {
         return this;
     }
 
+    @Nullable
     public static ResourceLocation getPlayerCapeId(UUID uuid) {
         return CURRENT_CAPES.get(uuid);
     }
 
+    @Nullable
     public static ResourceLocation getPlayerCapeTexture(UUID uuid) {
-        return ALL_CAPES.get(getPlayerCapeId(uuid));
+        return ALL_CAPES.getOrDefault(getPlayerCapeId(uuid), null);
     }
 
     /**
@@ -197,11 +195,17 @@ public class CapeRegistry extends SavedData {
      */
     public static boolean removeCape(UUID uuid, ResourceLocation cape) {
         List<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
+        if (FREE_CAPES.contains(cape)) {
+            return false;
+        }
         if (capes == null || !capes.contains(cape)) {
             return false;
         }
         capes.remove(cape);
         UNLOCKED_CAPES.put(uuid, capes);
+        if (cape.equals(getPlayerCapeId(uuid))) {
+            setActiveCape(uuid, null);
+        }
         return true;
     }
 
@@ -214,10 +218,17 @@ public class CapeRegistry extends SavedData {
         CURRENT_CAPES.put(uuid, cape);
     }
 
-    public static void giveCape(UUID uuid, ResourceLocation cape) {
+    /**
+     * Sets the current cape for a player.
+     *
+     * @param uuid The UUID of the player to be given the cape.
+     * @param cape The ResourceLocation that holds the cape used here. {@code null} to remove cape.
+     */
+    public static boolean setActiveCape(UUID uuid, @Nullable ResourceLocation cape) {
         CURRENT_CAPES.put(uuid, cape);
         GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(uuid, cape));
         save();
+        return true;
     }
 
     // For loading capes when the player logs in, so that it's synced to the clients.
