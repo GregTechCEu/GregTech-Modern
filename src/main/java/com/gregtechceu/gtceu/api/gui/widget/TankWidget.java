@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -303,13 +304,16 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (stack != null && !stack.isEmpty()) {
             tooltips.add(stack.getDisplayName());
             if (!isPhantom && showAmount) {
-                tooltips.add(Component.translatable("gtceu.fluid.amount", stack.getAmount(), lastTankCapacity));
+                tooltips.add(
+                        Component.translatable("gtceu.fluid.amount", FormattingUtil.formatNumbers(stack.getAmount()),
+                                FormattingUtil.formatNumbers(lastTankCapacity)));
             }
             TooltipsHandler.appendFluidTooltips(stack, tooltips::add, null);
         } else {
             tooltips.add(Component.translatable("gtceu.fluid.empty"));
             if (!isPhantom && showAmount) {
-                tooltips.add(Component.translatable("gtceu.fluid.amount", 0, lastTankCapacity).append(" mB"));
+                tooltips.add(Component.translatable("gtceu.fluid.amount", 0,
+                        FormattingUtil.formatNumbers(lastTankCapacity)));
             }
         }
         tooltips.addAll(getTooltipTexts());
