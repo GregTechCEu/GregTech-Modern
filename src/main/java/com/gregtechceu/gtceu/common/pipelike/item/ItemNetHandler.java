@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -11,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -364,15 +365,17 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
     public ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate,
                                         int allowed, boolean ignoreLimit) {
-        int rate;
-        boolean isStackSpecific = false;
-        rate = arm.getFilterHandler().getFilter().testItemCount(stack);
+        int rate = arm.getFilterHandler().getFilter().testItemCount(stack);
         int count;
         switch (arm.getTransferMode()) {
             case TRANSFER_ANY:
                 return insert(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                count = rate - countStack(handler, stack, arm, isStackSpecific);
+                if (arm.getFilterHandler().getFilter().supportsAmounts()) {
+                    count = rate - countStack(handler, stack, arm);
+                } else {
+                    count = rate;
+                }
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insert(handler, stack, simulate, count, ignoreLimit);
@@ -393,14 +396,17 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return stack;
     }
 
-    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm, boolean isStackSpecific) {
+    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
+        ItemFilter filter = arm.getFilterHandler().getFilter();
+        boolean ignoreNBT = filter instanceof SimpleItemFilter simple && simple.isIgnoreNbt();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
-            if (isStackSpecific ? ItemStackHashStrategy.comparingAllButCount().equals(stack, slot) :
-                    arm.getFilterHandler().getFilter().test(slot)) {
+            if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
+            else if (!ItemStack.isSameItemSameTags(stack, slot)) continue;
+            if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }
         }

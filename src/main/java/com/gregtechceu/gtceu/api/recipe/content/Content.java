@@ -29,23 +29,16 @@ import org.jetbrains.annotations.Nullable;
 public class Content {
 
     @Getter
-    public Object content;
-    public int chance;
-    public int maxChance;
-    public int tierChanceBoost;
-    @Nullable
-    public String slotName;
-    @Nullable
-    public String uiName;
+    public final Object content;
+    public final int chance;
+    public final int maxChance;
+    public final int tierChanceBoost;
 
-    public Content(Object content, int chance, int maxChance, int tierChanceBoost, @Nullable String slotName,
-                   @Nullable String uiName) {
+    public Content(Object content, int chance, int maxChance, int tierChanceBoost) {
         this.content = content;
         this.chance = chance;
         this.maxChance = maxChance;
         this.tierChanceBoost = fixBoost(tierChanceBoost);
-        this.slotName = slotName == null || slotName.isEmpty() ? null : slotName;
-        this.uiName = uiName == null || uiName.isEmpty() ? null : uiName;
     }
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
@@ -56,23 +49,24 @@ public class Content {
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.maxChance),
                 Codec.INT.optionalFieldOf("tierChanceBoost", 0)
-                        .forGetter(val -> val.tierChanceBoost),
-                Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
-                Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
+                        .forGetter(val -> val.tierChanceBoost))
                 .apply(instance, Content::new));
     }
 
     public Content copy(RecipeCapability<?> capability) {
-        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost, slotName, uiName);
+        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
     }
 
     public Content copy(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
         if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
-                    slotName, uiName);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
         }
+    }
+
+    public boolean isChanced() {
+        return chance > 0 && chance < maxChance;
     }
 
     /**
@@ -193,8 +187,6 @@ public class Content {
                 ", chance=" + chance +
                 ", maxChance=" + maxChance +
                 ", tierChanceBoost=" + tierChanceBoost +
-                ", slotName='" + slotName + '\'' +
-                ", uiName='" + uiName + '\'' +
                 '}';
     }
 }

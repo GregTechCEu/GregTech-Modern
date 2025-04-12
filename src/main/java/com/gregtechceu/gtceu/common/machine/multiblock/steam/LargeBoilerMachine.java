@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -120,25 +119,20 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
-            if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {
-                inputTanks.addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)));
-            }
-            if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                inputTanks
-                        .addAll(Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-            }
+            inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
+            inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
             if (currentTemperature < 100) {
                 steamGenerated = 0;
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
-                    if (drainWater == null || drainWater.isEmpty()) {
+                    if (drainWater == null || drainWater.isEmpty() || drainWater.get(0).getAmount() > 0) {
                         break;
                     }
                 }
             } else if (maxDrain > 0) {
                 // if maxDrain is zero because of throttle or TICKS_PER_STEAM_GENERATION is too low, skip below code because not needed
                 for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
+                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater == null || drainWater.isEmpty()) {
                         break;
                     }
@@ -153,16 +147,10 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                     // fill steam
                     var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
-                    if (getCapabilitiesProxy().contains(IO.OUT, FluidRecipeCapability.CAP)) {
-                        outputTanks.addAll(
-                                Objects.requireNonNull(getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP)));
-                    }
-                    if (getCapabilitiesProxy().contains(IO.BOTH, FluidRecipeCapability.CAP)) {
-                        outputTanks.addAll(
-                                Objects.requireNonNull(getCapabilitiesProxy().get(IO.BOTH, FluidRecipeCapability.CAP)));
-                    }
+                    outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
+                    outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
-                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, null, false);
+                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
                         if (fillSteam == null) break;
                     }
                 }

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -29,7 +30,9 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -52,6 +55,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,11 +69,25 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine
-                          implements IMiner, IControllable, IFancyUIMachine, IDataInfoProvider {
+                          implements IMiner, IControllable, IFancyUIMachine, IDataInfoProvider, IAutoOutputItem {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class,
             WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    protected Direction outputFacingItems;
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    protected boolean autoOutputItems;
+    @Getter
+    @Setter
+    @Persisted
+    protected boolean allowInputFromOutputSideItems;
     @Getter
     @Persisted
     protected final CustomItemStackHandler chargerInventory;
@@ -106,13 +124,13 @@ public class MinerMachine extends WorkableTieredMachine
 
     @Override
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        return new NotifiableItemStackHandler(this, 0, IO.IN);
     }
 
     @Override
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
         if (args.length > 3 && args[args.length - 4] instanceof Integer invSize) {
-            return new NotifiableItemStackHandler(this, invSize, IO.OUT, IO.BOTH);
+            return new NotifiableItemStackHandler(this, invSize, IO.OUT);
         }
         throw new IllegalArgumentException(
                 "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
@@ -179,8 +197,9 @@ public class MinerMachine extends WorkableTieredMachine
     // ********** LOGIC **********//
     //////////////////////////////////////
     protected void updateAutoOutputSubscription() {
-        var outputFacingItems = getFrontFacing();
-        if (!exportItems.isEmpty() && GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFacingItems)) {
+        var outputFace = getOutputFacingItems();
+        if (isAutoOutputItems() && outputFace != null && !exportItems.isEmpty() &&
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), outputFace)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -199,9 +218,25 @@ public class MinerMachine extends WorkableTieredMachine
 
     protected void autoOutput() {
         if (getOffsetTimer() % 5 == 0) {
-            exportItems.exportToNearby(getFrontFacing());
+            if (isAutoOutputItems() && getOutputFacingItems() != null) {
+                exportItems.exportToNearby(getOutputFacingItems());
+            }
         }
         updateAutoOutputSubscription();
+    }
+
+    @Override
+    public void setAutoOutputItems(boolean allow) {
+        this.autoOutputItems = allow;
+        updateAutoOutputSubscription();
+    }
+
+    @Override
+    public void setOutputFacingItems(@Nullable Direction outputFacing) {
+        if (outputFacing != Direction.DOWN) {
+            this.outputFacingItems = outputFacing;
+            updateAutoOutputSubscription();
+        }
     }
 
     protected void chargeBattery() {

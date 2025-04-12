@@ -1639,27 +1639,6 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 2, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
                 .buildAndRegister();
 
-        AcidicBromineSolution = new Material.Builder(GTCEu.id("acidic_bromine_solution"))
-                .liquid()
-                .color(0xc49b52)
-                .components(Chlorine, 1, Bromine, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        ConcentratedBromineSolution = new Material.Builder(GTCEu.id("concentrated_bromine_solution"))
-                .liquid()
-                .color(0x91481e)
-                .components(Bromine, 2, Chlorine, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        HydrogenIodide = new Material.Builder(GTCEu.id("hydrogen_iodide"))
-                .gas()
-                .color(0x8187a6)
-                .components(Hydrogen, 1, Iodine, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
         DiethylenetriaminePentaacetonitrile = new Material.Builder(GTCEu.id("diethylenetriamine_pentaacetonitrile"))
                 .liquid()
                 .color(0xcbbfd6)
@@ -1679,6 +1658,13 @@ public class FirstDegreeMaterials {
                 .color(0xcfbf65).secondaryColor(0x85600b)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Sodium, 1, Nitrogen, 1, Oxygen, 2)
+                .buildAndRegister();
+
+        HydrogenPeroxide = new Material.Builder(GTCEu.id("hydrogen_peroxide"))
+                .liquid()
+                .color(0x0cbdd7)
+                .components(Hydrogen, 2, Oxygen, 2)
+                .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS, true)
                 .buildAndRegister();
     }
 }

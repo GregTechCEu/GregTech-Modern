@@ -14,6 +14,7 @@ public class IntegrationLang {
         initRecipeViewerLang(provider);
         initWailaLikeLang(provider);
         initMinimapLang(provider);
+        initOwnershipLang(provider);
     }
 
     /** JEI, REI, EMI */
@@ -87,6 +88,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
         provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("gtceu.top.buffer_not_bound", "Buffer Not Currently Bound");
         provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
         provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
 
@@ -105,7 +107,8 @@ public class IntegrationLang {
     private static void initMinimapLang(RegistrateLangProvider provider) {
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
 
-        provider.add("message.gtceu.new_veins", "Prospected %d new veins!");
+        provider.add("message.gtceu.new_veins.amount", "Prospected %d new veins!");
+        provider.add("message.gtceu.new_veins.name", "Prospected %s!");
         provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
         provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
 
@@ -113,5 +116,11 @@ public class IntegrationLang {
         provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
         provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
         provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
+    }
+
+    private static void initOwnershipLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.ownership.name.player", "Player");
+        provider.add("gtceu.ownership.name.ftb", "FTB Teams");
+        provider.add("gtceu.ownership.name.argonauts", "Argonauts Guild");
     }
 }

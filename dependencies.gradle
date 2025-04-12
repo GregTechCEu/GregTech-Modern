@@ -48,8 +48,10 @@ dependencies {
     // Teams
     modCompileOnly(forge.ftblibrary)
     modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftbquests)
     modCompileOnly(forge.resourcefullib)
     modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.heracles)
 
     // Maps
     modCompileOnly(forge.ftbchunks)
@@ -57,6 +59,9 @@ dependencies {
     modCompileOnly(forge.xaerosworldmap)
     modCompileOnly(forge.journeymap.api)
     modCompileOnly(forge.journeymap.forge)
+
+    // GameStages
+    modCompileOnly(forge.gamestages)
 
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
@@ -80,11 +85,18 @@ dependencies {
 
     modExtraRuntimeOnly(forge.ftblibrary)
     modExtraRuntimeOnly(forge.ftbteams)
+    modExtraRuntimeOnly(forge.ftbquests)
+
+    modExtraRuntimeOnly(forge.heracles)
+    modExtraRuntimeOnly(forge.resourcefullib)
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
 //    modExtraRuntimeOnly(forge.journeymap.forge)
 //    modExtraRuntimeOnly(forge.ftbchunks)
+
+    modExtraRuntimeOnly(forge.gamestages)
+    modExtraRuntimeOnly(forge.bookshelf)
 
     modExtraRuntimeOnly(forge.spark)
     modExtraRuntimeOnly(forge.observable)

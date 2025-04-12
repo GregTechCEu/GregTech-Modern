@@ -23,13 +23,15 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 /**
  * @author KilaBash
@@ -48,10 +50,14 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Persisted
     @DescSynced
     public final CustomItemStackHandler storage;
+    @Accessors(fluent = true)
+    @Getter
+    @Setter
+    private boolean shouldSearchContent = true;
     private Boolean isEmpty;
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO,
-                                      Function<Integer, CustomItemStackHandler> storageFactory) {
+                                      IntFunction<CustomItemStackHandler> storageFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = storageFactory.apply(slots);
@@ -67,8 +73,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         this(machine, slots, handlerIO, handlerIO);
     }
 
-    public NotifiableItemStackHandler setFilter(Function<ItemStack, Boolean> filter) {
-        this.storage.setFilter(filter::apply);
+    public NotifiableItemStackHandler setFilter(Predicate<ItemStack> filter) {
+        this.storage.setFilter(filter);
         return this;
     }
 
@@ -83,8 +89,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName,
-                                              boolean simulate) {
+    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
         return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
     }
 
@@ -190,7 +195,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < getSlots(); ++i) {
             ItemStack stack = getStackInSlot(i);
@@ -198,7 +203,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 stacks.add(stack);
             }
         }
-        return Arrays.asList(stacks.toArray());
+        return new ArrayList<>(stacks);
     }
 
     @Override

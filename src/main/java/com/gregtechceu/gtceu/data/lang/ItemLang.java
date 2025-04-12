@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
+import static com.gregtechceu.gtceu.data.lang.LangHandler.replace;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ItemLang {
@@ -53,27 +54,16 @@ public class ItemLang {
         provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {}
+    private static void initItemNames(RegistrateLangProvider provider) {
+        replace(provider, "item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
+    }
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
-        provider.add("item.gtceu.copper_credit.tooltip", "§70.125 Credits");
-        provider.add("item.gtceu.cupronickel_credit.tooltip", "§71 Credit");
-        provider.add("item.gtceu.silver_credit.tooltip", "§78 Credits");
-        provider.add("item.gtceu.gold_credit.tooltip", "§764 Credits");
-        provider.add("item.gtceu.platinum_credit.tooltip", "§7512 Credits");
-        provider.add("item.gtceu.osmium_credit.tooltip", "§74096 Credits");
-        provider.add("item.gtceu.naquadah_credit.tooltip", "§732768 Credits");
-        provider.add("item.gtceu.neutronium_credit.tooltip", "§7262144 Credits");
-        provider.add("item.gtceu.ancient_gold_coin.tooltip", "§7Found in ancient Ruins");
-        provider.add("item.gtceu.doge_coin.tooltip",
-                "§7wow much coin how monyey so cwypto pwz minye v wich vewy cuwwency wow");
-        provider.add("item.gtceu.chocolate_coin.tooltip", "§7Wrapped in Gold");
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
         provider.add("item.gtceu.nano_saber.tooltip", "§7Ryujin no ken wo kurae!");
         provider.add("item.gtceu.plate_casting_mold.tooltip", "§7Mold for making Plates");
         provider.add("item.gtceu.casing_casting_mold.tooltip", "§7Mold for making Item Casings");
         provider.add("item.gtceu.gear_casting_mold.tooltip", "§7Mold for making Gears");
-        provider.add("item.gtceu.credit_casting_mold.tooltip", "§7Secure Mold for making Coins (Don't lose it!)");
         provider.add("item.gtceu.bottle_casting_mold.tooltip", "§7Mold for making Bottles");
         provider.add("item.gtceu.ingot_casting_mold.tooltip", "§7Mold for making Ingots");
         provider.add("item.gtceu.ball_casting_mold.tooltip", "§7Mold for making Balls");

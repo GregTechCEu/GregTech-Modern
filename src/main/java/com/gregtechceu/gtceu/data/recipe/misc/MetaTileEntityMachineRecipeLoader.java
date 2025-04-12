@@ -3,13 +3,12 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -19,6 +18,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -34,16 +34,14 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 public class MetaTileEntityMachineRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        // this needs to exist here now :)
-        CraftingComponent.initializeComponents();
-
         // Reservoir Hatch
         ASSEMBLER_RECIPES.recipeBuilder("reservoir_hatch")
                 .inputItems(COVER_INFINITE_WATER)
                 .inputItems(FLUID_IMPORT_HATCH[EV])
                 .inputItems(ELECTRIC_PUMP_EV)
                 .outputItems(RESERVOIR_HATCH)
-                .duration(300).EUt(VA[EV]).save(provider);
+                .duration(300).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         registerLaserRecipes(provider);
 
@@ -51,7 +49,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_ulv", ENERGY_OUTPUT_HATCH[ULV].asStack(),
                 " V ", "SHS", "   ",
-                'S', new UnificationEntry(spring, Lead),
+                'S', new MaterialEntry(spring, Lead),
                 'V', VOLTAGE_COIL_ULV.asStack(),
                 'H', HULL[ULV].asStack());
 
@@ -60,11 +58,12 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(spring, Lead, 2)
                 .inputItems(VOLTAGE_COIL_ULV)
                 .outputItems(ENERGY_OUTPUT_HATCH[ULV])
-                .duration(200).EUt(VA[ULV]).save(provider);
+                .duration(200).EUt(VA[ULV])
+                .addMaterialInfo(true).save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_lv", ENERGY_OUTPUT_HATCH[LV].asStack(),
                 " V ", "SHS", "   ",
-                'S', new UnificationEntry(spring, Tin),
+                'S', new MaterialEntry(spring, Tin),
                 'V', VOLTAGE_COIL_LV.asStack(),
                 'H', HULL[LV].asStack());
 
@@ -73,12 +72,13 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(spring, Tin, 2)
                 .inputItems(VOLTAGE_COIL_LV)
                 .outputItems(ENERGY_OUTPUT_HATCH[LV])
-                .duration(200).EUt(VA[LV]).save(provider);
+                .duration(200).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "dynamo_hatch_mv", ENERGY_OUTPUT_HATCH[MV].asStack(),
                 " V ", "SHS", " P ",
                 'P', ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(),
-                'S', new UnificationEntry(spring, Copper),
+                'S', new MaterialEntry(spring, Copper),
                 'V', VOLTAGE_COIL_MV.asStack(),
                 'H', HULL[MV].asStack());
 
@@ -88,34 +88,38 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT)
                 .inputItems(VOLTAGE_COIL_MV)
                 .outputItems(ENERGY_OUTPUT_HATCH[MV])
-                .duration(200).EUt(VA[MV]).save(provider);
+                .duration(200).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_hv")
                 .inputItems(HULL[HV])
                 .inputItems(spring, Gold, 2)
                 .inputItems(LOW_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_HV)
-                .inputFluids(SodiumPotassium.getFluid(1000))
+                .inputFluids(SodiumPotassium, 1000)
                 .outputItems(ENERGY_OUTPUT_HATCH[HV])
-                .duration(200).EUt(VA[HV]).save(provider);
+                .duration(200).EUt(VA[HV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_ev")
                 .inputItems(HULL[EV])
                 .inputItems(spring, Aluminium, 2)
                 .inputItems(POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_EV)
-                .inputFluids(SodiumPotassium.getFluid(2000))
+                .inputFluids(SodiumPotassium, 2000)
                 .outputItems(ENERGY_OUTPUT_HATCH[EV])
-                .duration(200).EUt(VA[EV]).save(provider);
+                .duration(200).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_iv")
                 .inputItems(HULL[IV])
                 .inputItems(spring, Tungsten, 2)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_IV)
-                .inputFluids(SodiumPotassium.getFluid(3000))
+                .inputFluids(SodiumPotassium, 3000)
                 .outputItems(ENERGY_OUTPUT_HATCH[IV])
-                .duration(200).EUt(VA[IV]).save(provider);
+                .duration(200).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("dynamo_hatch_luv")
                 .inputItems(HULL[LuV])
@@ -123,10 +127,11 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_LuV, 2)
-                .inputFluids(SodiumPotassium.getFluid(6000))
-                .inputFluids(SolderingAlloy.getFluid(720))
+                .inputFluids(SodiumPotassium, 6000)
+                .inputFluids(SolderingAlloy, 5 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[LuV])
-                .duration(400).EUt(VA[LuV]).save(provider);
+                .duration(400).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("dynamo_hatch_zpm")
                 .inputItems(HULL[ZPM])
@@ -134,8 +139,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_ZPM, 2)
-                .inputFluids(SodiumPotassium.getFluid(8000))
-                .inputFluids(SolderingAlloy.getFluid(1440))
+                .inputFluids(SodiumPotassium, 8000)
+                .inputFluids(SolderingAlloy, 10 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[ZPM])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_OUTPUT_HATCH[LuV].asStack())
@@ -148,8 +153,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.UV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_UV, 2)
-                .inputFluids(SodiumPotassium.getFluid(10000))
-                .inputFluids(SolderingAlloy.getFluid(2880))
+                .inputFluids(SodiumPotassium, 10000)
+                .inputFluids(SolderingAlloy, 20 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[UV])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_OUTPUT_HATCH[ZPM].asStack())
@@ -163,8 +168,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.UHV_CIRCUITS)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
-                .inputFluids(SodiumPotassium.getFluid(12000))
-                .inputFluids(SolderingAlloy.getFluid(5760))
+                .inputFluids(SodiumPotassium, 12000)
+                .inputFluids(SolderingAlloy, 40 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[UHV])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_OUTPUT_HATCH[UV].asStack())
@@ -176,7 +181,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_ulv", ENERGY_INPUT_HATCH[ULV].asStack(),
                 " V ", "CHC", "   ",
-                'C', new UnificationEntry(cableGtSingle, RedAlloy),
+                'C', new MaterialEntry(cableGtSingle, RedAlloy),
                 'V', VOLTAGE_COIL_ULV.asStack(),
                 'H', HULL[ULV].asStack());
 
@@ -185,11 +190,12 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(cableGtSingle, RedAlloy, 2)
                 .inputItems(VOLTAGE_COIL_ULV)
                 .outputItems(ENERGY_INPUT_HATCH[ULV])
-                .duration(200).EUt(VA[ULV]).save(provider);
+                .duration(200).EUt(VA[ULV])
+                .addMaterialInfo(true).save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_lv", ENERGY_INPUT_HATCH[LV].asStack(),
                 " V ", "CHC", "   ",
-                'C', new UnificationEntry(cableGtSingle, Tin),
+                'C', new MaterialEntry(cableGtSingle, Tin),
                 'V', VOLTAGE_COIL_LV.asStack(),
                 'H', HULL[LV].asStack());
 
@@ -198,11 +204,12 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(cableGtSingle, Tin, 2)
                 .inputItems(VOLTAGE_COIL_LV)
                 .outputItems(ENERGY_INPUT_HATCH[LV])
-                .duration(200).EUt(VA[LV]).save(provider);
+                .duration(200).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_mv", ENERGY_INPUT_HATCH[MV].asStack(),
                 " V ", "CHC", " P ",
-                'C', new UnificationEntry(cableGtSingle, Copper),
+                'C', new MaterialEntry(cableGtSingle, Copper),
                 'P', ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(),
                 'V', VOLTAGE_COIL_MV.asStack(),
                 'H', HULL[MV].asStack());
@@ -213,34 +220,38 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT)
                 .inputItems(VOLTAGE_COIL_MV)
                 .outputItems(ENERGY_INPUT_HATCH[MV])
-                .duration(200).EUt(VA[MV]).save(provider);
+                .duration(200).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_hv")
                 .inputItems(HULL[HV])
                 .inputItems(cableGtSingle, Gold, 2)
                 .inputItems(LOW_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_HV)
-                .inputFluids(SodiumPotassium.getFluid(1000))
+                .inputFluids(SodiumPotassium, 1000)
                 .outputItems(ENERGY_INPUT_HATCH[HV])
-                .duration(200).EUt(VA[HV]).save(provider);
+                .duration(200).EUt(VA[HV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_ev")
                 .inputItems(HULL[EV])
                 .inputItems(cableGtSingle, Aluminium, 2)
                 .inputItems(POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_EV)
-                .inputFluids(SodiumPotassium.getFluid(2000))
+                .inputFluids(SodiumPotassium, 2000)
                 .outputItems(ENERGY_INPUT_HATCH[EV])
-                .duration(200).EUt(VA[EV]).save(provider);
+                .duration(200).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_iv")
                 .inputItems(HULL[IV])
                 .inputItems(cableGtSingle, Tungsten, 2)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(VOLTAGE_COIL_IV)
-                .inputFluids(SodiumPotassium.getFluid(3000))
+                .inputFluids(SodiumPotassium, 3000)
                 .outputItems(ENERGY_INPUT_HATCH[IV])
-                .duration(200).EUt(VA[IV]).save(provider);
+                .duration(200).EUt(VA[IV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_hatch_luv")
                 .inputItems(HULL[LuV])
@@ -248,8 +259,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.LuV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_LuV, 2)
-                .inputFluids(SodiumPotassium.getFluid(6000))
-                .inputFluids(SolderingAlloy.getFluid(720))
+                .inputFluids(SodiumPotassium, 6000)
+                .inputFluids(SolderingAlloy, 5 * L)
                 .outputItems(ENERGY_INPUT_HATCH[LuV])
                 .scannerResearch(b -> b
                         .researchStack(ENERGY_INPUT_HATCH[IV].asStack())
@@ -262,8 +273,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_ZPM, 2)
-                .inputFluids(SodiumPotassium.getFluid(8000))
-                .inputFluids(SolderingAlloy.getFluid(1440))
+                .inputFluids(SodiumPotassium, 8000)
+                .inputFluids(SolderingAlloy, 10 * L)
                 .outputItems(ENERGY_INPUT_HATCH[ZPM])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_INPUT_HATCH[LuV].asStack())
@@ -276,8 +287,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.UV_CIRCUITS)
                 .inputItems(VOLTAGE_COIL_UV, 2)
-                .inputFluids(SodiumPotassium.getFluid(10000))
-                .inputFluids(SolderingAlloy.getFluid(2880))
+                .inputFluids(SodiumPotassium, 10000)
+                .inputFluids(SolderingAlloy, 20 * L)
                 .outputItems(ENERGY_INPUT_HATCH[UV])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_INPUT_HATCH[ZPM].asStack())
@@ -291,8 +302,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(CustomTags.UHV_CIRCUITS)
                 .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
-                .inputFluids(SodiumPotassium.getFluid(12000))
-                .inputFluids(SolderingAlloy.getFluid(5760))
+                .inputFluids(SodiumPotassium, 12000)
+                .inputFluids(SolderingAlloy, 40 * L)
                 .outputItems(ENERGY_INPUT_HATCH[UHV])
                 .stationResearch(b -> b
                         .researchStack(ENERGY_INPUT_HATCH[UV].asStack())
@@ -304,21 +315,18 @@ public class MetaTileEntityMachineRecipeLoader {
         for (int tier = 0; tier < POWER_TRANSFORMER.length; tier++) {
             var hatch = POWER_TRANSFORMER[tier];
             if (hatch == null) continue;
-            // Assume they actually are nonnull for now.
-            var materialPrime = ChemicalHelper.getMaterial(CraftingComponent.CABLE_HEX.getIngredient(tier)).material();
-            var materialSecond = ChemicalHelper.getMaterial(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
-                    .material();
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_power_transformer")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_power_transformer")
                     .inputItems(HI_AMP_TRANSFORMER_4A[tier])
-                    .inputItems(CraftingComponent.PUMP.getIngredient((tier / 2 + 1)))
-                    .inputItems(CraftingComponent.CABLE_TIER_UP_OCT.getIngredient(tier))
-                    .inputItems(CraftingComponent.CABLE_HEX.getIngredient(tier))
-                    .inputItems(springSmall, materialPrime)
-                    .inputItems(spring, materialSecond)
-                    .inputFluids(Lubricant.getFluid(2000))
+                    .inputItems(GTCraftingComponents.PUMP.get((tier / 2 + 1)))
+                    .inputItems(GTCraftingComponents.CABLE_TIER_UP_OCT.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE_HEX.get(tier))
+                    .inputItems(GTCraftingComponents.SMALL_SPRING_TRANSFORMER.get(tier))
+                    .inputItems(GTCraftingComponents.SPRING_TRANSFORMER.get(tier))
+                    .inputFluids(Lubricant, 2000)
                     .outputItems(hatch)
-                    .duration(100).EUt(VA[tier]).save(provider);
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 4A Energy Hatches
@@ -326,12 +334,13 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = ENERGY_INPUT_HATCH_4A[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(ENERGY_INPUT_HATCH[tier])
-                    .inputItems(CraftingComponent.WIRE_QUAD.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 2)
+                    .inputItems(GTCraftingComponents.WIRE_QUAD.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 2)
                     .outputItems(hatch)
-                    .duration(100).EUt(VA[tier]).save(provider);
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 16A Energy Hatches
@@ -346,13 +355,14 @@ public class MetaTileEntityMachineRecipeLoader {
                 transformer = TRANSFORMER[tier];
             }
 
-            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
                     .inputItems(ENERGY_INPUT_HATCH_4A[tier])
-                    .inputItems(CraftingComponent.WIRE_OCT.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.WIRE_OCT.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 4)
                     .outputItems(hatch)
-                    .duration(200).EUt(VA[tier]).save(provider);
+                    .duration(200).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 64A Substation Energy Hatches
@@ -367,13 +377,14 @@ public class MetaTileEntityMachineRecipeLoader {
                 transformer = POWER_TRANSFORMER[tier];
             }
 
-            ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
                     .inputItems(ENERGY_INPUT_HATCH_16A[tier])
-                    .inputItems(CraftingComponent.WIRE_HEX.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 6)
+                    .inputItems(GTCraftingComponents.WIRE_HEX.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 6)
                     .outputItems(hatch)
-                    .duration(400).EUt(VA[tier]).save(provider);
+                    .duration(400).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 4A Dynamo Hatches
@@ -381,12 +392,13 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = ENERGY_OUTPUT_HATCH_4A[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(ENERGY_OUTPUT_HATCH[tier])
-                    .inputItems(CraftingComponent.WIRE_QUAD.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 2)
+                    .inputItems(GTCraftingComponents.WIRE_QUAD.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 2)
                     .outputItems(hatch)
-                    .duration(100).EUt(VA[tier - 1]).save(provider);
+                    .duration(100).EUt(VA[tier - 1])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 16A Dynamo Hatches
@@ -401,13 +413,14 @@ public class MetaTileEntityMachineRecipeLoader {
                 transformer = TRANSFORMER[tier];
             }
 
-            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
                     .inputItems(ENERGY_OUTPUT_HATCH_4A[tier])
-                    .inputItems(CraftingComponent.WIRE_OCT.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.WIRE_OCT.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 4)
                     .outputItems(hatch)
-                    .duration(200).EUt(VA[tier]).save(provider);
+                    .duration(200).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 64A Substation Dynamo Hatches
@@ -423,13 +436,14 @@ public class MetaTileEntityMachineRecipeLoader {
             }
             if (transformer == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_" + GTValues.VN[tier].toLowerCase())
+            ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
                     .inputItems(ENERGY_OUTPUT_HATCH_16A[tier])
-                    .inputItems(CraftingComponent.WIRE_HEX.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PLATE.getIngredient(tier), 6)
+                    .inputItems(GTCraftingComponents.WIRE_HEX.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PLATE.get(tier), 6)
                     .outputItems(hatch)
-                    .duration(400).EUt(VA[tier]).save(provider);
+                    .duration(400).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // Maintenance Hatch
@@ -438,7 +452,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(HULL[LV])
                 .circuitMeta(8)
                 .outputItems(MAINTENANCE_HATCH)
-                .duration(100).EUt(VA[LV]).save(provider);
+                .duration(100).EUt(VA[LV])
+                .addMaterialInfo(true).save(provider);
 
         // Multiblock Miners
 
@@ -489,7 +504,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(gear, VanadiumSteel, 4)
                 .circuitMeta(2)
                 .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[MV])
-                .duration(400).EUt(VA[MV]).save(provider);
+                .duration(400).EUt(VA[MV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hv_fluid_drilling_rig")
                 .inputItems(HULL[EV])
@@ -500,7 +516,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(gear, TungstenCarbide, 4)
                 .circuitMeta(2)
                 .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[HV])
-                .duration(400).EUt(VA[EV]).save(provider);
+                .duration(400).EUt(VA[EV])
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("ev_fluid_drilling_rig")
                 .inputItems(HULL[LuV])
@@ -511,7 +528,8 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(gear, Osmiridium, 4)
                 .circuitMeta(2)
                 .outputItems(GTMultiMachines.FLUID_DRILLING_RIG[EV])
-                .duration(400).EUt(VA[LuV]).save(provider);
+                .duration(400).EUt(VA[LuV])
+                .addMaterialInfo(true).save(provider);
 
         // Long Distance Pipes
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_item_endpoint")
@@ -519,38 +537,38 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputItems(plate, Steel, 8)
                 .inputItems(gear, Steel, 2)
                 .circuitMeta(1)
-                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(LONG_DIST_ITEM_ENDPOINT, 2)
                 .duration(400).EUt(16)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_endpoint")
                 .inputItems(pipeLargeFluid, Bronze, 2)
                 .inputItems(plate, Steel, 8)
                 .inputItems(gear, Steel, 2)
                 .circuitMeta(1)
-                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(LONG_DIST_FLUID_ENDPOINT, 2)
                 .duration(400).EUt(16)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_item_pipe")
                 .inputItems(pipeLargeItem, Tin, 2)
                 .inputItems(plate, Steel, 8)
                 .circuitMeta(2)
-                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(LD_ITEM_PIPE, 64)
                 .duration(600).EUt(24)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("long_distance_fluid_pipe")
                 .inputItems(pipeLargeFluid, Bronze, 2)
                 .inputItems(plate, Steel, 8)
                 .circuitMeta(2)
-                .inputFluids(SolderingAlloy.getFluid(L / 2))
+                .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(LD_FLUID_PIPE, 64)
                 .duration(600).EUt(24)
-                .save(provider);
+                .addMaterialInfo(true).save(provider);
 
         // ME Parts
 
@@ -564,28 +582,32 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(meInterface.copy())
                     .inputItems(accelerationCard.copy())
                     .outputItems(GTAEMachines.FLUID_EXPORT_HATCH_ME)
-                    .duration(300).EUt(VA[HV]).save(provider);
+                    .duration(300).EUt(VA[HV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("me_import_hatch")
                     .inputItems(FLUID_IMPORT_HATCH[EV])
                     .inputItems(meInterface.copy())
                     .inputItems(accelerationCard.copy())
                     .outputItems(GTAEMachines.FLUID_IMPORT_HATCH_ME)
-                    .duration(300).EUt(VA[HV]).save(provider);
+                    .duration(300).EUt(VA[HV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("me_export_bus")
                     .inputItems(ITEM_EXPORT_BUS[EV])
                     .inputItems(meInterface.copy())
                     .inputItems(accelerationCard.copy())
                     .outputItems(GTAEMachines.ITEM_EXPORT_BUS_ME)
-                    .duration(300).EUt(VA[HV]).save(provider);
+                    .duration(300).EUt(VA[HV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("me_import_bus")
                     .inputItems(ITEM_IMPORT_BUS[EV])
                     .inputItems(meInterface.copy())
                     .inputItems(accelerationCard.copy())
                     .outputItems(GTAEMachines.ITEM_IMPORT_BUS_ME)
-                    .duration(300).EUt(VA[HV]).save(provider);
+                    .duration(300).EUt(VA[HV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("me_stocking_import_bus")
                     .inputItems(ITEM_IMPORT_BUS[IV])
@@ -594,7 +616,8 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(SENSOR_IV)
                     .inputItems(accelerationCard.copyWithCount(4))
                     .outputItems(GTAEMachines.STOCKING_IMPORT_BUS_ME)
-                    .duration(300).EUt(VA[IV]).save(provider);
+                    .duration(300).EUt(VA[IV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("me_stocking_import_hatch")
                     .inputItems(FLUID_IMPORT_HATCH[IV])
@@ -603,7 +626,8 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(SENSOR_IV)
                     .inputItems(accelerationCard.copyWithCount(4))
                     .outputItems(GTAEMachines.STOCKING_IMPORT_HATCH_ME)
-                    .duration(300).EUt(VA[IV]).save(provider);
+                    .duration(300).EUt(VA[IV])
+                    .addMaterialInfo(true).save(provider);
 
             ASSEMBLY_LINE_RECIPES.recipeBuilder("me_pattern_buffer")
                     .inputItems(DUAL_IMPORT_HATCH[LuV], 1)
@@ -616,8 +640,8 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(wireFine, Europium, 32)
                     .inputItems(wireFine, Europium, 32)
                     .inputItems(wireFine, Europium, 32)
-                    .inputFluids(SolderingAlloy.getFluid(L * 4))
-                    .inputFluids(Lubricant.getFluid(500))
+                    .inputFluids(SolderingAlloy, L * 4)
+                    .inputFluids(Lubricant, 500)
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
                     .scannerResearch(b -> b.researchStack(DUAL_IMPORT_HATCH[LuV].asStack())
                             .duration(1200)
@@ -631,8 +655,8 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(AEBlocks.QUANTUM_RING.asItem(), 2)
                     .inputItems(wireFine, Europium, 32)
                     .inputItems(wireFine, Europium, 32)
-                    .inputFluids(SolderingAlloy.getFluid(L * 4))
-                    .inputFluids(Lubricant.getFluid(500))
+                    .inputFluids(SolderingAlloy, L * 4)
+                    .inputFluids(Lubricant, 500)
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER_PROXY)
                     .stationResearch(b -> b.researchStack(GTAEMachines.ME_PATTERN_BUFFER.asStack())
                             .CWUt(32))
@@ -646,15 +670,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_INPUT_HATCH_256[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_256a_laser_target_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_256a_laser_target_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond)
-                    .inputItems(CraftingComponent.SENSOR.getIngredient(tier))
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier))
-                    .inputItems(CraftingComponent.CABLE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.SENSOR.get(tier))
+                    .inputItems(GTCraftingComponents.PUMP.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE.get(tier), 4)
                     .circuitMeta(1)
                     .outputItems(hatch)
-                    .duration(300).EUt(VA[tier]).save(provider);
+                    .duration(300).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 256A Laser Source Hatches
@@ -662,15 +687,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_OUTPUT_HATCH_256[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_256a_laser_source_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_256a_laser_source_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond)
-                    .inputItems(CraftingComponent.EMITTER.getIngredient(tier))
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier))
-                    .inputItems(CraftingComponent.CABLE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.EMITTER.get(tier))
+                    .inputItems(GTCraftingComponents.PUMP.get(tier))
+                    .inputItems(GTCraftingComponents.CABLE.get(tier), 4)
                     .circuitMeta(1)
                     .outputItems(hatch)
-                    .duration(300).EUt(VA[tier]).save(provider);
+                    .duration(300).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 1024A Laser Target Hatches
@@ -678,15 +704,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_INPUT_HATCH_1024[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_1024a_laser_target_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_1024a_laser_target_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond, 2)
-                    .inputItems(CraftingComponent.SENSOR.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.CABLE_DOUBLE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.SENSOR.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PUMP.get(tier), 2)
+                    .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
                     .circuitMeta(2)
                     .outputItems(hatch)
-                    .duration(600).EUt(VA[tier]).save(provider);
+                    .duration(600).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 1024A Laser Source Hatches
@@ -694,15 +721,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_OUTPUT_HATCH_1024[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_1024a_laser_source_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_1024a_laser_source_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond, 2)
-                    .inputItems(CraftingComponent.EMITTER.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier), 2)
-                    .inputItems(CraftingComponent.CABLE_DOUBLE.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.EMITTER.get(tier), 2)
+                    .inputItems(GTCraftingComponents.PUMP.get(tier), 2)
+                    .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
                     .circuitMeta(2)
                     .outputItems(hatch)
-                    .duration(600).EUt(VA[tier]).save(provider);
+                    .duration(600).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 4096A Laser Target Hatches
@@ -710,15 +738,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_INPUT_HATCH_4096[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_4096a_laser_target_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_4096a_laser_target_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond, 4)
-                    .inputItems(CraftingComponent.SENSOR.getIngredient(tier), 4)
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier), 4)
-                    .inputItems(CraftingComponent.CABLE_QUAD.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.SENSOR.get(tier), 4)
+                    .inputItems(GTCraftingComponents.PUMP.get(tier), 4)
+                    .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
                     .circuitMeta(3)
                     .outputItems(hatch)
-                    .duration(1200).EUt(VA[tier]).save(provider);
+                    .duration(1200).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
 
         // 4096A Laser Source Hatches
@@ -726,15 +755,16 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = LASER_OUTPUT_HATCH_4096[tier];
             if (hatch == null) continue;
 
-            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase() + "_4096a_laser_output_hatch")
+            ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_4096a_laser_output_hatch")
                     .inputItems(HULL[tier])
                     .inputItems(lens, Diamond, 4)
-                    .inputItems(CraftingComponent.EMITTER.getIngredient(tier), 4)
-                    .inputItems(CraftingComponent.PUMP.getIngredient(tier), 4)
-                    .inputItems(CraftingComponent.CABLE_QUAD.getIngredient(tier), 4)
+                    .inputItems(GTCraftingComponents.EMITTER.get(tier), 4)
+                    .inputItems(GTCraftingComponents.PUMP.get(tier), 4)
+                    .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
                     .circuitMeta(3)
                     .outputItems(hatch)
-                    .duration(1200).EUt(VA[tier]).save(provider);
+                    .duration(1200).EUt(VA[tier])
+                    .addMaterialInfo(true).save(provider);
         }
     }
 }
