@@ -131,9 +131,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
+            double maxDrain = (double) (currentTemperature * throttle * TICKS_PER_STEAM_GENERATION) /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
-            var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
+            var drainWater = List.of(FluidIngredient.of(Math.max(1,(int)Math.ceil(maxDrain)), Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
             inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
@@ -154,11 +154,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
+                double drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
                         maxDrain - drainWater.get(0).getAmount();
 
                 boolean hasDrainedWater = drained > 0;
-                steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
+                steamGenerated = (int) (drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater);
 
                 if (hasDrainedWater) {
                     // fill steam
