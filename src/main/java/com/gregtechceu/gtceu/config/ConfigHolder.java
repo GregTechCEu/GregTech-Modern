@@ -794,5 +794,15 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
         public boolean renderFluids = true;
+
+        @Configurable
+        @Configurable.Comment({ "Whether or not to colour tiered machine highlights in the tier colour?",
+                "Default: true" })
+        public boolean colouredTieredMachineOutline = true;
+
+        @Configurable
+        @Configurable.Comment({ "Whether or not to colour wire/cable highlights based on voltage tier?",
+                "Default: true" })
+        public boolean colouredWireOutline = true;
     }
 }

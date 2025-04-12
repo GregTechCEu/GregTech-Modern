@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Camera;
@@ -143,24 +144,26 @@ public abstract class LevelRendererMixin {
                                                  double camX, double camY, double camZ, BlockPos pos,
                                                  BlockState state) {
         assert level != null;
+        var rendererCfg = ConfigHolder.INSTANCE.client.renderer;
         int rgb = 0;
-        var override = false;
+        var condition = false;
+        // spotless:off
         if (state.getBlock() instanceof MaterialBlock matBlock) {
-            override = true;
+            condition = true;
             rgb = matBlock.material.getMaterialRGB();
-        } else if (state.getBlock() instanceof MetaMachineBlock &&
+        } else if (state.getBlock() instanceof MetaMachineBlock && 
                 level.getBlockEntity(pos) instanceof MetaMachineBlockEntity mmbe) {
-                    if (mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
-                        override = true;
-                        rgb = GTValues.VCM[tiered.getTier()];
-                    }
-                } else
-            if (state.getBlock() instanceof CableBlock &&
-                    level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
-                        override = true;
-                        rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
-                    }
-        if (override) {
+            if (rendererCfg.colouredTieredMachineOutline && mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                condition = true;
+                rgb = GTValues.VCM[tiered.getTier()];
+            }
+        } else if (rendererCfg.colouredWireOutline && 
+                state.getBlock() instanceof CableBlock && level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
+            condition = true;
+            rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
+        }
+        // spotless:on
+        if (condition) {
             var red = (float) FastColor.ARGB32.red(rgb) / 255f;
             var green = (float) FastColor.ARGB32.green(rgb) / 255f;
             var blue = (float) FastColor.ARGB32.blue(rgb) / 255f;
