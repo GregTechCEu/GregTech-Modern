@@ -181,8 +181,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                             }
                         }
                     }
-                } else {
-                    this.hasNoWater = !hasDrainedWater;
                 }
             }
         }
