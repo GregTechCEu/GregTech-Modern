@@ -22,7 +22,7 @@ public final class RecipeModifierList implements RecipeModifier {
      * <p>
      * The RecipeModifierList will build modifiers by keeping tracking of the recipe as each modifier is applied
      * </p>
-     * 
+     *
      * @param machine the machine which is requesting the modifier
      * @param recipe  the recipe - will not be mutated
      * @return Fully composed ModifierFunction of all desired RecipeModifiers

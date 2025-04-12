@@ -18,24 +18,21 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.SimpleModelState;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 /**
  * @author KilaBash
@@ -136,40 +133,9 @@ public class WorkableOverlayModel {
                                      boolean isActive, boolean isWorkingEnabled) {
         var quads = new ArrayList<BakedQuad>();
 
-        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? 1 :
-                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? -1 : 0);
+        var rotation = createRotationState(frontFacing, upwardsFacing);
 
-        Matrix4f matrix = new Matrix4f();
-
-        if (frontFacing.getAxis() != Direction.Axis.Y) {
-            double rotationRad = Math.toRadians(frontFacing.toYRot());
-            Quaternionf worldUp = new Quaternionf().rotationAxis(Mth.PI - (float) rotationRad, 0, 1, 0);
-            matrix.rotate(worldUp);
-        } else {
-            matrix.rotate(Mth.HALF_PI, frontFacing.getStepY(), 0, 0);
-            if (upwardsFacing.getAxis() == Direction.Axis.Z) {
-                matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
-            }
-            if (frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
-                matrix.rotate(Mth.PI, 0, 0, 1);
-            }
-        }
-
-        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0,
-                frontFacing.getAxisDirection() == Direction.AxisDirection.NEGATIVE ? 1 : -1);
-
-        if (frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE &&
-                frontFacing.getAxis() != Direction.Axis.Y) {
-            if (upwardsFacing.getAxis() != Direction.Axis.Z) {
-                matrix.rotate(Mth.PI, 0, 0, 1);
-            }
-        }
-
-        matrix.rotate(rot);
-
-        var rotation = new SimpleModelState(new Transformation(matrix));
-
-        for (Direction renderSide : GTUtil.DIRECTIONS) {
+        for (var renderSide : GTUtil.DIRECTIONS) {
             // construct a rotation matrix from front & up rotation
 
             ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
@@ -207,7 +173,7 @@ public class WorkableOverlayModel {
     @NotNull
     @OnlyIn(Dist.CLIENT)
     public TextureAtlasSprite getParticleTexture() {
-        for (WorkableOverlayModel.ActivePredicate predicate : sprites.values()) {
+        for (ActivePredicate predicate : sprites.values()) {
             TextureAtlasSprite sprite = predicate.getSprite(false, false);
             if (sprite != null) return sprite;
         }

@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.Locale;
+
 public class TagFixer {
 
     public static final String[] FLUID_TAGS = {
@@ -22,7 +24,7 @@ public class TagFixer {
             for (String key : t.getAllKeys()) {
                 var cover = t.getCompound(key);
                 var id = cover.getCompound("uid").getString("id");
-                if ((id.toLowerCase().contains("fluid") || id.toLowerCase().contains("pump"))) {
+                if ((id.toLowerCase(Locale.ROOT).contains("fluid") || id.toLowerCase(Locale.ROOT).contains("pump"))) {
                     var data = cover.getCompound("payload").getCompound("d");
                     for (String fix_key : FLUID_TAGS) {
                         if (data.contains(fix_key, Tag.TAG_LONG)) {

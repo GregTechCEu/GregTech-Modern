@@ -95,6 +95,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private VoxelShape shape = Shapes.block();
     @Setter
     private RotationState rotationState = RotationState.NON_Y_AXIS;
+    /**
+     * Whether this machine can be rotated or face upwards.
+     * todo: set to true by default if we manage to rotate the model accordingly
+     */
+    @Setter
+    private boolean allowExtendedFacing = false;
     @Setter
     private boolean hasTESR;
     @Setter
@@ -387,6 +393,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             definition.setEditableUI(editableUI);
         }
         definition.setAppearance(appearance);
+        definition.setAllowExtendedFacing(allowExtendedFacing);
         definition.setRenderer(GTCEu.isClientSide() ? renderer.get() : IRenderer.EMPTY);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
@@ -398,6 +405,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     static class BlockBuilderWrapper {
 
+        @SuppressWarnings("removal")
         public static <
                 DEFINITION extends MachineDefinition> BlockBuilder<Block, Registrate> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
                                                                                                        DEFINITION definition) {

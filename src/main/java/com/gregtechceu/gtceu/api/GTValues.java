@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api;
 
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
-
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
@@ -14,12 +12,6 @@ import static net.minecraft.ChatFormatting.*;
  * Made for static imports, this Class is just a Helper.
  */
 public class GTValues {
-
-    /**
-     * Default fallback value used for Map keys.
-     * Currently only used in {@link CraftingComponent}.
-     */
-    public static final int FALLBACK = -1;
 
     /**
      * <p/>
@@ -131,8 +123,10 @@ public class GTValues {
             MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
-            MODID_ARGONAUTS = "argonauts";
-
+            MODID_ARGONAUTS = "argonauts",
+            MODID_HERACLES = "heracles",
+            MODID_GAMESTAGES = "gamestages",
+            MODID_FTB_QUEST = "ftbquests";
     /**
      * Spray painting compat modids
      */

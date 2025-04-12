@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
+import com.gregtechceu.gtceu.common.particle.MufflerParticleOptions;
 
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +23,14 @@ public class GTParticleTypes {
                 @Override
                 public Codec<HazardParticleOptions> codec() {
                     return HazardParticleOptions.CODEC;
+                }
+            });
+    public static final RegistryObject<ParticleType<MufflerParticleOptions>> MUFFLER_PARTICLE = PARTICLE_TYPES
+            .register("muffler", () -> new ParticleType<>(false, MufflerParticleOptions.DESERIALIZER) {
+
+                @Override
+                public Codec<MufflerParticleOptions> codec() {
+                    return MufflerParticleOptions.CODEC;
                 }
             });
 

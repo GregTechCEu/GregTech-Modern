@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -114,15 +119,28 @@ public class BlastProperty implements IMaterialProperty {
     public enum GasTier {
 
         // Tiers used by GTCEu
-        LOW,
-        MID,
-        HIGH,
+        LOW(() -> FluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000)),
+        MID(() -> FluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100)),
+        HIGH(() -> FluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50)),
 
         // Tiers reserved for addons
-        HIGHER,
-        HIGHEST;
+        HIGHER(() -> FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
+        HIGHEST(() -> FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
 
         public static final GasTier[] VALUES = values();
+        private Supplier<FluidIngredient> fluid;
+
+        GasTier(Supplier<FluidIngredient> fluid) {
+            this.fluid = Suppliers.memoize(fluid);
+        }
+
+        public void setFluid(Supplier<FluidIngredient> fluid) {
+            this.fluid = Suppliers.memoize(fluid);
+        }
+
+        public FluidIngredient getFluid() {
+            return fluid.get().copy();
+        }
     }
 
     public static class Builder {

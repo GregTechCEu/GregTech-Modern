@@ -165,11 +165,13 @@ public class BlockHighlightRenderer {
     private static float rColour;
     private static float gColour;
     private static float bColour;
+    private static float alpha;
 
     private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult,
                                          Function<Direction, ResourceTexture> test) {
         rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
+        alpha = 1.0f;
         var blockPos = blockHitResult.getBlockPos();
         var facing = blockHitResult.getDirection();
         var box = new AABB(blockPos);
@@ -363,9 +365,13 @@ public class BlockHighlightRenderer {
     private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
         var normal = new Vector3f(from).sub(to);
 
-        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f)
-                .normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z)
+        buffer.vertex(mat, from.x, from.y, from.z)
+                .color(rColour, gColour, bColour, alpha)
+                .normal(normal.x, normal.y, normal.z)
+                .endVertex();
+        buffer.vertex(mat, to.x, to.y, to.z)
+                .color(rColour, gColour, bColour, alpha)
+                .normal(normal.x, normal.y, normal.z)
                 .endVertex();
     }
 }

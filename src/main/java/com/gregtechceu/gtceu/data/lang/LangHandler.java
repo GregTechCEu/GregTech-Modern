@@ -63,6 +63,10 @@ public class LangHandler {
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
         provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
         provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
+        provider.add("recipe.condition.gamestage.locked_stage", "Locked at stage: %s");
+        provider.add("recipe.condition.quest.completed.tooltip", "Requires %s completed");
+        provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
 
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
@@ -1284,6 +1288,8 @@ public class LangHandler {
         provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
         provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
         provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
+        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
@@ -1399,6 +1405,10 @@ public class LangHandler {
         provider.add("gtceu.direction.tooltip.right", "Right");
         provider.add("gtceu.direction.tooltip.back", "Back");
         provider.add("gtceu.direction.tooltip.front", "Front");
+
+        provider.add("gtceu.tooltip.status.trinary.false", "False");
+        provider.add("gtceu.tooltip.status.trinary.true", "True");
+        provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
     }
 
     /**
