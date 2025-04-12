@@ -131,6 +131,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 steamGenerated = 0;
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
+                    if (drainWater == null || drainWater.isEmpty()) {
+                        break;
+                    }
                 }
             } else if (maxDrain > 0) {
                 // if maxDrain is zero because of throttle or TICKS_PER_STEAM_GENERATION is too low, skip below code because not needed
