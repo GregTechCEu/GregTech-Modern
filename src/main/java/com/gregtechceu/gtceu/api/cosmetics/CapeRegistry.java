@@ -30,7 +30,8 @@ public class CapeRegistry extends SavedData {
      */
     private static final Set<ResourceLocation> FREE_CAPES = new HashSet<>();
 
-    private static final Map<UUID, List<ResourceLocation>> UNLOCKED_CAPES = new HashMap<>();
+    // This map should always have TreeSet values for iteration consistency.
+    private static final Map<UUID, Set<ResourceLocation>> UNLOCKED_CAPES = new HashMap<>();
     private static final Map<UUID, ResourceLocation> CURRENT_CAPES = new HashMap<>();
 
     private static final CapeRegistry INSTANCE = new CapeRegistry();
@@ -59,17 +60,17 @@ public class CapeRegistry extends SavedData {
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
         ListTag unlockedCapesTag = new ListTag();
-        for (Map.Entry<UUID, List<ResourceLocation>> entry : UNLOCKED_CAPES.entrySet()) {
+        for (Map.Entry<UUID, Set<ResourceLocation>> entry : UNLOCKED_CAPES.entrySet()) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putUUID("owner", entry.getKey());
+
+            ListTag capesTag = new ListTag();
             for (ResourceLocation cape : entry.getValue()) {
-                String capeLocation = cape.toString();
-
-                CompoundTag entryTag = new CompoundTag();
-
-                entryTag.putString("cape", capeLocation);
-                entryTag.putUUID("owner", entry.getKey());
-
-                unlockedCapesTag.add(entryTag);
+                capesTag.add(StringTag.valueOf(cape.toString()));
             }
+            entryTag.put("capes", capesTag);
+
+            unlockedCapesTag.add(entryTag);
         }
         tag.put("unlocked_capes", unlockedCapesTag);
 
@@ -97,24 +98,28 @@ public class CapeRegistry extends SavedData {
         ListTag unlockedCapesTag = tag.getList("unlocked_capes", Tag.TAG_COMPOUND);
         for (int i = 0; i < unlockedCapesTag.size(); i++) {
             CompoundTag entryTag = unlockedCapesTag.getCompound(i);
-            String capeLocation = entryTag.getString("cape");
-            if (capeLocation.isEmpty())
-                continue;
             UUID uuid = entryTag.getUUID("owner");
 
-            List<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(uuid, $ -> new ArrayList<>());
-            capes.add(new ResourceLocation(capeLocation));
+            Set<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(uuid, CapeRegistry::makeSet);
+
+            ListTag capesTag = entryTag.getList("capes", Tag.TAG_STRING);
+            for (int j = 0; j < capesTag.size(); j++) {
+                String capeId = capesTag.getString(j);
+                if (capeId.isEmpty())
+                    continue;
+                capes.add(new ResourceLocation(capeId));
+            }
             UNLOCKED_CAPES.put(uuid, capes);
         }
 
         ListTag currentCapesTag = tag.getList("current_capes", Tag.TAG_COMPOUND);
         for (int i = 0; i < currentCapesTag.size(); i++) {
             CompoundTag entryTag = currentCapesTag.getCompound(i);
-            String capeLocation = entryTag.getString("cape");
-            if (capeLocation.isEmpty())
+            String capeId = entryTag.getString("cape");
+            if (capeId.isEmpty())
                 continue;
             UUID uuid = entryTag.getUUID("owner");
-            CURRENT_CAPES.put(uuid, new ResourceLocation(capeLocation));
+            CURRENT_CAPES.put(uuid, new ResourceLocation(capeId));
         }
 
         return this;
@@ -136,8 +141,8 @@ public class CapeRegistry extends SavedData {
      * @param uuid The player data used to get what capes the player has through internal maps.
      * @return A list of ResourceLocations containing the cape textures that the player has unlocked.
      */
-    public static List<ResourceLocation> getUnlockedCapes(UUID uuid) {
-        return UNLOCKED_CAPES.getOrDefault(uuid, Collections.emptyList());
+    public static Set<ResourceLocation> getUnlockedCapes(UUID uuid) {
+        return UNLOCKED_CAPES.getOrDefault(uuid, Collections.emptySet());
     }
 
     /**
@@ -176,7 +181,7 @@ public class CapeRegistry extends SavedData {
      * @param capeId The ResourceLocation that holds the cape used here.
      */
     public static boolean unlockCape(UUID owner, ResourceLocation capeId) {
-        List<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(owner, $ -> new ArrayList<>());
+        Set<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(owner, CapeRegistry::makeSet);
         if (capes.contains(capeId)) {
             return false;
         }
@@ -194,10 +199,10 @@ public class CapeRegistry extends SavedData {
      * @param cape The ResourceLocation that holds the cape used here.
      */
     public static boolean removeCape(UUID uuid, ResourceLocation cape) {
-        List<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
         if (FREE_CAPES.contains(cape)) {
             return false;
         }
+        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
         if (capes == null || !capes.contains(cape)) {
             return false;
         }
@@ -225,6 +230,10 @@ public class CapeRegistry extends SavedData {
      * @param cape The ResourceLocation that holds the cape used here. {@code null} to remove cape.
      */
     public static boolean setActiveCape(UUID uuid, @Nullable ResourceLocation cape) {
+        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
+        if (capes == null || cape != null && !capes.contains(cape)) {
+            return false;
+        }
         CURRENT_CAPES.put(uuid, cape);
         GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(uuid, cape));
         save();
@@ -257,5 +266,23 @@ public class CapeRegistry extends SavedData {
                 save();
             }
         }
+    }
+
+    private static final Comparator<ResourceLocation> SET_COMPARATOR = (o1, o2) -> {
+        int result = o1.compareTo(o2);
+        boolean isFirstFree = FREE_CAPES.contains(o1);
+        if (isFirstFree ^ FREE_CAPES.contains(o2)) {
+            if (isFirstFree) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            return result;
+        }
+    };
+
+    private static Set<ResourceLocation> makeSet(UUID ignored) {
+        return new TreeSet<>(SET_COMPARATOR);
     }
 }
