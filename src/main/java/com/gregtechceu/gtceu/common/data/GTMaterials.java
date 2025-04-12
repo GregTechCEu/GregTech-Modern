@@ -274,7 +274,11 @@ public class GTMaterials {
     public static Material get(String name) {
         var mat = GTCEuAPI.materialManager.getMaterial(name);
         // mat could be null here due to the registry grabbing a material that isn't in the map
-        return mat == null ? GTMaterials.NULL : mat;
+        if (mat == null) {
+            GTCEu.LOGGER.warn("{} is not a known Material", name);
+            return GTMaterials.NULL;
+        }
+        return mat;
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {

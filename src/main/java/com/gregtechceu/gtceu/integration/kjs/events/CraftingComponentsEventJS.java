@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +18,7 @@ import dev.latvian.mods.kubejs.item.ItemStackJS;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -25,7 +27,7 @@ import java.util.Map;
 public class CraftingComponentsEventJS extends StartupEventJS {
 
     private ComponentWrapper create(String id, Object fallback) {
-        return new ComponentWrapper(id, fallback);
+        return ComponentWrapper.of(id, fallback);
     }
 
     public ComponentWrapper createItem(String id, ItemStack stack) {
@@ -75,7 +77,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
             if (tier == -1) return;
             ItemStack stack = parseItemStack(val.getValue());
             if (stack == null) {
-                ConsoleJS.STARTUP.errorf("Invalid ItemStack %s passed to modifyItems!", val.getValue());
+                ConsoleJS.STARTUP.errorf("Invalid ItemStack %s passed to setItems!", val.getValue());
                 return;
             }
             craftingComponent.add(tier, stack);
@@ -88,7 +90,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
             if (tier == -1) return;
             TagKey<Item> tagKey = parseTag(val.getValue());
             if (tagKey == null) {
-                ConsoleJS.STARTUP.error("Invalid TagKey passed to modifyTags");
+                ConsoleJS.STARTUP.error("Invalid TagKey passed to setTags");
                 return;
             }
             craftingComponent.add(tier, tagKey);
@@ -101,7 +103,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
             if (tier == -1) return;
             MaterialEntry entry = MaterialEntry.of(val.getValue());
             if (entry == null) {
-                ConsoleJS.STARTUP.error("Invalid MaterialEntry passed to modifyMaterialEntries");
+                ConsoleJS.STARTUP.error("Invalid MaterialEntry passed to setMaterialEntries");
                 return;
             }
             craftingComponent.add(tier, entry);
@@ -162,7 +164,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
                 int tier = Integer.parseUnsignedInt(str);
                 if (tier >= 0 && tier < GTValues.TIER_COUNT) ret = tier;
             } catch (NumberFormatException ignored) {
-                ret = GTValues.RVN.getInt(str);
+                ret = GTUtil.getTierByName(str);
             }
         } else if (o instanceof Number number) {
             int tier = number.intValue();
@@ -173,37 +175,48 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return ret;
     }
 
-    public static class ComponentWrapper {
+    public static class ComponentWrapper extends CraftingComponent {
 
-        private final CraftingComponent component;
+        private final String id;
 
         private ComponentWrapper(String id, Object fallback) {
-            component = CraftingComponent.of(id, fallback);
+            super(fallback);
+            this.id = id;
         }
 
-        private ComponentWrapper set(int tier, Object value) {
-            component.add(tier, value);
+        public static ComponentWrapper of(@NotNull String id, @NotNull Object fallback) {
+            if (ALL_COMPONENTS.containsKey(id)) {
+                // Throw here because we don't want Kubers to mess with existing components
+                throw new IllegalArgumentException("Duplicate crafting component: " + id);
+            }
+            var ret = new ComponentWrapper(id, fallback);
+            ALL_COMPONENTS.put(id, ret);
+            return ret;
+        }
+
+        public @NotNull ComponentWrapper add(int tier, @NotNull Object value) {
+            try {
+                super.add(tier, value);
+            } catch (RuntimeException e) {
+                ConsoleJS.STARTUP.error("Problem with component " + id, e);
+            }
             return this;
         }
 
-        public ComponentWrapper setItem(int tier, ItemStack stack) {
-            return set(tier, stack);
+        public ComponentWrapper addItem(int tier, ItemStack stack) {
+            return add(tier, stack);
         }
 
-        public ComponentWrapper setTag(int tier, ResourceLocation tag) {
-            return set(tier, TagKey.create(Registries.ITEM, tag));
+        public ComponentWrapper addTag(int tier, ResourceLocation tag) {
+            return add(tier, TagKey.create(Registries.ITEM, tag));
         }
 
-        public ComponentWrapper setMaterialEntry(int tier, MaterialEntry entry) {
-            return set(tier, entry);
+        public ComponentWrapper addMaterialEntry(int tier, MaterialEntry entry) {
+            return add(tier, entry);
         }
 
-        public ComponentWrapper setMaterialEntry(int tier, TagPrefix prefix, Material mat) {
-            return set(tier, new MaterialEntry(prefix, mat));
-        }
-
-        public Object get(int tier) {
-            return component.get(tier);
+        public ComponentWrapper addMaterialEntry(int tier, TagPrefix prefix, Material mat) {
+            return add(tier, new MaterialEntry(prefix, mat));
         }
     }
 }

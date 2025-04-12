@@ -8,6 +8,9 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
 
     public MaterialEntry {
@@ -16,6 +19,8 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     }
 
     public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
+
+    private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialEntry(TagPrefix tagPrefix) {
         this(tagPrefix, GTMaterials.NULL);
@@ -40,11 +45,17 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     public static @Nullable MaterialEntry of(Object o) {
         if (o instanceof MaterialEntry entry) return entry;
         if (o instanceof CharSequence chars) {
-            var values = chars.toString().split(":");
-            if (values.length >= 2) {
+            var str = chars.toString().trim();
+            var cached = PARSE_CACHE.get(str);
+            if (cached != null) return cached;
+
+            var values = str.split(":", 2);
+            if (values.length > 1) {
                 var prefix = TagPrefix.get(values[0]);
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
-                return new MaterialEntry(prefix, GTMaterials.get(values[1]));
+                cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
+                PARSE_CACHE.put(str, cached);
+                return cached;
             }
         }
         return null;

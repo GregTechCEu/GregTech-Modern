@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api;
 
-import net.minecraft.Util;
 import net.minecraft.util.RandomSource;
-
-import it.unimi.dsi.fastutil.objects.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -140,13 +137,6 @@ public class GTValues {
      */
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
-
-    /**
-     * Convenience Function to get from VN -> Tier
-     * Returns -1 if the tier name isn't found
-     */
-    public static final Object2IntFunction<String> RVN = Object2IntFunctions
-            .unmodifiable(Util.make(new Object2IntArrayMap<>(VN, ALL_TIERS), map -> map.defaultReturnValue(-1)));
 
     /**
      * The short names for the voltages, formatted for text
