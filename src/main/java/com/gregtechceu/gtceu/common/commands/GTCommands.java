@@ -73,13 +73,13 @@ public class GTCommands {
         dispatcher.register(
                 literal("gtceu")
                         .then(literal("ui_editor")
-                                .requires(ctx -> ctx.hasPermission(3))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                                 .executes(context -> {
                                     GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
                                     return 1;
                                 }))
                         .then(literal("dump_data")
-                                .requires(ctx -> ctx.hasPermission(4))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_OWNERS))
                                 .then(literal("bedrock_fluid_veins")
                                         .executes(context -> dumpDataRegistry(context,
                                                 GTRegistries.BEDROCK_FLUID_DEFINITIONS,
@@ -96,7 +96,7 @@ public class GTCommands {
                                                 GTOreDefinition.FULL_CODEC,
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
-                                .requires(ctx -> ctx.hasPermission(3))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                                 .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
                                         .executes(context -> {
                                             return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));
@@ -107,7 +107,7 @@ public class GTCommands {
                                                 }))))
                         .then(literal("cape")
                                 .then(literal("give")
-                                        .requires(ctx -> ctx.hasPermission(2))
+                                        .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                         .then(argument("targets", EntityArgument.players())
                                                 .then(argument("cape", ResourceLocationArgument.id())
                                                         .suggests(ALL_CAPES)
@@ -122,7 +122,7 @@ public class GTCommands {
                                                             return giveCapes(ctx.getSource(), players, CapeRegistry.ALL_CAPES.keySet());
                                                         }))))
                                 .then(literal("take")
-                                        .requires(ctx -> ctx.hasPermission(3))
+                                        .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                         .then(argument("targets", EntityArgument.players())
                                                 .then(argument("cape", ResourceLocationArgument.id())
                                                         .suggests(ALL_CAPES)

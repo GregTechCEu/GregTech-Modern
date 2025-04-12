@@ -18,8 +18,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.Commands.*;
 
 public class HazardCommands {
 
@@ -27,7 +26,7 @@ public class HazardCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("environmental_hazard")
-                        .requires(source -> source.hasPermission(3))
+                        .requires(source -> source.hasPermission(LEVEL_ADMINS))
                         .then(argument("condition", MedicalConditionArgument.medicalCondition())
                                 .then(argument("can_spread", BoolArgumentType.bool())
                                         .then(argument("source", BlockPosArgument.blockPos())
