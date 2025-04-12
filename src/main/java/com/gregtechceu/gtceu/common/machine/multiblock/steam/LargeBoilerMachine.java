@@ -62,8 +62,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     @Persisted
     @Getter
     private int currentTemperature, throttle;
-    @Getter
-    private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
     private int steamGenerated;
