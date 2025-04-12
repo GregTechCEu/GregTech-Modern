@@ -254,7 +254,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     public void handleDisplayClick(String componentData, ClickData clickData) {
         if (!clickData.isRemote) {
             int result = componentData.equals("add") ? 5 : -5;
-            this.throttle = Mth.clamp(throttle + result, 25, 100);
+            int minThrottle = Math.min((int) Math.ceil((double) (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100) / (100 * TICKS_PER_STEAM_GENERATION) / 5.0) * 5,95);
+            this.throttle = Mth.clamp(throttle + result, minThrottle, 100);
         }
     }
 
