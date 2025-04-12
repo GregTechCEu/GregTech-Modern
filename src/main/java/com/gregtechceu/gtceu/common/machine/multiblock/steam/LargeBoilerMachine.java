@@ -131,13 +131,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 steamGenerated = 0;
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
-                    this.hasNoWater = !(drainWater == null || drainWater.isEmpty() ||
-                            drainWater.get(0).getAmount() > 0);
-                    if (!this.hasNoWater) {
-                        break;
-                    }
                 }
-            } else {
+            } else if (maxDrain > 0) {
+                // if maxDrain is zero because of throttle or TICKS_PER_STEAM_GENERATION is too low, skip below code because not needed
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, false);
                     if (drainWater == null || drainWater.isEmpty()) {
@@ -169,7 +165,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 }
 
                 // check explosion
-                if (this.hasNoWater && hasDrainedWater) {
+                if (drained < maxDrain) {
                     doExplosion(2f);
                     var center = getPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
