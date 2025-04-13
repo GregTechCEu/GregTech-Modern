@@ -133,7 +133,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             // drain water
             double maxDrain = (double) (currentTemperature * throttle * TICKS_PER_STEAM_GENERATION) /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
-            var drainWater = List.of(FluidIngredient.of(Math.max(1,(int)Math.ceil(maxDrain)), Fluids.WATER));
+            var drainWater = List.of(FluidIngredient.of(Math.max(1, (int) Math.ceil(maxDrain)), Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
             inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
