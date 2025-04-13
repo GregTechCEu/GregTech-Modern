@@ -47,6 +47,7 @@ public class GTRecipes {
         ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
 
         // Decomposition info loading
+        ItemMaterialData.reinitializeMaterialData();
         MaterialInfoLoader.init();
 
         // com.gregtechceu.gtceu.data.recipe.generated.*
@@ -96,7 +97,6 @@ public class GTRecipes {
 
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));
 
-        ItemMaterialData.reinitializeMaterialData();
         // Must run recycling recipes very last
         if (!(GTCEu.Mods.isKubeJSLoaded() && KJSCallWrapper.hasRecipesListeners())) {
             RecyclingRecipes.init(consumer);
