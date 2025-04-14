@@ -315,59 +315,40 @@ public class ToolHelper {
     public static List<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                             Player player, HitResult rayTraceResult,
                                             AOEFunction function) {
-        if (!aoeDefinition.isEmpty() && rayTraceResult instanceof BlockHitResult blockHit &&
-                blockHit.getDirection() != null) {
-            int column = aoeDefinition.column;
-            int row = aoeDefinition.row;
-            int layer = aoeDefinition.layer;
-            Direction playerFacing = player.getDirection();
-            Direction.Axis playerAxis = playerFacing.getAxis();
-            Direction.Axis sideHitAxis = blockHit.getDirection().getAxis();
-            Direction.AxisDirection sideHitAxisDir = blockHit.getDirection().getAxisDirection();
-            var validPositions = new ObjectArrayList<BlockPos>(column * row * layer / 2);
-            if (sideHitAxis.isVertical()) {
-                boolean isX = playerAxis == Direction.Axis.X;
-                boolean isDown = sideHitAxisDir == Direction.AxisDirection.NEGATIVE;
-                for (int y = 0; y <= layer; y++) {
-                    for (int x = isX ? -row : -column; x <= (isX ? row : column); x++) {
-                        for (int z = isX ? -column : -row; z <= (isX ? column : row); z++) {
-                            if (!(x == 0 && y == 0 && z == 0)) {
-                                BlockPos pos = blockHit.getBlockPos().offset(x, isDown ? y : -y, z);
-                                if (player.mayUseItemAt(pos.relative(blockHit.getDirection()), blockHit.getDirection(),
-                                        stack)) {
-                                    if (function.apply(stack, world, player, pos, new UseOnContext(player.level(),
-                                            player, player.getUsedItemHand(), stack, blockHit))) {
-                                        validPositions.add(pos);
-                                    }
-                                }
-                            }
-                        }
+        if (!(rayTraceResult instanceof BlockHitResult hitResult)) {
+            return List.of();
+        }
+        var playerFacing = player.getDirection();
+        var hitFacing = hitResult.getDirection();
+        var topDown = hitFacing != Direction.DOWN;
+        var depthDirection = hitFacing.getOpposite();
+        var topDirection = hitFacing.getAxis().isVertical() ? playerFacing : Direction.UP;
+        var sideDirection = playerFacing.getClockWise();
+        var validPositions = new ObjectArrayList<BlockPos>();
+        for (int depth = 0; depth <= aoeDefinition.layer; depth++) {
+            int top = topDown ? aoeDefinition.row : -aoeDefinition.row;
+            while (topDown ? top >= -aoeDefinition.row : top <= aoeDefinition.row) {
+                for (int side = -aoeDefinition.column; side <= aoeDefinition.column; side++) {
+                    var pos = hitResult.getBlockPos()
+                            .relative(depthDirection, depth)
+                            .relative(topDirection, top)
+                            .relative(sideDirection, side);
+                    if (!player.mayUseItemAt(pos.relative(hitFacing), hitFacing, stack)) {
+                        continue;
+                    }
+                    if (function.apply(stack, world, player, pos,
+                            new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, hitResult))) {
+                        validPositions.add(pos);
                     }
                 }
-            } else {
-                boolean isX = sideHitAxis == Direction.Axis.X;
-                boolean isNegative = sideHitAxisDir == Direction.AxisDirection.NEGATIVE;
-                for (int x = 0; x <= layer; x++) {
-                    // Special case for any additional column > 1: https://i.imgur.com/Dvcx7Vg.png
-                    // Same behaviour as the Flux Bore
-                    for (int y = (row == 0 ? 0 : -1); y <= (row == 0 ? 0 : row * 2 - 1); y++) {
-                        for (int z = -column; z <= column; z++) {
-                            if (!(x == 0 && y == 0 && z == 0)) {
-                                BlockPos pos = blockHit.getBlockPos().offset(
-                                        isX ? (isNegative ? x : -x) : (isNegative ? z : -z), y,
-                                        isX ? (isNegative ? z : -z) : (isNegative ? x : -x));
-                                if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player,
-                                        player.getUsedItemHand(), stack, blockHit))) {
-                                    validPositions.add(pos);
-                                }
-                            }
-                        }
-                    }
+                if (topDown) {
+                    top--;
+                } else {
+                    top++;
                 }
             }
-            return validPositions;
         }
-        return List.of();
+        return validPositions;
     }
 
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
@@ -402,10 +383,8 @@ public class ToolHelper {
     public static void applyHammerDropConversion(ServerLevel world, BlockPos pos, ItemStack tool, BlockState state,
                                                  List<ItemStack> drops, int fortune, float dropChance,
                                                  RandomSource random) {
-        if (is(tool, GTToolType.HARD_HAMMER) || /*
-                                                 * EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE,
-                                                 * tool)
-                                                 */ -1 > 0) {
+        // EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool)
+        if (is(tool, GTToolType.HARD_HAMMER)) {
             List<ItemStack> silktouchDrops = getSilkTouchDrop(world, pos, state);
             for (ItemStack silktouchDrop : silktouchDrops) {
                 if (silktouchDrop.isEmpty()) continue;
