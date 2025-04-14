@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
@@ -71,7 +70,7 @@ public abstract class LevelRendererMixin {
     private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
                              Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
                              Matrix4f projectionMatrix, CallbackInfo ci) {
-        if (minecraft.player == null || minecraft.level == null) return;
+        if (minecraft.player == null || level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
         if (!ToolHelper.hasBehaviorsTag(mainHandItem) ||
@@ -80,13 +79,13 @@ public abstract class LevelRendererMixin {
             return;
 
         BlockPos hitResultPos = result.getBlockPos();
-        BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
+        BlockState hitResultState = level.getBlockState(hitResultPos);
 
         SortedSet<BlockDestructionProgress> progresses = destructionProgress.get(hitResultPos.asLong());
         if (progresses == null || progresses.isEmpty() || !mainHandItem.isCorrectToolForDrops(hitResultState)) return;
         BlockDestructionProgress progress = progresses.last();
 
-        Set<BlockPos> positions = ToolHelper.getHarvestableBlocks(mainHandItem,
+        var positions = ToolHelper.getHarvestableBlocks(mainHandItem,
                 ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, result);
 
         Vec3 vec3 = camera.getPosition();
@@ -104,8 +103,8 @@ public abstract class LevelRendererMixin {
                     last.pose(),
                     last.normal(),
                     1.0f);
-            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos,
-                    minecraft.level, poseStack, breakProgressDecal);
+            this.minecraft.getBlockRenderer().renderBreakingTexture(level.getBlockState(pos), pos,
+                    level, poseStack, breakProgressDecal);
             poseStack.popPose();
         }
     }
@@ -131,11 +130,22 @@ public abstract class LevelRendererMixin {
             return;
         }
 
-        ToolHelper
-                .getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player,
-                        minecraft.hitResult)
-                .forEach(position -> gtceu$renderContextAwareOutline(poseStack, consumer, entity, camX, camY, camZ,
-                        position, level.getBlockState(position)));
+        var positions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level,
+                minecraft.player, minecraft.hitResult);
+        positions.sort((o1, o2) -> {
+            if (level.getBlockState(o1).getBlock() instanceof MaterialBlock) {
+                if (level.getBlockState(o2).getBlock() instanceof MaterialBlock) {
+                    return 0;
+                }
+                return 1;
+            }
+            if (level.getBlockState(o2).getBlock() instanceof MaterialBlock) {
+                return -1;
+            }
+            return 0;
+        });
+        positions.forEach(position -> gtceu$renderContextAwareOutline(poseStack, consumer, entity, camX, camY, camZ,
+                position, level.getBlockState(position)));
         ci.cancel();
     }
 
