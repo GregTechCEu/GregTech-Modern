@@ -23,12 +23,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolActions;
 
-import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Used to allow a tool to hoe the ground, only if it cannot extend the
@@ -58,11 +56,11 @@ public class HoeGroundBehavior implements IToolBehavior {
         ItemStack stack = player.getItemInHand(hand);
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
 
-        Set<BlockPos> blocks;
+        List<BlockPos> blocks;
         // only attempt to till if the center block is tillable
         if (isBlockTillable(stack, world, player, pos, context)) {
             if (aoeDefinition.isEmpty()) {
-                blocks = ImmutableSet.of(pos);
+                blocks = List.of(pos);
             } else {
                 HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);
 
@@ -101,8 +99,8 @@ public class HoeGroundBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                  Player player, HitResult rayTraceResult) {
+    public static List<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
+                                                   Player player, HitResult rayTraceResult) {
         return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult,
                 HoeGroundBehavior.INSTANCE::isBlockTillable);
     }

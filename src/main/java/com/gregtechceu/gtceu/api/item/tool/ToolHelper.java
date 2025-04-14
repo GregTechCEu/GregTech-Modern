@@ -65,7 +65,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -276,7 +276,7 @@ public class ToolHelper {
         int currentDurability = stack.getDamageValue();
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
-        Set<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
+        var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             int blocksBroken = 0;
             for (BlockPos pos : harvestableBlocks) {
@@ -312,9 +312,9 @@ public class ToolHelper {
         return AoESymmetrical.read(getBehaviorsTag(stack), getMaxAoEDefinition(stack));
     }
 
-    public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                           Player player, HitResult rayTraceResult,
-                                           AOEFunction function) {
+    public static List<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
+                                            Player player, HitResult rayTraceResult,
+                                            AOEFunction function) {
         if (!aoeDefinition.isEmpty() && rayTraceResult instanceof BlockHitResult blockHit &&
                 blockHit.getDirection() != null) {
             int column = aoeDefinition.column;
@@ -324,7 +324,7 @@ public class ToolHelper {
             Direction.Axis playerAxis = playerFacing.getAxis();
             Direction.Axis sideHitAxis = blockHit.getDirection().getAxis();
             Direction.AxisDirection sideHitAxisDir = blockHit.getDirection().getAxisDirection();
-            Set<BlockPos> validPositions = new ObjectOpenHashSet<>();
+            var validPositions = new ObjectArrayList<BlockPos>(column * row * layer / 2);
             if (sideHitAxis.isVertical()) {
                 boolean isX = playerAxis == Direction.Axis.X;
                 boolean isDown = sideHitAxisDir == Direction.AxisDirection.NEGATIVE;
@@ -367,11 +367,11 @@ public class ToolHelper {
             }
             return validPositions;
         }
-        return Collections.emptySet();
+        return List.of();
     }
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                     Player player, HitResult rayTraceResult) {
+    public static List<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
+                                                      Player player, HitResult rayTraceResult) {
         return iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, ToolHelper::isBlockAoEHarvestable);
     }
 
@@ -542,17 +542,12 @@ public class ToolHelper {
         return successful;
     }
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Level world, Player player,
-                                                     HitResult rayTraceResult) {
-        return getHarvestableBlocks(stack, getAoEDefinition(stack), world, player, rayTraceResult);
-    }
-
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsTag(stack)) return Collections.emptySet();
+    public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
+        if (!hasBehaviorsTag(stack)) return List.of();
 
         AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
         if (aoeDefiniton.isEmpty()) {
-            return Collections.emptySet();
+            return List.of();
         }
 
         HitResult rayTraceResult = getPlayerDefaultRaytrace(player);

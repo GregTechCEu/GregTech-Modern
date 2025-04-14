@@ -22,12 +22,10 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 public class HarvestCropsBehavior implements IToolBehavior {
 
@@ -50,10 +48,10 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
 
-        Set<BlockPos> blocks;
+        List<BlockPos> blocks;
 
         if (aoeDefinition.isEmpty()) {
-            blocks = ImmutableSet.of(pos);
+            blocks = List.of(pos);
         } else {
             HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);
 
