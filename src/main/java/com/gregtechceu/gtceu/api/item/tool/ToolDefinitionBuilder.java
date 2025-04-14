@@ -57,7 +57,7 @@ public class ToolDefinitionBuilder {
     @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
     @Setter
-    private AoESymmetrical aoe = AoESymmetrical.none();
+    private AoESymmetrical aoe = AoESymmetrical.EMPTY;
     private final Set<Block> effectiveBlocks = new ObjectOpenHashSet<>();
     private Predicate<BlockState> effectiveStates;
     private final Object2IntMap<Enchantment> defaultEnchantments = new Object2IntArrayMap<>();

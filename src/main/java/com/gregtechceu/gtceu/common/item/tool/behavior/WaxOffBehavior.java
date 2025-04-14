@@ -53,7 +53,7 @@ public class WaxOffBehavior implements IToolBehavior {
         Set<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
         if (isBlockUnWaxable(stack, level, player, pos, context)) {
-            if (aoeDefinition == AoESymmetrical.none()) {
+            if (aoeDefinition.isEmpty()) {
                 blocks = ImmutableSet.of(pos);
             } else {
                 HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);

@@ -315,7 +315,7 @@ public class ToolHelper {
     public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                            Player player, HitResult rayTraceResult,
                                            AOEFunction function) {
-        if (aoeDefinition != AoESymmetrical.none() && rayTraceResult instanceof BlockHitResult blockHit &&
+        if (!aoeDefinition.isEmpty() && rayTraceResult instanceof BlockHitResult blockHit &&
                 blockHit.getDirection() != null) {
             int column = aoeDefinition.column;
             int row = aoeDefinition.row;
@@ -551,7 +551,7 @@ public class ToolHelper {
         if (!hasBehaviorsTag(stack)) return Collections.emptySet();
 
         AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
-        if (aoeDefiniton == AoESymmetrical.none()) {
+        if (aoeDefiniton.isEmpty()) {
             return Collections.emptySet();
         }
 

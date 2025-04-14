@@ -52,7 +52,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
 
-        if (aoeDefinition == AoESymmetrical.none()) {
+        if (aoeDefinition.isEmpty()) {
             blocks = ImmutableSet.of(pos);
         } else {
             HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);

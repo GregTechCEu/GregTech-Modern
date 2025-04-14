@@ -158,7 +158,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         CompoundTag behaviourTag = getBehaviorsTag(stack);
         getToolStats().getBehaviors().forEach(behavior -> behavior.addBehaviorNBT(stack, behaviourTag));
 
-        if (aoeDefinition != AoESymmetrical.none()) {
+        if (!aoeDefinition.isEmpty()) {
             behaviourTag.putInt(MAX_AOE_COLUMN_KEY, aoeDefinition.column);
             behaviourTag.putInt(MAX_AOE_ROW_KEY, aoeDefinition.row);
             behaviourTag.putInt(MAX_AOE_LAYER_KEY, aoeDefinition.layer);
@@ -693,7 +693,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         boolean addedBehaviorNewLine = false;
         AoESymmetrical aoeDefinition = getAoEDefinition(stack);
 
-        if (aoeDefinition != AoESymmetrical.none()) {
+        if (!aoeDefinition.isEmpty()) {
             addedBehaviorNewLine = tooltip.add(Component.literal(""));
             tooltip.add(Component.translatable("item.gtceu.tool.behavior.aoe_mining",
                     aoeDefinition.column * 2 + 1, aoeDefinition.row * 2 + 1, aoeDefinition.layer + 1));
@@ -773,7 +773,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             case "enchantment.cofhcore.smelting": // cofhcore
             case "enchantment.as.smelting": // astral sorcery
                 // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack) == AoESymmetrical.none() &&
+                return getToolStats().getAoEDefinition(stack).isEmpty() &&
                         !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
         }
 
