@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.particle.MufflerParticleOptions;
+import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -53,7 +53,7 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
         var xSpd = facing.getStepX() + (GTValues.RNG.nextFloat() - .5f) * .5f;
         var zSpd = facing.getStepZ() + (GTValues.RNG.nextFloat() - .5f) * .5f;
 
-        self().getLevel().addParticle(new MufflerParticleOptions(0x1E1C1D, 1f),
+        self().getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
                 xPos, yPos, zPos, xSpd, ySpd, zSpd);
     }
 
