@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -129,21 +131,17 @@ public class WorkableOverlayModel {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, Direction upwardsFacing,
+    public List<BakedQuad> bakeQuads(@Nullable Direction side, ModelState modelState,
                                      boolean isActive, boolean isWorkingEnabled) {
         var quads = new ArrayList<BakedQuad>();
 
-        var rotation = createRotationState(frontFacing, upwardsFacing);
-
         for (var renderSide : GTUtil.DIRECTIONS) {
-            // construct a rotation matrix from front & up rotation
-
             ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
             if (predicate != null) {
                 var texture = predicate.getSprite(isActive, isWorkingEnabled);
                 if (texture != null) {
                     var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                            rotation, -1, 0, true, true);
+                            modelState, -1, 0, true, true);
                     if (quad.getDirection() == side) {
                         quads.add(quad);
                     }
@@ -153,13 +151,13 @@ public class WorkableOverlayModel {
                 if (texture != null) {
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
                         var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                                rotation, -101, 15, true, false);
+                                modelState, -101, 15, true, false);
                         if (quad.getDirection() == side) {
                             quads.add(quad);
                         }
                     } else {
                         var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                                rotation, -1, 0, true, true);
+                                modelState, -1, 0, true, true);
                         if (quad.getDirection() == side) {
                             quads.add(quad);
                         }
@@ -186,7 +184,7 @@ public class WorkableOverlayModel {
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
                 combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, Direction.NORTH,
+                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, BlockModelRotation.X0_Y0,
                         false, false));
         IItemRendererProvider.disabled.set(false);
     }
@@ -201,7 +199,7 @@ public class WorkableOverlayModel {
 
             var normalSprite = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath);
             var normalSprite1 = getTextureLocation(normalSprite);
-            if (!resManager.getResource(normalSprite1).isPresent()) continue;
+            if (resManager.getResource(normalSprite1).isEmpty()) continue;
             register.accept(normalSprite);
 
             // normal
