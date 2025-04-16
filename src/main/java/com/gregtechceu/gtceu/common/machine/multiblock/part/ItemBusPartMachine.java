@@ -182,13 +182,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) {
-            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
-        } else if (autoIOSubs != null) {
-            autoIOSubs.unsubscribe();
-            autoIOSubs = null;
-        }
+        updateInventorySubscription(getFrontFacing());
     }
 
     protected void updateInventorySubscription(Direction newFacing) {

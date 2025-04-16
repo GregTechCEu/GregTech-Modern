@@ -179,13 +179,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     protected void updateTankSubscription() {
-        if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing())) {
-            autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
-        } else if (autoIOSubs != null) {
-            autoIOSubs.unsubscribe();
-            autoIOSubs = null;
-        }
+        updateTankSubscription(getFrontFacing());
     }
 
     protected void updateTankSubscription(Direction newFacing) {
