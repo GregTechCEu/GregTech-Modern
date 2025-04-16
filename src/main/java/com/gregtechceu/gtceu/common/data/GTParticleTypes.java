@@ -25,7 +25,7 @@ public class GTParticleTypes {
                     return HazardParticleOptions.CODEC;
                 }
             });
-    public static final RegistryObject<ParticleType<SimpleParticleType>> MUFFLER_PARTICLE = PARTICLE_TYPES
+    public static final RegistryObject<SimpleParticleType> MUFFLER_PARTICLE = PARTICLE_TYPES
             .register("muffler", () -> new SimpleParticleType(false));
 
     public static void init(IEventBus modBus) {
