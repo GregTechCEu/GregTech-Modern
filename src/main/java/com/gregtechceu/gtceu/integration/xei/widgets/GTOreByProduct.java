@@ -172,9 +172,9 @@ public class GTOreByProduct {
         // macerate ore -> crushed
         addToOutputs(material, TagPrefix.crushed, 2 * oreMultiplier);
         if (!ChemicalHelper.get(TagPrefix.gem, byproducts[0]).isEmpty()) {
-            addToOutputs(byproducts[0], TagPrefix.gem, 1);
+            addToOutputs(byproducts[0], TagPrefix.gem, byproductMultiplier);
         } else {
-            addToOutputs(byproducts[0], TagPrefix.dust, 1);
+            addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
         }
         addChance(1400, 850);
 
@@ -185,12 +185,12 @@ public class GTOreByProduct {
 
         // centrifuge impure -> dust
         addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[0], TagPrefix.dust, 1);
+        addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
         addChance(1111, 0);
 
         // ore wash crushed -> crushed purified
         addToOutputs(material, TagPrefix.crushedPurified, 1);
-        addToOutputs(byproducts[0], TagPrefix.dust, 1);
+        addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
         addChance(3333, 0);
         FluidTagList tagList = new FluidTagList();
         tagList.add(GTMaterials.Water.getFluidTag(), 1000, null);
@@ -204,17 +204,17 @@ public class GTOreByProduct {
 
         // macerate centrifuged -> dust
         addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[2], TagPrefix.dust, 1);
+        addToOutputs(byproducts[2], TagPrefix.dust, byproductMultiplier);
         addChance(1400, 850);
 
         // macerate crushed purified -> purified
         addToOutputs(material, TagPrefix.dustPure, 1);
-        addToOutputs(byproducts[1], TagPrefix.dust, 1);
+        addToOutputs(byproducts[1], TagPrefix.dust, byproductMultiplier);
         addChance(1400, 850);
 
         // centrifuge purified -> dust
         addToOutputs(material, TagPrefix.dust, 1);
-        addToOutputs(byproducts[1], TagPrefix.dust, 1);
+        addToOutputs(byproducts[1], TagPrefix.dust, byproductMultiplier);
         addChance(1111, 0);
 
         // cauldron/simple washer
@@ -245,10 +245,10 @@ public class GTOreByProduct {
                     separatedInto.get(separatedInto.size() - 1).hasProperty(PropertyKey.INGOT)) ? TagPrefix.nugget :
                             TagPrefix.dust;
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedInto.get(separatedInto.size() - 1),
-                    prefix == TagPrefix.nugget ? 2 : 1);
+                    prefix == TagPrefix.nugget ? 2 * byproductMultiplier: byproductMultiplier);
 
             addToOutputs(material, TagPrefix.dust, 1);
-            addToOutputs(separatedInto.get(0), TagPrefix.dust, 1);
+            addToOutputs(separatedInto.get(0), TagPrefix.dust, byproductMultiplier);
             addChance(1000, 250);
             addToOutputs(separatedStack2);
             addChance(prefix == TagPrefix.dust ? 500 : 2000, prefix == TagPrefix.dust ? 150 : 600);
@@ -259,16 +259,16 @@ public class GTOreByProduct {
         // sifter
         if (hasSifter) {
             boolean highOutput = material.hasFlag(MaterialFlags.HIGH_SIFTER_OUTPUT);
-            ItemStack flawedStack = ChemicalHelper.get(TagPrefix.gemFlawed, material);
-            ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material);
+            ItemStack flawedStack = ChemicalHelper.get(TagPrefix.gemFlawed, material, byproductMultiplier);
+            ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material, byproductMultiplier);
 
-            addToOutputs(material, TagPrefix.gemExquisite, 1);
+            addToOutputs(material, TagPrefix.gemExquisite, byproductMultiplier);
             addGemChance(300, 100, 500, 150, highOutput);
-            addToOutputs(material, TagPrefix.gemFlawless, 1);
+            addToOutputs(material, TagPrefix.gemFlawless, byproductMultiplier);
             addGemChance(1000, 150, 1500, 200, highOutput);
-            addToOutputs(material, TagPrefix.gem, 1);
+            addToOutputs(material, TagPrefix.gem, byproductMultiplier);
             addGemChance(3500, 500, 5000, 1000, highOutput);
-            addToOutputs(material, TagPrefix.dustPure, 1);
+            addToOutputs(material, TagPrefix.dustPure, byproductMultiplier);
             addGemChance(5000, 750, 2500, 500, highOutput);
 
             if (!flawedStack.isEmpty()) {
