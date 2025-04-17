@@ -130,8 +130,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-            assert steamEnergy != null : "Formed without Steam Hatch";
-            if (steamEnergy.getCapacity() > 0) {
+            if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
                 long steamStored = steamEnergy.getStored();
                 textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
                         steamEnergy.getCapacity()));

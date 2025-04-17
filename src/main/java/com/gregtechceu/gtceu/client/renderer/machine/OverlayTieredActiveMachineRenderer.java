@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@SuppressWarnings("removal")
 public class OverlayTieredActiveMachineRenderer extends TieredHullMachineRenderer {
 
     protected IModelRenderer activeOverlayModel;
