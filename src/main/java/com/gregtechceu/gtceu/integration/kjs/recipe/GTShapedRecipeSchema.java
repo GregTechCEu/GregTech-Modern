@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TinyMap;
@@ -17,6 +18,8 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
@@ -35,8 +38,9 @@ public interface GTShapedRecipeSchema {
         }
 
         @HideFromJS
-        public boolean hasIngredientActions() {
-            return recipeIngredientActions != null && !recipeIngredientActions.isEmpty();
+        public List<IngredientAction> getIngredientActions() {
+            if (recipeIngredientActions == null) return Collections.emptyList();
+            return recipeIngredientActions;
         }
 
         // Adapted from KJS's ShapedRecipeSchema#ShapedRecipeJS

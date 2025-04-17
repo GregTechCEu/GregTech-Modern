@@ -43,6 +43,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -59,6 +60,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -81,12 +83,15 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponent
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraftforge.items.ItemStackHandler;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -97,16 +102,17 @@ import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.kubejs.recipe.KubeJSRecipeEventHandler;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
-import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
@@ -596,12 +602,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     private static void handleGTShaped(GTShapedRecipeSchema.ShapedRecipeJS shaped) {
         if (!shaped.isAddMaterialInfo()) return;
-        // Difficult to deal with ingredient actions, so we just won't support them with decomposition
-        if (shaped.hasIngredientActions()) {
-            ConsoleJS.getCurrent(ConsoleJS.SERVER)
-                    .warnf("Ingredient Actions are not supported with decomposition, check recipe {%s}", shaped.id);
-            return;
-        }
 
         var pattern = shaped.getValue(PATTERN);
         final var tools = ToolHelper.getToolSymbols();
@@ -610,26 +610,42 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         // Parse Material Info
         Char2IntOpenHashMap inputMap = new Char2IntOpenHashMap(entries.length);
+        Char2IntMap slotMap = new Char2IntOpenHashMap(entries.length);
+        int idx = -1;
         for (String s : pattern) {
             for (char c : s.toCharArray()) {
+                ++idx;
                 if (tools.contains(c)) continue; // Skip tools for decomp
                 inputMap.addTo(c, 1);
+                slotMap.put(c, idx);
             }
         }
         if (inputMap.isEmpty()) return;
+
         var result = shaped.getValue(RESULT);
         ItemStack outItem = result.item;
         int outCount = result.getCount();
         Reference2LongOpenHashMap<Material> materials = new Reference2LongOpenHashMap<>();
+        CraftingContainer cc = new DummyCraftingContainer(new ItemStackHandler(idx + 1));
 
         for (var entry : entries) {
             char c = entry.key();
             int inCount = inputMap.get(c);
             if (inCount == 0) continue;
-            ItemStack[] stacks = entry.value().kjs$asIngredient().getItems();
-            if (stacks.length == 0 || stacks[0].isEmpty()) continue;
-            if (stacks[0].getCraftingRemainingItem() != ItemStack.EMPTY) continue;
-            var item = stacks[0].getItem();
+
+            var ingredient = entry.value().kjs$asIngredient();
+            var values = ((IngredientAccessor) ingredient).getValues();
+            if (values.length == 0 || values[0] instanceof Ingredient.TagValue) continue;
+
+            ItemStack[] stacks = ingredient.getItems();
+            ItemStack stack;
+            if (stacks.length == 0 || (stack = stacks[0]).isEmpty()) continue;
+
+            int slot = slotMap.get(c);
+            cc.setItem(slot, stack);
+            if (!IngredientAction.getRemaining(cc, slot, shaped.getIngredientActions()).isEmpty()) continue;
+
+            var item = stack.getItem();
 
             var info = ItemMaterialData.getMaterialInfo(item);
             if (info != null) {
