@@ -305,7 +305,8 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (setMaterialInfoData) {
-            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(),
+                    getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
@@ -395,7 +396,8 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (setMaterialInfoData) {
-            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(),
+                    getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 
@@ -466,7 +468,8 @@ public class VanillaRecipeHelper {
         builder.save(provider);
 
         if (setMaterialInfoData) {
-            ItemMaterialData.registerMaterialInfo(result.getItem(), getRecyclingIngredients(result.getCount(), recipe));
+            ItemMaterialData.registerMaterialInfo(result.getItem(),
+                    getRecyclingIngredients(result.getCount(), recipe));
         }
     }
 

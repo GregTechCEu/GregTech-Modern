@@ -1248,7 +1248,7 @@ public class TagPrefix {
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
-            ItemMaterialData.registerMaterialInfoItems(this, material, Arrays.asList(items));
+            ItemMaterialData.registerMaterialEntries(Arrays.asList(items), this, material);
         }
     }
 
