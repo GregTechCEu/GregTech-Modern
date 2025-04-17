@@ -336,6 +336,11 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
+        @Configurable.Comment({ "Raw Oil Sprout spawn chance (on average 1 every n chunks)", "Default: 64" })
+        @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
+        public float rawOilSproutSpawnChance = 64;
+
+        @Configurable
         @Configurable.Comment({ "Should all Stone Types drop unique Ore Item Blocks?",
                 "Default: false (meaning only Stone, Netherrack, and Endstone)" })
         public boolean allUniqueStoneTypes = false;

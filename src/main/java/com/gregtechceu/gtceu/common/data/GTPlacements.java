@@ -59,7 +59,7 @@ public class GTPlacements {
                 BiomeFilter.biome(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top()));
         PlacementUtils.register(ctx, RAW_OIL_SPROUT, featureLookup.getOrThrow(GTConfiguredFeatures.RAW_OIL_SPROUT),
-                RarityFilter.onAverageOnceEvery(64),
+                RarityFilter.onAverageOnceEvery(ConfigHolder.INSTANCE.worldgen.rawOilSproutSpawnChance),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(40)));
