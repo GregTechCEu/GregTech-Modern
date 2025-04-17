@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
@@ -18,13 +17,10 @@ public class GTItemBarRenderer implements IItemDecorator {
 
     @Override
     public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
-        GTCEu.LOGGER.info("Rendering item bar decorator");
         if (stack.getItem() instanceof IGTTool toolItem) {
-            GTCEu.LOGGER.info("Rendering tool bar decorator");
             ToolChargeBarRenderer.renderBarsTool(guiGraphics, toolItem, stack, x, y);
             return true;
         } else if (stack.getItem() instanceof IComponentItem componentItem) {
-            GTCEu.LOGGER.info("Rendering component item bar decorator");
             ToolChargeBarRenderer.renderBarsItem(guiGraphics, componentItem, stack, x, y);
             return true;
         }
