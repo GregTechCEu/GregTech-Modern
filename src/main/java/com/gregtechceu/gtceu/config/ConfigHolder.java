@@ -338,7 +338,7 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Raw Oil Sprout spawn chance (on average 1 every n chunks)", "Default: 64" })
         @Configurable.Range(min = 1, max = Integer.MAX_VALUE)
-        public float rawOilSproutSpawnChance = 64;
+        public int rawOilSproutSpawnChance = 64;
 
         @Configurable
         @Configurable.Comment({ "Should all Stone Types drop unique Ore Item Blocks?",
