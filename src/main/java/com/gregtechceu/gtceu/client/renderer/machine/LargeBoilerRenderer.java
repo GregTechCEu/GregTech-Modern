@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
+import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
@@ -21,11 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote LargeBoilerRenderer
- */
 public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implements IControllerRenderer {
 
     public static final ResourceLocation BLOOM_OVERLAY = GTCEu.id("block/casings/firebox/machine_casing_firebox_bloom");
@@ -41,30 +39,34 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
     public void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
                                 @Nullable Direction side, RandomSource rand, Direction modelFacing,
                                 ModelState modelState) {
-        // We have to render it ourselves to avoid uv issues
-        if (machine.self().getPos().below().getY() == part.self().getPos().getY()) {
-            // firebox
-            if (side != null && modelFacing != null) {
-                if (side == Direction.UP) {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(firebox.top()), modelState));
-                } else if (side == Direction.DOWN) {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(firebox.bottom()), modelState));
-                } else {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(firebox.side()), modelState));
-                    if (machine instanceof IRecipeLogicMachine recipeLogicMachine &&
-                            recipeLogicMachine.getRecipeLogic().isWorking()) {
-                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK,
-                                modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState,
-                                -101, 15, true, false));
-                    }
-                }
-            }
+        if (side == null) {
+            return;
+        }
+
+        var multiFront = MetaMachine.getFrontFacing(machine.self());
+        var multiUpward = MetaMachine.getUpwardFacing(machine.self());
+        var multiState = GTMatrixUtils.createRotationState(multiFront, Direction.NORTH);
+        var multiFacing = ModelFactory.modelFacing(side, multiFront);
+        var flipped = machine.self().isFlipped();
+        var relativeDown = RelativeDirection.DOWN.getRelativeFacing(multiFront, multiUpward, flipped);
+        // the rest of the owl
+        if (machine.self().getPos().relative(relativeDown).get(relativeDown.getAxis()) !=
+                part.self().getPos().get(relativeDown.getAxis())) {
+            quads.add(StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(baseCasing), multiState));
+            return;
+        }
+        // firebox
+        if (side == relativeDown) {
+            quads.add(
+                    StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.bottom()), multiState));
+        } else if (side == RelativeDirection.UP.getRelativeFacing(multiFacing, multiUpward, flipped)) {
+            quads.add(StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.top()), multiState));
         } else {
-            if (side != null && modelFacing != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(baseCasing), modelState));
+            quads.add(StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.side()), multiState));
+            if (machine instanceof IRecipeLogicMachine recipeLogicMachine &&
+                    recipeLogicMachine.getRecipeLogic().isWorking()) {
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, multiFacing,
+                        ModelFactory.getBlockSprite(BLOOM_OVERLAY), multiState, -101, 15, true, false));
             }
         }
     }

@@ -45,7 +45,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@LDLRegister(name = "item_slot", group = "widget.container", priority = 50)
+@LDLRegister(name = "gtm_item_slot", group = "widget.gtm_container", priority = 50)
 public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     public SlotWidget() {
@@ -89,6 +89,11 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
     public SlotWidget setContainerSlot(Container inventory, int slotIndex) {
         super.setContainerSlot(inventory, slotIndex);
         return this;
+    }
+
+    @Override
+    public void updateSlot(Slot slot) {
+        super.updateSlot(slot);
     }
 
     @Override

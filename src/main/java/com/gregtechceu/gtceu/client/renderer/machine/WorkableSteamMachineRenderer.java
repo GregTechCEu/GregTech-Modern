@@ -45,15 +45,11 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
                               Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        var upwardsFacing = Direction.NORTH;
-        if (machine != null && machine.allowExtendedFacing()) {
-            upwardsFacing = machine.getUpwardsFacing();
-        }
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
+            quads.addAll(overlayModel.bakeQuads(side, modelState, workable.isActive(),
                     workable.isWorkingEnabled()));
         } else {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
+            quads.addAll(overlayModel.bakeQuads(side, modelState, false, false));
         }
         if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
             if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -757,7 +757,7 @@ public class GTCraftingComponents {
     private static final class KJSCallWrapper {
 
         private static void craftingComponentModification() {
-            GTCEuServerEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
+            GTCEuStartupEvents.CRAFTING_COMPONENTS.post(new CraftingComponentsEventJS());
         }
     }
 }
