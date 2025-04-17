@@ -12,8 +12,9 @@ import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.decorator.GTItemBarRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -91,8 +92,11 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : ForgeRegistries.ITEMS) {
-            if (item instanceof IGTTool || item instanceof IComponentItem) {
-                event.register(item, GTItemBarRenderer.INSTANCE);
+            if (item instanceof IComponentItem) {
+                event.register(item, GTComponentItemDecorator.INSTANCE);
+            }
+            if (item instanceof IGTTool) {
+                event.register(item, GTToolBarRenderer.INSTANCE);
             }
             if (item instanceof LampBlockItem) {
                 event.register(item, GTLampItemOverlayRenderer.INSTANCE);

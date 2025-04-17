@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
-import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 
@@ -11,19 +10,16 @@ import net.minecraftforge.client.IItemDecorator;
 
 import org.jetbrains.annotations.NotNull;
 
-public class GTItemBarRenderer implements IItemDecorator {
+public class GTToolBarRenderer implements IItemDecorator {
 
-    public static final GTItemBarRenderer INSTANCE = new GTItemBarRenderer();
+    public static final GTToolBarRenderer INSTANCE = new GTToolBarRenderer();
 
     @Override
     public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
-        if (stack.getItem() instanceof IGTTool toolItem) {
-            ToolChargeBarRenderer.renderBarsTool(guiGraphics, toolItem, stack, x, y);
-            return true;
-        } else if (stack.getItem() instanceof IComponentItem componentItem) {
-            ToolChargeBarRenderer.renderBarsItem(guiGraphics, componentItem, stack, x, y);
+        if (stack.getItem() instanceof IGTTool gtTool) {
+            ToolChargeBarRenderer.renderBarsTool(guiGraphics, gtTool, stack, x, y);
             return true;
         }
-        return false;
+        return true;
     }
 }
