@@ -101,7 +101,7 @@ public class AcidRecipes {
                 .outputFluids(NitricOxide.getFluid(1000))
                 .duration(240).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("nitric_oxide_from_dioxide_2")
+        CHEMICAL_RECIPES.recipeBuilder("nitric_acid_from_dioxide_2")
                 .circuitMeta(3)
                 .inputFluids(Water.getFluid(1000))
                 .inputFluids(Oxygen.getFluid(1000))
