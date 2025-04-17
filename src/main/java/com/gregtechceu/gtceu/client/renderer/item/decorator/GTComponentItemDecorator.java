@@ -17,12 +17,13 @@ public final class GTComponentItemDecorator implements IItemDecorator {
     @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (stack.getItem() instanceof IComponentItem componentItem) {
+            var retVal = false;
             for (var component : componentItem.getComponents()) {
                 if (component instanceof IItemDecoratorComponent itemDecoratorComponent) {
-                    itemDecoratorComponent.render(guiGraphics, font, stack, xOffset, yOffset);
+                    retVal |= itemDecoratorComponent.render(guiGraphics, font, stack, xOffset, yOffset);
                 }
             }
-            return true;
+            return retVal;
         }
         return false;
     }

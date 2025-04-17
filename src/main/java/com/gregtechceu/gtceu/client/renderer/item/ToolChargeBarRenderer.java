@@ -56,13 +56,15 @@ public final class ToolChargeBarRenderer {
         }
     }
 
-    public static void renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
-                                         int yPosition, boolean renderedDurability) {
+    public static boolean renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
+                                            int yPosition, boolean renderedDurability) {
         if (charge > 0 && maxCharge > 0) {
             int level = Math.round(charge * 13.0F / maxCharge);
             render(graphics, level, xPosition, yPosition, renderedDurability ? 2 : 0, true, colorBarLeftEnergy,
                     colorBarRightEnergy, true);
+            return true;
         }
+        return false;
     }
 
     public static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager,
