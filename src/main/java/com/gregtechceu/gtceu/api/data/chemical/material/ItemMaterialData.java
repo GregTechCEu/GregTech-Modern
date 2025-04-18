@@ -77,7 +77,7 @@ public class ItemMaterialData {
     public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> supplier,
                                              @NotNull MaterialEntry materialEntry) {
         registerItemEntry(supplier, materialEntry);
-        ITEM_MATERIAL_ENTRY.add(Pair.of(supplier, materialEntry));
+        ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
         if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
             registerRegistryObjectEntry(registryObject, materialEntry);
         } else if (supplier instanceof BlockEntry<?> entry) {
