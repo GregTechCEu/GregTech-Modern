@@ -14,9 +14,7 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
 import com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
-import com.lowdragmc.lowdraglib.gui.widget.TabButton;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -102,6 +100,9 @@ public class RecipeTypeUIProject extends UIProject {
                         new TextTexture("Main"))),
                 new UIMainPanel(editor, root, recipeType == null ? null : recipeType.registryName.toLanguageKey()));
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
+            if (tab == WidgetToolBox.Default.CONTAINER) {
+                continue;
+            }
             editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon,
                     tab.createToolBox());
         }

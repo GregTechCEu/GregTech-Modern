@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -32,6 +34,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -40,6 +43,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -56,6 +60,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -70,17 +75,23 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
+import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraftforge.items.ItemStackHandler;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -88,7 +99,10 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import dev.latvian.mods.kubejs.recipe.KubeJSRecipeEventHandler;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
@@ -98,11 +112,18 @@ import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import it.unimi.dsi.fastutil.chars.Char2IntMap;
+import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.KEY;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
+import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
 /**
  * @author KilaBash
@@ -203,6 +224,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
             event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
         }
+        var ns = event.namespace(GTCEu.MOD_ID);
+        ns.put("shaped", new WrappingRecipeSchemaType(ns, GTCEu.id("shaped"),
+                GTShapedRecipeSchema.SCHEMA, KubeJSRecipeEventHandler.SHAPED.get()));
     }
 
     @Override
@@ -440,90 +464,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager,
                                      Map<ResourceLocation, Recipe<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
-        RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
-            if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
-                // get the recipe ID without the leading type path
-                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
-                        .recipeBuilder(gtRecipe.idWithoutType());
-
-                if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
-                    builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
-                    builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
-                    builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
-                    builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
-                            .get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
-                }
-                builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
-
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
-                    builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS) != null) {
-                    builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getSecond().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS) != null) {
-                    builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS) != null) {
-                    builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getSecond().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }
-
-                if (gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS) != null) {
-                    builder.inputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS) != null) {
-                    builder.outputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS) != null) {
-                    builder.tickInputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS));
-                }
-                if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
-                    builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
-                }
-
-                builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
-                builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
-                gtRecipe.itemMaterialStacks = null;
-                gtRecipe.fluidMaterialStacks = null;
-
-                builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
-                if (gtRecipe.removeMaterialInfo)
-                    builder.removePreviousMaterialInfo();
-
-                builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
-                        GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+        for (RecipeJS addedRecipe : event.addedRecipes) {
+            if (addedRecipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
+                handleGTRecipe(recipesByName, gtRecipe);
+            } else if (addedRecipe instanceof GTShapedRecipeSchema.ShapedRecipeJS gtShaped) {
+                handleGTShaped(gtShaped);
             }
-        })));
+        }
 
         PowerlessJetpack.FUELS.clear();
         // Must run recycling recipes very last
@@ -558,5 +505,164 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                         .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
             }
         }
+    }
+
+    private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
+                                       GTRecipeSchema.GTRecipeJS gtRecipe) {
+        // get the recipe ID without the leading type path
+        GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id))
+                .recipeBuilder(gtRecipe.idWithoutType());
+
+        if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
+            builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.DATA) != null) {
+            builder.data = gtRecipe.getValue(GTRecipeSchema.DATA);
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
+            builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
+            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
+        }
+        builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
+
+        if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
+            builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS).entrySet().stream()
+                    .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer
+                                    .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
+                                            .getFirst().write(gtRecipe, content)))
+                            .toList()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS) != null) {
+            builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS).entrySet().stream()
+                    .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer
+                                    .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
+                                            .getSecond().write(gtRecipe, content)))
+                            .toList()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS) != null) {
+            builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS).entrySet().stream()
+                    .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer
+                                    .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
+                                            .getFirst().write(gtRecipe, content)))
+                            .toList()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS) != null) {
+            builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS).entrySet().stream()
+                    .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer
+                                    .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
+                                            .getSecond().write(gtRecipe, content)))
+                            .toList()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+
+        if (gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS) != null) {
+            builder.inputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.INPUT_CHANCE_LOGICS));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS) != null) {
+            builder.outputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.OUTPUT_CHANCE_LOGICS));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS) != null) {
+            builder.tickInputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_INPUT_CHANCE_LOGICS));
+        }
+        if (gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS) != null) {
+            builder.tickOutputChanceLogic.putAll(gtRecipe.getValue(GTRecipeSchema.TICK_OUTPUT_CHANCE_LOGICS));
+        }
+
+        builder.setTempItemMaterialStacks(gtRecipe.itemMaterialStacks);
+        builder.setTempFluidMaterialStacks(gtRecipe.fluidMaterialStacks);
+        gtRecipe.itemMaterialStacks = null;
+        gtRecipe.fluidMaterialStacks = null;
+
+        builder.addMaterialInfo(gtRecipe.itemMaterialInfo, gtRecipe.fluidMaterialInfo);
+        if (gtRecipe.removeMaterialInfo) {
+            builder.removePreviousMaterialInfo();
+        }
+
+        builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
+                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+    }
+
+    private static void handleGTShaped(GTShapedRecipeSchema.ShapedRecipeJS shaped) {
+        if (!shaped.isAddMaterialInfo()) return;
+
+        var pattern = shaped.getValue(PATTERN);
+        final var tools = ToolHelper.getToolSymbols();
+        var key = shaped.getValue(KEY);
+        var entries = key.entries();
+
+        // Parse Material Info
+        Char2IntOpenHashMap inputMap = new Char2IntOpenHashMap(entries.length);
+        Char2IntMap slotMap = new Char2IntOpenHashMap(entries.length);
+        int idx = -1;
+        for (String s : pattern) {
+            for (char c : s.toCharArray()) {
+                ++idx;
+                if (tools.contains(c)) continue; // Skip tools for decomp
+                inputMap.addTo(c, 1);
+                slotMap.put(c, idx);
+            }
+        }
+        if (inputMap.isEmpty()) return;
+
+        var result = shaped.getValue(RESULT);
+        ItemStack outItem = result.item;
+        int outCount = result.getCount();
+        Reference2LongOpenHashMap<Material> materials = new Reference2LongOpenHashMap<>();
+        CraftingContainer cc = new DummyCraftingContainer(new ItemStackHandler(idx + 1));
+
+        for (var entry : entries) {
+            char c = entry.key();
+            int inCount = inputMap.get(c);
+            if (inCount == 0) continue;
+
+            var ingredient = entry.value().kjs$asIngredient();
+            var values = ((IngredientAccessor) ingredient).getValues();
+            if (values.length == 0 || values[0] instanceof Ingredient.TagValue) continue;
+
+            ItemStack[] stacks = ingredient.getItems();
+            ItemStack stack;
+            if (stacks.length == 0 || (stack = stacks[0]).isEmpty()) continue;
+
+            int slot = slotMap.get(c);
+            cc.setItem(slot, stack);
+            if (!IngredientAction.getRemaining(cc, slot, shaped.getIngredientActions()).isEmpty()) continue;
+
+            var item = stack.getItem();
+
+            var info = ItemMaterialData.getMaterialInfo(item);
+            if (info != null) {
+                for (var ms : info.getMaterials()) {
+                    if (ms.material() instanceof MarkerMaterial) continue;
+                    materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
+                }
+                continue;
+            } else {
+                ItemMaterialData.UNRESOLVED_ITEM_MATERIAL_INFO.computeIfAbsent(outItem, i -> new ArrayList<>())
+                        .add(stacks[0].copyWithCount(inCount));
+            }
+
+            var matStack = ChemicalHelper.getMaterialStack(item);
+            if (!matStack.isEmpty() && !(matStack.material() instanceof MarkerMaterial)) {
+                materials.addTo(matStack.material(), (matStack.amount() * inCount) / outCount);
+            }
+
+            var prefix = ChemicalHelper.getPrefix(item);
+            if (!prefix.isEmpty()) {
+                for (var ms : prefix.secondaryMaterials()) {
+                    materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
+                }
+            }
+        }
+
+        ItemMaterialData.registerMaterialInfo(outItem.getItem(), new ItemMaterialInfo(materials));
     }
 }

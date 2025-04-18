@@ -1396,7 +1396,7 @@ public class GTBlocks {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 GTMaterialItems.toUnify.put(entry, blockSupplier);
-                ItemMaterialData.registerMaterialInfoItem(entry, blockSupplier);
+                ItemMaterialData.registerMaterialEntry(blockSupplier, entry);
             });
             return builder;
         };

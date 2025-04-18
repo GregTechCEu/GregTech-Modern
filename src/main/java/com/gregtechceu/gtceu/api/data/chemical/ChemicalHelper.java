@@ -183,7 +183,7 @@ public class ChemicalHelper {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             for (var entry : ITEM_MATERIAL_ENTRY) {
-                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get(), entry.getSecond());
+                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get().asItem(), entry.getSecond());
             }
             ITEM_MATERIAL_ENTRY.clear();
 
