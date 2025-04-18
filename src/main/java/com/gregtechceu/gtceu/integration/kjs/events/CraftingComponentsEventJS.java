@@ -1,60 +1,112 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.event.StartupEventJS;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
+import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.kubejs.util.UtilsJS;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({ "unused" })
 @NoArgsConstructor
 public class CraftingComponentsEventJS extends StartupEventJS {
 
-    public void modify(CraftingComponent craftingComponent, int tier, Object value) {
+    private ComponentWrapper create(String id, Object fallback) {
+        return ComponentWrapper.of(id, fallback);
+    }
+
+    public ComponentWrapper createItem(String id, ItemStack stack) {
+        return create(id, stack);
+    }
+
+    public ComponentWrapper createTag(String id, ResourceLocation tag) {
+        return create(id, TagKey.create(Registries.ITEM, tag));
+    }
+
+    public ComponentWrapper createMaterialEntry(String id, MaterialEntry entry) {
+        return create(id, entry);
+    }
+
+    // Set singular
+    private void set(CraftingComponent craftingComponent, int tier, Object value) {
         craftingComponent.add(tier, value);
     }
 
-    public void modify(CraftingComponent craftingComponent, Map<Number, Object> map) {
+    public void setItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
+        set(craftingComponent, tier, item);
+    }
+
+    public void setTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
+        set(craftingComponent, tier, TagKey.create(Registries.ITEM, tag));
+    }
+
+    public void setMaterialEntry(CraftingComponent craftingComponent, int tier,
+                                 MaterialEntry matEntry) {
+        set(craftingComponent, tier, matEntry);
+    }
+
+    // Set from Map methods
+    public void set(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
+            Object obj = parseObject(val.getValue());
+            if (obj == null) return;
+            craftingComponent.add(tier, obj);
         }
     }
 
-    public void modifyItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
-        craftingComponent.add(tier, item);
-    }
-
-    public void modifyItem(CraftingComponent craftingComponent, Map<Number, ItemStack> map) {
+    public void setItems(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
+            ItemStack stack = parseItemStack(val.getValue());
+            if (stack == null) {
+                ConsoleJS.STARTUP.errorf("Invalid ItemStack %s passed to setItems!", val.getValue());
+                return;
+            }
+            craftingComponent.add(tier, stack);
         }
     }
 
-    public void modifyTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
-        craftingComponent.add(tier, TagKey.create(Registries.ITEM, tag));
-    }
-
-    public void modifyTag(CraftingComponent craftingComponent, Map<Number, ResourceLocation> map) {
+    public void setTags(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
+            TagKey<Item> tagKey = parseTag(val.getValue());
+            if (tagKey == null) {
+                ConsoleJS.STARTUP.error("Invalid TagKey passed to setTags");
+                return;
+            }
+            craftingComponent.add(tier, tagKey);
         }
     }
 
-    public void modifyMaterialEntry(CraftingComponent craftingComponent, int tier, MaterialEntry item) {
-        craftingComponent.add(tier, item);
-    }
-
-    public void modifyMaterialEntry(CraftingComponent craftingComponent, Map<Number, MaterialEntry> map) {
+    public void setMaterialEntries(CraftingComponent craftingComponent, Map<Object, Object> map) {
         for (var val : map.entrySet()) {
-            craftingComponent.add(val.getKey().intValue(), val.getValue());
+            int tier = parseTier(val.getKey());
+            if (tier == -1) return;
+            MaterialEntry entry = MaterialEntry.of(val.getValue());
+            if (entry == null) {
+                ConsoleJS.STARTUP.error("Invalid MaterialEntry passed to setMaterialEntries");
+                return;
+            }
+            craftingComponent.add(tier, entry);
         }
     }
 
@@ -74,45 +126,97 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         craftingComponent.remove(tier);
     }
 
-    public void removeTiers(CraftingComponent craftingComponent, List<Number> tiers) {
-        for (var tier : tiers) {
-            craftingComponent.remove(tier.intValue());
+    public void removeTiers(CraftingComponent craftingComponent, int... tiers) {
+        for (int t : tiers) {
+            craftingComponent.remove(t);
         }
     }
 
-    public CraftingComponent create(String id, Object fallback) {
-        return CraftingComponent.of(id, fallback);
+    private static ItemStack parseItemStack(Object o) {
+        ItemStack stack = ItemStackJS.of(o);
+        if (stack == null || stack.isEmpty()) return null;
+        return stack;
     }
 
-    public CraftingComponent create(String id, Object fallback, Map<Number, Object> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
-        }
-        return m;
+    @SuppressWarnings("unchecked")
+    private static TagKey<Item> parseTag(Object o) {
+        if (o instanceof TagKey<?> key && key.isFor(Registries.ITEM)) return (TagKey<Item>) key;
+        ResourceLocation rl = UtilsJS.getMCID(null, o);
+        if (rl != null) return TagKey.create(Registries.ITEM, rl);
+        return null;
     }
 
-    public CraftingComponent createItem(String id, Object fallback, Map<Number, ItemStack> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
+    private static Object parseObject(Object o) {
+        Object obj = parseItemStack(o);
+        if (obj == null) obj = parseTag(o);
+        if (obj == null) obj = MaterialEntry.of(o);
+        if (obj == null) {
+            ConsoleJS.STARTUP.errorf("%s is not of type ItemStack, MaterialEntry or TagKey<Item>", o);
         }
-        return m;
+        return obj;
     }
 
-    public CraftingComponent createTag(String id, Object fallback, Map<Number, ResourceLocation> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), TagKey.create(Registries.ITEM, val.getValue()));
+    private static int parseTier(Object o) {
+        int ret = -1;
+        if (o instanceof CharSequence cs) {
+            String str = cs.toString();
+            try {
+                int tier = Integer.parseUnsignedInt(str);
+                if (tier >= 0 && tier < GTValues.TIER_COUNT) ret = tier;
+            } catch (NumberFormatException ignored) {
+                ret = GTUtil.getTierByName(str);
+            }
+        } else if (o instanceof Number number) {
+            int tier = number.intValue();
+            if (tier >= 0 && tier < GTValues.TIER_COUNT) ret = tier;
         }
-        return m;
+
+        if (ret == -1) ConsoleJS.STARTUP.errorf("%s is not a valid tier!", o);
+        return ret;
     }
 
-    public CraftingComponent createMaterialEntry(String id, Object fallback, Map<Number, MaterialEntry> map) {
-        var m = CraftingComponent.of(id, fallback);
-        for (var val : map.entrySet()) {
-            m.add(val.getKey().intValue(), val.getValue());
+    public static class ComponentWrapper extends CraftingComponent {
+
+        private final String id;
+
+        private ComponentWrapper(String id, Object fallback) {
+            super(fallback);
+            this.id = id;
         }
-        return m;
+
+        public static ComponentWrapper of(@NotNull String id, @NotNull Object fallback) {
+            if (ALL_COMPONENTS.containsKey(id)) {
+                // Throw here because we don't want Kubers to mess with existing components
+                throw new IllegalArgumentException("Duplicate crafting component: " + id);
+            }
+            var ret = new ComponentWrapper(id, fallback);
+            ALL_COMPONENTS.put(id, ret);
+            return ret;
+        }
+
+        public @NotNull ComponentWrapper add(int tier, @NotNull Object value) {
+            try {
+                super.add(tier, value);
+            } catch (RuntimeException e) {
+                ConsoleJS.STARTUP.error("Problem with component " + id, e);
+            }
+            return this;
+        }
+
+        public ComponentWrapper addItem(int tier, ItemStack stack) {
+            return add(tier, stack);
+        }
+
+        public ComponentWrapper addTag(int tier, ResourceLocation tag) {
+            return add(tier, TagKey.create(Registries.ITEM, tag));
+        }
+
+        public ComponentWrapper addMaterialEntry(int tier, MaterialEntry entry) {
+            return add(tier, entry);
+        }
+
+        public ComponentWrapper addMaterialEntry(int tier, TagPrefix prefix, Material mat) {
+            return add(tier, new MaterialEntry(prefix, mat));
+        }
     }
 }

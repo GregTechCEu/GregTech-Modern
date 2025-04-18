@@ -41,8 +41,7 @@ public interface IPartRenderer {
                             modelState);
                     return true;
                 } else if (renderer instanceof MachineRenderer machineRenderer) {
-                    machineRenderer.renderBaseModel(quads, block.definition, controller.self(), frontFacing, side,
-                            rand);
+                    machineRenderer.renderBaseModel(quads, block.definition, controller.self(), modelState, side, rand);
                     return true;
                 }
             }

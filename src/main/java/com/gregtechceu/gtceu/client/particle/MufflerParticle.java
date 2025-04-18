@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.client.particle;
 
-import com.gregtechceu.gtceu.common.particle.MufflerParticleOptions;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -18,10 +17,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 public class MufflerParticle extends TextureSheetParticle {
 
+    private static final int COLOR = 0x1E1C1D;
+
     private final SpriteSet sprites;
 
     protected MufflerParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed,
-                              double zSpeed, MufflerParticleOptions options, SpriteSet sprites) {
+                              double zSpeed, SimpleParticleType options, SpriteSet sprites) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.speedUpWhenYMotionIsBlocked = true;
         this.sprites = sprites;
@@ -29,10 +30,10 @@ public class MufflerParticle extends TextureSheetParticle {
         this.yd *= 0.5F;
         this.zd *= 0.1F;
         float colorMultiplier = this.random.nextFloat() * 4.4F + 1.3F;
-        this.rCol = this.randomizeColor(FastColor.ARGB32.red(options.color()) / 255f, colorMultiplier);
-        this.gCol = this.randomizeColor(FastColor.ARGB32.green(options.color()) / 255f, colorMultiplier);
-        this.bCol = this.randomizeColor(FastColor.ARGB32.blue(options.color()) / 255f, colorMultiplier + 1);
-        this.quadSize *= 1.5F * options.scale();
+        this.rCol = this.randomizeColor(FastColor.ARGB32.red(COLOR) / 255f, colorMultiplier);
+        this.gCol = this.randomizeColor(FastColor.ARGB32.green(COLOR) / 255f, colorMultiplier);
+        this.bCol = this.randomizeColor(FastColor.ARGB32.blue(COLOR) / 255f, colorMultiplier + 1);
+        this.quadSize *= 1.5F;
         this.lifetime = (int) (lifetime / (level.random.nextFloat() * 0.8 + 0.2) * 2);
         this.setSpriteFromAge(sprites);
         this.hasPhysics = true;
@@ -70,7 +71,7 @@ public class MufflerParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<MufflerParticleOptions> {
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
 
         private final SpriteSet sprites;
 
@@ -78,7 +79,7 @@ public class MufflerParticle extends TextureSheetParticle {
             this.sprites = sprites;
         }
 
-        public Particle createParticle(MufflerParticleOptions options, ClientLevel level, double x, double y, double z,
+        public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z,
                                        double xSpeed, double ySpeed, double zSpeed) {
             RandomSource randomSource = level.random;
             ySpeed += (double) randomSource.nextFloat() * -1.9 * (double) randomSource.nextFloat() * 0.1 * 5.0;

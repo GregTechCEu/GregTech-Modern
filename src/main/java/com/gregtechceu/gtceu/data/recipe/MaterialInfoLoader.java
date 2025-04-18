@@ -75,7 +75,8 @@ public class MaterialInfoLoader {
         ItemMaterialData.registerMaterialInfo(Blocks.SNOW,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Water, M)));
 
-        ItemMaterialData.registerMaterialInfo(Blocks.ICE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M)));
+        ItemMaterialData.registerMaterialInfo(Blocks.ICE,
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.Ice, M)));
 
         ItemMaterialData.registerMaterialInfo(Items.BOOK,
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Paper, M * 3)));

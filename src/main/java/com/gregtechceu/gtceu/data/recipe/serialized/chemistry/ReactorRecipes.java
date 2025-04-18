@@ -230,7 +230,7 @@ public class ReactorRecipes {
                 .outputFluids(PolyvinylAcetate.getFluid(216))
                 .duration(160).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("pva_from_tetrachloride_air")
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("pva_from_tetrachloride_air")
                 .circuitMeta(2)
                 .inputFluids(Air.getFluid(7500))
                 .inputFluids(VinylAcetate.getFluid(2160))
@@ -238,7 +238,7 @@ public class ReactorRecipes {
                 .outputFluids(PolyvinylAcetate.getFluid(3240))
                 .duration(800).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("pva_from_tetrachloride_oxygen")
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("pva_from_tetrachloride_oxygen")
                 .circuitMeta(2)
                 .inputFluids(Oxygen.getFluid(7500))
                 .inputFluids(VinylAcetate.getFluid(2160))

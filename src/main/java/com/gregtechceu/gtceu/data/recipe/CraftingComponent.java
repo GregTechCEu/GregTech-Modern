@@ -83,7 +83,7 @@ public class CraftingComponent {
         }
     }
 
-    public static CraftingComponent getByID(String id) {
+    public static CraftingComponent get(String id) {
         if (!ALL_COMPONENTS.containsKey(id)) {
             GTCEu.LOGGER.error("No such crafting component: {}", id);
             return EMPTY;
