@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -41,7 +44,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle,
-                           IComponentCapability {
+                           IComponentCapability, IItemDecoratorComponent {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -261,5 +264,15 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     public static ElectricStats createBattery(long maxCharge, int tier, boolean rechargeable) {
         return ElectricStats.create(maxCharge, tier, rechargeable, true);
+    }
+
+    @Override
+    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        if (electricItem != null) {
+            return ToolChargeBarRenderer.renderElectricBar(guiGraphics, electricItem.getCharge(),
+                    electricItem.getMaxCharge(), xOffset, yOffset, stack.isBarVisible());
+        }
+        return false;
     }
 }
