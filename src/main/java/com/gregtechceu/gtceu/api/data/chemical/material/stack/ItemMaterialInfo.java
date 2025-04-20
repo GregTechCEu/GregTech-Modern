@@ -16,6 +16,7 @@ public class ItemMaterialInfo {
 
     private final List<MaterialStack> sortedMaterials = new ArrayList<>();
     private int sortedHash = 0;
+    private String str;
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
         var materials = new Reference2LongOpenHashMap<Material>();
@@ -65,6 +66,14 @@ public class ItemMaterialInfo {
                 .sorted(Comparator.comparingLong(Reference2LongMap.Entry::getLongValue))
                 .forEach(entry -> sortedMaterials.add(new MaterialStack(entry.getKey(), entry.getLongValue())));
         sortedHash = sortedMaterials.hashCode();
+
+        StringBuilder ret = new StringBuilder("{ ");
+        for (var matStack : sortedMaterials) {
+            ret.append(matStack.material().toCamelCaseString()).append(":")
+                    .append(matStack.amount() / (float) GTValues.M).append(" ");
+        }
+        ret.append("}");
+        str = ret.toString();
     }
 
     @Override
@@ -83,14 +92,6 @@ public class ItemMaterialInfo {
 
     @Override
     public String toString() {
-        if (sortedMaterials.isEmpty()) return "";
-
-        StringBuilder ret = new StringBuilder("{ ");
-        for (var matStack : sortedMaterials) {
-            ret.append(matStack.material().toCamelCaseString()).append(":")
-                    .append(matStack.amount() / (float) GTValues.M).append(" ");
-        }
-        ret.append("}");
-        return ret.toString();
+        return str;
     }
 }
