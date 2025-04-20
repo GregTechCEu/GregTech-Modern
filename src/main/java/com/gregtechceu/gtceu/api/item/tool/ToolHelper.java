@@ -65,7 +65,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -324,7 +323,7 @@ public class ToolHelper {
         var depthDirection = hitFacing.getOpposite();
         var topDirection = hitFacing.getAxis().isVertical() ? playerFacing : Direction.UP;
         var sideDirection = playerFacing.getClockWise();
-        var validPositions = new ObjectArrayList<BlockPos>();
+        var validPositions = new ArrayList<BlockPos>();
         for (int depth = 0; depth <= aoeDefinition.layer; depth++) {
             int top = topDown ? aoeDefinition.row : -aoeDefinition.row;
             while (topDown ? top >= -aoeDefinition.row : top <= aoeDefinition.row) {
@@ -524,13 +523,13 @@ public class ToolHelper {
     public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
         if (!hasBehaviorsTag(stack)) return List.of();
 
-        AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
-        if (aoeDefiniton.isZero()) {
+        var aoeDefinition = getAoEDefinition(stack);
+        if (aoeDefinition.isZero()) {
             return List.of();
         }
 
         HitResult rayTraceResult = getPlayerDefaultRaytrace(player);
-        return getHarvestableBlocks(stack, aoeDefiniton, player.level(), player, rayTraceResult);
+        return getHarvestableBlocks(stack, aoeDefinition, player.level(), player, rayTraceResult);
     }
 
     public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
