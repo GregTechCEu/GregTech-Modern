@@ -107,7 +107,7 @@ public class ReactorRecipes {
                 .outputFluids(DilutedHydrochloricAcid.getFluid(2000))
                 .duration(480).EUt(96).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("polydimetnylsiloxane_from_elements")
+        CHEMICAL_RECIPES.recipeBuilder("polydimethylsiloxane_from_elements")
                 .circuitMeta(2)
                 .inputItems(dust, Silicon)
                 .inputFluids(Water.getFluid(1000))

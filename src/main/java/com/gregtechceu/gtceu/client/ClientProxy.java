@@ -5,10 +5,16 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -30,13 +36,12 @@ import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -81,6 +86,21 @@ public class ClientProxy extends CommonProxy {
             ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
             ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
                     ChestBoatModel::createBodyModel);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
+        for (Item item : ForgeRegistries.ITEMS) {
+            if (item instanceof IComponentItem) {
+                event.register(item, GTComponentItemDecorator.INSTANCE);
+            }
+            if (item instanceof IGTTool) {
+                event.register(item, GTToolBarRenderer.INSTANCE);
+            }
+            if (item instanceof LampBlockItem) {
+                event.register(item, GTLampItemOverlayRenderer.INSTANCE);
+            }
         }
     }
 
