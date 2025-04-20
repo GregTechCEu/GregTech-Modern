@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -82,6 +83,14 @@ public class ItemMaterialInfo {
 
     @Override
     public String toString() {
-        return sortedMaterials.isEmpty() ? "" : sortedMaterials.get(0).material().toCamelCaseString();
+        if (sortedMaterials.isEmpty()) return "";
+
+        StringBuilder ret = new StringBuilder("{ ");
+        for (var matStack : sortedMaterials) {
+            ret.append(matStack.material().toCamelCaseString()).append(":")
+                    .append(matStack.amount() / (float) GTValues.M).append(" ");
+        }
+        ret.append("}");
+        return ret.toString();
     }
 }
