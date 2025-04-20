@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.component;
 
+import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
@@ -11,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * @date 2023/2/22
  * @implNote IDurabilityBar
  */
-public interface IDurabilityBar extends IItemComponent {
+public interface IDurabilityBar extends IItemDecoratorComponent {
 
     default int getBarWidth(ItemStack stack) {
         return Math.round(getDurabilityForDisplay(stack) * 13);
@@ -59,5 +63,10 @@ public interface IDurabilityBar extends IItemComponent {
      */
     default boolean showFullBar(ItemStack itemStack) {
         return true;
+    }
+
+    @Override
+    default boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+        return ToolChargeBarRenderer.renderDurabilityBar(guiGraphics, stack, this, xOffset, yOffset);
     }
 }
