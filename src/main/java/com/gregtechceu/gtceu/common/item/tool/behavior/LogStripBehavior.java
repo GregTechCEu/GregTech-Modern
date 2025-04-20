@@ -50,7 +50,7 @@ public class LogStripBehavior implements IToolBehavior {
         List<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
         if (isBlockStrippable(stack, level, player, pos, context)) {
-            if (aoeDefinition.isEmpty()) {
+            if (aoeDefinition.isZero()) {
                 blocks = List.of(pos);
             } else {
                 HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);

@@ -83,7 +83,7 @@ public interface IGTToolDefinition {
     }
 
     default AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return AoESymmetrical.EMPTY;
+        return AoESymmetrical.ZERO;
     }
 
     /**

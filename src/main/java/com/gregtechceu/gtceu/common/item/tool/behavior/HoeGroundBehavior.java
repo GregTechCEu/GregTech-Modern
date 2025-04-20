@@ -59,7 +59,7 @@ public class HoeGroundBehavior implements IToolBehavior {
         List<BlockPos> blocks;
         // only attempt to till if the center block is tillable
         if (isBlockTillable(stack, world, player, pos, context)) {
-            if (aoeDefinition.isEmpty()) {
+            if (aoeDefinition.isZero()) {
                 blocks = List.of(pos);
             } else {
                 HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);

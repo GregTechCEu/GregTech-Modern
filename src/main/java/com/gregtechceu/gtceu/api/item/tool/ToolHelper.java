@@ -525,7 +525,7 @@ public class ToolHelper {
         if (!hasBehaviorsTag(stack)) return List.of();
 
         AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
-        if (aoeDefiniton.isEmpty()) {
+        if (aoeDefiniton.isZero()) {
             return List.of();
         }
 

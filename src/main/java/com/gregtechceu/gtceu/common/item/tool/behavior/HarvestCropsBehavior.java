@@ -50,7 +50,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
         List<BlockPos> blocks;
 
-        if (aoeDefinition.isEmpty()) {
+        if (aoeDefinition.isZero()) {
             blocks = List.of(pos);
         } else {
             HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);

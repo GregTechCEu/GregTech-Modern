@@ -54,7 +54,7 @@ public class GrassPathBehavior implements IToolBehavior {
         List<BlockPos> blocks;
         // only attempt to till if the center block is tillable
         if (level.getBlockState(pos.above()).isAir() && isBlockPathConvertible(stack, level, player, pos, context)) {
-            if (aoeDefinition.isEmpty()) {
+            if (aoeDefinition.isZero()) {
                 blocks = List.of(pos);
             } else {
                 HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);
