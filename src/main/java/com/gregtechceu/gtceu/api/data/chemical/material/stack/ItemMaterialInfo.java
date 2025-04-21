@@ -16,7 +16,7 @@ public class ItemMaterialInfo {
 
     private final List<MaterialStack> sortedMaterials = new ArrayList<>();
     private int sortedHash = 0;
-    private String str;
+    private String toStringValue;
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
         var materials = new Reference2LongOpenHashMap<Material>();
@@ -73,7 +73,7 @@ public class ItemMaterialInfo {
                     .append(matStack.amount() / (float) GTValues.M).append(" ");
         }
         ret.append("}");
-        str = ret.toString();
+        toStringValue = ret.toString();
     }
 
     @Override
@@ -92,6 +92,6 @@ public class ItemMaterialInfo {
 
     @Override
     public String toString() {
-        return str;
+        return toStringValue;
     }
 }
