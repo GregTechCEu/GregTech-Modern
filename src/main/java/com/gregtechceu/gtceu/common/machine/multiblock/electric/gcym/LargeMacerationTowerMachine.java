@@ -53,6 +53,7 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
 
     @Override
     public void onUnload() {
+        super.onUnload();
         unsubscribe(hurtSub);
         hurtSub = null;
         handlers.clear();
