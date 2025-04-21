@@ -47,7 +47,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
 
     @Override
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+        if (holder instanceof ICustomParallel p) return p.limitEUParallel(recipe, multiplier, tick);
         if (tick) {
             long recipeEUt = RecipeHelper.getOutputEUt(recipe);
             if (recipeEUt == 0) return multiplier;
@@ -60,38 +60,38 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             }
 
             return Math.min(multiplier, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
-        }
+        } else {
+            var outputs = recipe.getOutputContents(this);
+            if (outputs.isEmpty()) return multiplier;
 
-        var outputs = recipe.getOutputContents(this);
-        if (outputs.isEmpty()) return multiplier;
+            if (!holder.hasCapabilityProxies()) return 0;
+            var handlers = holder.getCapabilitiesFlat(IO.OUT, this);
+            if (handlers.isEmpty()) return 0;
 
-        if (!holder.hasCapabilityProxies()) return 0;
-        var handlers = holder.getCapabilitiesFlat(IO.OUT, this);
-        if (handlers.isEmpty()) return 0;
+            int minMultiplier = 0;
+            int maxMultiplier = multiplier;
 
-        int minMultiplier = 0;
-        int maxMultiplier = multiplier;
-
-        long totalEU = 0L;
-        for (var content : outputs) totalEU += of(content.content);
-        if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
-            maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
-        }
-
-        while (minMultiplier != maxMultiplier) {
-            List<Long> eu = LongList.of(totalEU * multiplier);
-            for (var handler : handlers) {
-                // noinspection unchecked
-                eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                if (eu == null) break;
+            long totalEU = 0L;
+            for (var content : outputs) totalEU += of(content.content);
+            if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
+                maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
             }
-            int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
-            minMultiplier = bin[0];
-            multiplier = bin[1];
-            maxMultiplier = bin[2];
-        }
 
-        return multiplier;
+            while (minMultiplier != maxMultiplier) {
+                List<Long> eu = LongList.of(totalEU * multiplier);
+                for (var handler : handlers) {
+                    // noinspection unchecked
+                    eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
+                    if (eu == null) break;
+                }
+                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+                minMultiplier = bin[0];
+                multiplier = bin[1];
+                maxMultiplier = bin[2];
+            }
+
+            return multiplier;
+        }
     }
 
     @Override
@@ -109,32 +109,32 @@ public class EURecipeCapability extends RecipeCapability<Long> {
                 return Integer.MAX_VALUE;
             }
             return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
-        }
+        } else {
+            if (!holder.hasCapabilityProxies()) return 0;
+            var inputs = recipe.getInputContents(this);
+            if (inputs.isEmpty()) return limit;
 
-        if (!holder.hasCapabilityProxies()) return 0;
-        var inputs = recipe.getInputContents(this);
-        if (inputs.isEmpty()) return limit;
-
-        long nonConsumable = 0;
-        long consumable = 0;
-        for (Content content : inputs) {
-            long l = of(content.content);
-            if (content.chance == 0) nonConsumable += l;
-            else consumable += l;
-        }
-
-        if (nonConsumable == 0 && consumable == 0) return limit;
-
-        long sum = 0;
-        for (var handler : holder.getCapabilitiesFlat(IO.IN, this)) {
-            for (var content : handler.getContents()) {
-                if (content instanceof Long l) sum += l;
+            long nonConsumable = 0;
+            long consumable = 0;
+            for (Content content : inputs) {
+                long l = of(content.content);
+                if (content.chance == 0) nonConsumable += l;
+                else consumable += l;
             }
-        }
 
-        if (sum < nonConsumable) return 0;
-        sum -= nonConsumable;
-        return GTMath.saturatedCast(Math.min(sum / consumable, limit));
+            if (nonConsumable == 0 && consumable == 0) return limit;
+
+            long sum = 0;
+            for (var handler : holder.getCapabilitiesFlat(IO.IN, this)) {
+                for (var content : handler.getContents()) {
+                    if (content instanceof Long l) sum += l;
+                }
+            }
+
+            if (sum < nonConsumable) return 0;
+            sum -= nonConsumable;
+            return Math.min(GTMath.saturatedCast(sum / consumable), limit);
+        }
     }
 
     /**
@@ -162,11 +162,12 @@ public class EURecipeCapability extends RecipeCapability<Long> {
 
         /**
          * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
-         * 
+         *
          * @param recipe     Recipe
          * @param multiplier Initial multiplier
+         * @param tick       Tick or not
          * @return Limited multiplier
          */
-        int limitParallel(GTRecipe recipe, int multiplier);
+        int limitEUParallel(GTRecipe recipe, int multiplier, boolean tick);
     }
 }

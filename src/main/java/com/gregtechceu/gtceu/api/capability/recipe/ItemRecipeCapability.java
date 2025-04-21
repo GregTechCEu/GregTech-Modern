@@ -238,7 +238,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+        if (holder instanceof ICustomParallel p) return p.limitItemParallel(recipe, multiplier, tick);
         var outputContents = (tick ? recipe.tickOutputs : recipe.outputs).get(this);
         if (outputContents == null || outputContents.isEmpty()) return multiplier;
 
@@ -326,17 +326,18 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             boolean satisfied = true;
             for (var ncEntry : Object2IntMaps.fastIterable(nonConsumables)) {
                 Ingredient ingredient = ncEntry.getKey();
-                final int needed = ncEntry.getIntValue();
-                int available = 0;
+                int needed = ncEntry.getIntValue();
                 for (var stackEntry : Object2IntMaps.fastIterable(group)) {
                     if (ingredient.test(stackEntry.getKey())) {
                         int count = stackEntry.getIntValue();
-                        stackEntry.setValue(Math.max(0, available - count));
-                        available += count;
-                        if (available >= needed) break;
+                        int lesser = Math.min(needed, count);
+                        count -= lesser;
+                        needed -= lesser;
+                        stackEntry.setValue(count);
+                        if (needed == 0) break;
                     }
                 }
-                if (available < needed) {
+                if (needed > 0) {
                     satisfied = false;
                     break;
                 }
@@ -624,11 +625,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
         /**
          * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
-         * 
+         *
          * @param recipe     Recipe
          * @param multiplier Initial multiplier
+         * @param tick       Tick or not
          * @return Limited multiplier
          */
-        int limitParallel(GTRecipe recipe, int multiplier);
+        int limitItemParallel(GTRecipe recipe, int multiplier, boolean tick);
     }
 }

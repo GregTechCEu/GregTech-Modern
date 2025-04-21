@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
@@ -22,7 +23,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
@@ -130,16 +130,19 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         super.onStructureInvalid();
     }
 
-    public int limitParallel(GTRecipe recipe, int multiplier) {
+    @Override
+    public int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick) {
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        int maxAmount = recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
+        var contents = (tick ? recipe.tickInputs : recipe.inputs).get(FluidRecipeCapability.CAP);
+        if (contents == null || contents.isEmpty()) return multiplier;
+
+        int maxAmount = contents.stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .map(i -> i.getStacks()[0])
-                .mapToInt(FluidStack::getAmount)
+                .mapToInt(FluidIngredient::getAmount)
                 .max()
                 .orElse(0);
 

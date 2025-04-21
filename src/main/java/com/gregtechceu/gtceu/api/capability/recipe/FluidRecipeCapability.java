@@ -141,7 +141,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+        if (holder instanceof ICustomParallel p) return p.limitFluidParallel(recipe, multiplier, tick);
         var outputContents = (tick ? recipe.tickOutputs : recipe.outputs).get(this);
         if (outputContents == null || outputContents.isEmpty()) return multiplier;
 
@@ -192,7 +192,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         var inputs = (tick ? recipe.tickInputs : recipe.inputs).get(this);
         if (inputs == null || inputs.isEmpty()) return limit;
 
-        List<Object2IntMap<FluidStack>> inventoryGroups = getInventoryGroups(holder);
+        List<Object2IntMap<FluidStack>> inventoryGroups = getInputContents(holder);
         if (inventoryGroups.isEmpty()) return 0;
 
         var nonConsumables = new Object2IntOpenHashMap<FluidIngredient>();
@@ -210,15 +210,18 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             boolean satisfied = true;
             for (var ncEntry : Object2IntMaps.fastIterable(nonConsumables)) {
                 FluidIngredient ingredient = ncEntry.getKey();
-                final int needed = ncEntry.getIntValue();
-                int available = 0;
+                int needed = ncEntry.getIntValue();
                 for (var stackEntry : Object2IntMaps.fastIterable(group)) {
                     if (ingredient.test(stackEntry.getKey())) {
-                        available += stackEntry.getIntValue();
-                        if (available >= needed) break;
+                        int count = stackEntry.getIntValue();
+                        int lesser = Math.min(needed, count);
+                        count -= lesser;
+                        needed -= lesser;
+                        stackEntry.setValue(count);
+                        if (needed == 0) break;
                     }
                 }
-                if (available < needed) {
+                if (needed > 0) {
                     satisfied = false;
                     break;
                 }
@@ -257,7 +260,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return maxMultiplier;
     }
 
-    private static List<Object2IntMap<FluidStack>> getInventoryGroups(IRecipeCapabilityHolder holder) {
+    private static List<Object2IntMap<FluidStack>> getInputContents(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
         List<RecipeHandlerList> distinct = new ArrayList<>();
@@ -409,8 +412,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
          *
          * @param recipe     Recipe
          * @param multiplier Initial multiplier
+         * @param tick       Tick or not
          * @return Limited multiplier
          */
-        int limitParallel(GTRecipe recipe, int multiplier);
+        int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick);
     }
 }
