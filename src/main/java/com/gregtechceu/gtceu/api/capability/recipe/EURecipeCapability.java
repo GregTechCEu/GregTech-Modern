@@ -8,7 +8,10 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
+
+import it.unimi.dsi.fastutil.longs.LongList;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,37 +46,95 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     }
 
     @Override
-    public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
         if (holder instanceof ICustomParallel p) return p.limitParallel(recipe, multiplier);
+        if (tick) {
+            long recipeEUt = RecipeHelper.getOutputEUt(recipe);
+            if (recipeEUt == 0) return multiplier;
 
-        long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof IOverclockMachine overclockMachine) {
-            maxVoltage = overclockMachine.getOverclockVoltage();
-        } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
+            long maxVoltage = Long.MAX_VALUE;
+            if (holder instanceof IOverclockMachine overclockMachine) {
+                maxVoltage = overclockMachine.getOverclockVoltage();
+            } else if (holder instanceof ITieredMachine tieredMachine) {
+                maxVoltage = tieredMachine.getMaxVoltage();
+            }
+
+            return Math.min(multiplier, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
         }
 
-        long recipeEUt = RecipeHelper.getOutputEUt(recipe);
-        if (recipeEUt == 0) {
-            return Integer.MAX_VALUE;
+        var outputs = recipe.getOutputContents(this);
+        if (outputs.isEmpty()) return multiplier;
+
+        if (!holder.hasCapabilityProxies()) return 0;
+        var handlers = holder.getCapabilitiesFlat(IO.OUT, this);
+        if (handlers.isEmpty()) return 0;
+
+        int minMultiplier = 0;
+        int maxMultiplier = multiplier;
+
+        long totalEU = 0L;
+        for (var content : outputs) totalEU += of(content.content);
+        if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
+            maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
         }
-        return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
+
+        while (minMultiplier != maxMultiplier) {
+            List<Long> eu = LongList.of(totalEU * multiplier);
+            for (var handler : handlers) {
+                // noinspection unchecked
+                eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
+                if (eu == null) break;
+            }
+            int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+            minMultiplier = bin[0];
+            multiplier = bin[1];
+            maxMultiplier = bin[2];
+        }
+
+        return multiplier;
     }
 
     @Override
-    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
-        long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof IOverclockMachine overclockMachine) {
-            maxVoltage = overclockMachine.getOverclockVoltage();
-        } else if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
+        if (tick) {
+            long maxVoltage = Long.MAX_VALUE;
+            if (holder instanceof IOverclockMachine overclockMachine) {
+                maxVoltage = overclockMachine.getOverclockVoltage();
+            } else if (holder instanceof ITieredMachine tieredMachine) {
+                maxVoltage = tieredMachine.getMaxVoltage();
+            }
+
+            long recipeEUt = RecipeHelper.getInputEUt(recipe);
+            if (recipeEUt == 0) {
+                return Integer.MAX_VALUE;
+            }
+            return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
         }
 
-        long recipeEUt = RecipeHelper.getInputEUt(recipe);
-        if (recipeEUt == 0) {
-            return Integer.MAX_VALUE;
+        if (!holder.hasCapabilityProxies()) return 0;
+        var inputs = recipe.getInputContents(this);
+        if (inputs.isEmpty()) return limit;
+
+        long nonConsumable = 0;
+        long consumable = 0;
+        for (Content content : inputs) {
+            long l = of(content.content);
+            if (content.chance == 0) nonConsumable += l;
+            else consumable += l;
         }
-        return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
+
+        if (nonConsumable == 0 && consumable == 0) return limit;
+
+        long sum = 0;
+        for (var handler : holder.getCapabilitiesFlat(IO.IN, this)) {
+            for (var content : handler.getContents()) {
+                if (content instanceof Long l) sum += l;
+            }
+        }
+
+        if (sum < nonConsumable) return 0;
+        sum -= nonConsumable;
+        return GTMath.saturatedCast(Math.min(sum / consumable, limit));
     }
 
     /**

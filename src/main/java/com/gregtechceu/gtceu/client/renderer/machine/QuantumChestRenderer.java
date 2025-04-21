@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
-import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -33,7 +32,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -160,9 +158,9 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             var amount = stored.isEmpty() ? "*" : FormattingUtil.formatNumberReadable(storedAmount, false);
             text = new TextTexture(amount).setDropShadow(false);
         }
-//        text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-//                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
-//                0, 0, 0, 24, 64, 28);
+        // text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+        // MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
+        // 0, 0, 0, 24, 64, 28);
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }

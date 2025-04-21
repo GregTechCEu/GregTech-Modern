@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
@@ -37,7 +36,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.Nullable;
 
@@ -180,9 +178,9 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             var amount = stored.isEmpty() ? "*" : FormattingUtil.formatNumberReadable(storedAmount, true);
             text = new TextTexture(amount).setDropShadow(false);
         }
-//        text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-//                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
-//                0, 0, 0, 24, 64, 28);
+        // text.draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+        // MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())),
+        // 0, 0, 0, 24, 64, 28);
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }

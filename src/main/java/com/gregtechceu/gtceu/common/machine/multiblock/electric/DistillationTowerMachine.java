@@ -134,7 +134,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        var maxAmount = recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
+        int maxAmount = recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
@@ -144,10 +144,12 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 .orElse(0);
 
         if (maxAmount == 0) return multiplier;
+        if (multiplier > Integer.MAX_VALUE / maxAmount) {
+            maxMultiplier = multiplier = Integer.MAX_VALUE / maxAmount;
+        }
 
         while (minMultiplier != maxMultiplier) {
-            if (multiplier > Integer.MAX_VALUE / maxAmount) multiplier = Integer.MAX_VALUE / maxAmount;
-            GTRecipe copy = recipe.copy(ContentModifier.multiplier(multiplier), false);
+            GTRecipe copy = modifyOutputs(recipe, ContentModifier.multiplier(multiplier));
             boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE);
             int[] bin = ParallelLogic.adjustMultiplier(filled, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
@@ -155,6 +157,14 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             maxMultiplier = bin[2];
         }
         return multiplier;
+    }
+
+    private static GTRecipe modifyOutputs(GTRecipe recipe, ContentModifier cm) {
+        return new GTRecipe(recipe.recipeType, recipe.id, recipe.inputs, cm.applyContents(recipe.outputs),
+                recipe.tickInputs, recipe.tickOutputs, recipe.inputChanceLogics, recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.recipeCategory);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {

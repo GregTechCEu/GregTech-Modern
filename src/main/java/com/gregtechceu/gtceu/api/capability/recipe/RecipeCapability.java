@@ -140,15 +140,15 @@ public abstract class RecipeCapability<T> {
     /**
      * maximum parallel amount based on the inputs (and possibly outputs) provided.
      *
-     * @param recipe     the recipe from which we get the input to product ratio
      * @param holder     the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
-     * @param multiplier the maximum possible multiplied we can get from the input inventory
-     *                   see {@link ParallelLogic#limitByInput}
+     * @param recipe     the recipe from which we get the input to product ratio
+     * @param multiplier the maximum possible multiplied we can get from the input inventory see
+     *                   {@link ParallelLogic#getMaxByInput}
+     * @param tick       whether to check regular outputs or tick outputs
      * @return the amount of times a {@link GTRecipe} outputs can be merged into an inventory without voiding products.
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
-    // TODO: kross - make it so caps check both regular outputs and tick outputs
-    public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
         return Integer.MAX_VALUE;
     }
 
@@ -156,14 +156,14 @@ public abstract class RecipeCapability<T> {
      * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input
      * inventories
      *
-     * @param holder         The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the
-     *                       machine.
-     * @param recipe         The {@link GTRecipe} for which to find the maximum that can be run simultaneously
-     * @param parallelAmount The limit on the amount of recipes that can be performed at one time
+     * @param holder The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe The {@link GTRecipe} for which to find the maximum that can be run simultaneously
+     * @param limit  The limit on the amount of recipes that can be performed at one time
+     * @param tick
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
-    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
         return Integer.MAX_VALUE;
     }
 
