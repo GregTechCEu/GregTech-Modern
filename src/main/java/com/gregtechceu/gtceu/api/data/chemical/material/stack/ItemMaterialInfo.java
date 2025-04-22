@@ -69,8 +69,8 @@ public class ItemMaterialInfo {
 
         StringBuilder ret = new StringBuilder("{ ");
         for (var matStack : sortedMaterials) {
-            ret.append(matStack.material().toCamelCaseString()).append(":")
-                    .append(matStack.amount() / (float) GTValues.M).append(" ");
+            ret.append(matStack.amount() / (float) GTValues.M).append("x ")
+                    .append(matStack.material().toCamelCaseString()).append(" ");
         }
         ret.append("}");
         toStringValue = ret.toString();
