@@ -60,11 +60,14 @@ public class ItemMaterialInfo {
         setSortedMaterials(materials);
     }
 
-    private void setSortedMaterials(Reference2LongMap<Material> materials) {
+    private void setSortedMaterials(Reference2LongMap<Material> matStacks) {
         sortedMaterials.clear();
-        materials.reference2LongEntrySet().stream()
-                .sorted(Comparator.comparingLong(Reference2LongMap.Entry::getLongValue))
-                .forEach(entry -> sortedMaterials.add(new MaterialStack(entry.getKey(), entry.getLongValue())));
+
+        for (var matStack : matStacks.reference2LongEntrySet()) {
+            sortedMaterials.add(new MaterialStack(matStack.getKey(), matStack.getLongValue()));
+        }
+        sortedMaterials.sort(Comparator.comparingLong(MaterialStack::amount));
+
         sortedHash = sortedMaterials.hashCode();
 
         StringBuilder ret = new StringBuilder("{ ");
