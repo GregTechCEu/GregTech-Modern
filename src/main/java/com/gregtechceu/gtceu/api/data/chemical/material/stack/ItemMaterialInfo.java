@@ -70,12 +70,12 @@ public class ItemMaterialInfo {
 
         sortedHash = sortedMaterials.hashCode();
 
-        StringBuilder ret = new StringBuilder("{ ");
+        StringBuilder ret = new StringBuilder("[ ");
         for (var matStack : sortedMaterials) {
             ret.append(matStack.amount() / (float) GTValues.M).append("x ")
                     .append(matStack.material().getResourceLocation()).append(" ");
         }
-        ret.append("}");
+        ret.append("]");
         toStringValue = ret.toString();
     }
 
