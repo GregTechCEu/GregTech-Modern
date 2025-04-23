@@ -2,40 +2,13 @@ package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
-
-import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.registerMaterialEntry;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/28
- * @implNote ItemTagsHandler
- */
 public class TagsHandler {
-
-    public static void initItem(RegistrateTagsProvider<Item> provider) {
-        ItemTagLoader.init(provider);
-    }
-
-    public static void initBlock(RegistrateTagsProvider<Block> provider) {
-        BlockTagLoader.init(provider);
-    }
-
-    public static void initFluid(RegistrateTagsProvider<Fluid> provider) {
-        FluidTagLoader.init(provider);
-    }
-
-    public static void initEntity(RegistrateTagsProvider<EntityType<?>> provider) {
-        EntityTypeTagLoader.init(provider);
-    }
 
     public static void initExtraUnificationEntries() {
         registerMaterialEntry(Items.CLAY_BALL, ingot, Clay);
