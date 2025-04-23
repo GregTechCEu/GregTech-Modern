@@ -63,8 +63,8 @@ public class ItemMaterialInfo {
     private void setSortedMaterials(Reference2LongMap<Material> matStacks) {
         sortedMaterials.clear();
 
-        for (var matStack : matStacks.reference2LongEntrySet()) {
-            sortedMaterials.add(new MaterialStack(matStack.getKey(), matStack.getLongValue()));
+        for (var entry : matStacks.reference2LongEntrySet()) {
+            sortedMaterials.add(new MaterialStack(entry.getKey(), entry.getLongValue()));
         }
         sortedMaterials.sort(Comparator.comparingLong(MaterialStack::amount));
 
