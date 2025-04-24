@@ -8,6 +8,15 @@ body:
       label: Cross-mod Integration
       description: "Does this feature involve integration with another mod? If so specify the mod(s). Otherwise, leave this blank."
       placeholder: "Example: Create Mod"
+  - type: dropdown
+    id: mc-version
+    attributes:
+      label: Minecraft Version
+      description: The version of Minecraft you wish this feature was added for.
+      options:
+        - "Both"
+        - "1.20.1 Forge"
+        - "1.21.1 NeoForge"
   - type: textarea
     id: description
     attributes:
