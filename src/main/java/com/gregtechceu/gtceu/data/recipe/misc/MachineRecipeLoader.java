@@ -1331,7 +1331,7 @@ public class MachineRecipeLoader {
                 .outputItems(dustTiny, Calcite)
                 .duration(25).EUt(2)
                 .save(provider);
-
+<
         // TODO add other foods
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))
