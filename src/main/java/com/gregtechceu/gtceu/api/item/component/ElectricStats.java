@@ -19,7 +19,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -193,7 +192,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier,
-                                               boolean needShowTimeRemaining) {
+                                               boolean showTimeRemaining) {
         double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
@@ -205,7 +204,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         long maxChargeTime;
         String unit;
 
-        if (needShowTimeRemaining) {
+        ChatFormatting color = ChatFormatting.RED;
+        if (percentage > 0.5) {
+            color = ChatFormatting.GREEN;
+        } else if (percentage > 0.3) {
+            color = ChatFormatting.YELLOW;
+        }
+
+        if (showTimeRemaining) {
             if (durationCurrent.getSeconds() <= 60) {
                 maxChargeTime = durationMax.getSeconds();
                 currentChargeTime = durationCurrent.toSeconds();
@@ -219,50 +225,17 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                 currentChargeTime = durationCurrent.toHours();
                 unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
             }
-
-            if (percentage > 0.5) {
-                tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.0",
-                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                        GTValues.VNF[tier],
-                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
-                        unit)
-                        .withStyle(ChatFormatting.GREEN));
-            } else if (percentage > 0.3) {
-                tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.1",
-                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                        GTValues.VNF[tier],
-                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
-                        unit)
-                        .withStyle(ChatFormatting.YELLOW));
-            } else {
-                tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.2",
-                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                        GTValues.VNF[tier],
-                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
-                        unit)
-                        .withStyle(ChatFormatting.RED));
-            }
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                    unit)
+                    .withStyle(color));
         } else {
-            String key = "metaitem.generic.electric_item.tooltip";
-            if (percentage > 0.5) {
-                tooltip.add(getChargeComponent(key, currentCharge, maxCharge, tier, ChatFormatting.GREEN));
-            } else if (percentage > 0.3) {
-                tooltip.add(getChargeComponent(key, currentCharge, maxCharge, tier, ChatFormatting.YELLOW));
-            } else {
-                tooltip.add(getChargeComponent(key, currentCharge, maxCharge, tier, ChatFormatting.RED));
-            }
+            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier]).withStyle(color));
         }
-    }
-
-    private static MutableComponent getChargeComponent(
-                                                       String key,
-                                                       long currentCharge,
-                                                       long maxCharge,
-                                                       int tier,
-                                                       ChatFormatting color) {
-        return Component.translatable(key,
-                FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                GTValues.VNF[tier]).withStyle(color);
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {

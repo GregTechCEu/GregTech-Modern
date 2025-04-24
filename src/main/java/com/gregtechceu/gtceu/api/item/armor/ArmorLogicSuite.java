@@ -92,7 +92,6 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         });
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         IElectricItem cont = GTCapabilityHelper.getElectricItem(itemStack);
         if (cont != null) {
