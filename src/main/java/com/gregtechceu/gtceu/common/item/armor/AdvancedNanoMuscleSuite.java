@@ -143,6 +143,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
+        super.addInfo(itemStack, lines);
         CompoundTag data = itemStack.getOrCreateTag();
         Component state;
         boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
@@ -160,8 +161,6 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         state = hover ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
-
-        super.addInfo(itemStack, lines);
     }
 
     @Override
