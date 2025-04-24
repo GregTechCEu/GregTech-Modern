@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -642,7 +641,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // electric info
         if (this.isElectric()) {
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(), false);
+            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+                    false);
         }
 
         // durability info

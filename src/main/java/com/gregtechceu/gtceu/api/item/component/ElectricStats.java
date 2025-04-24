@@ -222,21 +222,24 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
             if (percentage > 0.5) {
                 tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.0",
-                                FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                                GTValues.VNF[tier],
-                                FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                        GTValues.VNF[tier],
+                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                        unit)
                         .withStyle(ChatFormatting.GREEN));
             } else if (percentage > 0.3) {
                 tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.1",
-                                FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                                GTValues.VNF[tier],
-                                FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                        GTValues.VNF[tier],
+                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                        unit)
                         .withStyle(ChatFormatting.YELLOW));
             } else {
                 tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.2",
-                                FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                                GTValues.VNF[tier],
-                                FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
+                        FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                        GTValues.VNF[tier],
+                        FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                        unit)
                         .withStyle(ChatFormatting.RED));
             }
         } else {
@@ -252,16 +255,14 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static MutableComponent getChargeComponent(
-            String key,
-            long currentCharge,
-            long maxCharge,
-            int tier,
-            ChatFormatting color
-    ) {
+                                                       String key,
+                                                       long currentCharge,
+                                                       long maxCharge,
+                                                       int tier,
+                                                       ChatFormatting color) {
         return Component.translatable(key,
                 FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                GTValues.VNF[tier]
-        ).withStyle(color);
+                GTValues.VNF[tier]).withStyle(color);
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
