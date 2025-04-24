@@ -1404,7 +1404,7 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
-    public void addOutputMaterialInfo() {
+    private void addOutputMaterialInfo() {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
