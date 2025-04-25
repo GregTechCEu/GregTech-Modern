@@ -9,7 +9,7 @@ on:
         required: false
         type: string
   issues:
-    types: [opened, labeled, unlabeled]
+    types: [opened]
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
         template: [ 000-bug-report.yml, 001-feature-request.yml ]
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Parse issue form
         uses: stefanbuck/github-issue-parser@v3
         id: issue-parser
