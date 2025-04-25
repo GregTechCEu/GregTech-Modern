@@ -21,9 +21,9 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
         if (blockAccessor.getServerData().contains("converter_mode")) {
             boolean isFeToEu = blockAccessor.getServerData().getBoolean("converter_mode");
             if (isFeToEu) {
-                iTooltip.add(Component.translatable("gtceu.top.convert_eu"));
-            } else {
                 iTooltip.add(Component.translatable("gtceu.top.convert_fe"));
+            } else {
+                iTooltip.add(Component.translatable("gtceu.top.convert_eu"));
             }
         }
     }
