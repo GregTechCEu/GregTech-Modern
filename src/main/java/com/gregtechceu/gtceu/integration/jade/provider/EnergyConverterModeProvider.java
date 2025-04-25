@@ -18,8 +18,8 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getServerData().contains("converter_mode")) {
-            boolean isFeToEu = blockAccessor.getServerData().getBoolean("converter_mode");
+        if (blockAccessor.getServerData().contains("converterMode")) {
+            boolean isFeToEu = blockAccessor.getServerData().getBoolean("converterMode");
             if (isFeToEu) {
                 iTooltip.add(Component.translatable("gtceu.top.convert_fe"));
             } else {
@@ -32,7 +32,7 @@ public class EnergyConverterModeProvider implements IBlockComponentProvider, ISe
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof MetaMachineBlockEntity blockEntity &&
                 blockEntity.getMetaMachine() instanceof ConverterMachine converter) {
-            compoundTag.putBoolean("converter_mode", converter.isFeToEu());
+            compoundTag.putBoolean("converterMode", converter.isFeToEu());
         }
     }
 
