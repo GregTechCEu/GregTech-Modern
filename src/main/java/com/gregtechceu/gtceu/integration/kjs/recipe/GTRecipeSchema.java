@@ -741,7 +741,8 @@ public interface GTRecipeSchema {
          * Does not generate a research recipe.
          *
          * @param researchId the researchId for the recipe
-         * @param dataStack  the stack to hold the data. Must have the {@linkplain GTDataComponents#DATA_ITEM} component.
+         * @param dataStack  the stack to hold the data.
+         *                   Must have the {@linkplain GTDataComponents#DATA_ITEM} component.
          * @return this
          */
         public GTKubeRecipe researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {

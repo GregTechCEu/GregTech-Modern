@@ -102,6 +102,7 @@ import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.callback.BakeCallback;
 
 import com.google.common.collect.Multimaps;
@@ -117,15 +118,36 @@ import java.util.function.Function;
 
 public class CommonInit {
 
+    private static IEventBus modBus;
+
     public static void init(final IEventBus modBus) {
+        CommonInit.modBus = modBus;
         modBus.register(CommonInit.class);
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
 
+        GTRegistries.init(modBus);
         GTCreativeModeTabs.init();
         GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+
+        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
+    }
+
+    // Only register everything once.
+    private static boolean didRunRegistration = false;
+
+    @SubscribeEvent
+    public static void onRegister(RegisterEvent event) {
+        if (didRunRegistration) {
+            return;
+        }
+        didRunRegistration = true;
 
         GTElements.init();
         MaterialIconSet.init();
@@ -179,12 +201,6 @@ public class CommonInit {
         MachineOwner.init();
         ChestGenHooks.init();
         GTDataFixers.init();
-
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     @ApiStatus.Internal

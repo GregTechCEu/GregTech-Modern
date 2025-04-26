@@ -105,5 +105,5 @@ ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.
 jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
 rei = ["rei-plugin", "rei-neoforge"]
 rei-runtime = ["rei-neoforge", "architectury", "clothconfig"]
-kjs = ["kubejs", "rhino", "architectury"]
+kjs = ["kubejs", "rhino"]
 

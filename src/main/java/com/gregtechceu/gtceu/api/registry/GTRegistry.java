@@ -32,31 +32,6 @@ public class GTRegistry<T> extends MappedRegistry<T> {
         super(key, registryLifecycle, hasIntrusiveHolders);
     }
 
-    @Override
-    public Registry<T> freeze() {
-        if (!checkActiveModContainerIsOwner()) {
-            return this;
-        }
-        return super.freeze();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void unfreeze() {
-        if (!checkActiveModContainerIsOwner()) {
-            return;
-        }
-        super.unfreeze();
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean checkActiveModContainerIsOwner() {
-        ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && (container.getModId().equals(this.key().location().getNamespace()) ||
-                container.getModId().equals(GTCEu.MOD_ID) ||
-                container.getModId().equals("minecraft")); // check for minecraft in case of datagen or a mishap
-    }
-
     public <V extends T> V register(ResourceKey<T> key, V value) {
         if (containsKey(key)) {
             throw new IllegalStateException(

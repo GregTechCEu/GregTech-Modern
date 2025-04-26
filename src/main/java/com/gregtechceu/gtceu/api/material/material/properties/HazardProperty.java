@@ -29,11 +29,6 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.*;
 
-/**
- * @author h3tR
- * @date 2024/2/12
- * @implNote HazardProperty
- */
 public class HazardProperty implements IMaterialProperty {
 
     public final MedicalCondition condition;

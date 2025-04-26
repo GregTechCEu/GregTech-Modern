@@ -214,9 +214,9 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
     private Object convertIngredient(FluidStack fluidStack) {
         if (GTCEu.Mods.isEMILoaded()) {
-            return NeoForgeEmiStack.of(fluidStack).setChance(getXEIChance());
+            return EMICallWrapper.getEMIIngredient(fluidStack, getXEIChance());
         } else if (GTCEu.Mods.isREILoaded()) {
-            return EntryStacks.of(REICallWrapper.toREIStack(fluidStack));
+            return REICallWrapper.getREIIngredient(fluidStack);
         } else if (GTCEu.Mods.isJEILoaded() && !fluidStack.isEmpty()) {
             return JEICallWrapper.getJEIFluidClickable(fluidStack, getPosition(), getSize());
         }
@@ -610,28 +610,12 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
      */
     public static final class JEICallWrapper {
 
-        public static List<Object> getJEIIngredients(FluidEntryList list) {
-            return list.getStacks()
-                    .stream()
-                    .filter(stack -> !stack.isEmpty())
-                    .map(JEICallWrapper::getJEIFluid)
-                    .toList();
-        }
-
         public static List<Object> getJEIIngredientsClickable(FluidEntryList list, Position pos, Size size) {
             return list.getStacks()
                     .stream()
                     .filter(stack -> !stack.isEmpty())
                     .map(stack -> getJEIFluidClickable(stack, pos, size))
                     .toList();
-        }
-
-        public static Object getJEIFluid(FluidStack fluidStack) {
-            return _getJEIFluid(JEIPlugin.jeiHelpers.getPlatformFluidHelper(), fluidStack);
-        }
-
-        private static <T> Object _getJEIFluid(IPlatformFluidHelper<T> helper, FluidStack fluidStack) {
-            return helper.create(fluidStack.getFluidHolder(), fluidStack.getAmount(), fluidStack.getComponentsPatch());
         }
 
         public static Object getJEIFluidClickable(FluidStack fluidStack, Position pos, Size size) {
@@ -680,6 +664,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             if (list instanceof FluidStackList stackList) return getREIIngredients(stackList);
             return Collections.emptyList();
         }
+
+        public static Object getREIIngredient(FluidStack fluidStack) {
+            return EntryStacks.of(REICallWrapper.toREIStack(fluidStack));
+        }
     }
 
     public static final class EMICallWrapper {
@@ -703,6 +691,10 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             if (list instanceof FluidTagList tagList) return getEMIIngredients(tagList, xeiChance);
             if (list instanceof FluidStackList stackList) return getEMIIngredients(stackList, xeiChance);
             return Collections.emptyList();
+        }
+
+        public static Object getEMIIngredient(FluidStack fluidStack, float xeiChance) {
+            return NeoForgeEmiStack.of(fluidStack).setChance(xeiChance);
         }
     }
 }

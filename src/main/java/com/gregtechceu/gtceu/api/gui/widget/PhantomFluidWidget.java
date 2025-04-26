@@ -107,22 +107,12 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
     @Nullable
     private static Object convertIngredient(Object ingredient) {
-        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
-            var key = emiStack.getKey();
-            if (key instanceof Fluid f) {
-                int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
-                ingredient = new FluidStack(f.builtInRegistryHolder(), amount, emiStack.getComponentChanges());
-            } else if (key instanceof Item i) {
-                ingredient = new ItemStack(i, (int) emiStack.getAmount());
-                ((ItemStack) ingredient).applyComponents(emiStack.getComponentChanges());
-            } else {
-                ingredient = null;
-            }
-        } else if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(), (int) fluidStack.getAmount(),
-                    fluidStack.getPatch());
-        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getIngredient(NeoForgeTypes.FLUID_STACK).orElse(null);
+        if (GTCEu.Mods.isEMILoaded()) {
+            ingredient = EMICallWrapper.tryWrap(ingredient);
+        } else if (GTCEu.Mods.isREILoaded()) {
+            ingredient = REICallWrapper.tryWrap(ingredient);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            ingredient = JEICallWrapper.tryWrap(ingredient);
         }
         return ingredient;
     }
@@ -255,6 +245,46 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1, 1, 1, 1);
+        }
+    }
+
+    private static class EMICallWrapper {
+
+        private static Object tryWrap(Object ingredient) {
+            if (ingredient instanceof EmiStack emiStack) {
+                var key = emiStack.getKey();
+                if (key instanceof Fluid f) {
+                    int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
+                    ingredient = new FluidStack(f.builtInRegistryHolder(), amount, emiStack.getComponentChanges());
+                } else if (key instanceof Item i) {
+                    ingredient = new ItemStack(i, (int) emiStack.getAmount());
+                    ((ItemStack) ingredient).applyComponents(emiStack.getComponentChanges());
+                } else {
+                    ingredient = null;
+                }
+            }
+            return ingredient;
+        }
+    }
+
+    private static class REICallWrapper {
+
+        private static Object tryWrap(Object ingredient) {
+            if (ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+                ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(), (int) fluidStack.getAmount(),
+                        fluidStack.getPatch());
+            }
+            return ingredient;
+        }
+    }
+
+    private static class JEICallWrapper {
+
+        private static Object tryWrap(Object ingredient) {
+            if (ingredient instanceof ITypedIngredient<?> jeiStack) {
+                ingredient = jeiStack.getIngredient(NeoForgeTypes.FLUID_STACK).orElse(null);
+            }
+            return ingredient;
         }
     }
 }

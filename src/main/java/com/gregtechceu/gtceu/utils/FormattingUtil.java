@@ -4,7 +4,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 
-import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,20 +35,20 @@ public class FormattingUtil {
     private static final int NUMBER_BASE = '0';
 
     public static String toSmallUpNumbers(String string) {
-        return checkNumbers(string, SMALL_UP_NUMBER_BASE, true);
+        return checkNumbers(string, SMALL_UP_NUMBER_BASE);
     }
 
     public static String toSmallDownNumbers(String string) {
-        return checkNumbers(string, SMALL_DOWN_NUMBER_BASE, false);
+        return checkNumbers(string, SMALL_DOWN_NUMBER_BASE);
     }
 
     @NotNull
-    private static String checkNumbers(String string, int smallUpNumberBase, boolean isUp) {
+    private static String checkNumbers(String string, int startIndex) {
         char[] charArray = string.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             int relativeIndex = charArray[i] - NUMBER_BASE;
             if (relativeIndex >= 0 && relativeIndex <= 9) {
-                if (isUp) {
+                if (startIndex == SMALL_UP_NUMBER_BASE) {
                     if (relativeIndex == 1) {
                         charArray[i] = SMALL_UP_NUMBER_ONE;
                         continue;
@@ -61,7 +60,7 @@ public class FormattingUtil {
                         continue;
                     }
                 }
-                int newChar = smallUpNumberBase + relativeIndex;
+                int newChar = startIndex + relativeIndex;
                 charArray[i] = (char) newChar;
             }
         }
@@ -74,26 +73,42 @@ public class FormattingUtil {
      *
      * @param string Any string with ASCII characters.
      * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maragingSteel300" -> "maraging_steel_300"
+     * 
+     *         <pre>
+     *         <br/>{@code "maragingSteel300" -> "maraging_steel_300"}
+     *         <br/>{@code "gtceu:maraging_steel_300" -> "gtceu:maraging_steel_300"}
+     *         <br/>{@code "maragingSteel_300" -> "maraging_steel_300"}
+     *         <br/>{@code "maragingSTEEL_300" -> "maraging_steel_300"}
+     *         <br/>{@code "MARAGING_STEEL_300" -> "maraging_steel_300"}
+     * </pre>
      */
     public static String toLowerCaseUnderscore(String string) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
-            if (i != 0 && (Character.isUpperCase(string.charAt(i)) ||
-                    (Character.isDigit(string.charAt(i - 1)) ^ Character.isDigit(string.charAt(i)))))
-                result.append("_");
-            result.append(Character.toLowerCase(string.charAt(i)));
+            char curChar = string.charAt(i);
+            result.append(Character.toLowerCase(curChar));
+            if (i == string.length() - 1) break;
+
+            char nextChar = string.charAt(i + 1);
+            if (curChar == '_' || nextChar == '_') continue;
+            boolean nextIsUpper = Character.isUpperCase(nextChar);
+            if (Character.isUpperCase(curChar) && nextIsUpper) continue;
+            if (nextIsUpper || Character.isDigit(curChar) ^ Character.isDigit(nextChar)) result.append('_');
         }
         return result.toString();
     }
 
     /**
-     * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word boundaries:
-     *         "maragingSteel300" -> "maraging_steel_300"
+     * Check if {@code string} has any uppercase characters.
+     * @param string the string to check
+     * @return if the string has any uppercase characters.
      */
-    public static String toLowerCaseUnder(String string) {
-        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
+    public static boolean hasUpperCase(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            if (Character.isUpperCase(ch)) return true;
+        }
+        return false;
     }
 
     /**
@@ -138,7 +153,7 @@ public class FormattingUtil {
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '_')
                 continue;
-            if (i == 0 || string.charAt(i - 1) == '_') {
+            if (i != 0 && string.charAt(i - 1) == '_') {
                 result.append(Character.toUpperCase(string.charAt(i)));
             } else {
                 result.append(string.charAt(i));

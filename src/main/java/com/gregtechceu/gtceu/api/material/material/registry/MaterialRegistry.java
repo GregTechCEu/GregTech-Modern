@@ -58,7 +58,7 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
                                                         @NotNull RegistrationInfo registrationInfo) {
         if (isRegistryClosed) {
             throw new IllegalStateException(
-                    "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material %s..."
+                    "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the RegisterEvent. Skipping material %s..."
                             .formatted(key.location()));
         }
         usedNamespaces.add(key.location().getNamespace());

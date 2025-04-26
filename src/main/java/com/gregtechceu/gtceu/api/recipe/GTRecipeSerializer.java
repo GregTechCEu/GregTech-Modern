@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -47,12 +47,13 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     return DataResult.error(() -> "Recipe type " + recipeType + " is not a GTRecipeType");
                 }
             }, Function.identity());
-    public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipeType> GT_RECIPE_TYPE_STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<ByteBuf, GTRecipeType> GT_RECIPE_TYPE_STREAM_CODEC = new StreamCodec<>() {
 
-        private static final StreamCodec<RegistryFriendlyByteBuf, RecipeType<?>> STREAM_CODEC = ByteBufCodecs.registry(Registries.RECIPE_TYPE);
+        private static final StreamCodec<ByteBuf, RecipeType<?>> STREAM_CODEC = ResourceLocation.STREAM_CODEC
+                .map(BuiltInRegistries.RECIPE_TYPE::get, BuiltInRegistries.RECIPE_TYPE::getKey);
 
         @Override
-        public @NotNull GTRecipeType decode(@NotNull RegistryFriendlyByteBuf buffer) {
+        public @NotNull GTRecipeType decode(@NotNull ByteBuf buffer) {
             RecipeType<?> recipeType = STREAM_CODEC.decode(buffer);
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 throw new DecoderException("Recipe type " + recipeType + " is not a GTRecipeType");
@@ -61,7 +62,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
 
         @Override
-        public void encode(@NotNull RegistryFriendlyByteBuf buffer, @NotNull GTRecipeType value) {
+        public void encode(@NotNull ByteBuf buffer, @NotNull GTRecipeType value) {
             STREAM_CODEC.encode(buffer, value);
         }
     };

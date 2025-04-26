@@ -47,9 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
-
-public class Material implements Comparable<Material> {
+public class Material {
 
     /**
      * Basic Info of this Material.
@@ -164,7 +162,7 @@ public class Material implements Comparable<Material> {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTCEuAPI.materialManager.isFrozen())
+        if (GTCEuAPI.materialManager.isFrozen())
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
     }
@@ -484,10 +482,6 @@ public class Material implements Comparable<Material> {
         return prop == null ? 0 : prop.getBlastTemperature();
     }
 
-    public String toCamelCaseString() {
-        return FormattingUtil.lowerUnderscoreToUpperCamel(getName());
-    }
-
     @NotNull
     public ResourceLocation getResourceLocation() {
         return materialInfo.resourceLocation;
@@ -499,11 +493,6 @@ public class Material implements Comparable<Material> {
 
     public MutableComponent getLocalizedName() {
         return Component.translatable(getUnlocalizedName());
-    }
-
-    @Override
-    public int compareTo(Material material) {
-        return toString().compareTo(material.toString());
     }
 
     @Override
@@ -525,7 +514,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
-        if (!GTCEuAPI.materialManager.isFrozen()) {
+        if (GTCEuAPI.materialManager.isFrozen()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
@@ -1123,39 +1112,40 @@ public class Material implements Comparable<Material> {
         // Tons of shortcut functions for adding various hazard effects.
 
         public Builder removeHazard() {
-            properties.setProperty(HAZARD,
+            properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(HazardProperty.HazardTrigger.NONE, GTMedicalConditions.NONE,
                             0, false));
             return this;
         }
 
         public Builder radioactiveHazard(float multiplier) {
-            properties.setProperty(HAZARD, new HazardProperty(HazardProperty.HazardTrigger.ANY,
+            properties.setProperty(PropertyKey.HAZARD, new HazardProperty(HazardProperty.HazardTrigger.ANY,
                     GTMedicalConditions.CARCINOGEN, multiplier, true));
             return this;
         }
 
         public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, false));
+            properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, false));
             return this;
         }
 
         public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               float progressionMultiplier) {
-            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, progressionMultiplier, false));
+            properties.setProperty(PropertyKey.HAZARD,
+                    new HazardProperty(trigger, condition, progressionMultiplier, false));
             return this;
         }
 
         public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               float progressionMultiplier, boolean applyToDerivatives) {
-            properties.setProperty(HAZARD,
+            properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
             return this;
         }
 
         public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
+            properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
             return this;
         }
 
@@ -1274,18 +1264,19 @@ public class Material implements Comparable<Material> {
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
                     ImmutableList.copyOf(composition);
-            if (!properties.hasProperty(HAZARD)) {
+            if (!properties.hasProperty(PropertyKey.HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
                     Material material = materialStack.material();
-                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).applyToDerivatives) {
-                        properties.setProperty(HAZARD, material.getProperty(HAZARD));
+                    HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+                    if (property != null && property.applyToDerivatives) {
+                        properties.setProperty(PropertyKey.HAZARD, property);
                         break;
                     }
                 }
             }
-            if (properties.hasProperty(HAZARD) &&
-                    properties.getProperty(HAZARD).hazardTrigger == HazardProperty.HazardTrigger.NONE) {
-                properties.removeProperty(HAZARD);
+            if (properties.hasProperty(PropertyKey.HAZARD) &&
+                    properties.getProperty(PropertyKey.HAZARD).hazardTrigger == HazardProperty.HazardTrigger.NONE) {
+                properties.removeProperty(PropertyKey.HAZARD);
             }
 
             var mat = new Material(materialInfo, properties, flags);

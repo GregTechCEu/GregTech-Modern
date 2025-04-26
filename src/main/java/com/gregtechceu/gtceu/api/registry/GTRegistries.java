@@ -25,7 +25,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.IdMappingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import com.google.common.collect.HashBasedTable;
@@ -104,9 +107,14 @@ public final class GTRegistries {
     }
 
     private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
+    private static boolean isFrozen = true;
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
-        TO_REGISTER.put(registry, name, value);
+        if (!isFrozen) {
+            Registry.register(registry, name, value);
+        } else {
+            TO_REGISTER.put(registry, name, value);
+        }
         return value;
     }
 
@@ -118,10 +126,21 @@ public final class GTRegistries {
                 TO_REGISTER.row(reg).forEach(helper::register);
             });
         }
+        TO_REGISTER.clear();
+    }
+
+    private static void onUnfreeze(RegisterEvent event) {
+        isFrozen = false;
+    }
+
+    private static void onFreeze(IdMappingEvent event) {
+        isFrozen = event.isFrozen();
     }
 
     public static void init(IEventBus eventBus) {
-        eventBus.addListener(GTRegistries::actuallyRegister);
+        eventBus.addListener(EventPriority.HIGHEST, GTRegistries::onUnfreeze);
+        eventBus.addListener(EventPriority.LOWEST, GTRegistries::actuallyRegister);
+        NeoForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
 
     @UnmodifiableView

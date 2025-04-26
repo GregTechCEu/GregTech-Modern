@@ -189,9 +189,9 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
 
     private Object convertIngredient(ItemStack itemStack) {
         if (GTCEu.Mods.isEMILoaded()) {
-            return EmiStack.of(itemStack).setChance(getXEIChance());
+            return EMICallWrapper.getEMIIngredient(itemStack, getXEIChance());
         } else if (GTCEu.Mods.isREILoaded()) {
-            return EntryStacks.of(itemStack);
+            return REICallWrapper.getREIIngredient(itemStack);
         } else if (GTCEu.Mods.isJEILoaded() && !itemStack.isEmpty()) {
             return JEICallWrapper.getJEIStackClickable(itemStack, getPosition(), getSize());
         }
@@ -334,14 +334,6 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             return JEIPlugin.getItemIngredient(stack, pos.x, pos.y, size.width, size.height);
         }
 
-        public static List<Object> getJEIIngredients(ItemEntryList list, UnaryOperator<ItemStack> realStack) {
-            return list.getStacks()
-                    .stream()
-                    .filter(stack -> !stack.isEmpty())
-                    .map(realStack)
-                    .collect(Collectors.toList());
-        }
-
         public static List<Object> getJEIIngredientsClickable(ItemEntryList list, Position pos, Size size,
                                                               UnaryOperator<ItemStack> realStack) {
             return list.getStacks()
@@ -377,6 +369,10 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (list instanceof ItemStackList stackList) return getREIIngredients(stackList, realStack);
             return Collections.emptyList();
         }
+
+        public static Object getREIIngredient(ItemStack stack) {
+            return EntryStacks.of(stack);
+        }
     }
 
     public static final class EMICallWrapper {
@@ -403,6 +399,10 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             if (list instanceof ItemTagList tagList) return getEMIIngredients(tagList, xeiChance, realStack);
             if (list instanceof ItemStackList stackList) return getEMIIngredients(stackList, xeiChance, realStack);
             return Collections.emptyList();
+        }
+
+        public static Object getEMIIngredient(ItemStack stack, float xeiChance) {
+            return EmiStack.of(stack).setChance(xeiChance);
         }
     }
 }

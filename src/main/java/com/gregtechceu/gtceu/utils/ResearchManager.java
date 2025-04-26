@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -78,7 +79,7 @@ public final class ResearchManager {
         dataItem.set(GTDataComponents.RESEARCH_ITEM, new ResearchItem(researchId, recipeType));
 
         if (CWUt > 0) {
-            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnder(researchId))
+            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
                     .inputItems(dataItem.getItem())
                     .inputItems(researchItem)
                     .outputItems(dataItem)
@@ -87,7 +88,7 @@ public final class ResearchManager {
                     .totalCWU(duration)
                     .save(provider);
         } else {
-            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnder(researchId))
+            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
                     .inputItems(dataItem.getItem())
                     .inputItems(researchItem)
                     .outputItems(dataItem)
@@ -99,12 +100,13 @@ public final class ResearchManager {
     }
 
     public record ResearchItem(String researchId, GTRecipeType recipeType) {
+
         // spotless:off
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
                 GTRecipeSerializer.GT_RECIPE_TYPE_CODEC.fieldOf("research_type").forGetter(ResearchItem::recipeType)
         ).apply(instance, ResearchItem::new));
-        public static final StreamCodec<RegistryFriendlyByteBuf, ResearchItem> STREAM_CODEC = StreamCodec.composite(
+        public static final StreamCodec<ByteBuf, ResearchItem> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.STRING_UTF8, ResearchItem::researchId,
                 GTRecipeSerializer.GT_RECIPE_TYPE_STREAM_CODEC, ResearchItem::recipeType,
                 ResearchItem::new);

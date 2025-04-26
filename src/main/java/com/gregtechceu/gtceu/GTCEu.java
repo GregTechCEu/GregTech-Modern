@@ -65,13 +65,16 @@ public class GTCEu {
         if (Strings.isBlank(path)) {
             return TEMPLATE_LOCATION;
         }
-        path = FormattingUtil.toLowerCaseUnderscore(path);
 
         int i = path.indexOf(':');
         if (i > 0) {
             return ResourceLocation.parse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
+        }
+        // only convert it to camel_case if it has any uppercase to begin with
+        if (FormattingUtil.hasUpperCase(path)) {
+            path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
     }

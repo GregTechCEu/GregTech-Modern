@@ -6,10 +6,7 @@ import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class ItemMaterialInfo {
 
@@ -17,11 +14,7 @@ public class ItemMaterialInfo {
     private int sortedHash = 0;
 
     public ItemMaterialInfo(MaterialStack... materialStacks) {
-        var materials = new Reference2LongOpenHashMap<Material>();
-        for (var mat : materialStacks) {
-            materials.addTo(mat.material(), mat.amount());
-        }
-        setSortedMaterials(materials);
+        this(Arrays.asList(materialStacks));
     }
 
     public ItemMaterialInfo(List<MaterialStack> materialStacks) {
@@ -82,6 +75,6 @@ public class ItemMaterialInfo {
 
     @Override
     public String toString() {
-        return sortedMaterials.isEmpty() ? "" : sortedMaterials.getFirst().material().toCamelCaseString();
+        return sortedMaterials.isEmpty() ? "" : sortedMaterials.getFirst().material().getResourceLocation().toString();
     }
 }

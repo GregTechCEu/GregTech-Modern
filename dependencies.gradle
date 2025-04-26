@@ -27,9 +27,7 @@ dependencies {
     compileOnly(forge.ae2wtlib)
 
     // KJS
-    compileOnly(forge.kubejs)
-    compileOnly(forge.architectury)
-    compileOnly(forge.rhino)
+    compileOnly(forge.bundles.kjs)
 
     // Shimmer
     compileOnly(forge.shimmer)

@@ -154,7 +154,7 @@ public class GTItemStackComponentizationFix extends DataFix {
                     } else if (entry.getKey().contains("AoE")) {
                         continue;
                     }
-                    dynamic = dynamic.set("gtceu:" + FormattingUtil.toLowerCaseUnder(entry.getKey()),
+                    dynamic = dynamic.set("gtceu:" + FormattingUtil.toLowerCaseUnderscore(entry.getKey()),
                             createEmpty(tag));
                 }
 
