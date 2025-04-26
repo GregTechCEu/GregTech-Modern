@@ -100,6 +100,7 @@ public class FormattingUtil {
 
     /**
      * Check if {@code string} has any uppercase characters.
+     * 
      * @param string the string to check
      * @return if the string has any uppercase characters.
      */

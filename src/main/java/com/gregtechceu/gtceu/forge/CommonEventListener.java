@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
@@ -33,6 +34,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.command.GTCommands;
 import com.gregtechceu.gtceu.data.command.HazardCommands;
 import com.gregtechceu.gtceu.data.command.MedicalConditionCommands;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
@@ -55,12 +57,14 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -343,6 +347,21 @@ public class CommonEventListener {
         var zone = data.getZoneByPos(pos);
         if (zone != null) {
             PacketDistributor.sendToPlayer(player, new SPacketRemoveHazardZone(pos));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onTooltipEvent(ItemTooltipEvent event) {
+        TooltipsHandler.appendTooltips(event.getItemStack(), event.getFlags(), event.getToolTip(), event.getContext());
+    }
+
+    @SubscribeEvent
+    public static void onAttributeTooltipEvent(AddAttributeTooltipsEvent event) {
+        ItemStack stack = event.getStack();
+
+        if (!stack.has(GTDataComponents.DATA_COPY_POS)) {
+            stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
+                    event::addTooltipLines, event.getContext().flag());
         }
     }
 }

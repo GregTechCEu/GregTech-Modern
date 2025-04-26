@@ -108,6 +108,7 @@ public class BedrockFluidDefinition {
          * }
          * };
          */
+        this.biomeWeightModifier = BiomeWeightModifier.EMPTY;
         this.dimensionFilter = dimensionFilter;
     }
 

@@ -52,7 +52,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
@@ -348,18 +347,26 @@ public interface IGTTool extends IUIHolder.Item, ItemLike {
 
     default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
                                                            HolderLookup.RegistryLookup<Enchantment> lookup) {
-        return EnchantmentHelper.updateEnchantments(stack, enchantments -> {
-            ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
+        var existing = stack.get(GTDataComponents.INNATE_ENCHANTMENTS);
+        if (existing != null) {
+            return existing;
+        }
 
-            // Set tool and material enchantments
-            Object2IntMap<ResourceKey<Enchantment>> innateEnchantments = new Object2IntOpenHashMap<>();
-            innateEnchantments.putAll(getToolStats().getDefaultEnchantments());
-            innateEnchantments.putAll(toolProperty.getEnchantments());
+        ItemEnchantments original = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        var enchantments = new ItemEnchantments.Mutable(original);
 
-            innateEnchantments.forEach((enchantKey, level) -> {
-                lookup.get(enchantKey).ifPresent(enchant -> enchantments.upgrade(enchant, level));
-            });
+        ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
+
+        // Set tool and material enchantments
+        Object2IntMap<ResourceKey<Enchantment>> innateEnchantments = new Object2IntOpenHashMap<>();
+        innateEnchantments.putAll(getToolStats().getDefaultEnchantments());
+        innateEnchantments.putAll(toolProperty.getEnchantments());
+
+        innateEnchantments.forEach((enchantKey, level) -> {
+            lookup.get(enchantKey).ifPresent(enchant -> enchantments.upgrade(enchant, level));
         });
+        // noinspection DataFlowIssue
+        return stack.set(GTDataComponents.INNATE_ENCHANTMENTS, enchantments.toImmutable());
     }
 
     default int definition$getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {

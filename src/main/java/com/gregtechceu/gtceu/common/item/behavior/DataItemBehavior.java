@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -19,9 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-
-import java.util.Collection;
 import java.util.List;
 
 public class DataItemBehavior implements IInteractionItem, IAddInformation {
@@ -39,25 +34,6 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation {
             if (pos != null) {
                 tooltipComponents.add(Component.translatable("gtceu.tooltip.proxy_bind",
                         makePosPart(pos.getX()), makePosPart(pos.getY()), makePosPart(pos.getZ())));
-            }
-        } else {
-            Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
-            if (recipes != null && !recipes.isEmpty()) {
-                tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
-                Collection<ItemStack> added = new ObjectOpenHashSet<>();
-                outer:
-                for (GTRecipe recipe : recipes) {
-                    ItemStack output = ItemRecipeCapability.CAP
-                            .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content).getItems()[0];
-                    for (var item : added) {
-                        if (output.is(item.getItem())) continue outer;
-                    }
-                    if (added.add(output)) {
-                        tooltipComponents.add(
-                                Component.translatable("behavior.data_item.assemblyline.data",
-                                        output.getDisplayName()));
-                    }
-                }
             }
         }
     }

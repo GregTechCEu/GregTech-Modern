@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
-import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
@@ -17,7 +16,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerHeartTypeEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
@@ -46,11 +44,6 @@ public class ForgeClientEventListener {
         if (event.getEntity().hasEffect(GTMobEffects.WEAK_POISON)) {
             event.setType(Gui.HeartType.POISIONED);
         }
-    }
-
-    @SubscribeEvent
-    public static void onTooltipEvent(ItemTooltipEvent event) {
-        TooltipsHandler.appendTooltips(event.getItemStack(), event.getFlags(), event.getToolTip(), event.getContext());
     }
 
     @SubscribeEvent

@@ -12,21 +12,27 @@ import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public final class ResearchManager {
 
@@ -99,7 +105,7 @@ public final class ResearchManager {
         }
     }
 
-    public record ResearchItem(String researchId, GTRecipeType recipeType) {
+    public record ResearchItem(String researchId, GTRecipeType recipeType) implements TooltipProvider {
 
         // spotless:off
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -110,6 +116,28 @@ public final class ResearchManager {
                 ByteBufCodecs.STRING_UTF8, ResearchItem::researchId,
                 GTRecipeSerializer.GT_RECIPE_TYPE_STREAM_CODEC, ResearchItem::recipeType,
                 ResearchItem::new);
+
+        @Override
+        public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
+            Collection<GTRecipe> recipes = recipeType().getDataStickEntry(researchId());
+            if (recipes != null && !recipes.isEmpty()) {
+                tooltipAdder.accept(Component.translatable("behavior.data_item.assemblyline.title"));
+                Collection<ItemStack> added = new ObjectOpenHashSet<>();
+                outer:
+                for (GTRecipe recipe : recipes) {
+                    ItemStack output = ItemRecipeCapability.CAP
+                            .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content).getItems()[0];
+                    for (var item : added) {
+                        if (output.is(item.getItem())) continue outer;
+                    }
+                    if (added.add(output)) {
+                        tooltipAdder.accept(
+                                Component.translatable("behavior.data_item.assemblyline.data",
+                                        output.getDisplayName()));
+                    }
+                }
+            }
+        }
         // spotless:on
     }
 
