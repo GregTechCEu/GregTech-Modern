@@ -141,10 +141,6 @@ public class ToolDefinitionBuilder {
     }
 
     public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level) {
-        return this.defaultEnchantment(enchantment, level, 0);
-    }
-
-    public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level, int growth) {
         if (ConfigHolder.INSTANCE.recipes.enchantedTools) {
             this.defaultEnchantments.put(enchantment, level);
         }
