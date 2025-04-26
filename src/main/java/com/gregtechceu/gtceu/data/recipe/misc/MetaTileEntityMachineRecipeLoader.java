@@ -143,7 +143,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 10 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[ZPM])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_OUTPUT_HATCH[LuV].asStack())
+                        .researchItemStack(ENERGY_OUTPUT_HATCH[LuV].asStack())
                         .CWUt(8))
                 .duration(600).EUt(VA[ZPM]).save(provider);
 
@@ -157,7 +157,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 20 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[UV])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_OUTPUT_HATCH[ZPM].asStack())
+                        .researchItemStack(ENERGY_OUTPUT_HATCH[ZPM].asStack())
                         .CWUt(64)
                         .EUt(VA[ZPM]))
                 .duration(800).EUt(VA[UV]).save(provider);
@@ -172,7 +172,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 40 * L)
                 .outputItems(ENERGY_OUTPUT_HATCH[UHV])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_OUTPUT_HATCH[UV].asStack())
+                        .researchItemStack(ENERGY_OUTPUT_HATCH[UV].asStack())
                         .CWUt(128)
                         .EUt(VA[UV]))
                 .duration(1000).EUt(VA[UHV]).save(provider);
@@ -263,7 +263,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 5 * L)
                 .outputItems(ENERGY_INPUT_HATCH[LuV])
                 .scannerResearch(b -> b
-                        .researchStack(ENERGY_INPUT_HATCH[IV].asStack())
+                        .researchItemStack(ENERGY_INPUT_HATCH[IV].asStack())
                         .EUt(VA[EV]))
                 .duration(400).EUt(VA[LuV]).save(provider);
 
@@ -277,7 +277,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 10 * L)
                 .outputItems(ENERGY_INPUT_HATCH[ZPM])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_INPUT_HATCH[LuV].asStack())
+                        .researchItemStack(ENERGY_INPUT_HATCH[LuV].asStack())
                         .CWUt(8))
                 .duration(600).EUt(VA[ZPM]).save(provider);
 
@@ -291,7 +291,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 20 * L)
                 .outputItems(ENERGY_INPUT_HATCH[UV])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_INPUT_HATCH[ZPM].asStack())
+                        .researchItemStack(ENERGY_INPUT_HATCH[ZPM].asStack())
                         .CWUt(64)
                         .EUt(VA[ZPM]))
                 .duration(800).EUt(VA[UV]).save(provider);
@@ -306,7 +306,7 @@ public class MetaTileEntityMachineRecipeLoader {
                 .inputFluids(SolderingAlloy, 40 * L)
                 .outputItems(ENERGY_INPUT_HATCH[UHV])
                 .stationResearch(b -> b
-                        .researchStack(ENERGY_INPUT_HATCH[UV].asStack())
+                        .researchItemStack(ENERGY_INPUT_HATCH[UV].asStack())
                         .CWUt(128)
                         .EUt(VA[UV]))
                 .duration(1000).EUt(VA[UHV]).save(provider);
@@ -643,7 +643,7 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputFluids(SolderingAlloy, L * 4)
                     .inputFluids(Lubricant, 500)
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
-                    .scannerResearch(b -> b.researchStack(DUAL_IMPORT_HATCH[LuV].asStack())
+                    .scannerResearch(b -> b.researchItemStack(DUAL_IMPORT_HATCH[LuV].asStack())
                             .duration(1200)
                             .EUt(VA[LuV]))
                     .duration(600).EUt(VA[LuV]).save(provider);
@@ -658,7 +658,7 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputFluids(SolderingAlloy, L * 4)
                     .inputFluids(Lubricant, 500)
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER_PROXY)
-                    .stationResearch(b -> b.researchStack(GTAEMachines.ME_PATTERN_BUFFER.asStack())
+                    .stationResearch(b -> b.researchItemStack(GTAEMachines.ME_PATTERN_BUFFER.asStack())
                             .CWUt(32))
                     .duration(600).EUt(VA[ZPM]).save(provider);
         }

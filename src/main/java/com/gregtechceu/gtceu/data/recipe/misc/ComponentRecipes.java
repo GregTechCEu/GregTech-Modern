@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -109,7 +110,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 250)
                 .outputItems(ELECTRIC_MOTOR_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_MOTOR_IV.asStack())
+                        .researchItemStack(ELECTRIC_MOTOR_IV.asStack())
                         .duration(900)
                         .EUt(VA[EV]))
                 .duration(600).EUt(6000)
@@ -127,7 +128,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 500)
                 .outputItems(ELECTRIC_MOTOR_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_MOTOR_LuV.asStack())
+                        .researchItemStack(ELECTRIC_MOTOR_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000)
@@ -146,7 +147,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(ELECTRIC_MOTOR_UV)
                 .stationResearch(b -> b
-                        .researchStack(ELECTRIC_MOTOR_ZPM.asStack())
+                        .researchItemStack(ELECTRIC_MOTOR_ZPM.asStack())
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -320,7 +321,7 @@ public class ComponentRecipes {
                 .inputFluids(StyreneButadieneRubber, L * 8)
                 .outputItems(CONVEYOR_MODULE_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(CONVEYOR_MODULE_IV.asStack())
+                        .researchItemStack(CONVEYOR_MODULE_IV.asStack())
                         .duration(900)
                         .EUt(VA[EV]))
                 .duration(600).EUt(6000)
@@ -338,7 +339,7 @@ public class ComponentRecipes {
                 .inputFluids(StyreneButadieneRubber, L * 16)
                 .outputItems(CONVEYOR_MODULE_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(CONVEYOR_MODULE_LuV.asStack())
+                        .researchItemStack(CONVEYOR_MODULE_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000)
@@ -357,7 +358,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(CONVEYOR_MODULE_UV)
                 .stationResearch(b -> b
-                        .researchStack(CONVEYOR_MODULE_ZPM.asStack())
+                        .researchItemStack(CONVEYOR_MODULE_ZPM.asStack())
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -375,7 +376,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 250)
                 .outputItems(ELECTRIC_PUMP_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_PUMP_IV.asStack())
+                        .researchItemStack(ELECTRIC_PUMP_IV.asStack())
                         .duration(900)
                         .EUt(VA[EV]))
                 .duration(600).EUt(6000)
@@ -393,7 +394,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 500)
                 .outputItems(ELECTRIC_PUMP_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_PUMP_LuV.asStack())
+                        .researchItemStack(ELECTRIC_PUMP_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000)
@@ -412,7 +413,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(ELECTRIC_PUMP_UV)
                 .stationResearch(b -> b
-                        .researchStack(ELECTRIC_PUMP_ZPM.asStack())
+                        .researchItemStack(ELECTRIC_PUMP_ZPM.asStack())
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -617,7 +618,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 250)
                 .outputItems(ELECTRIC_PISTON_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_PISTON_IV.asStack())
+                        .researchItemStack(ELECTRIC_PISTON_IV.asStack())
                         .duration(900)
                         .EUt(VA[EV]))
                 .duration(600).EUt(6000)
@@ -636,7 +637,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 500)
                 .outputItems(ELECTRIC_PISTON_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(ELECTRIC_PISTON_LuV.asStack())
+                        .researchItemStack(ELECTRIC_PISTON_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000)
@@ -656,7 +657,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(ELECTRIC_PISTON_UV)
                 .stationResearch(b -> b
-                        .researchStack(ELECTRIC_PISTON_ZPM.asStack())
+                        .researchItemStack(ELECTRIC_PISTON_ZPM.asStack())
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -739,7 +740,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 250)
                 .outputItems(ROBOT_ARM_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(ROBOT_ARM_IV.asStack())
+                        .researchItemStack(ROBOT_ARM_IV.asStack())
                         .duration(900)
                         .EUt(VA[EV]))
                 .duration(600).EUt(6000)
@@ -759,7 +760,7 @@ public class ComponentRecipes {
                 .inputFluids(Lubricant, 500)
                 .outputItems(ROBOT_ARM_ZPM)
                 .scannerResearch(b -> b
-                        .researchStack(ROBOT_ARM_LuV.asStack())
+                        .researchItemStack(ROBOT_ARM_LuV.asStack())
                         .duration(1200)
                         .EUt(VA[IV]))
                 .duration(600).EUt(24000)
@@ -780,7 +781,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(ROBOT_ARM_UV)
                 .stationResearch(b -> b
-                        .researchStack(ROBOT_ARM_ZPM.asStack())
+                        .researchItemStack(ROBOT_ARM_ZPM.asStack())
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -860,7 +861,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 4)
                 .outputItems(FIELD_GENERATOR_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(FIELD_GENERATOR_IV.asStack())
+                        .researchItemStack(FIELD_GENERATOR_IV.asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(600).EUt(6000)
@@ -878,7 +879,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 8)
                 .outputItems(FIELD_GENERATOR_ZPM)
                 .stationResearch(b -> b
-                        .researchStack(FIELD_GENERATOR_LuV.asStack())
+                        .researchItemStack(FIELD_GENERATOR_LuV.asStack())
                         .CWUt(4))
                 .duration(600).EUt(24000)
                 .addMaterialInfo(true).save(provider);
@@ -896,7 +897,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(FIELD_GENERATOR_UV)
                 .stationResearch(b -> b
-                        .researchStack(FIELD_GENERATOR_ZPM.asStack())
+                        .researchItemStack(FIELD_GENERATOR_ZPM.asStack())
                         .CWUt(48)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -972,7 +973,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 2)
                 .outputItems(SENSOR_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(SENSOR_IV.asStack())
+                        .researchItemStack(SENSOR_IV.asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(600).EUt(6000)
@@ -990,7 +991,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 4)
                 .outputItems(SENSOR_ZPM)
                 .stationResearch(b -> b
-                        .researchStack(SENSOR_LuV.asStack())
+                        .researchItemStack(SENSOR_LuV.asStack())
                         .CWUt(4))
                 .duration(600).EUt(24000)
                 .addMaterialInfo(true).save(provider);
@@ -1008,7 +1009,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(SENSOR_UV)
                 .stationResearch(b -> b
-                        .researchStack(SENSOR_ZPM.asStack())
+                        .researchItemStack(SENSOR_ZPM.asStack())
                         .CWUt(48)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
@@ -1089,7 +1090,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 2)
                 .outputItems(EMITTER_LuV)
                 .scannerResearch(b -> b
-                        .researchStack(EMITTER_IV.asStack())
+                        .researchItemStack(EMITTER_IV.asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(600).EUt(6000)
@@ -1107,7 +1108,7 @@ public class ComponentRecipes {
                 .inputFluids(SolderingAlloy, L * 4)
                 .outputItems(EMITTER_ZPM)
                 .stationResearch(b -> b
-                        .researchStack(EMITTER_LuV.asStack())
+                        .researchItemStack(EMITTER_LuV.asStack())
                         .CWUt(8))
                 .duration(600).EUt(24000)
                 .addMaterialInfo(true).save(provider);
@@ -1125,7 +1126,7 @@ public class ComponentRecipes {
                 .inputFluids(Naquadria, L * 4)
                 .outputItems(EMITTER_UV)
                 .stationResearch(b -> b
-                        .researchStack(EMITTER_ZPM.asStack())
+                        .researchItemStack(EMITTER_ZPM.asStack())
                         .CWUt(48)
                         .EUt(VA[ZPM]))
                 .duration(600).EUt(100000)
