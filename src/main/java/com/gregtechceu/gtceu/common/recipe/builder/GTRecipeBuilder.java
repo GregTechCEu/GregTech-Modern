@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.recipe.builder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
@@ -25,6 +24,7 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -1243,7 +1243,7 @@ public class GTRecipeBuilder {
      * Does not generate a research recipe.
      *
      * @param researchId the researchId for the recipe
-     * @param dataStack  the stack to hold the data. Must have the {@link IDataItem} behavior.
+     * @param dataStack  the stack to hold the data. Must have the {@linkplain GTDataComponents#DATA_ITEM} component.
      * @return this
      */
     public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {

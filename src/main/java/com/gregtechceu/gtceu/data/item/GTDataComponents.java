@@ -77,6 +77,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResearchManager.ResearchItem>> RESEARCH_ITEM = DATA_COMPONENTS
             .registerComponentType("research_item", builder -> builder.persistent(ResearchManager.ResearchItem.CODEC)
                     .networkSynchronized(ResearchManager.ResearchItem.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DATA_ITEM = DATA_COMPONENTS
+            .registerComponentType("data_item", builder -> builder.persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemMagnetBehavior.MagnetComponent>> MAGNET = DATA_COMPONENTS
             .registerComponentType("magnet",
                     builder -> builder.persistent(ItemMagnetBehavior.MagnetComponent.CODEC)

@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
 import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
 import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemTagList;
@@ -49,7 +50,6 @@ import net.neoforged.neoforge.common.crafting.*;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.NotNull;
@@ -418,14 +418,15 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
-            Pair<GTRecipeType, String> researchData = null;
+            ResearchManager.ResearchItem researchData = null;
             for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                researchData = ItemRecipeCapability.CAP.of(stack.content).getItems()[0]
+                        .get(GTDataComponents.RESEARCH_ITEM);
                 if (researchData != null) break;
             }
             if (researchData != null) {
-                Collection<GTRecipe> possibleRecipes = researchData.getFirst()
-                        .getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> possibleRecipes = researchData.recipeType()
+                        .getDataStickEntry(researchData.researchId());
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
@@ -498,7 +499,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                             List<ItemStack> dataItems = new ArrayList<>();
                             for (ResearchData.ResearchEntry entry : condition.data) {
                                 ItemStack dataStick = entry.dataItem().copy();
-                                ResearchManager.writeResearchToComponent(dataStick, entry.researchId(), recipeType);
+                                dataStick.set(GTDataComponents.RESEARCH_ITEM,
+                                        new ResearchManager.ResearchItem(entry.researchId(), recipeType));
                                 dataItems.add(dataStick);
                             }
                             CycleItemEntryHandler handler = CycleItemEntryHandler.createFromStacks(List.of(dataItems));

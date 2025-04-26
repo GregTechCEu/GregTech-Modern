@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,9 +43,9 @@ public class GuiGraphicsMixin {
             return;
         }
 
-        Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+        ResearchManager.ResearchItem researchData = stack.get(GTDataComponents.RESEARCH_ITEM);
         if (Screen.hasShiftDown() && researchData != null) {
-            Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+            Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 for (var recipe : recipes) {
                     ItemStack output = ItemRecipeCapability.CAP

@@ -13,11 +13,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -32,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -73,8 +72,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             @Override
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
-                if (ResearchManager.isStackDataItem(stack, isDataBank) &&
-                        ResearchManager.hasResearchTag(stack)) {
+                if (ResearchManager.isStackDataItem(stack, isDataBank) && stack.has(GTDataComponents.RESEARCH_ITEM)) {
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
@@ -118,10 +116,11 @@ public class DataAccessHatchMachine extends TieredPartMachine
         recipes.clear();
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);
-            Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+            ResearchManager.ResearchItem researchData = stack.get(GTDataComponents.RESEARCH_ITEM);
             boolean isValid = ResearchManager.isStackDataItem(stack, isDataBank);
             if (researchData != null && isValid) {
-                Collection<GTRecipe> collection = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> collection = researchData.recipeType()
+                        .getDataStickEntry(researchData.researchId());
                 if (collection != null) {
                     recipes.addAll(collection);
                 }
@@ -149,7 +148,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
             for (GTRecipe recipe : recipes) {
                 ItemStack stack = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
                     list.add(Component.translatable("behavior.data_item.assemblyline.data", stack.getDisplayName()));

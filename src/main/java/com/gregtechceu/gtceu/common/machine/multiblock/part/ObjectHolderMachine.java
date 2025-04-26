@@ -4,9 +4,6 @@ import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
-import com.gregtechceu.gtceu.api.item.component.IDataItem;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
@@ -14,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -150,16 +148,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
                 return true;
             }
 
-            boolean isDataItem = false;
-            if (stack.getItem() instanceof IComponentItem metaItem) {
-                for (IItemComponent behaviour : metaItem.getComponents()) {
-                    if (behaviour instanceof IDataItem) {
-                        isDataItem = true;
-                        break;
-                    }
-                }
-            }
-
+            boolean isDataItem = stack.has(GTDataComponents.DATA_ITEM);
             if (slot == 0 && !isDataItem) {
                 return true;
             } else return slot == 1 && isDataItem;

@@ -1433,13 +1433,16 @@ public class GTItems {
             .register() : null;
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::new)
-            .lang("Data Stick").onRegister(attach(new DataItemBehavior()))
+            .lang("Data Stick").onRegister(attach(DataItemBehavior.INSTANCE))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, false))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::new)
-            .lang("Data Orb").onRegister(attach(new DataItemBehavior()))
+            .lang("Data Orb").onRegister(attach(DataItemBehavior.INSTANCE))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, false))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::new)
-            .lang("Data Module").onRegister(attach(new DataItemBehavior(true)))
+            .lang("Data Module").onRegister(attach(DataItemBehavior.INSTANCE))
+            .properties(p -> p.component(GTDataComponents.DATA_ITEM, true))
             .register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();

@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.common.item.behavior;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
@@ -21,44 +19,29 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Collection;
 import java.util.List;
 
-public class DataItemBehavior implements IInteractionItem, IAddInformation, IDataItem {
+public class DataItemBehavior implements IInteractionItem, IAddInformation {
 
-    private final boolean requireDataBank;
+    public static final DataItemBehavior INSTANCE = new DataItemBehavior();
 
-    public DataItemBehavior() {
-        this.requireDataBank = false;
-    }
-
-    public DataItemBehavior(boolean requireDataBank) {
-        this.requireDataBank = requireDataBank;
-    }
-
-    @Override
-    public boolean requireDataBank() {
-        return requireDataBank;
-    }
+    protected DataItemBehavior() {}
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+        ResearchManager.ResearchItem researchData = stack.get(GTDataComponents.RESEARCH_ITEM);
         if (researchData == null) {
             BlockPos pos = stack.get(GTDataComponents.DATA_COPY_POS);
             if (pos != null) {
-                tooltipComponents.add(Component.translatable(
-                        "gtceu.tooltip.proxy_bind",
-                        Component.literal("" + pos.getX()).withStyle(ChatFormatting.LIGHT_PURPLE),
-                        Component.literal("" + pos.getY()).withStyle(ChatFormatting.LIGHT_PURPLE),
-                        Component.literal("" + pos.getZ()).withStyle(ChatFormatting.LIGHT_PURPLE)));
+                tooltipComponents.add(Component.translatable("gtceu.tooltip.proxy_bind",
+                        makePosPart(pos.getX()), makePosPart(pos.getY()), makePosPart(pos.getZ())));
             }
         } else {
-            Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+            Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
                 Collection<ItemStack> added = new ObjectOpenHashSet<>();
@@ -79,6 +62,10 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
         }
     }
 
+    private static Component makePosPart(int coordinate) {
+        return Component.literal(Integer.toString(coordinate)).withStyle(ChatFormatting.LIGHT_PURPLE);
+    }
+
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity blockEntity) {
@@ -88,7 +75,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             }
             if (machine instanceof IDataStickInteractable interactable) {
                 if (context.isSecondaryUseActive()) {
-                    if (ResearchManager.readResearchId(itemStack) == null) {
+                    if (!itemStack.has(GTDataComponents.RESEARCH_ITEM)) {
                         return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                     }
                 } else {
