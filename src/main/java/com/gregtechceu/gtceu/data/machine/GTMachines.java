@@ -59,8 +59,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.STEAM_BOILER_RECIP
 public class GTMachines {
 
     static {
-        REGISTRATE.creativeModeTab(() -> MACHINE);
-        GTRegistries.MACHINES.unfreeze();
+        REGISTRATE.creativeModeTab(MACHINE);
     }
 
     //////////////////////////////////////
@@ -1088,9 +1087,6 @@ public class GTMachines {
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
         }
-
-        GTCEuAPI.postRegisterEvent(GTRegistries.MACHINES);
-        GTRegistries.MACHINES.freeze();
     }
 
     public static MachineDefinition get(String name) {

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 
@@ -72,8 +73,8 @@ public class GTMaterialItems {
 
     // Material Items
     public static void generateMaterialItems() {
-        REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
-        for (var tagPrefix : TagPrefix.values()) {
+        REGISTRATE.creativeModeTab(MATERIAL_ITEM);
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (tagPrefix.doGenerateItem()) {
                 for (Material material : GTCEuAPI.materialManager) {
                     GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(material.getModid());
@@ -102,7 +103,7 @@ public class GTMaterialItems {
 
     // Material Tools
     public static void generateTools() {
-        REGISTRATE.creativeModeTab(() -> TOOL);
+        REGISTRATE.creativeModeTab(TOOL);
         for (GTToolType toolType : GTToolType.getTypes().values()) {
             for (Material material : GTCEuAPI.materialManager) {
                 GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(material.getModid());

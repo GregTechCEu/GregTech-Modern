@@ -49,7 +49,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
@@ -186,11 +185,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     private RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
-    public void creativeModeTab(Supplier<RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> currentTab) {
-        this.currentTab = currentTab.get();
-    }
-
-    public void creativeModeTab(RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab) {
+    public void creativeModeTab(@Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab) {
         this.currentTab = currentTab;
     }
 

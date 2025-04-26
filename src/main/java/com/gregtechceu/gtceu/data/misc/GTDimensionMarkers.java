@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.misc;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -22,8 +20,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTDimensionMarkers {
 
     static {
-        GTRegistries.DIMENSION_MARKERS.unfreeze();
-        REGISTRATE.creativeModeTab(() -> null);
+        REGISTRATE.creativeModeTab(null);
     }
 
     public static final BlockEntry<Block> OVERWORLD_MARKER = createMarker("overworld");
@@ -67,8 +64,5 @@ public class GTDimensionMarkers {
                 .register();
     }
 
-    public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.DIMENSION_MARKERS);
-        GTRegistries.DIMENSION_MARKERS.freeze();
-    }
+    public static void init() {}
 }

@@ -41,7 +41,7 @@ public class GTFluids {
         NeoForgeMod.enableMilkFluid();
 
         // register fluids for materials
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
+        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_FLUID);
         for (var material : GTCEuAPI.materialManager) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
 

@@ -21,7 +21,8 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
 
     private final Set<String> usedNamespaces = new HashSet<>();
     private final Map<String, Material> fallbackMaterials = new HashMap<>();
-    private Phase registrationPhase = Phase.PRE;
+
+    private boolean isRegistryClosed = false;
 
     public MaterialRegistry(ResourceKey<Registry<Material>> key) {
         super(key);
@@ -55,6 +56,11 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
     public Holder.@NotNull Reference<Material> register(int id,
                                                         @NotNull ResourceKey<Material> key, @NotNull Material value,
                                                         @NotNull RegistrationInfo registrationInfo) {
+        if (isRegistryClosed) {
+            throw new IllegalStateException(
+                    "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material %s..."
+                            .formatted(key.location()));
+        }
         usedNamespaces.add(key.location().getNamespace());
         return super.register(id, key, value, registrationInfo);
     }
@@ -88,21 +94,12 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
         return fallbackMaterials.get(GTCEu.MOD_ID);
     }
 
-    @NotNull
     @Override
-    public Phase getPhase() {
-        return registrationPhase;
+    public boolean isFrozen() {
+        return this.gtceu$isFrozen();
     }
 
-    public void unfreezeRegistries() {
-        registrationPhase = Phase.OPEN;
-    }
-
-    public void closeRegistries() {
-        registrationPhase = Phase.CLOSED;
-    }
-
-    public void freezeRegistries() {
-        registrationPhase = Phase.FROZEN;
+    public void close() {
+        isRegistryClosed = true;
     }
 }

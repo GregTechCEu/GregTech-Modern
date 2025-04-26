@@ -6,11 +6,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.CommonInit;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.command.GTCommandArguments;
-import com.gregtechceu.gtceu.data.effect.GTMobEffects;
-import com.gregtechceu.gtceu.data.misc.GTValueProviderTypes;
-import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
-import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -64,13 +59,6 @@ public class GTCEu {
 
         modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
         modBus.addListener(GTNetwork::registerPayloads);
-
-        GTValueProviderTypes.init(modBus);
-        GTRegistries.init(modBus);
-        GTFeatures.init(modBus);
-        GTCommandArguments.init(modBus);
-        GTMobEffects.init(modBus);
-        GTParticleTypes.init(modBus);
     }
 
     public static ResourceLocation id(String path) {

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -31,16 +30,13 @@ public class GTRecipeCategories {
 
     public static GTRecipeCategory register(String categoryName, @NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(categoryName, recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
+        GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
     }
 
-    public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.RECIPE_CATEGORIES);
-        GTRegistries.RECIPE_CATEGORIES.freeze();
-    }
+    public static void init() {}
 
     public static GTRecipeCategory get(String name) {
-        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.appendId(name));
+        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name));
     }
 }

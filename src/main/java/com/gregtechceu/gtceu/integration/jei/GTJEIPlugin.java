@@ -38,18 +38,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @JeiPlugin
 public class GTJEIPlugin implements IModPlugin {
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return GTCEu.id("jei_plugin");
     }
 
     @Override
     public void registerCategories(@NotNull IRecipeCategoryRegistration registry) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-        GTCEu.LOGGER.info("JEI register categories");
+        if (!GTCEu.Mods.isJEILoaded()) return;
+
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -68,7 +69,8 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
+        if (!GTCEu.Mods.isJEILoaded()) return;
+
         GTRecipeJEICategory.registerRecipeCatalysts(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
@@ -83,8 +85,8 @@ public class GTJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-        GTCEu.LOGGER.info("JEI register");
+        if (!GTCEu.Mods.isJEILoaded()) return;
+
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeJEICategory.registerRecipes(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -97,21 +99,19 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerIngredients(@NotNull IModIngredientRegistration registry) {
-        if (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isEMILoaded()) return;
-        GTCEu.LOGGER.info("JEI register ingredients");
-    }
+    public void registerItemSubtypes(@NotNull ISubtypeRegistration registration) {
+        if (!GTCEu.Mods.isJEILoaded()) return;
 
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.registerSubtypeInterpreter(GTItems.PROGRAMMED_CIRCUIT.asItem(),
                 CircuitSubtypeInterpreter.INSTANCE);
         registration.registerSubtypeInterpreter(GTItems.TURBINE_ROTOR.asItem(), MaterialSubtypeInterpreter.INSTANCE);
     }
 
     @Override
-    public <T> void registerFluidSubtypes(ISubtypeRegistration registration,
+    public <T> void registerFluidSubtypes(@NotNull ISubtypeRegistration registration,
                                           @NotNull IPlatformFluidHelper<T> platformFluidHelper) {
+        if (!GTCEu.Mods.isJEILoaded()) return;
+
         PotionFluidSubtypeInterpreter interpreter = PotionFluidSubtypeInterpreter.INSTANCE;
         PotionFluid potionFluid = GTFluids.POTION.get();
         registration.registerSubtypeInterpreter(NeoForgeTypes.FLUID_STACK, potionFluid.getSource(), interpreter);
@@ -119,7 +119,9 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerExtraIngredients(IExtraIngredientRegistration registration) {
+    public void registerExtraIngredients(@NotNull IExtraIngredientRegistration registration) {
+        if (!GTCEu.Mods.isJEILoaded()) return;
+
         Collection<FluidStack> potionFluids = new ArrayList<>(BuiltInRegistries.POTION.size());
         BuiltInRegistries.POTION.holders().forEach(potion -> {
             FluidStack potionFluid = PotionFluid.of(1000, potion);

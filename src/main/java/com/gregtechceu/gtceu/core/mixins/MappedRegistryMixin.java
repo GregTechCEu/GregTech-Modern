@@ -24,6 +24,8 @@ public abstract class MappedRegistryMixin<T> extends BaseMappedRegistry<T>
                                          implements WritableRegistry<T>, IMappedRegistryAccess<T> {
 
     @Shadow
+    private boolean frozen;
+    @Shadow
     @Final
     private ObjectList<Holder.Reference<T>> byId;
     @Shadow
@@ -41,6 +43,11 @@ public abstract class MappedRegistryMixin<T> extends BaseMappedRegistry<T>
     @Shadow
     @Final
     private Map<ResourceKey<T>, RegistrationInfo> registrationInfos;
+
+    @Override
+    public boolean gtceu$isFrozen() {
+        return this.frozen;
+    }
 
     @Override
     public ObjectList<Holder.Reference<T>> gtceu$getById() {

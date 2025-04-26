@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -13,23 +14,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
+import org.jetbrains.annotations.NotNull;
+
 public class FacadeCoverRecipe extends CustomRecipe {
 
-    public static SimpleCraftingRecipeSerializer<FacadeCoverRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(
-            FacadeCoverRecipe::new);
-
-    public static ResourceLocation ID = GTCEu.id("crafting/facade_cover");
+    public static final ResourceLocation ID = GTCEu.id("crafting/facade_cover");
+    private static TagKey<Item> IRON_PLATE_TAG;
 
     public FacadeCoverRecipe(CraftingBookCategory category) {
         super(category);
+        if (IRON_PLATE_TAG == null) {
+            IRON_PLATE_TAG = ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron);
+        }
     }
 
     @Override
-    public boolean matches(CraftingInput container, Level level) {
+    public boolean matches(CraftingInput container, @NotNull Level level) {
         int plateSize = 0;
         boolean foundBlockItem = false;
         for (int i = 0; i < container.size(); i++) {
@@ -39,7 +44,7 @@ public class FacadeCoverRecipe extends CustomRecipe {
                 foundBlockItem = true;
                 continue;
             }
-            if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
+            if (item.is(IRON_PLATE_TAG)) {
                 plateSize++;
                 continue;
             }
@@ -49,7 +54,7 @@ public class FacadeCoverRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(CraftingInput container, HolderLookup.@NotNull Provider provider) {
         ItemStack itemStack = GTItems.COVER_FACADE.asStack(3);
         for (int i = 0; i < container.size(); i++) {
             var item = container.getItem(i);
@@ -64,13 +69,12 @@ public class FacadeCoverRecipe extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        TagKey<Item> ironPlate = ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron);
+    public @NotNull NonNullList<Ingredient> getIngredients() {
         return NonNullList.of(Ingredient.EMPTY,
-                Ingredient.of(ironPlate),
-                Ingredient.of(ironPlate),
-                Ingredient.of(ironPlate),
-                Ingredient.of(Blocks.STONE));
+                Ingredient.of(IRON_PLATE_TAG),
+                Ingredient.of(IRON_PLATE_TAG),
+                Ingredient.of(IRON_PLATE_TAG),
+                Ingredient.of(Items.STONE));
     }
 
     @Override
@@ -79,14 +83,14 @@ public class FacadeCoverRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
+    public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider provider) {
         var result = GTItems.COVER_FACADE.asStack();
         FacadeItemBehaviour.setFacadeStack(GTItems.COVER_FACADE.asStack(), new ItemStack(Blocks.STONE));
         return result;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return GTRecipeSerializers.CRAFTING_FACADE_COVER.get();
     }
 }

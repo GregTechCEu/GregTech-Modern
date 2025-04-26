@@ -74,7 +74,7 @@ public class FluidContainerIngredient implements ICustomIngredient {
     }
 
     @Override
-    public IngredientType<?> getType() {
+    public @NotNull IngredientType<?> getType() {
         return GTIngredientTypes.FLUID_CONTAINER_INGREDIENT.get();
     }
 

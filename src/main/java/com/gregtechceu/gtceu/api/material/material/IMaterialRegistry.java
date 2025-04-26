@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.material.material;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.IMappedRegistryAccess;
+
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
@@ -8,16 +11,10 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface IMaterialRegistry extends Iterable<Material> {
 
     /**
-     * Accessible when in phases:
-     * <ul>
-     * <li>{@link Phase#OPEN}</li>
-     * <li>{@link Phase#CLOSED}</li>
-     * <li>{@link Phase#FROZEN}</li>
-     * </ul>
-     *
      * @return all namespaces the registered materials use
      */
     @UnmodifiableView
@@ -25,7 +22,7 @@ public interface IMaterialRegistry extends Iterable<Material> {
     Collection<String> getUsedNamespaces();
 
     /**
-     * Register a material. Accessible when in phase {@link Phase#OPEN}.
+     * Register a material.
      *
      * @param material the material to register
      * @return the same material.
@@ -36,13 +33,25 @@ public interface IMaterialRegistry extends Iterable<Material> {
      * Get a material from a String in formats:
      * <ul>
      * <li>{@code "modid:registry_name"}</li>
-     * <li>{@code "registry_name"} - where modid is inferred to be {@link com.gregtechceu.gtceu.GTCEu#MOD_ID}</li>
+     * <li>{@code "registry_name"} - where modid is inferred to be {@link GTCEu#MOD_ID}</li>
      * </ul>
+     * Generally, you should use {@linkplain IMaterialRegistry#getMaterial(ResourceLocation)} instead.
      *
+     * @param name the name of the material in the above format
+     * @return the material associated with the name
+     * @see IMaterialRegistry#getMaterial(ResourceLocation)
+     */
+    default Material getMaterial(String name) {
+        return getMaterial(GTCEu.id(name));
+    }
+
+    /**
+     * Get a material from a ResourceLocation<br/>
      * Intended for use in reading/writing materials from/to NBT tags.
      *
      * @param name the name of the material in the above format
      * @return the material associated with the name
+     * @see IMaterialRegistry#getMaterial(String)
      */
     Material getMaterial(ResourceLocation name);
 
@@ -69,24 +78,9 @@ public interface IMaterialRegistry extends Iterable<Material> {
     Stream<Material> stream();
 
     /**
-     * @return the current phase in the material registration process
-     * @see Phase
+     *
+     * @return {@code true} if this registry is frozen, {@code false} otherwise
+     * @see IMappedRegistryAccess#gtceu$isFrozen()
      */
-    @NotNull
-    Phase getPhase();
-
-    default boolean canModifyMaterials() {
-        return this.getPhase() != Phase.FROZEN && this.getPhase() != Phase.PRE;
-    }
-
-    enum Phase {
-        /** Material Registration and Modification is not started */
-        PRE,
-        /** Material Registration and Modification is available */
-        OPEN,
-        /** Material Registration is unavailable and only Modification is available */
-        CLOSED,
-        /** Material Registration and Modification is unavailable */
-        FROZEN
-    }
+    boolean isFrozen();
 }

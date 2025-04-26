@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.kind;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,21 +14,17 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNullByDefault;
+import org.jetbrains.annotations.Nullable;
 
 // TODO shapeless fluid container recipes
+@NotNullByDefault
 public class ShapedFluidContainerRecipe extends ShapedRecipe {
-
-    public static final RecipeSerializer<ShapedFluidContainerRecipe> SERIALIZER = new Serializer();
 
     public ShapedFluidContainerRecipe(String group, CraftingBookCategory category,
                                       ShapedRecipePattern pattern, ItemStack result,
                                       boolean showNotification) {
         super(group, category, pattern, result, showNotification);
-    }
-
-    public ShapedFluidContainerRecipe(String group, CraftingBookCategory category,
-                                      ShapedRecipePattern pattern, ItemStack result) {
-        this(group, category, pattern, result, true);
     }
 
     @Override
@@ -40,16 +37,16 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
         for (int x = 0; x <= inv.width() - this.getWidth(); ++x) {
             for (int y = 0; y <= inv.height() - this.getHeight(); ++y) {
                 var stack = this.findFluidReplacement(inv, x, y, false);
-                if (stack.getFirst() != -1) {
-                    items.set(stack.getFirst(), stack.getSecond());
+                if (stack != null) {
                     replacedSlot = stack.getFirst();
+                    items.set(replacedSlot, stack.getSecond());
                     break OUTER_LOOP;
                 }
 
                 stack = this.findFluidReplacement(inv, x, y, true);
-                if (stack.getFirst() != -1) {
-                    items.set(stack.getFirst(), stack.getSecond());
+                if (stack != null) {
                     replacedSlot = stack.getFirst();
+                    items.set(replacedSlot, stack.getSecond());
                     break OUTER_LOOP;
                 }
             }
@@ -71,6 +68,7 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
      */
+    @Nullable
     private Pair<Integer, ItemStack> findFluidReplacement(CraftingInput inv, int width, int height,
                                                           boolean mirrored) {
         for (int x = 0; x < inv.width(); ++x) {
@@ -97,7 +95,12 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
             }
         }
 
-        return Pair.of(-1, ItemStack.EMPTY);
+        return null;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return GTRecipeSerializers.CRAFTING_SHAPED_FLUID_CONTAINER.get();
     }
 
     public static class Serializer implements RecipeSerializer<ShapedFluidContainerRecipe> {

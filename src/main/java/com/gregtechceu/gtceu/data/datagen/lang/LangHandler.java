@@ -956,7 +956,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.temperature", "Temp: %sK");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
-        provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
+        provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU (%s)");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
         provider.add("gtceu.recipe.cleanroom", "Requires %s");
         provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -18,15 +17,10 @@ public class GTRecipeCapabilities {
     public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;
 
     public static void init() {
-        GTRegistries.RECIPE_CAPABILITIES.unfreeze();
-
-        GTRegistries.RECIPE_CAPABILITIES.register(GTCEu.id(ITEM.name), ITEM);
-        GTRegistries.RECIPE_CAPABILITIES.register(GTCEu.id(FLUID.name), FLUID);
-        GTRegistries.RECIPE_CAPABILITIES.register(GTCEu.id(BLOCK_STATE.name), BLOCK_STATE);
-        GTRegistries.RECIPE_CAPABILITIES.register(GTCEu.id(EU.name), EU);
-        GTRegistries.RECIPE_CAPABILITIES.register(GTCEu.id(CWU.name), CWU);
-
-        GTCEuAPI.postRegisterEvent(GTRegistries.RECIPE_CAPABILITIES);
-        GTRegistries.RECIPE_CAPABILITIES.freeze();
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(ITEM.name), ITEM);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(FLUID.name), FLUID);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(BLOCK_STATE.name), BLOCK_STATE);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(EU.name), EU);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(CWU.name), CWU);
     }
 }

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.SurfaceRockBlockItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.*;
@@ -57,7 +58,7 @@ public class GTMaterialBlocks {
     public static void generateMaterialBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Material Blocks...");
 
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (!TagPrefix.ORES.containsKey(tagPrefix) && tagPrefix.doGenerateBlock()) {
                 for (Material material : GTCEuAPI.materialManager) {
                     GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(material.getModid());
@@ -112,7 +113,7 @@ public class GTMaterialBlocks {
             final TagPrefix.OreType oreType = ore.getValue();
             var entry = registrate
                     .block("%s%s_ore".formatted(
-                            oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "",
+                            oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnderscore(oreTag.name) + "_" : "",
                             material.getName()),
                             properties -> new OreBlock(properties, oreTag, material, true))
                     .initialProperties(() -> {

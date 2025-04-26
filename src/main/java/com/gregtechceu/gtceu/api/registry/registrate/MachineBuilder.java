@@ -385,7 +385,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
-        GTRegistries.MACHINES.register(definition.getId(), definition);
+        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
         return definition;
     }
 

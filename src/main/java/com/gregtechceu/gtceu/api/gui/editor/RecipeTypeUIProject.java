@@ -17,10 +17,12 @@ import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -83,7 +85,8 @@ public class RecipeTypeUIProject extends UIProject {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.deserializeNBT(provider, tag);
         if (tag.contains("recipe_type")) {
-            recipeType = GTRegistries.RECIPE_TYPES.get(ResourceLocation.parse(tag.getString("recipe_type")));
+            var type = BuiltInRegistries.RECIPE_TYPE.get(ResourceLocation.parse(tag.getString("recipe_type")));
+            recipeType = (GTRecipeType) type;
         }
     }
 
@@ -122,8 +125,11 @@ public class RecipeTypeUIProject extends UIProject {
             }
         } else if (name.equals("template_tab")) {
             Map<String, List<GTRecipeType>> categories = new LinkedHashMap<>();
-            for (GTRecipeType recipeType : GTRegistries.RECIPE_TYPES) {
-                categories.computeIfAbsent(recipeType.group, group -> new ArrayList<>()).add(recipeType);
+            for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
+                if (!(recipeType instanceof GTRecipeType gtType)) {
+                    continue;
+                }
+                categories.computeIfAbsent(gtType.group, group -> new ArrayList<>()).add(gtType);
             }
             categories.forEach((groupName, recipeTypes) -> menu.branch(groupName, m -> {
                 for (GTRecipeType recipeType : recipeTypes) {

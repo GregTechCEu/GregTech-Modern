@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -83,6 +84,7 @@ public class TagType {
     }
     // spotless:on
 
+    @Nullable
     public TagKey<Item> getTag(TagPrefix prefix, @NotNull Material material) {
         if (filter != null && !material.isNull() && !filter.test(material)) return null;
         return formatter.apply(prefix, material);

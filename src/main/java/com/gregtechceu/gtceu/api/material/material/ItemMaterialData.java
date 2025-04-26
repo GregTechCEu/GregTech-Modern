@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.material.material;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.datagen.TagsHandler;
 import com.gregtechceu.gtceu.data.item.GTMaterialItems;
@@ -185,8 +186,8 @@ public class ItemMaterialData {
 
         // Load new data
         TagsHandler.initExtraUnificationEntries();
-        for (TagPrefix prefix : TagPrefix.values()) {
-            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(Arrays.asList(items), prefix, mat));
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
+            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(items, prefix, mat));
         }
         GTMaterialItems.toUnify
                 .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));

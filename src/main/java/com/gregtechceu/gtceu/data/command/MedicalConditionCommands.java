@@ -83,11 +83,8 @@ public class MedicalConditionCommands {
                                                         }))))));
     }
 
-    private static int queryMedicalConditions(ServerPlayer target) throws CommandSyntaxException {
+    private static int queryMedicalConditions(ServerPlayer target) {
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
-        if (tracker == null) {
-            throw EntityArgument.NO_PLAYERS_FOUND.create();
-        }
         int count = tracker.getMedicalConditions().size();
         if (count == 0) {
             target.sendSystemMessage(
@@ -116,9 +113,6 @@ public class MedicalConditionCommands {
         int count = 0;
         for (ServerPlayer target : targets) {
             IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(target);
-            if (tracker == null) {
-                continue;
-            }
             if (condition == null) {
                 count += tracker.getMedicalConditions().keySet().size();
                 for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
@@ -140,9 +134,6 @@ public class MedicalConditionCommands {
         int success = 0;
         for (ServerPlayer player : targets) {
             IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-            if (tracker == null) {
-                continue;
-            }
             tracker.progressCondition(condition, strength);
             success++;
         }

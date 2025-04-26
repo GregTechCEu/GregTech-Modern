@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -23,10 +22,6 @@ import java.util.List;
  * Logic for determining which chanced outputs should be produced from a list
  */
 public abstract class ChanceLogic {
-
-    static {
-        GTRegistries.CHANCE_LOGICS.unfreeze();
-    }
 
     /**
      * Chanced Output Logic where any ingredients succeeding their roll will be produced
@@ -177,7 +172,7 @@ public abstract class ChanceLogic {
     };
 
     public ChanceLogic(String id) {
-        GTRegistries.CHANCE_LOGICS.register(GTCEu.id(id), this);
+        GTRegistries.register(GTRegistries.CHANCE_LOGICS, GTCEu.id(id), this);
     }
 
     /**
@@ -269,8 +264,5 @@ public abstract class ChanceLogic {
     public abstract Component getTranslation();
 
     @ApiStatus.Internal
-    public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.CHANCE_LOGICS);
-        GTRegistries.CHANCE_LOGICS.freeze();
-    }
+    public static void init() {}
 }

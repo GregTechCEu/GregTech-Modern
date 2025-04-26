@@ -102,7 +102,7 @@ public class GTBlocks {
     // Pipes Blocks //
     //////////////////////////////////////
     static {
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
+        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
     }
 
     // Laser Pipe Blocks
@@ -211,7 +211,7 @@ public class GTBlocks {
     // ****** Casing Blocks *****//
     //////////////////////////////////////
     static {
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.DECORATION);
+        REGISTRATE.creativeModeTab(GTCreativeModeTabs.DECORATION);
     }
 
     // Multiblock Machine Casing Blocks
@@ -1412,14 +1412,14 @@ public class GTBlocks {
         generateStoneBlocks();
 
         // Procedural Blocks
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
+        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
         GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
         GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
         GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
         GTMaterialBlocks.MATERIAL_BLOCKS = GTMaterialBlocks.MATERIAL_BLOCKS_BUILDER.build();
 
         // Procedural Pipes/Wires
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
+        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
         GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
         GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
         GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks

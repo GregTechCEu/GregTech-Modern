@@ -286,7 +286,7 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         // Special //
         ///////////////////////////////////////////////////
-        SpecialRecipeBuilder.special(FacadeCoverRecipe::new).save(provider, FacadeCoverRecipe.ID.toString());
+        SpecialRecipeBuilder.special(FacadeCoverRecipe::new).save(provider, FacadeCoverRecipe.ID);
     }
 
     private static void addDuctRecipes(@NotNull RecipeOutput provider, @NotNull Material material,

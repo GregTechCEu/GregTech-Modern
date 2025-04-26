@@ -26,11 +26,6 @@ public interface IGTAddon {
     void gtInitComplete();
 
     /**
-     * Call init on your custom TagPrefix class(es) here
-     */
-    default void registerTagPrefixes() {}
-
-    /**
      * Call init on your custom IWorldGenLayer class(es) here
      */
     default void registerWorldgenLayers() {}

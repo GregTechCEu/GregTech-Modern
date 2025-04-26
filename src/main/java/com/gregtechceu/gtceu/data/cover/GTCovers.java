@@ -25,10 +25,6 @@ public class GTCovers {
     public static final int[] ALL_TIERS_WITH_ULV = GTValues.tiersBetween(GTValues.ULV,
             GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
-    static {
-        GTRegistries.COVERS.unfreeze();
-    }
-
     public final static CoverDefinition FACADE = register(
             "facade", FacadeCover::new,
             FacadeCoverRenderer.INSTANCE);
@@ -138,7 +134,7 @@ public class GTCovers {
     public static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            ICoverRenderer coverRenderer) {
         var definition = new CoverDefinition(GTCEu.id(id), behaviorCreator, coverRenderer);
-        GTRegistries.COVERS.register(GTCEu.id(id), definition);
+        GTRegistries.register(GTRegistries.COVERS, GTCEu.id(id), definition);
         return definition;
     }
 
@@ -161,8 +157,5 @@ public class GTCovers {
         }).toArray(CoverDefinition[]::new);
     }
 
-    public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.COVERS);
-        GTRegistries.COVERS.freeze();
-    }
+    public static void init() {}
 }

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -143,7 +144,7 @@ public class Material implements Comparable<Material> {
     }
 
     protected void registerMaterial() {
-        GTCEuAPI.materialManager.register(this);
+        GTRegistries.register(GTRegistries.MATERIALS, this.getResourceLocation(), this);
     }
 
     public String getName() {
@@ -163,7 +164,7 @@ public class Material implements Comparable<Material> {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials())
+        if (!GTCEuAPI.materialManager.isFrozen())
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
     }
@@ -524,7 +525,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials()) {
+        if (!GTCEuAPI.materialManager.isFrozen()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);

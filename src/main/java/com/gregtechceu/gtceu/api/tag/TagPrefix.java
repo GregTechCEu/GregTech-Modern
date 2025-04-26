@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.tag;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -11,14 +9,13 @@ import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
 import com.gregtechceu.gtceu.data.item.GTMaterialItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.TagPrefixKubeEvent;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -55,9 +52,11 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.*;
 
@@ -73,15 +72,10 @@ public class TagPrefix {
                     .orElseGet(() -> DataResult.error(() -> "invalid TagPrefix: " + str)),
             prefix -> DataResult.success(prefix.name));
 
-    public static void init() {
-        AddonFinder.getAddonList().forEach(IGTAddon::registerTagPrefixes);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.postEvent();
-        }
-    }
+    public static void init() {}
 
     public static TagPrefix get(String name) {
-        return PREFIXES.get(name);
+        return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
     }
 
     public boolean isEmpty() {
@@ -1017,7 +1011,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Collection<Supplier<? extends ItemLike>>> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -1032,10 +1026,10 @@ public class TagPrefix {
 
     public TagPrefix(String name) {
         this.name = name;
-        String lowerCaseUnder = FormattingUtil.toLowerCaseUnder(name);
+        String lowerCaseUnder = FormattingUtil.toLowerCaseUnderscore(name);
         this.idPattern = "%s_" + lowerCaseUnder;
         this.langValue = "%s " + FormattingUtil.toEnglishName(lowerCaseUnder);
-        PREFIXES.put(name, this);
+        GTRegistries.register(GTRegistries.TAG_PREFIXES, GTCEu.id(name), this);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1143,14 +1137,6 @@ public class TagPrefix {
         return (long) (GTValues.M * materialAmounts.getFloat(material));
     }
 
-    public static TagPrefix getPrefix(String prefixName) {
-        return getPrefix(prefixName, null);
-    }
-
-    public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return PREFIXES.getOrDefault(prefixName, replacement);
-    }
-
     @Unmodifiable
     public List<TagKey<Item>> getItemParentTags() {
         return tags.stream()
@@ -1254,41 +1240,52 @@ public class TagPrefix {
 
     @SafeVarargs
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
-        ignoredMaterials.put(material, items);
-        if (items.length > 0) {
-            ItemMaterialData.registerMaterialEntries(Arrays.asList(items), this, material);
+        setIgnored(material, Arrays.asList(items));
+    }
+
+    public void setIgnored(Material material, Collection<Supplier<? extends ItemLike>> items) {
+        ignoredMaterials.computeIfAbsent(material, m -> new HashSet<>()).addAll(items);
+        if (!items.isEmpty()) {
+            ItemMaterialData.registerMaterialEntries(items, this, material);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void setIgnored(Material material, ItemLike... items) {
         // go through setIgnoredBlock to wrap if this is a block prefix
         if (this.doGenerateBlock()) {
-            this.setIgnoredBlock(material,
-                    Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast).toArray(Block[]::new));
+            this.setIgnoredBlock(material, Arrays.stream(items)
+                    .filter(Block.class::isInstance)
+                    .map(Block.class::cast)
+                    .toArray(Block[]::new));
+            // also add possible item-only entries
+            this.setIgnored(material, Arrays.stream(items)
+                    .filter(item -> !(item instanceof Block))
+                    .map(item -> (Supplier<ItemLike>) () -> item)
+                    .collect(Collectors.toSet()));
         } else {
-            this.setIgnored(material,
-                    Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+            this.setIgnored(material, Arrays.stream(items)
+                    .map(item -> (Supplier<ItemLike>) () -> item)
+                    .collect(Collectors.toSet()));
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void setIgnoredBlock(Material material, Block... items) {
-        this.setIgnored(material, Arrays.stream(items).map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
-                .toArray(Supplier[]::new));
+    public void setIgnoredBlock(Material material, Block... blocks) {
+        this.setIgnored(material, Arrays.stream(blocks)
+                .map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
+                .collect(Collectors.toSet()));
     }
 
-    @SuppressWarnings("unchecked")
     public void setIgnored(Material material) {
-        this.ignoredMaterials.put(material, new Supplier[0]);
+        ignoredMaterials.computeIfAbsent(material, m -> new HashSet<>());
     }
 
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
     }
 
-    public Map<Material, Supplier<? extends ItemLike>[]> getIgnored() {
-        return new HashMap<>(ignoredMaterials);
+    @UnmodifiableView
+    public Map<Material, Collection<Supplier<? extends ItemLike>>> getIgnored() {
+        return Collections.unmodifiableMap(ignoredMaterials);
     }
 
     public boolean isAmountModified(Material material) {
@@ -1312,19 +1309,12 @@ public class TagPrefix {
         return name.hashCode();
     }
 
-    public static Collection<TagPrefix> values() {
-        return PREFIXES.values();
+    public static Iterable<TagPrefix> values() {
+        return GTRegistries.TAG_PREFIXES;
     }
 
     @Override
     public String toString() {
         return name;
-    }
-
-    private static final class KJSCallWrapper {
-
-        private static void postEvent() {
-            GTCEuStartupEvents.TAG_PREFIXES.post(new TagPrefixKubeEvent());
-        }
     }
 }

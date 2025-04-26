@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
-import com.gregtechceu.gtceu.api.recipe.kind.*;
-import com.gregtechceu.gtceu.api.recipe.kind.ShapedFluidContainerRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -26,7 +24,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
-import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -43,6 +41,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.experimental.ExtensionMethod;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,11 +57,6 @@ public class GTRecipeTypes {
     public static final String GENERATOR = "generator";
     public static final String MULTIBLOCK = "multiblock";
     public static final String DUMMY = "dummy";
-
-    static {
-        GTRegistries.RECIPE_TYPES.unfreeze();
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
-    }
 
     //////////////////////////////////////
     // ********* Steam **********//
@@ -524,7 +518,7 @@ public class GTRecipeTypes {
                 items.add(GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .filter(coil -> coil.getKey().getCoilTemperature() >= temp)
                         .map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0,
+                widgetGroup.addWidget(new SlotWidget(CycleItemEntryHandler.createFromStacks(items), 0,
                         widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 32, false, false));
             })
             .setSound(GTSoundEntries.FURNACE);
@@ -670,28 +664,19 @@ public class GTRecipeTypes {
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         recipeType.setSerializer(GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName,
                 new GTRecipeSerializer()));
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
         return recipeType;
     }
 
     public static void init() {
         GCYMRecipeTypes.init();
-        GTCEuAPI.postRegisterEvent(GTRegistries.RECIPE_TYPES);
-        GTRegistries.RECIPE_TYPES.freeze();
-
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_facade_cover"),
-                FacadeCoverRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_strict"),
-                StrictShapedRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_energy_transfer"),
-                ShapedEnergyTransferRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_tool_head_replace"),
-                ToolHeadReplaceRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_fluid_container"),
-                ShapedFluidContainerRecipe.SERIALIZER);
     }
 
+    @Nullable
     public static GTRecipeType get(String name) {
-        return GTRegistries.RECIPE_TYPES.get(GTCEu.appendId(name));
+        RecipeType<?> type = BuiltInRegistries.RECIPE_TYPE.get(GTCEu.id(name));
+        if (type instanceof GTRecipeType gtType) {
+            return gtType;
+        }
+        return null;
     }
 }

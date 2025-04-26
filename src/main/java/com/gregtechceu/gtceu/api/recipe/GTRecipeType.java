@@ -252,9 +252,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeBuilder recipeBuilder(ResourceLocation id, Object... append) {
         if (append.length > 0) {
-            return recipeBuilder.copy(ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
-                    id.getPath() + Arrays.stream(append).map(Object::toString).map(FormattingUtil::toLowerCaseUnder)
-                            .reduce("", (a, b) -> a + "_" + b)));
+            return recipeBuilder.copy(id.withPath(path -> path + Arrays.stream(append)
+                    .map(Object::toString).map(FormattingUtil::toLowerCaseUnderscore)
+                    .reduce("", (a, b) -> a + "_" + b)));
         }
         return recipeBuilder.copy(id);
     }

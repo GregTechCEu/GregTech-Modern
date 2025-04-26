@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
@@ -198,7 +199,7 @@ public class ChemicalHelper {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
-            for (TagPrefix prefix : TagPrefix.values()) {
+            for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
                 for (Material material : GTCEuAPI.materialManager) {
                     prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)

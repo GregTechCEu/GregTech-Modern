@@ -105,8 +105,6 @@ public class GTCapabilityHelper {
         return level.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, pos, side);
     }
 
-    @SuppressWarnings("DataFlowIssue") // it's nullable.
-    @Nullable
     public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
         return entity.getData(GTAttachmentTypes.MEDICAL_CONDITION_TRACKER);
     }

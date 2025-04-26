@@ -7,15 +7,11 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.material.material.IMaterialRegistry;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.neoforge.RegisterEventAccessor;
 
 import net.minecraft.world.level.block.Block;
-import net.neoforged.fml.ModLoader;
-import net.neoforged.neoforge.registries.RegisterEvent;
 
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
@@ -55,14 +51,5 @@ public class GTCEuAPI {
 
         if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
-    }
-
-    /**
-     * Post the register event for a specific (GT) registry. Internal use only, do not attempt to call this.
-     */
-    @ApiStatus.Internal
-    public static <T> void postRegisterEvent(GTRegistry<T> registry) {
-        RegisterEvent registerEvent = RegisterEventAccessor.create(registry.key(), registry);
-        ModLoader.postEventWrapContainerInModOrder(registerEvent);
     }
 }

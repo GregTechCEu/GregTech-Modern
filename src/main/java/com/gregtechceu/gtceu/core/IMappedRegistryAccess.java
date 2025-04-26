@@ -12,6 +12,10 @@ import java.util.Map;
 
 public interface IMappedRegistryAccess<T> {
 
+    default boolean gtceu$isFrozen() {
+        throw new AssertionError();
+    }
+
     default ObjectList<Holder.Reference<T>> gtceu$getById() {
         throw new AssertionError();
     }

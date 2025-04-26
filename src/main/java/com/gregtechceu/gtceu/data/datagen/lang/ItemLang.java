@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.data.datagen.lang;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
@@ -20,8 +23,10 @@ public class ItemLang {
 
     private static void initGeneratedNames(RegistrateLangProvider provider) {
         // RecipeTypes
-        for (var recipeType : GTRegistries.RECIPE_TYPES) {
-            provider.add(recipeType.getTranslationKey(), toEnglishName(recipeType.registryName.getPath()));
+        for (var recipeType : BuiltInRegistries.RECIPE_TYPE) {
+            if (recipeType instanceof GTRecipeType gtRecipeType) {
+                provider.add(gtRecipeType.getTranslationKey(), toEnglishName(gtRecipeType.registryName.getPath()));
+            }
         }
 
         // Recipe Categories
@@ -35,7 +40,7 @@ public class ItemLang {
         provider.add("gtceu.recipe.category.ingot_molding", "Metal Molding");
 
         // TagPrefix
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
         }
         // GTToolType

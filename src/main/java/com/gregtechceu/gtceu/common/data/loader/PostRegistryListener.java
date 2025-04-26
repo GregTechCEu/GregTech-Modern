@@ -39,8 +39,8 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
     }
 
     public static void buildVeinGenerators(Registry<OreVeinDefinition> registry) {
-        var iterator = registry.asHolderIdMap().iterator();
-        Set<Holder<OreVeinDefinition>> toRemove = new HashSet<>();
+        var iterator = registry.holders().iterator();
+        Set<Holder.Reference<OreVeinDefinition>> toRemove = new HashSet<>();
         while (iterator.hasNext()) {
             var definition = iterator.next();
             var veinGen = definition.value().veinGenerator();

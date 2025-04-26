@@ -115,7 +115,7 @@ public class SoundEntryBuilder {
         SoundEntry entry = wrappedEvents.isEmpty() ?
                 new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
                 new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
-        GTRegistries.SOUNDS.register(entry.getId(), entry);
+        GTRegistries.register(GTRegistries.SOUNDS, entry.getId(), entry);
         return entry;
     }
 }

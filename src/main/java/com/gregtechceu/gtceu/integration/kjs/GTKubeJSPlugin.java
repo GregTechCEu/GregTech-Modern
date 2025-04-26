@@ -71,6 +71,8 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
+import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.prefix.TagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipetype.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipetype.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
@@ -86,9 +88,11 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComponent;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
@@ -122,6 +126,10 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
         registry.addDefault(GTRegistries.DIMENSION_MARKER_REGISTRY, DimensionMarkerBuilder.class,
                 DimensionMarkerBuilder::new);
         registry.addDefault(GTRegistries.MATERIAL_REGISTRY, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
+        registry.of(GTRegistries.TAG_PREFIX_REGISTRY, reg -> {
+            reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
+            reg.add(ID.kjs("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+        });
 
         registry.addDefault(GTRegistries.RECIPE_TYPE_REGISTRY, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
         registry.addDefault(GTRegistries.RECIPE_CATEGORY_REGISTRY, GTRecipeCategoryBuilder.class,
@@ -182,8 +190,10 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerRecipeSchemas(RecipeSchemaRegistry event) {
-        for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
-            event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
+        for (var id : BuiltInRegistries.RECIPE_TYPE.keySet()) {
+            RecipeType<?> type = BuiltInRegistries.RECIPE_TYPE.get(id);
+            if (!(type instanceof GTRecipeType)) continue;
+            event.register(id, GTRecipeSchema.SCHEMA);
         }
         event.namespace(GTCEu.MOD_ID).register("shaped", GTShapedRecipeSchema.SCHEMA);
     }

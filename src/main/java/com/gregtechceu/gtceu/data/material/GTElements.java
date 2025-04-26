@@ -1,15 +1,10 @@
 package com.gregtechceu.gtceu.data.material;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 public class GTElements {
-
-    static {
-        GTRegistries.ELEMENTS.unfreeze();
-    }
 
     public static final Element H = createAndRegister(1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(1, 1, -1, "H", "Deuterium", "D", true);
@@ -149,14 +144,11 @@ public class GTElements {
     public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        GTRegistries.ELEMENTS.register(GTCEu.id(name), element);
+        GTRegistries.register(GTRegistries.ELEMENTS, GTCEu.id(name), element);
         return element;
     }
 
-    public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.ELEMENTS);
-        GTRegistries.ELEMENTS.freeze();
-    }
+    public static void init() {}
 
     public static Element get(String name) {
         return GTRegistries.ELEMENTS.get(GTCEu.id(name));

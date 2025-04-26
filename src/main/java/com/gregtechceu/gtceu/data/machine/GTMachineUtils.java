@@ -322,7 +322,7 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerConverter(int amperage) {
         if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
-            REGISTRATE.creativeModeTab(() -> null);
+            REGISTRATE.creativeModeTab(null);
         }
 
         MachineDefinition[] converters = registerTieredMachines(amperage + "a_energy_converter",
@@ -346,7 +346,7 @@ public class GTMachineUtils {
                 ALL_TIERS);
 
         if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
-            REGISTRATE.creativeModeTab(() -> MACHINE);
+            REGISTRATE.creativeModeTab(MACHINE);
         }
         return converters;
     }

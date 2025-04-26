@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.DimensionMarker;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
@@ -30,18 +31,24 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.*;
 
 public final class GTRegistries {
 
     public static final ResourceLocation ROOT_GT_REGISTRY_NAME = GTCEu.id("root");
-    public static final GTRegistry<GTRegistry<?>> ROOT = new GTRegistry<>(ROOT_GT_REGISTRY_NAME);
     // spotless:off
+    public static final ResourceKey<Registry<Registry<?>>> ROOT_REGISTRY = makeRegistryKey(ROOT_GT_REGISTRY_NAME);
+    private static final List<ResourceLocation> LOAD_ORDER = new ArrayList<>();
+
     public static final ResourceKey<Registry<OreVeinDefinition>> ORE_VEIN_REGISTRY = makeRegistryKey(GTCEu.id("ore_vein"));
     public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID_REGISTRY = makeRegistryKey(GTCEu.id("bedrock_fluid"));
     public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE_REGISTRY = makeRegistryKey(GTCEu.id("bedrock_ore"));
 
-    public static final ResourceKey<Registry<Material>> MATERIAL_REGISTRY = makeRegistryKey(GTCEu.id("material"));
     public static final ResourceKey<Registry<Element>> ELEMENT_REGISTRY = makeRegistryKey(GTCEu.id("element"));
+    public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX_REGISTRY = makeRegistryKey(GTCEu.id("tag_prefix"));
+    public static final ResourceKey<Registry<Material>> MATERIAL_REGISTRY = makeRegistryKey(GTCEu.id("material"));
     public static final ResourceKey<Registry<MachineDefinition>> MACHINE_REGISTRY = makeRegistryKey(GTCEu.id("machine"));
     public static final ResourceKey<Registry<CoverDefinition>> COVER_REGISTRY = makeRegistryKey(GTCEu.id("cover"));
 
@@ -56,24 +63,44 @@ public final class GTRegistries {
     public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER_REGISTRY = makeRegistryKey(GTCEu.id("dimension_marker"));
 
     // GT Registry
-    public static final MaterialRegistry MATERIALS = new MaterialRegistry(MATERIAL_REGISTRY);
-    public static final GTRegistry<Element> ELEMENTS = new GTRegistry<>(ELEMENT_REGISTRY);
-    public static final GTRegistry<MachineDefinition> MACHINES = new GTRegistry<>(MACHINE_REGISTRY);
-    public static final GTRegistry<CoverDefinition> COVERS = new GTRegistry<>(COVER_REGISTRY);
+    public static final GTRegistry<Registry<?>> ROOT = new GTRegistry<>(ROOT_REGISTRY);
+    static {
+        ROOT.unfreeze();
+    }
 
-    public static final GTRegistry<GTRecipeType> RECIPE_TYPES = new GTRegistry<>(RECIPE_TYPE_REGISTRY);
-    public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry<>(RECIPE_CATEGORY_REGISTRY);
-    public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry<>(RECIPE_CAPABILITY_REGISTRY);
-    public static final GTRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = new GTRegistry<>(RECIPE_CONDITION_REGISTRY);
-    public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = new GTRegistry<>(CHANCE_LOGIC_REGISTRY);
+    public static final GTRegistry<Element> ELEMENTS = makeRegistry(ELEMENT_REGISTRY);
+    public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
+    public static final GTRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(TAG_PREFIX_REGISTRY);
 
-    public static final GTRegistry<ToolBehaviorType<?>> TOOL_BEHAVIORS = new GTRegistry<>(TOOL_BEHAVIOR_REGISTRY);
-    public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(SOUND_REGISTRY);
-    public static final GTRegistry<DimensionMarker> DIMENSION_MARKERS = new GTRegistry<>(DIMENSION_MARKER_REGISTRY);
+    public static final GTRegistry<SoundEntry> SOUNDS = makeRegistry(SOUND_REGISTRY);
+    public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(CHANCE_LOGIC_REGISTRY);
+    public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(RECIPE_CAPABILITY_REGISTRY);
+    public static final GTRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(RECIPE_CONDITION_REGISTRY);
+    public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(RECIPE_CATEGORY_REGISTRY);
+
+    public static final GTRegistry<MachineDefinition> MACHINES = makeRegistry(MACHINE_REGISTRY);
+    public static final GTRegistry<CoverDefinition> COVERS = makeRegistry(COVER_REGISTRY);
+
+    public static final GTRegistry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(TOOL_BEHAVIOR_REGISTRY);
+    public static final GTRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(DIMENSION_MARKER_REGISTRY);
     // spotless:on
 
     public static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <T> GTRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
+        GTRegistry<T> registry = new GTRegistry<>(key);
+        LOAD_ORDER.add(key.location());
+        return ROOT.register((ResourceKey) key, registry);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static MaterialRegistry makeMaterialRegistry() {
+        MaterialRegistry registry = new MaterialRegistry(MATERIAL_REGISTRY);
+        LOAD_ORDER.add(MATERIAL_REGISTRY.location());
+        return ROOT.register((ResourceKey) MATERIAL_REGISTRY, registry);
     }
 
     private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
@@ -95,6 +122,11 @@ public final class GTRegistries {
 
     public static void init(IEventBus eventBus) {
         eventBus.addListener(GTRegistries::actuallyRegister);
+    }
+
+    @UnmodifiableView
+    public static List<ResourceLocation> getRegistrationOrder() {
+        return Collections.unmodifiableList(LOAD_ORDER);
     }
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);

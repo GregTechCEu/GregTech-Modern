@@ -52,7 +52,7 @@ public class DimensionMarker {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
-        GTRegistries.DIMENSION_MARKERS.register(dimKey, this);
+        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimKey, this);
     }
 
     private ItemStack getStack(Item item) {

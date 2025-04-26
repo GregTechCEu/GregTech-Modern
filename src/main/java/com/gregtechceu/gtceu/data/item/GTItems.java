@@ -93,7 +93,7 @@ public class GTItems {
     // ******* Misc Items ********//
     //////////////////////////////////////
     static {
-        REGISTRATE.creativeModeTab(() -> ITEM);
+        REGISTRATE.creativeModeTab(ITEM);
     }
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
             .lang("Compressed Clay")

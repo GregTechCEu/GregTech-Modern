@@ -23,8 +23,8 @@ import java.util.Optional;
 public class GTProgrammedCircuitCategory extends
                                          ModularUIDisplayCategory<GTProgrammedCircuitCategory.GTProgrammedCircuitDisplay> {
 
-    public static CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier
-            .of(GTCEu.id("programmed_circuit"));
+    private static final ResourceLocation ID = GTCEu.id("programmed_circuit");
+    public static final CategoryIdentifier<GTProgrammedCircuitDisplay> CATEGORY = CategoryIdentifier.of(ID);
 
     @Getter
     private final Renderer icon;
@@ -64,7 +64,7 @@ public class GTProgrammedCircuitCategory extends
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return Optional.of(GTCEu.id("programmed_circuit"));
+            return Optional.of(ID);
         }
     }
 }

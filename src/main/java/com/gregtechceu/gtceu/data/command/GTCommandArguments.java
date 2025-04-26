@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.command;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.command.argument.MaterialArgument;
 import com.gregtechceu.gtceu.common.command.argument.MedicalConditionArgument;
 
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -17,13 +16,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 @SuppressWarnings("unused")
 public class GTCommandArguments {
 
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
+    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
             .create(Registries.COMMAND_ARGUMENT_TYPE, GTCEu.MOD_ID);
-
-    private static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<MaterialArgument>> MATERIAL_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
-            .register(
-                    "material", () -> ArgumentTypeInfos.registerByClass(MaterialArgument.class,
-                            SingletonArgumentInfo.contextAware(MaterialArgument::material)));
 
     private static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<MedicalConditionArgument>> MEDICAL_CONDITION_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register("medical_condition",

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.kind;
 
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,8 +16,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public class StrictShapedRecipe extends ShapedRecipe {
-
-    public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
     public StrictShapedRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
                               ItemStack result, boolean showNotification) {
@@ -56,7 +55,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return GTRecipeSerializers.CRAFTING_SHAPED_STRICT.get();
     }
 
     public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {

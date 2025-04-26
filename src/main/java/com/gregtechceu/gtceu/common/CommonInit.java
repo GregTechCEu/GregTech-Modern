@@ -14,10 +14,10 @@ import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -40,11 +40,13 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.data.command.GTCommandArguments;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.data.datafixer.GTDataFixers;
 import com.gregtechceu.gtceu.data.datagen.GTRegistrateDatagen;
 import com.gregtechceu.gtceu.data.datagen.lang.MaterialLangGenerator;
+import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
 import com.gregtechceu.gtceu.data.fluid.GTFluids;
 import com.gregtechceu.gtceu.data.item.GTArmorMaterials;
@@ -59,6 +61,8 @@ import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.misc.GTAttachmentTypes;
 import com.gregtechceu.gtceu.data.misc.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.data.misc.GTDimensionMarkers;
+import com.gregtechceu.gtceu.data.misc.GTValueProviderTypes;
+import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
 import com.gregtechceu.gtceu.data.recipe.*;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.tag.GTIngredientTypes;
@@ -96,6 +100,9 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.callback.BakeCallback;
 
 import com.google.common.collect.Multimaps;
 import com.tterrag.registrate.providers.ProviderType;
@@ -103,6 +110,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import mcjty.theoneprobe.api.ITheOneProbe;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.Function;
@@ -115,40 +123,86 @@ public class CommonInit {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
-        GTRecipeCapabilities.init();
-        GTRecipeConditions.init();
-        GTToolTiers.init();
+
+        GTCreativeModeTabs.init();
+        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
         initMaterials();
         TagPrefix.init();
+
         GTSoundEntries.init();
         GTDamageTypes.init();
-        GTCovers.init();
-        GTFluids.init();
-        GTCreativeModeTabs.init();
+
         GTBlocks.init();
-        GTEntityTypes.init();
         GTBlockEntities.init();
-        GTRecipeTypes.init();
-        GTRecipeCategories.init();
-        GTMachineUtils.init();
-        GTMachines.init();
+        GTFluids.init();
 
         GTFoods.init();
+        GTToolTiers.init();
         GTToolBehaviors.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
         GTDataComponents.DATA_COMPONENTS.register(modBus);
         GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
+
         GTDimensionMarkers.init();
+        GTRecipeCapabilities.init();
+        GTRecipeConditions.init();
         ChanceLogic.init();
-        WaypointManager.init();
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
+        GTRecipeTypes.init();
+        GTRecipeCategories.init();
+
+        GTMachineUtils.init();
+        GTCovers.init();
+        GTMachines.init();
+
+        GTEntityTypes.init();
         GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
+        GTRecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
+
+        GTCommandArguments.COMMAND_ARGUMENT_TYPES.register(modBus);
+        GTMobEffects.MOB_EFFECTS.register(modBus);
+        GTParticleTypes.PARTICLE_TYPES.register(modBus);
 
         GTRegistrateDatagen.init();
+        GTValueProviderTypes.register(modBus);
+        GTFeatures.register(modBus);
+        WorldGenLayers.registerAll();
+        VeinGenerators.registerAddonGenerators();
+        IndicatorGenerators.registerAddonGenerators();
+        WaypointManager.init();
+
+        CustomBlockRotations.init();
+        KeyBind.init();
+        MachineOwner.init();
+        ChestGenHooks.init();
+        GTDataFixers.init();
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+
+        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
+    }
+
+    @ApiStatus.Internal
+    public static void initMaterials() {
+        GTCEu.LOGGER.info("Registering GTCEu Materials");
+        GTMaterials.init();
+        GTRegistries.MATERIALS.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
+
+        // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
+        // Block entirely new Materials from being added in the Post event
+        GTRegistries.MATERIALS.close();
+        ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSEventWrapper.materialModification();
+        }
+    }
+
+    private static void postInitMaterials() {
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
@@ -165,48 +219,28 @@ public class CommonInit {
                     .map(ModContainer::getEventBus)
                     .ifPresent(registrate::registerEventListeners);
         });
-
-        WorldGenLayers.registerAll();
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
-
-        GTFeatures.init();
-        CustomBlockRotations.init();
-        KeyBind.init();
-        MachineOwner.init();
-        ChestGenHooks.init();
-        GTDataFixers.init();
-
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
-    private static void initMaterials() {
-        // First, register other mods' Registries
-        MaterialRegistry managerInternal = (MaterialRegistry) GTCEuAPI.materialManager;
+    @SubscribeEvent
+    public static void registerRegistries(NewRegistryEvent event) {
+        GTRegistries.ROOT.forEach(event::register);
+        GTRegistries.ROOT.freeze();
+    }
 
-        // First, register CEu Materials
-        managerInternal.unfreezeRegistries();
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
-        managerInternal.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
+    @SubscribeEvent
+    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(GTRegistries.ORE_VEIN_REGISTRY,
+                OreVeinDefinition.DIRECT_CODEC, OreVeinDefinition.DIRECT_CODEC);
+        event.dataPackRegistry(GTRegistries.BEDROCK_FLUID_REGISTRY,
+                BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
+        event.dataPackRegistry(GTRegistries.BEDROCK_ORE_REGISTRY,
+                BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
+    }
 
-        // Then, register addon Materials
-        GTCEu.LOGGER.info("Registering addon Materials");
-        GTCEuAPI.postRegisterEvent(GTRegistries.MATERIALS);
-
-        // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
-        // Block entirely new Materials from being added in the Post event
-        managerInternal.closeRegistries();
-        ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialModification();
-        }
-
-        // Freeze Material Registry before processing Items, Blocks, and Fluids
-        managerInternal.freezeRegistries();
-        /* End Material Registration */
+    @SubscribeEvent
+    public static void modifyRegistries(ModifyRegistriesEvent event) {
+        // noinspection UnstableApiUsage
+        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) registry -> postInitMaterials());
     }
 
     @SubscribeEvent
@@ -264,16 +298,6 @@ public class CommonInit {
                         (stack, ctx) -> new FluidBucketWrapper(stack), bucket);
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(GTRegistries.ORE_VEIN_REGISTRY,
-                OreVeinDefinition.DIRECT_CODEC, OreVeinDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_FLUID_REGISTRY,
-                BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_ORE_REGISTRY,
-                BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
     }
 
     @SubscribeEvent

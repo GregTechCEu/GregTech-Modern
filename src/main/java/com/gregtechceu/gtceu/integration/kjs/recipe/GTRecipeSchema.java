@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -25,6 +26,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMapComp
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -111,12 +113,13 @@ public interface GTRecipeSchema {
         public <T> GTKubeRecipe output(RecipeCapability<T> capability, Object... obj) {
             CapabilityMap map = getValue(perTick ? ALL_TICK_OUTPUTS : ALL_OUTPUTS);
             if (map != null) {
-                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
-                if (map.get(capability) != null &&
-                        map.get(capability).size() + obj.length > recipeType.getMaxOutputs(capability)) {
+                var recipeType = BuiltInRegistries.RECIPE_TYPE.get(this.type.id);
+                if (recipeType instanceof GTRecipeType gtType &&
+                        map.get(capability) != null &&
+                        map.get(capability).size() + obj.length > gtType.getMaxOutputs(capability)) {
                     ConsoleJS.SERVER.warn(String.format(
                             "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
-                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
+                            id, (perTick ? "Tick " : ""), capability.name, gtType.getMaxOutputs(capability)));
                 }
                 for (Object object : obj) {
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));

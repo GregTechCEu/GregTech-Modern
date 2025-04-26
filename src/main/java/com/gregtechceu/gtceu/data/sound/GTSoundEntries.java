@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.sound;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
@@ -9,10 +8,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTSoundEntries {
-
-    static {
-        GTRegistries.SOUNDS.unfreeze();
-    }
 
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
@@ -56,11 +51,8 @@ public class GTSoundEntries {
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
     public static void init() {
-        GTCEuAPI.postRegisterEvent(GTRegistries.SOUNDS);
         GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
         registerSounds();
-
-        GTRegistries.SOUNDS.freeze();
     }
 
     private static void registerSounds() {

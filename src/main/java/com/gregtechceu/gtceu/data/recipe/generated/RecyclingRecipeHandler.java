@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 
@@ -25,7 +26,7 @@ public final class RecyclingRecipeHandler {
 
     public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
         // registers universal maceration recipes for specified ore prefixes
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             if (prefix.generateRecycling()) {
                 processCrushing(provider, prefix, material);
             }

@@ -20,24 +20,25 @@ public class GTFeatures {
     public static final ResourceLocation NEW_ORE_VEIN_TOGGLE = GTCEu.id("vein_toggle");
     public static final ResourceLocation NEW_ORE_VEIN_RIDGED = GTCEu.id("vein_ridged");
 
-    public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(Registries.FEATURE,
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE,
             GTCEu.MOD_ID);
 
-    public static final DeferredHolder<Feature<?>, StoneBlobFeature> STONE_BLOB = FEATURE_REGISTER.register(
+    public static final DeferredHolder<Feature<?>, StoneBlobFeature> STONE_BLOB = FEATURES.register(
             "stone_blob",
             StoneBlobFeature::new);
-    public static final DeferredHolder<Feature<?>, FluidSproutFeature> FLUID_SPROUT = FEATURE_REGISTER.register(
+    public static final DeferredHolder<Feature<?>, FluidSproutFeature> FLUID_SPROUT = FEATURES.register(
             "fluid_sprout",
             FluidSproutFeature::new);
 
-    public static void init() {
+    private static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
         inst = RubberTreeChancePlacement.RUBBER_TREE_CHANCE_PLACEMENT;
     }
 
-    public static void init(IEventBus modEventBus) {
-        FEATURE_REGISTER.register(modEventBus);
+    public static void register(IEventBus modEventBus) {
+        init();
+        FEATURES.register(modEventBus);
     }
 }

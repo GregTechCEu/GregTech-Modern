@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.item.GTMaterialItems;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -24,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolHeadReplaceRecipe extends CustomRecipe {
-
-    public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(
-            ToolHeadReplaceRecipe::new);
 
     private static final Map<TagPrefix, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
 
@@ -133,6 +131,6 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return GTRecipeSerializers.CRAFTING_TOOL_HEAD_REPLACE.get();
     }
 }

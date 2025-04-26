@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeSerializers;
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
-import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -19,16 +19,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNullByDefault;
 
-/**
- * @author Irgendwer01
- * @date 2023/11/4
- * @implNote ShapedEnergyTransferRecipe
- */
-@FieldsAreNonnullByDefault
+@NotNullByDefault
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {
-
-    public static final RecipeSerializer<ShapedEnergyTransferRecipe> SERIALIZER = new Serializer();
 
     @Getter
     private final Ingredient chargeIngredient;
@@ -83,6 +77,11 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             }
         }
         return resultStack;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return GTRecipeSerializers.CRAFTING_SHAPED_ENERGY_TRANSFER.get();
     }
 
     public static class Serializer implements RecipeSerializer<ShapedEnergyTransferRecipe> {
