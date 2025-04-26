@@ -2,6 +2,12 @@
 name: Issue Labels
 
 on:
+  workflow_dispatch:
+    inputs:
+      issue_body:
+        description: "The issue body"
+        required: false
+        type: string
   issues:
     types: [opened]
 
@@ -18,10 +24,12 @@ jobs:
         template: [ 000-bug-report.yml, 001-feature-request.yml ]
     steps:
       - uses: actions/checkout@v4
+      
       - name: Parse issue form
         uses: stefanbuck/github-issue-parser@v3
         id: issue-parser
         with:
+          issue-body: ${{ github.event.issue?.body ?? inputs.issue_body }}
           template-path: .github/ISSUE_TEMPLATE/${{ matrix.template }}
 
       - name: Set labels based on mc-version field
