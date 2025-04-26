@@ -85,9 +85,6 @@ public class CommonEventListener {
 
         Player player = event.getEntity();
         IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-        if (tracker == null) {
-            return;
-        }
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(medicalCondition);
@@ -293,9 +290,6 @@ public class CommonEventListener {
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-            if (tracker == null) {
-                return;
-            }
             for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(condition);
             }

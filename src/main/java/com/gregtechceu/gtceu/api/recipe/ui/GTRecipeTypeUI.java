@@ -241,12 +241,15 @@ public class GTRecipeTypeUI {
                 progress.add(dualProgressWidget);
             });
             // add recipe button
-            if (!isJEI && (GTCEu.Mods.isREILoaded() || GTCEu.Mods.isJEILoaded() || GTCEu.Mods.isEMILoaded())) {
+            if (!isJEI && GTCEu.Mods.isAnyRecipeViewerLoaded()) {
                 for (Widget widget : progress) {
                     template.addWidget(new ButtonWidget(widget.getPosition().x, widget.getPosition().y,
                             widget.getSize().width, widget.getSize().height, IGuiTexture.EMPTY, cd -> {
                                 if (cd.isRemote) {
-                                    if (GTCEu.Mods.isREILoaded()) {
+                                    if (GTCEu.Mods.isEMILoaded()) {
+                                        EmiApi.displayRecipeCategory(
+                                                GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
+                                    } else if (GTCEu.Mods.isREILoaded()) {
                                         ViewSearchBuilder.builder().addCategories(
                                                 recipeType.getCategories().stream()
                                                         .filter(GTRecipeCategory::isXEIVisible)
@@ -259,9 +262,6 @@ public class GTRecipeTypeUI {
                                                         .filter(GTRecipeCategory::isXEIVisible)
                                                         .map(GTRecipeJEICategory::machineType)
                                                         .collect(Collectors.toList()));
-                                    } else if (GTCEu.Mods.isEMILoaded()) {
-                                        EmiApi.displayRecipeCategory(
-                                                GTRecipeEMICategory.machineCategory(recipeType.getCategory()));
                                     }
                                 }
                             }).setHoverTooltips("gtceu.recipe_type.show_recipes"));

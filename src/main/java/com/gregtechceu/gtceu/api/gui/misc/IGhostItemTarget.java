@@ -60,9 +60,7 @@ public interface IGhostItemTarget extends IGhostIngredientTarget {
                 itemStack.applyComponents(itemEmiStack.getComponentChanges());
             }
             ingredient = itemStack;
-        }
-
-        if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
+        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> itemJeiStack) {
             return itemJeiStack.getItemStack().orElse(ItemStack.EMPTY);
         }
         return ingredient;

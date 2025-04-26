@@ -27,6 +27,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.emi.emi.api.stack.EmiStack;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collections;
@@ -122,9 +123,8 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
         return false;
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<Target> getPhantomTargets(Object ingredient) {
+    @Nullable
+    private static Object convertIngredient(Object ingredient) {
         if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
             Item item = emiStack.getKeyOfType(Item.class);
             if (item != null) {
@@ -134,6 +134,13 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
         } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
             ingredient = jeiStack.getItemStack().orElse(null);
         }
+        return ingredient;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public List<Target> getPhantomTargets(Object ingredient) {
+        ingredient = convertIngredient(ingredient);
         if (!(ingredient instanceof ItemStack)) {
             return Collections.emptyList();
         }
@@ -149,15 +156,7 @@ public class PhantomSlotWidget extends SlotWidget implements IGhostIngredientTar
 
             @Override
             public void accept(@NotNull Object ingredient) {
-                if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
-                    Item item = emiStack.getKeyOfType(Item.class);
-                    if (item != null) {
-                        ingredient = new ItemStack(item, (int) emiStack.getAmount());
-                        ((ItemStack) ingredient).applyComponents(emiStack.getComponentChanges());
-                    }
-                } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-                    ingredient = jeiStack.getItemStack().orElse(null);
-                }
+                ingredient = convertIngredient(ingredient);
                 if (slotReference != null && ingredient instanceof ItemStack stack) {
                     long id = Minecraft.getInstance().getWindow().getWindow();
                     boolean shiftDown = InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);

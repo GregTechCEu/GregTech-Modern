@@ -35,14 +35,14 @@ import dev.emi.emi.api.stack.EmiStack;
 import lombok.Getter;
 import lombok.Setter;
 import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
 
 @LDLRegister(name = "gtm_phantom_fluid_slot", group = "widget.gtm_container", priority = 50)
 public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTarget, IConfigurableWidget {
@@ -58,6 +58,8 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
     public PhantomFluidWidget() {
         super();
+        this.phantomFluidGetter = () -> FluidStack.EMPTY;
+        this.phantomFluidSetter = stack -> {};
     }
 
     public PhantomFluidWidget(@Nullable IFluidHandler fluidTank, int tank, int x, int y, int width, int height,
@@ -103,13 +105,9 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
         return FluidStack.EMPTY;
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<Target> getPhantomTargets(Object ingredient) {
-        if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(), (int) fluidStack.getAmount(),
-                    fluidStack.getPatch());
-        } else if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
+    @Nullable
+    private static Object convertIngredient(Object ingredient) {
+        if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
             var key = emiStack.getKey();
             if (key instanceof Fluid f) {
                 int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
@@ -120,10 +118,19 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
             } else {
                 ingredient = null;
             }
+        } else if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(), (int) fluidStack.getAmount(),
+                    fluidStack.getPatch());
         } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> jeiStack) {
-            ingredient = jeiStack.getIngredient();
+            ingredient = jeiStack.getIngredient(NeoForgeTypes.FLUID_STACK).orElse(null);
         }
+        return ingredient;
+    }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public List<Target> getPhantomTargets(Object ingredient) {
+        ingredient = convertIngredient(ingredient);
         if (!(ingredient instanceof FluidStack) && drainFrom(ingredient).isEmpty()) {
             return Collections.emptyList();
         }
@@ -139,22 +146,7 @@ public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTa
 
             @Override
             public void accept(@NotNull Object ingredient) {
-                if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-                    ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(),
-                            (int) fluidStack.getAmount(),
-                            fluidStack.getPatch());
-                } else if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack emiStack) {
-                    var key = emiStack.getKey();
-                    if (key instanceof Fluid f) {
-                        int amount = emiStack.getAmount() == 0 ? 1000 : (int) emiStack.getAmount();
-                        ingredient = new FluidStack(f.builtInRegistryHolder(), amount, emiStack.getComponentChanges());
-                    } else if (key instanceof Item i) {
-                        ingredient = new ItemStack(i, (int) emiStack.getAmount());
-                        ((ItemStack) ingredient).applyComponents(emiStack.getComponentChanges());
-                    } else {
-                        ingredient = null;
-                    }
-                }
+                ingredient = convertIngredient(ingredient);
 
                 FluidStack ingredientStack;
                 if (ingredient instanceof FluidStack fluidStack) ingredientStack = fluidStack;

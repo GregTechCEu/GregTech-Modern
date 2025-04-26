@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -70,7 +70,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     private final SceneWidget sceneWidget;
     private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
     public final MultiblockMachineDefinition controllerDefinition;
-    public final MBPattern[] patterns;
+    private final MBPattern[] patterns;
     private final List<SimplePredicate> predicates;
     private int index;
     public int layer;
@@ -251,7 +251,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
-        var itemHandler = new CycleItemStackHandler(pattern.parts);
+        var itemHandler = CycleItemEntryHandler.createFromStacks(pattern.parts);
         for (int i = 0; i < slotWidgets.length; i++) {
             slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
                     .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
@@ -295,7 +295,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 }
             }
             candidates = new SlotWidget[candidateStacks.size()];
-            CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
+            CycleItemEntryHandler itemHandler = CycleItemEntryHandler.createFromStacks(candidateStacks);
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
@@ -449,7 +449,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                         var item = itemStack.copy();
                         item.setCount(amount);
                         return item;
-                    }).filter(item -> !item.isEmpty()).toList();
+                    }).<ItemStack>filter(item -> !item.isEmpty()).toList();
         }
     }
 

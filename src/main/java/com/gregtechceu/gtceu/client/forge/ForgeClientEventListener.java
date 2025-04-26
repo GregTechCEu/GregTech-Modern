@@ -39,6 +39,13 @@ public class ForgeClientEventListener {
     }
 
     @SubscribeEvent
+    public static void onRenderPlayerHearts(PlayerHeartTypeEvent event) {
+        if (event.getEntity().hasEffect(GTMobEffects.WEAK_POISON)) {
+            event.setType(Gui.HeartType.POISIONED);
+        }
+    }
+
+    @SubscribeEvent
     public static void onTooltipEvent(ItemTooltipEvent event) {
         TooltipsHandler.appendTooltips(event.getItemStack(), event.getFlags(), event.getToolTip(), event.getContext());
     }

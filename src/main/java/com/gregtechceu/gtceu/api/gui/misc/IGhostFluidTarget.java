@@ -13,6 +13,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
+import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -62,21 +64,16 @@ public interface IGhostFluidTarget extends IGhostIngredientTarget {
     }
 
     default Object convertIngredient(Object ingredient) {
-        if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(),
-                    (int) fluidStack.getAmount(), fluidStack.getPatch());
-        }
-
         if (GTCEu.Mods.isEMILoaded() && ingredient instanceof EmiStack fluidEmiStack) {
             Fluid fluid = fluidEmiStack.getKeyOfType(Fluid.class);
             ingredient = fluid == null ? FluidStack.EMPTY :
                     new FluidStack(fluid.builtInRegistryHolder(),
                             (int) fluidEmiStack.getAmount(), fluidEmiStack.getComponentChanges());
-        }
-
-        if (GTCEu.Mods.isJEILoaded() && ingredient instanceof FluidStack fluidStack) {
-            ingredient = new FluidStack(fluidStack.getFluidHolder(),
-                    fluidStack.getAmount(), fluidStack.getComponentsPatch());
+        } else if (GTCEu.Mods.isREILoaded() && ingredient instanceof dev.architectury.fluid.FluidStack fluidStack) {
+            ingredient = new FluidStack(fluidStack.getFluid().builtInRegistryHolder(),
+                    (int) fluidStack.getAmount(), fluidStack.getPatch());
+        } else if (GTCEu.Mods.isJEILoaded() && ingredient instanceof ITypedIngredient<?> fluidJeiStack) {
+            return fluidJeiStack.getIngredient(NeoForgeTypes.FLUID_STACK).orElse(FluidStack.EMPTY);
         }
         return ingredient;
     }

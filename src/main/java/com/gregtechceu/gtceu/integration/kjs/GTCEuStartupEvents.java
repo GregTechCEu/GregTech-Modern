@@ -11,7 +11,6 @@ public interface GTCEuStartupEvents {
 
     EventHandler MATERIAL_ICON_INFO = GROUP.startup("materialIconInfo", () -> MaterialIconInfoKubeEvent.class);
     EventHandler WORLD_GEN_LAYERS = GROUP.startup("worldGenLayers", () -> WorldGenLayerKubeEvent.class);
-    EventHandler TAG_PREFIXES = GROUP.startup("tagPrefixes", () -> TagPrefixKubeEvent.class);
 
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification",
             () -> MaterialModificationKubeEvent.class);

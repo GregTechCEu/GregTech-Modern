@@ -67,10 +67,6 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
         FluidStack fluid = fluidTank.getFluidInTank(tank);
         if (fluid.isEmpty())
             return;
-
-        if (fluid.isEmpty())
-            return;
-
         fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0), fluidTank.getTankCapacity(tank)));
         if (fluid.getAmount() <= 0L) {
             fluidTank.drain(fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);

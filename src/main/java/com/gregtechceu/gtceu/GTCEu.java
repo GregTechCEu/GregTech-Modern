@@ -77,23 +77,26 @@ public class GTCEu {
         if (Strings.isBlank(path)) {
             return TEMPLATE_LOCATION;
         }
-        return TEMPLATE_LOCATION.withPath(FormattingUtil.toLowerCaseUnder(path));
+        path = FormattingUtil.toLowerCaseUnderscore(path);
+
+        int i = path.indexOf(':');
+        if (i > 0) {
+            return ResourceLocation.parse(path);
+        } else if (i == 0) {
+            path = path.substring(i + 1);
+        }
+        return TEMPLATE_LOCATION.withPath(path);
     }
 
     public static String appendIdString(String id) {
-        return id.indexOf(':') == -1 ? (MOD_ID + ":" + id) : id;
-    }
-
-    public static ResourceLocation appendId(String id) {
-        String[] strings = new String[] { "gtceu", id };
         int i = id.indexOf(':');
-        if (i >= 0) {
-            strings[1] = id.substring(i + 1);
-            if (i >= 1) {
-                strings[0] = id.substring(0, i);
-            }
+        if (i > 0) {
+            return id;
+        } else if (i == 0) {
+            return MOD_ID + id;
+        } else {
+            return MOD_ID + ":" + id;
         }
-        return ResourceLocation.fromNamespaceAndPath(strings[0], strings[1]);
     }
 
     /**
@@ -175,6 +178,11 @@ public class GTCEu {
 
     public static class Mods {
 
+        public static boolean isAnyRecipeViewerLoaded() {
+            return isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_JEI) ||
+                    isModLoaded(GTValues.MODID_REI);
+        }
+
         public static boolean isJEILoaded() {
             return !(isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_REI)) &&
                     isModLoaded(GTValues.MODID_JEI);
@@ -192,13 +200,12 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_KUBEJS);
         }
 
-        public static boolean isIrisOculusLoaded() {
-            return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
+        public static boolean isIrisLoaded() {
+            return isModLoaded(GTValues.MODID_IRIS);
         }
 
-        public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                    isModLoaded(GTValues.MODID_EMBEDDIUM);
+        public static boolean isSodiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM);
         }
 
         public static boolean isAE2Loaded() {

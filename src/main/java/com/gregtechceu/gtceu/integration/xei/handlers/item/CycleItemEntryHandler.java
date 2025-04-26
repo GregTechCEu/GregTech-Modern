@@ -26,6 +26,16 @@ public class CycleItemEntryHandler implements IItemHandlerModifiable {
         this.entries = new ArrayList<>(entries);
     }
 
+    public static CycleItemEntryHandler createFromStacks(List<List<ItemStack>> stacks) {
+        List<ItemEntryList> entries = new ArrayList<>();
+        for (var list : stacks) {
+            entries.add(ItemStackList.of(list));
+        }
+        CycleItemEntryHandler handler = new CycleItemEntryHandler(entries);
+        handler.unwrapped = stacks;
+        return handler;
+    }
+
     public List<List<ItemStack>> getUnwrapped() {
         if (unwrapped == null) {
             unwrapped = entries.stream()
