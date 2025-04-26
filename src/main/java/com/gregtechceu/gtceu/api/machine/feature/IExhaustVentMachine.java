@@ -107,7 +107,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
                 new AABB(pos.relative(getVentingDirection())),
                 entity -> !(entity instanceof Player player) || !player.isSpectator() && !player.isCreative())) {
-            entity.hurt(GTDamageTypes.HEAT.source(level), getVentingDamage());
+            entity.hurt(level.damageSources().source(GTDamageTypes.HEAT), getVentingDamage());
             // TODO ADVANCEMENT
             // if (entity instanceof ServerPlayer) {
             // AdvancementTriggers.STEAM_VENT_DEATH.trigger((ServerPlayer) entity);

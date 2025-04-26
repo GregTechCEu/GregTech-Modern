@@ -55,7 +55,7 @@ public class EntityDamageUtil {
         // fire resistance entities cannot be burned
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
 
-        entity.hurt(GTDamageTypes.HEAT.source(entity.level()), damage);
+        entity.hurt(entity.level().damageSources().source(GTDamageTypes.HEAT), damage);
         // TODO advancements
         // if (entity instanceof ServerPlayer serverPlayer)
         // AdvancementTriggers.HEAT_DEATH.trigger(serverPlayer);
@@ -120,7 +120,7 @@ public class EntityDamageUtil {
         if (entity.getType().is(CustomTags.CHEMICAL_IMMUNE))
             return;
 
-        entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);
+        entity.hurt(entity.level().damageSources().source(GTDamageTypes.CHEMICAL), damage);
         entity.addEffect(new MobEffectInstance(MobEffects.POISON, damage * 100, 1));
         // TODO advancements
         // if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((ServerPlayer) entity);

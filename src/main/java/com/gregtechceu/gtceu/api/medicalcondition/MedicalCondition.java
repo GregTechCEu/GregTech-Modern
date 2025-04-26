@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.medicalcondition;
 
-import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageScaling;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
@@ -31,7 +32,8 @@ public class MedicalCondition {
     public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached
     public final Set<Symptom.ConfiguredSymptom> symptoms = new HashSet<>();
-    private final DamageTypeData damageTypeData;
+    @Getter
+    private final ResourceKey<DamageType> damageType;
     public final IdleProgressionType idleProgressionType;
     public final float idleProgressionRate;
     public final boolean canBePermanent;
@@ -48,12 +50,7 @@ public class MedicalCondition {
         this.name = name;
         this.color = color;
         this.maxProgression = maxProgression;
-        this.damageTypeData = new DamageTypeData.Builder()
-                .simpleId("medical_condition/" + name)
-                .scaling(DamageScaling.NEVER)
-                .tag(DamageTypeTags.BYPASSES_ARMOR)
-                .build();
-
+        this.damageType = ResourceKey.create(Registries.DAMAGE_TYPE, GTCEu.id("medical_condition/" + name));
         this.symptoms.addAll(Arrays.asList(symptoms));
         this.idleProgressionType = idleProgressionType;
         this.idleProgressionRate = idleProgressionRate;
@@ -72,11 +69,11 @@ public class MedicalCondition {
     }
 
     public DamageSource getDamageSource(MedicalConditionTracker tracker) {
-        return damageTypeData.source(tracker.getPlayer().level());
+        return tracker.getPlayer().damageSources().source(damageType);
     }
 
     public DamageSource getDamageSource(Level level) {
-        return damageTypeData.source(level);
+        return level.damageSources().source(damageType);
     }
 
     public enum IdleProgressionType {

@@ -156,7 +156,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                 double amperage = cable.getAverageAmperage();
                 if (voltage > 0L && amperage > 0L) {
                     float damageAmount = (float) ((GTUtil.getTierByVoltage(voltage) + 1) * amperage * 4);
-                    entityLiving.hurt(GTDamageTypes.ELECTRIC.source(level), damageAmount);
+                    entityLiving.hurt(level.damageSources().source(GTDamageTypes.ELECTRIC), damageAmount);
                     if (entityLiving instanceof ServerPlayer) {
                         // TODO advancments
                         // AdvancementTriggers.ELECTROCUTION_DEATH.trigger((ServerPlayer) entityLiving);

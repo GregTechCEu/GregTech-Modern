@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
-import com.gregtechceu.gtceu.api.item.component.IDataItem;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -57,19 +55,11 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
             dataStack = getDefaultDataItem();
         }
 
-        boolean foundBehavior = false;
-        if (dataStack.getItem() instanceof IComponentItem metaItem) {
-            for (IItemComponent behaviour : metaItem.getComponents()) {
-                if (behaviour instanceof IDataItem) {
-                    foundBehavior = true;
-                    dataStack = dataStack.copy();
-                    dataStack.setCount(1);
-                    break;
-                }
-            }
-        }
-        if (!foundBehavior) {
-            throw new IllegalArgumentException("Data ItemStack must have the IDataItem behavior");
+        if (dataStack.has(GTDataComponents.DATA_ITEM)) {
+            dataStack = dataStack.copy();
+            dataStack.setCount(1);
+        } else {
+            throw new IllegalArgumentException("Data ItemStack must have the gtceu:data_item component");
         }
     }
 

@@ -101,7 +101,7 @@ public class TagPrefixItem extends Item {
                     heatDamage *= armorItem.getArmorLogic().getHeatResistance();
                 }
                 if (heatDamage > 0.0) {
-                    livingEntity.hurt(GTDamageTypes.HEAT.source(level), heatDamage);
+                    livingEntity.hurt(level.damageSources().source(GTDamageTypes.HEAT), heatDamage);
                 } else if (heatDamage < 0.0) {
                     livingEntity.hurt(livingEntity.damageSources().freeze(), -heatDamage);
                 }

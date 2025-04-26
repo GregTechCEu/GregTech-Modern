@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class GTPoisonEffect extends MobEffect {
 
@@ -13,7 +14,7 @@ public class GTPoisonEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         if (livingEntity.getHealth() > 1.0F) {
-            livingEntity.hurt(livingEntity.damageSources().magic(), amplifier / 10.0F);
+            livingEntity.hurt(livingEntity.damageSources().source(NeoForgeMod.POISON_DAMAGE), amplifier / 10.0F);
             return true;
         }
         return false;

@@ -1,42 +1,39 @@
 package com.gregtechceu.gtceu.data.damagesource;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
+import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageEffects;
+import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageType;
 
 public class GTDamageTypes {
 
-    public static final DamageTypeData EXPLOSION = new DamageTypeData.Builder()
-            .simpleId("explosion")
-            .tag(DamageTypeTags.IS_EXPLOSION)
-            .build();
-    public static final DamageTypeData HEAT = new DamageTypeData.Builder()
-            .simpleId("heat")
-            .tag(DamageTypeTags.IS_FIRE, DamageTypeTags.BYPASSES_ARMOR)
-            .build();
-    public static final DamageTypeData CHEMICAL = new DamageTypeData.Builder()
-            .simpleId("chemical")
-            .tag(DamageTypeTags.BYPASSES_ARMOR)
-            .build();
-    public static final DamageTypeData ELECTRIC = new DamageTypeData.Builder()
-            .simpleId("electric")
-            .tag(DamageTypeTags.IS_LIGHTNING)
-            .build();
-    public static final DamageTypeData RADIATION = new DamageTypeData.Builder()
-            .simpleId("radiation")
-            .tag(DamageTypeTags.BYPASSES_ARMOR)
-            .build();
-    public static final DamageTypeData TURBINE = new DamageTypeData.Builder()
-            .simpleId("turbine")
-            .tag(DamageTypeTags.BYPASSES_ARMOR)
-            .build();
+    public static final ResourceKey<DamageType> HEAT = create("heat");
+    public static final ResourceKey<DamageType> CHEMICAL = create("chemical");
+    public static final ResourceKey<DamageType> ELECTRIC = create("electric");
+    public static final ResourceKey<DamageType> RADIATION = create("radiation");
+    public static final ResourceKey<DamageType> TURBINE = create("turbine");
 
     public static void init() {}
 
+    private static ResourceKey<DamageType> create(String path) {
+        return ResourceKey.create(Registries.DAMAGE_TYPE, GTCEu.id(path));
+    }
+
     public static void bootstrap(BootstrapContext<DamageType> ctx) {
-        DamageTypeData.allInNamespace(GTCEu.MOD_ID).forEach(data -> data.register(ctx));
+        ctx.register(HEAT, new DamageType("gtceu.heat", 0, DamageEffects.BURNING));
+        ctx.register(CHEMICAL, new DamageType("gtceu.chemical", 0));
+        ctx.register(CHEMICAL, new DamageType("gtceu.electric", 0));
+
+        for (var entry : MedicalCondition.CONDITIONS.entrySet()) {
+            String name = entry.getKey();
+            MedicalCondition condition = entry.getValue();
+            ctx.register(condition.getDamageType(),
+                    new DamageType("gtceu.medical_condition." + name, DamageScaling.ALWAYS, 0));
+        }
     }
 }

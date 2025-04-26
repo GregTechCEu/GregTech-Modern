@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.data.datagen.tag.BiomeTagsLoader;
-import com.gregtechceu.gtceu.data.datagen.tag.DamageTagsLoader;
+import com.gregtechceu.gtceu.data.datagen.tag.DamageTypeTagsLoader;
 import com.gregtechceu.gtceu.data.enchantment.GTEnchantmentProviders;
 import com.gregtechceu.gtceu.data.sound.GTJukeboxSongs;
 import com.gregtechceu.gtceu.data.worldgen.*;
@@ -51,7 +51,7 @@ public class GTVanillaDatagen {
                             .add(GTRegistries.ORE_VEIN_REGISTRY, GTOreVeins::bootstrap),
                     set));
             generator.addProvider(true,
-                    new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+                    new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
         }
     }
 }
