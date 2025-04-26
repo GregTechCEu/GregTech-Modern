@@ -1240,7 +1240,7 @@ public class GTRecipeBuilder {
      * @return this
      */
     public GTRecipeBuilder scannerResearch(@NotNull ItemStack researchStack) {
-        return scannerResearch(b -> b.researchItemStack(researchStack));
+        return scannerResearch(b -> b.researchStack(researchStack));
     }
 
     /**

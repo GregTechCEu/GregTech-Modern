@@ -22,7 +22,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
     protected String researchId;
     protected int eut;
 
-    public T researchItemStack(@NotNull ItemStack researchStack) {
+    public T researchStack(@NotNull ItemStack researchStack) {
         if (!researchStack.isEmpty()) {
             this.itemResearchStack = researchStack;
         }

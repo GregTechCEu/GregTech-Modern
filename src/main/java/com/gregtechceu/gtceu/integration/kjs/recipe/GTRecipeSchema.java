@@ -935,7 +935,7 @@ public interface GTRecipeSchema {
          * @return this
          */
         public GTRecipeJS scannerResearch(@NotNull ItemStack researchStack) {
-            return scannerResearch(b -> b.researchItemStack(researchStack));
+            return scannerResearch(b -> b.researchStack(researchStack));
         }
 
         /**

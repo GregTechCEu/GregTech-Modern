@@ -39,7 +39,7 @@ public class ComputerRecipes {
                 .outputItems(ADVANCED_DATA_ACCESS_HATCH)
                 .inputFluids(SolderingAlloy, L * 4)
                 .inputFluids(Polybenzimidazole, L * 4)
-                .stationResearch(b -> b.researchItemStack(DATA_BANK.asStack()).CWUt(4))
+                .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
                 .duration(400).EUt(6000)
                 .addMaterialInfo(true, true).save(provider);
 
@@ -110,7 +110,7 @@ public class ComputerRecipes {
                 .inputFluids(Lubricant, 500)
                 .outputItems(DATA_BANK)
                 .scannerResearch(b -> b
-                        .researchItemStack(DATA_ACCESS_HATCH.asStack())
+                        .researchStack(DATA_ACCESS_HATCH.asStack())
                         .duration(2400)
                         .EUt(VA[EV]))
                 .duration(1200).EUt(6000)
@@ -129,7 +129,7 @@ public class ComputerRecipes {
                 .inputFluids(VanadiumGallium, L * 8)
                 .outputItems(RESEARCH_STATION)
                 .scannerResearch(b -> b
-                        .researchItemStack(SCANNER[LuV].asStack())
+                        .researchStack(SCANNER[LuV].asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)
@@ -147,7 +147,7 @@ public class ComputerRecipes {
                 .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(OBJECT_HOLDER)
                 .scannerResearch(b -> b
-                        .researchItemStack(ITEM_IMPORT_BUS[ZPM].asStack())
+                        .researchStack(ITEM_IMPORT_BUS[ZPM].asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)
@@ -166,7 +166,7 @@ public class ComputerRecipes {
                 .inputFluids(Polybenzimidazole, L * 4)
                 .outputItems(NETWORK_SWITCH)
                 .stationResearch(b -> b
-                        .researchItemStack(new ItemStack(OPTICAL_PIPES[0]))
+                        .researchStack(new ItemStack(OPTICAL_PIPES[0]))
                         .CWUt(32)
                         .EUt(VA[ZPM]))
                 .duration(1200).EUt(100000)
@@ -185,7 +185,7 @@ public class ComputerRecipes {
                 .inputFluids(PCBCoolant, 4000)
                 .outputItems(HIGH_PERFORMANCE_COMPUTING_ARRAY)
                 .scannerResearch(b -> b
-                        .researchItemStack(COVER_SCREEN.asStack())
+                        .researchStack(COVER_SCREEN.asStack())
                         .duration(2400)
                         .EUt(VA[IV]))
                 .duration(1200).EUt(100000)

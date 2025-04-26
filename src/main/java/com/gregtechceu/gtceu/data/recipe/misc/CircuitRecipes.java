@@ -1467,7 +1467,7 @@ public class CircuitRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(CRYSTAL_MAINFRAME_UV)
                 .stationResearch(b -> b
-                        .researchItemStack(CRYSTAL_COMPUTER_ZPM.asStack())
+                        .researchStack(CRYSTAL_COMPUTER_ZPM.asStack())
                         .CWUt(16))
                 .save(provider);
 
@@ -1534,7 +1534,7 @@ public class CircuitRecipes {
                 .inputFluids(SolderingAlloy.getFluid(1152))
                 .outputItems(WETWARE_SUPER_COMPUTER_UV)
                 .stationResearch(b -> b
-                        .researchItemStack(WETWARE_PROCESSOR_ASSEMBLY_ZPM.asStack())
+                        .researchStack(WETWARE_PROCESSOR_ASSEMBLY_ZPM.asStack())
                         .CWUt(16))
                 .save(provider);
 
@@ -1555,7 +1555,7 @@ public class CircuitRecipes {
                 .inputFluids(Polybenzimidazole.getFluid(L * 8))
                 .outputItems(WETWARE_MAINFRAME_UHV)
                 .stationResearch(b -> b
-                        .researchItemStack(WETWARE_SUPER_COMPUTER_UV.asStack())
+                        .researchStack(WETWARE_SUPER_COMPUTER_UV.asStack())
                         .CWUt(96)
                         .EUt(VA[UV]))
                 .EUt(300000).duration(2000).save(provider);

@@ -381,7 +381,7 @@ public class BatteryRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(ENERGY_MODULE)
                 .stationResearch(b -> b
-                        .researchItemStack(ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack())
+                        .researchStack(ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack())
                         .CWUt(16))
                 .EUt(100000).duration(1200).save(provider);
 
@@ -404,7 +404,7 @@ public class BatteryRecipes {
                 .inputFluids(Polybenzimidazole.getFluid(L * 4))
                 .outputItems(ENERGY_CLUSTER)
                 .stationResearch(b -> b
-                        .researchItemStack(ENERGY_MODULE.asStack())
+                        .researchStack(ENERGY_MODULE.asStack())
                         .CWUt(96)
                         .EUt(VA[ZPM]))
                 .EUt(200000).duration(1400).save(provider);
@@ -429,7 +429,7 @@ public class BatteryRecipes {
                 .inputFluids(Naquadria.getFluid(L * 18))
                 .outputItems(ULTIMATE_BATTERY)
                 .stationResearch(b -> b
-                        .researchItemStack(ENERGY_CLUSTER.asStack())
+                        .researchStack(ENERGY_CLUSTER.asStack())
                         .CWUt(144)
                         .EUt(VA[UHV]))
                 .EUt(300000).duration(2000).save(provider);
