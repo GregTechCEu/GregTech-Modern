@@ -44,7 +44,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private boolean changed = true;
 
     public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
-        this.values = empty.toArray(Value[]::new);
+        this(empty.toArray(Value[]::new), amount, nbt);
+    }
+
+    private FluidIngredient(FluidIngredient.Value[] values, int amount, @Nullable CompoundTag nbt) {
+        this.values = values;
         this.amount = amount;
         this.nbt = nbt;
     }
@@ -79,8 +83,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public FluidIngredient copy() {
-        return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
-                this.nbt == null ? null : this.nbt.copy());
+        return new FluidIngredient(values, amount, nbt == null ? null : nbt.copy());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.FastEmptyStream;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,10 +18,11 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class SizedIngredient extends Ingredient {
+
+    private static final FastEmptyStream<Value> FAST_EMPTY_STREAM = FastEmptyStream.create(new Ingredient.Value[0]);
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -32,7 +34,7 @@ public class SizedIngredient extends Ingredient {
     private boolean changed = true;
 
     protected SizedIngredient(Ingredient inner, int amount) {
-        super(Stream.empty());
+        super(FAST_EMPTY_STREAM);
         this.amount = amount;
         this.inner = inner;
     }
@@ -68,14 +70,9 @@ public class SizedIngredient extends Ingredient {
                 return copy(intProviderIngredient);
             }
 
-            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
-            if (sizedIngredient.itemStacks != null) {
-                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
-                        .toArray(ItemStack[]::new);
-            }
-            return copied;
+            return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
-            return circuit.copy();
+            return circuit;
         } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
             var copied = new IntProviderIngredient(intProviderIngredient.inner, intProviderIngredient.countProvider);
             if (intProviderIngredient.itemStacks != null) {
@@ -88,6 +85,21 @@ public class SizedIngredient extends Ingredient {
             return copied;
         }
         return SizedIngredient.create(ingredient);
+    }
+
+    public static Ingredient getInner(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            return getInner(sizedIngredient);
+        }
+        return ingredient;
+    }
+
+    public static Ingredient getInner(SizedIngredient sizedIngredient) {
+        Ingredient inner = sizedIngredient.inner;
+        if (inner instanceof SizedIngredient ingredient) {
+            return getInner(ingredient);
+        }
+        return inner;
     }
 
     @Override
@@ -116,7 +128,7 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (getInner() instanceof IntProviderIngredient intProviderIngredient) {
+        if (inner instanceof IntProviderIngredient intProviderIngredient) {
             return intProviderIngredient.getItems();
         }
         if (changed || itemStacks == null) {

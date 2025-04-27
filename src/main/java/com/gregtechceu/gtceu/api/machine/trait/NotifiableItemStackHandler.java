@@ -115,7 +115,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 provider.setSampledCount(null);
             }
 
-            var items = ingredient.getItems();
+            var items = SizedIngredient.getInner(ingredient).getItems();
             if (items.length == 0 || items[0].isEmpty()) {
                 it.remove();
                 continue;
