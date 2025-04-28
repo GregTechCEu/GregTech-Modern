@@ -17,7 +17,7 @@ Energy is transferred in packages. Voltage describes the size of the package, wh
 
 ### Voltage
 
-GregTech tiers progression into voltage tiers. The voltage tier of a generator defines the maximum EU the generator can output. The voltage tier of a single block machine or energy tier describes the maximum amount of EU that it can recieve per amp. If this value is exceeded the machine explodes.
+GregTech tiers progression into voltage tiers. The voltage tier of a generator defines the maximum EU the generator can output. The voltage tier of a single block machine or Energy Hatch describes the maximum amount of EU that it can recieve per amp. If this value is exceeded the machine explodes.
 
 Certain recipes might require certain voltage levels, thus requiring a higher tier machine.
 
