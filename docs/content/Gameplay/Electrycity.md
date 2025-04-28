@@ -90,7 +90,7 @@ For example: Tin Cable can transfer 32 EU/t with a Cable Loss of 1 EU/Amps/Meter
 
 Cables come in different density. A higher density can transfer a higher amount of Amps.
 
-To account for cable loss, machines requiring large amounts of Amps (like the EBF), you should place these machines closer to your power use and use more dense cables.
+To account for cable loss, machines requiring large amounts of Amps (like the EBF), you should place these machines closer to your power use and use more dense cables. For example, an EBF that has 2 LV Energy Hatches requires 4A of LV, so using only 4A Tin Cables will barely be enough (it will be as most recipe Voltages account for some power loss) as even after travelling 1 block, each amp would already lose 1 EU.
 
 !!! tip
 Wires have twice the Cable Loss as Cables.
