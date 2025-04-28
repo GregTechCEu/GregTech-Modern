@@ -7,6 +7,9 @@ title: Electricity
 
 GregTech uses an energy system different from Forge Energy (FE) called Energy Units (EU). 1 EU converts to 4 FE, but FE cannot be converted to EU without a converter.
 
+!!! note
+    The conversion rate between EU and FE can be changed in the configs.
+
 
 ## Amperage and Voltage
 
