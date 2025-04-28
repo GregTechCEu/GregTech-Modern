@@ -77,8 +77,8 @@ Multiblocks with 2 Energy Hatches of the same Voltage Tier will overclock to 1 A
 
 In GregTech, energy is transferred trough wires and cables. Cables are the covered versions of wires, but anything mentioned about cables applies to wires too.
 
-!!! warning
-Non-superconductor wires will electrocute you if touched while electricity is flowing trough.
+!!! danger
+    Non-superconductor wires will electrocute you if touched while electricity is flowing trough.
 
 All cables have a max Voltage, max Amperage and a Loss/Meter/Ampere.
 
