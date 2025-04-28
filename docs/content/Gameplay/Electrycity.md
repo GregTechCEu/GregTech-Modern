@@ -116,3 +116,10 @@ Transformers come in 1-4, 2-8 and 4-16 versions.
 ### Active Transformer
 
 The Active Transformer is a multiblock that can transform to and from any voltage, accepting energy with an Energy Hatch and outputting energy with a Dynamo Hatch.
+
+## Diodes
+
+Diode blocks can be used to limit the Amperage troughput of a network. A Diode has 5 input sides (green) and 1 output side (red). By default a Diode accepts and Amps and outputs 1 Amp. The output Amperage can be changed by right clicking with a Soft Mallet.
+
+![Diode 16A to 4A](./assets/diode.png)
+*An LV Diode taking 16A of LV power and outputting 4A of LV power to prevent the smaller cable from burning.*
