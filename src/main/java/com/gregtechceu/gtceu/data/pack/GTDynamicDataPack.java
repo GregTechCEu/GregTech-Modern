@@ -20,13 +20,11 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,72 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Node ROOT = new Node();
-
-    protected static class Node {
-
-        /**
-         * Holds either a byte[] with the data for a given location, or a map of string -> Node.
-         */
-        Object contents = new Object2ObjectOpenHashMap<>();
-
-        void collectResources(String namespace, String[] pathComponents, int curIndex,
-                              PackResources.ResourceOutput output) {
-            if (curIndex < pathComponents.length) {
-                String component = pathComponents[curIndex];
-
-                Node n = getChild(component);
-                if (n != null) {
-                    n.collectResources(namespace, pathComponents, curIndex + 1, output);
-                }
-            } else {
-                // We reached the desired path. Collect all resources
-                this.outputResources(namespace, String.join("/", pathComponents), output);
-            }
-        }
-
-        private boolean isTerminalNode() {
-            return contents instanceof byte[];
-        }
-
-        @SuppressWarnings("unchecked")
-        private Map<String, Node> getChildren() {
-            if (!(contents instanceof Map<?, ?>)) {
-                throw new IllegalStateException("attempting to get children on a terminal node");
-            }
-            return (Map<String, Node>) contents;
-        }
-
-        void outputResources(String namespace, String path, PackResources.ResourceOutput output) {
-            if (isTerminalNode()) {
-                // This is a terminal node.
-                ResourceLocation location = new ResourceLocation(namespace, path);
-                output.accept(location, this.createIoSupplier());
-            } else {
-                for (var entry : getChildren().entrySet()) {
-                    entry.getValue().outputResources(namespace, path + "/" + entry.getKey(), output);
-                }
-            }
-        }
-
-        IoSupplier<InputStream> createIoSupplier() {
-            if (!isTerminalNode()) {
-                throw new IllegalStateException("Node has no data");
-            }
-            // Capture the byte array here to avoid capturing the whole node in the lambda
-            byte[] byteArray = (byte[]) contents;
-            return () -> new ByteArrayInputStream(byteArray);
-        }
-
-        @Nullable
-        Node getChild(String name) {
-            if (isTerminalNode()) {
-                return null;
-            } else {
-                return getChildren().get(name);
-            }
-        }
-    }
+    protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
 
     private final String name;
 
@@ -125,16 +58,11 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static void clearServer() {
-        ROOT.getChildren().clear();
+        CONTENTS.clearData();
     }
 
     private static void addToData(ResourceLocation location, byte[] bytes) {
-        String[] pathComponents = location.getPath().split("/");
-        Node node = ROOT.getChildren().computeIfAbsent(location.getNamespace(), $ -> new Node());
-        for (String component : pathComponents) {
-            node = node.getChildren().computeIfAbsent(component, $ -> new Node());
-        }
-        node.contents = bytes;
+        CONTENTS.addToData(location, bytes);
     }
 
     public static void addRecipe(FinishedRecipe recipe) {
@@ -184,9 +112,7 @@ public class GTDynamicDataPack implements PackResources {
 
     public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
         ResourceLocation l = getAdvancementLocation(loc);
-        synchronized (ROOT) {
-            addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
-        }
+        addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Nullable
@@ -198,18 +124,7 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
-            Node node = ROOT.getChild(location.getNamespace());
-            String[] pathComponents = location.getPath().split("/");
-            for (String path : pathComponents) {
-                if (node == null) {
-                    return null;
-                }
-                node = node.getChild(path);
-            }
-            if (node == null) {
-                return null;
-            }
-            return node.createIoSupplier();
+            return CONTENTS.getResource(location);
         } else {
             return null;
         }
@@ -218,11 +133,7 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
         if (packType == PackType.SERVER_DATA) {
-            Node base = ROOT.getChild(namespace);
-            if (base == null) {
-                return;
-            }
-            base.collectResources(namespace, path.split("/"), 0, resourceOutput);
+            CONTENTS.listResources(namespace, path, resourceOutput);
         }
     }
 
