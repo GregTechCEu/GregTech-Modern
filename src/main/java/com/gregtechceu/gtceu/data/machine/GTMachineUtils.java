@@ -668,20 +668,20 @@ public class GTMachineUtils {
     public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,
                                              long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
-        tooltipComponents
-                .add(input ?
-                        Component.translatable("gtceu.universal.tooltip.voltage_in",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]) :
-                        Component.translatable("gtceu.universal.tooltip.voltage_out",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]));
-        tooltipComponents
-                .add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
-                        FormattingUtil.formatNumbers(energyCapacity)));
+        tooltipComponents.add(input ?
+                Component.translatable("gtceu.universal.tooltip.voltage_in",
+                        FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]) :
+                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                        FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]));
+        tooltipComponents.add(Component.translatable(
+                "gtceu.universal.tooltip.energy_storage_capacity",
+                FormattingUtil.formatNumbers(energyCapacity)));
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
-                recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
-            tooltipComponents
-                    .add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                            FormattingUtil.formatNumbers(tankCapacity)));
+                recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+            tooltipComponents.add(Component.translatable(
+                    "gtceu.universal.tooltip.fluid_storage_capacity",
+                    FormattingUtil.formatNumbers(tankCapacity)));
+        }
         return tooltipComponents.toArray(Component[]::new);
     }
 

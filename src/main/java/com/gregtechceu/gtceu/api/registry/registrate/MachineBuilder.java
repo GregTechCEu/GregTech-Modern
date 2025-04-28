@@ -249,8 +249,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> {
         return this;
     }
 
-    public MachineBuilder<DEFINITION> tooltips(Component... components) {
-        tooltips.addAll(Arrays.stream(components).toList());
+    // Go home IntelliJ, you're drunk.
+    @SuppressWarnings("NullableProblems")
+    public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
+        tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
 

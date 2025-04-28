@@ -270,7 +270,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder tooltips(Component... components) {
+    public MultiblockMachineBuilder tooltips(@Nullable Component... components) {
         return (MultiblockMachineBuilder) super.tooltips(components);
     }
 
