@@ -103,7 +103,7 @@ Superconductor Wires are Wires with 0 Cable Loss. These Wires don't have a cable
 Multiblock Generators use Dynamo Hatches to output electricity. Dynamo Hatches have 1A, 4A, 16A and 64A variants.
 
 !!! note
-Multiblock Generators will always try to "fill" existing generated Amps before trying to generate more Amps.
+    Multiblock Generators will always try to "fill" existing generated Amps before trying to generate more Amps.
 
 
 ## Transformers
