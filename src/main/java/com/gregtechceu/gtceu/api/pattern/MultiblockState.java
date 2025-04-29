@@ -113,7 +113,7 @@ public class MultiblockState {
      * Clears some internal data.
      *
      * @apiNote Cleared fields are {@code cache}, {@code matchContext},
-     * {@code globalCount} and {@code layerCount}
+     *          {@code globalCount} and {@code layerCount}
      */
     protected void clean() {
         this.matchContext.reset();

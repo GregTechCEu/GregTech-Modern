@@ -25,6 +25,7 @@ public class PatternMatchContext {
     /**
      * Associates the specified value with the specified key in the internal map.
      * If the map previously contained a mapping for the key, the old value is replaced.
+     * 
      * @param key   the map key.
      * @param value the map value.
      */
@@ -34,6 +35,7 @@ public class PatternMatchContext {
 
     /**
      * Returns specified map entry as an int.
+     * 
      * @param key the entry name in the map.
      * @return the entry at {@code key} as an int, or 0 if the entry doesn't exist.
      */
@@ -43,6 +45,7 @@ public class PatternMatchContext {
 
     /**
      * Increments the specified entry by a specific value.
+     * 
      * @param key   the entry name in the map.
      * @param value the value to increment by.
      */
@@ -53,6 +56,7 @@ public class PatternMatchContext {
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code defaultValue} if this map contains no mapping for the key.
+     * 
      * @param key          the entry name in the map.
      * @param defaultValue the value to return if the entry is empty.
      * @return the entry's content, or the default value.
@@ -65,6 +69,7 @@ public class PatternMatchContext {
     /**
      * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
      * See {@link HashMap#get(Object)} for more details.
+     * 
      * @param key
      * @return
      */
@@ -77,8 +82,9 @@ public class PatternMatchContext {
      * Returns the value to which the specified key is mapped.
      * If the entry is null, generates a new value with the given {@link Supplier},
      * sets the entry to the newly created value, and returns said value.
-     * @param key      the entry name in the map.
-     * @param creator  the supplier to use if null.
+     * 
+     * @param key     the entry name in the map.
+     * @param creator the supplier to use if null.
      * @return the value of the specified entry, or a generated value if null
      */
     public <T> T getOrCreate(String key, Supplier<T> creator) {
@@ -94,8 +100,9 @@ public class PatternMatchContext {
      * Returns the value to which the specified key is mapped.
      * If the entry is null, sets the entry to {@code initialValue}
      * and returns said value.
-     * @param key           the entry name in the map.
-     * @param initialValue  the value to use if null.
+     * 
+     * @param key          the entry name in the map.
+     * @param initialValue the value to use if null.
      * @return the value of the specified entry, or the initial value if null
      */
     public <T> T getOrPut(String key, T initialValue) {
@@ -110,6 +117,7 @@ public class PatternMatchContext {
     /**
      * Returns {@code true} if this map contains a mapping for the specified key.
      * See {@link HashMap#containsKey(Object)} for more details.
+     * 
      * @param key the key to check.
      * @return whether the key has an associated value.
      */
@@ -121,6 +129,7 @@ public class PatternMatchContext {
      * Returns a Set view of the mappings contained in this map.
      * The set is backed by the map, so changes to the map are reflected in the set, and vice versa.
      * See {@link HashMap#entrySet()} for more details.
+     * 
      * @return a set view of the mappings contained in this map.
      */
     public Set<Map.Entry<String, Object>> entrySet() {
