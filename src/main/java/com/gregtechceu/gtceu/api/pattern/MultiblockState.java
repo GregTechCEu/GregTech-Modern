@@ -110,8 +110,10 @@ public class MultiblockState {
     }
 
     /**
-     * Clears {@link MultiblockState#cache}, {@link MultiblockState#matchContext},
-     * {@link MultiblockState#globalCount} and {@link MultiblockState#layerCount}
+     * Clears some internal data.
+     *
+     * @apiNote Cleared fields are {@code cache}, {@code matchContext},
+     * {@code globalCount} and {@code layerCount}
      */
     protected void clean() {
         this.matchContext.reset();
@@ -173,7 +175,7 @@ public class MultiblockState {
     }
 
     /**
-     * Returns the {@link BlockState} at {@link MultiblockState#pos}.
+     * Returns the {@link BlockState} at the active position.
      * If null, tries to query it by checking at the in-world pos.
      * If still null, returns error.
      * 
@@ -190,7 +192,7 @@ public class MultiblockState {
     }
 
     /**
-     * Returns the {@link BlockEntity} at {@link MultiblockState#pos}.
+     * Returns the {@link BlockEntity} at the active position.
      * If not initialized, tries to query it by checking at the in-world coords.
      * Can return null if the block isn't a BlockEntity.
      * 
@@ -210,7 +212,7 @@ public class MultiblockState {
     }
 
     /**
-     * @return {@link MultiblockState#pos}
+     * @return the active position
      */
     public BlockPos getPos() {
         return this.pos.immutable();
@@ -228,7 +230,7 @@ public class MultiblockState {
     }
 
     /**
-     * Adds given {@link BlockPos} to {@link MultiblockState#cache}
+     * Adds given {@link BlockPos} to the cache
      * 
      * @param pos the position to add
      */
