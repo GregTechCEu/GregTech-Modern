@@ -41,23 +41,23 @@ Each tier quadruples the EU value of the previous tier.
 | UEV        | Ultra Excessive Voltage | 8,388,608     |
 | UIV        | Ultra Immense Voltage   | 33,554,432    |
 | UXV        | Ultra Extreme Voltage   | 134,217,728   |
-| OPV        | Overpowered Voltage     | 536,870,912   |
-| MAX        | Maximum Voltage         | 2,147,483,640 |
+| OpV        | Overpowered Voltage     | 536,870,912   |
+| MAX        | Maximum Voltage         | 2,147,483,648 |
 
 
 ### Amperage
 
 Machines and energy hatches draw amps to fill their EU buffers. When running a recipe, the machine will draw from its internal buffer.
 
-Different machines draw different amoun of amps:
+Different machines draw different amounts of amps:
 
 | Machine                | Notes                                                |
 | ---------------------- | ---------------------------------------------------- |
 | Singleblock Generators | Outputs 1A of its tier                               |
-| Energy Hatches         | Draws 2A (second amp mostly for extra draw for loss) |
+| Energy Hatches         | Draws 2A                                             |
 | Transformers Step-Up   | Draws 4A lower voltage, outputs 1A higher voltage    |
 | Transformers Step-Down | Draws 1A higher voltage, outputs 4A lower voltage    |
-| Battery Buffers Draws  | 2A per Battery, outputs 1A per Battery.              |
+| Battery Buffers        | Draws 2A per Battery, outputs 1A per Battery.        |
 
 
 ## Machine Overclocking
@@ -78,7 +78,7 @@ Multiblocks with 2 Energy Hatches of the same Voltage Tier will overclock to 1 A
 In GregTech, energy is transferred trough wires and cables. Cables are the covered versions of wires, but anything mentioned about cables applies to wires too.
 
 !!! danger
-    Non-superconductor wires will electrocute you if touched while electricity is flowing trough.
+    Non-superconductor wires will electrocute you if touched while electricity is flowing through.
 
 All cables have a max Voltage, max Amperage and a Loss/Meter/Ampere.
 
@@ -93,9 +93,9 @@ Cables come in different density. A higher density can transfer a higher amount 
 To account for cable loss, machines requiring large amounts of Amps (like the EBF), you should place these machines closer to your power use and use more dense cables. For example, an EBF that has 2 LV Energy Hatches requires 4A of LV, so using only 4A Tin Cables will barely be enough (it will be as most recipe Voltages account for some power loss) as even after travelling 1 block, each amp would already lose 1 EU.
 
 !!! tip
-    Wires have twice the Cable Loss as Cables.
+    Cables have half the cable loss as wires do. Insulate your wires!
 
-Superconductor Wires are Wires with 0 Cable Loss. These Wires don't have a cable wariant and won't electrocute you when touching them.
+Superconductor Wires are Wires with 0 Cable Loss. Those don't have a cable variant and won't electrocute you when touching them.
 
 
 ## Dynamo Hatches
@@ -108,7 +108,7 @@ Multiblock Generators use Dynamo Hatches to output electricity. Dynamo Hatches h
 
 ## Transformers
 
-Transformers can either transform 1 Amps of a higher Voltage into 4 Amps of a lower Voltage, or transform 4 Amps of a lower Voltage to 1 Amps of a higher Voltage. The Mode can be swapped by right-clicking with a Screwdriver.
+Transformers can either _transform down_ 1 Amps of a higher Voltage to 4 Amps of a lower Voltage, or _transform up_ 4 Amps of a lower Voltage to 1 Amps of a higher Voltage. The Mode can be swapped by right-clicking with a Screwdriver.
 
 Transformers come in 1-4, 2-8 and 4-16 versions.
 
@@ -119,7 +119,7 @@ The Active Transformer is a multiblock that can transform to and from any voltag
 
 ## Diodes
 
-Diode blocks can be used to limit the Amperage troughput of a network. A Diode has 5 input sides (green) and 1 output side (red). By default a Diode accepts and Amps and outputs 1 Amp. The output Amperage can be changed by right clicking with a Soft Mallet.
+Diode blocks can be used to limit the Amperage throughput of a network. A Diode has 5 input sides (green) and 1 output side (red). By default a Diode accepts and Amps and outputs 1 Amp. The output Amperage can be changed by right clicking with a Soft Mallet.
 
 ![Diode 16A to 4A](./assets/diode.png)
 *An LV Diode taking 16A of LV power and outputting 4A of LV power to prevent the smaller cable from burning.*
