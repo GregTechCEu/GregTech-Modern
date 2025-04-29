@@ -39,15 +39,14 @@ import java.util.stream.Collectors;
 
 public class MultiblockState {
 
-    // TODO: Why do those 2 errors use a lang key from another mod that isn't a dependency?
     public final static PatternError UNLOAD_ERROR = new PatternStringError("multiblocked.pattern.error.chunk");
     public final static PatternError UNINIT_ERROR = new PatternStringError("multiblocked.pattern.error.init");
 
     /** The <b>active</b> position */
     private BlockPos pos;
-    /** The <code>BlockState</code> at {@link MultiblockState#pos} */
+    /** The {@code BlockState} at {@link MultiblockState#pos} */
     private BlockState blockState;
-    /** The <code>BlockEntity</code> at {@link MultiblockState#pos} */
+    /** The {@code BlockEntity} at {@link MultiblockState#pos} */
     private BlockEntity tileEntity;
     private boolean tileEntityInitialized;
     /** See {@link PatternMatchContext} */
@@ -66,8 +65,6 @@ public class MultiblockState {
      * A map indicating how many matches have been found for each specified SimplePredicate in the current layer.
      * <br>
      * Used to check for minimum and maximum amount of matches (e.g. minimum casings)
-     * <br>
-     * See {@link SimplePredicate#testLayer(MultiblockState)} for more information.
      */
     @Getter
     private Map<SimplePredicate, Integer> layerCount;
@@ -81,13 +78,13 @@ public class MultiblockState {
     @Getter
     @Setter
     private boolean neededFlip = false;
-    /** The <code>Level</code> (dimension + side) the multi is in. */
+    /** The {@link Level} (dimension + side) the multi is in. */
     @Getter
     public final Level world;
     /** The controller's position */
     public final BlockPos controllerPos;
 
-    /** Multiblock's controller. Not too sure why it is used instead of the getter tho */
+    /** Multiblock's controller. */
     public IMultiController lastController;
 
     /**
@@ -97,7 +94,7 @@ public class MultiblockState {
      * TODO: Figure out why there is a commented out "persist" here
      */
     // persist
-    public LongOpenHashSet cache;
+    private LongOpenHashSet cache;
 
     /**
      * Initializes a new {@link MultiblockState}. Each multi controller has one.
@@ -186,7 +183,7 @@ public class MultiblockState {
         if (this.blockState == null) {
             this.blockState = this.world.getBlockState(this.pos);
         }
-        if (this.blockState == null) { // TODO: Tell the IDE to stop reporting this as useless (it's not)
+        if (this.blockState == null) {
             GTCEu.LOGGER.error("could not get BlockState at " + this.pos + " in MultiblockState");
         }
         return this.blockState;
@@ -233,8 +230,6 @@ public class MultiblockState {
     /**
      * Adds given {@link BlockPos} to {@link MultiblockState#cache}
      * 
-     * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     *           so pos is converted into a <code>long</code> before being added
      * @param pos the position to add
      */
     public void addPosCache(BlockPos pos) {
@@ -244,10 +239,8 @@ public class MultiblockState {
     /**
      * Checks for the given {@link BlockPos} in the cache
      * 
-     * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     *           so pos is converted into a <code>long</code> before being compared
      * @param pos the BlockPos to check
-     * @return
+     * @return whether the position is found
      */
     public boolean isPosInCache(BlockPos pos) {
         return cache.contains(pos.asLong());
@@ -256,8 +249,6 @@ public class MultiblockState {
     /**
      * Returns the cache's contents as a list of BlockPos
      * 
-     * @implNote {@link MultiblockState#cache} is a set of <code>long</code>,
-     *           so the contents first have to be converted back to {@link BlockPos}
      * @return the contents of the cache as a list
      */
     public Collection<BlockPos> getCache() {
