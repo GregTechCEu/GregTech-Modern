@@ -70,7 +70,7 @@ A _perfect overclock_ quadruples both the recipe's speed and EU/t usage.
 
 Some multibocks suck as the Large Chemical Reactor do perfect overclocking by default, while some have conditional perfect overclocking.
 
-Multiblocks with 2 Energy Hatches of the same Voltage Tier will overclock to 1 Amps of the Voltage Tier above. (For example, an Electric Blast Furncace with 2 LV Energy Hatches (4A of LV = 4 \_ 32 = 128 EU/t) will overclock to MV (1A of MV = 1 \* 128 = 128 EU/t).)
+Multiblocks with 2 Energy Hatches of the same Voltage Tier will overclock to 1 Amps of the Voltage Tier above. (For example, an Electric Blast Furncace with 2 LV Energy Hatches (4A of LV = 4 \* 32 = 128 EU/t) will overclock to MV (1A of MV = 1 \* 128 = 128 EU/t).)
 
 
 ## Wires, Cables, Cable loss
