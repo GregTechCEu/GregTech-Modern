@@ -123,3 +123,10 @@ Diode blocks can be used to limit the Amperage throughput of a network. A Diode 
 
 ![Diode 16A to 4A](./assets/diode.png)
 *An LV Diode taking 16A of LV power and outputting 4A of LV power to prevent the smaller cable from burning.*
+
+## Power Substation (PSS)
+
+The Power Substation is a multiblock battery. It uses Lapotronic Capacitors to store power and it can have many Energy Hatches and Dynamo (Energy Output) Hatches. It is gated behind LuV circuits, which can be made in EV tier with an EV Circuit Assembler.
+
+![A power substation using 2 Energy Hatches and 2 Dynamo Hatches](./assets/pss.png)
+*A power substation using 2 Energy Hatches and 2 Dynamo Hatches*
