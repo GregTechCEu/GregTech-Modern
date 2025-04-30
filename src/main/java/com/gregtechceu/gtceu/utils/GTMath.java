@@ -19,10 +19,6 @@ public class GTMath {
         return Math.max(min, Math.min(max, value));
     }
 
-    public static int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
     public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
         int count = saturatedCast(amount);
         int fullStacks = count / 64;

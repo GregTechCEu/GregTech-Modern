@@ -315,8 +315,7 @@ public class GTMultiMachines {
             })
             .workableCasingRenderer(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
-            .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip"),
-                    Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
+            .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",

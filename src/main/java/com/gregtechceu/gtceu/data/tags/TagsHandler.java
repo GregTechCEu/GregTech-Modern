@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.registerMaterialInfoItems;
+import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.registerMaterialEntry;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
@@ -38,23 +38,23 @@ public class TagsHandler {
     }
 
     public static void initExtraUnificationEntries() {
-        registerMaterialInfoItems(ingot, Clay, Items.CLAY_BALL);
+        registerMaterialEntry(Items.CLAY_BALL, ingot, Clay);
 
-        registerMaterialInfoItems(dye, Color.Black, Items.BLACK_DYE);
-        registerMaterialInfoItems(dye, Color.Red, Items.RED_DYE);
-        registerMaterialInfoItems(dye, Color.Green, Items.GREEN_DYE);
-        registerMaterialInfoItems(dye, Color.Brown, Items.BROWN_DYE);
-        registerMaterialInfoItems(dye, Color.Blue, Items.BLUE_DYE);
-        registerMaterialInfoItems(dye, Color.Purple, Items.PURPLE_DYE);
-        registerMaterialInfoItems(dye, Color.Cyan, Items.CYAN_DYE);
-        registerMaterialInfoItems(dye, Color.LightGray, Items.LIGHT_GRAY_DYE);
-        registerMaterialInfoItems(dye, Color.Gray, Items.GRAY_DYE);
-        registerMaterialInfoItems(dye, Color.Pink, Items.PINK_DYE);
-        registerMaterialInfoItems(dye, Color.Lime, Items.LIME_DYE);
-        registerMaterialInfoItems(dye, Color.Yellow, Items.YELLOW_DYE);
-        registerMaterialInfoItems(dye, Color.LightBlue, Items.LIGHT_BLUE_DYE);
-        registerMaterialInfoItems(dye, Color.Magenta, Items.MAGENTA_DYE);
-        registerMaterialInfoItems(dye, Color.Orange, Items.ORANGE_DYE);
-        registerMaterialInfoItems(dye, Color.White, Items.WHITE_DYE);
+        registerMaterialEntry(Items.BLACK_DYE, dye, Color.Black);
+        registerMaterialEntry(Items.RED_DYE, dye, Color.Red);
+        registerMaterialEntry(Items.GREEN_DYE, dye, Color.Green);
+        registerMaterialEntry(Items.BROWN_DYE, dye, Color.Brown);
+        registerMaterialEntry(Items.BLUE_DYE, dye, Color.Blue);
+        registerMaterialEntry(Items.PURPLE_DYE, dye, Color.Purple);
+        registerMaterialEntry(Items.CYAN_DYE, dye, Color.Cyan);
+        registerMaterialEntry(Items.LIGHT_GRAY_DYE, dye, Color.LightGray);
+        registerMaterialEntry(Items.GRAY_DYE, dye, Color.Gray);
+        registerMaterialEntry(Items.PINK_DYE, dye, Color.Pink);
+        registerMaterialEntry(Items.LIME_DYE, dye, Color.Lime);
+        registerMaterialEntry(Items.YELLOW_DYE, dye, Color.Yellow);
+        registerMaterialEntry(Items.LIGHT_BLUE_DYE, dye, Color.LightBlue);
+        registerMaterialEntry(Items.MAGENTA_DYE, dye, Color.Magenta);
+        registerMaterialEntry(Items.ORANGE_DYE, dye, Color.Orange);
+        registerMaterialEntry(Items.WHITE_DYE, dye, Color.White);
     }
 }

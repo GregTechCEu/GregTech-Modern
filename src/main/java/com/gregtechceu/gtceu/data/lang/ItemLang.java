@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
+import static com.gregtechceu.gtceu.data.lang.LangHandler.replace;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ItemLang {
@@ -53,7 +54,9 @@ public class ItemLang {
         provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {}
+    private static void initItemNames(RegistrateLangProvider provider) {
+        replace(provider, "item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
+    }
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
@@ -114,9 +117,7 @@ public class ItemLang {
         provider.add("item.gtceu.zpm_battery_hull.tooltip", "§7An empty §fZPM §7Battery Hull");
         provider.add("item.gtceu.uv_battery_hull.tooltip", "§7An empty §3UV §7Battery Hull");
         provider.add("item.gtceu.battery.charge_time", "§aHolds %s %s of Power (%s)");
-        provider.add("item.gtceu.battery.charge_detailed.0", "§a%s/%s EU§7 - Tier %s §7(§a%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.1", "§e%s/%s EU§7 - Tier %s §7(§e%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_detailed.2", "§c%s/%s EU§7 - Tier %s §7(§c%s/%s %s remaining§7)");
+        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s %s remaining§7)");
         provider.add("item.gtceu.battery.charge_unit.second", "seconds");
         provider.add("item.gtceu.battery.charge_unit.minute", "minutes");
         provider.add("item.gtceu.battery.charge_unit.hour", "hours");

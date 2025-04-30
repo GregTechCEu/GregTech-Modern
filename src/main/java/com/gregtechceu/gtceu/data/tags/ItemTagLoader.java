@@ -36,6 +36,16 @@ public class ItemTagLoader {
                 Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
                 Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
                 Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
+        create(provider, CustomTags.CORAL_BLOCK_ITEMS, Items.BRAIN_CORAL_BLOCK, Items.BUBBLE_CORAL_BLOCK,
+                Items.FIRE_CORAL_BLOCK, Items.TUBE_CORAL_BLOCK, Items.HORN_CORAL_BLOCK, Items.DEAD_BRAIN_CORAL_BLOCK,
+                Items.DEAD_BUBBLE_CORAL_BLOCK, Items.DEAD_FIRE_CORAL_BLOCK, Items.DEAD_TUBE_CORAL_BLOCK,
+                Items.DEAD_HORN_CORAL_BLOCK);
+        create(provider, CustomTags.CORAL_ITEMS, Items.BRAIN_CORAL, Items.BUBBLE_CORAL, Items.FIRE_CORAL,
+                Items.TUBE_CORAL, Items.HORN_CORAL, Items.DEAD_BRAIN_CORAL, Items.DEAD_BUBBLE_CORAL,
+                Items.DEAD_FIRE_CORAL, Items.DEAD_TUBE_CORAL, Items.DEAD_HORN_CORAL, Items.BRAIN_CORAL_FAN,
+                Items.BUBBLE_CORAL_FAN, Items.FIRE_CORAL_FAN, Items.TUBE_CORAL_FAN, Items.HORN_CORAL_FAN,
+                Items.DEAD_BRAIN_CORAL_FAN, Items.DEAD_BUBBLE_CORAL_FAN, Items.DEAD_FIRE_CORAL_FAN,
+                Items.DEAD_TUBE_CORAL_FAN, Items.DEAD_HORN_CORAL_FAN);
         create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get());
         create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
         create(provider, lens, Color.LightBlue, GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());

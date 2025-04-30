@@ -23,10 +23,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -386,17 +383,21 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
-                        widget -> {
-                            var index = WidgetUtils.widgetIdIndex(widget);
-                            if (index >= 0 && index < contents.size()) {
-                                var content = contents.get(index);
-                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null, minTier, tier);
-                                widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                        recipe.getType().getChanceFunction()));
-                            }
-                        });
+                var widgetClass = cap.getWidgetClass();
+                if (widgetClass != null) {
+                    WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
+                            widget -> {
+                                var index = WidgetUtils.widgetIdIndex(widget);
+                                if (index >= 0 && index < contents.size()) {
+                                    var content = contents.get(index);
+                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                            content,
+                                            null, minTier, tier);
+                                    widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                            recipe.getType().getChanceFunction()));
+                                }
+                            });
+                }
             }
         }
     }

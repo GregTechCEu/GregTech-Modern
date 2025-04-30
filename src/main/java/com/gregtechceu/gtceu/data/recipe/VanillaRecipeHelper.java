@@ -253,23 +253,24 @@ public class VanillaRecipeHelper {
                                        @NotNull Object... recipe) {
         var builder = new ShapedRecipeBuilder(regName).output(result);
         builder.isStrict(isStrict);
-        CharSet set = new CharOpenHashSet();
+        final CharSet tools = ToolHelper.getToolSymbols();
+        CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : ToolHelper.getToolSymbols()) {
-                    if (pattern.indexOf(c) >= 0) {
-                        set.add(c.charValue());
+                for (char c : pattern.toCharArray()) {
+                    if (tools.contains(c)) {
+                        foundTools.add(c);
                     }
                 }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : ToolHelper.getToolSymbols()) {
-                        if (s.indexOf(c) >= 0) {
-                            set.add(c.charValue());
+                    for (char c : s.toCharArray()) {
+                        if (tools.contains(c)) {
+                            foundTools.add(c);
                         }
                     }
                 }
@@ -299,7 +300,8 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (Character c : set) {
+        for (var it = foundTools.iterator(); it.hasNext();) {
+            char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
         builder.save(provider);
@@ -347,23 +349,24 @@ public class VanillaRecipeHelper {
                                                      @NotNull Object... recipe) {
         var builder = new ShapedEnergyTransferRecipeBuilder(regName).output(result);
         builder.chargeIngredient(chargeIngredient).overrideCharge(overrideCharge).transferMaxCharge(transferMaxCharge);
-        CharSet set = new CharOpenHashSet();
+        final CharSet tools = ToolHelper.getToolSymbols();
+        CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : ToolHelper.getToolSymbols()) {
-                    if (pattern.indexOf(c) >= 0) {
-                        set.add(c.charValue());
+                for (char c : pattern.toCharArray()) {
+                    if (tools.contains(c)) {
+                        foundTools.add(c);
                     }
                 }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : ToolHelper.getToolSymbols()) {
-                        if (s.indexOf(c) >= 0) {
-                            set.add(c.charValue());
+                    for (char c : s.toCharArray()) {
+                        if (tools.contains(c)) {
+                            foundTools.add(c);
                         }
                     }
                 }
@@ -389,7 +392,8 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (Character c : set) {
+        for (var it = foundTools.iterator(); it.hasNext();) {
+            char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
         builder.save(provider);
@@ -413,23 +417,24 @@ public class VanillaRecipeHelper {
                                                      @NotNull Object... recipe) {
         var builder = new ShapedFluidContainerRecipeBuilder(regName).output(result);
         builder.isStrict(isStrict);
-        CharSet set = new CharOpenHashSet();
+        final CharSet tools = ToolHelper.getToolSymbols();
+        CharSet foundTools = new CharArraySet(9);
         for (int i = 0; i < recipe.length; i++) {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : ToolHelper.getToolSymbols()) {
-                    if (pattern.indexOf(c) >= 0) {
-                        set.add(c.charValue());
+                for (char c : pattern.toCharArray()) {
+                    if (tools.contains(c)) {
+                        foundTools.add(c);
                     }
                 }
             }
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : ToolHelper.getToolSymbols()) {
-                        if (s.indexOf(c) >= 0) {
-                            set.add(c.charValue());
+                    for (char c : s.toCharArray()) {
+                        if (tools.contains(c)) {
+                            foundTools.add(c);
                         }
                     }
                 }
@@ -459,7 +464,8 @@ public class VanillaRecipeHelper {
                 }
             }
         }
-        for (Character c : set) {
+        for (var it = foundTools.iterator(); it.hasNext();) {
+            char c = it.nextChar();
             builder.define(c, ToolHelper.getToolFromSymbol(c).itemTags.get(0));
         }
 
@@ -549,8 +555,7 @@ public class VanillaRecipeHelper {
         while (recipe[itr] instanceof String s) {
             for (char c : s.toCharArray()) {
                 if (ToolHelper.getToolFromSymbol(c) != null) continue; // skip tools
-                int count = inputCountMap.getOrDefault(c, 0);
-                inputCountMap.put(c, count + 1);
+                inputCountMap.addTo(c, 1);
             }
             itr++;
         }
@@ -596,7 +601,7 @@ public class VanillaRecipeHelper {
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
                     if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
+                        addMaterialStack(materialStacksExploded, outputCount, inputCountMap, ms, lastChar);
                     }
                 }
                 continue;
@@ -605,14 +610,14 @@ public class VanillaRecipeHelper {
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
             if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
-                addMaterialStack(materialStacksExploded, inputCountMap, materialStack, lastChar);
+                addMaterialStack(materialStacksExploded, outputCount, inputCountMap, materialStack, lastChar);
             }
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
             if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
-                    addMaterialStack(materialStacksExploded, inputCountMap, ms, lastChar);
+                    addMaterialStack(materialStacksExploded, outputCount, inputCountMap, ms, lastChar);
                 }
             }
         }
@@ -621,8 +626,8 @@ public class VanillaRecipeHelper {
     }
 
     private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<Material> materialStacksExploded,
-                                         @NotNull Char2IntFunction inputCountMap, @NotNull MaterialStack ms, char c) {
-        long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
-        materialStacksExploded.put(ms.material(), (ms.amount() * inputCountMap.get(c)) + amount);
+                                         int outputStackCount, @NotNull Char2IntFunction inputCountMap,
+                                         @NotNull MaterialStack ms, char c) {
+        materialStacksExploded.merge(ms.material(), (ms.amount() * inputCountMap.get(c) / outputStackCount), Long::sum);
     }
 }
