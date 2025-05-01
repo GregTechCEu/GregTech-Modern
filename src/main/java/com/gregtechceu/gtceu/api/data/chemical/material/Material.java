@@ -1313,7 +1313,7 @@ public class Material implements Comparable<Material> {
          */
         @Getter
         @Setter
-        private IntList colors = new IntArrayList(List.of(-1, -1));
+        private IntList colors = IntArrayList.of(-1, -1);
 
         /**
          * The color of this Material.

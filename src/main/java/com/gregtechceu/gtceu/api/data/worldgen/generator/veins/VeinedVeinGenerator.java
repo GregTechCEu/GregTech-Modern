@@ -43,7 +43,6 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -101,17 +100,11 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        var s1 = this.oreBlocks.stream().flatMap(definition -> definition.block.map(
-                state -> state.stream()
-                        .map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
-                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))));
-        var s2 = this.rareBlocks.stream().flatMap(definition -> definition.block.map(
-                state -> state.stream()
-                        .map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
-                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))));
-
-        return Stream.concat(s1, s2).collect(Collectors.toList());
+    public List<VeinEntry> getAllEntries() {
+        List<VeinEntry> entries = new ArrayList<>(oreBlocks.size() + rareBlocks.size());
+        oreBlocks.stream().flatMap(VeinBlockDefinition::asEntries).forEach(entries::add);
+        rareBlocks.stream().flatMap(VeinBlockDefinition::asEntries).forEach(entries::add);
+        return entries;
     }
 
     @Override
@@ -328,6 +321,11 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         public VeinBlockDefinition(List<OreConfiguration.TargetBlockState> block, int weight) {
             this(Either.left(block), weight);
+        }
+
+        public Stream<VeinEntry> asEntries() {
+            return VeinGenerator.mapTarget(block)
+                    .map(entry -> new VeinEntry(entry, weight));
         }
     }
 

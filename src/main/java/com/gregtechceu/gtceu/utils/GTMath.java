@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,5 +46,13 @@ public class GTMath {
         } else {
             return value < -2147483648L ? Integer.MIN_VALUE : (int) value;
         }
+    }
+
+    public static int hashInts(int... vals) {
+        return Arrays.hashCode(vals);
+    }
+
+    public static int hashLongs(long... vals) {
+        return Arrays.hashCode(vals);
     }
 }

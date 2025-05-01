@@ -106,11 +106,11 @@ public class BedrockOreDefinition {
                 originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
 
             @Override
-            public Integer apply(Holder<Biome> biome) {
+            public int applyAsInt(Holder<Biome> biome) {
                 int mod = 0;
                 for (var modifier : originalModifiers) {
                     if (modifier.biomes.get().contains(biome)) {
-                        mod += modifier.apply(biome);
+                        mod += modifier.applyAsInt(biome);
                     }
                 }
                 return mod;
@@ -126,11 +126,11 @@ public class BedrockOreDefinition {
                 originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
 
             @Override
-            public Integer apply(Holder<Biome> biome) {
+            public int applyAsInt(Holder<Biome> biome) {
                 int mod = 0;
                 for (var modifier : originalModifiers) {
                     if (modifier.biomes.get().contains(biome)) {
-                        mod += modifier.apply(biome);
+                        mod += modifier.applyAsInt(biome);
                     }
                 }
                 return mod;

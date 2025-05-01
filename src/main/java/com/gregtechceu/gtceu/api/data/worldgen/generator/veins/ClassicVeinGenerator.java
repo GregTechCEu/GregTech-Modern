@@ -79,25 +79,13 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
-        primary.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, primary.layers)));
-        secondary.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, secondary.layers)));
-        between.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, between.layers)));
-        sporadic.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, 1)));
-        return result;
+    public List<VeinEntry> getAllEntries() {
+        List<VeinEntry> entries = new ArrayList<>(primary.size() + secondary.size() + between.size() + sporadic.size());
+        primary.asEntriesWithChance(primary.layers).forEach(entries::add);
+        secondary.asEntriesWithChance(secondary.layers).forEach(entries::add);
+        between.asEntriesWithChance(between.layers).forEach(entries::add);
+        sporadic.asEntriesWithChance(1).forEach(entries::add);
+        return entries;
     }
 
     @Override
@@ -283,6 +271,15 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         public Layer copy() {
             return new Layer(this.target.mapBoth(ArrayList::new, Function.identity()), layers);
+        }
+
+        public int size() {
+            return target.left().isPresent() ? target.left().get().size() : 1;
+        }
+
+        public Stream<VeinEntry> asEntriesWithChance(int chance) {
+            return VeinGenerator.mapTarget(target)
+                    .map(entry -> new VeinEntry(entry, chance));
         }
 
         public static class Builder {

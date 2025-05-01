@@ -34,16 +34,16 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
-    public static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
+    public static final Reference2IntMap<MobEffect> potionRemovalCost = new Reference2IntOpenHashMap<>();
     private float charge = 0.0F;
     private static final byte RUNNING_TIMER = 10; // .5 seconds
     private static final byte JUMPING_TIMER = 10; // .5 seconds
@@ -252,8 +252,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     public static void removeNegativeEffects(@NotNull IElectricItem item, Player player) {
         for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects())) {
             MobEffect potion = effect.getEffect();
-            Integer cost = potionRemovalCost.get(potion);
-            if (cost != null) {
+            int cost = potionRemovalCost.getOrDefault(potion, -1);
+            if (cost != -1) {
                 cost = cost * (effect.getAmplifier() + 1);
                 if (item.canUse(cost)) {
                     item.discharge(cost, item.getTier(), true, false, false);

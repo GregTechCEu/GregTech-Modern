@@ -70,7 +70,8 @@ public class WorldGeneratorUtils {
                             (entry.biomes().get().size() == 0 || entry.biomes().get().contains(biome)))
                     .map(vein -> new AbstractMap.SimpleEntry<>(
                             vein.weight() +
-                                    (vein.biomeWeightModifier() == null ? 0 : vein.biomeWeightModifier().apply(biome)),
+                                    (vein.biomeWeightModifier() == null ? 0 :
+                                            vein.biomeWeightModifier().applyAsInt(biome)),
                             vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());

@@ -545,7 +545,7 @@ public class GTToolType {
         @Setter
         private int tier = -1;
         @Setter
-        private Character symbol = null;
+        private char symbol = ' ';
         @Setter
         private ToolConstructor constructor = GTToolItem::create;
         @Setter
@@ -625,7 +625,7 @@ public class GTToolType {
             if (toolClassNames.isEmpty()) {
                 toolClassNames.add(name);
             }
-            if (this.symbol == null) {
+            if (this.symbol == ' ') {
                 return get();
             }
             GTToolType existing = ToolHelper.getToolFromSymbol(this.symbol);

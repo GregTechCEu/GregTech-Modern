@@ -1015,7 +1015,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder addData(String key, Float data) {
+    public GTRecipeBuilder addData(String key, float data) {
         this.data.putFloat(key, data);
         return this;
     }

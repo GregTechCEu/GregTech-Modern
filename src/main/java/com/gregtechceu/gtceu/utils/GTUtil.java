@@ -50,10 +50,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
@@ -384,18 +381,20 @@ public class GTUtil {
     public static DyeColor determineDyeColor(int rgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
-        Map<Double, DyeColor> distances = new HashMap<>();
+        double min = Double.MAX_VALUE;
+        DyeColor minColor = null;
         for (DyeColor dyeColor : DyeColor.values()) {
             float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            distances.put(distance, dyeColor);
+            if (Double.compare(min, distance) < 0) {
+                minColor = dyeColor;
+                min = distance;
+            }
         }
-
-        double min = Collections.min(distances.keySet());
-        return distances.get(min);
+        return minColor;
     }
 
     public static int convertRGBtoARGB(int colorValue) {
