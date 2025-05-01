@@ -184,7 +184,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
             addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
                     electricItem.getTier());
-            tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
+            tooltipComponents.add(Component.translatable("gtceu.item.electric.discharge_mode.tooltip"));
         }
     }
 

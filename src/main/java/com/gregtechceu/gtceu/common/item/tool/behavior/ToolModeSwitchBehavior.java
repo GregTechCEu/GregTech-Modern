@@ -47,7 +47,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
             if (toolTypes.contains(GTToolType.WRENCH)) {
                 tagCompound.putByte("Mode",
                         (byte) ((tagCompound.getByte("Mode") + 1) % WrenchModeType.values().length));
-                player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode",
+                player.displayClientMessage(Component.translatable("gtceu.item.machine_configuration.mode",
                         WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
             }
             return InteractionResultHolder.success(itemStack);
@@ -63,7 +63,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
 
         var toolTypes = ToolHelper.getToolTypes(stack);
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            tooltip.add(Component.translatable("metaitem.machine_configuration.mode",
+            tooltip.add(Component.translatable("gtceu.item.machine_configuration.mode",
                     WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
         }
     }

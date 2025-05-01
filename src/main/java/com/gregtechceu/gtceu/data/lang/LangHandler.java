@@ -56,8 +56,9 @@ public class LangHandler {
 
 
         provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
-        // capabilities
-//        provider.add("recipe.capability.eu.name", "GTCEu Energy");
+
+        // Recipe Capabilities
+        provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
         provider.add("recipe.capability.item.name", "Item");
 
@@ -92,52 +93,29 @@ public class LangHandler {
 //        provider.add("item.invalid.name", "Invalid item");
       
         provider.add("fluid.empty", "Empty");
-      
+
+        // Expand tooltip
         provider.add("gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
         provider.add("gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
         provider.add("gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
         provider.add("gtceu.tooltip.tool_fluid_hold_shift",
                 "§7Hold SHIFT to show Fluid Containment and Tool Info");
       
-//        provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
-        provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
-//        provider.add("metaitem.generic.electric_item.stored", "%d/%d EU (%s)");
-//        provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
-//        provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
-        provider.add("metaitem.electric.discharge_mode.tooltip", "§7Use while sneaking to toggle discharge mode");
-        provider.add("metaitem.dust.tooltip.purify", "§7Right click a Cauldron to get clean Dust");
-        provider.add("metaitem.crushed.tooltip.purify", "§7Right click a Cauldron to get Purified Ore");
-        provider.add("metaitem.int_circuit.configuration", "§aConfiguration: §r%d");
-        provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
 
+        // Generic item tooltips
+        provider.add("gtceu.item.electric.tooltip", "%d/%d EU - Tier %s");
+        provider.add("gtceu.item.electric.discharge_mode.tooltip", "§7Use while sneaking to toggle discharge mode");
+        provider.add("gtceu.item.dust.tooltip.purify", "§7Right click a Cauldron §7to get clean §6Dust");
+        provider.add("gtceu.item.crushed.tooltip.purify", "§7Right click a Cauldron §7to get §6Purified Ore");
+        provider.add("gtceu.item.int_circuit.configuration", "§aConfiguration: §r%d");
+        provider.add("gtceu.item.machine_configuration.mode", "§aConfiguration Mode:§r %s");
+
+        // Tool Modes
         provider.add("gtceu.tool.mode.fluid", "§9Fluid§r");
         provider.add("gtceu.tool.mode.item", "§6Item§r");
         provider.add("gtceu.tool.mode.both", "§dBoth (Fluid And Item)§r");
 
-//        provider.add("gtceu.tool.class.sword", "Sword");
-//        provider.add("gtceu.tool.class.pickaxe", "Pickaxe");
-//        provider.add("gtceu.tool.class.shovel", "Shovel");
-//        provider.add("gtceu.tool.class.axe", "Axe");
-//        provider.add("gtceu.tool.class.hoe", "Hoe");
-//        provider.add("gtceu.tool.class.mining_hammer", "Mining Hammer");
-//        provider.add("gtceu.tool.class.spade", "Spade");
-//        provider.add("gtceu.tool.class.saw", "Saw");
-//        provider.add("gtceu.tool.class.hammer", "Hammer");
-//        provider.add("gtceu.tool.class.mallet", "Soft Mallet");
-//        provider.add("gtceu.tool.class.wrench", "Wrench");
-//        provider.add("gtceu.tool.class.file", "File");
-//        provider.add("gtceu.tool.class.crowbar", "Crowbar");
-//        provider.add("gtceu.tool.class.screwdriver", "Screwdriver");
-//        provider.add("gtceu.tool.class.mortar", "Mortar");
-//        provider.add("gtceu.tool.class.wire_cutter", "Wire Cutter");
-//        provider.add("gtceu.tool.class.knife", "Knife");
-//        provider.add("gtceu.tool.class.butchery_knife", "Butchery Knife");
-//        provider.add("gtceu.tool.class.scythe", "Scythe");
-//        provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
-//        provider.add("gtceu.tool.class.plunger", "Plunger");
-//        provider.add("gtceu.tool.class.shears", "Shears");
-//        provider.add("gtceu.tool.class.drill", "Drill");
-
+        // Commands
         provider.add("command.gtceu.medical_condition.get", "Player %s has these medical conditions:");
         provider.add("command.gtceu.medical_condition.get.empty", "Player %s has no medical conditions.");
         provider.add("command.gtceu.medical_condition.get.element", "Condition %s§r: %s minutes %s seconds");
@@ -148,6 +126,7 @@ public class LangHandler {
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
         provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
 
+        // Conditions
         provider.add("gtceu.medical_condition.description", "§l§4HAZARDOUS: §7Hold SHIFT to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§4HAZARDOUS: ");
         provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
@@ -164,6 +143,7 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
         provider.add("gtceu.medical_condition.none", "§2Not Dangerous");
 
+        // Hazards
         provider.add("gtceu.hazard_trigger.description", "§4Caused by: ");
         provider.add("gtceu.hazard_trigger.protection.description", "§7Protects from: ");
         provider.add("gtceu.hazard_trigger.inhalation", "§9Inhalation");
@@ -171,6 +151,7 @@ public class LangHandler {
         provider.add("gtceu.hazard_trigger.skin_contact", "§bSkin contact");
         provider.add("gtceu.hazard_trigger.none", "§7Nothing");
 
+        // Antidotes
         provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold SHIFT to show details");
         provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
         provider.add("gtceu.medical_condition.antidote.description.effect_removed",
@@ -178,6 +159,7 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.antidote.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
+        // Tools
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
@@ -267,7 +249,11 @@ public class LangHandler {
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
+
+        // todo
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
+
+        // todo
         provider.add("metaitem.clipboard.tooltip",
                 "Can be written on (without any writing Instrument). Right-click on Wall to place, and SHIFT-Right-Click to remove");
         provider.add("metaitem.behavior.mode_switch.tooltip", "Use while sneaking to switch mode");
@@ -277,6 +263,8 @@ public class LangHandler {
         provider.add("metaitem.tool.tooltip.durability", "§fDurability: §a%d / %d");
         provider.add("metaitem.tool.tooltip.rotor.efficiency", "Turbine Efficiency: §9%d%%");
         provider.add("metaitem.tool.tooltip.rotor.power", "Turbine Power: §9%d%%");
+
+        // Voltage coils
         provider.add("item.gtceu.ulv_voltage_coil.tooltip", "Primitive Coil");
         provider.add("item.gtceu.lv_voltage_coil.tooltip", "Basic Coil");
         provider.add("item.gtceu.mv_voltage_coil.tooltip", "Good Coil");
@@ -292,6 +280,8 @@ public class LangHandler {
         provider.add("item.gtceu.uxv_voltage_coil.tooltip", "Epic Coil");
         provider.add("item.gtceu.opv_voltage_coil.tooltip", "Legendary Coil");
         provider.add("item.gtceu.max_voltage_coil.tooltip", "Maximum Coil");
+
+        // todo Metaitems
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
@@ -853,6 +843,7 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.item_magnet.info", "§7Does not attract while sneaking");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
         provider.add("behavior.data_item.assemblyline.title", "§nAssembly Line Construction Data:");
@@ -1202,41 +1193,13 @@ public class LangHandler {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        provider.add("gtceu.command.usage", "Usage: /gtceu <worldgen/hand/recipecheck>");
-        provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
-        provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
-        provider.add("gtceu.command.worldgen.reload.success", "Worldgen successfully reloaded from config.");
-        provider.add("gtceu.command.worldgen.reload.failed",
-                "Worldgen reload failed. Check console for errors.");
-        provider.add("gtceu.command.hand.groovy", "Consider using §6/gs hand");
-        provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
-        provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
-        provider.add("gtceu.command.hand.electric", "Electric Info: %d / %d EU - Tier: %d; Is Battery: %s");
-        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d mB; Can Fill: %s; Can Drain: %s");
-        provider.add("gtceu.command.hand.fluid2", "Fluid Id:");
-        provider.add("gtceu.command.hand.material", "Material Id:");
-        provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
-        provider.add("gtceu.command.hand.meta_item", "MetaItem Id:");
-        provider.add("gtceu.command.hand.tag_entries", "§3Tag entries:");
-        provider.add("gtceu.command.hand.tool_stats", "Tool Stats Class: %s");
-        provider.add("gtceu.command.hand.not_a_player", "This command is only usable by a player.");
-        provider.add("gtceu.command.hand.no_item",
-                "You must hold something in main hand or off hand before executing this command.");
-        provider.add("gtceu.command.recipecheck.usage", "Usage: /gtceu recipecheck");
-        provider.add("gtceu.command.recipecheck.begin", "Starting recipe conflict check...");
-        provider.add("gtceu.command.recipecheck.end",
-                "Recipe conflict check found %d possible conflicts. Check the server log for more info");
-        provider.add("gtceu.command.recipecheck.end_no_conflicts", "No recipe conflicts found!");
-        provider.add("gtceu.command.copy.copied_and_click", "copied to clipboard. Click to copy again");
-        provider.add("gtceu.command.copy.click_to_copy", "Click to copy");
-        provider.add("gtceu.command.copy.copied_start", "Copied [");
-        provider.add("gtceu.command.copy.copied_end", "] to the clipboard");
-
+        // Misc chat messages
         provider.add("gtceu.chat.cape",
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
 
         provider.add("gtceu.universal.clear_nbt_recipe.tooltip", "§cThis will destroy all contents!");
 
+        // Covers
         provider.add("gtceu.cover.energy_detector.message_electricity_storage_normal",
                 "Monitoring Normal Electricity Storage");
         provider.add("gtceu.cover.energy_detector.message_electricity_storage_inverted",
@@ -1422,12 +1385,69 @@ public class LangHandler {
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
         provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
 
+        // Directions
         provider.add("gtceu.direction.tooltip.up", "Up");
         provider.add("gtceu.direction.tooltip.down", "Down");
         provider.add("gtceu.direction.tooltip.left", "Left");
         provider.add("gtceu.direction.tooltip.right", "Right");
         provider.add("gtceu.direction.tooltip.back", "Back");
         provider.add("gtceu.direction.tooltip.front", "Front");
+
+        // Death Messages
+        provider.add("death.attack.gtceu.heat", "%s was boiled alive");
+        provider.add("death.attack.gtceu.frost", "%s explored cryogenics");
+        provider.add("death.attack.gtceu.chemical", "%s had a chemical accident");
+        provider.add("death.attack.gtceu.electric", "%s was electrocuted");
+        provider.add("death.attack.gtceu.radiation", "%s glows with joy now");
+        provider.add("death.attack.gtceu.turbine", "%s put their head into a turbine");
+        provider.add("death.attack.gtceu.explosion", "%s exploded");
+        provider.add("death.attack.gtceu.explosion.player", "%s exploded with help of %s");
+        provider.add("death.attack.gtceu.heat.player", "%s was boiled alive by %s");
+        provider.add("death.attack.gtceu.pickaxe", "%s got mined by %s");
+        provider.add("death.attack.gtceu.shovel", "%s got dug up by %s");
+        provider.add("death.attack.gtceu.axe", "%s has been chopped by %s");
+        provider.add("death.attack.gtceu.hoe", "%s had their head tilled by %s");
+        provider.add("death.attack.gtceu.hammer", "%s was squashed by %s");
+        provider.add("death.attack.gtceu.mallet", "%s got hammered to death by %s");
+        provider.add("death.attack.gtceu.mining_hammer", "%s was mistaken for Ore by %s");
+        provider.add("death.attack.gtceu.spade", "%s got excavated by %s");
+        provider.add("death.attack.gtceu.wrench", "%s gave %s a whack with the Wrench!");
+        provider.add("death.attack.gtceu.file", "%s has been filed D for 'Dead' by %s");
+        provider.add("death.attack.gtceu.crowbar", "%s lost half a life to %s");
+        provider.add("death.attack.gtceu.screwdriver", "%s has screwed with %s for the last time!");
+        provider.add("death.attack.gtceu.mortar", "%s was ground to dust by %s");
+        provider.add("death.attack.gtceu.wire_cutter", "%s has cut the cable for the Life Support Machine of %s");
+        provider.add("death.attack.gtceu.scythe", "%s had their soul taken by %s");
+        provider.add("death.attack.gtceu.knife", "%s was gently poked by %s");
+        provider.add("death.attack.gtceu.butchery_knife", "%s was butchered by %s");
+        provider.add("death.attack.gtceu.drill_lv", "%s was drilled with 32V by %s");
+        provider.add("death.attack.gtceu.drill_mv", "%s was drilled with 128V by %s");
+        provider.add("death.attack.gtceu.drill_hv", "%s was drilled with 512V by %s");
+        provider.add("death.attack.gtceu.drill_ev", "%s was drilled with 2048V by %s");
+        provider.add("death.attack.gtceu.drill_iv", "%s was drilled with 8192V by %s");
+        provider.add("death.attack.gtceu.chainsaw_lv", "%s was massacred by %s");
+        provider.add("death.attack.gtceu.wrench_lv", "%s's pipes were loosened by %s");
+        provider.add("death.attack.gtceu.wrench_hv", "%s's pipes were loosened by %s");
+        provider.add("death.attack.gtceu.wrench_iv", "%s had a Monkey Wrench thrown into their plans by %s");
+        provider.add("death.attack.gtceu.buzzsaw", "%s got buzzed by %s");
+        provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
+
+        provider.add("death.attack.gtceu.medical_condition/asbestosis", "%s got mesothelioma");
+        provider.add("death.attack.gtceu.medical_condition/chemical_burns", "%s had a chemical accident");
+        provider.add("death.attack.gtceu.medical_condition/poison",
+                "%s forgot that poisonous materials are, in fact, poisonous");
+        provider.add("death.attack.gtceu.medical_condition/silicosis",
+                "%s didn't die of tuberculosis. it was silicosis.");
+        provider.add("death.attack.gtceu.medical_condition/arsenicosis", "%s got arsenic poisoning");
+        provider.add("death.attack.gtceu.medical_condition/berylliosis", "%s mined emeralds a bit too greedily");
+        provider.add("death.attack.gtceu.medical_condition/carcinogen", "%s got leukemia");
+        provider.add("death.attack.gtceu.medical_condition/irritant", "%s got a §n§lREALLY§r bad rash");
+        provider.add("death.attack.gtceu.medical_condition/methanol_poisoning",
+                "%s tried to drink moonshine during the prohibition");
+        provider.add("death.attack.gtceu.medical_condition/nausea", "%s died of nausea");
+        provider.add("death.attack.gtceu.medical_condition/none", "%s died of... nothing?");
+        provider.add("death.attack.gtceu.medical_condition/weak_poison", "%s ate lead (or mercury!)");
+        provider.add("death.attack.gtceu.medical_condition/carbon_monoxide_poisoning", "%s left the stove on");
     }
 
     /**

@@ -632,11 +632,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // electric info
         if (this.isElectric()) {
-
-            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
-                    FormattingUtil.formatNumbers(getCharge(stack)),
-                    FormattingUtil.formatNumbers(getMaxCharge(stack)),
-                    GTValues.VNF[getElectricTier()]));
             ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier());
         }
 
