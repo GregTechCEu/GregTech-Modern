@@ -300,7 +300,7 @@ public abstract class ProspectorMode<T> {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
-                                new OreInfo(entry.getFirst(), entry.getSecond(), left, oreVein.getOreYield()));
+                                new OreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }
                 }
             }

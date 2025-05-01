@@ -105,9 +105,7 @@ public class StandardVeinGenerator extends VeinGenerator {
     @Override
     public List<VeinEntry> getAllEntries() {
         if (this.blocks != null) {
-            return VeinGenerator.mapTarget(blocks)
-                    .map(entry -> new VeinEntry(entry, 1))
-                    .toList();
+            return VeinGenerator.mapTarget(blocks, 1).toList();
         } else {
             return getDefaultEntries();
         }

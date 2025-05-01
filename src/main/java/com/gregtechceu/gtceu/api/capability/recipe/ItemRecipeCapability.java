@@ -83,7 +83,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
-            return new IntProviderIngredient(intProviderIngredient.getInner(),
+            return IntProviderIngredient.of(intProviderIngredient.getInner(),
                     new FlooredInt(
                             new AddedFloat(
                                     new MultipliedFloat(

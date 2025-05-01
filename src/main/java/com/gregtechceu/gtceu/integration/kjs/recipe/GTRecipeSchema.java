@@ -356,7 +356,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient, UniformInt.of(min, max)));
+            return output(ItemRecipeCapability.CAP, IntProviderIngredient.of(ingredient, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {

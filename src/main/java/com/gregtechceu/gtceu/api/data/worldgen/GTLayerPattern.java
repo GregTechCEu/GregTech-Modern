@@ -107,8 +107,7 @@ public class GTLayerPattern {
 
         public Stream<VeinGenerator.VeinEntry> asVeinEntries() {
             return targets.stream()
-                    .flatMap(VeinGenerator::mapTarget)
-                    .map(entry -> new VeinGenerator.VeinEntry(entry, weight));
+                    .flatMap(target -> VeinGenerator.mapTarget(target, weight));
         }
 
         public Either<List<TargetBlockState>, Material> rollBlock(RandomSource random) {

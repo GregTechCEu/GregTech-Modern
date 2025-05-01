@@ -78,7 +78,7 @@ public abstract class VeinGenerator {
 
     /**
      * Generate a map of all ore placers (by block position), for each block in this ore vein.
-     * 
+     *
      * <p>
      * Note that, if in any way possible, this is NOT supposed to directly place any of the vein's blocks, as their
      * respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
@@ -126,5 +126,10 @@ public abstract class VeinGenerator {
     public static Stream<Either<BlockState, Material>> mapTarget(Either<List<OreConfiguration.TargetBlockState>, Material> target) {
         return target.map(tbs -> tbs.stream().map(state -> Either.left(state.state)),
                 mat -> Stream.of(Either.right(mat)));
+    }
+
+    public static Stream<VeinEntry> mapTarget(Either<List<OreConfiguration.TargetBlockState>, Material> target,
+                                              int weight) {
+        return mapTarget(target).map(entry -> new VeinEntry(entry, weight));
     }
 }

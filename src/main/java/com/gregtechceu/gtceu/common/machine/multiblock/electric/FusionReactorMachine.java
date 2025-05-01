@@ -66,8 +66,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             PERFECT_HALF_VOLTAGE_FACTOR, false);
 
     // Max EU -> Tier map, used to find minimum tier needed for X EU to start
-    private static final TreeMap<Long, Integer> FUSION_ENERGY = new TreeMap<>();
-    private static final Long2IntSortedMap F_ENERGY = new Long2IntAVLTreeMap();
+    private static final Long2IntSortedMap FUSION_ENERGY = new Long2IntAVLTreeMap();
     // Tier -> Suffix map, i.e. LuV -> MKI
     private static final Int2ObjectMap<String> FUSION_NAMES = new Int2ObjectArrayMap<>(4);
     // Minimum registered fusion reactor tier
@@ -306,18 +305,20 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     //////////////////////////////////////
     public static void registerFusionTier(int tier, @NotNull String name) {
         long maxEU = calculateEnergyStorageFactor(tier, 16);
-        F_ENERGY.put(maxEU, tier);
-        // FUSION_ENERGY.put(maxEU, tier);
+        FUSION_ENERGY.put(maxEU, tier);
         FUSION_NAMES.put(tier, name);
         MINIMUM_TIER = Math.min(tier, MINIMUM_TIER);
     }
 
     private static int findCeilingTier(long euToStart) {
         long key;
-        var tail = F_ENERGY.tailMap(euToStart);
-        if (tail.isEmpty()) key = F_ENERGY.lastLongKey();
+        // tail = submap where all keys are >= EU to start
+        // if tail is empty, then EU is greater than all the EU values, so we choose the last key
+        // otherwise we want the first key in the tail map
+        var tail = FUSION_ENERGY.tailMap(euToStart);
+        if (tail.isEmpty()) key = FUSION_ENERGY.lastLongKey();
         else key = tail.firstLongKey();
-        return F_ENERGY.get(key);
+        return FUSION_ENERGY.get(key);
     }
 
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {

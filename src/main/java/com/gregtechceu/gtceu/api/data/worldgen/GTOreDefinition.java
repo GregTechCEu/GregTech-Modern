@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
@@ -104,7 +105,7 @@ public class GTOreDefinition {
     @Setter
     private float discardChanceOnAirExposure;
     @Getter
-    private Supplier<HolderSet<Biome>> biomes;
+    private @Nullable Supplier<HolderSet<Biome>> biomes;
     @Getter
     @Setter
     private BiomeWeightModifier biomeWeightModifier = BiomeWeightModifier.EMPTY;
@@ -140,6 +141,18 @@ public class GTOreDefinition {
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
         this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
+    }
+
+    public boolean isForBiome(Holder<Biome> biome) {
+        if (biomes == null) return true;
+        var set = biomes.get();
+        return set.size() == 0 || set.contains(biome);
+    }
+
+    public int weightForBiome(Holder<Biome> biome) {
+        int w = weight;
+        if (biomeWeightModifier != null) w += biomeWeightModifier.applyAsInt(biome);
+        return w;
     }
 
     @HideFromJS

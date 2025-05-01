@@ -23,6 +23,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -43,7 +45,7 @@ public class BedrockOreDefinition {
                     Codec.INT.fieldOf("depletion_amount").forGetter(ft -> ft.depletionAmount),
                     ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
                     Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
-                    MATERIAL.codec().listOf().fieldOf("materials").forGetter(ft -> ft.materials),
+                    WeightedMaterial.CODEC.listOf().fieldOf("materials").forGetter(ft -> ft.materials),
                     BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of())
                             .forGetter(ft -> ft.originalModifiers),
                     ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
@@ -74,7 +76,7 @@ public class BedrockOreDefinition {
     private int depletedYield; // yield after the vein is depleted
     @Getter
     @Setter
-    private List<Pair<Material, Integer>> materials; // the ores which the vein contains
+    private List<WeightedMaterial> materials; // the ores which the vein contains
     @Getter
     private BiomeWeightModifier biomeWeightModifier; // weighting of biomes
     private List<BiomeWeightModifier> originalModifiers; // weighting of biomes
@@ -83,7 +85,7 @@ public class BedrockOreDefinition {
     public Set<ResourceKey<Level>> dimensionFilter; // filtering of dimensions
 
     public BedrockOreDefinition(ResourceLocation name, int size, int weight, IntProvider yield, int depletionAmount,
-                                int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials,
+                                int depletionChance, int depletedYield, List<WeightedMaterial> materials,
                                 List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
         this(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers,
                 dimensionFilter);
@@ -91,7 +93,7 @@ public class BedrockOreDefinition {
     }
 
     public BedrockOreDefinition(int weight, int size, IntProvider yield, int depletionAmount, int depletionChance,
-                                int depletedYield, List<Pair<Material, Integer>> materials,
+                                int depletedYield, List<WeightedMaterial> materials,
                                 List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
         this.weight = weight;
         this.size = size;
@@ -138,12 +140,12 @@ public class BedrockOreDefinition {
         };
     }
 
-    public List<Integer> getAllChances() {
-        return materials().stream().map(Pair::getSecond).toList();
+    public IntList getAllChances() {
+        return IntArrayList.toList(materials().stream().mapToInt(WeightedMaterial::weight));
     }
 
     public List<Material> getAllMaterials() {
-        return materials().stream().map(Pair::getFirst).toList();
+        return materials().stream().map(WeightedMaterial::material).toList();
     }
 
     public static Builder builder(ResourceLocation name) {
@@ -167,7 +169,7 @@ public class BedrockOreDefinition {
         @Setter
         private int depletedYield; // yield after the vein is depleted
         @Setter
-        private List<Pair<Material, Integer>> materials; // the ores which the vein contains
+        private List<WeightedMaterial> materials; // the ores which the vein contains
         private Set<ResourceKey<Level>> dimensions;
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
@@ -188,7 +190,7 @@ public class BedrockOreDefinition {
 
         public Builder material(Material material, int amount) {
             if (this.materials == null) this.materials = new ArrayList<>();
-            this.materials.add(Pair.of(material, amount));
+            this.materials.add(new WeightedMaterial(material, amount));
             return this;
         }
 

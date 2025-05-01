@@ -79,10 +79,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
     @Override
     public List<VeinEntry> getAllEntries() {
         List<VeinEntry> entries = new ArrayList<>(top.size() + middle.size() + bottom.size() + spread.size());
-        top.asEntriesWithChance(top.layers).forEach(entries::add);
-        middle.asEntriesWithChance(middle.layers).forEach(entries::add);
-        bottom.asEntriesWithChance(bottom.layers).forEach(entries::add);
-        spread.asEntriesWithChance(1).forEach(entries::add);
+        VeinGenerator.mapTarget(top.target, top.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(middle.target, middle.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(bottom.target, bottom.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(spread.target, 1).forEach(entries::add);
         return entries;
     }
 

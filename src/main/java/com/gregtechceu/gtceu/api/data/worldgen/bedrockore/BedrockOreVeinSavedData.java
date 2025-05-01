@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -25,8 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -230,11 +227,10 @@ public class BedrockOreVeinSavedData extends SavedData {
      * @return Fluid in given chunk
      */
     @Nullable
-    public List<Map.Entry<Integer, Material>> getOreInChunk(int chunkX, int chunkZ) {
+    public List<WeightedMaterial> getOreInChunk(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().materials().stream().map(pair -> Map.entry(pair.getSecond(), pair.getFirst()))
-                .collect(Collectors.toList());
+        return info.getDefinition().materials();
     }
 
     /**

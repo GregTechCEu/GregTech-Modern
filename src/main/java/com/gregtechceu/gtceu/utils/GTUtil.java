@@ -51,7 +51,6 @@ import org.lwjgl.glfw.GLFW;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
@@ -279,29 +278,28 @@ public class GTUtil {
         return replacement;
     }
 
-    public static <T> int getRandomItem(RandomSource random, List<? extends Entry<Integer, T>> randomList, int size) {
-        if (randomList.isEmpty())
-            return -1;
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(RandomSource random, List<T> randomList) {
+        if (randomList.isEmpty()) return null;
+        int size = randomList.size();
         int[] baseOffsets = new int[size];
         int currentIndex = 0;
         for (int i = 0; i < size; i++) {
-            Entry<Integer, T> entry = randomList.get(i);
-            if (entry.getKey() <= 0) {
-                throw new IllegalArgumentException("Invalid weight: " + entry.getKey());
+            int weight = randomList.get(i).weight();
+            if (weight <= 0) {
+                throw new IllegalArgumentException("Invalid weight: " + weight);
             }
-            currentIndex += entry.getKey();
+            currentIndex += weight;
             baseOffsets[i] = currentIndex;
         }
         int randomValue = random.nextInt(currentIndex);
         for (int i = 0; i < size; i++) {
-            if (randomValue < baseOffsets[i])
-                return i;
+            if (randomValue < baseOffsets[i]) return randomList.get(i);
         }
         throw new IllegalArgumentException("Invalid weight");
     }
 
-    public static <T> int getRandomItem(List<? extends Entry<Integer, T>> randomList, int size) {
-        return getRandomItem(GTValues.RNG, randomList, size);
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(List<T> randomList) {
+        return getRandomItem(GTValues.RNG, randomList);
     }
 
     @SuppressWarnings("unchecked")

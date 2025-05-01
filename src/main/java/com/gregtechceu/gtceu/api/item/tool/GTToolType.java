@@ -476,13 +476,13 @@ public class GTToolType {
     @Nullable
     public final SoundEntry soundEntry;
     public final boolean playSoundOnBlockDestroy;
-    public final Character symbol;
+    public final char symbol;
     public final long materialAmount;
     public final IGTToolDefinition toolDefinition;
     public final ToolConstructor constructor;
     public final int electricTier;
 
-    public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses,
+    public GTToolType(String name, String idFormat, char symbol, Set<GTToolType> toolClasses,
                       IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags,
                       List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames,
                       @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier,

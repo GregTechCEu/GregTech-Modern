@@ -618,7 +618,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return outputItems(IntProviderIngredient.create(SizedIngredient.create(output), intProvider));
+        return outputItems(IntProviderIngredient.of(SizedIngredient.create(output), intProvider));
     }
 
     public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {

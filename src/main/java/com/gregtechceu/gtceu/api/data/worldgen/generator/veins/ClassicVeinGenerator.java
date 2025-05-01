@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
@@ -81,10 +80,10 @@ public class ClassicVeinGenerator extends VeinGenerator {
     @Override
     public List<VeinEntry> getAllEntries() {
         List<VeinEntry> entries = new ArrayList<>(primary.size() + secondary.size() + between.size() + sporadic.size());
-        primary.asEntriesWithChance(primary.layers).forEach(entries::add);
-        secondary.asEntriesWithChance(secondary.layers).forEach(entries::add);
-        between.asEntriesWithChance(between.layers).forEach(entries::add);
-        sporadic.asEntriesWithChance(1).forEach(entries::add);
+        VeinGenerator.mapTarget(primary.target, primary.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(secondary.target, secondary.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(between.target, between.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(sporadic.target, 1).forEach(entries::add);
         return entries;
     }
 
@@ -275,11 +274,6 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         public int size() {
             return target.left().isPresent() ? target.left().get().size() : 1;
-        }
-
-        public Stream<VeinEntry> asEntriesWithChance(int chance) {
-            return VeinGenerator.mapTarget(target)
-                    .map(entry -> new VeinEntry(entry, chance));
         }
 
         public static class Builder {
