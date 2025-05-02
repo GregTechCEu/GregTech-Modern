@@ -478,9 +478,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    public void inValid() {
-        if (lastRecipe != null && isWorking()) {}
-    }
+    // Remains for legacy + for subclasses
+    public void inValid() {}
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

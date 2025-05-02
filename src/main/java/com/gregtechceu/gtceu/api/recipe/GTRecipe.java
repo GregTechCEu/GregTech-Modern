@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
@@ -57,6 +58,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public int parallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
+    // Lazy fields, since we need the recipe EUt very often
     private long inputEUt = -1;
     private long outputEUt = -1;
 
@@ -212,7 +214,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return ChanceLogic.OR;
     }
 
-    public long getInputEUt() {
+    // Technically should account for overflow but realistically not an issue.
+    public @Range(from = 0, to = Long.MAX_VALUE) long getInputEUt() {
         if (inputEUt == -1) {
             var inputs = tickInputs.get(EURecipeCapability.CAP);
             if (inputs == null) return inputEUt = 0;
@@ -225,7 +228,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return inputEUt;
     }
 
-    public long getOutputEUt() {
+    public @Range(from = 0, to = Long.MAX_VALUE) long getOutputEUt() {
         if (outputEUt == -1) {
             var outputs = tickOutputs.get(EURecipeCapability.CAP);
             if (outputs == null) return outputEUt = 0;

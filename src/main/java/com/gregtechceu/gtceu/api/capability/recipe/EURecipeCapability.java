@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -49,7 +48,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
         if (holder instanceof ICustomParallel p) return p.limitEUParallel(recipe, multiplier, tick);
         if (tick) {
-            long recipeEUt = RecipeHelper.getOutputEUt(recipe);
+            long recipeEUt = recipe.getOutputEUt();
             if (recipeEUt == 0) return multiplier;
 
             long maxVoltage = Long.MAX_VALUE;
@@ -104,7 +103,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
                 maxVoltage = tieredMachine.getMaxVoltage();
             }
 
-            long recipeEUt = RecipeHelper.getInputEUt(recipe);
+            long recipeEUt = recipe.getInputEUt();
             if (recipeEUt == 0) {
                 return Integer.MAX_VALUE;
             }

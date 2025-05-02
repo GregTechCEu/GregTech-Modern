@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -138,17 +137,17 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
-     * maximum parallel amount based on the inputs (and possibly outputs) provided.
+     * Calculate the maximum parallel amount based on the output space of the holder
      *
-     * @param holder     the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
-     * @param recipe     the recipe from which we get the input to product ratio
-     * @param multiplier the maximum possible multiplied we can get from the input inventory see
-     *                   {@link ParallelLogic#getMaxByInput}
-     * @param tick       whether to check regular outputs or tick outputs
+     * @param holder        the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe        the recipe from which we get the input to product ratio
+     * @param maxMultiplier the upper bound on the multiplier, see {@link #getMaxParallelByInput}
+     * @param tick          whether to check regular outputs or tick outputs
      * @return the amount of times a {@link GTRecipe} outputs can be merged into an inventory without voiding products.
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
-    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
+    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int maxMultiplier,
+                                        boolean tick) {
         return Integer.MAX_VALUE;
     }
 
@@ -158,7 +157,7 @@ public abstract class RecipeCapability<T> {
      *
      * @param holder The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
      * @param recipe The {@link GTRecipe} for which to find the maximum that can be run simultaneously
-     * @param limit  The limit on the amount of recipes that can be performed at one time
+     * @param limit  The hard limit on the amount of recipes that can be performed at one time
      * @param tick
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
