@@ -944,6 +944,7 @@ public class FirstDegreeMaterials {
         SodiumBicarbonate = new Material.Builder(GTCEu.id("sodium_bicarbonate"))
                 .dust(1)
                 .color(0xFFFFFF).secondaryColor(0xa7d2df).iconSet(ROUGH)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Hydrogen, 1, Carbon, 1, Oxygen, 3)
                 .buildAndRegister();
 
