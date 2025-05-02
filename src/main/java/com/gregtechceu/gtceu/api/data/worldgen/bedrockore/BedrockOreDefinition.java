@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -18,9 +17,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -33,9 +30,6 @@ import java.util.*;
 
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
-
-    public static final MapCodec<Pair<Material, Integer>> MATERIAL = Codec
-            .mapPair(GTCEuAPI.materialManager.codec().fieldOf("material"), Codec.INT.fieldOf("chance"));
 
     public static final Codec<BedrockOreDefinition> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(

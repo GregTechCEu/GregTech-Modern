@@ -11,7 +11,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
@@ -56,7 +55,7 @@ public class WorldGeneratorUtils {
     private static class WorldOreVeinCache {
 
         private final List<GTOreDefinition> worldVeins;
-        private final List<WeightedVein> veins = new LinkedList<>();
+        private final Map<Holder<Biome>, List<WeightedVein>> biomeVeins = new Object2ObjectOpenHashMap<>();
 
         public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
@@ -66,23 +65,19 @@ public class WorldGeneratorUtils {
         }
 
         private List<WeightedVein> getEntry(Holder<Biome> biome) {
-            if (!veins.isEmpty()) return veins;
-            worldVeins.stream()
+            if (biomeVeins.containsKey(biome)) return biomeVeins.get(biome);
+            var biomeVeins = worldVeins.stream()
                     .filter(vein -> vein.isForBiome(biome))
                     .map(vein -> new WeightedVein(vein, vein.weightForBiome(biome)))
                     .filter(vein -> vein.weight > 0)
-                    .forEach(veins::add);
-            return veins;
+                    .toList();
+            this.biomeVeins.put(biome, biomeVeins);
+            return biomeVeins;
         }
     }
 
-    public static List<WeightedVein> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome,
-                                                         RandomSource random) {
-        if (oreVeinCache.containsKey(level))
-            return oreVeinCache.get(level).getEntry(biome);
-        WorldOreVeinCache worldOreVeinCache = new WorldOreVeinCache(level);
-        oreVeinCache.put(level, worldOreVeinCache);
-        return worldOreVeinCache.getEntry(biome);
+    public static List<WeightedVein> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome) {
+        return oreVeinCache.computeIfAbsent(level, WorldOreVeinCache::new).getEntry(biome);
     }
 
     public static Optional<String> getWorldGenLayerKey(IWorldGenLayer layer) {

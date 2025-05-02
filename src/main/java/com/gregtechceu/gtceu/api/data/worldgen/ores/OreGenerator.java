@@ -141,7 +141,7 @@ public class OreGenerator {
     @Nullable
     private GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random,
                                      IWorldGenLayer layer) {
-        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random).stream()
+        var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome).stream()
                 .filter(vein -> vein.vein().layer().equals(layer))
                 .toList();
         var randomVein = GTUtil.getRandomItem(random, veins);
