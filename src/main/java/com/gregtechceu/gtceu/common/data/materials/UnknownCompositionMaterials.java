@@ -573,5 +573,31 @@ public class UnknownCompositionMaterials {
                 .color(0xfabf29)
                 .flags(NO_SMELTING)
                 .buildAndRegister();
+
+        BauxiteSlurry = new Material.Builder(GTCEu.id("bauxite_slurry"))
+                .fluid()
+                .color(0x051650)
+                .buildAndRegister();
+
+        CrackedBauxiteSlurry = new Material.Builder(GTCEu.id("cracked_bauxite_slurry"))
+                .liquid(new FluidBuilder()
+                        .temperature(775))
+                .color(0x052C50)
+                .buildAndRegister();
+
+        BauxiteSludge = new Material.Builder(GTCEu.id("bauxite_sludge"))
+                .fluid()
+                .color(0x563D2D)
+                .buildAndRegister();
+
+        DecalcifiedBauxiteSludge = new Material.Builder(GTCEu.id("decalcified_bauxite_sludge"))
+                .fluid()
+                .color(0x6F2DA8)
+                .buildAndRegister();
+
+        BauxiteSlag = new Material.Builder(GTCEu.id("bauxite_slag"))
+                .dust()
+                .color(0x6F2DA8).iconSet(SAND)
+                .buildAndRegister();
     }
 }
