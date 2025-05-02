@@ -168,8 +168,6 @@ public class MaterialFlagAddition {
         oreProp.setSeparatedInto(Iron);
         oreProp.setWashedIn(SodiumPersulfate);
 
-
-
         oreProp = Bauxite.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Grossular, Rutile, Gallium);
         oreProp.setWashedIn(SodiumPersulfate);
