@@ -11,6 +11,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class TitaniumRecipes {
 
+    private TitaniumRecipes() {}
+
     public static void init(Consumer<FinishedRecipe> provider) {
         titaniumProcess(provider);
         solvayProcess(provider);
