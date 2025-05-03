@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.worldgen.generator.veins;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -7,7 +8,7 @@ import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
+import com.gregtechceu.gtceu.data.worldgen.GTDensityFunctions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
@@ -40,6 +42,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +115,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                                   BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
-        Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry()
+        Registry<DensityFunction> densityFunctions = level.registryAccess()
                 .registryOrThrow(Registries.DENSITY_FUNCTION);
 
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream()
@@ -129,8 +132,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
-        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
+        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE),
+                randomState);
+        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_RIDGED),
+                randomState);
 
         int size = entry.clusterSize().sample(random);
 
@@ -326,7 +331,13 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
     }
 
-    private static DensityFunction mapToNoise(DensityFunction function, RandomState randomState) {
+    private static DensityFunction mapToNoise(@Nullable DensityFunction function, RandomState randomState) {
+        if (function == null) {
+            // if the function is somehow missing, default to 0 and print an error.
+            GTCEu.LOGGER.error("Failed to generate veined vein, missing required density (3D noise) functions!");
+            return DensityFunctions.zero();
+        }
+
         return function.mapAll(new DensityFunction.Visitor() {
 
             @Override
