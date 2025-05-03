@@ -64,14 +64,7 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(),
-                        blockEntity.getBlockState(), blockEntity, side);
-            }
-        }
-        return null;
+        return level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
     }
 
     @Nullable
