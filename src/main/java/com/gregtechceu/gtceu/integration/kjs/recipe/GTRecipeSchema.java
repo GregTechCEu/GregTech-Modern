@@ -422,7 +422,7 @@ public interface GTRecipeSchema {
             } catch (NumberFormatException e) {
                 throw new KubeRuntimeException(String.format(
                         "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
-                        fraction, e));
+                        fraction), e);
             }
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -704,13 +704,12 @@ public interface GTRecipeSchema {
             if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
             if (researchEntry == null) {
                 throw new KubeRuntimeException(
-                        String.format("Assembly Line Research Entry cannot be empty.", new IllegalArgumentException()));
+                        "Assembly Line Research Entry cannot be empty.", new IllegalArgumentException());
             }
 
             if (!generatingRecipes) {
                 throw new KubeRuntimeException(
-                        String.format("Cannot generate recipes when using researchWithoutRecipe()",
-                                new IllegalArgumentException()));
+                       "Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, List.of());
