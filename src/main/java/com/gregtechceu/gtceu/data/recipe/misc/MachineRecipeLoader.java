@@ -625,7 +625,7 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
-                .inputItems(Tags.Blocks.CHESTS_WOODEN)
+                .inputItems(Tags.Items.CHESTS_WOODEN)
                 .inputItems(ELECTRIC_PISTON_LV)
                 .inputItems(plate, Iron)
                 .inputFluids(SolderingAlloy, L / 2)

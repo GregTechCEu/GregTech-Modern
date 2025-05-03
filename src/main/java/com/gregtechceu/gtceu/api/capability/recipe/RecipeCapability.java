@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.connection.ConnectionType;
@@ -91,6 +93,14 @@ public abstract class RecipeCapability<T> {
      */
     public T of(Object o) {
         return serializer.of(o);
+    }
+
+    public T fromNbt(Tag tag, HolderLookup.Provider provider) {
+        return serializer.fromNbt(tag, provider);
+    }
+
+    public Tag toNbt(Object content, HolderLookup.Provider provider) {
+        return serializer.toNbt(of(content), provider);
     }
 
     public String slotName(IO io) {

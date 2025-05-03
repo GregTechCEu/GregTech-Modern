@@ -181,7 +181,8 @@ public class CommonInit {
         GTMachines.init();
 
         GTEntityTypes.init();
-        GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
+        GTIngredientTypes.ITEM_INGREDIENT_TYPES.register(modBus);
+        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
         GTRecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
 
         GTCommandArguments.COMMAND_ARGUMENT_TYPES.register(modBus);

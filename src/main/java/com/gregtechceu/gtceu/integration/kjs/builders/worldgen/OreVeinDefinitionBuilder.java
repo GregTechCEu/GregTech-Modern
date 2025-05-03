@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.*;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 import com.mojang.datafixers.util.Pair;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
@@ -209,11 +209,13 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
         public Pair<Integer, Integer> heightRange = null;
     }
 
+    // It's simpler than doing the exact same thing via a ton of nested calls.
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public OreVeinDefinition createObject() {
         return new OreVeinDefinition(clusterSize, density, weight, layer,
                 Set.copyOf(dimensionFilter), heightRange, discardChanceOnAirExposure,
                 biomes, biomeWeightModifier, veinGenerator, indicatorGenerators,
-                GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME));
+                RegistryAccessContainer.current.access().lookupOrThrow(Registries.BIOME));
     }
 }

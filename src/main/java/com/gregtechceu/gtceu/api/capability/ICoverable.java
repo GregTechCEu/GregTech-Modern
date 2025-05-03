@@ -256,7 +256,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     @Override
     default BlockState getBlockAppearance(@NotNull BlockState state, @NotNull BlockAndTintGetter level,
                                           @NotNull BlockPos pos, @NotNull Direction side,
-                                          @Nullable BlockState sourceState, @NotNull BlockPos sourcePos) {
+                                          @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         CoverBehavior cover = getCoverAtSide(side);
         if (cover != null) {
             return cover.getAppearance(sourceState, sourcePos);

@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeUtil;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
@@ -35,6 +35,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -562,11 +563,11 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe explosivesAmount(int explosivesAmount) {
-            return addData("explosives_amount", explosivesAmount);
+            return inputItems(RecipeUtil.makeSizedIngredient(new ItemStack(Blocks.TNT, explosivesAmount)));
         }
 
         public GTKubeRecipe explosivesType(ItemStack explosivesType) {
-            return addData("explosives_type", explosivesType.save(GTRegistries.builtinRegistry()));
+            return inputItems(RecipeUtil.makeSizedIngredient(explosivesType));
         }
 
         public GTKubeRecipe solderMultiplier(int multiplier) {

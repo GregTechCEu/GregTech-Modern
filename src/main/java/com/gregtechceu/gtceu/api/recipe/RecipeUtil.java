@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.ExDataComponentFluidIngredient;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -8,7 +9,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -42,14 +42,16 @@ public class RecipeUtil {
         return fluidStack.amount() % divisor == 0 && fluidStack.amount() / divisor >= 25;
     }
 
-    public static SizedFluidIngredient makeFluidIngredient(FluidStack stack) {
+    public static SizedFluidIngredient makeSizedFluidIngredient(FluidStack stack) {
+        return new SizedFluidIngredient(makeFluidIngredient(stack), stack.getAmount());
+    }
+
+    public static FluidIngredient makeFluidIngredient(FluidStack stack) {
         var tagKey = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath());
         if (stack.isComponentsPatchEmpty()) {
-            return new SizedFluidIngredient(FluidIngredient.tag(tagKey), stack.getAmount());
+            return FluidIngredient.tag(tagKey);
         } else {
-            var tag = BuiltInRegistries.FLUID.getOrCreateTag(tagKey);
-            return new SizedFluidIngredient(DataComponentFluidIngredient.of(true, stack.getComponents(), tag),
-                    stack.getAmount());
+            return ExDataComponentFluidIngredient.of(true, stack.getComponents(), tagKey);
         }
     }
 

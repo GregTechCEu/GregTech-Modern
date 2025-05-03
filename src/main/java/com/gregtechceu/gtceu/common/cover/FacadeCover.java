@@ -60,7 +60,7 @@ public class FacadeCover extends CoverBehavior {
     }
 
     @Nullable
-    public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(@Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         return facadeState;
     }
 }

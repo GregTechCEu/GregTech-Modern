@@ -212,7 +212,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
      * get Appearance. same as IBlockExtension.getAppearance() / IFabricBlock.getAppearance()
      */
     @Nullable
-    public BlockState getAppearance(BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getAppearance(@Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         return null;
     }
 

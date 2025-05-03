@@ -724,7 +724,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
-        return notConsumableFluid(RecipeUtil.makeFluidIngredient(fluid));
+        return notConsumableFluid(RecipeUtil.makeSizedFluidIngredient(fluid));
     }
 
     public GTRecipeBuilder notConsumableFluid(SizedFluidIngredient ingredient) {
@@ -988,7 +988,7 @@ public class GTRecipeBuilder {
         if (!matStack.isNull() && chance != 0 && chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
-        return input(FluidRecipeCapability.CAP, RecipeUtil.makeFluidIngredient(input));
+        return input(FluidRecipeCapability.CAP, RecipeUtil.makeSizedFluidIngredient(input));
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
@@ -1001,7 +1001,7 @@ public class GTRecipeBuilder {
             }
         }
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs)
-                .map(RecipeUtil::makeFluidIngredient)
+                .map(RecipeUtil::makeSizedFluidIngredient)
                 .toArray(SizedFluidIngredient[]::new));
     }
 
