@@ -53,6 +53,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -285,12 +286,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             var hitVector = hit.getLocation().relative(getFrontFacing(), -0.5);
             if (!aabb.contains(hitVector)) return InteractionResult.PASS;
 
-            var held = player.getMainHandItem();
-            if (!held.isEmpty() && cache.canInsert(held)) { // push
-                var remaining = cache.insertItem(0, held, false);
-                player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
-                return InteractionResult.SUCCESS;
-            } else if (isDoubleHit(player.getUUID())) {
+            if (isDoubleHit(player.getUUID())) {
                 for (var stack : player.getInventory().items) {
                     if (!stack.isEmpty() && cache.canInsert(stack)) {
                         stack.setCount(cache.insertItem(0, stack, false).getCount());
@@ -303,6 +299,32 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         return InteractionResult.PASS;
     }
 
+    @Override
+    public ItemInteractionResult onUseWithItem(ItemStack held, BlockState state, Level world, BlockPos pos,
+                                               Player player, InteractionHand hand, BlockHitResult hit) {
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
+            // Check to see if the hit is within the glass frame of the chest
+            var aabb = new AABB(hit.getBlockPos()).deflate(0.12);
+            var hitVector = hit.getLocation().relative(getFrontFacing(), -0.5);
+            if (!aabb.contains(hitVector)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+            if (cache.canInsert(held)) { // push
+                var remaining = cache.insertItem(0, held, false);
+                player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
+                return ItemInteractionResult.SUCCESS;
+            } else if (isDoubleHit(player.getUUID())) {
+                for (var stack : player.getInventory().items) {
+                    if (!stack.isEmpty() && cache.canInsert(stack)) {
+                        stack.setCount(cache.insertItem(0, stack, false).getCount());
+                    }
+                }
+            }
+            INTERACTION_LOGGER.put(player.getUUID(), System.currentTimeMillis());
+            return ItemInteractionResult.SUCCESS;
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
     private static boolean isDoubleHit(UUID uuid) {
         return (System.currentTimeMillis() - INTERACTION_LOGGER.getOrDefault(uuid, System.currentTimeMillis())) < 300;
     }
@@ -310,7 +332,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
-            if (player.getItemInHand(hand).is(GTToolType.WRENCH.itemTags.get(0))) return false;
+            if (player.getItemInHand(hand).is(Tags.Items.TOOLS_WRENCH)) return false;
             if (!stored.isEmpty()) { // pull
                 var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {

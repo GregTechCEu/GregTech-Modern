@@ -32,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -128,6 +127,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     }
 
     //////////////////////////////////////
+    //////////////////////////////////////
     // ****** Fluid Logic *******//
     //////////////////////////////////////
 
@@ -148,7 +148,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
         super.removeItemComponentsFromTag(tag);
-        tag.remove("stored");
+        tag.remove("Fluid");
         tag.remove("cache");
     }
 
@@ -208,16 +208,17 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
     }
 
-    @SuppressWarnings("resource")
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (!isRemote()) {
+    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,
+                                               Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!world.isClientSide) {
             if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        } else {
+            return ItemInteractionResult.SUCCESS;
         }
-        return world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     @Override

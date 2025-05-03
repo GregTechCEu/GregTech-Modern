@@ -100,12 +100,11 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
         if (hit.getDirection() != getFrontFacing() || isRemote()) {
             return InteractionResult.PASS;
         }
         // Clear item if empty hand + shift-rclick
-        if (heldItem.isEmpty() && player.isShiftKeyDown() && !stored.isEmpty()) {
+        if (player.getItemInHand(hand).isEmpty() && player.isShiftKeyDown() && !stored.isEmpty()) {
             updateStored(ItemStack.EMPTY);
             return InteractionResult.SUCCESS;
         }

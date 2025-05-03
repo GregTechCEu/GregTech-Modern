@@ -23,6 +23,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -72,10 +73,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return (long) Math.ceil(1d * mBPerCycle / ticksPerCycle);
     }
 
-    private InteractionResult updateStored(FluidStack fluid) {
+    private ItemInteractionResult updateStored(FluidStack fluid) {
         stored = fluid.copyWithAmount(FluidType.BUCKET_VOLUME);
         onFluidChanged();
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     private void setTicksPerCycle(String value) {
@@ -93,43 +94,48 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
         if (hit.getDirection() == getFrontFacing() && !isRemote()) {
             // Clear fluid if empty + shift-rclick
-            if (heldItem.isEmpty()) {
-                if (player.isShiftKeyDown() && !stored.isEmpty()) {
-                    return updateStored(FluidStack.EMPTY);
-                }
-                return InteractionResult.PASS;
+            if (player.getItemInHand(hand).isEmpty() && player.isShiftKeyDown() && !stored.isEmpty()) {
+                stored = FluidStack.EMPTY;
+                onFluidChanged();
+                return InteractionResult.SUCCESS;
             }
+        }
+        return InteractionResult.PASS;
+    }
 
+    @Override
+    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,
+                                               Player player, InteractionHand hand, BlockHitResult hit) {
+        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
-                return FluidUtil.getFluidContained(heldItem)
+                return FluidUtil.getFluidContained(stack)
                         .map(this::updateStored)
-                        .orElse(InteractionResult.PASS);
+                        .orElse(ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION);
             }
 
             // Need to make a fake source to fully fill held-item since our cache only allows mbPerTick extraction
             CustomFluidTank source = new CustomFluidTank(stored.copyWithAmount(Integer.MAX_VALUE));
-            ItemStack result = FluidUtil.tryFillContainer(heldItem, source, Integer.MAX_VALUE, player, true)
+            ItemStack result = FluidUtil.tryFillContainer(stack, source, Integer.MAX_VALUE, player, true)
                     .getResult();
-            if (!result.isEmpty() && heldItem.getCount() > 1) {
+            if (!result.isEmpty() && stack.getCount() > 1) {
                 ItemHandlerHelper.giveItemToPlayer(player, result);
-                result = heldItem.copy();
+                result = stack.copy();
                 result.shrink(1);
             }
 
             if (!result.isEmpty()) {
                 player.setItemInHand(hand, result);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             } else {
-                return FluidUtil.getFluidContained(heldItem)
+                return FluidUtil.getFluidContained(stack)
                         .map(this::updateStored)
-                        .orElse(InteractionResult.PASS);
+                        .orElse(ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION);
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

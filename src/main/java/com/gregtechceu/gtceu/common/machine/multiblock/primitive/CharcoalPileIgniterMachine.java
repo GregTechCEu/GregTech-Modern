@@ -25,7 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FireChargeItem;
@@ -360,8 +360,9 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                                               Player player, InteractionHand hand,
+                                               BlockHitResult hit) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof IMachineBlockEntity machineBe) {
             MetaMachine mte = machineBe.getMetaMachine();
@@ -370,7 +371,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     player.swing(hand);
                 } else if (!cpi.isActive()) {
                     boolean shouldActivate = false;
-                    ItemStack stack = player.getItemInHand(hand);
                     if (stack.getItem() instanceof FlintAndSteelItem) {
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                         getLevel().playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -396,11 +396,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
                     if (shouldActivate) {
                         cpi.setActive(true);
-                        return InteractionResult.CONSUME;
+                        return ItemInteractionResult.CONSUME;
                     }
                 }
             }
         }
-        return super.onUse(state, level, pos, player, hand, hit);
+        return super.onUseWithItem(stack, state, level, pos, player, hand, hit);
     }
 }
