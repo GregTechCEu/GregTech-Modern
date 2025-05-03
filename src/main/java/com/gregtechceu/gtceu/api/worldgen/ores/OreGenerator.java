@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Responsible for (pre)generating ore veins.<br/>
+ * Responsible for (pre)generating ore veins.<br>
  * This does not actually place any of the ore's blocks, and delegates to the applicable vein generator.
  */
 public class OreGenerator {
@@ -77,14 +77,14 @@ public class OreGenerator {
     }
 
     /**
-     * Generates the vein for the specified chunk metadata.<br/>
+     * Generates the vein for the specified chunk metadata.<br>
      * If the chunk is not located on one of the ore vein grid's intersections, no vein will be generated.
      *
      * <p>
      * Note that depending on the configured random offset, the actual center of the generated vein may be located
      * outside the specified origin chunk.
      *
-     * @return The generated vein for the specified chunk metadata.<br/>
+     * @return The generated vein for the specified chunk metadata.<br>
      *         {@code Optional.empty()} if no vein exists at this chunk.
      */
     public List<GeneratedVein> generateOres(WorldGenLevel level, List<GeneratedVeinMetadata> metadata,

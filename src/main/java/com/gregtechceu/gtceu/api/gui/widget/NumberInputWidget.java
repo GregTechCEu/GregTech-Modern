@@ -27,7 +27,7 @@ import java.util.function.Supplier;
  * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
  *
  * <p>
- * The buttons' change amount can be altered with Ctrl, Shift, or both.<br/>
+ * The buttons' change amount can be altered with Ctrl, Shift, or both.<br>
  * The input is limited by a minimum and maximum value.
  * </p>
  */

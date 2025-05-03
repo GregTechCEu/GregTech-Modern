@@ -262,7 +262,7 @@ public class GTTransferUtils {
     }
 
     /**
-     * Inserts items by trying to fill slots with the same item first, and then fill empty slots. <br/>
+     * Inserts items by trying to fill slots with the same item first, and then fill empty slots. <br>
      * Seems like close to duplicate behavior of {@link ItemHandlerHelper#insertItemStacked}
      */
     public static ItemStack insertItem(IItemHandler handler, ItemStack stack, boolean simulate) {

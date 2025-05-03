@@ -25,7 +25,7 @@ public class MultiblockDisplayText {
 
     /**
      * Construct a new Multiblock Display Text builder.
-     * <br/>
+     * <br>
      * Automatically adds the "Invalid Structure" line if the structure is not formed.
      */
     public static Builder builder(List<Component> textList, boolean isStructureFormed) {
@@ -77,7 +77,7 @@ public class MultiblockDisplayText {
         /**
          * Set custom translation keys for the three-state "Idling", "Paused", "Running" display text.
          * <strong>You still must call {@link Builder#addWorkingStatusLine()} for these to appear!</strong>
-         * <br/>
+         * <br>
          * Pass any key as null for it to continue to use the default key.
          *
          * @param idlingKey  The translation key for the Idle state, or "!isActive && isWorkingEnabled".
@@ -96,7 +96,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the max EU/t that this multiblock can use.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed energy container has greater than zero capacity.
          */
         public Builder addEnergyUsageLine(IEnergyContainer energyContainer) {
@@ -123,7 +123,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the max Recipe Tier that this multiblock can use for recipe lookup.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed tier is a valid energy tier index for
          * {@link GTValues#VNF}.
          */
@@ -146,7 +146,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the exact EU/t that this multiblock needs to run.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed value is greater than zero.
          */
         public Builder addEnergyUsageExactLine(long energyUsage) {
@@ -166,7 +166,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the max EU/t that this multiblock can produce.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the max voltage is greater than zero and the recipe EU/t.
          */
         public Builder addEnergyProductionLine(long maxVoltage, long recipeEUt) {
@@ -187,7 +187,7 @@ public class MultiblockDisplayText {
         /**
          * Adds the max EU/t that this multiblock can produce, including how many amps. Recommended for multi-amp
          * outputting multis.
-         * <br/>
+         * <br>
          * Added if the structure is formed, if the amperage is greater than zero and if the max voltage is greater than
          * zero.
          */
@@ -208,7 +208,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the max CWU/t that this multiblock can use.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the max CWU/t is greater than zero.
          */
         public Builder addComputationUsageLine(int maxCWUt) {
@@ -225,7 +225,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a currently used CWU/t line.
-         * <br/>
+         * <br>
          * Added if the structure is formed, the machine is active, and the current CWU/t is greater than zero.
          */
         public Builder addComputationUsageExactLine(int currentCWUt) {
@@ -243,7 +243,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a three-state indicator line, showing if the machine is running, paused, or idling.
-         * <br/>
+         * <br>
          * Added if the structure is formed.
          */
         public Builder addWorkingStatusLine() {
@@ -261,7 +261,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the "Work Paused." line.
-         * <br/>
+         * <br>
          * Added if working is not enabled, or if the checkState passed parameter is false.
          * Also added only if formed.
          */
@@ -276,7 +276,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the "Running Perfectly." line.
-         * <br/>
+         * <br>
          * Added if machine is active, or if the checkState passed parameter is false.
          * Also added only if formed.
          */
@@ -291,7 +291,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds the "Idling." line.
-         * <br/>
+         * <br>
          * Added if the machine is not active and working is enabled, or if the checkState passed parameter is false.
          * Also added only if formed.
          */
@@ -314,7 +314,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a simple progress line that displays the current time of a recipe and its progress as a percentage.
-         * <br/>
+         * <br>
          * Added if structure is formed and the machine is active.
          *
          * @param currentDuration The current duration of the recipe in ticks
@@ -408,7 +408,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a line indicating how many parallels this multi can potentially perform.
-         * <br/>
+         * <br>
          * Added if structure is formed and the number of parallels is greater than one.
          */
         public Builder addParallelsLine(int numParallels, boolean exact) {
@@ -427,7 +427,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a warning line when the machine is low on power.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed parameter is true.
          */
         public Builder addLowPowerLine(boolean isLowPower) {
@@ -442,7 +442,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a warning line when the machine is low on computation.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed parameter is true.
          */
         public Builder addLowComputationLine(boolean isLowComputation) {
@@ -457,7 +457,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a warning line when the machine's dynamo tier is too low for current conditions.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed parameter is true.
          */
         public Builder addLowDynamoTierLine(boolean isTooLow) {
@@ -472,8 +472,8 @@ public class MultiblockDisplayText {
 
         /**
          * Adds warning line(s) when the machine has maintenance problems.
-         * <br/>
-         * Added if there are any maintenance problems, one line per problem as well as a header. <br/>
+         * <br>
+         * Added if there are any maintenance problems, one line per problem as well as a header. <br>
          * Will check the config setting for if maintenance is enabled automatically.
          */
         public Builder addMaintenanceProblemLines(byte maintenanceProblems) {
@@ -528,7 +528,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds two error lines when the machine's muffler hatch is obstructed.
-         * <br/>
+         * <br>
          * Added if the structure is formed and if the passed parameter is true.
          */
         public Builder addMufflerObstructedLine(boolean isObstructed) {
@@ -545,7 +545,7 @@ public class MultiblockDisplayText {
 
         /**
          * Adds a fuel consumption line showing the fuel name and the number of ticks per recipe run.
-         * <br/>
+         * <br>
          * Added if structure is formed, the machine is active, and the passed fuelName parameter is not null.
          */
         public Builder addFuelNeededLine(String fuelName, int previousRecipeDuration) {

@@ -16,7 +16,7 @@ public interface IInteractedMachine extends IMachineFeature {
     /**
      * Basically a hook from block
      * {@link net.minecraft.world.level.block.state.BlockBehaviour#useWithoutItem(BlockState, Level, BlockPos, Player, BlockHitResult)}
-     * <br/>
+     * <br>
      * Right-Click
      */
     default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
@@ -27,7 +27,7 @@ public interface IInteractedMachine extends IMachineFeature {
     /**
      * Basically a hook from block
      * {@link net.minecraft.world.level.block.state.BlockBehaviour#useItemOn(ItemStack, BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)}
-     * <br/>
+     * <br>
      * Right-Click
      */
     default ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,

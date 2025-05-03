@@ -67,7 +67,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     /**
      * Internal method, do not call yourself.
-     * <br/>
+     * <br>
      * Use {@link ICoverable#removeCover(boolean, Direction, Player)} and
      * {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
      * 

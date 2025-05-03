@@ -75,11 +75,11 @@ public class FormattingUtil {
      * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
      * 
      *         <pre>
-     *         <br/>{@code "maragingSteel300" -> "maraging_steel_300"}
-     *         <br/>{@code "gtceu:maraging_steel_300" -> "gtceu:maraging_steel_300"}
-     *         <br/>{@code "maragingSteel_300" -> "maraging_steel_300"}
-     *         <br/>{@code "maragingSTEEL_300" -> "maraging_steel_300"}
-     *         <br/>{@code "MARAGING_STEEL_300" -> "maraging_steel_300"}
+     *         <br>{@code "maragingSteel300" -> "maraging_steel_300"}
+     *         <br>{@code "gtceu:maraging_steel_300" -> "gtceu:maraging_steel_300"}
+     *         <br>{@code "maragingSteel_300" -> "maraging_steel_300"}
+     *         <br>{@code "maragingSTEEL_300" -> "maraging_steel_300"}
+     *         <br>{@code "MARAGING_STEEL_300" -> "maraging_steel_300"}
      * </pre>
      */
     public static String toLowerCaseUnderscore(String string) {

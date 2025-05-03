@@ -46,7 +46,7 @@ public interface IMaterialRegistry extends Iterable<Material> {
     }
 
     /**
-     * Get a material from a ResourceLocation<br/>
+     * Get a material from a ResourceLocation<br>
      * Intended for use in reading/writing materials from/to NBT tags.
      *
      * @param name the name of the material in the above format

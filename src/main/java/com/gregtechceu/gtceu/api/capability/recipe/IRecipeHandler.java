@@ -30,7 +30,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * @param recipe   recipe.
      * @param left     left contents for to be handled.
      * @param simulate simulate.
-     * @return left contents for continue handling by other proxies. <br/>
+     * @return left contents for continue handling by other proxies. <br>
      *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
     List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);

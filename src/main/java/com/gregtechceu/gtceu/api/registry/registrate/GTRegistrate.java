@@ -75,7 +75,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     /**
      * Get or create a new {@link GTRegistrate} and register event listeners for registration and data generation.
      * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
-     * <br/>
+     * <br>
      * Completely skips all mod id validity messages and defaults to GT's bus instead. <b>ADDON DEVS DO NOT USE.</b>
      *
      * @param modId The mod ID for which objects will be registered

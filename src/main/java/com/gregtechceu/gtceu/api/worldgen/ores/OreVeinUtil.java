@@ -52,7 +52,7 @@ public class OreVeinUtil {
      * Note that depending on the config value for the random vein offset, its actual
      * center may be outside the supplied chunk.
      * 
-     * @return The origin of the vein to be generated.<br/>
+     * @return The origin of the vein to be generated.<br>
      *         {@code Optional.empty()} if no vein should exist for the specified chunk.
      */
     public static Optional<BlockPos> getVeinCenter(ChunkPos chunkPos, RandomSource random) {
@@ -74,7 +74,7 @@ public class OreVeinUtil {
     }
 
     /**
-     * @return The radius (in chunks) to search for adjacent veins.<br/>
+     * @return The radius (in chunks) to search for adjacent veins.<br>
      *         Depends on the largest registered vein size, as well as the configured random vein offset.
      */
     static int getMaxVeinSearchDistance() {
@@ -85,7 +85,7 @@ public class OreVeinUtil {
     }
 
     /**
-     * @return The radius (in chunks) to search for adjacent indicators.<br/>
+     * @return The radius (in chunks) to search for adjacent indicators.<br>
      *         Depends on the largest registered indicator size, as well as the configured random vein offset.
      */
     static int getMaxIndicatorSearchDistance() {

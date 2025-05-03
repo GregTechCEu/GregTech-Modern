@@ -20,7 +20,7 @@ public class GeneratedIndicators {
 
     /**
      * @param origin     The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
-     * @param indicators The ore placers for each ore block position.<br/>
+     * @param indicators The ore placers for each ore block position.<br>
      *                   Doesn't need to be ordered, grouping by chunks is done internally.
      */
     public GeneratedIndicators(ChunkPos origin, Map<ChunkPos, List<OreIndicatorPlacer>> indicators) {

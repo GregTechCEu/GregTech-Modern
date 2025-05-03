@@ -66,7 +66,7 @@ public class OverlayedTankHandler {
         private List<FluidStack> stacks;
 
         /**
-         * Constructs the Overlayed Tank from the given NotifiableFluidTank <br/>
+         * Constructs the Overlayed Tank from the given NotifiableFluidTank <br>
          * Stores properties, such as:
          * <ul>
          * <li>The number of tanks via {@link NotifiableFluidTank#getTanks}</li>
@@ -136,7 +136,7 @@ public class OverlayedTankHandler {
         }
 
         /**
-         * Searches {@link OverlayedTank#stacks} for a FluidStack equivalent to the passed {@code fluid} <br/>
+         * Searches {@link OverlayedTank#stacks} for a FluidStack equivalent to the passed {@code fluid} <br>
          * 
          * @param fluid A FluidStack with the fluid to search for
          * @return If {@code sameFluidFill} is false, then the first matching stack found. Otherwise, the first non-full

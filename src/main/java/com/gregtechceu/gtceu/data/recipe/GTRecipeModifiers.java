@@ -136,7 +136,7 @@ public class GTRecipeModifiers {
      * This working temperature is equal to {@code coilTemp + (100K × (voltageTier - MV))} for energy tiers over MV.
      * </p>
      * <p>
-     * Recipe is OC'd via {@link OverclockingLogic#heatingCoilOC}.<br/>
+     * Recipe is OC'd via {@link OverclockingLogic#heatingCoilOC}.<br>
      * Then, EUt is multiplied by {@code 0.95×} for every {@code 900K} over the required temperature.
      * </p>
      *
@@ -173,7 +173,7 @@ public class GTRecipeModifiers {
     /**
      * Recipe Modifier for <b>Pyrolyse Oven Multiblocks</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.<br/>
+     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.<br>
      * Then, duration is multiplied by {@code 1.333×} for Cupronickel Coils
      * or {@code 2 / (tier + 1)} for higher tiercoils.
      * </p>

@@ -36,7 +36,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     /**
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
      * You can override it but it's unsafe for calling. because it will also be called in an async thread.
-     * <br/>
+     * <br>
      * you should always use {@link IMultiController#checkPatternWithLock()} and
      * {@link IMultiController#checkPatternWithTryLock()} instead.
      *
@@ -88,7 +88,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     /**
      * Whether Multiblock Formed.
-     * <br/>
+     * <br>
      * NOTE: even machine is formed, it doesn't mean to workable!
      * Its parts maybe invalid due to chunk unload.
      */
@@ -110,22 +110,22 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     /**
      * Called when structure is formed, have to be called after {@link #checkPattern()}. (server-side / fake scene only)
-     * <br/>
+     * <br>
      * Trigger points:
-     * <br/>
+     * <br>
      * 1 - Blocks in structure changed but still formed.
-     * <br/>
+     * <br>
      * 2 - Literally, structure formed.
      */
     void onStructureFormed();
 
     /**
      * Called when structure is invalid. (server-side / fake scene only)
-     * <br/>
+     * <br>
      * Trigger points:
-     * <br/>
+     * <br>
      * 1 - Blocks in structure changed.
-     * <br/>
+     * <br>
      * 2 - Before controller machine removed.
      */
     void onStructureInvalid();

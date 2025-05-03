@@ -29,19 +29,19 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 /**
  * Guide to the GregTech CE: Unofficial Cable Processing.
- * <br/>
+ * <br>
  * Cable Covering Fluids:
  * - Rubber: This can be used for any cable EV-tier or lower. After that it is unavailable.
- * <br/>
+ * <br>
  * - Silicone Rubber: This can be used for any cable tier, saving the amount of fluid needed. However, at IV,
  * it will require a Foil of the cable material as well, making it undesirable.
- * <br/>
+ * <br>
  * - Styrene-Butadiene Rubber (SBR): This can be used for any cable tier, and is the most optimal cable-covering
  * fluid available.
- * <br/>
+ * <br>
  * Extra Materials for Cable Covering:
  * - Polyphenylene Sulfide (PPS): At LuV, this foil is required to cover cables. Lower tiers will not use it.
- * <br/>
+ * <br>
  * - Material Foil: At IV, an extra foil of the Material is needed to make the cable with SiR.
  */
 public final class WireRecipeHandler {

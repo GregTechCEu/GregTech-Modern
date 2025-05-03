@@ -112,7 +112,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     /**
      * Recipe Modifier for <b>Combustion Engine Multiblocks</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is rejected if the machine's intakes are obstructed or if it doesn't have lubricant<br/>
+     * Recipe is rejected if the machine's intakes are obstructed or if it doesn't have lubricant<br>
      * Recipe is parallelized up to {@code desiredEUt / recipeEUt} times.
      * EUt is further multiplied by the production boost of the engine.
      *

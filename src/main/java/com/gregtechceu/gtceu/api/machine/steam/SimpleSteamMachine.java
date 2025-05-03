@@ -126,7 +126,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     /**
      * Recipe Modifier for <b>Simple Steam Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is rejected if tier is greater than LV or if machine cannot vent.<br/>
+     * Recipe is rejected if tier is greater than LV or if machine cannot vent.<br>
      * Duration is multiplied by {@code 2} if the machine is low pressure
      * </p>
      *
