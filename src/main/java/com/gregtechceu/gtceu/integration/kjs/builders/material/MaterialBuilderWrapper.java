@@ -48,7 +48,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     @Info("""
             Add a `FluidProperty` to this Material.
             Will be created with the specified state a with standard `FluidBuilder` defaults.
-            
+
             Can be called multiple times to add multiple fluids.
             """)
     public MaterialBuilderWrapper fluid(@NotNull FluidStorageKey key, @NotNull FluidState state) {
@@ -58,7 +58,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     @Info("""
             Add a `FluidProperty` to this Material.
-            
+
             Can be called multiple times to add multiple fluids.
             """)
     public MaterialBuilderWrapper fluid(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
