@@ -540,7 +540,7 @@ public class GTRecipeTypes {
                                     .getItems() :
                             null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
-                    if (input.ingredient().hasNoFluids()) return;
+                    if (input.ingredient().isEmpty()) return;
                     List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
                         Content outputContent = contents.get(i);
