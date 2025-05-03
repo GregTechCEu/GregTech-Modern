@@ -139,10 +139,10 @@ public class CustomTags {
     public static final TagKey<Item> TOOLS_SAW = TagUtil.createItemTag("tools/saw");
     public static final TagKey<Item> TOOLS_SCREWDRIVER = TagUtil.createItemTag("tools/screwdriver");
     public static final TagKey<Item> TOOLS_SCYTHE = TagUtil.createItemTag("tools/scythe");
-    public static final TagKey<Item> TOOLS_SHEAR = TagUtil.createItemTag("tools/shear");
+    public static final TagKey<Item> TOOLS_SHEAR = Tags.Items.TOOLS_SHEAR;
     public static final TagKey<Item> TOOLS_SPADE = TagUtil.createItemTag("tools/spade");
     public static final TagKey<Item> TOOLS_WIRE_CUTTER = TagUtil.createItemTag("tools/wire_cutter");
-    public static final TagKey<Item> TOOLS_WRENCH = TagUtil.createItemTag("tools/wrench"); // Compat with other mods
+    public static final TagKey<Item> TOOLS_WRENCH = Tags.Items.TOOLS_WRENCH;
 
     // Crafting Tool Tags
     public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("crafting_tools/crowbar");

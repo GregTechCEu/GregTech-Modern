@@ -64,6 +64,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -655,14 +656,20 @@ public class GTMachineUtils {
     }
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
-        var content = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
-        if (content != null) {
-            FluidStack stored = content.stored();
-            long storedAmount = content.amount();
-            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getHoverName(),
-                    FormattingUtil.formatNumbers(storedAmount)));
+        FluidStack stored;
+        long storedAmount = 0;
+
+        var largeContent = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
+        if (largeContent != null) {
+            stored = largeContent.stored();
+            storedAmount = largeContent.amount();
+        } else {
+            stored = stack.getOrDefault(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.EMPTY).copy();
         }
+
+        if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+        list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getHoverName(),
+                FormattingUtil.formatNumbers(storedAmount)));
     };
 
     public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,

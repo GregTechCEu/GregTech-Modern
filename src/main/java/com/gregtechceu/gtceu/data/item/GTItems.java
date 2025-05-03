@@ -57,6 +57,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -402,12 +403,14 @@ public class GTItems {
             .lang("Matches")
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, false, false)))
+            .tag(Tags.Items.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::new)
             .lang("Matchbox")
             .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, true, false, Items.PAPER, 16)))
+            .tag(Tags.Items.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::new)
             .lang("Invar Lighter")
@@ -417,6 +420,7 @@ public class GTItems {
             .onRegister(attach(FilteredFluidContainer.create(100, true,
                     x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
+            .tag(Tags.Items.TOOLS_IGNITER)
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
             .register();
@@ -429,6 +433,7 @@ public class GTItems {
             .onRegister(attach(FilteredFluidContainer.create(1000, true,
                     x -> x.is(CustomTags.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
+            .tag(Tags.Items.TOOLS_IGNITER)
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrDefault(GTDataComponents.LIGHTER_OPEN, false) ? 1.0f : 0.0f))
             .register();
