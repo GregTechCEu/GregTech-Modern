@@ -41,14 +41,14 @@ public class GTRecipeCategory {
         this.recipeType = recipeType;
         this.name = recipeType.registryName.getPath();
         this.registryKey = recipeType.registryName;
-        this.languageKey = recipeType.registryName.toLanguageKey();
+        this.languageKey = recipeType.getTranslationKey();
     }
 
     public GTRecipeCategory(@NotNull String categoryName, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
         this.name = categoryName;
         this.registryKey = GTCEu.id(categoryName);
-        this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
+        this.languageKey = "recipe_category.%s.%s".formatted(GTCEu.MOD_ID, categoryName);
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {

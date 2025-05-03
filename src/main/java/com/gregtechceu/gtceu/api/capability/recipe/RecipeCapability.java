@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.DispatchedMapCodec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -36,11 +39,20 @@ import java.util.*;
  */
 public abstract class RecipeCapability<T> {
 
-    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.byNameCodec();
+    // spotless:off
+    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTCEu.GTCEU_ID
+                    .comapFlatMap(
+                            id -> GTRegistries.RECIPE_CAPABILITIES.getHolder(id)
+                                    .map(DataResult::success)
+                                    .orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + id)),
+                            (Holder.Reference<RecipeCapability<?>> holder) -> holder.key().location()
+                    )
+            .flatComapMap(Holder.Reference::value, cap -> safeReference(GTRegistries.RECIPE_CAPABILITIES.wrapAsHolder(cap)));
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
             RecipeCapability.DIRECT_CODEC,
             RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
+    // spotless:on
 
     public final String name;
     public final int color;
@@ -230,5 +242,11 @@ public abstract class RecipeCapability<T> {
 
     public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
+    }
+
+    private static DataResult<Holder.Reference<RecipeCapability<?>>> safeReference(Holder<RecipeCapability<?>> value) {
+        return value.getDelegate() instanceof Holder.Reference<RecipeCapability<?>> reference ?
+                DataResult.success(reference) : DataResult.error(
+                        () -> "Unregistered holder in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + value);
     }
 }

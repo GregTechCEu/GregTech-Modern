@@ -26,7 +26,7 @@ public class GTEmiOreProcessing extends ModularEmiRecipe<GTOreByProductWidget> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return material.getResourceLocation();
+        return material.getResourceLocation().withPrefix("/");
     }
 
     @Override

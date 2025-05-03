@@ -27,6 +27,6 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return definition.getId();
+        return definition.getId().withPrefix("/");
     }
 }

@@ -56,15 +56,17 @@ public abstract class RecipeManagerLateMixin {
                         .onSave(gtRecipe.recipeType.getRecipeBuilder().onSave)
                         .save(new RecipeOutput() {
 
+                            @SuppressWarnings("removal")
                             @Override
-                            public Advancement.Builder advancement() {
+                            public Advancement.@NotNull Builder advancement() {
                                 return Advancement.Builder.recipeAdvancement()
                                         .parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
                             }
 
                             @Override
                             public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
-                                               @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                                               @Nullable AdvancementHolder advancement,
+                                               ICondition @NotNull... conditions) {
                                 recipesByName.put(id, new RecipeHolder<>(id, recipe));
                             }
                         });

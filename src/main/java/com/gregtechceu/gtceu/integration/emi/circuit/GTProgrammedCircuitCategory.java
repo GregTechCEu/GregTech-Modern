@@ -53,7 +53,7 @@ public class GTProgrammedCircuitCategory extends EmiRecipeCategory {
 
         @Override
         public @Nullable ResourceLocation getId() {
-            return GTCEu.id("programmed_circuit");
+            return GTCEu.id("/programmed_circuit");
         }
 
         @Override

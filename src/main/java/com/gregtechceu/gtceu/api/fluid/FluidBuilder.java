@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -294,15 +295,26 @@ public class FluidBuilder {
                     .blockstate((ctx, prov) -> prov
                             .simpleBlock(ctx.getEntry(), prov.models().getBuilder(this.name)
                                     .texture("particle", this.still)))
+                    .color(() -> () -> (state, level, pos, index) -> {
+                        return IClientFluidTypeExtensions.of(state.getFluidState())
+                                .getTintColor(state.getFluidState(), level, pos);
+                    })
                     .register();
-        } else builder.noBlock();
+        } else {
+            // noinspection DataFlowIssue
+            builder.noBlock().fluidProperties(p -> p.block(null));
+        }
         if (this.hasBucket) {
             builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+                    .color(() -> () -> GTBucketItem::color)
                     .register();
-        } else builder.noBucket();
+        } else {
+            // noinspection DataFlowIssue
+            builder.noBucket().fluidProperties(p -> p.bucket(null));
+        }
 
         builder.onRegister(fluid -> {
             if (fluid.getSource() instanceof GTFluid gtSource) attributes.forEach(gtSource::addAttribute);

@@ -64,7 +64,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.dimension.tooltip", dimension);
+        return Component.translatableEscape("recipe.condition.dimension.tooltip", dimension.location());
     }
 
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {

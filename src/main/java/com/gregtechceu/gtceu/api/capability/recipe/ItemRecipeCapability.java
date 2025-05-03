@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
@@ -549,19 +550,13 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     // Maps ingredients to an ItemEntryList for XEI: either an ItemTagList or an ItemStackList
     private static ItemEntryList mapItem(final SizedIngredient ingredient) {
         if (ingredient.getContainedCustom() instanceof IntProviderIngredient intProvider) {
-            final int amount = 1;
-            var mapped = tryMapInner(intProvider.getInner(), amount);
+            var mapped = tryMapInner(intProvider.getInner(), 1);
             if (mapped != null) return mapped;
         } else if (ingredient.getContainedCustom() instanceof IntersectionIngredient intersection) {
             return mapIntersection(intersection, ingredient.count());
-        } else {
-            var tagList = tryMapTag(ingredient.ingredient(), 1);
+        } else if (!ingredient.ingredient().isCustom()) {
+            var tagList = tryMapTag(ingredient.ingredient(), ingredient.count());
             if (tagList != null) return tagList;
-        }
-        if (ingredient instanceof SizedIngredient sizedIngredient) {
-            final int amount = sizedIngredient.hashCode();
-            var mapped = tryMapInner(sizedIngredient.ingredient(), amount);
-            if (mapped != null) return mapped;
         }
         ItemStackList stackList = new ItemStackList();
         boolean isIntProvider = ingredient.getContainedCustom() instanceof IntProviderIngredient;
@@ -573,10 +568,25 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         return stackList;
     }
 
-    private static @Nullable ItemEntryList tryMapInner(final Ingredient inner, int amount) {
-        if (inner.getCustomIngredient() instanceof IntersectionIngredient intersection)
-            return mapIntersection(intersection, amount);
-        return tryMapTag(inner, amount);
+    @SuppressWarnings("SameParameterValue")
+    private static @Nullable ItemEntryList tryMapInner(final Ingredient inner, int count) {
+        if (inner.getCustomIngredient() instanceof IntProviderIngredient intProvider) {
+            var mapped = tryMapInner(intProvider.getInner(), 1);
+            if (mapped != null) return mapped;
+        } else if (inner.getCustomIngredient() instanceof IntersectionIngredient intersection) {
+            return mapIntersection(intersection, count);
+        } else if (!inner.isCustom()) {
+            var tagList = tryMapTag(inner, count);
+            if (tagList != null) return tagList;
+        }
+        ItemStackList stackList = new ItemStackList();
+        boolean isIntProvider = inner.getCustomIngredient() instanceof IntProviderIngredient;
+
+        UnaryOperator<ItemStack> setCount = stack -> isIntProvider ? stack.copyWithCount(1) : stack;
+        Arrays.stream(inner.getItems())
+                .map(setCount)
+                .forEach(stackList::add);
+        return stackList;
     }
 
     // Map intersection ingredients to the items inside, as recipe viewers don't support them.
@@ -596,6 +606,11 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     }
 
     private static @Nullable ItemTagList tryMapTag(final Ingredient ingredient, int amount) {
+        if (ingredient.isCustom()) {
+            GTCEu.LOGGER.error("tried to map unexpected ingredient type {}", ingredient.getCustomIngredient());
+            return null;
+        }
+
         var values = ingredient.getValues();
         if (values.length > 0 && values[0] instanceof Ingredient.TagValue(TagKey<Item> tag)) {
             return ItemTagList.of(tag, amount, DataComponentPatch.EMPTY);

@@ -258,7 +258,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder addCondition(RecipeCondition condition) {
+    public GTRecipeBuilder addCondition(RecipeCondition<?> condition) {
         conditions.add(condition);
         return this;
     }
@@ -1348,7 +1348,7 @@ public class GTRecipeBuilder {
         tempItemMaterialStacks = null;
         tempFluidStacks = null;
 
-        output.accept(id, build(), null);
+        output.accept(id.withPrefix(recipeType.registryName.getPath() + "/"), build(), null);
     }
 
     public void addOutputMaterialInfo() {

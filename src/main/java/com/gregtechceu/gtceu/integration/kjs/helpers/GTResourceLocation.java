@@ -21,10 +21,7 @@ import java.util.function.UnaryOperator;
  */
 public record GTResourceLocation(ResourceLocation wrapped) {
 
-    public static final Codec<ResourceLocation> GTCEU_ID = Codec.STRING.comapFlatMap(
-            str -> ResourceLocation.read(GTCEu.appendIdString(str)),
-            s -> s.getNamespace().equals(GTCEu.MOD_ID) ? s.getPath() : s.toString());
-    public static final Codec<GTResourceLocation> CODEC = GTCEU_ID.xmap(GTResourceLocation::new,
+    public static final Codec<GTResourceLocation> CODEC = GTCEu.GTCEU_ID.xmap(GTResourceLocation::new,
             GTResourceLocation::wrapped);
 
     @Nullable
