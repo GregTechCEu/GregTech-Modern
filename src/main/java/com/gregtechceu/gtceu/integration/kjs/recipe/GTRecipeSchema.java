@@ -709,7 +709,7 @@ public interface GTRecipeSchema {
 
             if (!generatingRecipes) {
                 throw new KubeRuntimeException(
-                       "Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
+                        "Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, List.of());
