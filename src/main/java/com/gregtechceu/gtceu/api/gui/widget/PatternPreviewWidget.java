@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SimplePredicate;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 
@@ -349,8 +348,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 for (int z = 0; z < column.length; z++) {
                     BlockState blockState = column[z].getBlockState();
                     BlockPos pos = multiPos.offset(x, y, z);
-                    if (column[z].getBlockEntity(pos,
-                            GTRegistries.builtinRegistry()) instanceof IMachineBlockEntity holder) {
+                    if (column[z].getBlockEntity(pos, LEVEL.registryAccess()) instanceof IMachineBlockEntity holder) {
                         holder.getSelf().setLevel(LEVEL);
                         blockEntitiesToAdd.add(holder.getSelf());
                         if (holder.getMetaMachine() instanceof IMultiController controller) {
@@ -449,7 +447,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                         var item = itemStack.copy();
                         item.setCount(amount);
                         return item;
-                    }).<ItemStack>filter(item -> !item.isEmpty()).toList();
+                    }).filter((ItemStack item) -> !item.isEmpty()).toList();
         }
     }
 

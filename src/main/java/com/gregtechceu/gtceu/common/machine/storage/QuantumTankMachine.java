@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -118,7 +118,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //////////////////////////////////////
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -153,10 +153,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(this.getLevel().registryAccess()));
-        tag.put("stored", stored.save(this.getLevel().registryAccess()));
+        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(MixinHelpers.getCurrentBERegistries()));
+        tag.put("stored", stored.save(MixinHelpers.getCurrentBERegistries()));
         tag.putLong("storedAmount", storedAmount);
-        tag.putLong("maxAmount", maxAmount);
     }
 
     @Override
@@ -164,9 +163,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         super.loadCustomPersistedData(tag);
 
         var from = tag.contains("cache") ? tag.getCompound("cache") : tag;
-        this.lockedFluid.readFromNBT(GTRegistries.builtinRegistry(), from.getCompound("lockedFluid"));
+        this.lockedFluid.readFromNBT(MixinHelpers.getCurrentBERegistries(), from.getCompound("lockedFluid"));
 
-        var stored = FluidStack.parseOptional(GTRegistries.builtinRegistry(), tag.getCompound("stored"));
+        var stored = FluidStack.parseOptional(MixinHelpers.getCurrentBERegistries(), tag.getCompound("stored"));
         this.stored = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
 
         if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
@@ -175,7 +174,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.ExDataComponentInput componentInput) {
+    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         LargeFluidContent storage = componentInput.getOrDefault(GTDataComponents.LARGE_FLUID_CONTENT,
                 LargeFluidContent.EMPTY);
@@ -184,9 +183,16 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     @Override
-    public void collectImplicitComponents(DataComponentMap.Builder components) {
+    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
         super.collectImplicitComponents(components);
         components.set(GTDataComponents.LARGE_FLUID_CONTENT, new LargeFluidContent(stored, storedAmount));
+    }
+
+    @Override
+    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeItemComponentsFromTag(tag);
+        tag.remove("stored");
+        tag.remove("storedAmount");
     }
 
     //////////////////////////////////////

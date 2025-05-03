@@ -11,7 +11,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -57,23 +56,21 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
     @Override
     protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor,
                               BlockEntity blockEntity, IPluginConfig iPluginConfig) {
-        if (compoundTag.contains("hasProblems", Tag.TAG_BYTE)) {
-            if (compoundTag.getBoolean("hasProblems")) {
-                if (blockAccessor.showDetails()) {
-                    int problems = compoundTag.getInt("maintenanceProblems");
-                    for (byte i = 0; i < 6; i++) {
-                        if (((problems >> i) & 1) == 0) {
-                            var tuple = GTUtil.getMaintenanceText(i);
-                            iTooltip.add(IElementHelper.get().smallItem(tuple.getA()));
-                            iTooltip.append(tuple.getB());
-                        }
+        if (compoundTag.getBoolean("hasProblems")) {
+            if (blockAccessor.showDetails()) {
+                int problems = compoundTag.getInt("maintenanceProblems");
+                for (byte i = 0; i < 6; i++) {
+                    if (((problems >> i) & 1) == 0) {
+                        var tuple = GTUtil.getMaintenanceText(i);
+                        iTooltip.add(IElementHelper.get().smallItem(tuple.getA()));
+                        iTooltip.append(tuple.getB());
                     }
-                } else {
-                    iTooltip.add(Component.translatable("gtceu.top.maintenance_broken").withStyle(ChatFormatting.RED));
                 }
             } else {
-                iTooltip.add(Component.translatable("gtceu.top.maintenance_fixed").withStyle(ChatFormatting.GREEN));
+                iTooltip.add(Component.translatable("gtceu.top.maintenance_broken").withStyle(ChatFormatting.RED));
             }
+        } else {
+            iTooltip.add(Component.translatable("gtceu.top.maintenance_fixed").withStyle(ChatFormatting.GREEN));
         }
     }
 }

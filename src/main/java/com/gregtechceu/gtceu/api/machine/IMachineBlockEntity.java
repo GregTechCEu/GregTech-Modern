@@ -14,6 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * A simple compound Interface for all my TileEntities.
  * <p/>
@@ -26,7 +28,7 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
         return (BlockEntity) this;
     }
 
-    default Level level() {
+    default @Nullable Level level() {
         return self().getLevel();
     }
 
@@ -35,28 +37,31 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
     }
 
     default void notifyBlockUpdate() {
-        if (level() != null) {
-            level().updateNeighborsAt(pos(), level().getBlockState(pos()).getBlock());
+        Level level = level();
+        if (level != null) {
+            level.updateNeighborsAt(pos(), level.getBlockState(pos()).getBlock());
         }
     }
 
     default void scheduleRenderUpdate() {
         var pos = pos();
-        if (level() != null) {
-            var state = level().getBlockState(pos);
-            if (level().isClientSide) {
-                level().sendBlockUpdated(pos, state, state, 1 << 3);
+        Level level = level();
+        if (level != null) {
+            var state = level.getBlockState(pos);
+            if (level.isClientSide) {
+                level.sendBlockUpdated(pos, state, state, 1 << 3);
             } else {
-                level().blockEvent(pos, state.getBlock(), 1, 0);
+                level.blockEvent(pos, state.getBlock(), 1, 0);
             }
         }
     }
 
     default long getOffsetTimer() {
-        if (level() == null) return getOffset();
-        else if (level().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
+        Level level = level();
+        if (level == null) return getOffset();
+        else if (level.isClientSide()) return GTValues.CLIENT_TIME + getOffset();
 
-        var server = level().getServer();
+        var server = level.getServer();
         if (server != null) return server.getTickCount() + getOffset();
         return getOffset();
     }

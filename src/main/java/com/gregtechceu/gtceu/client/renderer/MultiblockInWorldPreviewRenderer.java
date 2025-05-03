@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.RotationState;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
@@ -197,7 +196,7 @@ public class MultiblockInWorldPreviewRenderer {
                     BlockPos realPos = pos.offset(offset);
 
                     // spotless:off
-                    if (column[z].getBlockEntity(realPos, GTRegistries.builtinRegistry()) instanceof IMachineBlockEntity holder &&
+                    if (column[z].getBlockEntity(realPos, controller.getLevel().registryAccess()) instanceof IMachineBlockEntity holder &&
                             holder.getMetaMachine() instanceof IMultiController cont) {
                         holder.getSelf().setLevel(LEVEL);
                         controllerBase = cont;

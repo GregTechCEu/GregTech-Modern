@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.utils.SerializableManagedGridNode;
 
@@ -91,12 +91,12 @@ public class GridNodeHolder extends MachineTrait {
 
     @SuppressWarnings("unused")
     public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
-        return node.serializeNBT(GTRegistries.builtinRegistry());
+        return node.serializeNBT(MixinHelpers.getCurrentBERegistries());
     }
 
     @SuppressWarnings("unused")
     public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
-        this.mainNode.deserializeNBT(GTRegistries.builtinRegistry(), tag);
+        this.mainNode.deserializeNBT(MixinHelpers.getCurrentBERegistries(), tag);
         return this.mainNode;
     }
 }

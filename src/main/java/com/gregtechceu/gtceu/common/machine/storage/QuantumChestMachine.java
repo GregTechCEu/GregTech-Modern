@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -159,21 +159,21 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedItem", lockedItem.serializeNBT(GTRegistries.builtinRegistry()));
-        tag.put("stored", stored.saveOptional(GTRegistries.builtinRegistry()));
+        if (!forDrop) tag.put("lockedItem", lockedItem.serializeNBT(MixinHelpers.getCurrentBERegistries()));
+        tag.put("stored", stored.saveOptional(MixinHelpers.getCurrentBERegistries()));
         tag.putLong("storedAmount", storedAmount);
     }
 
     @Override
     public void loadCustomPersistedData(@NotNull CompoundTag tag) {
         super.loadCustomPersistedData(tag);
-        lockedItem.deserializeNBT(GTRegistries.builtinRegistry(), tag.getCompound("lockedItem"));
-        stored = ItemStack.parseOptional(GTRegistries.builtinRegistry(), tag.getCompound("stored"));
+        lockedItem.deserializeNBT(MixinHelpers.getCurrentBERegistries(), tag.getCompound("lockedItem"));
+        stored = ItemStack.parseOptional(MixinHelpers.getCurrentBERegistries(), tag.getCompound("stored"));
         storedAmount = tag.getLong("storedAmount");
     }
 
     @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.ExDataComponentInput componentInput) {
+    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         LargeItemContent storage = componentInput.getOrDefault(GTDataComponents.LARGE_ITEM_CONTENT,
                 LargeItemContent.EMPTY);
@@ -182,9 +182,16 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     @Override
-    public void collectImplicitComponents(DataComponentMap.Builder components) {
+    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
         super.collectImplicitComponents(components);
         components.set(GTDataComponents.LARGE_ITEM_CONTENT, new LargeItemContent(stored, storedAmount));
+    }
+
+    @Override
+    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeItemComponentsFromTag(tag);
+        tag.remove("stored");
+        tag.remove("storedAmount");
     }
 
     //////////////////////////////////////

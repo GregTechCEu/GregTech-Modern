@@ -216,6 +216,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void collectImplicitComponents(DataComponentMap.Builder components) {}
 
+    public void removeItemComponentsFromTag(CompoundTag tag) {}
+
     //////////////////////////////////////
     // ***** Tickable Manager ****//
     //////////////////////////////////////
@@ -699,7 +701,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     @NotNull
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         @Nullable BlockState sourceState, BlockPos sourcePos) {
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
         if (this instanceof IMultiPart part && part.isFormed()) {

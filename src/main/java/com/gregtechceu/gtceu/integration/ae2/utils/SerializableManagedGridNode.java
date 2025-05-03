@@ -6,6 +6,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.me.ManagedGridNode;
+import org.jetbrains.annotations.NotNull;
 
 public class SerializableManagedGridNode extends ManagedGridNode implements INBTSerializable<CompoundTag> {
 
@@ -14,14 +15,14 @@ public class SerializableManagedGridNode extends ManagedGridNode implements INBT
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
         super.saveToNBT(tag);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
         super.loadFromNBT(tag);
     }
 }

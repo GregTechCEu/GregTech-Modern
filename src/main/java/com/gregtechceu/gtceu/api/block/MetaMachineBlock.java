@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -17,8 +18,6 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -126,12 +124,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                     machine.markDirty();
                 }
             }
-            if (machine instanceof IDropSaveMachine dropSaveMachine) {
-                CustomData tag = pStack.get(DataComponents.BLOCK_ENTITY_DATA);
-                if (tag != null) {
-                    dropSaveMachine.loadFromItem(tag.copyTag());
-                }
-            }
             if (machine instanceof IMachineLife machineLife) {
                 machineLife.onMachinePlaced(player, pStack);
             }
@@ -189,11 +181,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
                                        Player player) {
         ItemStack itemStack = super.getCloneItemStack(state, target, level, pos, player);
-        if (getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
-            CompoundTag tag = itemStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-            // TODO remove in future version.
-            dropSaveMachine.saveToItem(tag);
-            itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
+        MetaMachine machine = getMachine(level, pos);
+        if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
+            dropSaveMachine.saveToItem(itemStack, level.registryAccess());
         }
         return itemStack;
     }
@@ -229,12 +219,21 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
-        if (tileEntity instanceof IMachineBlockEntity holder) {
+        if (blockEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
             if (machine instanceof IMachineModifyDrops machineModifyDrops) {
                 machineModifyDrops.onDrops(drops);
+            }
+            if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
+                for (ItemStack drop : drops) {
+                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
+                        dropSaveMachine.saveToItem(drop, blockEntity.getLevel().registryAccess());
+                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                        break;
+                    }
+                }
             }
         }
         return drops;
@@ -351,7 +350,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     @Nullable
     @Override
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
-                                         @Nullable BlockState sourceState, BlockPos sourcePos) {
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         var machine = getMachine(level, pos);
         if (machine != null) {
             return machine.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);

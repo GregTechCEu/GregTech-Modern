@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -160,12 +161,12 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
     @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.ExDataComponentInput componentInput) {
+    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
         CreativeMachineInfo info = componentInput.get(GTDataComponents.CREATIVE_MACHINE_INFO);
         if (info != null) {
@@ -175,9 +176,16 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public void collectImplicitComponents(DataComponentMap.Builder components) {
+    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
         super.collectImplicitComponents(components);
         components.set(GTDataComponents.CREATIVE_MACHINE_INFO, new CreativeMachineInfo(mBPerCycle, ticksPerCycle));
+    }
+
+    @Override
+    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeItemComponentsFromTag(tag);
+        tag.remove("mBPerCycle");
+        tag.remove("ticksPerCycle");
     }
 
     private class InfiniteCache extends FluidCache {

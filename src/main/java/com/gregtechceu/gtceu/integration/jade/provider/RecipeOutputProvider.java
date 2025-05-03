@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 
 import net.minecraft.ChatFormatting;
@@ -58,7 +57,8 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
-                var ops = GTRegistries.builtinRegistry().createSerializationContext(NbtOps.INSTANCE);
+                var ops = recipeLogic.getMachine().getLevel()
+                        .registryAccess().createSerializationContext(NbtOps.INSTANCE);
 
                 ListTag itemTags = new ListTag();
                 for (var item : itemContents) {
@@ -115,7 +115,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (capData.getBoolean("Working")) {
-            var ops = GTRegistries.builtinRegistry().createSerializationContext(NbtOps.INSTANCE);
+            var ops = block.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
 
             List<ItemStack> outputItems = new ArrayList<>();
             if (capData.contains("OutputItems", Tag.TAG_LIST)) {
