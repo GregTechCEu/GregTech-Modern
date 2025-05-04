@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
@@ -34,7 +33,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -197,15 +195,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (!isRemote()) {
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
-            var blockState = getBlockState();
-            if (!blockState.getValue(BlockProperties.SERVER_TICK)) {
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    blockState = blockState.setValue(BlockProperties.SERVER_TICK, true);
-                    setBlockState(blockState);
-                    serverLevel.getServer().tell(new TickTask(0, () -> serverLevel.setBlockAndUpdate(getBlockPos(),
-                            getBlockState().setValue(BlockProperties.SERVER_TICK, true))));
-                }
-            }
             return subscription;
         }
         return null;
@@ -222,8 +211,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
         }
-        var iter = serverTicks.iterator();
-        while (iter.hasNext()) {
+        for (var iter = serverTicks.iterator(); iter.hasNext();) {
             var tickable = iter.next();
             if (tickable.isStillSubscribed()) {
                 tickable.run();
@@ -231,9 +219,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (!tickable.isStillSubscribed()) {
                 iter.remove();
             }
-        }
-        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !this.isRemoved()) {
-            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
         }
     }
 
