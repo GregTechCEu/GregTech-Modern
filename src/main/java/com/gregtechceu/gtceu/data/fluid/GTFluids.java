@@ -42,6 +42,9 @@ public class GTFluids {
 
         // register fluids for materials
         REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_FLUID);
+    }
+
+    public static void generateMaterialFluids() {
         for (var material : GTCEuAPI.materialManager) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
 

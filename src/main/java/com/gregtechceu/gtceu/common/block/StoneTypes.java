@@ -17,22 +17,19 @@ import java.util.function.Supplier;
 
 public enum StoneTypes implements StringRepresentable {
 
-    STONE("stone", MapColor.STONE, true, () -> Blocks.STONE::defaultBlockState, GTMaterials.Stone, false),
-    DEEPSLATE("deepslate", MapColor.DEEPSLATE, true, () -> Blocks.DEEPSLATE::defaultBlockState, GTMaterials.Deepslate,
-            false),
-    RED_GRANITE("red_granite", MapColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState,
-            GTMaterials.RedGranite),
-    MARBLE("marble", MapColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, GTMaterials.Marble),
-    ANDESITE("andesite", MapColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, GTMaterials.Andesite, false),
-    GRANITE("granite", MapColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, GTMaterials.Granite, false),
-    DIORITE("diorite", MapColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, GTMaterials.Diorite, false),
-    BASALT("basalt", MapColor.TERRACOTTA_BLACK, true, () -> Blocks.BASALT::defaultBlockState, GTMaterials.Basalt,
-            false),
-    CONCRETE_LIGHT("light_concrete", MapColor.STONE, false, () -> GTBlocks.LIGHT_CONCRETE::getDefaultState,
-            GTMaterials.Concrete),
-    CONCRETE_DARK("dark_concrete", MapColor.STONE, false, () -> GTBlocks.DARK_CONCRETE::getDefaultState,
-            GTMaterials.Concrete),
+    // spotless:off
+    STONE("stone", MapColor.STONE, true, () -> Blocks.STONE::defaultBlockState, () -> GTMaterials.Stone, false),
+    DEEPSLATE("deepslate", MapColor.DEEPSLATE, true, () -> Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, false),
+    RED_GRANITE("red_granite", MapColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState, () -> GTMaterials.RedGranite),
+    MARBLE("marble", MapColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, () -> GTMaterials.Marble),
+    ANDESITE("andesite", MapColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, false),
+    GRANITE("granite", MapColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, () -> GTMaterials.Granite, false),
+    DIORITE("diorite", MapColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, () -> GTMaterials.Diorite, false),
+    BASALT("basalt", MapColor.TERRACOTTA_BLACK, true, () -> Blocks.BASALT::defaultBlockState, () -> GTMaterials.Basalt, false),
+    CONCRETE_LIGHT("light_concrete", MapColor.STONE, false, () -> GTBlocks.LIGHT_CONCRETE::getDefaultState, () -> GTMaterials.Concrete),
+    CONCRETE_DARK("dark_concrete", MapColor.STONE, false, () -> GTBlocks.DARK_CONCRETE::getDefaultState, () -> GTMaterials.Concrete),
             ;
+    // spotless:on
 
     private final String name;
     public final MapColor mapColor;
@@ -40,18 +37,17 @@ public enum StoneTypes implements StringRepresentable {
     public final boolean natural;
     @Getter
     public final Supplier<Supplier<BlockState>> state;
-    @Getter
-    public final Material material;
+    public final Supplier<Material> material;
 
     public final boolean generateBlocks;
 
     StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
-               Material material) {
+               Supplier<Material> material) {
         this(name, mapColor, natural, state, material, true);
     }
 
     StoneTypes(@NotNull String name, @NotNull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
-               Material material, boolean generateBlocks) {
+               Supplier<Material> material, boolean generateBlocks) {
         this.name = name;
         this.mapColor = mapColor;
         this.natural = natural;
@@ -73,6 +69,10 @@ public enum StoneTypes implements StringRepresentable {
             case CONCRETE_LIGHT, CONCRETE_DARK -> TagPrefix.block;
             default -> TagPrefix.block;
         };
+    }
+
+    public Material getMaterial() {
+        return material.get();
     }
 
     public static void init() {}

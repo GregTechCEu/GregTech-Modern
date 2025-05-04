@@ -66,7 +66,7 @@ dependencies {
 //    runtimeOnly(forge.bundles.rei.runtime)
 
     //////////////////////////////////////////////////////
-    // Runtime s for dev testing with unclean client //
+    // Runtime mods for dev testing with unclean client //
     //////////////////////////////////////////////////////
     extraRuntimeOnly(forge.javd)
     extraRuntimeOnly(forge.trenzalore)
@@ -79,7 +79,7 @@ dependencies {
     extraRuntimeOnly(forge.ftbteams)
     extraRuntimeOnly(forge.ftbquests)
 
-    extraRuntimeOnly(forge.heracles)
+//    extraRuntimeOnly(forge.heracles)
     extraRuntimeOnly(forge.resourcefullib)
 
 //    extraRuntimeOnly(forge.xaerosminimap)
@@ -87,8 +87,10 @@ dependencies {
 //    extraRuntimeOnly(forge.journeymap.forge)
 //    extraRuntimeOnly(forge.ftbchunks)
 
-    extraRuntimeOnly(forge.gamestages)
-    extraRuntimeOnly(forge.bookshelf)
+//    extraRuntimeOnly(forge.gamestages)
+    extraRuntimeOnly(forge.bookshelf) {
+        transitive = false
+    }
 
     extraRuntimeOnly(forge.spark)
     extraRuntimeOnly(forge.observable)

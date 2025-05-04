@@ -2525,10 +2525,7 @@ public class GTItems {
             .lang("Treated Wood Boat with Chest")
             .register();
 
-    public static void init() {
-        GTMaterialItems.generateMaterialItems();
-        GTMaterialItems.generateTools();
-    }
+    public static void init() {}
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
         return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo);

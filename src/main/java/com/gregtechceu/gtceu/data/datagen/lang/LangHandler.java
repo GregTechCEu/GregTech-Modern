@@ -505,6 +505,7 @@ public class LangHandler {
         provider.add("cover.shutter.message.enabled", "Closed shutter");
         provider.add("cover.shutter.message.disabled", "Opened shutter");
 
+        provider.add("item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         // greg's humor is now on 1.21...
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite");

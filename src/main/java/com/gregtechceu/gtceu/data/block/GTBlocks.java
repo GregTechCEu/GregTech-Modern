@@ -1411,28 +1411,11 @@ public class GTBlocks {
         // Decor Blocks
         generateStoneBlocks();
 
-        // Procedural Blocks
-        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
-        GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
-        GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
-        GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
-        GTMaterialBlocks.MATERIAL_BLOCKS = GTMaterialBlocks.MATERIAL_BLOCKS_BUILDER.build();
-
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
-        GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
-        GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
-        GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
         generateLaserPipeBlocks();    // Laser Pipe Blocks
         generateOpticalPipeBlocks();  // Optical Pipe Blocks
         generateDuctPipeBlocks();     // Duct Pipe Blocks
-
-        // Remove Builder Tables
-        GTMaterialBlocks.MATERIAL_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.SURFACE_ROCK_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.CABLE_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.FLUID_PIPE_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.ITEM_PIPE_BLOCKS_BUILDER = null;
 
         // GCYM
         GCYMBlocks.init();

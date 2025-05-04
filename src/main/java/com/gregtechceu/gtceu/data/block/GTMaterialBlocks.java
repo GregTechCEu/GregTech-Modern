@@ -138,6 +138,11 @@ public class GTMaterialBlocks {
         }
     }
 
+    public static void buildMaterialBlockTable() {
+        MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
+        MATERIAL_BLOCKS_BUILDER = null;
+    }
+
     // Material Ore Indicator Piles
     public static void generateOreIndicators() {
         GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks...");
@@ -148,6 +153,7 @@ public class GTMaterialBlocks {
             }
         }
         SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
+        SURFACE_ROCK_BLOCKS_BUILDER = null;
         GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks... Complete!");
     }
 
@@ -185,6 +191,7 @@ public class GTMaterialBlocks {
             }
         }
         CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
+        CABLE_BLOCKS_BUILDER = null;
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
 
@@ -225,6 +232,7 @@ public class GTMaterialBlocks {
             }
         }
         FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
+        FLUID_PIPE_BLOCKS_BUILDER = null;
         GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
     }
 
@@ -270,6 +278,7 @@ public class GTMaterialBlocks {
             }
         }
         ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
+        ITEM_PIPE_BLOCKS_BUILDER = null;
         GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
     }
 
