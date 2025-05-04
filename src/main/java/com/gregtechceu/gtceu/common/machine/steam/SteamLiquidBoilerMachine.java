@@ -22,6 +22,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     // ***** Initialization *****//
     //////////////////////////////////////
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 

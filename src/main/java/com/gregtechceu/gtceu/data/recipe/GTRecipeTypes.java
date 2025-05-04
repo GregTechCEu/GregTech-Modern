@@ -64,15 +64,15 @@ public class GTRecipeTypes {
     public final static GTRecipeType STEAM_BOILER_RECIPES = register("steam_boiler", STEAM)
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
+            .setMaxTooltips(1)
             .onRecipeBuild((builder, provider) -> {
-                // remove the * 12 if SteamBoilerMachine:240 is uncommented
                 var duration = (builder.duration / 12 / 80); // copied for large boiler
                 if (duration > 0) {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
-            .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .addCustomRecipeLogic(SmallBoilerLogic.INSTANCE);
 
     //////////////////////////////////////
     // ********* Common *********//
@@ -483,7 +483,8 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 0, 1, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(true), DOWN_TO_UP)
             .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .addCustomRecipeLogic(LargeBoilerLogic.INSTANCE);
 
     public final static GTRecipeType COKE_OVEN_RECIPES = register("coke_oven", MULTIBLOCK).setMaxIOSize(1, 1, 0, 1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)

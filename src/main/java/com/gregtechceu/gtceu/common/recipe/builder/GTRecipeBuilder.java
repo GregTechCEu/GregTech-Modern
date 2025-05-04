@@ -321,55 +321,41 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Object input) {
-        switch (input) {
-            case Item item:
-                return inputItems(item);
-            case Supplier<?> supplier when supplier.get() instanceof ItemLike item:
-                return inputItems(item.asItem());
-            case ItemStack stack:
-                return inputItems(stack);
-            case Ingredient ingredient:
-                return inputItems(ingredient);
-            case SizedIngredient ingredient:
-                return inputItems(ingredient);
-            case MaterialEntry entry:
-                return inputItems(entry);
-            case TagKey<?> tag:
-                return inputItems((TagKey<Item>) tag);
-            case MachineDefinition machine:
-                return inputItems(machine);
-            default:
+        return switch (input) {
+            case Item item -> inputItems(item);
+            case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> inputItems(item.asItem());
+            case ItemStack stack -> inputItems(stack);
+            case Ingredient ingredient -> inputItems(ingredient);
+            case SizedIngredient ingredient -> inputItems(ingredient);
+            case MaterialEntry entry -> inputItems(entry);
+            case TagKey<?> tag -> inputItems((TagKey<Item>) tag);
+            case MachineDefinition machine -> inputItems(machine);
+            default -> {
                 GTCEu.LOGGER.error("Input item is not one of:\n" +
                         "Item, Supplier<Item>, ItemStack, Ingredient, " +
                         "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
-                return this;
-        }
+                yield this;
+            }
+        };
     }
 
     public GTRecipeBuilder inputItems(Object input, int count) {
-        switch (input) {
-            case Item item:
-                return inputItems(item, count);
-            case Supplier<?> supplier when supplier.get() instanceof ItemLike item:
-                return inputItems(item.asItem(), count);
-            case ItemStack stack:
-                return inputItems(stack.copyWithCount(count));
-            case Ingredient ingredient:
-                return inputItems(ingredient, count);
-            case SizedIngredient ingredient:
-                return inputItems(ingredient.ingredient(), count);
-            case MaterialEntry entry:
-                return inputItems(entry, count);
-            case TagKey<?> tag:
-                return inputItems((TagKey<Item>) tag, count);
-            case MachineDefinition machine:
-                return inputItems(machine, count);
-            default:
+        return switch (input) {
+            case Item item -> inputItems(item, count);
+            case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> inputItems(item.asItem(), count);
+            case ItemStack stack -> inputItems(stack.copyWithCount(count));
+            case Ingredient ingredient -> inputItems(ingredient, count);
+            case SizedIngredient ingredient -> inputItems(ingredient.ingredient(), count);
+            case MaterialEntry entry -> inputItems(entry, count);
+            case TagKey<?> tag -> inputItems((TagKey<Item>) tag, count);
+            case MachineDefinition machine -> inputItems(machine, count);
+            default -> {
                 GTCEu.LOGGER.error("Input item is not one of:\n" +
                         "Item, Supplier<Item>, ItemStack, Ingredient, " +
                         "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
-                return this;
-        }
+                yield this;
+            }
+        };
     }
 
     public GTRecipeBuilder inputItems(Ingredient input) {
@@ -509,51 +495,39 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItems(Object output) {
-        switch (output) {
-            case Item item:
-                return outputItems(item);
-            case Supplier<?> supplier when supplier.get() instanceof ItemLike item:
-                return outputItems(item.asItem());
-            case Ingredient ingredient:
-                return outputItems(ingredient);
-            case SizedIngredient ingredient:
-                return outputItems(ingredient);
-            case ItemStack stack:
-                return outputItems(stack);
-            case MaterialEntry entry:
-                return outputItems(entry);
-            case MachineDefinition machine:
-                return outputItems(machine);
-            default:
+        return switch (output) {
+            case Item item -> outputItems(item);
+            case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem());
+            case Ingredient ingredient -> outputItems(ingredient);
+            case SizedIngredient ingredient -> outputItems(ingredient);
+            case ItemStack stack -> outputItems(stack);
+            case MaterialEntry entry -> outputItems(entry);
+            case MachineDefinition machine -> outputItems(machine);
+            default -> {
                 GTCEu.LOGGER.error("Output item is not one of:\n" +
                         "Item, Supplier<Item>, ItemStack, Ingredient, " +
                         "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
-                return this;
-        }
+                yield this;
+            }
+        };
     }
 
     public GTRecipeBuilder outputItems(Object output, int count) {
-        switch (output) {
-            case Item item:
-                return outputItems(item, count);
-            case Supplier<?> supplier when supplier.get() instanceof ItemLike item:
-                return outputItems(item.asItem(), count);
-            case ItemStack stack:
-                return outputItems(stack.copyWithCount(count));
-            case MaterialEntry entry:
-                return outputItems(entry, count);
-            case Ingredient ingredient:
-                return outputItems(ingredient, count);
-            case SizedIngredient ingredient:
-                return outputItems(ingredient.ingredient(), count);
-            case MachineDefinition machine:
-                return outputItems(machine, count);
-            default:
+        return switch (output) {
+            case Item item -> outputItems(item, count);
+            case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem(), count);
+            case ItemStack stack -> outputItems(stack.copyWithCount(count));
+            case MaterialEntry entry -> outputItems(entry, count);
+            case Ingredient ingredient -> outputItems(ingredient, count);
+            case SizedIngredient ingredient -> outputItems(ingredient.ingredient(), count);
+            case MachineDefinition machine -> outputItems(machine, count);
+            default -> {
                 GTCEu.LOGGER.error("Output item is not one of:\n" +
                         "Item, Supplier<Item>, ItemStack, Ingredient, " +
                         "MaterialEntry, TagKey<Item>, MachineDefinition, id: {}", id);
-                return this;
-        }
+                yield this;
+            }
+        };
     }
 
     public GTRecipeBuilder outputItems(Ingredient input) {

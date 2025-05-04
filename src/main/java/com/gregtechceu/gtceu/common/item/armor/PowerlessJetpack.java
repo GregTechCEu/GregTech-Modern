@@ -38,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     private int burnTimer = 0;
 
     @OnlyIn(Dist.CLIENT)
-    private ArmorUtils.ModularHUD HUD;
+    private ArmorUtils.@UnknownNullability ModularHUD HUD;
 
     public PowerlessJetpack() {
         if (GTCEu.isClientSide())

@@ -18,6 +18,6 @@ public class GTStringUtils {
     @NotNull
     public static String itemStackToString(@NotNull ItemStack stack) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        return stack.getCount() + "x_" + itemId.getNamespace() + "_" + itemId.getPath();
+        return stack.getCount() + "x_" + itemId.toDebugFileName();
     }
 }

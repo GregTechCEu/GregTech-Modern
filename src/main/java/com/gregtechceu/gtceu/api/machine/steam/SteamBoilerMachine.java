@@ -82,14 +82,14 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public SteamBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.waterTank = createWaterTank(args);
-        this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
+        this.waterTank.setFilter(fluid -> fluid.is(GTMaterials.Water.getFluidTag()));
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -172,19 +172,22 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected void updateCurrentTemperature() {
         if (recipeLogic.isWorking()) {
             if (getOffsetTimer() % 12 == 0) {
-                if (currentTemperature < getMaxTemperature())
+                if (currentTemperature < getMaxTemperature()) {
                     if (isHighPressure) {
                         currentTemperature++;
                     } else if (getOffsetTimer() % 24 == 0) {
                         currentTemperature++;
                     }
+                }
             }
         } else if (timeBeforeCoolingDown == 0) {
             if (currentTemperature > 0) {
                 currentTemperature -= getCoolDownRate();
                 timeBeforeCoolingDown = getCooldownInterval();
             }
-        } else--timeBeforeCoolingDown;
+        } else {
+            --timeBeforeCoolingDown;
+        }
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
@@ -198,7 +201,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     doExplosion(2.0f);
-                } else this.hasNoWater = !hasDrainedWater;
+                } else {
+                    this.hasNoWater = !hasDrainedWater;
+                }
                 if (filledSteam == 0 && hasDrainedWater && getLevel() instanceof ServerLevel serverLevel) {
                     final float x = getPos().getX() + 0.5F;
                     final float y = getPos().getY() + 0.5F;
@@ -221,7 +226,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                     // bypass capability check for special case behavior
                     steamTank.drainInternal(FluidType.BUCKET_VOLUME * 4, FluidAction.EXECUTE);
                 }
-            } else this.hasNoWater = false;
+            } else {
+                this.hasNoWater = false;
+            }
         }
         updateSteamSubscription();
     }
@@ -287,8 +294,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     protected ItemInteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, ItemStack held,
-                                                      Direction gridSide,
-                                                      BlockHitResult hitResult) {
+                                                      Direction gridSide, BlockHitResult hitResult) {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
