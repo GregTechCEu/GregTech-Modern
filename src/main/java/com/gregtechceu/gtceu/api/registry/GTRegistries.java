@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +31,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.IdMappingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -43,7 +45,7 @@ public final class GTRegistries {
     public static final ResourceLocation ROOT_GT_REGISTRY_NAME = GTCEu.id("root");
     // spotless:off
     public static final ResourceKey<Registry<Registry<?>>> ROOT_REGISTRY = makeRegistryKey(ROOT_GT_REGISTRY_NAME);
-    private static final List<ResourceLocation> LOAD_ORDER = new ArrayList<>();
+    private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
 
     public static final ResourceKey<Registry<OreVeinDefinition>> ORE_VEIN_REGISTRY = makeRegistryKey(GTCEu.id("ore_vein"));
     public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID_REGISTRY = makeRegistryKey(GTCEu.id("bedrock_fluid"));
@@ -65,45 +67,44 @@ public final class GTRegistries {
     public static final ResourceKey<Registry<SoundEntry>> SOUND_REGISTRY = makeRegistryKey(GTCEu.id("sound"));
     public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER_REGISTRY = makeRegistryKey(GTCEu.id("dimension_marker"));
 
-    // GT Registry
-    public static final GTRegistry<Registry<?>> ROOT = new GTRegistry<>(ROOT_REGISTRY);
-    static {
-        ROOT.unfreeze();
-    }
-
-    public static final GTRegistry<Element> ELEMENTS = makeRegistry(ELEMENT_REGISTRY);
+    // GT Registries
+    public static final MappedRegistry<Element> ELEMENTS = makeRegistry(ELEMENT_REGISTRY);
     public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
-    public static final GTRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(TAG_PREFIX_REGISTRY);
+    public static final MappedRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(TAG_PREFIX_REGISTRY);
 
-    public static final GTRegistry<SoundEntry> SOUNDS = makeRegistry(SOUND_REGISTRY);
-    public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(CHANCE_LOGIC_REGISTRY);
-    public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(RECIPE_CAPABILITY_REGISTRY);
-    public static final GTRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(RECIPE_CONDITION_REGISTRY);
-    public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(RECIPE_CATEGORY_REGISTRY);
+    public static final MappedRegistry<SoundEntry> SOUNDS = makeRegistry(SOUND_REGISTRY, false);
+    public static final MappedRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(CHANCE_LOGIC_REGISTRY);
+    public static final MappedRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(RECIPE_CAPABILITY_REGISTRY);
+    public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(RECIPE_CONDITION_REGISTRY);
+    public static final MappedRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(RECIPE_CATEGORY_REGISTRY);
 
-    public static final GTRegistry<MachineDefinition> MACHINES = makeRegistry(MACHINE_REGISTRY);
-    public static final GTRegistry<CoverDefinition> COVERS = makeRegistry(COVER_REGISTRY);
+    public static final MappedRegistry<MachineDefinition> MACHINES = makeRegistry(MACHINE_REGISTRY);
+    public static final MappedRegistry<CoverDefinition> COVERS = makeRegistry(COVER_REGISTRY);
 
-    public static final GTRegistry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(TOOL_BEHAVIOR_REGISTRY);
-    public static final GTRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(DIMENSION_MARKER_REGISTRY);
+    public static final MappedRegistry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(TOOL_BEHAVIOR_REGISTRY);
+    public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(DIMENSION_MARKER_REGISTRY, false);
     // spotless:on
 
     public static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <T> GTRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
-        GTRegistry<T> registry = new GTRegistry<>(key);
-        LOAD_ORDER.add(key.location());
-        return ROOT.register((ResourceKey) key, registry);
+    public static <T> MappedRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
+        return makeRegistry(key, true);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <T> MappedRegistry<T> makeRegistry(ResourceKey<Registry<T>> key, boolean sync) {
+        MappedRegistry<T> registry = (MappedRegistry<T>) new RegistryBuilder<>(key)
+                .sync(sync)
+                .create();
+        LOAD_ORDER.put(key.location(), registry);
+        return registry;
+    }
+
     private static MaterialRegistry makeMaterialRegistry() {
         MaterialRegistry registry = new MaterialRegistry(MATERIAL_REGISTRY);
-        LOAD_ORDER.add(MATERIAL_REGISTRY.location());
-        return ROOT.register((ResourceKey) MATERIAL_REGISTRY, registry);
+        LOAD_ORDER.put(MATERIAL_REGISTRY.location(), registry);
+        return registry;
     }
 
     private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
@@ -139,13 +140,18 @@ public final class GTRegistries {
 
     public static void init(IEventBus eventBus) {
         eventBus.addListener(EventPriority.HIGHEST, GTRegistries::onUnfreeze);
-        eventBus.addListener(EventPriority.LOWEST, GTRegistries::actuallyRegister);
+        eventBus.addListener(EventPriority.LOW, GTRegistries::actuallyRegister);
         NeoForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
 
     @UnmodifiableView
     public static List<ResourceLocation> getRegistrationOrder() {
-        return Collections.unmodifiableList(LOAD_ORDER);
+        return List.copyOf(LOAD_ORDER.keySet());
+    }
+
+    @UnmodifiableView
+    public static Collection<Registry<?>> getRegistries() {
+        return LOAD_ORDER.values();
     }
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);

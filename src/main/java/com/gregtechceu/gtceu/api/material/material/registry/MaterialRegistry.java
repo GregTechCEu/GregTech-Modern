@@ -3,21 +3,22 @@ package com.gregtechceu.gtceu.api.material.material.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.IMaterialRegistry;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-public final class MaterialRegistry extends GTRegistry<Material> implements IMaterialRegistry {
+public final class MaterialRegistry extends MappedRegistry<Material> implements IMaterialRegistry {
 
     private final Set<String> usedNamespaces = new HashSet<>();
     private final Map<String, Material> fallbackMaterials = new HashMap<>();
@@ -25,7 +26,7 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
     private boolean isRegistryClosed = false;
 
     public MaterialRegistry(ResourceKey<Registry<Material>> key) {
-        super(key);
+        super(key, Lifecycle.stable());
     }
 
     @Override
@@ -38,13 +39,26 @@ public final class MaterialRegistry extends GTRegistry<Material> implements IMat
         return super.stream();
     }
 
+    // overriding this avoids a mixin.
+    @SuppressWarnings("UnstableApiUsage")
+    @Override
+    public boolean doesSync() {
+        return true;
+    }
+
     public Material register(Material material) {
         return register(material.getResourceLocation(), material);
     }
 
+    private Material register(ResourceLocation id, Material material) {
+        this.register(ResourceKey.create(this.key(), id), material, RegistrationInfo.BUILT_IN);
+        return material;
+    }
+
     @Override
     public Material getMaterial(ResourceLocation name) {
-        return getOrDefault(name, GTMaterials.NULL);
+        Material value = get(name);
+        return value != null ? value : GTMaterials.NULL;
     }
 
     @Override

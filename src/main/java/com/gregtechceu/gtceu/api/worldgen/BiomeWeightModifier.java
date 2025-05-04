@@ -11,20 +11,24 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
 
     public static final BiomeWeightModifier EMPTY = new BiomeWeightModifier(HolderSet.empty(), 0);
-
+    // spotless:off
     public static final Codec<BiomeWeightModifier> SINGLE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(mod -> mod.biomes),
-            Codec.INT.fieldOf("added_weight").forGetter(mod -> mod.addedWeight))
-            .apply(instance, BiomeWeightModifier::new));
+            Codec.INT.fieldOf("added_weight").forGetter(mod -> mod.addedWeight)
+    ).apply(instance, BiomeWeightModifier::new));
 
     public static final Codec<BiomeWeightModifier> CODEC = Codec
-            .lazyInitialized(() -> Codec.withAlternative(SINGLE_CODEC, FromList.CODEC));
+            .lazyInitialized(() -> Codec.withAlternative(FromList.CODEC, SINGLE_CODEC, BiomeWeightModifier::flattenAndWrap))
+            .xmap(Function.identity(), BiomeWeightModifier::flattenAndWrap);
+    // spotless:on
 
     public HolderSet<Biome> biomes;
     public int addedWeight;
@@ -50,7 +54,27 @@ public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
         if (modifiers.isEmpty()) {
             return EMPTY;
         }
-        return new FromList(modifiers);
+        List<BiomeWeightModifier> flat = new ArrayList<>();
+        for (BiomeWeightModifier inner : modifiers) {
+            flat.addAll(flatten(inner));
+        }
+        return new FromList(flat);
+    }
+
+    public static List<BiomeWeightModifier> flatten(BiomeWeightModifier modifier) {
+        if (modifier instanceof FromList list) {
+            List<BiomeWeightModifier> flat = new ArrayList<>();
+            for (BiomeWeightModifier inner : list.originalModifiers) {
+                flat.addAll(flatten(inner));
+            }
+            return flat;
+        } else {
+            return Collections.singletonList(modifier);
+        }
+    }
+
+    public static FromList flattenAndWrap(BiomeWeightModifier modifier) {
+        return new FromList(flatten(modifier));
     }
 
     public static class FromList extends BiomeWeightModifier {

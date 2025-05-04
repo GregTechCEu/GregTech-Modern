@@ -216,7 +216,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void collectImplicitComponents(DataComponentMap.Builder components) {}
 
-    public void removeItemComponentsFromTag(CompoundTag tag) {}
+    public void removeItemComponentsFromTag(CompoundTag tag) {
+        // Just clear the tag by default.
+        Set.copyOf(tag.getAllKeys()).forEach(tag::remove);
+    }
 
     //////////////////////////////////////
     // ***** Tickable Manager ****//

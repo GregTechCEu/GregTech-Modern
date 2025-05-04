@@ -22,7 +22,10 @@ public interface IMaterialRegistry extends Iterable<Material> {
     Collection<String> getUsedNamespaces();
 
     /**
-     * Register a material.
+     * Register a material.<br>
+     * You must register any materials in a registration event
+     * with {@link net.neoforged.bus.api.EventPriority#HIGHEST priority=HIGHEST},
+     * as anything else may be skipped if your mod is loaded after GT.
      *
      * @param material the material to register
      * @return the same material.

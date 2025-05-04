@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import com.mojang.serialization.Codec;
@@ -22,17 +23,18 @@ import java.util.stream.Collectors;
 public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior<?>> behaviors) {
 
     public static final ToolBehaviors EMPTY = new ToolBehaviors(Map.of());
+    // spotless:off
+    public static final Codec<Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_CODEC = Codec
+            .dispatchedMap(GTRegistries.TOOL_BEHAVIORS.byNameCodec(), ToolBehaviorType::getCodec);
+    public static final Codec<ToolBehaviors> CODEC = MAP_CODEC.xmap(ToolBehaviors::new, ToolBehaviors::behaviors);
 
-    public static final Codec<ToolBehaviors> CODEC = Codec
-            .dispatchedMap(GTRegistries.TOOL_BEHAVIORS.byNameCodec(), type -> (Codec<IToolBehavior<?>>) type.getCodec())
-            .xmap(ToolBehaviors::new, ToolBehaviors::behaviors);
-    public static final StreamCodec<RegistryFriendlyByteBuf, ToolBehaviors> STREAM_CODEC = StreamCodecUtils
-            .dispatchMap(
-                    size -> (Map<ToolBehaviorType<?>, IToolBehavior<?>>) new HashMap<ToolBehaviorType<?>, IToolBehavior<?>>(
-                            size),
-                    GTRegistries.TOOL_BEHAVIORS.streamCodec(),
-                    type -> (StreamCodec<? super RegistryFriendlyByteBuf, IToolBehavior<?>>) type.getStreamCodec())
+    public static final StreamCodec<RegistryFriendlyByteBuf, Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_STREAM_CODEC = StreamCodecUtils.dispatchMap(
+            HashMap::new,
+            ByteBufCodecs.registry(GTRegistries.TOOL_BEHAVIOR_REGISTRY),
+            type -> (StreamCodec<? super RegistryFriendlyByteBuf, IToolBehavior<?>>) type.getStreamCodec());
+    public static final StreamCodec<RegistryFriendlyByteBuf, ToolBehaviors> STREAM_CODEC = MAP_STREAM_CODEC
             .map(ToolBehaviors::new, ToolBehaviors::behaviors);
+    // spotless:on
 
     public ToolBehaviors(List<IToolBehavior<?>> behaviors) {
         this(behaviors.stream().collect(Collectors.toMap(IToolBehavior::getType, Function.identity())));
