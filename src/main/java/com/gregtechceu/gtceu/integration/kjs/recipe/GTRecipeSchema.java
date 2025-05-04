@@ -44,12 +44,15 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
+import dev.latvian.mods.kubejs.recipe.component.ListRecipeComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.KubeResourceLocation;
 import dev.latvian.mods.kubejs.util.TickDuration;
+import dev.latvian.mods.rhino.type.TypeInfo;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
@@ -713,7 +716,6 @@ public interface GTRecipeSchema {
                         "Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
             }
 
-            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, List.of());
             ResearchCondition condition = this.getValue(CONDITIONS).stream()
                     .filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast)
                     .orElse(null);
@@ -818,7 +820,7 @@ public interface GTRecipeSchema {
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
     RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.key("duration", ComponentRole.OTHER).optional(new TickDuration(100));
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data", ComponentRole.OTHER).optional(new CompoundTag());
-    RecipeKey<List<RecipeCondition<?>>> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asList().key("recipeConditions", ComponentRole.OTHER).optional(new ArrayList<>());
+    RecipeKey<List<RecipeCondition<?>>> CONDITIONS = createList(GTRecipeComponents.RECIPE_CONDITION).key("recipeConditions", ComponentRole.OTHER).optional(new ArrayList<>());
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category", ComponentRole.OTHER).defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = CapabilityMapComponent.INSTANCE.key("inputs", ComponentRole.INPUT).optional(new CapabilityMap());
@@ -842,4 +844,10 @@ public interface GTRecipeSchema {
             .factory(new KubeRecipeFactory(GTCEu.id("recipe"), GTKubeRecipe.class, GTKubeRecipe::new))
             .constructor(new IDRecipeConstructor());
     // spotless:on
+
+    static <L> ListRecipeComponent<L> createList(RecipeComponent<L> component) {
+        var typeInfo = TypeInfo.RAW_LIST.withParams(component.typeInfo());
+        var codec = component.codec().listOf();
+        return new ListRecipeComponent<>(component, false, typeInfo, codec, false, true);
+    }
 }

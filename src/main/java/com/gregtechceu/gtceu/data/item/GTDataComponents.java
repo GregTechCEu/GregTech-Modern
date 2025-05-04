@@ -69,7 +69,7 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Material>> ITEM_MATERIAL = DATA_COMPONENTS
             .registerComponentType("item_material", builder -> builder
                     .persistent(GTRegistries.MATERIALS.byNameCodec())
-                    .networkSynchronized(GTRegistries.MATERIALS.streamCodec()));
+                    .networkSynchronized(ByteBufCodecs.registry(GTRegistries.MATERIAL_REGISTRY)));
 
     // Armor-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTArmor>> ARMOR_DATA = DATA_COMPONENTS

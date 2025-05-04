@@ -39,6 +39,7 @@ import com.gregtechceu.gtceu.common.pack.GTPackSource;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
 import com.gregtechceu.gtceu.data.command.GTCommandArguments;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
@@ -49,10 +50,7 @@ import com.gregtechceu.gtceu.data.datagen.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.effect.GTMobEffects;
 import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
 import com.gregtechceu.gtceu.data.fluid.GTFluids;
-import com.gregtechceu.gtceu.data.item.GTArmorMaterials;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.item.GTFoods;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.item.*;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
@@ -78,6 +76,7 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.Item;
@@ -115,6 +114,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.Function;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class CommonInit {
 
@@ -159,15 +160,7 @@ public class CommonInit {
         GTDamageTypes.init();
 
         GTBlocks.init();
-        GTBlockEntities.init();
         GTFluids.init();
-
-        GTFoods.init();
-        GTToolTiers.init();
-        GTToolBehaviors.init();
-        GTDataComponents.DATA_COMPONENTS.register(modBus);
-        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
-        GTItems.init();
 
         GTDimensionMarkers.init();
         GTRecipeCapabilities.init();
@@ -175,6 +168,13 @@ public class CommonInit {
         ChanceLogic.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+
+        GTFoods.init();
+        GTToolTiers.init();
+        GTToolBehaviors.init();
+        GTDataComponents.DATA_COMPONENTS.register(modBus);
+        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
+        GTItems.init();
 
         GTMachineUtils.init();
         GTCovers.init();
@@ -209,13 +209,45 @@ public class CommonInit {
         GTCEu.LOGGER.info("Registering GTCEu Materials");
         GTMaterials.init();
         GTRegistries.MATERIALS.setFallbackMaterial(GTCEu.MOD_ID, GTMaterials.Aluminium);
+    }
 
-        // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
-        // Block entirely new Materials from being added in the Post event
-        GTRegistries.MATERIALS.close();
-        ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialModification();
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onRegisterVeryLate(RegisterEvent event) {
+        // Material event *should* happen before any of the others here
+        if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
+            // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
+            // Block entirely new Materials from being added in the Post event
+            GTRegistries.MATERIALS.close();
+            ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
+            if (GTCEu.Mods.isKubeJSLoaded()) {
+                KJSEventWrapper.materialModification();
+            }
+            // --spacer--
+        } else if (event.getRegistryKey() == Registries.FLUID) {
+            // Material fluids
+            GTFluids.generateMaterialFluids();
+            // --spacer--
+        } else if (event.getRegistryKey() == Registries.BLOCK) {
+            // Material Blocks
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
+            GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
+            GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
+            GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
+            GTMaterialBlocks.buildMaterialBlockTable();
+
+            // Material Pipes/Wires
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
+            GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
+            GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
+            GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+            // --spacer--
+        } else if (event.getRegistryKey() == Registries.ITEM) {
+            // Material Items & Tools
+            GTMaterialItems.generateMaterialItems();
+            GTMaterialItems.generateTools();
+            // --spacer--
+        } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
+            GTBlockEntities.init();
         }
     }
 
@@ -240,8 +272,7 @@ public class CommonInit {
 
     @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
-        GTRegistries.ROOT.forEach(event::register);
-        GTRegistries.ROOT.freeze();
+        GTRegistries.getRegistries().forEach(event::register);
     }
 
     @SubscribeEvent

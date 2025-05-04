@@ -68,8 +68,8 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     }
 
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
-        DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension.location(),
-                new DimensionMarker(DimensionMarker.MAX_TIER,
+        DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOptional(this.dimension.location())
+                .orElse(new DimensionMarker(DimensionMarker.MAX_TIER,
                         () -> Blocks.BARRIER, this.dimension.location().toString()));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogic {
 
@@ -38,9 +40,10 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
     });
 
     private final Map<ItemStack, GTRecipe> recipeCache = ItemStackMap.createTypeAndTagMap();
-    private final GTRecipe emptyMarker = new GTRecipeBuilder(EMPTY_MARKER_ID, getRecipeType())
-            .inputItems(EMPTY_MARKER_ITEM.copy())
-            .build();
+    private final Supplier<GTRecipe> emptyMarker = GTMemoizer
+            .memoize(() -> new GTRecipeBuilder(EMPTY_MARKER_ID, getRecipeType())
+                    .inputItems(EMPTY_MARKER_ITEM.copy())
+                    .build());
 
     public SteamBoilerLogic() {
         ALL_BOILER_LOGICS.add(this);
@@ -73,19 +76,19 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
         for (int i = 0; i < inputs.getSlots(); ++i) {
             ItemStack input = inputs.getStackInSlot(i);
             GTRecipe cached = recipeCache.get(input);
-            if (cached == emptyMarker) {
+            if (cached == emptyMarker.get()) {
                 continue;
             } else if (cached != null) {
                 return cached;
             }
 
             if (input.isEmpty() || FluidUtil.getFluidContained(input).isPresent()) {
-                recipeCache.put(input, emptyMarker);
+                recipeCache.put(input, emptyMarker.get());
                 continue;
             }
             int burnTime = input.getBurnTime(RecipeType.SMELTING);
             if (burnTime <= 0) {
-                recipeCache.put(input, emptyMarker);
+                recipeCache.put(input, emptyMarker.get());
                 continue;
             }
             GTRecipe recipe = makeRecipe(input, burnTime);
