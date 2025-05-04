@@ -111,7 +111,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private void setupBaseGui(BedrockFluidDefinition fluid) {
-        Fluid storedFluid = fluid.getStoredFluid().get();
+        Fluid storedFluid = fluid.getStoredFluid();
         TankWidget fluidSlot = new TankWidget(
                 new CustomFluidTank(new FluidStack(storedFluid, 1000)), 51, 18, false, false);
         fluidSlot.setIngredientIO(IngredientIO.OUTPUT);
@@ -181,8 +181,9 @@ public class GTOreVeinWidget extends WidgetGroup {
 
             DimensionMarker[] dimMarkers = dimensionFilter.stream()
                     .map(ResourceKey::location)
-                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOrDefault(loc,
-                            new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, loc.toString())))
+                    .map(loc -> GTRegistries.DIMENSION_MARKERS.getOptional(loc)
+                            .orElse(new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
+                                    loc.toString())))
                     .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                     .toArray(DimensionMarker[]::new);
             var handler = new CustomItemStackHandler(dimMarkers.length);

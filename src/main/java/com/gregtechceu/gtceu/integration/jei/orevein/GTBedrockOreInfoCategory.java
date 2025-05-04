@@ -44,6 +44,7 @@ public class GTBedrockOreInfoCategory extends ModularUIRecipeCategory<Holder<Bed
         var bedrockOres = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
         registry.addRecipes(RECIPE_TYPE, bedrockOres.holders()
+                .filter(ore -> ore.value().canGenerate())
                 .<Holder<BedrockOreDefinition>>map(Function.identity())
                 .toList());
     }

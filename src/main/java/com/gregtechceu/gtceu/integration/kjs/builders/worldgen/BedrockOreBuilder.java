@@ -43,15 +43,17 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
         super(id);
     }
 
-    public BedrockOreBuilder copy(ResourceLocation id) {
-        var copied = new BedrockOreBuilder(id);
-        copied.weight = weight;
-        copied.yield = yield;
-        copied.depletionAmount = depletionAmount;
-        copied.depletionChance = depletionChance;
-        copied.depletedYield = depletedYield;
-        copied.materials = materials;
-        return copied;
+    public static BedrockOreBuilder from(BedrockOreDefinition definition, ResourceLocation id) {
+        var builder = new BedrockOreBuilder(id);
+        builder.weight(definition.weight());
+        builder.yield(definition.yield());
+        builder.depletionAmount(definition.depletionAmount());
+        builder.depletionChance(definition.depletionChance());
+        builder.depletedYield(definition.depletedYield());
+        builder.materials(definition.materials());
+        builder.dimensions.addAll(definition.dimensionFilter());
+        builder.biomes.addAll(definition.getOriginalModifiers());
+        return builder;
     }
 
     public BedrockOreBuilder material(Material material, int amount) {
@@ -77,6 +79,6 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
     @Override
     public BedrockOreDefinition createObject() {
         return new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance,
-                depletedYield, materials, biomes, dimensions);
+                depletedYield, materials, BiomeWeightModifier.fromList(biomes), dimensions);
     }
 }

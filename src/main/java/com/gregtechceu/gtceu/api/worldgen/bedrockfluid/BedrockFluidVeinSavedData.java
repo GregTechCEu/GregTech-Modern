@@ -96,6 +96,9 @@ public class BedrockFluidVeinSavedData extends SavedData {
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var fluidDefinition = holder.value();
+                    if (!fluidDefinition.canGenerate()) {
+                        continue;
+                    }
                     int veinWeight = fluidDefinition.getWeight() +
                             fluidDefinition.getBiomeWeightModifier().apply(biome);
                     if (veinWeight > 0 && (fluidDefinition.getDimensionFilter().isEmpty() ||
@@ -138,8 +141,10 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess()
-                    .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
+                if (!definition.canGenerate()) {
+                    continue;
+                }
                 if (definition.getDimensionFilter().isEmpty() || definition.getDimensionFilter().stream()
                         .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.getBiomeWeightModifier().apply(biome);
@@ -196,7 +201,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public Fluid getFluidInChunk(int chunkX, int chunkZ) {
         FluidVeinWorldEntry info = getFluidVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().value().getStoredFluid().get();
+        return info.getDefinition().value().getStoredFluid();
     }
 
     /**

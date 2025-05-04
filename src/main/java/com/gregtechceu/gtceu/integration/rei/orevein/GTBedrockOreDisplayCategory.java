@@ -61,9 +61,9 @@ public class GTBedrockOreDisplayCategory extends ModularUIDisplayCategory<GTBedr
     public static void registerDisplays(DisplayRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
-        fluids.holders().forEach(bedrockOre -> {
-            registry.add(new GTBedrockOreDisplay(bedrockOre));
-        });
+        fluids.holders()
+                .filter(ore -> ore.value().canGenerate())
+                .forEach(bedrockOre -> registry.add(new GTBedrockOreDisplay(bedrockOre)));
     }
 
     public static void registerWorkstations(CategoryRegistry registry) {

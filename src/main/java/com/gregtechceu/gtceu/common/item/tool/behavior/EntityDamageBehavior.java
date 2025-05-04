@@ -48,8 +48,7 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
             .map(rl -> TagKey.create(Registries.ENTITY_TYPE, rl), TagKey::location);
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityDamageBehavior> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(128)), val -> val.mobType,
-            ByteBufCodecs.map(Object2FloatOpenHashMap::new, TAG_KEY_STREAM_CODEC, ByteBufCodecs.FLOAT),
-            val -> val.bonusList,
+            ByteBufCodecs.map(Object2FloatOpenHashMap::new, TAG_KEY_STREAM_CODEC, ByteBufCodecs.FLOAT), val -> val.bonusList,
             EntityDamageBehavior::new);
     // spotless:on
 

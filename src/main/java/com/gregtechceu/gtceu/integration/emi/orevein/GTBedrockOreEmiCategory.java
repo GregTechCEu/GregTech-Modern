@@ -26,9 +26,9 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
-        fluids.holders().forEach(ore -> {
-            registry.addRecipe(new GTBedrockOre(ore));
-        });
+        fluids.holders()
+                .filter(ore -> ore.value().canGenerate())
+                .forEach(ore -> registry.addRecipe(new GTBedrockOre(ore)));
     }
 
     public static void registerWorkStations(EmiRegistry registry) {

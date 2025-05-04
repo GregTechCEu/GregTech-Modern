@@ -15,7 +15,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
 public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
@@ -31,13 +30,25 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
     @Setter
     private int depletedYield; // yield after the vein is depleted
     @Setter
-    private Supplier<Fluid> fluid; // the fluid which the vein contains
+    private Fluid fluid; // the fluid which the vein contains
     private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
     public BedrockFluidBuilder(ResourceLocation id) {
         super(id);
+    }
+
+    public static BedrockFluidBuilder from(BedrockFluidDefinition definition, ResourceLocation id) {
+        var builder = new BedrockFluidBuilder(id);
+        builder.weight(definition.getWeight());
+        builder.minimumYield(definition.getMinimumYield()).maximumYield(definition.getMaximumYield());
+        builder.depletionAmount(definition.getDepletionAmount()).depletionChance(definition.getDepletionChance());
+        builder.depletedYield(definition.getDepletedYield());
+        builder.fluid(definition.getStoredFluid());
+        builder.dimensions.addAll(definition.getDimensionFilter());
+        builder.biomes.addAll(definition.getOriginalModifiers());
+        return builder;
     }
 
     public BedrockFluidBuilder yield(int min, int max) {
@@ -58,6 +69,6 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
     @Override
     public BedrockFluidDefinition createObject() {
         return new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount, depletionChance,
-                depletedYield, fluid, biomes, dimensions);
+                depletedYield, fluid, BiomeWeightModifier.fromList(biomes), dimensions);
     }
 }

@@ -45,6 +45,7 @@ public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<Holder<B
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
         registry.addRecipes(RECIPE_TYPE, fluids.holders()
+                .filter(fluid -> fluid.value().canGenerate())
                 .<Holder<BedrockFluidDefinition>>map(Function.identity())
                 .toList());
     }

@@ -50,7 +50,7 @@
         "RecipeManagerAccessor",
         "RecipeManagerEarlyMixin",
         "RecipeManagerLateMixin",
-        "RegistryDataMixin",
+        "RegistryDataLoader$LoaderMixin",
         "ReloadableServerResourcesMixin",
         "RepairItemRecipeMixin",
         "ResourceKeyAccessor",
@@ -66,7 +66,6 @@
         "jei.FluidHelperMixin",
         "neoforge.BaseMappedRegistryAccessor",
         "neoforge.GameDataMixin",
-        "neoforge.RegistryBuilderAccessor",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"

@@ -62,12 +62,12 @@ public class GTBedrockFluids {
                                  Consumer<BedrockFluidDefinition.Builder> consumer) {
         BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(context.lookup(Registries.BIOME));
         consumer.accept(builder);
-        context.register(key, builder.register());
+        context.register(key, builder.build());
     }
 
     public static void bootstrap(BootstrapContext<BedrockFluidDefinition> context) {
         register(context, HEAVY_OIL, builder -> builder
-                .fluid(GTMaterials.HeavyOil::getFluid)
+                .fluid(GTMaterials.HeavyOil.getFluid())
                 .weight(15)
                 .yield(100, 200)
                 .depletionAmount(1)
@@ -78,7 +78,7 @@ public class GTBedrockFluids {
                 .dimensions(overworld())
                 .build());
         register(context, LIGHT_OIL, builder -> builder
-                .fluid(GTMaterials.LightOil::getFluid)
+                .fluid(GTMaterials.LightOil.getFluid())
                 .weight(25)
                 .yield(175, 300)
                 .depletionAmount(1)
@@ -86,7 +86,7 @@ public class GTBedrockFluids {
                 .depletedYield(25)
                 .dimensions(overworld()));
         register(context, NATURAL_GAS, builder -> builder
-                .fluid(GTMaterials.NaturalGas::getFluid)
+                .fluid(GTMaterials.NaturalGas.getFluid())
                 .weight(15)
                 .yield(100, 175)
                 .depletionAmount(1)
@@ -94,7 +94,7 @@ public class GTBedrockFluids {
                 .depletedYield(20)
                 .dimensions(overworld()));
         register(context, OIL, builder -> builder
-                .fluid(GTMaterials.Oil::getFluid)
+                .fluid(GTMaterials.Oil.getFluid())
                 .weight(20)
                 .yield(175, 300)
                 .depletionAmount(1)
@@ -104,7 +104,7 @@ public class GTBedrockFluids {
                 .biomes(5, Tags.Biomes.IS_SANDY)
                 .dimensions(overworld()));
         register(context, RAW_OIL, builder -> builder
-                .fluid(GTMaterials.RawOil::getFluid)
+                .fluid(GTMaterials.RawOil.getFluid())
                 .weight(20)
                 .yield(200, 300)
                 .depletionAmount(1)
@@ -112,7 +112,7 @@ public class GTBedrockFluids {
                 .depletedYield(25)
                 .dimensions(overworld()));
         register(context, SALT_WATER, builder -> builder
-                .fluid(GTMaterials.SaltWater::getFluid)
+                .fluid(GTMaterials.SaltWater.getFluid())
                 .weight(0)
                 .yield(50, 100)
                 .depletionAmount(1)
@@ -123,7 +123,7 @@ public class GTBedrockFluids {
                 .biomes(150, BiomeTags.IS_OCEAN));
 
         register(context, LAVA, builder -> builder
-                .fluid(GTMaterials.Lava::getFluid)
+                .fluid(GTMaterials.Lava.getFluid())
                 .weight(65)
                 .yield(125, 250)
                 .depletionAmount(1)
@@ -131,7 +131,7 @@ public class GTBedrockFluids {
                 .depletedYield(30)
                 .dimensions(nether()));
         register(context, NETHER_NATURAL_GAS, builder -> builder
-                .fluid(GTMaterials.NaturalGas::getFluid)
+                .fluid(GTMaterials.NaturalGas.getFluid())
                 .weight(35)
                 .yield(150, 300)
                 .depletionAmount(1)

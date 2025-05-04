@@ -108,6 +108,9 @@ public class BedrockOreVeinSavedData extends SavedData {
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var oreDefinition = holder.value();
+                    if (!oreDefinition.canGenerate()) {
+                        continue;
+                    }
                     int veinWeight = oreDefinition.weight() + oreDefinition.biomeWeightModifier().apply(biome);
                     if (veinWeight > 0 &&
                             (oreDefinition.dimensionFilter().isEmpty() ||
@@ -174,8 +177,10 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess()
-                    .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)) {
+                if (!definition.canGenerate()) {
+                    continue;
+                }
                 if (definition.dimensionFilter().isEmpty() || definition.dimensionFilter().stream()
                         .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.biomeWeightModifier().apply(biome);

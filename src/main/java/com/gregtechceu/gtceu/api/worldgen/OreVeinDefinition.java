@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.worldgen;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
@@ -32,6 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -55,7 +57,7 @@ public class OreVeinDefinition {
             BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(ext -> ext.biomeWeightModifier),
             VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator),
             Codec.list(IndicatorGenerator.DIRECT_CODEC).fieldOf("indicators").forGetter(ft -> ft.indicatorGenerators)
-            ).apply(instance, OreVeinDefinition::new));
+    ).apply(instance, OreVeinDefinition::new));
 
     public static final Codec<Holder<OreVeinDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.ORE_VEIN_REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<OreVeinDefinition>> STREAM_CODEC = ByteBufCodecs.holderRegistry(GTRegistries.ORE_VEIN_REGISTRY);
@@ -81,7 +83,6 @@ public class OreVeinDefinition {
     @Setter
     private float discardChanceOnAirExposure;
     @Getter
-    @Nullable
     private HolderSet<Biome> biomes;
     @Getter
     @Setter
@@ -96,7 +97,10 @@ public class OreVeinDefinition {
     @Setter
     private List<IndicatorGenerator> indicatorGenerators;
 
-    private final HolderGetter<Biome> biomeLookup;
+    @ApiStatus.Internal
+    @Nullable
+    @Setter
+    private HolderGetter<Biome> biomeLookup;
 
     public OreVeinDefinition(OreVeinDefinition other) {
         this(other.clusterSize, other.density, other.weight, other.layer,
@@ -107,8 +111,8 @@ public class OreVeinDefinition {
 
     public OreVeinDefinition(IntProvider clusterSize, float density, int weight, IWorldGenLayer layer,
                              List<ResourceKey<Level>> dimensionFilter, HeightRangePlacement heightRange,
-                             float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes,
-                             @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
+                             float discardChanceOnAirExposure, HolderSet<Biome> biomes,
+                             BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
                              @Nullable List<IndicatorGenerator> indicatorGenerators) {
         this(clusterSize, density, weight,
                 layer, new HashSet<>(dimensionFilter), heightRange, discardChanceOnAirExposure, biomes,
@@ -118,9 +122,10 @@ public class OreVeinDefinition {
 
     public OreVeinDefinition(IntProvider clusterSize, float density, int weight, IWorldGenLayer layer,
                              Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement heightRange,
-                             float discardChanceOnAirExposure, @Nullable HolderSet<Biome> biomes,
-                             @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
-                             @Nullable List<IndicatorGenerator> indicatorGenerators, HolderGetter<Biome> biomeLookup) {
+                             float discardChanceOnAirExposure, HolderSet<Biome> biomes,
+                             BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
+                             @Nullable List<IndicatorGenerator> indicatorGenerators,
+                             @Nullable HolderGetter<Biome> biomeLookup) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;
@@ -169,6 +174,17 @@ public class OreVeinDefinition {
     }
 
     public OreVeinDefinition biomes(TagKey<Biome> biomes) {
+        if (biomeLookup == null) {
+            GTRegistries.builtinRegistry().registry(GTRegistries.ORE_VEIN_REGISTRY)
+                    .map(reg -> reg.getKey(this))
+                    .ifPresentOrElse(id -> {
+                        GTCEu.LOGGER.error("Tried to modify ore vein `{}`'s biomes after registry has been frozen!",
+                                id);
+                    }, () -> {
+                        GTCEu.LOGGER.error("Tried to modify an ore vein's biomes after registry has been frozen!");
+                    });
+            return this;
+        }
         this.biomes = biomeLookup.getOrThrow(biomes);
         return this;
     }
@@ -295,6 +311,13 @@ public class OreVeinDefinition {
         var generator = constructor.get();
         indicatorGenerators.add(generator);
         return generator;
+    }
+
+    public boolean canGenerate() {
+        if (this.veinGenerator() instanceof NoopVeinGenerator) {
+            return false;
+        }
+        return this.weight() > 0 || !this.biomeWeightModifier().isEmpty();
     }
 
     private static class InferredProperties {

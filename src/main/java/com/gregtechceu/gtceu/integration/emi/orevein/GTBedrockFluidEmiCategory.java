@@ -23,9 +23,9 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        fluids.holders().forEach(fluid -> {
-            registry.addRecipe(new GTBedrockFluid(fluid));
-        });
+        fluids.holders()
+                .filter(fluid -> fluid.value().canGenerate())
+                .forEach(fluid -> registry.addRecipe(new GTBedrockFluid(fluid)));
     }
 
     public static void registerWorkStations(EmiRegistry registry) {

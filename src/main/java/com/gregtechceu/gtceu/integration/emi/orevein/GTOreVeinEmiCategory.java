@@ -23,9 +23,9 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        fluids.holders().forEach(ore -> {
-            registry.addRecipe(new GTEmiOreVein(ore));
-        });
+        fluids.holders()
+                .filter(ore -> ore.value().canGenerate())
+                .forEach(ore -> registry.addRecipe(new GTEmiOreVein(ore)));
     }
 
     public static void registerWorkStations(EmiRegistry registry) {

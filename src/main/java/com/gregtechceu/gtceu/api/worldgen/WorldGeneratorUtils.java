@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.worldgen;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
 
 import net.minecraft.core.BlockPos;
@@ -57,22 +58,20 @@ public class WorldGeneratorUtils {
 
         public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = level.registryAccess().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY).holders()
+                    .filter(vein -> !(vein.value().veinGenerator() instanceof NoopVeinGenerator))
                     .filter(entry -> entry.value().dimensionFilter().stream()
                             .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
                     .collect(Collectors.toList());
         }
 
-        @SuppressWarnings("DataFlowIssue")
         private List<Entry<Integer, Holder<OreVeinDefinition>>> getEntry(Holder<Biome> biome) {
             if (!veins.isEmpty())
                 return veins;
             List<Entry<Integer, Holder<OreVeinDefinition>>> result = worldVeins.stream()
-                    .filter(entry -> entry.value().biomes() == null ||
-                            (entry.value().biomes().size() == 0 || entry.value().biomes().contains(biome)))
+                    .filter(vein -> vein.value().canGenerate())
+                    .filter(vein -> vein.value().biomes().size() == 0 || vein.value().biomes().contains(biome))
                     .map(vein -> new AbstractMap.SimpleEntry<>(
-                            vein.value().weight() +
-                                    (vein.value().biomeWeightModifier() == null ? 0 :
-                                            vein.value().biomeWeightModifier().apply(biome)),
+                            vein.value().weight() + vein.value().biomeWeightModifier().apply(biome),
                             vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());

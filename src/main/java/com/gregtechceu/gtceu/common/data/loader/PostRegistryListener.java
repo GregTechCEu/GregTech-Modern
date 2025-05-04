@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.common.data.loader;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
 import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.data.worldgen.GTOreVeins;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -17,8 +14,6 @@ import net.neoforged.neoforge.resource.ContextAwareReloadListener;
 
 import org.jetbrains.annotations.NotNullByDefault;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -40,19 +35,11 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
 
     public static void buildVeinGenerators(Registry<OreVeinDefinition> registry) {
         var iterator = registry.holders().iterator();
-        Set<Holder.Reference<OreVeinDefinition>> toRemove = new HashSet<>();
         while (iterator.hasNext()) {
             var definition = iterator.next();
             var veinGen = definition.value().veinGenerator();
-            if (veinGen != null && !(veinGen instanceof NoopVeinGenerator)) {
+            if (veinGen != null && definition.value().canGenerate()) {
                 veinGen.build();
-            } else {
-                toRemove.add(definition);
-            }
-        }
-        if (registry instanceof GTRegistry<OreVeinDefinition> registry1) {
-            for (var def : toRemove) {
-                registry1.remove(def);
             }
         }
     }

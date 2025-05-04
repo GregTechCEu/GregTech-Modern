@@ -26,7 +26,7 @@ public class GTBedrockFluidDisplay extends ModularDisplay<WidgetGroup> {
     @Override
     public List<EntryIngredient> getOutputEntries() {
         List<EntryIngredient> outputs = new ArrayList<>();
-        outputs.add(EntryIngredients.of(fluid.value().getStoredFluid().get()));
+        outputs.add(EntryIngredients.of(fluid.value().getStoredFluid()));
         return outputs;
     }
 }

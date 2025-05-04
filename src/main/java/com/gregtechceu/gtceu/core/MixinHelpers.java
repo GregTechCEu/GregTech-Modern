@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
@@ -22,6 +23,10 @@ import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
 import com.gregtechceu.gtceu.data.item.GTMaterialItems;
 import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinKubeEvent;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -322,6 +327,20 @@ public class MixinHelpers {
         });
     }
 
+    public static void postKJSVeinEvents(WritableRegistry<?> registry) {
+        if (!GTCEu.Mods.isKubeJSLoaded()) {
+            return;
+        }
+
+        if (registry.key() == GTRegistries.ORE_VEIN_REGISTRY) {
+            KJSCallWrapper.postOreVeinEvent();
+        } else if (registry.key() == GTRegistries.BEDROCK_FLUID_REGISTRY) {
+            KJSCallWrapper.postBedrockFluidEvent();
+        } else if (registry.key() == GTRegistries.BEDROCK_ORE_REGISTRY) {
+            KJSCallWrapper.postBedrockOreEvent();
+        }
+    }
+
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
         if (value != null) {
             IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
@@ -331,6 +350,21 @@ public class MixinHelpers {
                 gtExtensions.setFlowingTexture(value.getBuilder().flowing());
                 gtExtensions.setStillTexture(value.getBuilder().still());
             }
+        }
+    }
+
+    private static final class KJSCallWrapper {
+
+        private static void postOreVeinEvent() {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinKubeEvent());
+        }
+
+        private static void postBedrockFluidEvent() {
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinKubeEvent());
+        }
+
+        private static void postBedrockOreEvent() {
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent());
         }
     }
 }

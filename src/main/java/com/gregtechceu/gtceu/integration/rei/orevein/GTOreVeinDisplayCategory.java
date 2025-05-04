@@ -61,9 +61,9 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
     public static void registerDisplays(DisplayRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
-        fluids.holders().forEach(ore -> {
-            registry.add(new GTOreVeinDisplay(ore));
-        });
+        fluids.holders()
+                .filter(ore -> ore.value().canGenerate())
+                .forEach(ore -> registry.add(new GTOreVeinDisplay(ore)));
     }
 
     public static void registerWorkstations(CategoryRegistry registry) {

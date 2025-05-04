@@ -61,9 +61,9 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
     public static void registerDisplays(DisplayRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
                 .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
-        fluids.holders().forEach(fluid -> {
-            registry.add(new GTBedrockFluidDisplay(fluid));
-        });
+        fluids.holders()
+                .filter(fluid -> fluid.value().canGenerate())
+                .forEach(fluid -> registry.add(new GTBedrockFluidDisplay(fluid)));
     }
 
     public static void registerWorkstations(CategoryRegistry registry) {
