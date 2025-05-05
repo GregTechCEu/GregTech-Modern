@@ -12,6 +12,7 @@ obfuscation {
 
 // Add sources jar to components.java
 java {
+    artifacts.archives(reobfSlimJar)
     withSourcesJar()
 }
 
