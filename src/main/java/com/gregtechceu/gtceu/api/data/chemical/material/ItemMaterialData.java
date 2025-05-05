@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -26,7 +25,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -41,16 +39,16 @@ import java.util.function.Supplier;
 public class ItemMaterialData {
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
-    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
+    public static final Map<Item, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final List<Pair<Supplier<? extends ItemLike>, MaterialEntry>> ITEM_MATERIAL_ENTRY = new ArrayList<>();
-    public static final Map<ItemLike, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
+    public static final List<Pair<Supplier<? extends Item>, MaterialEntry>> ITEM_MATERIAL_ENTRY = new ArrayList<>();
+    public static final Map<Item, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
     public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<MaterialEntry, List<Supplier<? extends ItemLike>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
+    public static final Map<MaterialEntry, List<Supplier<? extends Item>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
     public static final Map<MaterialEntry, List<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new Object2ObjectOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ReferenceOpenHashMap<>();
@@ -59,45 +57,15 @@ public class ItemMaterialData {
             ItemStackHashStrategy.comparingAllButCount());
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
-        if (item instanceof Block block) {
-            ITEM_MATERIAL_INFO.put(block, materialInfo);
-        } else if (item instanceof BlockItem blockItem) {
-            ITEM_MATERIAL_INFO.put(blockItem.getBlock(), materialInfo);
-        } else if (item instanceof ItemEntry<?> entry) {
-            ITEM_MATERIAL_INFO.put(entry.asItem(), materialInfo);
-        } else {
-            ITEM_MATERIAL_INFO.put(item, materialInfo);
-        }
+        ITEM_MATERIAL_INFO.put(item.asItem(), materialInfo);
     }
 
     public static ItemMaterialInfo getMaterialInfo(ItemLike item) {
-        if (item instanceof Block block) {
-            return ITEM_MATERIAL_INFO.get(block);
-        } else if (item instanceof BlockItem blockItem) {
-            var info = ITEM_MATERIAL_INFO.get(blockItem.getBlock());
-            if (info != null) return info;
-            return ITEM_MATERIAL_INFO.get(item);
-        } else if (item instanceof ItemEntry<?> entry) {
-            return ITEM_MATERIAL_INFO.get(entry.asItem());
-        }
-        return ITEM_MATERIAL_INFO.get(item);
+        return ITEM_MATERIAL_INFO.get(item.asItem());
     }
 
     public static void clearMaterialInfo(ItemLike item) {
-        if (item instanceof Block block) {
-            ITEM_MATERIAL_INFO.remove(block);
-        } else if (item instanceof BlockItem blockItem) {
-            var info = ITEM_MATERIAL_INFO.get(blockItem.getBlock());
-            if (info != null) {
-                ITEM_MATERIAL_INFO.remove(blockItem.getBlock());
-            } else {
-                ITEM_MATERIAL_INFO.remove(item);
-            }
-        } else if (item instanceof ItemEntry<?> entry) {
-            ITEM_MATERIAL_INFO.remove(entry.asItem());
-        } else {
-            ITEM_MATERIAL_INFO.remove(item);
-        }
+        ITEM_MATERIAL_INFO.remove(item.asItem());
     }
 
     /**
@@ -109,7 +77,7 @@ public class ItemMaterialData {
     public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> supplier,
                                              @NotNull MaterialEntry materialEntry) {
         registerItemEntry(supplier, materialEntry);
-        ITEM_MATERIAL_ENTRY.add(Pair.of(supplier, materialEntry));
+        ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
         if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
             registerRegistryObjectEntry(registryObject, materialEntry);
         } else if (supplier instanceof BlockEntry<?> entry) {
@@ -151,7 +119,7 @@ public class ItemMaterialData {
     private static void registerItemEntry(@NotNull Supplier<? extends ItemLike> supplier,
                                           @NotNull MaterialEntry materialEntry) {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
-                .add(supplier);
+                .add(() -> supplier.get().asItem());
         if (TagPrefix.ORES.containsKey(materialEntry.tagPrefix()) &&
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
