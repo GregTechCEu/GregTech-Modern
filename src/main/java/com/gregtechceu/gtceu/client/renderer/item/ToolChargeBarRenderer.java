@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.util.DrawUtil;
 
@@ -52,8 +48,7 @@ public final class ToolChargeBarRenderer {
         boolean renderedDurability = false;
         CompoundTag tag = stack.getOrCreateTag();
         if (!tag.getBoolean(ToolHelper.UNBREAKABLE_KEY)) {
-            renderedDurability = renderDurabilityBar(graphics, stack.getBarWidth(), xPosition,
-                    yPosition);
+            renderedDurability = renderDurabilityBar(graphics, stack.getBarWidth(), xPosition, yPosition);
         }
         if (tool.isElectric()) {
             renderElectricBar(graphics, tool.getCharge(stack), tool.getMaxCharge(stack), xPosition, yPosition,
@@ -61,37 +56,19 @@ public final class ToolChargeBarRenderer {
         }
     }
 
-    public static void renderBarsItem(GuiGraphics graphics, IComponentItem item, ItemStack stack, int xPosition,
-                                      int yPosition) {
-        boolean renderedDurability = false;
-        IDurabilityBar bar = null;
-        for (IItemComponent component : item.getComponents()) {
-            if (component instanceof IDurabilityBar durabilityBar) {
-                bar = durabilityBar;
-            }
-        }
-        if (bar != null) {
-            renderedDurability = renderDurabilityBar(graphics, stack, bar, xPosition, yPosition);
-        }
-
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
-        if (electricItem != null) {
-            renderElectricBar(graphics, electricItem.getCharge(), electricItem.getMaxCharge(), xPosition, yPosition,
-                    renderedDurability);
-        }
-    }
-
-    private static void renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
-                                          int yPosition, boolean renderedDurability) {
+    public static boolean renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
+                                            int yPosition, boolean renderedDurability) {
         if (charge > 0 && maxCharge > 0) {
             int level = Math.round(charge * 13.0F / maxCharge);
             render(graphics, level, xPosition, yPosition, renderedDurability ? 2 : 0, true, colorBarLeftEnergy,
                     colorBarRightEnergy, true);
+            return true;
         }
+        return false;
     }
 
-    private static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager,
-                                               int xPosition, int yPosition) {
+    public static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager,
+                                              int xPosition, int yPosition) {
         float level = manager.getDurabilityForDisplay(stack);
         if (level == 0.0 && !manager.showEmptyBar(stack)) return false;
         if (level == 1.0 && !manager.showFullBar(stack)) return false;

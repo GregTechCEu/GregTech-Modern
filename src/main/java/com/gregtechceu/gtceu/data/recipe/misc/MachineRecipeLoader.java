@@ -1320,6 +1320,18 @@ public class MachineRecipeLoader {
                 .duration(150).EUt(2)
                 .save(provider);
 
+        MACERATOR_RECIPES.recipeBuilder("macerate_coral_block")
+                .inputItems(CustomTags.CORAL_BLOCK_ITEMS)
+                .outputItems(dust, Calcite)
+                .duration(150).EUt(2)
+                .save(provider);
+
+        MACERATOR_RECIPES.recipeBuilder("macerate_coral")
+                .inputItems(CustomTags.CORAL_ITEMS)
+                .outputItems(dustTiny, Calcite)
+                .duration(25).EUt(2)
+                .save(provider);
+
         // TODO add other foods
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))

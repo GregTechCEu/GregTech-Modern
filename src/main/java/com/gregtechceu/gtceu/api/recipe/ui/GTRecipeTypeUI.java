@@ -272,7 +272,7 @@ public class GTRecipeTypeUI {
                     RecipeCapability<?> cap = storagesEntry.getKey();
                     Object storage = storagesEntry.getValue();
                     // bind overlays
-                    Class<? extends Widget> widgetClass = cap.getWidgetClass();
+                    var widgetClass = cap.getWidgetClass();
                     if (widgetClass != null) {
                         WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
                                 widget -> {
@@ -317,7 +317,8 @@ public class GTRecipeTypeUI {
         int index = 0;
         for (var entry : map.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
-            if (cap.getWidgetClass() == null) {
+            var widgetClass = cap.getWidgetClass();
+            if (widgetClass == null) {
                 continue;
             }
             int capCount = entry.getValue();

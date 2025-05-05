@@ -1,16 +1,10 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.client.renderer.item.LampItemOverlayRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,25 +33,6 @@ public class GuiGraphicsMixin {
     private void renderItem(@Nullable LivingEntity entity, @Nullable Level level, ItemStack stack, int x, int y,
                             int seed, int guiOffset) {
         throw new AssertionError();
-    }
-
-    @Inject(
-            method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
-            at = @At(
-                     value = "FIELD",
-                     target = "Lnet/minecraft/client/gui/GuiGraphics;minecraft:Lnet/minecraft/client/Minecraft;",
-                     shift = At.Shift.BEFORE,
-                     ordinal = 0))
-    private void gtceu$renderCustomItemDecorations(Font font, ItemStack stack, int x, int y, String text,
-                                                   CallbackInfo ci) {
-        GuiGraphics self = (GuiGraphics) (Object) this;
-        if (stack.getItem() instanceof IGTTool toolItem) {
-            ToolChargeBarRenderer.renderBarsTool(self, toolItem, stack, x, y);
-        } else if (stack.getItem() instanceof IComponentItem componentItem) {
-            ToolChargeBarRenderer.renderBarsItem(self, componentItem, stack, x, y);
-        } else if (stack.getItem() instanceof LampBlockItem) {
-            LampItemOverlayRenderer.renderOverlay(self, stack, x, y);
-        }
     }
 
     @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V",

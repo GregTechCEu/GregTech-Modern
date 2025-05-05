@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -43,6 +42,7 @@ import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -270,7 +270,7 @@ public class CommonProxy {
             GTDynamicDataPack.clearServer();
 
             long startTime = System.currentTimeMillis();
-            ItemMaterialData.reinitializeMaterialData();
+            GTCraftingComponents.init();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
             // Initialize dungeon loot additions

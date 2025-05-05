@@ -433,9 +433,11 @@ public class Material implements Comparable<Material> {
             return Math.max(1, 43);
         long totalProtons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalProtons += material.amount() * material.material().getProtons();
         }
+        if (totalAmount == 0) return 0;
         return totalProtons / totalAmount;
     }
 
@@ -446,22 +448,26 @@ public class Material implements Comparable<Material> {
             return 55;
         long totalNeutrons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalNeutrons += material.amount() * material.material().getNeutrons();
         }
+        if (totalAmount == 0) return 0;
         return totalNeutrons / totalAmount;
     }
 
     public long getMass() {
         if (materialInfo.element != null)
             return materialInfo.element.mass();
-        if (materialInfo.componentList.size() == 0)
+        if (materialInfo.componentList.isEmpty())
             return 98;
         long totalMass = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            if (material.isEmpty()) continue;
             totalAmount += material.amount();
             totalMass += material.amount() * material.material().getMass();
         }
+        if (totalAmount == 0) return 0;
         return totalMass / totalAmount;
     }
 
