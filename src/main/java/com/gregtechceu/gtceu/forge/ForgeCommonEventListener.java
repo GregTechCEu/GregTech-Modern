@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -137,6 +138,13 @@ public class ForgeCommonEventListener {
                 public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
                                                                   @Nullable Direction arg) {
                     return drumMachineItem.getCapability(itemStack, capability);
+                }
+            });
+        } else if (itemStack.getItem() instanceof QuantumTankMachineItem quantumTankMachineItem) {
+            event.addCapability(GTCEu.id("fluid"), new ICapabilityProvider() {
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
+                    return quantumTankMachineItem.getCapability(itemStack, capability);
                 }
             });
         } else if (itemStack.getItem() instanceof PotionItem) {
