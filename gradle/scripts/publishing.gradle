@@ -2,6 +2,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = base.archivesName.get()
+            artifact(reobfSlimJar)
             from components.java
         }
     }

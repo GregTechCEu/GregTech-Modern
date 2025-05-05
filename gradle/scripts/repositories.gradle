@@ -2,7 +2,7 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { // KubeJS and Rhino
+    maven {
         name = "Saps.dev Maven"
         url = "https://maven.saps.dev/minecraft"
     }
@@ -20,6 +20,11 @@ repositories {
     maven { // LDLib, Shimmer
         name = "FirstDarkDev Maven"
         url = "https://maven.firstdarkdev.xyz/snapshots"
+    }
+
+    exclusiveContent { // KubeJS and Rhino
+        forRepository { maven { url = "https://maven.latvian.dev/releases" } }
+        filter { includeGroup("dev.latvian.mods")}
     }
 
     exclusiveContent { // FTB mods
