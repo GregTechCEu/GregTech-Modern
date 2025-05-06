@@ -120,7 +120,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('G', Block.getBlock('minecraft:glass'))
             .where('D', GTBlocks.COIL_CUPRONICKEL.get())
             .where('S', GTMachines.MUFFLER_HATCH[1], Direction.UP)
-            .where('M', GTMachines.MAINTENANCE_HATCH[1], Direction.SOUTH)
+            .where('M', GTMachines.MAINTENANCE_HATCH, Direction.SOUTH)
             .where('e', GTMachines.ENERGY_INPUT_HATCH[1], Direction.NORTH)
             .where('i', GTMachines.ITEM_IMPORT_BUS[1], Direction.SOUTH)
             .where('0', GTMachines.ITEM_EXPORT_BUS[1], Direction.SOUTH)

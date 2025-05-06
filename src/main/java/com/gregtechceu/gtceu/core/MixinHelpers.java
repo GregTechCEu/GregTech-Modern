@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -34,6 +35,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -89,6 +91,28 @@ public class MixinHelpers {
                     }
                 });
             });
+
+            if (!GTCEu.Mods.isAE2Loaded()) {
+                return;
+            }
+            // If AE2 is loaded, add the Fluid P2P attunement tag to all the buckets
+            var p2pFluidAttunements = new ResourceLocation("ae2", "p2p_attunements/fluid_p2p_tunnel");
+            for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+                FluidProperty property = material.getProperty(PropertyKey.FLUID);
+                if (property == null) {
+                    continue;
+                }
+                for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                    Fluid fluid = property.getStorage().get(key);
+                    if (fluid == null || fluid.getBucket() == Items.AIR) {
+                        continue;
+                    }
+                    var bucketId = BuiltInRegistries.ITEM.getKey(fluid.getBucket());
+                    var entry = new TagLoader.EntryWithSource(TagEntry.element(bucketId),
+                            GTValues.CUSTOM_TAG_SOURCE);
+                    tagMap.computeIfAbsent(p2pFluidAttunements, path -> new ArrayList<>()).add(entry);
+                }
+            }
         } else if (registry == BuiltInRegistries.BLOCK) {
             GTMaterialBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
@@ -130,29 +154,31 @@ public class MixinHelpers {
             }
         } else if (registry == BuiltInRegistries.FLUID) {
             for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                if (material.hasProperty(PropertyKey.FLUID)) {
-                    FluidProperty property = material.getProperty(PropertyKey.FLUID);
-                    for (FluidStorageKey key : FluidStorageKey.allKeys()) {
-                        Fluid fluid = property.getStorage().get(key);
-                        if (fluid != null) {
-                            ItemMaterialData.FLUID_MATERIAL.put(fluid, material);
+                FluidProperty property = material.getProperty(PropertyKey.FLUID);
+                if (property == null) {
+                    continue;
+                }
+                for (FluidStorageKey key : FluidStorageKey.allKeys()) {
+                    Fluid fluid = property.getStorage().get(key);
+                    if (fluid == null) {
+                        continue;
+                    }
+                    ItemMaterialData.FLUID_MATERIAL.put(fluid, material);
 
-                            ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
-                            TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
-                                    GTValues.CUSTOM_TAG_SOURCE);
-                            tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
-                                    path -> new ArrayList<>())
-                                    .add(entry);
-                            if (fluid instanceof GTFluid gtFluid) {
-                                tagMap.computeIfAbsent(gtFluid.getState().getTagKey().location(),
-                                        path -> new ArrayList<>())
-                                        .add(entry);
-                            } else {
-                                ResourceLocation fluidKeyTag = key.getDefaultFluidState().getTagKey().location();
-                                tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
-                                        .add(entry);
-                            }
-                        }
+                    ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
+                    TagLoader.EntryWithSource entry = new TagLoader.EntryWithSource(TagEntry.element(fluidId),
+                            GTValues.CUSTOM_TAG_SOURCE);
+                    tagMap.computeIfAbsent(TagUtil.createFluidTag(fluidId.getPath()).location(),
+                            path -> new ArrayList<>())
+                            .add(entry);
+                    if (fluid instanceof GTFluid gtFluid) {
+                        tagMap.computeIfAbsent(gtFluid.getState().getTagKey().location(),
+                                path -> new ArrayList<>())
+                                .add(entry);
+                    } else {
+                        ResourceLocation fluidKeyTag = key.getDefaultFluidState().getTagKey().location();
+                        tagMap.computeIfAbsent(fluidKeyTag, path -> new ArrayList<>())
+                                .add(entry);
                     }
                 }
                 if (material.hasProperty(PropertyKey.ALLOY_BLAST)) {

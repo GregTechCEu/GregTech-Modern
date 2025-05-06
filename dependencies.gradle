@@ -66,7 +66,7 @@ dependencies {
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.kotlinforforge)
+    modRuntimeOnly(forge.spark)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modRuntimeOnly(forge.emi)
@@ -98,7 +98,7 @@ dependencies {
     modExtraRuntimeOnly(forge.gamestages)
     modExtraRuntimeOnly(forge.bookshelf)
 
-    modExtraRuntimeOnly(forge.spark)
+    modExtraRuntimeOnly(forge.kotlinforforge)
     modExtraRuntimeOnly(forge.observable)
     //////////////////////////
 
