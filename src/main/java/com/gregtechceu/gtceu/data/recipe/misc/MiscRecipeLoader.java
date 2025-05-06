@@ -428,6 +428,8 @@ public class MiscRecipeLoader {
 
         builder.copy("colorless_lens").inputFluids(DyeWhite.getFluid(dyeAmount)).outputItems(lens, Glass)
                 .save(provider);
+        VanillaRecipeHelper.addShapelessRecipe(provider, "brown_dye_from_metal_mixture", new ItemStack(Items.BROWN_DYE),
+                new MaterialEntry(dust, MetalMixture));
 
         // NAN Certificate
         EXTRUDER_RECIPES.recipeBuilder("nan_certificate")

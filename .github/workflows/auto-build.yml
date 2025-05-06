@@ -39,7 +39,7 @@ jobs:
         run: ./gradlew publish --build-cache
       - name: Rename Jars
         if: ${{ env.PUBLISH == 'true' }}
-        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
+        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT+$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
       - name: Upload Artifacts
         if: ${{ env.PUBLISH == 'true' }}
         uses: actions/upload-artifact@v4
