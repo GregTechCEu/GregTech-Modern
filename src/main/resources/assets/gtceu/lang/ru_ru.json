@@ -5535,5 +5535,11 @@
     "gtceu.recipe_logic.no_capabilities": "Машина не имеет взаимодействий",
     "recipe.condition.gamestage.unlocked_stage": "Открывается на этапе: %s",
     "tagprefix.null": "%s Null",
-    "gtceu.tooltip.status.trinary.false": "Ложь"
+    "gtceu.tooltip.status.trinary.false": "Ложь",
+    "config.jade.plugin_gtceu.energy_converter_provider": "[GTCEu] Режим конвертации энергии",
+    "ldlib.gui.editor.group.widget.gtm_container": "Виджет контейнеров GTM",
+    "ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot": "Слот фантомной жидкости GTM",
+    "ldlib.gui.editor.register.widget.container.gtm_fluid_slot": "Жидкостный слот GTM",
+    "ldlib.gui.editor.register.widget.container.gtm_item_slot": "Предметный слот GTM",
+    "ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot": "Слот фантомного предмета GTM"
 }
