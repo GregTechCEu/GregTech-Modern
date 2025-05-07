@@ -5679,5 +5679,7 @@
     "gtceu.ownership.name.player": "Игрок",
     "gtceu.recipe_logic.no_capabilities": "Машина не имеет взаимодействий",
     "gtceu.tooltip.status.trinary.unknown": "Неизвестно",
-    "gtceu.top.buffer_not_bound": "Буфер не имеет привязки"
+    "gtceu.top.buffer_not_bound": "Буфер не имеет привязки",
+    "cover.advanced_detector.latch.enabled.1": "",
+    "cover.advanced_detector.latch.disabled.1": ""
 }
