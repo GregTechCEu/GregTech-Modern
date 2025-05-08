@@ -210,7 +210,7 @@
     "block.gtceu.hv_assembler": "§6Улучшенная сборочная машина II§r",
     "block.gtceu.hv_autoclave": "§6Улучшенный автоклав II§r",
     "block.gtceu.hv_battery_buffer_16x": "Батарейный буфер (16 ячеек §6HV§r)",
-    "block.gtceu.hv_battery_buffer_4x": "Батарейный буфер (4 ячейки §5EV§r)",
+    "block.gtceu.hv_battery_buffer_4x": "Батарейный буфер (4 ячейки §6HV§r)",
     "block.gtceu.hv_battery_buffer_8x": "Батарейный буфер (8 ячеек §6HV§r)",
     "block.gtceu.hv_bedrock_ore_miner": "§6Улучшенный подземный шахтер II§r",
     "block.gtceu.hv_bender": "§6Улучшенный гибочный станок II§r",
