@@ -35,6 +35,7 @@ public class PatternMatchContext {
 
     /**
      * Returns specified map entry as an int.
+     * Throws if the entry isn't an int.
      * 
      * @param key the entry name in the map.
      * @return the entry at {@code key} as an int, or 0 if the entry doesn't exist.
@@ -45,6 +46,7 @@ public class PatternMatchContext {
 
     /**
      * Increments the specified entry by a specific value.
+     * Throws if the entry isn't an int.
      * 
      * @param key   the entry name in the map.
      * @param value the value to increment by.
@@ -56,6 +58,7 @@ public class PatternMatchContext {
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code defaultValue} if this map contains no mapping for the key.
+     * Throws if the entry isn't of the right type.
      * 
      * @param key          the entry name in the map.
      * @param defaultValue the value to return if the entry is empty.

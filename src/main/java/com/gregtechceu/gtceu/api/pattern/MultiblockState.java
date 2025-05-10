@@ -30,11 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * A modifiable data container mainly used by multiblock structure predicates.
- * <br>
- * Contains a bunch of useful data for structure checks.
- * <p>
- * For more information, see individual variables and methods.
+ * A modifiable data container mused for multiblock structure predicates.
  */
 
 public class MultiblockState {
@@ -44,27 +40,25 @@ public class MultiblockState {
 
     /** The <b>active</b> position */
     private BlockPos pos;
-    /** The {@code BlockState} at {@link MultiblockState#pos} */
+    /** The {@code BlockState} at {@code pos} */
     private BlockState blockState;
-    /** The {@code BlockEntity} at {@link MultiblockState#pos} */
+    /** The {@code BlockEntity} at {@code pos} */
     private BlockEntity tileEntity;
     private boolean tileEntityInitialized;
-    /** See {@link PatternMatchContext} */
+
     @Getter
     private final PatternMatchContext matchContext;
     /**
-     * A map indicating how many matches have been found for each specified SimplePredicate in the whole multi.
+     * A map counting the number of global matches for each SimplePredicate in this MultiblockState. Used for validating Predicate count restrictions.
      * <br>
-     * Used to check for minimum and maximum amount of matches (e.g. minimum casings)
-     * <br>
-     * See {@link SimplePredicate#testGlobal(MultiblockState)} for more information.
+     * {@see SimplePredicate#testGlobal}
      */
     @Getter
     private Map<SimplePredicate, Integer> globalCount;
     /**
-     * A map indicating how many matches have been found for each specified SimplePredicate in the current layer.
+     * A map counting the number of matches for each SimplePredicate in the current layer. Used for validating Predicate count restrictions.
      * <br>
-     * Used to check for minimum and maximum amount of matches (e.g. minimum casings)
+     * {@see SimplePredicate#testLayer}
      */
     @Getter
     private Map<SimplePredicate, Integer> layerCount;
@@ -78,7 +72,7 @@ public class MultiblockState {
     @Getter
     @Setter
     private boolean neededFlip = false;
-    /** The {@link Level} (dimension + side) the multi is in. */
+    /** The {@code Level} the multi is in. */
     @Getter
     public final Level world;
     /** The controller's position */
@@ -90,14 +84,12 @@ public class MultiblockState {
     /**
      * A set containing {@link BlockPos} converted to long
      * Allows for quickly checking if a specific position has been added before
-     * <p>
-     * TODO: Figure out why there is a commented out "persist" here
      */
     // persist
     private LongOpenHashSet cache;
 
     /**
-     * Initializes a new {@link MultiblockState}. Each multi controller has one.
+     * Instantiates a new {@link MultiblockState}. Each multi controller has one.
      * 
      * @param world         the {@link Level} (dimension + side) the multi is in.
      * @param controllerPos the position of the multi controller.
@@ -109,12 +101,6 @@ public class MultiblockState {
         this.matchContext = new PatternMatchContext();
     }
 
-    /**
-     * Clears some internal data.
-     *
-     * @apiNote Cleared fields are {@code cache}, {@code matchContext},
-     *          {@code globalCount} and {@code layerCount}
-     */
     protected void clean() {
         this.matchContext.reset();
         this.globalCount = new HashMap<>();
@@ -161,12 +147,10 @@ public class MultiblockState {
         return null;
     }
 
-    /** See {@link MultiblockState#error} */
     public boolean hasError() {
         return error != null;
     }
 
-    /** See {@link MultiblockState#error} */
     public void setError(PatternError error) {
         this.error = error;
         if (error != null) {
@@ -258,9 +242,9 @@ public class MultiblockState {
     }
 
     /**
-     * Used to check the multiblock's structure again if a block's {@link BlockState} changes.
+     * Notifies this MultiblockState that a BlockState has changed.
      * <br>
-     * Unforms the multiblock if the resulting change invalidates the strcture.
+     * Rechecks the pattern as necessary and updates the structure as necessary.
      * 
      * @param pos   The {@link BlockPos} to check at
      * @param state The new {@link BlockState}

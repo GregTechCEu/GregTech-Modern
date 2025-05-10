@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
  * <br>
  * Contains extra methods allowing to determine XEI tooltips and to register multiblock IO, among other things.
  */
-
 public class SimplePredicate {
 
     public static SimplePredicate ANY = new SimplePredicate("any", x -> true, null);
