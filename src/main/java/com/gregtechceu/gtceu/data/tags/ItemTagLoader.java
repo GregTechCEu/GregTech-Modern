@@ -2,70 +2,87 @@ package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
-import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class ItemTagLoader {
 
-    public static void init(RegistrateTagsProvider<Item> provider) {
-        create(provider, CustomTags.CONCRETE_ITEM, Items.WHITE_CONCRETE, Items.ORANGE_CONCRETE, Items.MAGENTA_CONCRETE,
-                Items.LIGHT_BLUE_CONCRETE, Items.YELLOW_CONCRETE, Items.LIME_CONCRETE, Items.PINK_CONCRETE,
-                Items.GRAY_CONCRETE, Items.LIGHT_GRAY_CONCRETE, Items.CYAN_CONCRETE, Items.PURPLE_CONCRETE,
-                Items.BLUE_CONCRETE, Items.BROWN_CONCRETE, Items.GREEN_CONCRETE, Items.RED_CONCRETE,
-                Items.BLACK_CONCRETE);
-        create(provider, CustomTags.CONCRETE_POWDER_ITEM, Items.WHITE_CONCRETE_POWDER, Items.ORANGE_CONCRETE_POWDER,
-                Items.MAGENTA_CONCRETE_POWDER, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.YELLOW_CONCRETE_POWDER,
-                Items.LIME_CONCRETE_POWDER, Items.PINK_CONCRETE_POWDER, Items.GRAY_CONCRETE_POWDER,
-                Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER,
-                Items.BLUE_CONCRETE_POWDER, Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER,
-                Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
-        create(provider, CustomTags.CORAL_BLOCK_ITEMS, Items.BRAIN_CORAL_BLOCK, Items.BUBBLE_CORAL_BLOCK,
-                Items.FIRE_CORAL_BLOCK, Items.TUBE_CORAL_BLOCK, Items.HORN_CORAL_BLOCK, Items.DEAD_BRAIN_CORAL_BLOCK,
-                Items.DEAD_BUBBLE_CORAL_BLOCK, Items.DEAD_FIRE_CORAL_BLOCK, Items.DEAD_TUBE_CORAL_BLOCK,
-                Items.DEAD_HORN_CORAL_BLOCK);
-        create(provider, CustomTags.CORAL_ITEMS, Items.BRAIN_CORAL, Items.BUBBLE_CORAL, Items.FIRE_CORAL,
-                Items.TUBE_CORAL, Items.HORN_CORAL, Items.DEAD_BRAIN_CORAL, Items.DEAD_BUBBLE_CORAL,
-                Items.DEAD_FIRE_CORAL, Items.DEAD_TUBE_CORAL, Items.DEAD_HORN_CORAL, Items.BRAIN_CORAL_FAN,
-                Items.BUBBLE_CORAL_FAN, Items.FIRE_CORAL_FAN, Items.TUBE_CORAL_FAN, Items.HORN_CORAL_FAN,
-                Items.DEAD_BRAIN_CORAL_FAN, Items.DEAD_BUBBLE_CORAL_FAN, Items.DEAD_FIRE_CORAL_FAN,
-                Items.DEAD_TUBE_CORAL_FAN, Items.DEAD_HORN_CORAL_FAN);
-        create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get());
-        create(provider, lens, Color.White, GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
-        create(provider, lens, Color.LightBlue, GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
-        create(provider, lens, Color.Red, GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
-        create(provider, lens, Color.Green, GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
-        create(provider, lens, Color.Blue, GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
-        create(provider, lens, Color.Purple, GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
+    @SuppressWarnings("DataFlowIssue")
+    public static void init(RegistrateItemTagsProvider provider) {
+        provider.copy(CustomTags.CONCRETE_BLOCK, CustomTags.CONCRETE_ITEM);
+        provider.copy(CustomTags.CONCRETE_POWDER_BLOCK, CustomTags.CONCRETE_POWDER_ITEM);
+        // spotless:off
+        // the coral blocks: alive, dead, both
+        provider.addTag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)
+                .add(Items.BRAIN_CORAL_BLOCK, Items.BUBBLE_CORAL_BLOCK, Items.FIRE_CORAL_BLOCK, Items.TUBE_CORAL_BLOCK, Items.HORN_CORAL_BLOCK);
+        provider.addTag(CustomTags.DEAD_CORAL_BLOCK_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL_BLOCK, Items.DEAD_BUBBLE_CORAL_BLOCK, Items.DEAD_FIRE_CORAL_BLOCK, Items.DEAD_TUBE_CORAL_BLOCK, Items.DEAD_HORN_CORAL_BLOCK);
+        provider.addTag(CustomTags.CORAL_BLOCK_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_BLOCK_ITEMS);
 
-        create(provider, CustomTags.PISTONS, Items.PISTON, Items.STICKY_PISTON);
+        // the coral plants (the V-shaped pointy ones)
+        provider.addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
+                        .add(Items.BRAIN_CORAL, Items.BUBBLE_CORAL, Items.FIRE_CORAL, Items.TUBE_CORAL, Items.HORN_CORAL);
+        provider.addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL, Items.DEAD_BUBBLE_CORAL, Items.DEAD_FIRE_CORAL, Items.DEAD_TUBE_CORAL, Items.DEAD_HORN_CORAL);
+        provider.addTag(CustomTags.CORAL_PLANT_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS);
 
-        create(provider, dye, Color.Brown, GTMaterialItems.MATERIAL_ITEMS.get(dust, MetalMixture).get());
+        // the coral fans (the flat circular ones)
+        provider.addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS)
+                .add(Items.BRAIN_CORAL_FAN, Items.BUBBLE_CORAL_FAN, Items.FIRE_CORAL_FAN, Items.TUBE_CORAL_FAN, Items.HORN_CORAL_FAN);
+        provider.addTag(CustomTags.DEAD_CORAL_FAN_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL_FAN, Items.DEAD_BUBBLE_CORAL_FAN, Items.DEAD_FIRE_CORAL_FAN, Items.DEAD_TUBE_CORAL_FAN, Items.DEAD_HORN_CORAL_FAN);
+        provider.addTag(CustomTags.CORAL_FAN_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_FAN_ITEMS);
+
+        // all the coral items (except the blocks)
+        provider.addTag(CustomTags.ALIVE_CORAL_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS);
+        provider.addTag(CustomTags.DEAD_CORAL_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_FAN_ITEMS);
+        provider.addTag(CustomTags.CORAL_ITEMS)
+                .addTag(CustomTags.ALIVE_CORAL_ITEMS)
+                .addTag(CustomTags.DEAD_CORAL_ITEMS);
+        // spotless:on
+
+        provider.addTag(ChemicalHelper.getTag(lens, Color.White))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+        provider.addTag(ChemicalHelper.getTag(lens, Color.LightBlue))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
+        provider.addTag(ChemicalHelper.getTag(lens, Color.Red))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
+        provider.addTag(ChemicalHelper.getTag(lens, Color.Green))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
+        provider.addTag(ChemicalHelper.getTag(lens, Color.Blue))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
+        provider.addTag(ChemicalHelper.getTag(lens, Color.Purple))
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
+
+        provider.addTag(CustomTags.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-                .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
-
-        // todo match ae2 certus quartz tag
-        // OreDictionary.registerUnificationEntry("crystalCertusQuartz", ChemicalHelper.get(TagPrefix.gem,
-        // GTMaterials.CertusQuartz));
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).get());
 
         // add treated and untreated wood plates to vanilla planks tag
         provider.addTag(ItemTags.PLANKS)
@@ -164,28 +181,5 @@ public class ItemTagLoader {
                 .addOptional(GTItems.SENSOR_UIV.getId())
                 .addOptional(GTItems.SENSOR_UXV.getId())
                 .addOptional(GTItems.SENSOR_OpV.getId());
-    }
-
-    private static void create(RegistrateTagsProvider<Item> provider, TagPrefix prefix, Material material,
-                               Item... rls) {
-        create(provider, ChemicalHelper.getTag(prefix, material), rls);
-    }
-
-    public static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, ResourceLocation... rls) {
-        var builder = provider.addTag(tagKey);
-        for (ResourceLocation rl : rls) {
-            builder.addOptional(rl);
-        }
-    }
-
-    public static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, Item... rls) {
-        var builder = provider.addTag(tagKey);
-        for (Item item : rls) {
-            builder.add(BuiltInRegistries.ITEM.getResourceKey(item).get());
-        }
-    }
-
-    private static ResourceLocation rl(String name) {
-        return new ResourceLocation(name);
     }
 }

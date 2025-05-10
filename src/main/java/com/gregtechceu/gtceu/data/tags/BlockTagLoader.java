@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.tags;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -11,42 +10,40 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
 public class BlockTagLoader {
 
-    public static void init(RegistrateTagsProvider<Block> provider) {
-        create(provider, CustomTags.CONCRETE_BLOCK, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE,
-                Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
-                Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE,
-                Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE, Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE,
-                Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
-        create(provider, CustomTags.CONCRETE_POWDER_BLOCK, Blocks.WHITE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER,
-                Blocks.MAGENTA_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER,
-                Blocks.LIME_CONCRETE_POWDER, Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER,
-                Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER,
-                Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER,
-                Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
-        create(provider, CustomTags.ENDSTONE_ORE_REPLACEABLES, Blocks.END_STONE);
-        create(provider, Tags.Blocks.STORAGE_BLOCKS, Blocks.NETHER_BRICKS,
-                GTBlocks.CASING_PRIMITIVE_BRICKS.get(), GTBlocks.CASING_COKE_BRICKS.get());
+    public static void init(RegistrateTagsProvider.IntrinsicImpl<Block> provider) {
+        provider.addTag(CustomTags.CONCRETE_BLOCK)
+                .add(Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE,
+                        Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE, Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE,
+                        Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
+                        Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
+        provider.addTag(CustomTags.CONCRETE_POWDER_BLOCK)
+                .add(Blocks.WHITE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER,
+                        Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER,
+                        Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE_POWDER,
+                        Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER,
+                        Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER,
+                        Blocks.BLACK_CONCRETE_POWDER);
 
-        create(provider, BlockTags.REPLACEABLE,
-                GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.OilLight.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.OilHeavy.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.RawOil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
-                GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
+        provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
+
+        provider.addTag(BlockTags.REPLACEABLE)
+                .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
+                .add(GTMaterials.OilLight.getFluid().defaultFluidState().createLegacyBlock().getBlock())
+                .add(GTMaterials.OilHeavy.getFluid().defaultFluidState().createLegacyBlock().getBlock())
+                .add(GTMaterials.RawOil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
+                .add(GTMaterials.NaturalGas.getFluid().defaultFluidState().createLegacyBlock().getBlock());
 
         provider.addTag(BlockTags.MINEABLE_WITH_AXE)
-                .add(TagEntry.element(GTMachines.WOODEN_DRUM.getId()))
-                .add(TagEntry.element(GTMachines.WOODEN_CRATE.getId()));
+                .add(GTMachines.WOODEN_DRUM.getBlock())
+                .add(GTMachines.WOODEN_CRATE.getBlock());
 
         // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
         provider.addTag(CustomTags.MINEABLE_WITH_WRENCH)

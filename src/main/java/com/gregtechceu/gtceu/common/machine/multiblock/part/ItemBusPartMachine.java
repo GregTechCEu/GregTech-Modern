@@ -193,12 +193,16 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
-        updateInventorySubscription();
+        updateInventorySubscription(newFacing);
     }
 
     protected void updateInventorySubscription() {
+        updateInventorySubscription(getFrontFacing());
+    }
+
+    protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
