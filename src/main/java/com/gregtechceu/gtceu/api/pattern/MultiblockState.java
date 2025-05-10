@@ -133,9 +133,8 @@ public class MultiblockState {
     }
 
     /**
-     * If the controller isn't loaded, returns null and updates error.
-     * 
-     * @return the Controller object
+     * {@return The {@link IMultiController} associated with this State} 
+     * {@code null} if not loaded
      */
     public IMultiController getController() {
         if (world.isLoaded(controllerPos)) {
@@ -161,11 +160,8 @@ public class MultiblockState {
     }
 
     /**
-     * Returns the {@link BlockState} at the active position.
-     * If null, tries to query it by checking at the in-world pos.
-     * If still null, returns error.
-     * 
-     * @return blockState
+     * {@return the BlockState at the active position} 
+     * {@code null} if the BlockState was unable to be gotten for some reason.
      */
     public BlockState getBlockState() {
         if (this.blockState == null) {
@@ -178,11 +174,8 @@ public class MultiblockState {
     }
 
     /**
-     * Returns the {@link BlockEntity} at the active position.
-     * If not initialized, tries to query it by checking at the in-world coords.
-     * Can return null if the block isn't a BlockEntity.
-     * 
-     * @return tileEntity
+     * {@return the BlockEntity at the active position}
+     * {@code null} if the BlockState is not a BlockEntity
      */
     @Nullable
     public BlockEntity getTileEntity() {
@@ -225,19 +218,15 @@ public class MultiblockState {
     }
 
     /**
-     * Checks for the given {@link BlockPos} in the cache
-     * 
      * @param pos the BlockPos to check
-     * @return whether the position is found
+     * {@return {@code true} if the cache contains the given pos}
      */
     public boolean isPosInCache(BlockPos pos) {
         return cache.contains(pos.asLong());
     }
 
     /**
-     * Returns the cache's contents as a list of BlockPos
-     * 
-     * @return the contents of the cache as a list
+     * {@return a collection containing the cached BlockPos objects}
      */
     public Collection<BlockPos> getCache() {
         return cache.stream().map(BlockPos::of).collect(Collectors.toList());
