@@ -49,14 +49,16 @@ public class MultiblockState {
     @Getter
     private final PatternMatchContext matchContext;
     /**
-     * A map counting the number of global matches for each SimplePredicate in this MultiblockState. Used for validating Predicate count restrictions.
+     * A map counting the number of global matches for each SimplePredicate in this MultiblockState. Used for validating
+     * Predicate count restrictions.
      * <br>
      * {@see SimplePredicate#testGlobal}
      */
     @Getter
     private Map<SimplePredicate, Integer> globalCount;
     /**
-     * A map counting the number of matches for each SimplePredicate in the current layer. Used for validating Predicate count restrictions.
+     * A map counting the number of matches for each SimplePredicate in the current layer. Used for validating Predicate
+     * count restrictions.
      * <br>
      * {@see SimplePredicate#testLayer}
      */
