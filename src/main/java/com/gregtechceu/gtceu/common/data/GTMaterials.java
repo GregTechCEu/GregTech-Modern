@@ -93,7 +93,6 @@ public class GTMaterials {
 
         gemExquisite.setIgnored(Sugar);
         gemFlawless.setIgnored(Sugar);
-
         gem.setIgnored(Diamond, Items.DIAMOND);
         gem.setIgnored(Emerald, Items.EMERALD);
         gem.setIgnored(Lapis, Items.LAPIS_LAZULI);
@@ -101,11 +100,13 @@ public class GTMaterials {
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
         gem.setIgnored(EchoShard, Items.ECHO_SHARD);
+        gem.setIgnored(Energium, GTItems.ENERGIUM_CRYSTAL.get());
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
         excludeAllGems(EnderEye, Items.ENDER_EYE);
         excludeAllGems(NetherStar, Items.NETHER_STAR);
+        excludeAllGemsButNormal(Energium);
         excludeAllGemsButNormal(Lapotron);
 
         dust.setIgnored(Redstone, Items.REDSTONE);
@@ -114,6 +115,7 @@ public class GTMaterials {
         dust.setIgnored(Sugar, Items.SUGAR);
         dust.setIgnored(Bone, Items.BONE_MEAL);
         dust.setIgnored(Blaze, Items.BLAZE_POWDER);
+        dust.setIgnored(Energium, GTItems.ENERGIUM_DUST.get());
 
         rod.setIgnored(Wood, Items.STICK);
         rod.setIgnored(Bone, Items.BONE);
@@ -159,6 +161,7 @@ public class GTMaterials {
                 Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
+        block.setIgnored(Energium);
         block.setIgnored(Lapotron);
         block.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
 
@@ -884,7 +887,6 @@ public class GTMaterials {
     public static Material NaquadriaSolution;
     public static Material AcidicNaquadriaSolution;
     public static Material NaquadriaWaste;
-    public static Material Lapotron;
     public static Material UUMatter;
     public static Material PCBCoolant;
     public static Material Sculk;
@@ -976,6 +978,8 @@ public class GTMaterials {
      */
     public static Material RedAlloy;
     public static Material BlueAlloy;
+    public static Material Energium;
+    public static Material Lapotron;
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;

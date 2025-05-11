@@ -254,51 +254,51 @@ public class BatteryRecipes {
 
     private static void gemBatteries(Consumer<FinishedRecipe> provider) {
         // Energy Crystal
-        MIXER_RECIPES.recipeBuilder("energium_dust")
+        MIXER_RECIPES.recipeBuilder("dust, Energium")
                 .inputItems(dust, Redstone, 5)
                 .inputItems(dust, Ruby, 4)
                 .circuitMeta(1)
-                .outputItems(ENERGIUM_DUST, 9)
+                .outputItems(dust, Energium, 9)
                 .duration(600).EUt(VA[MV]).save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_energium_dust")
-                .inputItems(ENERGIUM_DUST, 9)
+        CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_dust, Energium")
+                .inputItems(dust, Energium, 9)
                 .outputItems(dust, Redstone, 5)
                 .outputItems(dust, Ruby, 4)
                 .duration(1200).EUt(VA[ULV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_water")
-                .inputItems(ENERGIUM_DUST, 9)
+                .inputItems(dust, Energium, 9)
                 .inputFluids(Water.getFluid(1000))
-                .outputItems(ENERGIUM_CRYSTAL)
+                .outputItems(gem, Energium)
                 .duration(1800).EUt(VA[HV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_distilled")
-                .inputItems(ENERGIUM_DUST, 9)
+                .inputItems(dust, Energium, 9)
                 .inputFluids(DistilledWater.getFluid(1000))
-                .outputItems(ENERGIUM_CRYSTAL)
+                .outputItems(gem, Energium)
                 .duration(1200).EUt(320).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_black_steel")
-                .inputItems(ENERGIUM_DUST, 9)
+                .inputItems(dust, Energium, 9)
                 .inputFluids(BlackSteel.getFluid(L * 2))
-                .outputItems(ENERGIUM_CRYSTAL)
+                .outputItems(gem, Energium)
                 .duration(300).EUt(256).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("energy_crystal_blue_steel")
-                .inputItems(ENERGIUM_DUST, 9)
+                .inputItems(dust, Energium, 9)
                 .inputFluids(RedSteel.getFluid(L / 2))
-                .outputItems(ENERGIUM_CRYSTAL)
+                .outputItems(gem, Energium)
                 .duration(150).EUt(192).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("recycle_energy_crystal")
-                .inputItems(ENERGIUM_CRYSTAL)
-                .outputItems(ENERGIUM_DUST, 9)
+                .inputItems(gem, Energium)
+                .outputItems(dust, Energium, 9)
                 .duration(500).EUt(VA[ULV]).save(provider);
 
         // Lapotron Crystal
         MIXER_RECIPES.recipeBuilder("lapotron_dust")
-                .inputItems(ENERGIUM_DUST, 3)
+                .inputItems(dust, Energium, 3)
                 .inputItems(dust, Lapis, 2)
                 .circuitMeta(2)
                 .outputItems(dust, Lapotron, 5)
@@ -306,7 +306,7 @@ public class BatteryRecipes {
 
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_lapotron_dust")
                 .inputItems(dust, Lapotron, 5)
-                .outputItems(ENERGIUM_DUST, 3)
+                .outputItems(dust, Energium, 3)
                 .outputItems(dust, Lapis, 2)
                 .duration(800).EUt(VA[ULV]).save(provider);
 

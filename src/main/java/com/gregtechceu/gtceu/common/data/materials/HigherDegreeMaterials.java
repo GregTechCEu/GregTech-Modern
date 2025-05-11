@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustSmall;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class HigherDegreeMaterials {
@@ -56,6 +58,22 @@ public class HigherDegreeMaterials {
                 .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
+        
+        Energium = new Material.Builder(GTCEu.id("energium"))
+            .gem()
+            .color(0xff0000).secondaryColor(0xff3f3f).iconSet(DIAMOND) //filler numbers
+            .flags(NO_UNIFICATION, DISABLE_DECOMPOSITION)
+            .components(Redstone, 5, Ruby, 4)
+            .ignoredTagPrefixes(dustTiny, dustSmall)
+            .buildAndRegister();
+        
+        Lapotron = new Material.Builder(GTCEu.id("lapotron"))
+            .gem()
+            .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
+            .flags(NO_UNIFICATION, DISABLE_DECOMPOSITION)
+            .components(Energium, 3, Lapis, 2)
+            .ignoredTagPrefixes(dustTiny, dustSmall)
+            .buildAndRegister();
 
         Basalt = new Material.Builder(GTCEu.id("basalt"))
                 .dust(1)

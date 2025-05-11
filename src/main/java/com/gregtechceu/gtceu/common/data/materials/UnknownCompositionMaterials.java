@@ -538,13 +538,6 @@ public class UnknownCompositionMaterials {
         NaquadriaWaste = new Material.Builder(GTCEu.id("naquadria_waste"))
                 .fluid().color(0x425B42).buildAndRegister();
 
-        Lapotron = new Material.Builder(GTCEu.id("lapotron"))
-                .gem()
-                .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
-                .flags(NO_UNIFICATION)
-                .ignoredTagPrefixes(dustTiny, dustSmall)
-                .buildAndRegister();
-
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))
                 .wood()
                 .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
