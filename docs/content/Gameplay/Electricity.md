@@ -20,7 +20,7 @@ Energy is transferred in packages. Voltage describes the size of the package, wh
 
 ### Voltage
 
-GregTech tiers progression into voltage tiers. The voltage tier of a generator defines the maximum EU the generator can output. The voltage tier of a single block machine or Energy Hatch describes the maximum amount of EU that it can recieve per amp. If this value is exceeded the machine explodes.
+GregTech tiers progression into voltage tiers. The voltage tier of a singleblock machine or energy hatch describes the maximum amount of EU that it can receive per amp. If that value is exceeded, the machine explodes.
 
 Certain recipes might require certain voltage levels, thus requiring a higher tier machine.
 
@@ -63,39 +63,44 @@ Different machines draw different amounts of amps:
 ## Machine Overclocking
 
 Machines of a higher tier than that of the recipe's voltage level can overclock recipes to speed them up.
-Overclocking doubles the recipe's speed, but quadruples EU/t usage. This is also called _2/4 overclock_ or _regular overclock_.
-Single block machines can only regular overclock.
+Overclocking doubles the recipe's speed, but quadruples EU/t usage. This is also called a _2/4 overclock_ or _regular overclock_.
+Singleblock machines can only do regular overclocks.
 
 A _perfect overclock_ quadruples both the recipe's speed and EU/t usage.
 
 Some multibocks suck as the Large Chemical Reactor do perfect overclocking by default, while some have conditional perfect overclocking.
 
-Multiblocks with 2 Energy Hatches of the same Voltage Tier will overclock to 1 Amps of the Voltage Tier above. (For example, an Electric Blast Furncace with 2 LV Energy Hatches (4A of LV = 4 \* 32 = 128 EU/t) will overclock to MV (1A of MV = 1 \* 128 = 128 EU/t).)
+Multiblocks with 2 Energy Hatches of the same voltage tier will overclock to 1 Amp of the next voltage tier. 
+
+For example, an Electric Blast Furnace with 2 LV Energy Hatches (4A of LV = 4 \* 32 = 128 EU/t) will overclock to MV (1A of MV = 1 \* 128 = 128 EU/t).
 
 
 ## Wires, Cables, Cable loss
 
-In GregTech, energy is transferred trough wires and cables. Cables are the covered versions of wires, but anything mentioned about cables applies to wires too.
+In GregTech, energy is transferred through wires and cables. Cables are insulated wires, so most information about them applies to wires as well.
 
 !!! danger
     Non-superconductor wires will electrocute you if touched while electricity is flowing through.
 
 All cables have a max Voltage, max Amperage and a Loss/Meter/Ampere.
 
-- Cables that recieve more EU than their maximum Voltage will burn up.
-- Cables that have more Amps travelling through them than their maximum Amperage will burn up.
+- Cables that receive more EU than their maximum Voltage will burn up.
+- Cables that have more Amps traveling through them than their maximum Amperage will burn up.
 
-Each energy packet (Amp) travelling trough a cable will lose Voltage per block travelled.<br>
-For example: Tin Cable can transfer 32 EU/t with a Cable Loss of 1 EU/Amps/Meter. This means, that 1 Amp can "live" for 32 blocks before it is lost.
+Each energy packet (Amp) travelling through a cable will lose the specified amount of voltage per block travelled.<br>
+For example: a 1x Tin Cable can transfer 32 EU/t with a Cable Loss of 1 EU/Meter. That means 1 Amp can "live" for 32 blocks before it's completely lost.
+
+!!! note "Machine energy requirements"
+    Most recipes require ¹⁵⁄₁₆ of the tier's EU value to function, so an LV Tin Cable can only supply enough energy for most LV recipes from at most 2 blocks away from the energy source.
 
 Cables come in different density. A higher density can transfer a higher amount of Amps.
 
-To account for cable loss, machines requiring large amounts of Amps (like the EBF), you should place these machines closer to your power use and use more dense cables. For example, an EBF that has 2 LV Energy Hatches requires 4A of LV, so using only 4A Tin Cables will barely be enough (it will be as most recipe Voltages account for some power loss) as even after travelling 1 block, each amp would already lose 1 EU.
+To account for cable loss, machines requiring large amounts of Amps (like the EBF), you should place these machines closer to your power use and use more dense cables. For example, an EBF that has 2 LV Energy Hatches requires 4A of LV, so using only 4A Tin Cables will barely be enough (it will be as most recipe Voltages account for some power loss) as even after traveling 1 block, each amp would already lose 1 EU.
 
 !!! tip
     Cables have half the cable loss as wires do. Insulate your wires!
 
-Superconductor Wires are Wires with 0 Cable Loss. Those don't have a cable variant and won't electrocute you when touching them.
+Superconductors are wires with 0 cable loss. They don't have a cable variant and won't electrocute you when touching them.
 
 
 ## Dynamo Hatches
