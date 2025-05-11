@@ -87,7 +87,7 @@ All cables have a max Voltage, max Amperage and a Loss/Meter/Ampere.
 - Cables that receive more EU than their maximum Voltage will burn up.
 - Cables that have more Amps traveling through them than their maximum Amperage will burn up.
 
-Each energy packet (Amp) travelling through a cable will lose the specified amount of voltage per block travelled.<br>
+Each energy packet (Amp) traveling through a cable will lose the specified amount of voltage per block traveled.<br>
 For example: a 1x Tin Cable can transfer 32 EU/t with a Cable Loss of 1 EU/Meter. That means 1 Amp can "live" for 32 blocks before it's completely lost.
 
 !!! note "Machine energy requirements"
