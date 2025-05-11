@@ -62,7 +62,6 @@ public class GTMaterialItems {
                     GTRegistrate registrate = registry.getRegistrate();
                     for (Material material : registry.getAllMaterials()) {
                         if (tagPrefix.doGenerateItem(material)) {
-
                             generateMaterialItem(tagPrefix, material, registrate);
                         }
                     }
