@@ -130,7 +130,7 @@ public class AntidoteRecipes {
                 .inputItems(dust, PotassiumFerrocyanide, 51)
                 .inputFluids(Iron3Chloride.getFluid(4000))
                 .outputItems(dust, PrussianBlue, 1)
-                .outputItems(dust, RockSalt, 6)
+                .outputItems(dust, RockSalt, 24)
                 .duration(500).EUt(VA[HV]).save(provider);
     }
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -37,17 +37,17 @@ public class BatteryRecipes {
         // :trol:
         VanillaRecipeHelper.addShapedRecipe(provider, "tantalum_capacitor", BATTERY_ULV_TANTALUM.asStack(2),
                 " F ", "FDF", "B B",
-                'F', new UnificationEntry(foil, Manganese),
-                'D', new UnificationEntry(dust, Tantalum),
-                'B', new UnificationEntry(bolt, Iron));
+                'F', new MaterialEntry(foil, Manganese),
+                'D', new MaterialEntry(dust, Tantalum),
+                'B', new MaterialEntry(bolt, Iron));
 
         // Battery Hull Recipes
 
         // LV
         VanillaRecipeHelper.addShapedRecipe(provider, "battery_hull_lv", BATTERY_HULL_LV.asStack(),
                 "C", "P", "P",
-                'C', new UnificationEntry(cableGtSingle, Tin),
-                'P', new UnificationEntry(plate, BatteryAlloy));
+                'C', new MaterialEntry(cableGtSingle, Tin),
+                'P', new MaterialEntry(plate, BatteryAlloy));
 
         ASSEMBLER_RECIPES.recipeBuilder("battery_hull_lv")
                 .inputItems(cableGtSingle, Tin)
@@ -59,8 +59,8 @@ public class BatteryRecipes {
         // MV
         VanillaRecipeHelper.addShapedRecipe(provider, "battery_hull_mv", BATTERY_HULL_MV.asStack(),
                 "C C", "PPP", "PPP",
-                'C', new UnificationEntry(cableGtSingle, Copper),
-                'P', new UnificationEntry(plate, BatteryAlloy));
+                'C', new MaterialEntry(cableGtSingle, Copper),
+                'P', new MaterialEntry(plate, BatteryAlloy));
 
         ASSEMBLER_RECIPES.recipeBuilder("battery_hull_mv_copper")
                 .inputItems(cableGtSingle, Copper, 2)

@@ -42,6 +42,8 @@ import net.minecraftforge.fluids.FluidType;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -64,6 +66,17 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+
+    private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
+
+    /**
+     * Convenience method to get from VN -> Tier
+     * 
+     * @return the voltage tier by name, -1 if the tier name isn't valid
+     */
+    public static int getTierByName(String name) {
+        return RVN.getOrDefault(name, -1);
+    }
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -225,42 +238,42 @@ public class GTUtil {
         return (byte) ((60 - Long.numberOfLeadingZeros(voltage)) >> 1);
     }
 
-    public static ItemStack copy(ItemStack... stacks) {
-        for (ItemStack stack : stacks)
-            if (!stack.isEmpty()) return stack.copy();
+    /**
+     * Copies first non-empty ItemStack from stacks.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copy();
+            }
+        }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack copyAmount(int amount, ItemStack... stacks) {
-        ItemStack stack = copy(stacks);
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (amount > 64) amount = 64;
-        else if (amount == -1) amount = 111;
-        else if (amount < 0) amount = 0;
-        stack.setCount(amount);
-        return stack;
-    }
-
-    public static FluidStack copyAmount(int amount, FluidStack fluidStack) {
-        if (fluidStack == null) return null;
-        FluidStack stack = fluidStack.copy();
-        stack.setAmount(amount);
-        return stack;
-    }
-
-    public static <M> M selectItemInList(int index, M replacement, List<M> list, Class<M> minClass) {
-        if (list.isEmpty())
-            return replacement;
-
-        M maybeResult;
-        if (list.size() <= index) {
-            maybeResult = list.get(list.size() - 1);
-        } else if (index < 0) {
-            maybeResult = list.get(0);
-        } else maybeResult = list.get(index);
-
-        if (maybeResult != null) return maybeResult;
-        return replacement;
+    /**
+     * Copies first non-empty ItemStack from stacks, with new stack size.
+     *
+     * @param stacks list of candidates for copying
+     * @return a copy of ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack copyFirst(int newCount, @NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack.copyWithCount(newCount);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {

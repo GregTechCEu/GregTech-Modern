@@ -51,9 +51,12 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
     private void initializeTank() {
         for (IMultiPart part : getParts()) {
-            for (var handler : part.getRecipeHandlers()) {
-                if (handler.getHandlerIO() == IO.OUT && handler.getCapability() == FluidRecipeCapability.CAP) {
-                    fluidTank = (NotifiableFluidTank) handler;
+            var handlerLists = part.getRecipeHandlers();
+
+            for (var handlerList : handlerLists) {
+                var recipeCap = handlerList.getCapability(FluidRecipeCapability.CAP);
+                if (handlerList.getHandlerIO() == IO.OUT && !recipeCap.isEmpty()) {
+                    fluidTank = (NotifiableFluidTank) recipeCap.get(0);
                     long tankCapacity = fluidTank.getTankCapacity(0);
                     if (tankCapacity == FluidType.BUCKET_VOLUME) {
                         hatchModifier = 1;
@@ -100,7 +103,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
                     fluidTank.handleRecipe(IO.OUT, null,
-                            List.of(FluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), null, false);
+                            List.of(FluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), false);
                 }
             }
         }

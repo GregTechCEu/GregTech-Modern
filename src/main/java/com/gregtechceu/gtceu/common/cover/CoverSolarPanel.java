@@ -46,7 +46,7 @@ public class CoverSolarPanel extends CoverBehavior {
 
     @Override
     public boolean canAttach() {
-        return attachedSide == Direction.UP && getEnergyContainer() != null;
+        return super.canAttach() && attachedSide == Direction.UP && getEnergyContainer() != null;
     }
 
     protected void update() {

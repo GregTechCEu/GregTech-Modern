@@ -124,14 +124,6 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
         return 0L;
     }
 
-    /**
-     * @return true if information like energy capacity should be hidden from TOP.
-     *         Useful for cables
-     */
-    default boolean isOneProbeHidden() {
-        return false;
-    }
-
     IEnergyContainer DEFAULT = new IEnergyContainer() {
 
         @Override

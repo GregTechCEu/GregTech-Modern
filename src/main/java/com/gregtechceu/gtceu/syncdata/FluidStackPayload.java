@@ -41,4 +41,12 @@ public class FluidStackPayload extends ObjectTypedPayload<FluidStack> {
             payload = FluidHelperImpl.toFluidStack(stack);
         }
     }
+
+    @Override
+    public Object copyForManaged(Object value) {
+        if (value instanceof FluidStack) {
+            return ((FluidStack) value).copy();
+        }
+        return value;
+    }
 }

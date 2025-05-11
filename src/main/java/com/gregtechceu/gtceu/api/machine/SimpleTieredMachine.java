@@ -114,7 +114,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
         this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args);
+        this.circuitInventory = createCircuitItemHandler(args).shouldSearchContent(false);
     }
 
     //////////////////////////////////////

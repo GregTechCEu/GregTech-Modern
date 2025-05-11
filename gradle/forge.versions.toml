@@ -1,5 +1,5 @@
 [versions]
-ldlib = "1.0.34"
+ldlib = "1.0.39"
 registrate = "MC1.20-1.3.11"
 configuration = "2.2.0"
 mixinExtras = "0.2.0"
@@ -19,6 +19,7 @@ shimmer = "1.20.1-0.2.4"
 journeyMapApi = "1.20-1.9-SNAPSHOT"
 ftblibrary = "2001.2.4"
 ftbteams = "2001.3.0"
+ftbquests= "2001.4.11"
 ftbchunks = "2001.3.4"
 
 ## modrinth maven ##
@@ -35,11 +36,15 @@ xaerosMinimap = "5773012"
 journeyMap = "5789363"
 resourcefullib = "5659871"
 argonauts = "5263580"
+heracles = "5406935"
 ae2wtlib = "5217955"
 spark = "4738952"
 observable = "5643037"
+gamestages = "15.0.2"
+bookshelf = "20.2.13"
 ftblibrary-cm = "5567591"
 ftbteams-cm = "5267190"
+ftbquests-cm = "6167056"
 ftbchunks-cm = "5956390"
 
 
@@ -70,6 +75,7 @@ journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref =
 shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
+ftbquests           = { module = "dev.ftb.mods:ftb-quests-forge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = "ftbchunks" }
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
@@ -83,12 +89,16 @@ xaerosminimap       = { module = "curse.maven:xaeros-minimap-263420", version.re
 journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "journeyMap" }
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }
+heracles            = { module = "curse.maven:heracles-845831", version.ref = "heracles" }
 ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
+gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
+bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
+ftbquests-cm        = { module = "curse.maven:ftb-quests-forge-289412", version.ref = "ftbquests-cm" }
 ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]

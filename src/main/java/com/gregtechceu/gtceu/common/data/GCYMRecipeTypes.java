@@ -48,7 +48,7 @@ public class GCYMRecipeTypes {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-                if (requiredCoil != null && requiredCoil.getMaterial() != null) {
+                if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
                     return LocalizationUtils.format("gtceu.recipe.coil.tier",
                             I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
                 }

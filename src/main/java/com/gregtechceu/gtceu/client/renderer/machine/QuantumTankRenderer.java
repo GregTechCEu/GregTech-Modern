@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -16,9 +18,13 @@ import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -33,6 +39,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 /**
  * @author KilaBash
@@ -52,6 +63,13 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     public QuantumTankRenderer(int tier, ResourceLocation modelLocation) {
         super(tier, modelLocation);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                                ModelState modelState, @Nullable Direction side, RandomSource rand) {
+        quads.addAll(getRotatedModel(modelState).getQuads(definition.defaultBlockState(), side, rand));
     }
 
     @Override
@@ -89,8 +107,17 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
                        int combinedLight, int combinedOverlay) {
         if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
                 machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getStoredAmount(),
+            poseStack.pushPose();
+            var frontFacing = machine.getFrontFacing();
+            var upwardFacing = machine.getUpwardsFacing();
+            poseStack.translate(.5, .5, .5);
+            rotateMatrix(poseStack.last().pose(),
+                    upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
+                    frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
+            poseStack.translate(-.5, -.5, -.5);
+            renderTank(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(),
                     machine.getMaxAmount(), machine.getLockedFluid(), machine instanceof CreativeTankMachine);
+            poseStack.popPose();
         }
     }
 

@@ -20,8 +20,9 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return false;
         }
 
-        return GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) !=
-                null;
+        return super.canAttach() &&
+                GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) !=
+                        null;
     }
 
     @Override
