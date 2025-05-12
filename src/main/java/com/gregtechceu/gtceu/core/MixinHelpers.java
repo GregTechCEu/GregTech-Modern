@@ -126,6 +126,9 @@ public class MixinHelpers {
             GTMaterialBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
                 MixinHelpers.addMaterialBlockTags(tagMap, prefix, map);
             });
+
+            MixinHelpers.addMaterialBlockTags(tagMap, TagPrefix.surfaceRock, GTMaterialBlocks.SURFACE_ROCK_BLOCKS);
+
             GTRegistries.MACHINES.forEach(machine -> {
                 ResourceLocation id = machine.getId();
                 tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(),

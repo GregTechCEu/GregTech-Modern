@@ -948,6 +948,10 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
 
+    public static final TagPrefix surfaceRock = new TagPrefix("surfaceRock")
+            .langValue("%s Surface Rock")
+            .materialAmount(GTValues.M / 3);
+
     public static class Conditions {
 
         public static final Predicate<Material> hasToolProperty = mat -> mat.hasProperty(PropertyKey.TOOL);
