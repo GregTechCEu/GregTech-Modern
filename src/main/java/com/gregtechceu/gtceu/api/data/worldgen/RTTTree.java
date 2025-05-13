@@ -7,11 +7,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/21
- * @implNote RTTTree
- */
 public class RTTTree {
 
     @Getter

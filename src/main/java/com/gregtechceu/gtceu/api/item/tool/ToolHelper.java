@@ -75,11 +75,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote ToolHelper
- */
 public class ToolHelper {
 
     public static final String TOOL_TAG_KEY = "GT.Tool";

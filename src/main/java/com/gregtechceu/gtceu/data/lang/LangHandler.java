@@ -20,11 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/3/19
- * @implNote LangHandler
- */
 public class LangHandler {
 
     public static void init(RegistrateLangProvider provider) {

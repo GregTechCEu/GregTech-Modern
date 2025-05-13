@@ -14,11 +14,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/3/14
- * @implNote FluidFilter
- */
 public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
 
     Map<ItemLike, Function<ItemStack, FluidFilter>> FILTERS = new HashMap<>();

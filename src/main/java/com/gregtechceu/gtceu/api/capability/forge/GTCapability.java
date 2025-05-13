@@ -9,11 +9,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote GTCapabilities
- */
 public class GTCapability {
 
     public static final Capability<IEnergyContainer> CAPABILITY_ENERGY_CONTAINER = CapabilityManager

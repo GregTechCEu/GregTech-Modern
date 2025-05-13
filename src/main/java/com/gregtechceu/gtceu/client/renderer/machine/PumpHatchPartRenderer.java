@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/5/25
- * @implNote PumpHatchPartRenderer
- */
 public class PumpHatchPartRenderer extends CTMModelRenderer {
 
     public static final ResourceLocation PIPE_OUT = GTCEu.id("block/overlay/machine/overlay_pipe_out");

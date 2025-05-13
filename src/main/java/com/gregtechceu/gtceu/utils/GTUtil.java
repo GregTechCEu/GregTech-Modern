@@ -58,11 +58,6 @@ import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote GTUtil
- */
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();

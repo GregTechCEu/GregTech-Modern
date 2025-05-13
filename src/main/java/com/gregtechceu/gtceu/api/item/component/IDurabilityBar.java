@@ -10,11 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote IDurabilityBar
- */
 public interface IDurabilityBar extends IItemDecoratorComponent {
 
     default int getBarWidth(ItemStack stack) {

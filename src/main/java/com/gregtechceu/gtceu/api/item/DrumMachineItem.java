@@ -15,11 +15,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2023/3/28
- * @implNote DrumMachineItem
- */
 public class DrumMachineItem extends MetaMachineItem {
 
     @NotNull

@@ -80,12 +80,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
 /**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote MetaMachine, an abstract layer of gregtech machine.
- *           Because I have to implement BlockEntities for both fabric and forge platform.
- *           All fundamental features will be implemented here.
- *           To add additional features, you can see {@link IMachineFeature}
+ * an abstract layer of gregtech machine.
+ * Because I have to implement BlockEntities for both fabric and forge platform.
+ * All fundamental features will be implemented here.
+ * To add additional features, you can see {@link IMachineFeature}
  */
 @SuppressWarnings("removal")
 @ParametersAreNonnullByDefault

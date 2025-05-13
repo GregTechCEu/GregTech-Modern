@@ -22,11 +22,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote TurbineRotorBehaviour
- */
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override

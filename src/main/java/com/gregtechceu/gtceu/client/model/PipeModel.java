@@ -38,11 +38,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote PipeModel
- */
 public class PipeModel {
 
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY = GTCEu.id("block/pipe/blocked/pipe_blocked");

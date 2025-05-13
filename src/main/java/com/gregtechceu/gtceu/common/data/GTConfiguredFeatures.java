@@ -21,11 +21,6 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.feature.trunkplacers.ForkingTrunkPlacer;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
-/**
- * @author KilaBash
- * @date 2023/3/26
- * @implNote GTConfiguredFeatures
- */
 public class GTConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER = ResourceKey.create(Registries.CONFIGURED_FEATURE,

@@ -125,11 +125,6 @@ import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
-/**
- * @author KilaBash
- * @date 2023/3/26
- * @implNote GregTechKubeJSPlugin
- */
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override

@@ -7,11 +7,6 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 
-/**
- * @author KilaBash
- * @date 2023/7/19
- * @implNote GTDamageTypes
- */
 public class GTDamageTypes {
 
     public static final DamageTypeData EXPLOSION = new DamageTypeData.Builder()

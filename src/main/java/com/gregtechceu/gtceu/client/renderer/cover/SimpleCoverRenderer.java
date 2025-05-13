@@ -23,11 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote SimpleCoverRenderer
- */
 public class SimpleCoverRenderer implements ICoverRenderer {
 
     ResourceLocation texture;

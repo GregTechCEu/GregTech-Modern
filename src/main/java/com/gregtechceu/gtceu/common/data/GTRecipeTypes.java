@@ -45,11 +45,6 @@ import java.util.List;
 
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeTypes
- */
 public class GTRecipeTypes {
 
     public static final String STEAM = "steam";
