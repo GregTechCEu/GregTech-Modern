@@ -1,0 +1,22 @@
+name: Ensure “ignore changelog” label
+
+# Запускаем при пуше в main и вручную
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  ensure-ignore-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update label “ignore changelog”
+        uses: peter-evans/create-or-update-label@v3
+        with:
+          token: ${{ secrets.GH_FULL_TOKEN }}
+          name: ignore changelog
+          color: FFFFFF
+          description: Не учитывать этот PR при генерации changelog
