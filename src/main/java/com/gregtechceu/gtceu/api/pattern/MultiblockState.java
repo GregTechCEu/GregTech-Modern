@@ -133,7 +133,7 @@ public class MultiblockState {
     }
 
     /**
-     * {@return The {@link IMultiController} associated with this State} 
+     * {@return The {@link IMultiController} associated with this State}
      * {@code null} if not loaded
      */
     public IMultiController getController() {
@@ -160,7 +160,7 @@ public class MultiblockState {
     }
 
     /**
-     * {@return the BlockState at the active position} 
+     * {@return the BlockState at the active position}
      * {@code null} if the BlockState was unable to be gotten for some reason.
      */
     public BlockState getBlockState() {
@@ -219,7 +219,7 @@ public class MultiblockState {
 
     /**
      * @param pos the BlockPos to check
-     * {@return {@code true} if the cache contains the given pos}
+     *            {@return {@code true} if the cache contains the given pos}
      */
     public boolean isPosInCache(BlockPos pos) {
         return cache.contains(pos.asLong());
