@@ -58,7 +58,7 @@ legacyForge {
         server {
             server()
             sourceSet = sourceSets.main
-            ideName = "Server"
+            ideName = "Clean Server"
 
             gameDirectory.set(file('run/server'))
             programArgument '--nogui'

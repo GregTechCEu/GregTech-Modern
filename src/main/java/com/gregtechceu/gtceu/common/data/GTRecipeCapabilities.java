@@ -11,11 +11,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.ModLoader;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeCapabilities
- */
 public class GTRecipeCapabilities {
 
     public final static RecipeCapability<Ingredient> ITEM = ItemRecipeCapability.CAP;

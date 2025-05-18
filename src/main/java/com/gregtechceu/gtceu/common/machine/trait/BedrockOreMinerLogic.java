@@ -25,11 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/7/12
- * @implNote FluidDrillLogic
- */
 public class BedrockOreMinerLogic extends RecipeLogic {
 
     public static final int MAX_PROGRESS = 20;

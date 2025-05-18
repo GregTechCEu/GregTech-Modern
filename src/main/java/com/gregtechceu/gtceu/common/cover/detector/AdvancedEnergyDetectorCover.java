@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,6 +50,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     @Getter
     @Setter
     public long minValue, maxValue;
+
     @Persisted
     @Getter
     private boolean usePercent;
@@ -68,27 +70,39 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (coverHolder.getOffsetTimer() % 20 != 0) return;
 
         IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
+        if (energyInfoProvider == null) return;
 
-        if (energyInfoProvider == null) {
-            return;
-        }
+        var energyInfo = energyInfoProvider.getEnergyInfo();
+        var isBigInt = energyInfoProvider.supportsBigIntEnergyValues();
 
-        // TODO properly support values > MAX_LONG
-        IEnergyInfoProvider.EnergyInfo energyInfo = energyInfoProvider.getEnergyInfo();
-        long capacity = energyInfo.capacity().longValue();
-        long stored = energyInfo.stored().longValue();
-
-        if (usePercent) {
-            if (capacity > 0) {
-                float ratio = (float) stored / capacity;
-                setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
-                        minValue, isInverted(), redstoneSignalOutput));
+        if (isBigInt) {
+            if (usePercent) {
+                if (energyInfo.capacity().compareTo(BigInteger.ZERO) > 0) {
+                    var ratio = GTMath.ratio(energyInfo.stored(), energyInfo.capacity());
+                    setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
+                            minValue, isInverted(), redstoneSignalOutput));
+                } else {
+                    setRedstoneSignalOutput(isInverted() ? 15 : 0);
+                }
             } else {
-                setRedstoneSignalOutput(isInverted() ? 0 : 15);
+                setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(energyInfo.stored(),
+                        BigInteger.valueOf(this.maxValue), BigInteger.valueOf(this.minValue),
+                        isInverted(), redstoneSignalOutput));
             }
         } else {
-            setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(stored, this.maxValue, this.minValue,
-                    isInverted(), redstoneSignalOutput));
+            if (usePercent) {
+                if (energyInfo.capacity().longValue() > 0) {
+                    var ratio = energyInfo.stored().longValue() / energyInfo.capacity().longValue();
+                    setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(ratio * 100, maxValue,
+                            minValue, isInverted(), redstoneSignalOutput));
+                } else {
+                    setRedstoneSignalOutput(isInverted() ? 15 : 0);
+                }
+            } else {
+                setRedstoneSignalOutput(computeLatchedRedstoneBetweenValues(energyInfo.stored().longValue(),
+                        this.maxValue, this.minValue,
+                        isInverted(), redstoneSignalOutput));
+            }
         }
     }
 
@@ -141,7 +155,12 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (GTCEu.isClientThread() || minValueInput == null || maxValueInput == null)
             return;
 
-        long energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValue();
+        long energyCapacity;
+        try {
+            energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValueExact();
+        } catch (ArithmeticException e) {
+            energyCapacity = Long.MAX_VALUE;
+        }
 
         minValueInput.setMin(0L);
         maxValueInput.setMin(0L);

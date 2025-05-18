@@ -38,9 +38,6 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 
 public class RecyclingRecipes {
 
-    // TODO - Fix recipe order with some things (noticed Hermetic Casings)
-    // TODO - Figure out solution to LuV+ components
-    // TODO - (to remember) Do NOT calculate any material component lists for circuits, they are simply totally lost
     // TODO - Work on durations and EUt's
 
     public static void init(Consumer<FinishedRecipe> provider) {

@@ -19,11 +19,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote IMultiPart
- */
 public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**

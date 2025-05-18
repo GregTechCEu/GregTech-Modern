@@ -84,11 +84,6 @@ import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTItems
- */
 public class GTItems {
 
     //////////////////////////////////////

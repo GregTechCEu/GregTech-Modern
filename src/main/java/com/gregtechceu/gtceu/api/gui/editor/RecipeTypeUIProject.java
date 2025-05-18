@@ -32,11 +32,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/3/29
- * @implNote RecipeTypeUIProject
- */
 @LDLRegister(name = "rtui", group = "editor.gtceu")
 public class RecipeTypeUIProject extends UIProject {
 

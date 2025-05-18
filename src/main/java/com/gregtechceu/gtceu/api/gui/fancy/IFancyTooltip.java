@@ -10,11 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/6/28
- * @implNote IFancyConfigurator
- */
 public interface IFancyTooltip {
 
     IGuiTexture getFancyTooltipIcon();

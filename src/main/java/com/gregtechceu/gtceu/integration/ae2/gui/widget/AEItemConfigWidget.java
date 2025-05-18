@@ -7,11 +7,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import appeng.api.stacks.GenericStack;
 
-/**
- * @Author GlodBlock
- * @Description Display {@link net.minecraft.world.item.ItemStack} config
- * @Date 2023/4/22-1:02
- */
 public class AEItemConfigWidget extends ConfigWidget {
 
     private final ExportOnlyAEItemList itemList;

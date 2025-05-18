@@ -13,11 +13,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/7/24
- * @implNote ShapedRecipeAccessor
- */
 @Mixin(ShapedRecipe.class)
 public interface ShapedRecipeAccessor {
 

@@ -201,7 +201,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
-        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
+        this.tier = Math.min(GTValues.MAX, GTUtil.getFloorTierByVoltage(getMaxVoltage()));
     }
 
     @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability

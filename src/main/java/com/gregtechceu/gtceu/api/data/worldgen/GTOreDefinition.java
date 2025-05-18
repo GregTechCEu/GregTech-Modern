@@ -41,11 +41,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author Screret
- * @date 2023/6/14
- * @implNote GTOreDefinition
- */
 @SuppressWarnings("unused")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

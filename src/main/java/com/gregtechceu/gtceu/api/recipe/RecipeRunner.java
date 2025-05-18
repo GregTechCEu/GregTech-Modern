@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Used to handle recipes, only valid for a single RecipeCapability's entries
- */
 class RecipeRunner {
 
     record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
