@@ -50,10 +50,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
@@ -300,6 +297,11 @@ public class GTUtil {
 
     public static <T> int getRandomItem(List<? extends Entry<Integer, T>> randomList, int size) {
         return getRandomItem(GTValues.RNG, randomList, size);
+    }
+
+    public static <T> List<T> mergeLists(@NotNull List<T> first, @NotNull List<? extends T> second) {
+        first.addAll(second);
+        return first;
     }
 
     @SuppressWarnings("unchecked")
