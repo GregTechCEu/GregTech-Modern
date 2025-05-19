@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -24,7 +23,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -74,18 +72,9 @@ public class MixinHelpers {
                     for (TagKey<Item> materialTag : materialTags) {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(
-                                TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get())),
+                                TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get().asItem())),
                                 GTValues.CUSTOM_TAG_SOURCE)));
-                        tagMap.merge(materialTag.location(), tags, GTUtil::mergeLists);
-                    }
-                        if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
-                        OreProperty ore = material.getProperty(PropertyKey.ORE);
-                        ResourceLocation tag = GTCEu.id("washed_in/" + ore.getWashedIn().getFirst().getName());
-                        List<TagLoader.EntryWithSource> tags = new ArrayList<>();
-                        itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(
-                        TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get())),
-                        GTValues.CUSTOM_TAG_SOURCE)));
-                        tagMap.merge(tag, tags, GTUtil::mergeLists);
+                        tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(tags);
                     }
 
                 }
