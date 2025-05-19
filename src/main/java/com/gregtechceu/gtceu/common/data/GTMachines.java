@@ -55,11 +55,6 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote GTMachines
- */
 public class GTMachines {
 
     static {

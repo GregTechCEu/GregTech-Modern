@@ -41,11 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote ItemBusPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
@@ -193,12 +188,16 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
-        updateInventorySubscription();
+        updateInventorySubscription(newFacing);
     }
 
     protected void updateInventorySubscription() {
+        updateInventorySubscription(getFrontFacing());
+    }
+
+    protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io == IO.OUT && !getInventory().isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

@@ -9,11 +9,6 @@ import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote TieredPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TieredPartMachine extends MultiblockPartMachine implements ITieredMachine {

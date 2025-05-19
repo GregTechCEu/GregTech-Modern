@@ -83,11 +83,6 @@ import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote GTBlocks
- */
 @SuppressWarnings("removal")
 public class GTBlocks {
     //////////////////////////////////////

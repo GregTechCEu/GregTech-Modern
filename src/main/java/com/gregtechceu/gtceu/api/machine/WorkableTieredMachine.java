@@ -23,11 +23,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote WorkableTieredMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,

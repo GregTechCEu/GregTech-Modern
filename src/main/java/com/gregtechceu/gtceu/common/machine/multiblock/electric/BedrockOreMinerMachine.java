@@ -33,11 +33,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author Screret
- * @date 2023/7/12
- * @implNote BedrockOreMinerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {

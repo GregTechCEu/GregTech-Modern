@@ -10,10 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote IExplosionMachine
- *           A machine which may cause explosion. e.g. whether, water around
+ * A machine which may cause explosion. e.g. whether, water around
  */
 public interface IExplosionMachine extends IMachineFeature {
 

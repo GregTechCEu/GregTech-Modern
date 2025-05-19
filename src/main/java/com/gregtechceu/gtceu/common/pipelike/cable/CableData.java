@@ -9,11 +9,6 @@ import net.minecraft.core.Direction;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableData
- */
 @Accessors(fluent = true)
 public class CableData implements IAttachData {
 

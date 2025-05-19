@@ -42,11 +42,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/14
- * @implNote SteamWorkableMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine

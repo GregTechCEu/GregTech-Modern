@@ -34,11 +34,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/7/12
- * @implNote FluidDrillMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidDrillMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {

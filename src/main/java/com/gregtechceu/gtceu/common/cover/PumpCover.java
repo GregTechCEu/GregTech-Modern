@@ -50,11 +50,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote PumpCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IUICover, IControllable {

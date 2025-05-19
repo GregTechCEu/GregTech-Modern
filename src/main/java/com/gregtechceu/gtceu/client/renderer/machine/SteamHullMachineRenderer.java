@@ -13,11 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SteamHullMachineRenderer
- */
 public class SteamHullMachineRenderer extends MachineRenderer {
 
     public SteamHullMachineRenderer(boolean isHighTier, ResourceLocation modelLocation) {

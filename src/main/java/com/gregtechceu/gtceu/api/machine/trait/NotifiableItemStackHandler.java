@@ -33,11 +33,6 @@ import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote NotifiableItemStackHandler
- */
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 

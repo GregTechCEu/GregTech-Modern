@@ -45,11 +45,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote FluidHatchPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot {
@@ -175,12 +170,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
         super.onRotated(oldFacing, newFacing);
-        updateTankSubscription();
+        updateTankSubscription(newFacing);
     }
 
     protected void updateTankSubscription() {
+        updateTankSubscription(getFrontFacing());
+    }
+
+    protected void updateTankSubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io == IO.OUT && !tank.isEmpty()) || io == IO.IN) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing())) {
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();

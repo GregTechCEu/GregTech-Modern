@@ -6,6 +6,9 @@ import net.minecraft.world.item.ItemStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,5 +57,9 @@ public class GTMath {
 
     public static int hashLongs(long... vals) {
         return Arrays.hashCode(vals);
+    }
+
+    public static float ratio(BigInteger a, BigInteger b) {
+        return new BigDecimal(a).divide(new BigDecimal(b), MathContext.DECIMAL32).floatValue();
     }
 }

@@ -21,10 +21,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @implNote MaterialBlockItem
- */
 public class MaterialBlockItem extends BlockItem implements IItemRendererProvider {
 
     protected MaterialBlockItem(MaterialBlock block, Properties properties) {

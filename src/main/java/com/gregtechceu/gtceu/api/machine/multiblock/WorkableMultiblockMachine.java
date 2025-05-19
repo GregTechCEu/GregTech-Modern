@@ -37,11 +37,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote WorkableMultiblockMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine

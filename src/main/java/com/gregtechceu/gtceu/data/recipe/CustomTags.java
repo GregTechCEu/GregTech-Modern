@@ -19,6 +19,24 @@ public class CustomTags {
     public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powders");
     public static final TagKey<Item> DOUGHS = TagUtil.createItemTag("dough");
 
+    // Why did I put them all here? Why not? Science isn't about why, it's about why NOT!
+    // Why is so much of our science dangerous? Why don't you marry safe science if you love it so much!?
+    // IN FACT, WHY NOT INVENT A SAFETY DOOR THAT WON'T HIT YOU ON THE BUTT ON THE WAY OUT BECAUSE YOU'RE FIRED!!!
+    // Not you test subject, you're doing fine.
+    // YES, YOU. BOX. YOUR STUFF. OUT THE FRONT DOOR. PARKING LOT. CAR. GOODBYE!
+    public static final TagKey<Item> ALIVE_CORAL_BLOCK_ITEMS = TagUtil.createItemTag("coral_blocks/alive");
+    public static final TagKey<Item> DEAD_CORAL_BLOCK_ITEMS = TagUtil.createItemTag("coral_blocks/dead");
+    public static final TagKey<Item> CORAL_BLOCK_ITEMS = TagUtil.createItemTag("coral_blocks");
+    public static final TagKey<Item> ALIVE_CORAL_PLANT_ITEMS = TagUtil.createItemTag("coral_plants/alive");
+    public static final TagKey<Item> DEAD_CORAL_PLANT_ITEMS = TagUtil.createItemTag("coral_plants/dead");
+    public static final TagKey<Item> CORAL_PLANT_ITEMS = TagUtil.createItemTag("coral_plants");
+    public static final TagKey<Item> ALIVE_CORAL_FAN_ITEMS = TagUtil.createItemTag("coral_fans/alive");
+    public static final TagKey<Item> DEAD_CORAL_FAN_ITEMS = TagUtil.createItemTag("coral_fans/dead");
+    public static final TagKey<Item> CORAL_FAN_ITEMS = TagUtil.createItemTag("coral_fans");
+    public static final TagKey<Item> ALIVE_CORAL_ITEMS = TagUtil.createItemTag("corals/alive");
+    public static final TagKey<Item> DEAD_CORAL_ITEMS = TagUtil.createItemTag("corals/dead");
+    public static final TagKey<Item> CORAL_ITEMS = TagUtil.createItemTag("corals");
+
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
     public static final TagKey<Item> RESISTORS = TagUtil.createModItemTag("resistors");
@@ -101,8 +119,6 @@ public class CustomTags {
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
     public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
-    public static final TagKey<Item> CORAL_BLOCK_ITEMS = TagUtil.createItemTag("coral_blocks");
-    public static final TagKey<Item> CORAL_ITEMS = TagUtil.createItemTag("corals");
 
     // Mineability tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");

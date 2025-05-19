@@ -33,11 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-/**
- * @author Screret
- * @date 2023/2/23
- * @implNote GTToolType
- */
 public class GTToolType {
 
     @Getter

@@ -59,11 +59,6 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();

@@ -14,11 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote IControllerRenderer
- */
 public interface IControllerRenderer {
 
     /**

@@ -17,11 +17,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Screret
- * @date 2023/6/16
- * @implNote EUToStartCondition
- */
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition {
 

@@ -23,11 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote SmeltingRecipeBuilder
- */
 @Accessors(chain = true, fluent = true)
 public class SmeltingRecipeBuilder {
 

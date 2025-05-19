@@ -23,11 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote WorkableCasingMachineRenderer
- */
 public class WorkableCasingMachineRenderer extends MachineRenderer {
 
     protected final WorkableOverlayModel overlayModel;
