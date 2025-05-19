@@ -33,10 +33,10 @@ jobs:
         run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
       - run: git fetch origin 1.20.1
       - name: Build
-        run: ./gradlew build --build-cache
+        run: ./gradlew build
       - name: Publish to Maven
         if: ${{ github.repository_owner == 'GregTechCEu' && env.PUBLISH == 'true' }}
-        run: ./gradlew publish --build-cache
+        run: ./gradlew publish
       - name: Rename Jars
         if: ${{ env.PUBLISH == 'true' }}
         run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT+$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
