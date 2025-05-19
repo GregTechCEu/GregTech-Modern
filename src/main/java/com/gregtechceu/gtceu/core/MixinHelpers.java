@@ -81,13 +81,17 @@ public class MixinHelpers {
 
                     if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
                         OreProperty ore = material.getProperty(PropertyKey.ORE);
-                        ResourceLocation tag = GTCEu.id("washed_in/" + ore.getWashedIn().getFirst().getName());
+                        Material washedIn = ore.getWashedIn().getFirst();
+                        if (washedIn.isNull()) return;
+                        ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
+                        ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(
                                 TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get())),
                                 GTValues.CUSTOM_TAG_SOURCE)));
-                        tagMap.merge(tag, tags, GTUtil::mergeLists);
+                        tagMap.merge(generalTag, tags, GTUtil::mergeLists);
+                        tagMap.merge(specificTag, tags, GTUtil::mergeLists);
                     }
                 }
             });
