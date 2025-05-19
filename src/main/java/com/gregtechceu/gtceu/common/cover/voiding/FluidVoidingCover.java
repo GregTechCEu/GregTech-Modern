@@ -79,8 +79,7 @@ public class FluidVoidingCover extends PumpCover {
             if (!filterHandler.test(stack)) continue;
 
             for (int op : GTMath.split(entry.getLongValue())) {
-                var toDrain = stack.copy();
-                toDrain.setAmount(op);
+                var toDrain = new FluidStack(stack, op);
                 fluidHandler.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
             }
         }

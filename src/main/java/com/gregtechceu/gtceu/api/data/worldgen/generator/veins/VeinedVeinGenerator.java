@@ -117,9 +117,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
         Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry()
                 .registry(Registries.DENSITY_FUNCTION).get();
 
-        List<VeinBlockDefinition> commonEntries = oreBlocks;
-        List<VeinBlockDefinition> rareEntries = rareBlocks;
-
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
         if (level instanceof WorldGenRegion region) {
@@ -199,7 +196,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
             final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
             generatedBlocks.put(pos, (access, section) -> placeBlock(access, section, randomSeed, entry, chance,
-                    rareEntries, pos, commonEntries));
+                    rareBlocks, pos, oreBlocks));
         }
 
         return generatedBlocks;
