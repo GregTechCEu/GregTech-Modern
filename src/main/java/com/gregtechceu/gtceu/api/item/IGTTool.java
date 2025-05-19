@@ -348,12 +348,10 @@ public interface IGTTool extends IUIHolder.Item, ItemLike {
                                                            HolderLookup.RegistryLookup<Enchantment> lookup) {
         var existing = stack.get(GTDataComponents.INNATE_ENCHANTMENTS);
         if (existing != null) {
-            return existing;
+            return IGTTool.joinEnchants(stack, existing);
         }
 
-        ItemEnchantments original = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
-        var enchantments = new ItemEnchantments.Mutable(original);
-
+        var enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
 
         // Set tool and material enchantments
@@ -361,11 +359,27 @@ public interface IGTTool extends IUIHolder.Item, ItemLike {
         innateEnchantments.putAll(getToolStats().getDefaultEnchantments());
         innateEnchantments.putAll(toolProperty.getEnchantments());
 
+        if (innateEnchantments.isEmpty()) {
+            return stack.getTagEnchantments();
+        }
         innateEnchantments.forEach((enchantKey, level) -> {
             lookup.get(enchantKey).ifPresent(enchant -> enchantments.upgrade(enchant, level));
         });
-        // noinspection DataFlowIssue
-        return stack.set(GTDataComponents.INNATE_ENCHANTMENTS, enchantments.toImmutable());
+        existing = enchantments.toImmutable();
+        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, existing);
+        return IGTTool.joinEnchants(stack, existing);
+    }
+
+    private static ItemEnchantments joinEnchants(ItemStack stack, @NotNull ItemEnchantments enchants) {
+        if (enchants.isEmpty()) {
+            return ItemEnchantments.EMPTY;
+        }
+        var original = stack.getTagEnchantments();
+        var joined = new ItemEnchantments.Mutable(original);
+        for (var entry : enchants.entrySet()) {
+            joined.upgrade(entry.getKey(), entry.getIntValue());
+        }
+        return joined.toImmutable();
     }
 
     default int definition$getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
