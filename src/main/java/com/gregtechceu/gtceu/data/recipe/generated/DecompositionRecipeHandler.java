@@ -69,8 +69,7 @@ public final class DecompositionRecipeHandler {
 
             long smallestMaterialAmount = materialAmounts.longStream().min().orElse(0);
             for (int i = 2; i <= smallestMaterialAmount; i++) {
-                if (isEveryMaterialReducible(i, materialAmounts))
-                    highestDivisor = i;
+                if (isEveryMaterialReducible(i, materialAmounts)) highestDivisor = i;
             }
 
             // divide components
@@ -123,8 +122,9 @@ public final class DecompositionRecipeHandler {
         builder.save(provider);
     }
 
-    private static boolean isEveryMaterialReducible(int divisor, List<Long> materialAmounts) {
-        for (long amount : materialAmounts) {
+    private static boolean isEveryMaterialReducible(int divisor, LongList materialAmounts) {
+        for (var it = materialAmounts.iterator(); it.hasNext();) {
+            long amount = it.nextLong();
             if (amount % divisor != 0) {
                 return false;
             }

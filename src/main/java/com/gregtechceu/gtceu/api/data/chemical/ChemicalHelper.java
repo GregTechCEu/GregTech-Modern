@@ -39,11 +39,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ChemicalHelper
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {
@@ -85,7 +80,7 @@ public class ChemicalHelper {
             Material entryMaterial = entry.material();
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
-        ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike);
+        ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;
         if (info.getMaterial().isEmpty()) {
             GTCEu.LOGGER.error("ItemMaterialInfo for {} is empty!", itemLike);
@@ -183,7 +178,7 @@ public class ChemicalHelper {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             for (var entry : ITEM_MATERIAL_ENTRY) {
-                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get(), entry.getSecond());
+                ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get().asItem(), entry.getSecond());
             }
             ITEM_MATERIAL_ENTRY.clear();
 
@@ -226,7 +221,7 @@ public class ChemicalHelper {
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
         if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
-            var items = new ArrayList<Supplier<? extends ItemLike>>();
+            var items = new ArrayList<Supplier<? extends Item>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder::value);
@@ -234,7 +229,7 @@ public class ChemicalHelper {
             }
             TagPrefix prefix = entry.tagPrefix();
             if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(entry.material())) {
-                return List.of(prefix.getItemFromTable(entry.material()));
+                return List.of(() -> prefix.getItemFromTable(entry.material()).get().asItem());
             }
             return items;
         }).stream().map(Supplier::get).collect(Collectors.toList());
@@ -308,7 +303,7 @@ public class ChemicalHelper {
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {
         List<Pair<ItemStack, ItemMaterialInfo>> f = new ArrayList<>();
         for (var entry : ITEM_MATERIAL_INFO.entrySet()) {
-            f.add(Pair.of(new ItemStack(entry.getKey().asItem()), entry.getValue()));
+            f.add(Pair.of(new ItemStack(entry.getKey()), entry.getValue()));
         }
         return f;
     }

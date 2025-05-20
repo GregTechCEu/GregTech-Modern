@@ -15,11 +15,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote FluidTankProxyTrait
- */
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 

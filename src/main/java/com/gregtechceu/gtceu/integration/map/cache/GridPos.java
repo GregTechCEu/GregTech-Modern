@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.integration.map.cache;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
-
-import java.util.Objects;
 
 public class GridPos {
 
@@ -45,7 +44,7 @@ public class GridPos {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, z);
+        return GTMath.hashInts(x, z);
     }
 
     @Override

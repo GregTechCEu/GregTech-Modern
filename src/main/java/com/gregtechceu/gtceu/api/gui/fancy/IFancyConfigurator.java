@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/6/28
- * @implNote IFancyConfigurator
- */
 public interface IFancyConfigurator {
 
     Component getTitle();

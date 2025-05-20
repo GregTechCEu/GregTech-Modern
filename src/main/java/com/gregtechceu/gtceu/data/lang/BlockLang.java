@@ -61,6 +61,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
         replace(provider, "block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
         replace(provider, "block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
+        replace(provider, "block.gtceu.palladium_substation", "Palladium Substation Casing");
 
         replace(provider, "block.gtceu.steam_casing_bronze", "Bronze Hull");
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");

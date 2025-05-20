@@ -127,12 +127,12 @@ public class OreGenCache {
 
         return Stream.generate(() -> {
             if (x.incrementAndGet() <= maxX) {
-                return new ChunkPos(x.getValue(), z.getValue());
+                return new ChunkPos(x.intValue(), z.intValue());
             }
 
             if (z.incrementAndGet() <= maxZ) {
                 x.setValue(minX);
-                return new ChunkPos(x.getValue(), z.getValue());
+                return new ChunkPos(x.intValue(), z.intValue());
             }
 
             return null;

@@ -42,18 +42,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeType
- */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public final ResourceLocation registryName;
     public final String group;
-    public final TreeMap<RecipeCapability<?>, Integer> maxInputs = new TreeMap<>(RecipeCapability.COMPARATOR);
-    public final TreeMap<RecipeCapability<?>, Integer> maxOutputs = new TreeMap<>(RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Getter

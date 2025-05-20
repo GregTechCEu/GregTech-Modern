@@ -10,6 +10,8 @@ import net.minecraft.core.Direction;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigInteger;
+
 public class EnergyDetectorCover extends DetectorCover {
 
     public EnergyDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -27,18 +29,23 @@ public class EnergyDetectorCover extends DetectorCover {
             return;
 
         IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
-        if (energyInfoProvider == null)
-            return;
+        if (energyInfoProvider == null) return;
 
         var energyInfo = energyInfoProvider.getEnergyInfo();
+        var isBigInt = energyInfoProvider.supportsBigIntEnergyValues();
 
-        long storedEnergy = energyInfo.stored().longValue();
-        long energyCapacity = energyInfo.capacity().longValue();
+        if (isBigInt) {
+            if (energyInfo.capacity().equals(BigInteger.ZERO)) return;
 
-        if (energyCapacity == 0)
-            return;
+            setRedstoneSignalOutput(
+                    RedstoneUtil.computeRedstoneValue(energyInfo.stored(), energyInfo.capacity(), isInverted()));
+        } else {
+            long storedEnergy = energyInfo.stored().longValue();
+            long energyCapacity = energyInfo.capacity().longValue();
+            if (energyCapacity == 0) return;
 
-        setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedEnergy, energyCapacity, isInverted()));
+            setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedEnergy, energyCapacity, isInverted()));
+        }
     }
 
     @Nullable

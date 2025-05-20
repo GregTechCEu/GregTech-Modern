@@ -23,11 +23,6 @@ import java.util.Optional;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawGradientRect;
 
-/**
- * @Author GlodBlock
- * @Description A configurable slot
- * @Date 2023/4/22-0:30
- */
 public class AEConfigSlotWidget extends Widget {
 
     protected ConfigWidget parentWidget;

@@ -19,11 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote CoverBehavior
- */
 public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IInteractionItem {
 
     @Override

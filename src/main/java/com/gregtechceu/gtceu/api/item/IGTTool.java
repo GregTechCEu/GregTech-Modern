@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -67,6 +66,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -148,11 +148,12 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         // Set tool and material enchantments
         Object2IntMap<Enchantment> enchantments = new Object2IntOpenHashMap<>(toolProperty.getEnchantments());
         enchantments.putAll(toolStats.getDefaultEnchantments(stack));
-        enchantments.forEach((enchantment, level) -> {
+        for (var entry : Object2IntMaps.fastIterable(enchantments)) {
+            var enchantment = entry.getKey();
             if (enchantment.canEnchant(stack)) {
-                stack.enchant(enchantment, level);
+                stack.enchant(enchantment, entry.getIntValue());
             }
-        });
+        }
 
         // Set behaviours
         CompoundTag behaviourTag = getBehaviorsTag(stack);
@@ -642,12 +643,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // electric info
         if (this.isElectric()) {
-
-            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
-                    FormattingUtil.formatNumbers(getCharge(stack)),
-                    FormattingUtil.formatNumbers(getMaxCharge(stack)),
-                    GTValues.VNF[getElectricTier()]));
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier());
+            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+                    false);
         }
 
         // durability info

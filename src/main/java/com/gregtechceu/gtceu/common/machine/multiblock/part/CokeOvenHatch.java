@@ -25,11 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote CokeOvenHatch
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CokeOvenHatch extends MultiblockPartMachine {
@@ -84,6 +79,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
             inputInventory.setProxy(cokeOven.importItems);
             outputInventory.setProxy(cokeOven.exportItems);
             tank.setProxy(cokeOven.exportFluids);
+            this.updateAutoIOSubscription();
         }
     }
 

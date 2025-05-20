@@ -19,11 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote PartSteamMachineRenderer
- */
+@SuppressWarnings("removal")
 public class OverlaySteamMachineRenderer extends SteamHullMachineRenderer implements IPartRenderer {
 
     protected IModelRenderer overlayModel;

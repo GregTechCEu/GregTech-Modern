@@ -26,11 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote IMachineRenderer
- */
 public interface ICoverableRenderer extends IRenderer {
 
     @Override
