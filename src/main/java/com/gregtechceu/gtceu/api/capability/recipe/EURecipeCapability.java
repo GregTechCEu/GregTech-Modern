@@ -99,10 +99,8 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             }
 
             long recipeEUt = recipe.getInputEUt();
-            if (recipeEUt == 0) {
-                return Integer.MAX_VALUE;
-            }
-            return Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt));
+            if (recipeEUt == 0) return limit;
+            return Math.min(limit, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
         } else {
             if (!holder.hasCapabilityProxies()) return 0;
             var inputs = recipe.getInputContents(this);

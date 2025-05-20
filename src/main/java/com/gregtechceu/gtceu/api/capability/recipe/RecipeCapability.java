@@ -158,7 +158,7 @@ public abstract class RecipeCapability<T> {
      * @param holder The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
      * @param recipe The {@link GTRecipe} for which to find the maximum that can be run simultaneously
      * @param limit  The hard limit on the amount of recipes that can be performed at one time
-     * @param tick
+     * @param tick   whether to check regular outputs or tick outputs
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
