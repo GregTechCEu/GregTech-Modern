@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,9 +40,9 @@ public class MultiblockState {
     @Getter
     private final PatternMatchContext matchContext;
     @Getter
-    private Object2IntMap<SimplePredicate> globalCount;
+    private Object2IntOpenHashMap<SimplePredicate> globalCount;
     @Getter
-    private Object2IntMap<SimplePredicate> layerCount;
+    private Object2IntOpenHashMap<SimplePredicate> layerCount;
     public TraceabilityPredicate predicate;
     public IO io;
     public PatternError error;

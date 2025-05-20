@@ -222,8 +222,8 @@ public class BlockPattern {
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isFlipped = controller.self().isFlipped();
-        Object2IntMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
-        Object2IntMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
+        Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
+        Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
         Map<BlockPos, Object> blocks = new HashMap<>();
         Set<BlockPos> placeBlockPos = new HashSet<>();
         blocks.put(centerPos, controller);
@@ -246,16 +246,13 @@ public class BlockPattern {
                             BlockInfo[] infos = new BlockInfo[0];
                             for (SimplePredicate limit : predicate.limited) {
                                 if (limit.minLayerCount > 0) {
-                                    if (!cacheLayer.containsKey(limit)) {
-                                        cacheLayer.put(limit, 1);
-                                    } else
-                                        if (cacheLayer.getInt(limit) < limit.minLayerCount &&
-                                                (limit.maxLayerCount == -1 ||
-                                                        cacheLayer.getInt(limit) < limit.maxLayerCount)) {
-                                                            cacheLayer.mergeInt(limit, 1, Integer::sum);
-                                                        } else {
-                                                            continue;
-                                                        }
+                                    int curr = cacheLayer.getInt(limit);
+                                    if (curr < limit.minLayerCount &&
+                                            (limit.maxLayerCount == -1 || curr < limit.maxLayerCount)) {
+                                        cacheLayer.addTo(limit, 1);
+                                    } else {
+                                        continue;
+                                    }
                                 } else {
                                     continue;
                                 }
@@ -266,14 +263,12 @@ public class BlockPattern {
                             if (!find) {
                                 for (SimplePredicate limit : predicate.limited) {
                                     if (limit.minCount > 0) {
-                                        if (!cacheGlobal.containsKey(limit)) {
-                                            cacheGlobal.put(limit, 1);
-                                        } else if (cacheGlobal.getInt(limit) < limit.minCount &&
-                                                (limit.maxCount == -1 || cacheGlobal.getInt(limit) < limit.maxCount)) {
-                                                    cacheGlobal.mergeInt(limit, 1, Integer::sum);
-                                                } else {
-                                                    continue;
-                                                }
+                                        int curr = cacheGlobal.getInt(limit);
+                                        if (curr < limit.minCount && (limit.maxCount == -1 || curr < limit.maxCount)) {
+                                            cacheGlobal.addTo(limit, 1);
+                                        } else {
+                                            continue;
+                                        }
                                     } else {
                                         continue;
                                     }
@@ -292,8 +287,8 @@ public class BlockPattern {
                                             cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) {
                                         continue;
                                     }
-                                    cacheLayer.mergeInt(limit, 1, Integer::sum);
-                                    cacheGlobal.mergeInt(limit, 1, Integer::sum);
+                                    cacheLayer.addTo(limit, 1);
+                                    cacheGlobal.addTo(limit, 1);
                                     infos = ArrayUtils.addAll(infos,
                                             limit.candidates == null ? null : limit.candidates.get());
                                 }
@@ -397,21 +392,15 @@ public class BlockPattern {
                         BlockInfo[] infos = null;
                         for (SimplePredicate limit : predicate.limited) { // check layer and previewCount
                             if (limit.minLayerCount > 0) {
-                                if (!cacheLayer.containsKey(limit)) {
-                                    cacheLayer.put(limit, 1);
-                                } else if (cacheLayer.getInt(limit) < limit.minLayerCount) {
+                                if (cacheLayer.getInt(limit) < limit.minLayerCount) {
                                     cacheLayer.addTo(limit, 1);
                                 } else {
                                     continue;
                                 }
-                                if (cacheGlobal.getOrDefault(limit, 0) < limit.previewCount) {
-                                    if (!cacheGlobal.containsKey(limit)) {
-                                        cacheGlobal.put(limit, 1);
-                                    } else if (cacheGlobal.getInt(limit) < limit.previewCount) {
-                                        cacheGlobal.addTo(limit, 1);
-                                    } else {
-                                        continue;
-                                    }
+                                if (cacheGlobal.getInt(limit) < limit.previewCount) {
+                                    cacheGlobal.addTo(limit, 1);
+                                } else {
+                                    continue;
                                 }
                             } else {
                                 continue;
@@ -423,18 +412,10 @@ public class BlockPattern {
                         if (!find) { // check global and previewCount
                             for (SimplePredicate limit : predicate.limited) {
                                 if (limit.minCount == -1 && limit.previewCount == -1) continue;
-                                if (cacheGlobal.getOrDefault(limit, 0) < limit.previewCount) {
-                                    if (!cacheGlobal.containsKey(limit)) {
-                                        cacheGlobal.put(limit, 1);
-                                    } else if (cacheGlobal.getInt(limit) < limit.previewCount) {
-                                        cacheGlobal.addTo(limit, 1);
-                                    } else {
-                                        continue;
-                                    }
+                                if (cacheGlobal.getInt(limit) < limit.previewCount) {
+                                    cacheGlobal.addTo(limit, 1);
                                 } else if (limit.minCount > 0) {
-                                    if (!cacheGlobal.containsKey(limit)) {
-                                        cacheGlobal.put(limit, 1);
-                                    } else if (cacheGlobal.getInt(limit) < limit.minCount) {
+                                    if (cacheGlobal.getInt(limit) < limit.minCount) {
                                         cacheGlobal.addTo(limit, 1);
                                     } else {
                                         continue;
@@ -450,9 +431,7 @@ public class BlockPattern {
                         if (!find) { // check common with previewCount
                             for (SimplePredicate common : predicate.common) {
                                 if (common.previewCount > 0) {
-                                    if (!cacheGlobal.containsKey(common)) {
-                                        cacheGlobal.put(common, 1);
-                                    } else if (cacheGlobal.getInt(common) < common.previewCount) {
+                                    if (cacheGlobal.getInt(common) < common.previewCount) {
                                         cacheGlobal.addTo(common, 1);
                                     } else {
                                         continue;
@@ -476,9 +455,8 @@ public class BlockPattern {
                         }
                         if (!find) { // check max
                             for (SimplePredicate limit : predicate.limited) {
-                                if (limit.previewCount != -1) {
-                                    continue;
-                                } else if (limit.maxCount != -1 || limit.maxLayerCount != -1) {
+                                if (limit.previewCount != -1) continue;
+                                if (limit.maxCount != -1 || limit.maxLayerCount != -1) {
                                     if (cacheGlobal.getOrDefault(limit, 0) < limit.maxCount) {
                                         cacheGlobal.addTo(limit, 1);
                                     } else if (cacheLayer.getOrDefault(limit, 0) < limit.maxLayerCount) {

@@ -45,7 +45,6 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -104,8 +103,12 @@ public class VeinedVeinGenerator extends VeinGenerator {
     @Override
     public List<VeinEntry> getAllEntries() {
         List<VeinEntry> entries = new ArrayList<>(oreBlocks.size() + rareBlocks.size());
-        oreBlocks.stream().flatMap(VeinBlockDefinition::asEntries).forEach(entries::add);
-        rareBlocks.stream().flatMap(VeinBlockDefinition::asEntries).forEach(entries::add);
+        for (var def : oreBlocks) {
+            VeinGenerator.mapTarget(def.block, def.weight).forEach(entries::add);
+        }
+        for (var def : rareBlocks) {
+            VeinGenerator.mapTarget(def.block, def.weight).forEach(entries::add);
+        }
         return entries;
     }
 
@@ -321,10 +324,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         public VeinBlockDefinition(List<TargetBlockState> block, int weight) {
             this(Either.left(block), weight);
-        }
-
-        public Stream<VeinEntry> asEntries() {
-            return VeinGenerator.mapTarget(block, weight);
         }
     }
 
