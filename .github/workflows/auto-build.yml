@@ -23,6 +23,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # do a full checkout instead of a shallow clone of HEAD so spotless's ratchetFrom works
       - name: Setup Build
         uses: ./.github/actions/build_setup
       - name: Get Mod Version
@@ -31,7 +33,6 @@ jobs:
       - name: Version Suffix
         id: suffix
         run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
-      - run: git fetch origin 1.20.1
       - name: Build
         run: ./gradlew build
       - name: Publish to Maven
