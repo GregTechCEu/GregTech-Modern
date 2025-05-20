@@ -22,11 +22,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote CoilBlock
- */
 @ParametersAreNonnullByDefault
 public class CoilBlock extends ActiveBlock {
 

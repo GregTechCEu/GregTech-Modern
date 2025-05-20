@@ -6,11 +6,6 @@ import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
 import net.minecraft.nbt.CompoundTag;
 
-/**
- * @author KilaBash
- * @date 2023/3/11
- * @implNote FluidPipeNet
- */
 public class FluidPipeNet extends PipeNet<FluidPipeProperties> {
 
     public FluidPipeNet(LevelPipeNet<FluidPipeProperties, FluidPipeNet> world) {

@@ -38,11 +38,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
-/**
- * @Author GlodBlock
- * @Description A configurable slot for {@link FluidStack}
- * @Date 2023/4/21-0:50
- */
 public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
 
     public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {

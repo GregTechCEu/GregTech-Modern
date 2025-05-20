@@ -110,11 +110,6 @@ import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
-/**
- * @author KilaBash
- * @date 2022/8/27
- * @implNote ForgeCommonEventListener
- */
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
 

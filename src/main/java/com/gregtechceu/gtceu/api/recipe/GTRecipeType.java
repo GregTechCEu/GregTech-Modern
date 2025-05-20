@@ -42,11 +42,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeType
- */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 

@@ -67,6 +67,7 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
 
     private void spinWheels() {
         if (isRemote() || getLevel() == null) return;
+        if (getOffsetTimer() % 10 != 0) return;
 
         List<ItemEntity> itemEntities = new ArrayList<>();
         for (var entity : getLevel().getEntities(null, grindBound)) {

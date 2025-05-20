@@ -667,6 +667,7 @@ public class GTMaterials {
     public static Material DiethylenetriaminepentaaceticAcid;
     public static Material SodiumNitrite;
     public static Material HydrogenPeroxide;
+    public static Material IlmeniteSlag;
 
     /**
      * Organic chemistry
@@ -889,6 +890,11 @@ public class GTMaterials {
     public static Material PCBCoolant;
     public static Material Sculk;
     public static Material Wax;
+    public static Material BauxiteSlurry;
+    public static Material CrackedBauxiteSlurry;
+    public static Material BauxiteSludge;
+    public static Material DecalcifiedBauxiteSludge;
+    public static Material BauxiteSlag;
 
     /**
      * Second Degree Compounds

@@ -24,11 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/7/11
- * @implNote BedrockFluidVeinSavedData
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BedrockFluidVeinSavedData extends SavedData {

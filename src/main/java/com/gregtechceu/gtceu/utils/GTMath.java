@@ -6,6 +6,9 @@ import net.minecraft.world.item.ItemStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,5 +48,9 @@ public class GTMath {
         } else {
             return value < -2147483648L ? Integer.MIN_VALUE : (int) value;
         }
+    }
+
+    public static float ratio(BigInteger a, BigInteger b) {
+        return new BigDecimal(a).divide(new BigDecimal(b), MathContext.DECIMAL32).floatValue();
     }
 }

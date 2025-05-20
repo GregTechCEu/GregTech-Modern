@@ -39,11 +39,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ChemicalHelper
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {

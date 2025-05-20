@@ -10,11 +10,6 @@ import lombok.experimental.Accessors;
 
 import java.util.Objects;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableData
- */
 @Accessors(fluent = true)
 public class FluidPipeData implements IAttachData {
 

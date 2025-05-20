@@ -55,11 +55,6 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ColorSprayBehaviour
- */
 public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IAddInformation {
 
     // vanilla

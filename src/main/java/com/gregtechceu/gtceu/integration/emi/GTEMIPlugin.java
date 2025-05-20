@@ -37,11 +37,6 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
 
-/**
- * @author KilaBash
- * @date 2023/4/4
- * @implNote EMIPlugin
- */
 @EmiEntrypoint
 public class GTEMIPlugin implements EmiPlugin {
 

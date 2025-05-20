@@ -45,11 +45,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- * @implNote QuantumChestRenderer
- */
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     private static final float MIN = 0.16f;
