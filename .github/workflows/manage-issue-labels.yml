@@ -6,28 +6,18 @@ on:
     types: [opened]
 
 permissions:
+  issues: write
   contents: read
 
 jobs:
   labels:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write # needed to utilize advanced-issue-labeler
-    strategy:
-      matrix:
-        template: [ 000-bug-report.yml, 001-feature-request.yml ]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Parse issue form
-        uses: stefanbuck/github-issue-parser@v3
-        id: issue-parser
         with:
-          template-path: .github/ISSUE_TEMPLATE/${{ matrix.template }}
-
-      - name: Set labels based on mc-version field
-        uses: redhat-plumbers-in-action/advanced-issue-labeler@v3
+          ref: '1.20.1'
+          sparse-checkout: '.github/labeler.yml'
+      - uses: github/issue-labeler@v3.3
         with:
-          issue-form: ${{ steps.issue-parser.outputs.jsonString }}
-          template: ${{ matrix.template }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+          enable-versioned-regex: 0

@@ -30,5 +30,6 @@
     }
   },
   "max_pull_requests": 1000,
-  "max_back_track_time_days": 60
+  "max_back_track_time_days": 365,
+  "base_branches": ["1.21"]
 }

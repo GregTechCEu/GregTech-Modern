@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # do a full checkout instead of a shallow clone of HEAD so spotless's ratchetFrom works
       - name: Check Path Filter
         uses: dorny/paths-filter@v3
         id: filter
@@ -29,11 +31,9 @@ jobs:
             code:
               - 'src/main/java/**'
               - 'src/test/**'
-      - run: git fetch origin 1.20.1
-        if: steps.filter.outputs.code == 'true'
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
       - name: Run Spotless Formatting Check with Gradle
         if: steps.filter.outputs.code == 'true'
-        run: ./gradlew spotlessCheck --warning-mode all --build-cache
+        run: ./gradlew spotlessCheck --warning-mode all
