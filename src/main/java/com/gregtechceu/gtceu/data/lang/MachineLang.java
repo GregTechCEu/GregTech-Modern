@@ -515,7 +515,10 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
-        provider.add("gtceu.multiblock.dimensions", "Dimensions: %s§cw§r, %s§ah§r, %s§bd§r");
+        multilineLang(provider, "gtceu.multiblock.dimensions", "Dimensions: \n" +
+                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s " +
+                "   \n" +
+                "  §9§lDepth§r: %s");
 
         multiLang(provider, "gtceu.machine.charcoal_pile.tooltip",
                 "Turns Logs into §aCharcoal§7 when §cignited§7.",

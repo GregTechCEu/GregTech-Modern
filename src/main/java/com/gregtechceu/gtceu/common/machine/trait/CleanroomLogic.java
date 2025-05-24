@@ -129,7 +129,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         var cleanroom = getMachine();
         // clamp to max for VA indexing
         var tier = Mth.clamp(cleanroom.getTier(), GTValues.ULV, GTValues.MAX);
-        // use 3/16th an amp when fully clean otherwise 15/16th an amp durign cleaning
+        // use 3/16th an amp when fully clean otherwise 15/16th an amp during cleaning
         long energyToDrain = cleanroom.isClean() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
                 GTValues.VA[tier];
         if (energyContainer != null) {

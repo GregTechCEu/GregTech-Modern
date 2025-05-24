@@ -151,7 +151,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         this.cleanroomReceivers = ImmutableSet.copyOf(receivers);
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(this));
 
-        // max progress is based roughly on the dimensions of the structure: (x^3)-(x^2)
+        // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
         // taller cleanrooms take longer than wider ones
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
         // max sized CR is around 1142 ticks per progression
@@ -513,7 +513,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions", lDist + rDist + 1, hDist + 1,
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
                     fDist + bDist + 1));
         } else {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
