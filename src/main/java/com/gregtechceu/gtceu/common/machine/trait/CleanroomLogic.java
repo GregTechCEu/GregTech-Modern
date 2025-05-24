@@ -15,10 +15,10 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 public class CleanroomLogic extends RecipeLogic implements IWorkable {

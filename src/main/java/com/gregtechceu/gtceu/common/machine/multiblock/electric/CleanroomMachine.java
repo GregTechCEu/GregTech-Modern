@@ -158,7 +158,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         var area = (lDist + rDist + 1) * (bDist + fDist + 1);
         var duration = Math.pow(area, 0.8) * (hDist + 1);
-        this.getRecipeLogic().setDuration(Math.max(100, (int)duration));
+        this.getRecipeLogic().setDuration(Math.max(100, (int) duration));
     }
 
     @Override
@@ -375,7 +375,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             c[i] = ceilingLayer[i].toString();
         }
 
-
         var area = (lDist + rDist + 1) * (bDist + fDist + 1);
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
         TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
@@ -514,7 +513,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
-            textList.add(Component.translatable("gtceu.multiblock.dimensions", lDist + rDist + 1, hDist + 1, fDist + bDist + 1));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions", lDist + rDist + 1, hDist + 1,
+                    fDist + bDist + 1));
         } else {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                     .withStyle(ChatFormatting.GRAY);
