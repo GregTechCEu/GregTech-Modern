@@ -115,7 +115,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where only the first ingredient succeeding its roll will be produced
      */
-    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+    public static final ChanceLogic FIRST = new ChanceLogic("first") {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
@@ -135,6 +135,53 @@ public abstract class ChanceLogic {
                     }
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
                     if (selected != null) break;
+                }
+                if (selected != null) builder.add(selected);
+            }
+            return builder.build();
+        }
+
+        @Override
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.first");
+        }
+
+        @Override
+        public String toString() {
+            return "ChanceLogic{FIRST}";
+        }
+    };
+
+    /**
+     * Chanced Output Logic where only one of the ingredients will be output, in a manner weighted to the input chances
+     */
+    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+
+        @Override
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
+            ImmutableList.Builder<Content> builder = ImmutableList.builder();
+            int maxChance = 0;
+            boolean firstMaxChanceSet = false;
+            for (int i = 0; i < times; ++i) {
+                Content selected = null;
+                for (Content entry : chancedEntries) {
+                    if (!firstMaxChanceSet) {
+                        maxChance = entry.maxChance;
+                        firstMaxChanceSet = true;
+                    }
+                    int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
+                    int cached = getCachedChance(entry, cache);
+                    int chance = newChance + cached;
+                    if (passesChance(chance, maxChance)) {
+                        selected = entry;
+                        newChance -= maxChance;
+                    }
+                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    if (selected != null) break;
+                    maxChance -= newChance;
                 }
                 if (selected != null) builder.add(selected);
             }

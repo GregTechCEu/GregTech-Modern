@@ -2164,6 +2164,7 @@
   "gtceu.canner": "Canner",
   "gtceu.centrifuge": "Centrifuge",
   "gtceu.chance_logic.and": "AND",
+  "gtceu.chance_logic.first": "FIRST",
   "gtceu.chance_logic.none": "NONE",
   "gtceu.chance_logic.or": "OR",
   "gtceu.chance_logic.xor": "XOR",
