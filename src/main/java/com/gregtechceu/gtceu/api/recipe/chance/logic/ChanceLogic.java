@@ -163,10 +163,12 @@ public abstract class ChanceLogic {
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
-            int maxChance = 0;
-            boolean firstMaxChanceSet = false;
+            int maxChance;
+            boolean firstMaxChanceSet;
             for (int i = 0; i < times; ++i) {
                 Content selected = null;
+                maxChance = 0;
+                firstMaxChanceSet = false;
                 for (Content entry : chancedEntries) {
                     if (!firstMaxChanceSet) {
                         maxChance = entry.maxChance;
