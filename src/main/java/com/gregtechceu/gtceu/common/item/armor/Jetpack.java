@@ -63,11 +63,11 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         if (toggleTimer == 0) {
             if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
-                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enable" : "disable");
                 data.putBoolean("hover", hoverMode);
             }
 
@@ -133,15 +133,15 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         if (data != null) {
             if (data.contains("enabled")) {
                 Component status = (data.getBoolean("enabled") ?
-                        Component.translatable("metaarmor.hud.status.enabled") :
-                        Component.translatable("metaarmor.hud.status.disabled"));
-                Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
+                        Component.translatable("armor.gtceu.hud.status.enabled") :
+                        Component.translatable("armor.gtceu.hud.status.disabled"));
+                Component result = Component.translatable("armor.gtceu.hud.engine_enabled", status);
                 this.HUD.newString(result);
             }
             if (data.contains("hover")) {
-                Component status = (data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") :
-                        Component.translatable("metaarmor.hud.status.disabled"));
-                Component result = Component.translatable("metaarmor.hud.hover_mode", status);
+                Component status = (data.getBoolean("hover") ? Component.translatable("armor.gtceu.hud.status.enabled") :
+                        Component.translatable("armor.gtceu.hud.status.disabled"));
+                Component result = Component.translatable("armor.gtceu.hud.hover_mode", status);
                 this.HUD.newString(result);
             }
         }
@@ -156,14 +156,14 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         Component state;
         boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-        state = enabled ? Component.translatable("metaarmor.hud.status.enabled") :
-                Component.translatable("metaarmor.hud.status.disabled");
-        lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
+        state = enabled ? Component.translatable("armor.gtceu.hud.status.enabled") :
+                Component.translatable("armor.gtceu.hud.status.disabled");
+        lines.add(Component.translatable("armor.gtceu.hud.engine_enabled", state));
 
         boolean hover = data.contains("hover") && data.getBoolean("hover");
-        state = hover ? Component.translatable("metaarmor.hud.status.enabled") :
-                Component.translatable("metaarmor.hud.status.disabled");
-        lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
+        state = hover ? Component.translatable("armor.gtceu.hud.status.enabled") :
+                Component.translatable("armor.gtceu.hud.status.disabled");
+        lines.add(Component.translatable("armor.gtceu.hud.hover_mode", state));
     }
 
     @Override

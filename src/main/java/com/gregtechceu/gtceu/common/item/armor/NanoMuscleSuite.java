@@ -61,10 +61,10 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("armor.gtceu.nms.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("armor.gtceu.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
@@ -95,7 +95,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+                player.displayClientMessage(Component.translatable("armor.gtceu.nms.nightvision.disabled"), true);
         }
     }
 
@@ -166,13 +166,13 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
             } else {
-                lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
-            lines.add(Component.translatable("metaarmor.tooltip.stepassist"));
-            lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.stepassist"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
         }
     }
 }

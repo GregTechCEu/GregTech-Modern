@@ -160,7 +160,7 @@ public interface IJetpack {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("enabled", true);
         tag.putBoolean("hover", true);
-        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        player.displayClientMessage(Component.translatable("armor.gtceu.jetpack.emergency_hover_mode"), true);
         player.fallDistance = 0;
 
         if (!player.level().isClientSide) {

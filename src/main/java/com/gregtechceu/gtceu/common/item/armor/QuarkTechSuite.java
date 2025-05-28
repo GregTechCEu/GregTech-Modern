@@ -96,10 +96,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("armor.gtceu.nms.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("armor.gtceu.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
@@ -164,7 +164,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 boostedJump = !boostedJump;
                 boostedJumpTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                        .translatable("armor.gtceu.nms.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
             }
             if (boostedJump) {
                 if (!world.isClientSide) {
@@ -342,22 +342,22 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
             } else {
-                lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
             }
-            lines.add(Component.translatable("metaarmor.tooltip.potions"));
-            lines.add(Component.translatable("metaarmor.tooltip.breath"));
-            lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.potions"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.breath"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.autoeat"));
         } else if (type == ArmorItem.Type.CHESTPLATE) {
-            lines.add(Component.translatable("metaarmor.tooltip.burning"));
-            lines.add(Component.translatable("metaarmor.tooltip.freezing"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.burning"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.freezing"));
         } else if (type == ArmorItem.Type.LEGGINGS) {
-            lines.add(Component.translatable("metaarmor.tooltip.speed"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
-            lines.add(Component.translatable("metaarmor.tooltip.stepassist"));
-            lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
-            lines.add(Component.translatable("metaarmor.tooltip.jump"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.stepassist"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.jump"));
         }
     }
 
