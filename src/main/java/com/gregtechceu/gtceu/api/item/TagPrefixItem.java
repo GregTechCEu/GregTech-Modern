@@ -30,11 +30,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote MaterialItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TagPrefixItem extends Item {
@@ -120,7 +115,7 @@ public class TagPrefixItem extends Item {
     }
 
     public int getItemBurnTime() {
-        DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
+        DustProperty property = material.isNull() ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;

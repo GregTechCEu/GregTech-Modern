@@ -45,12 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author h3tr
- * @date 2024/2/08
- * @implNote WorldAcceleratorMachine
- */
-
 public class WorldAcceleratorMachine extends TieredEnergyMachine implements IControllable {
 
     private static final Map<String, Class<?>> blacklistedClasses = new Object2ObjectOpenHashMap<>();

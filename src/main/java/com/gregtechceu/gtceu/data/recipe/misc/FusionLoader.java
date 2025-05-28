@@ -77,9 +77,9 @@ public class FusionLoader {
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("lutenium_and_chromium_to_americium_plasma")
-                .inputFluids(GTMaterials.Lutetium.getFluid(32))
-                .inputFluids(GTMaterials.Chromium.getFluid(32))
-                .outputFluids(GTMaterials.Americium.getFluid(32))
+                .inputFluids(GTMaterials.Lutetium.getFluid(16))
+                .inputFluids(GTMaterials.Chromium.getFluid(16))
+                .outputFluids(GTMaterials.Americium.getFluid(16))
                 .duration(64)
                 .EUt(49152)
                 .fusionStartEU(200_000_000)
@@ -152,16 +152,16 @@ public class FusionLoader {
                 .inputFluids(GTMaterials.Gallium.getFluid(16))
                 .inputFluids(GTMaterials.Radon.getFluid(125))
                 .outputFluids(GTMaterials.Duranium.getFluid(16))
-                .duration(64)
+                .duration(32)
                 .EUt(16384)
                 .fusionStartEU(140_000_000)
                 .save(provider);
 
         FUSION_RECIPES.recipeBuilder("titanium_and_duranium_to_tritanium_plasma")
-                .inputFluids(GTMaterials.Titanium.getFluid(32))
+                .inputFluids(GTMaterials.Titanium.getFluid(48))
                 .inputFluids(GTMaterials.Duranium.getFluid(32))
                 .outputFluids(GTMaterials.Tritanium.getFluid(16))
-                .duration(64)
+                .duration(16)
                 .EUt(VA[LuV])
                 .fusionStartEU(200_000_000)
                 .save(provider);
@@ -209,6 +209,24 @@ public class FusionLoader {
                 .duration(32)
                 .EUt(VA[LuV])
                 .fusionStartEU(200_000_000)
+                .save(provider);
+
+        FUSION_RECIPES.recipeBuilder("plutonium_241_and_hydrogen_gas_to_americium_plasma")
+                .inputFluids(GTMaterials.Plutonium241.getFluid(144))
+                .inputFluids(GTMaterials.Hydrogen.getFluid(FluidStorageKeys.GAS, 2000))
+                .outputFluids(GTMaterials.Americium.getFluid(FluidStorageKeys.PLASMA, 144))
+                .duration(64)
+                .EUt(98304)
+                .fusionStartEU(500_000_000)
+                .save(provider);
+
+        FUSION_RECIPES.recipeBuilder("silver_and_helium_3_to_tin_plasma")
+                .inputFluids(GTMaterials.Silver.getFluid(144))
+                .inputFluids(GTMaterials.Helium3.getFluid(375))
+                .outputFluids(GTMaterials.Tin.getFluid(FluidStorageKeys.PLASMA, 144))
+                .duration(16)
+                .EUt(49152)
+                .fusionStartEU(280_000_000)
                 .save(provider);
     }
 }

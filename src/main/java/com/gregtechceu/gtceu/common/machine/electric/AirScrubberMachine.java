@@ -46,7 +46,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 

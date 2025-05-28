@@ -31,7 +31,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import org.apache.commons.lang3.tuple.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     public static final String LIGHTER_OPEN = "lighterOpen";
     private static final String USES_LEFT = "usesLeft";
-    private static final Pair<Integer, Integer> DURABILITY_BAR_COLORS = GradientUtil.getGradient(0xF07F1D, 10);
+    private static final IntIntPair DURABILITY_BAR_COLORS = GradientUtil.getGradient(0xF07F1D, 10);
     private final ResourceLocation overrideLocation;
     private final boolean usesFluid;
     private final boolean hasMultipleUses;
@@ -264,7 +264,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public @Nullable Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+    public @Nullable IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
         if (hasMultipleUses && usesFluid) {
             return DURABILITY_BAR_COLORS;
         }

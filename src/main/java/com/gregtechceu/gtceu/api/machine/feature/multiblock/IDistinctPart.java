@@ -10,11 +10,6 @@ import net.minecraft.network.chat.Style;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/24
- * @implNote IDistinctPart
- */
 public interface IDistinctPart extends IMultiPart {
 
     boolean isDistinct();

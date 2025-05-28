@@ -59,11 +59,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author h3tr
- * @date 2023/7/15
- * @implNote BlockBreakerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
@@ -476,7 +471,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                 // remove the output facing when wrenching the current one to disable it
                 setOutputFacingItems(null);
             }
-
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
 

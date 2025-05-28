@@ -49,7 +49,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.DoubleSupplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -369,17 +369,17 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return group;
     }
 
-    private static Component getTextWidgetText(String type, Supplier<Float> multiplier) {
+    private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
         Component tooltip;
-        if (multiplier.get() == 1.0) {
+        if (multiplier.getAsDouble() == 1.0) {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description",
-                    FormattingUtil.formatNumber2Places(multiplier.get()));
+                    FormattingUtil.formatNumber2Places(multiplier.getAsDouble()));
         }
         return Component
                 .translatable("gtceu.maintenance.configurable_" + type,
-                        FormattingUtil.formatNumber2Places(multiplier.get()))
+                        FormattingUtil.formatNumber2Places(multiplier.getAsDouble()))
                 .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
 }

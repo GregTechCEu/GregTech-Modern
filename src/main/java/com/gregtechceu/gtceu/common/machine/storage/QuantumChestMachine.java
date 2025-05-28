@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -172,6 +173,26 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
+    // ****** Capability ********//
+    //////////////////////////////////////
+
+    @Override
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getItemHandlerCap(side, useCoverCapability);
+    }
+
+    @Override
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == getFrontFacing()) {
+            return null;
+        }
+        return super.getFluidHandlerCap(side, useCoverCapability);
+    }
+
+    //////////////////////////////////////
     // ******* Auto Output *******//
     //////////////////////////////////////
 
@@ -292,8 +313,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             } else {
                 setOutputFacingItems(null);
             }
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
-
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);

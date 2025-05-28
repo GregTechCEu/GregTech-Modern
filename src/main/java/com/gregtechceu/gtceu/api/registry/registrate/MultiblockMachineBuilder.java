@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
@@ -57,11 +57,6 @@ import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote MachineBuilder
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -72,11 +67,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
-    /**
-     * Whether this multi can be rotated or face upwards.
-     */
-    @Setter
-    private boolean allowExtendedFacing = true;
     /**
      * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
      */
@@ -98,6 +88,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
+        allowExtendedFacing(true);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name,
@@ -298,8 +289,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder conditionalTooltip(Component component, Supplier<Boolean> condition) {
-        return conditionalTooltip(component, condition.get());
+    public MultiblockMachineBuilder conditionalTooltip(Component component, BooleanSupplier condition) {
+        return conditionalTooltip(component, condition.getAsBoolean());
     }
 
     @Override
@@ -369,8 +360,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder regressWhenWaiting(boolean dampingWhenWaiting) {
-        return (MultiblockMachineBuilder) super.regressWhenWaiting(dampingWhenWaiting);
+    public MultiblockMachineBuilder regressWhenWaiting(boolean regressWhenWaiting) {
+        return (MultiblockMachineBuilder) super.regressWhenWaiting(regressWhenWaiting);
     }
 
     @Override
@@ -381,6 +372,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
         return (MultiblockMachineBuilder) super.onBlockEntityRegister(onBlockEntityRegister);
+    }
+
+    @Override
+    public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
+        return (MultiblockMachineBuilder) super.allowExtendedFacing(allowExtendedFacing);
     }
 
     @Override
@@ -399,10 +395,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         if (pattern == null) {
             throw new IllegalStateException("missing pattern while creating multiblock " + name);
         }
-        definition.setPatternFactory(SupplierMemoizer.memoize(() -> pattern.apply(definition)));
+        definition.setPatternFactory(GTMemoizer.memoize(() -> pattern.apply(definition)));
         definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
                 .flatMap(Collection::stream).toList());
-        definition.setAllowExtendedFacing(allowExtendedFacing);
         definition.setAllowFlip(allowFlip);
         if (!recoveryItems.isEmpty()) {
             definition.setRecoveryItems(

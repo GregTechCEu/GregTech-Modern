@@ -22,11 +22,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Arrays;
 import java.util.Locale;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote GTCovers
- */
 public class GTCovers {
 
     public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.LV,
@@ -129,6 +124,9 @@ public class GTCovers {
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_maintenance_detector")));
 
     // Solar Panels
+    public final static CoverDefinition SOLAR_PANEL_BASIC = register(
+            "solar_panel", CoverSolarPanel::new,
+            new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_solar_panel")));
     public final static CoverDefinition[] SOLAR_PANEL = registerTiered(
             "solar_panel", CoverSolarPanel::new,
             tier -> new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_solar_panel")), ALL_TIERS_WITH_ULV);

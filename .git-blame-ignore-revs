@@ -1,0 +1,5 @@
+# .git-blame-ignore-revs
+# add spotless formatting to 1.20.1 (#1334)
+5f59025e1044042dcd0913799d873f810f2fb220
+# Drop Fabric Support (1.20) (#735)
+5f9f2d8303d19aa1c749ee5ca8cd4149d90520f0

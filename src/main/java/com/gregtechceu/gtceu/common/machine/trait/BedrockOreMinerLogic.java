@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.OreVeinWorldEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -22,20 +24,14 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/7/12
- * @implNote FluidDrillLogic
- */
 public class BedrockOreMinerLogic extends RecipeLogic {
 
     public static final int MAX_PROGRESS = 20;
 
     @Getter
     @Nullable
-    private List<Map.Entry<Integer, Material>> veinMaterials;
+    private List<WeightedMaterial> veinMaterials;
 
     public BedrockOreMinerLogic(BedrockOreMinerMachine machine) {
         super(machine);
@@ -63,7 +59,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                if (match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
+                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -73,8 +69,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            Material material = veinMaterials
-                    .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
+            WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
+            if (wm == null) return null;
+            Material material = wm.material();
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material, getOreToProduce());
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup
@@ -105,7 +102,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
                     .buildRawRecipe();
-            if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
+            if (RecipeHelper.matchContents(getMachine(), recipe).isSuccess()) {
                 return recipe;
             }
         }
@@ -144,14 +141,14 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine, this.chanceCaches);
+            RecipeHelper.postWorking(this.machine, lastRecipe);
+            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            if (match.matchRecipe(this.machine).isSuccess() && match.matchTickRecipe(this.machine).isSuccess()) {
+            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

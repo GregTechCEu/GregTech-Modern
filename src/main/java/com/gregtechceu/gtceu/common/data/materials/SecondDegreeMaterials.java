@@ -530,28 +530,5 @@ public class SecondDegreeMaterials {
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS)
                 .buildAndRegister();
-
-        RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
-                .liquid()
-                .color(0x9f6b26)
-                .buildAndRegister();
-
-        DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
-                .liquid()
-                .color(0xab8c6d)
-                .buildAndRegister();
-
-        BrominatedChlorineVapor = new Material.Builder(GTCEu.id("brominated_chlorine_vapor"))
-                .gas()
-                .color(0xbb9b72)
-                .components(Chlorine, 1, Bromine, 1, Steam, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        AcidicBromineExhaust = new Material.Builder(GTCEu.id("acidic_bromine_exhaust"))
-                .gas()
-                .color(0x8f681e)
-                .components(Steam, 3, Chlorine, 1)
-                .buildAndRegister();
     }
 }

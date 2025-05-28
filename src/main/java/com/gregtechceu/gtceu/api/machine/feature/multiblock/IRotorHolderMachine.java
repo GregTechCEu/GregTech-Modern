@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -13,13 +14,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote IRotorHolderMachine
- */
 public interface IRotorHolderMachine extends IMultiPart {
 
     int SPEED_INCREMENT = 1;
@@ -31,6 +29,9 @@ public interface IRotorHolderMachine extends IMultiPart {
     static int getBaseEfficiency() {
         return 100;
     }
+
+    @NotNull
+    Material getRotorMaterial();
 
     ItemStack getRotorStack();
 

@@ -11,11 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote IItemUIFactory
- */
 public interface IItemUIFactory extends IInteractionItem {
 
     ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer);

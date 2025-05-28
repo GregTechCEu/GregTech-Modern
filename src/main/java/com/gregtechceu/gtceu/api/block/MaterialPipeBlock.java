@@ -20,11 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/28
- * @implNote MaterialPipeBlock
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MaterialPipeBlock<
@@ -49,7 +44,7 @@ public abstract class MaterialPipeBlock<
             if (blockState.getBlock() instanceof MaterialPipeBlock<?, ?, ?> block) {
                 if (blockPos != null && level != null &&
                         level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                    if (pipe.getFrameMaterial() != null) {
+                    if (!pipe.getFrameMaterial().isNull()) {
                         if (index == 3) {
                             return pipe.getFrameMaterial().getMaterialRGB();
                         } else if (index == 4) {
@@ -86,7 +81,7 @@ public abstract class MaterialPipeBlock<
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
                 .getPipeBlock()).material;
-        if (pipeType == null || material == null) {
+        if (pipeType == null || material.isNull()) {
             return getFallbackType();
         }
         return createProperties(pipeType, material);

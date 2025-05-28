@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
@@ -40,23 +40,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeType
- */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public final ResourceLocation registryName;
     public final String group;
-    public final TreeMap<RecipeCapability<?>, Integer> maxInputs = new TreeMap<>(RecipeCapability.COMPARATOR);
-    public final TreeMap<RecipeCapability<?>, Integer> maxOutputs = new TreeMap<>(RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Getter
@@ -80,9 +74,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     protected SoundEntry sound;
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
-    @Setter
-    @Getter
-    protected boolean isFuelRecipeType;
     @Getter
     @Setter
     protected boolean isScanner;
@@ -214,17 +205,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return null;
     }
 
-    @Nullable
-    public Iterator<GTRecipe> searchFuelRecipe(IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies() || !isFuelRecipeType()) return null;
-        return getLookup().getRecipeIterator(holder, recipe -> recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
-    }
-
-    public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies()) return null;
-        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
-                recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+    public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
+        if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
+        var iterator = getLookup().getRecipeIterator(holder, canHandle);
         boolean any = false;
         while (iterator.hasNext()) {
             GTRecipe recipe = iterator.next();
@@ -240,7 +223,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
             GTRecipe recipe = logic.createCustomRecipe(holder);
-            if (recipe != null) return Collections.singleton(recipe).iterator();
+            if (recipe != null && canHandle.test(recipe)) return Collections.singleton(recipe).iterator();
         }
         return Collections.emptyIterator();
     }
@@ -275,8 +258,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipeBuilder(GTCEu.id(id), append);
     }
 
-    public GTRecipeBuilder recipeBuilder(UnificationEntry entry, Object... append) {
-        return recipeBuilder(GTCEu.id(entry.tagPrefix + (entry.material == null ? "" : "_" + entry.material.getName())),
+    public GTRecipeBuilder recipeBuilder(MaterialEntry entry, Object... append) {
+        return recipeBuilder(
+                GTCEu.id(entry.tagPrefix() +
+                        (entry.material().isNull() ? "" : "_" + entry.material().getName())),
                 append);
     }
 

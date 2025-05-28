@@ -21,6 +21,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,6 +121,14 @@ public abstract class RecipeCapability<T> {
         return new ArrayList<>(ingredients);
     }
 
+    public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
+        List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
+        for (var ingredient : ingredients) {
+            ret.add(convertToMapIngredient(ingredient));
+        }
+        return ret;
+    }
+
     /**
      * Does the recipe test if this capability is workable? if not, you should test validity somewhere else.
      */
@@ -180,6 +189,9 @@ public abstract class RecipeCapability<T> {
         return null;
     }
 
+    /**
+     * Return the class of the supported widget that should be used to display this capability.
+     */
     @Nullable
     public Class<? extends Widget> getWidgetClass() {
         return null;

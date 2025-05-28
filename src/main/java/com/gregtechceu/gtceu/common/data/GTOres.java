@@ -34,11 +34,6 @@ import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGe
 import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/20
- * @implNote GTOres
- */
 @SuppressWarnings("unused")
 public class GTOres {
 

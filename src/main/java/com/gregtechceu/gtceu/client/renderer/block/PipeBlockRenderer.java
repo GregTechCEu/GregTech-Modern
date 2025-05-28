@@ -37,11 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote PipeBlockRenderer
- */
 public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     @Getter
@@ -90,7 +85,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                     ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
             ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing, pos,
                     level, modelState);
-            if (pipeNode.getFrameMaterial() != null) {
+            if (!pipeNode.getFrameMaterial().isNull()) {
                 ResourceLocation rl = MaterialIconType.frameGt
                         .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS

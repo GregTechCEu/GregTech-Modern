@@ -10,11 +10,6 @@ import net.minecraft.world.item.Item;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/2/16
- * @implNote TagPrefixItemRenderer
- */
 public class ToolItemRenderer {
 
     private static final Set<ToolItemRenderer> MODELS = new HashSet<>();

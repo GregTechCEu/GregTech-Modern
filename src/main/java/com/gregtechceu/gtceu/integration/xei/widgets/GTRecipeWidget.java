@@ -15,16 +15,15 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -46,11 +45,6 @@ import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote GTRecipeWidget
- */
 public class GTRecipeWidget extends WidgetGroup {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipeContentGroup";
@@ -251,6 +245,9 @@ public class GTRecipeWidget extends WidgetGroup {
         if (isShiftClick) {
             oc = OverclockingLogic.PERFECT_OVERCLOCK;
         }
+        if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+            oc = FusionReactorMachine.FUSION_OC;
+        }
         setRecipeTextWidget(oc);
         setRecipeWidget();
     }
@@ -381,17 +378,21 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
-                        widget -> {
-                            var index = WidgetUtils.widgetIdIndex(widget);
-                            if (index >= 0 && index < contents.size()) {
-                                var content = contents.get(index);
-                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null, minTier, tier);
-                                widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                        recipe.getType().getChanceFunction()));
-                            }
-                        });
+                var widgetClass = cap.getWidgetClass();
+                if (widgetClass != null) {
+                    WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
+                            widget -> {
+                                var index = WidgetUtils.widgetIdIndex(widget);
+                                if (index >= 0 && index < contents.size()) {
+                                    var content = contents.get(index);
+                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                            content,
+                                            null, minTier, tier);
+                                    widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                            recipe.getType().getChanceFunction()));
+                                }
+                            });
+                }
             }
         }
     }

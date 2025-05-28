@@ -33,11 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote ProspectorScannerBehavior
- */
 public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionItem, IAddInformation {
 
     private final int radius;

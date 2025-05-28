@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,11 +43,6 @@ import org.joml.Vector3f;
 import java.util.Set;
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote BlockHighlightRenderer
- */
 @OnlyIn(Dist.CLIENT)
 public class BlockHighlightRenderer {
 
@@ -168,20 +162,24 @@ public class BlockHighlightRenderer {
 
     private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult,
                                          Function<Direction, ResourceTexture> test) {
-        rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
+        rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         var blockPos = blockHitResult.getBlockPos();
         var facing = blockHitResult.getDirection();
-        var box = new AABB(blockPos);
+        float maxX = blockPos.getX() + 1;
+        float minX = blockPos.getX();
+        float maxY = blockPos.getY() + 1;
+        float minY = blockPos.getY();
+        float maxZ = blockPos.getZ() + 1.01f;
         var attachSide = ICoverable.traceCoverSide(blockHitResult);
-        var topRight = new Vector3f((float) box.maxX, (float) box.maxY, (float) box.maxZ);
-        var bottomRight = new Vector3f((float) box.maxX, (float) box.minY, (float) box.maxZ);
-        var bottomLeft = new Vector3f((float) box.minX, (float) box.minY, (float) box.maxZ);
-        var topLeft = new Vector3f((float) box.minX, (float) box.maxY, (float) box.maxZ);
+        var topRight = new Vector3f(maxX, maxY, maxZ);
+        var bottomRight = new Vector3f(maxX, minY, maxZ);
+        var bottomLeft = new Vector3f(minX, minY, maxZ);
+        var topLeft = new Vector3f(minX, maxY, maxZ);
         var shift = new Vector3f(0.25f, 0, 0);
         var shiftVert = new Vector3f(0, 0.25f, 0);
 
-        var cubeCenter = box.getCenter().toVector3f();
+        var cubeCenter = blockPos.getCenter().toVector3f();
 
         topRight.sub(cubeCenter);
         bottomRight.sub(cubeCenter);
@@ -363,9 +361,13 @@ public class BlockHighlightRenderer {
     private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
         var normal = new Vector3f(from).sub(to);
 
-        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f)
-                .normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z)
+        buffer.vertex(mat, from.x, from.y, from.z)
+                .color(rColour, gColour, bColour, 1f)
+                .normal(normal.x, normal.y, normal.z)
+                .endVertex();
+        buffer.vertex(mat, to.x, to.y, to.z)
+                .color(rColour, gColour, bColour, 1f)
+                .normal(normal.x, normal.y, normal.z)
                 .endVertex();
     }
 }

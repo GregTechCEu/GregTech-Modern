@@ -31,11 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/6/28
- * @implNote IFancyUIMachine
- */
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @Override

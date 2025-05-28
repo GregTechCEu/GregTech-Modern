@@ -33,11 +33,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote IntCircuitBehaviour
- */
 public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
 
     public static final int CIRCUIT_MAX = 32;

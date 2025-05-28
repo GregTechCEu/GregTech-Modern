@@ -2,11 +2,6 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { // KubeJS and Rhino
-        name = "Saps.dev Maven"
-        url = "https://maven.saps.dev/minecraft"
-    }
-
     maven { // JEI
         name = "Jared's Maven"
         url = "https://maven.blamejared.com/"
@@ -22,6 +17,10 @@ repositories {
         url = "https://maven.firstdarkdev.xyz/snapshots"
     }
 
+    exclusiveContent { // KubeJS and Rhino
+        forRepository { maven { url = "https://maven.latvian.dev/releases" } }
+        filter { includeGroup("dev.latvian.mods")}
+    }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }
         filter { includeGroup("dev.ftb.mods") }

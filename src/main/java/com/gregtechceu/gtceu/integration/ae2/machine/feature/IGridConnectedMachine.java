@@ -11,9 +11,6 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 
 /**
  * A machine that can connect to ME network.
- *
- * @author GateGuardian
- * @date : 2024/7/14
  */
 public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBlockEntity {
 

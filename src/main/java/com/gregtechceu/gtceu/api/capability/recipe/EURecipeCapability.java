@@ -14,11 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class EURecipeCapability extends RecipeCapability<Long> {
 
     public final static EURecipeCapability CAP = new EURecipeCapability();
@@ -84,7 +79,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
      */
     public static List<Content> makeEUContent(Long eu) {
         return List.of(
-                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0, null, null));
+                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0));
     }
 
     /**

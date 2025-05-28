@@ -13,11 +13,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote IInteractionItem
- */
 public interface IInteractionItem extends IItemComponent {
 
     default InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
@@ -60,6 +55,10 @@ public interface IInteractionItem extends IItemComponent {
     }
 
     default boolean sneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+        return false;
+    }
+
+    default boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return false;
     }
 }

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,11 +43,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableBlock
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, LevelEnergyNet> {
@@ -110,9 +106,12 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         int tier = GTUtil.getTierByVoltage(wireProperties.getVoltage());
         if (wireProperties.isSuperconductor())
             tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
-        tooltip.add(Component.translatable("gtceu.cable.voltage", wireProperties.getVoltage(), GTValues.VNF[tier]));
-        tooltip.add(Component.translatable("gtceu.cable.amperage", wireProperties.getAmperage()));
-        tooltip.add(Component.translatable("gtceu.cable.loss_per_block", wireProperties.getLossPerBlock()));
+        tooltip.add(Component.translatable("gtceu.cable.voltage",
+                FormattingUtil.formatNumbers(wireProperties.getVoltage()), GTValues.VNF[tier]));
+        tooltip.add(Component.translatable("gtceu.cable.amperage",
+                FormattingUtil.formatNumbers(wireProperties.getAmperage())));
+        tooltip.add(Component.translatable("gtceu.cable.loss_per_block",
+                FormattingUtil.formatNumbers(wireProperties.getLossPerBlock())));
     }
 
     @Override
@@ -123,7 +122,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (pipeNode.getFrameMaterial() != null) {
+        if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
@@ -134,7 +133,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
-            if (cable != null && cable.getFrameMaterial() == null && cable.getNodeData().getLossPerBlock() > 0) {
+            if (cable != null && cable.getFrameMaterial().isNull() &&
+                    cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();
                 double amperage = cable.getAverageAmperage();
                 if (voltage > 0L && amperage > 0L) {

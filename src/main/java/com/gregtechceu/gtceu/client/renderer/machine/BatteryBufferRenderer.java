@@ -17,11 +17,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.client.renderer.machine.OverlayEnergyIORenderer.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/10
- * @implNote TransformerRenderer
- */
 public class BatteryBufferRenderer extends TieredHullMachineRenderer {
 
     private final int inventorySize;

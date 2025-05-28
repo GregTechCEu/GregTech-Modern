@@ -59,11 +59,6 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
@@ -83,7 +78,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
-            return new IntProviderIngredient(intProviderIngredient.getInner(),
+            return IntProviderIngredient.of(intProviderIngredient.getInner(),
                     new FlooredInt(
                             new AddedFloat(
                                     new MultipliedFloat(
@@ -168,8 +163,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
-            if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
-                Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
+            if (!prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix)) {
+                Material material = ChemicalHelper.getMaterialStack(stack.getItem()).material();
                 ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(
                         Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
             }
@@ -245,9 +240,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         int maxMultiplier = multiplier;
 
         OverlayedItemHandler itemHandler = new OverlayedItemHandler(new CombinedInvWrapper(
-                Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP),
-                        Collections::emptyList)
-                        .stream()
+                holder.getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).stream()
                         .filter(IItemHandlerModifiable.class::isInstance)
                         .map(IItemHandlerModifiable.class::cast)
                         .toArray(IItemHandlerModifiable[]::new)));
@@ -382,11 +375,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 ItemStackHashStrategy.comparingAllButCount());
         Object2IntMap<ItemStack> result = new Object2IntOpenHashMap<>();
 
-        List<IRecipeHandler<?>> recipeHandlerList = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .filter(handler -> !handler.isProxy()).toList();
+        var recipeHandlerList = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
 
         for (IRecipeHandler<?> container : recipeHandlerList) {
 

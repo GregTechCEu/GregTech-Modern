@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -33,7 +33,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -49,6 +48,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,11 +57,6 @@ import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/28
- * @implNote PipeBlockEntity
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
@@ -101,10 +96,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @RequireRerender
     @DescSynced
     @Persisted
-    @Getter
     @Setter
-    @Nullable
-    private Material frameMaterial = null;
+    @NotNull
+    private Material frameMaterial = GTMaterials.NULL;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -169,6 +163,16 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
+    public @NotNull Material getFrameMaterial() {
+        // backwards compat
+        // noinspection ConstantValue
+        if (frameMaterial == null) {
+            frameMaterial = GTMaterials.NULL;
+        }
+        return frameMaterial;
+    }
+
+    @Override
     public int getBlockedConnections() {
         return canHaveBlockedFaces() ? blockedConnections : 0;
     }
@@ -186,15 +190,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (!isRemote()) {
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
-            var blockState = getBlockState();
-            if (!blockState.getValue(BlockProperties.SERVER_TICK)) {
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    blockState = blockState.setValue(BlockProperties.SERVER_TICK, true);
-                    setBlockState(blockState);
-                    serverLevel.getServer().tell(new TickTask(0, () -> serverLevel.setBlockAndUpdate(getBlockPos(),
-                            getBlockState().setValue(BlockProperties.SERVER_TICK, true))));
-                }
-            }
             return subscription;
         }
         return null;
@@ -211,8 +206,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
         }
-        var iter = serverTicks.iterator();
-        while (iter.hasNext()) {
+        for (var iter = serverTicks.iterator(); iter.hasNext();) {
             var tickable = iter.next();
             if (tickable.isStillSubscribed()) {
                 tickable.run();
@@ -220,9 +214,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (!tickable.isStillSubscribed()) {
                 iter.remove();
             }
-        }
-        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !this.isRemoved()) {
-            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
         }
     }
 
@@ -279,6 +270,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             connections = withSideConnection(connections, side, connected);
 
             updateNetworkConnection(side, connected);
+            // notify neighbor of change so Auto Output updates its ticking status
+            getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
             setChanged();
 
             if (!fromNeighbor && tile instanceof IPipeNode<?, ?> pipeTile) {
@@ -416,10 +409,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }
             } else {
-                if (frameMaterial != null) {
+                if (!frameMaterial.isNull()) {
                     Block.popResource(getLevel(), getPipePos(),
                             GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                    frameMaterial = null;
+                    frameMaterial = GTMaterials.NULL;
                     playerIn.swing(hand);
                     return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
                 }

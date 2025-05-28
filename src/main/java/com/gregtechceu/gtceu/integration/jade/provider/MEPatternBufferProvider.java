@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.MEPatternBufferRecipeHandler;
+import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -11,61 +13,29 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.fluid.JadeFluidObject;
+import snownee.jade.api.ui.IElementHelper;
 
 public class MEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
-
+            if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
+                if (!serverData.getBoolean("formed")) return;
 
                 iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
-                        .withStyle(ChatFormatting.LIGHT_PURPLE));
-
-                ListTag itemTags = serverData.getList("items", Tag.TAG_COMPOUND);
-                ListTag fluidTags = serverData.getList("fluids", Tag.TAG_COMPOUND);
-                for (int i = 0; i < itemTags.size(); ++i) {
-                    CompoundTag itemTag = itemTags.getCompound(i);
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemTag.getString("item")));
-                    long count = itemTag.getLong("count");
-                    if (item != null && !item.equals(Items.AIR)) {
-                        iTooltip.add(item.getDescription()
-                                .copy()
-                                .withStyle(ChatFormatting.GOLD)
-                                .append(Component.literal(" * ").withStyle(ChatFormatting.WHITE))
-                                .append(Component.literal("" + count).withStyle(ChatFormatting.LIGHT_PURPLE)));
-                    }
-                }
-                for (int i = 0; i < fluidTags.size(); ++i) {
-                    CompoundTag fluidTag = fluidTags.getCompound(i);
-                    @Nullable
-                    FluidType fluid = ForgeRegistries.FLUID_TYPES
-                            .get()
-                            .getValue(new ResourceLocation(fluidTag.getString("fluid")));
-                    long count = fluidTag.getLong("count");
-                    if (fluid != null) {
-                        iTooltip.add(fluid
-                                .getDescription()
-                                .copy()
-                                .withStyle(ChatFormatting.AQUA)
-                                .append(Component.literal(" * ").withStyle(ChatFormatting.WHITE))
-                                .append(Component.literal("" + count).withStyle(ChatFormatting.LIGHT_PURPLE)));
-                    }
-                }
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+                readBufferTag(iTooltip, serverData);
             }
         }
     }
@@ -74,35 +44,13 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof MEPatternBufferPartMachine buffer) {
+                if (!buffer.isFormed()) {
+                    compoundTag.putBoolean("formed", false);
+                    return;
+                }
+                compoundTag.putBoolean("formed", true);
                 compoundTag.putInt("proxies", buffer.getProxies().size());
-
-                var merged = MEPatternBufferRecipeHandler.mergeInternalSlot(buffer.getInternalInventory());
-                var items = merged.getLeft();
-                var fluids = merged.getRight();
-
-                ListTag itemTags = new ListTag();
-                for (Item item : items.keySet()) {
-                    ResourceLocation key = ForgeRegistries.ITEMS.getKey(item);
-                    if (key != null) {
-                        CompoundTag itemTag = new CompoundTag();
-                        itemTag.putString("item", key.toString());
-                        itemTag.putLong("count", items.getLong(item));
-                        itemTags.add(itemTag);
-                    }
-                }
-                compoundTag.put("items", itemTags);
-
-                ListTag fluidTags = new ListTag();
-                for (Fluid fluid : fluids.keySet()) {
-                    ResourceLocation key = ForgeRegistries.FLUID_TYPES.get().getKey(fluid.getFluidType());
-                    if (key != null) {
-                        CompoundTag fluidTag = new CompoundTag();
-                        fluidTag.putString("fluid", key.toString());
-                        fluidTag.putLong("count", fluids.getLong(fluid));
-                        fluidTags.add(fluidTag);
-                    }
-                }
-                compoundTag.put("fluids", fluidTags);
+                writeBufferTag(compoundTag, buffer);
             }
         }
     }
@@ -110,5 +58,61 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
     @Override
     public ResourceLocation getUid() {
         return GTCEu.id("me_pattern_buffer");
+    }
+
+    public static void writeBufferTag(CompoundTag compoundTag, MEPatternBufferPartMachine buffer) {
+        var merged = buffer.mergeInternalSlots();
+        var items = merged.items();
+        var fluids = merged.fluids();
+
+        ListTag itemsTag = new ListTag();
+        for (var entry : items.object2LongEntrySet()) {
+            var ct = entry.getKey().serializeNBT();
+            ct.putLong("real", entry.getLongValue());
+            itemsTag.add(ct);
+        }
+        if (!itemsTag.isEmpty()) compoundTag.put("items", itemsTag);
+
+        ListTag fluidsTag = new ListTag();
+        for (var entry : fluids.object2LongEntrySet()) {
+            var ct = entry.getKey().writeToNBT(new CompoundTag());
+            ct.putLong("real", entry.getLongValue());
+            fluidsTag.add(ct);
+        }
+        if (!fluidsTag.isEmpty()) compoundTag.put("fluids", fluidsTag);
+    }
+
+    public static void readBufferTag(ITooltip iTooltip, CompoundTag serverData) {
+        IElementHelper helper = iTooltip.getElementHelper();
+
+        ListTag itemsTag = serverData.getList("items", Tag.TAG_COMPOUND);
+        for (Tag t : itemsTag) {
+            if (!(t instanceof CompoundTag ct)) continue;
+            var stack = ItemStack.of(ct);
+            var count = ct.getLong("real");
+            if (!stack.isEmpty() && count > 0) {
+                iTooltip.add(helper.smallItem(stack));
+                Component text = Component.literal(" ")
+                        .append(Component.literal(String.valueOf(count)).withStyle(ChatFormatting.DARK_PURPLE))
+                        .append(Component.literal("× ").withStyle(ChatFormatting.WHITE))
+                        .append(stack.getHoverName().copy().withStyle(ChatFormatting.GOLD));
+                iTooltip.append(text);
+            }
+        }
+        ListTag fluidsTag = serverData.getList("fluids", Tag.TAG_COMPOUND);
+        for (Tag t : fluidsTag) {
+            if (!(t instanceof CompoundTag ct)) continue;
+            var stack = FluidStack.loadFluidStackFromNBT(ct);
+            var amount = ct.getLong("real");
+            if (!stack.isEmpty() && amount > 0) {
+                iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.getFluid())));
+                Component text = Component.literal(" ")
+                        .append(Component.literal(FormattingUtil.formatBuckets(amount)))
+                        .withStyle(ChatFormatting.DARK_PURPLE)
+                        .append(Component.literal(" ").withStyle(ChatFormatting.WHITE))
+                        .append(stack.getDisplayName().copy().withStyle(ChatFormatting.DARK_AQUA));
+                iTooltip.append(text);
+            }
+        }
     }
 }

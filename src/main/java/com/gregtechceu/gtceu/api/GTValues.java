@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api;
 
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
-
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 import static net.minecraft.ChatFormatting.*;
 
@@ -14,12 +13,6 @@ import static net.minecraft.ChatFormatting.*;
  * Made for static imports, this Class is just a Helper.
  */
 public class GTValues {
-
-    /**
-     * Default fallback value used for Map keys.
-     * Currently only used in {@link CraftingComponent}.
-     */
-    public static final int FALLBACK = -1;
 
     /**
      * <p/>
@@ -131,8 +124,10 @@ public class GTValues {
             MODID_FTB_CHUNKS = "ftbchunks",
             MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
-            MODID_ARGONAUTS = "argonauts";
-
+            MODID_ARGONAUTS = "argonauts",
+            MODID_HERACLES = "heracles",
+            MODID_GAMESTAGES = "gamestages",
+            MODID_FTB_QUEST = "ftbquests";
     /**
      * Spray painting compat modids
      */
@@ -285,14 +280,14 @@ public class GTValues {
      */
     public static boolean HT = false;
 
-    public static Supplier<Boolean> FOOLS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("04") && yearMonthDay[2].equals("01");
+    public static BooleanSupplier FOOLS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };
 
-    public static Supplier<Boolean> XMAS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("12") && (yearMonthDay[2].equals("24") || yearMonthDay[2].equals("25"));
+    public static BooleanSupplier XMAS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.DECEMBER && (now.getDayOfMonth() == 24 || now.getDayOfMonth() == 25);
     };
 
     public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";

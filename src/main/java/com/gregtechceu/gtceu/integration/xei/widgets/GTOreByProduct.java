@@ -26,9 +26,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,7 @@ public class GTOreByProduct {
 
         // "INPUTS"
 
-        Pair<Material, Integer> washedIn = property.getWashedIn();
+        ObjectIntPair<Material> washedIn = property.getWashedIn();
         List<Material> separatedInto = property.getSeparatedInto();
 
         ItemTagList oreStacks = new ItemTagList();
@@ -121,7 +121,7 @@ public class GTOreByProduct {
         itemInputs.add(ItemStackList.of(simpleWashers));
         itemInputs.add(ItemStackList.of(simpleWashers));
 
-        if (washedIn != null && washedIn.getFirst() != null) {
+        if (!washedIn.first().isNull()) {
             hasChemBath = true;
             addToInputs(GTMachines.CHEMICAL_BATH[GTValues.LV].asStack());
         } else {
@@ -154,7 +154,7 @@ public class GTOreByProduct {
         // direct smelt
         if (hasDirectSmelt) {
             ItemStack smeltingResult;
-            Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
+            Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                     property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
                 smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);
@@ -232,7 +232,7 @@ public class GTOreByProduct {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 580);
-            fluidInputs.add(FluidTagList.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
+            fluidInputs.add(FluidTagList.of(washedIn.first().getFluidTag(), washedIn.secondInt(), null));
         } else {
             addEmptyOutputs(2);
             fluidInputs.add(new FluidStackList());
@@ -340,7 +340,7 @@ public class GTOreByProduct {
     private void addChance(int base, int tier) {
         // this is solely for the chance overlay and tooltip, neither of which care about the ItemStack
         chances.put(currentSlot - 1,
-                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue(), tier, null, null));
+                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue(), tier));
     }
 
     // make the code less :weary:

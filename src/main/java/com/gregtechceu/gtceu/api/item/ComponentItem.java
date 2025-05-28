@@ -50,11 +50,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ComponentItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
@@ -241,6 +236,18 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                // this will cancel the left click animation
+                return interactionItem.onEntitySwing(stack, entity);
+            }
+        }
+        // normal behavior
+        return super.onEntitySwing(stack, entity);
+    }
+
+    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
                                                   InteractionHand usedHand) {
         for (IItemComponent component : components) {
@@ -385,8 +392,12 @@ public class ComponentItem extends Item
     @Deprecated
     @SuppressWarnings("deprecation")
     public @Nullable FoodProperties getFoodProperties() {
-        // Fake item stack is ok for now, since we do not yet have foods which generate stats from NBT
-        return getFoodProperties(new ItemStack(this), null);
+        // If item has `foodProperties` from super, return it.
+        if (super.isEdible()) return super.getFoodProperties();
+        // If item has `IEdibleItem` components, return food stats from default stack
+        if (isEdible()) return getFoodProperties(this.getDefaultInstance(), null);
+        // Not edible, so null.
+        return null;
     }
 
     @Override

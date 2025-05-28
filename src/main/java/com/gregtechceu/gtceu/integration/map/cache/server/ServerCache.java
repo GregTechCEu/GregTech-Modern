@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.map.cache.server;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -69,17 +68,20 @@ public class ServerCache extends WorldCache {
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, pos, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
-            if (nearbyVein.definition().indicatorGenerators().stream()
-                    .anyMatch(generator -> generator.block() != null && Objects.requireNonNull(generator.block())
-                            .map(state -> {
-                                MaterialStack mat = ChemicalHelper.getMaterial(state.getBlock().asItem());
-                                if (mat == null) return false;
-                                return mat.material() == material;
-                            },
-                                    mat -> mat == material))) {
-                foundVeins.add(nearbyVein);
+            for (var gen : nearbyVein.definition().indicatorGenerators()) {
+                var block = gen.block();
+                if (block == null) continue;
+                boolean found = block.map(state -> {
+                    var ms = ChemicalHelper.getMaterialStack(state.getBlock().asItem());
+                    return !ms.isEmpty() && ms.material() == material;
+                }, mat -> mat == material);
+                if (found) {
+                    foundVeins.add(nearbyVein);
+                    break;
+                }
             }
         }
+
         GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
@@ -110,9 +112,14 @@ public class ServerCache extends WorldCache {
     }
 
     public void prospectAllInChunk(ResourceKey<Level> dim, ChunkPos pos, ServerPlayer player) {
-        if (cache.containsKey(dim)) {
-            GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, cache.get(dim).getVeinsInChunk(pos)), player);
+        List<GeneratedVeinMetadata> nearbyVeins = cache.get(dim).getVeinsInChunk(pos);
+        List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
+        for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
+            if (cache.containsKey(dim)) {
+                foundVeins.add(nearbyVein);
+            }
         }
+        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
     }
 
     public void removeAllInChunk(ResourceKey<Level> dim, ChunkPos pos) {

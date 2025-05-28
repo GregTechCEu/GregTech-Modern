@@ -55,11 +55,6 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote GTMachines
- */
 public class GTMachines {
 
     static {
@@ -239,7 +234,7 @@ public class GTMachines {
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
-                            GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
+                            GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector",
@@ -254,7 +249,7 @@ public class GTMachines {
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/rock_crusher"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
-                            GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.apply(tier), true))
+                            GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .tooltips(explosion())
                     .register(),
             ELECTRIC_TIERS);
@@ -268,7 +263,7 @@ public class GTMachines {
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/air_scrubber"))
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
-                            GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.apply(tier), true))
+                            GTRecipeTypes.AIR_SCRUBBER_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .tooltips(explosion())
                     .register(),
             LOW_TIERS);
@@ -399,7 +394,7 @@ public class GTMachines {
             (holder, tier) -> new MinerMachine(holder, tier, ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2),
                     tier * 8, tier),
             (tier, builder) -> builder
-                    .rotationState(RotationState.ALL)
+                    .rotationState(RotationState.NON_Y_AXIS)
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
@@ -514,6 +509,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE
             .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
+            .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
@@ -530,6 +526,7 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
+            .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
                 if (stack.hasTag()) {
@@ -558,6 +555,7 @@ public class GTMachines {
                     .langValue("Super Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -574,6 +572,7 @@ public class GTMachines {
                     .langValue("Quantum Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -590,6 +589,7 @@ public class GTMachines {
                     .langValue("Super Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
@@ -606,6 +606,7 @@ public class GTMachines {
                     .langValue("Quantum Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(TANK_TOOLTIPS)

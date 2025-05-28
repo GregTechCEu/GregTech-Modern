@@ -53,6 +53,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.stainless_steel_gearbox", "Stainless Steel Gearbox Casing");
         replace(provider, "block.gtceu.titanium_gearbox", "Titanium Gearbox Casing");
         replace(provider, "block.gtceu.tungstensteel_gearbox", "Tungstensteel Gearbox Casing");
+        replace(provider, "block.gtceu.steel_turbine_casing", "Magnalium Turbine Casing");
         replace(provider, "block.gtceu.titanium_turbine_casing", "Titanium Turbine Casing");
         replace(provider, "block.gtceu.stainless_steel_turbine_casing", "Stainless Turbine Casing");
         replace(provider, "block.gtceu.tungstensteel_turbine_casing", "Tungstensteel Turbine Casing");
@@ -60,6 +61,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
         replace(provider, "block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
         replace(provider, "block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
+        replace(provider, "block.gtceu.palladium_substation", "Palladium Substation Casing");
 
         replace(provider, "block.gtceu.steam_casing_bronze", "Bronze Hull");
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");

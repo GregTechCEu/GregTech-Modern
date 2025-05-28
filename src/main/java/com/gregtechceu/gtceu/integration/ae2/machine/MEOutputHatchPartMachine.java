@@ -133,7 +133,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public List<Object> getContents() {
+        public @NotNull List<Object> getContents() {
             return Collections.emptyList();
         }
 
@@ -168,7 +168,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         @Override
         @Nullable
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       @Nullable String slotName, boolean simulate) {
+                                                       boolean simulate) {
             if (io != IO.OUT) return left;
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.iterator(); it.hasNext();) {
@@ -229,18 +229,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         @Override
         public boolean supportsDrain(int tank) {
             return false;
-        }
-
-        @Override
-        public CustomFluidTank copy() {
-            // because recipe testing uses copy transfer instead of simulated operations
-            return new FluidStorageDelegate() {
-
-                @Override
-                public int fill(FluidStack resource, FluidAction action) {
-                    return super.fill(resource, action);
-                }
-            };
         }
     }
 }
