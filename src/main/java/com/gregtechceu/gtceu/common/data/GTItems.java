@@ -210,7 +210,6 @@ public class GTItems {
     public static ItemEntry<Item> SHAPE_EXTRUDER_BOTTLE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_FOIL;
     public static ItemEntry<Item> SHAPE_EXTRUDER_GEAR_SMALL;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_ROD_LONG;
     public static ItemEntry<Item> SHAPE_EXTRUDER_ROTOR;
 
     static {
@@ -281,10 +280,6 @@ public class GTItems {
                 .register();
         SHAPE_EXTRUDERS[24] = SHAPE_EXTRUDER_GEAR_SMALL = REGISTRATE.item("small_gear_extruder_mold", Item::new)
                 .lang("Extruder Mold (Small Gear)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_EXTRUDERS[25] = SHAPE_EXTRUDER_ROD_LONG = REGISTRATE.item("long_rod_extruder_mold", Item::new)
-                .lang("Extruder Mold (Long Rod)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[26] = SHAPE_EXTRUDER_ROTOR = REGISTRATE.item("rotor_extruder_mold", Item::new)
