@@ -119,18 +119,18 @@ public enum RelativeDirection {
         };
     }
 
-    public ToIntFunction<BlockPos> getSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
+    public Comparator<BlockPos> getSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
         // get the direction to go in for the part sorter
         Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> BlockPos::getY;
-            case DOWN -> pos -> -pos.getY();
-            case EAST -> BlockPos::getX;
-            case WEST -> pos -> -pos.getX();
-            case NORTH -> pos -> -pos.getZ();
-            case SOUTH -> BlockPos::getZ;
+            case UP -> Comparator.comparingInt(BlockPos::getY);
+            case DOWN -> Comparator.comparingInt(pos -> -pos.getY());
+            case EAST -> Comparator.comparingInt(BlockPos::getX);
+            case WEST -> Comparator.comparingInt(pos -> -pos.getX());
+            case NORTH -> Comparator.comparingInt(BlockPos::getZ);
+            case SOUTH -> Comparator.comparingInt(pos -> -pos.getZ());
         };
     }
 
