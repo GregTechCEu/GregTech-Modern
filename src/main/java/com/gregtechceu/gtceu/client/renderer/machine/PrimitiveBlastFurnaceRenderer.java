@@ -55,9 +55,9 @@ public class PrimitiveBlastFurnaceRenderer extends WorkableCasingMachineRenderer
                 pose.translate(opposite.getStepX(), opposite.getStepY(), opposite.getStepZ());
 
                 var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(lavaRenderType, true));
-                var up = RelativeDirection.UP.getRelativeFacing(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
+                var up = RelativeDirection.UP.getRelative(pbf.getFrontFacing(), pbf.getUpwardsFacing(),
                         pbf.isFlipped());
-                if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
+                if (up.getAxis() != Direction.Axis.Y) up = up.getOpposite();
 
                 fluidBlockRenderer.drawFace(up, pose, consumer, Fluids.LAVA.getSource(),
                         RenderUtil.FluidTextureType.STILL, combinedOverlay, combinedLight);
