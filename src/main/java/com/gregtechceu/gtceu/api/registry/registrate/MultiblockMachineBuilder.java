@@ -298,6 +298,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder conditionalTooltip(Component component, boolean condition) {
         if (condition)
             tooltips(component);
+        return this;
     }
 
     @Tolerate
