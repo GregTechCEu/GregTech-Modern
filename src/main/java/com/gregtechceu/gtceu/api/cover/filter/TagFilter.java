@@ -16,11 +16,6 @@ import lombok.Getter;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-/**
- * @author KilaBash
- * @date 2023/3/14
- * @implNote TagFilter
- */
 public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, S> {
 
     private static final Pattern DOUBLE_WILDCARD = Pattern.compile("\\*{2,}");

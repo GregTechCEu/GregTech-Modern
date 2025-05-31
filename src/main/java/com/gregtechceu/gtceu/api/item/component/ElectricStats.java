@@ -184,9 +184,10 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
-        if (electricItem != null && electricItem.canProvideChargeExternally()) {
-            addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
-                    electricItem.getTier(), true);
+        if (electricItem == null) return;
+        addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
+                electricItem.getTier(), electricItem.canProvideChargeExternally());
+        if (electricItem.canProvideChargeExternally()) {
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
         }
     }

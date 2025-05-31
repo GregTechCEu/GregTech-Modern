@@ -17,10 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @implNote MaterialBlockItem
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {

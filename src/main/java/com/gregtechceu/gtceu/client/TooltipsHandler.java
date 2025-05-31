@@ -34,11 +34,6 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/11
- * @implNote TooltipsHandler
- */
 @OnlyIn(Dist.CLIENT)
 public class TooltipsHandler {
 

@@ -30,11 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/29
- * @implNote RecipeTypeUIProject
- */
 @LDLRegister(name = "mui", group = "editor.gtceu")
 public class MachineUIProject extends UIProject {
 

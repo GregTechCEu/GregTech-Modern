@@ -12,11 +12,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/**
- * @author KilaBash
- * @date 2023/7/5
- * @implNote UIMainPanel
- */
 public class UIMainPanel extends MainPanel {
 
     final String description;

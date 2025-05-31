@@ -13,11 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote WrappedSoundEntry
- */
 public class WrappedSoundEntry extends SoundEntry {
 
     private final List<ConfiguredSoundEvent> wrappedEvents;

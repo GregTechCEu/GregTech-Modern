@@ -16,11 +16,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote EnergyContainerHelper
- */
 public class GTCapabilityHelper {
 
     @Nullable

@@ -57,11 +57,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * @author KilaBash
- * @date 2023/3/5
- * @implNote PatterShapeInfoWidget
- */
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
 

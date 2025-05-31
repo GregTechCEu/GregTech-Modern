@@ -11,11 +11,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote RecipeManagerAccessor
- */
 @Mixin(RecipeManager.class)
 public interface RecipeManagerAccessor {
 

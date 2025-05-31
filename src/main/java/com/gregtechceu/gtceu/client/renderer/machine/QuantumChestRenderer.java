@@ -41,11 +41,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- * @implNote QuantumChestRenderer
- */
 public class QuantumChestRenderer extends TieredHullMachineRenderer {
 
     private static Item CREATIVE_CHEST_ITEM = null;

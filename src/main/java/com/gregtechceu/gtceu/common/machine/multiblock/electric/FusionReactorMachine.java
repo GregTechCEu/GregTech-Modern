@@ -35,18 +35,17 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
+import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -67,9 +66,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             PERFECT_HALF_VOLTAGE_FACTOR, false);
 
     // Max EU -> Tier map, used to find minimum tier needed for X EU to start
-    private static final TreeMap<Long, Integer> FUSION_ENERGY = new TreeMap<>();
+    private static final Long2IntSortedMap FUSION_ENERGY = new Long2IntAVLTreeMap();
     // Tier -> Suffix map, i.e. LuV -> MKI
-    private static final Int2ObjectMap<String> FUSION_NAMES = new Int2ObjectOpenHashMap<>(4);
+    private static final Int2ObjectMap<String> FUSION_NAMES = new Int2ObjectArrayMap<>(4);
     // Minimum registered fusion reactor tier
     private static int MINIMUM_TIER = MAX;
 
@@ -122,7 +121,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         super.onStructureFormed();
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE || io == IO.OUT) continue;
@@ -292,7 +292,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         long euToStart = recipe.data.getLong("eu_to_start");
         if (euToStart <= 0) return;
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int fusionTier = FUSION_ENERGY.ceilingEntry(euToStart).getValue();
+        int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
         group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
                 LocalizationUtils.format("gtceu.recipe.eu_to_start",
@@ -308,6 +308,17 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         FUSION_ENERGY.put(maxEU, tier);
         FUSION_NAMES.put(tier, name);
         MINIMUM_TIER = Math.min(tier, MINIMUM_TIER);
+    }
+
+    private static int findCeilingTier(long euToStart) {
+        long key;
+        // tail = submap where all keys are >= EU to start
+        // if tail is empty, then EU is greater than all the EU values, so we choose the last key
+        // otherwise we want the first key in the tail map
+        var tail = FUSION_ENERGY.tailMap(euToStart);
+        if (tail.isEmpty()) key = FUSION_ENERGY.lastLongKey();
+        else key = tail.firstLongKey();
+        return FUSION_ENERGY.get(key);
     }
 
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {

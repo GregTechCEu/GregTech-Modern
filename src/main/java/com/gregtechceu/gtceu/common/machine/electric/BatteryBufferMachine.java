@@ -36,11 +36,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/10
- * @implNote BatteryBufferMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine

@@ -40,11 +40,6 @@ import java.nio.file.Path;
 
 import static net.minecraft.commands.Commands.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/9
- * @implNote GTCommands
- */
 public class GTCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {

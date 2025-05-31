@@ -20,11 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote GTRegistry
- */
 public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();

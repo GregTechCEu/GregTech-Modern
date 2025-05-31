@@ -12,11 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote IToolable
- */
 public interface IToolable {
 
     /**

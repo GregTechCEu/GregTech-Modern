@@ -69,11 +69,6 @@ import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote MachineBuilder
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -271,8 +266,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> conditionalTooltip(Component component, Supplier<Boolean> condition) {
-        return conditionalTooltip(component, condition.get());
+    public MachineBuilder<DEFINITION> conditionalTooltip(Component component, BooleanSupplier condition) {
+        return conditionalTooltip(component, condition.getAsBoolean());
     }
 
     public MachineBuilder<DEFINITION> conditionalTooltip(Component component, boolean condition) {

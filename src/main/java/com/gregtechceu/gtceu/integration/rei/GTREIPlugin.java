@@ -40,11 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote REIPlugin
- */
 @REIPluginClient
 public class GTREIPlugin implements REIClientPlugin {
 

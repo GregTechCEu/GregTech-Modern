@@ -24,11 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-/**
- * @author Irgendwer01
- * @date 2023/11/4
- * @implNote ShapedEnergyTransferRecipeBuilder
- */
 public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
 
     protected ItemStack output = ItemStack.EMPTY;

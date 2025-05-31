@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
@@ -59,11 +59,12 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Override
     public void onStructureFormed() {
-        getDefinition().setPartSorter(Comparator.comparing(it -> multiblockPartSorter().apply(it.self().getPos())));
+        getDefinition()
+                .setPartSorter(Comparator.comparingInt(it -> multiblockPartSorter().applyAsInt(it.self().getPos())));
         super.onStructureFormed();
     }
 
-    private Function<BlockPos, Integer> multiblockPartSorter() {
+    private ToIntFunction<BlockPos> multiblockPartSorter() {
         return RelativeDirection.RIGHT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
     }
 

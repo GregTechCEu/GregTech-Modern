@@ -59,11 +59,6 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
@@ -83,7 +78,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
-            return new IntProviderIngredient(intProviderIngredient.getInner(),
+            return IntProviderIngredient.of(intProviderIngredient.getInner(),
                     new FlooredInt(
                             new AddedFloat(
                                     new MultipliedFloat(

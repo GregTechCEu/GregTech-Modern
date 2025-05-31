@@ -7,11 +7,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote ItemFluidContainer
- */
 public class ItemFluidContainer implements IRecipeRemainder {
 
     @Override

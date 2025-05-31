@@ -13,11 +13,6 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/27
- * @implNote ModelUtil
- */
 @OnlyIn(Dist.CLIENT)
 public class ModelUtil {
 
