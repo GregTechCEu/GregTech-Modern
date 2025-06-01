@@ -21,15 +21,16 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.FireChargeItem;
-import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,6 +41,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -78,6 +80,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private int fDist = 0;
     @DescSynced
     private int hDist = 0;
+    @Getter
     @DescSynced
     @RequireRerender
     private boolean isActive;
@@ -129,11 +132,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public int getMaxProgress() {
         return maxTime;
-    }
-
-    @Override
-    public boolean isActive() {
-        return isActive;
     }
 
     @Override
@@ -359,47 +357,40 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
-        BlockEntity be = world.getBlockEntity(pos);
+        ItemStack stack = player.getItemInHand(hand);
+        if (!stack.is(ItemTags.CREEPER_IGNITERS)) {
+            return super.onUse(state, level, pos, player, hand, hit);
+        }
+
+        BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof IMachineBlockEntity machineBe) {
             MetaMachine mte = machineBe.getMetaMachine();
-            if (mte instanceof CharcoalPileIgniterMachine cpi && cpi.isFormed()) {
-                if (world.isClientSide) {
-                    player.swing(hand);
-                } else if (!cpi.isActive()) {
-                    boolean shouldActivate = false;
-                    ItemStack stack = player.getItemInHand(hand);
-                    if (stack.getItem() instanceof FlintAndSteelItem) {
-                        stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
-                        getLevel().playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+            if (mte instanceof CharcoalPileIgniterMachine cpi && cpi.isFormed() && !cpi.isActive()) {
+                boolean isLighter = false;
+                SoundEvent sound = stack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE :
+                        SoundEvents.FLINTANDSTEEL_USE;
 
-                        shouldActivate = true;
-                    } else if (stack.getItem() instanceof FireChargeItem) {
-                        stack.shrink(1);
-
-                        getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
-
-                        shouldActivate = true;
-                    } else if (stack.getItem() instanceof ComponentItem compItem) {
-                        for (var component : compItem.getComponents()) {
-                            if (component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
-                                getLevel().playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f,
-                                        1.0f);
-
-                                shouldActivate = true;
-                                break;
-                            }
+                if (stack.getItem() instanceof ComponentItem compItem) {
+                    for (var component : compItem.getComponents()) {
+                        if (component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
+                            isLighter = true;
+                            break;
                         }
                     }
-
-                    if (shouldActivate) {
-                        cpi.setActive(true);
-                        return InteractionResult.CONSUME;
-                    }
                 }
+                if (!isLighter && stack.isDamageableItem()) {
+                    stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+                } else if (!isLighter) {
+                    stack.shrink(1);
+                }
+
+                level.playSound(null, pos, sound, SoundSource.PLAYERS, 1.0f, 1.0f);
+                cpi.setActive(true);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, level, pos, player, hand, hit);
     }
 }
