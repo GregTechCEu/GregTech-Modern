@@ -49,6 +49,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -92,7 +93,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private RotationState rotationState = RotationState.NON_Y_AXIS;
     /**
      * Whether this machine can be rotated or face upwards.
-     * todo: set to true by default if we manage to rotate the model accordingly
      */
     @Setter
     private boolean allowExtendedFacing = false;
@@ -159,6 +159,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private EditableMachineUI editableUI;
     @Getter // getter for KJS
     @Setter
+    @Nullable
     private String langValue = null;
 
     protected MachineBuilder(Registrate registrate, String name,
@@ -322,6 +323,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     protected DEFINITION createDefinition() {
         return definition.apply(new ResourceLocation(registrate.getModid(), name));
+    }
+
+    @Override
+    public void generateLang(LangEventJS lang) {
+        super.generateLang(lang);
+        if (langValue() != null) {
+            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
+        }
     }
 
     @HideFromJS
