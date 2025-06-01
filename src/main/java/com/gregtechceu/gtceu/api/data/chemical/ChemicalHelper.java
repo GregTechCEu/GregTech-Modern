@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -221,13 +221,13 @@ public class ChemicalHelper {
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
         if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
+            TagPrefix prefix = entry.tagPrefix();
             var items = new ArrayList<Supplier<? extends Item>>();
-            for (TagKey<Item> tag : getTags(entry.tagPrefix(), entry.material())) {
+            for (TagKey<Item> tag : prefix.getItemTags(entry.material())) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder::value);
                 }
             }
-            TagPrefix prefix = entry.tagPrefix();
             if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(entry.material())) {
                 return List.of(() -> prefix.getItemFromTable(entry.material()).get().asItem());
             }
@@ -254,12 +254,17 @@ public class ChemicalHelper {
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
         if (materialEntry.isEmpty()) return Collections.emptyList();
         return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
-
+            TagPrefix prefix = entry.tagPrefix();
             var blocks = new ArrayList<Supplier<? extends Block>>();
-            for (var tag : getTags(materialEntry.tagPrefix(), entry.material())) {
-                var blockTag = TagKey.create(Registries.BLOCK, tag.location());
-                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(blockTag)) {
+            for (TagKey<Block> tag : prefix.getBlockTags(entry.material())) {
+                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
                     blocks.add(itemHolder::value);
+                }
+            }
+            if (blocks.isEmpty() && prefix.hasItemTable() && prefix.doGenerateBlock(entry.material())) {
+                var blockSupplier = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
+                if (blockSupplier != null) {
+                    return Collections.singletonList(blockSupplier);
                 }
             }
             return blocks;
@@ -294,10 +299,6 @@ public class ChemicalHelper {
             return tags[0];
         }
         return null;
-    }
-
-    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @NotNull Material material) {
-        return orePrefix.getItemTags(material);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {
