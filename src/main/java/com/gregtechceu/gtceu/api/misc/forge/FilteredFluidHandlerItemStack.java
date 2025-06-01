@@ -23,26 +23,6 @@ public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
     }
 
     @Override
-    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-        FluidStack drained = super.drain(resource, action);
-        this.removeTagWhenEmpty(action);
-        return drained;
-    }
-
-    @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        FluidStack drained = super.drain(maxDrain, action);
-        this.removeTagWhenEmpty(action);
-        return drained;
-    }
-
-    private void removeTagWhenEmpty(FluidAction action) {
-        if (getFluid() == FluidStack.EMPTY && action.execute()) {
-            this.container.setTag(null);
-        }
-    }
-
-    @Override
     public boolean canFillFluidType(FluidStack fluid) {
         return filter.test(fluid);
     }
