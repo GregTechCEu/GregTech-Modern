@@ -149,13 +149,6 @@ public class MixinHelpers {
                         .add(new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE));
             });
 
-            GTBlocks.ALL_FUSION_CASINGS.forEach((casingType, block) -> {
-                ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block.get());
-                tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[casingType.getHarvestLevel()].location(),
-                        path -> new ArrayList<>())
-                        .add(new TagLoader.EntryWithSource(TagEntry.element(blockId), GTValues.CUSTOM_TAG_SOURCE));
-            });
-
             // if config is NOT enabled, add the pickaxe/axe tags to the "configurable" mineability tags
             if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
                 var tagList = tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(),
