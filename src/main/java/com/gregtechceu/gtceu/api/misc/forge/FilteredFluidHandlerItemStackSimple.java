@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.api.misc.forge;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
-public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
+public class FilteredFluidHandlerItemStackSimple extends FluidHandlerItemStackSimple {
 
     protected final Predicate<FluidStack> filter;
 
@@ -16,8 +16,8 @@ public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
      * @param container The container itemStack, data is stored on it directly as NBT.
      * @param capacity  The maximum capacity of this fluid tank.
      */
-    public FilteredFluidHandlerItemStack(@NotNull ItemStack container, int capacity,
-                                         Predicate<FluidStack> filter) {
+    public FilteredFluidHandlerItemStackSimple(@NotNull ItemStack container, int capacity,
+                                               Predicate<FluidStack> filter) {
         super(container, capacity);
         this.filter = filter;
     }

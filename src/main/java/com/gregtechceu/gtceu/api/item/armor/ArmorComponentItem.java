@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.client.model.HumanoidModel;
@@ -22,13 +21,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+@NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Getter
@@ -132,7 +131,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return armorLogic.getArmorTexture(stack, entity, slot, type).toString();
+        var textureId = armorLogic.getArmorTexture(stack, entity, slot, type);
+        return textureId == null ? null : textureId.toString();
     }
 
     ///////////////////////////////////////////
@@ -307,19 +307,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
             }
         }
         return super.hasCraftingRemainingItem(stack);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull final ItemStack itemStack, @NotNull final Capability<T> cap) {
-        for (IItemComponent component : components) {
-            if (component instanceof IComponentCapability componentCapability) {
-                var value = componentCapability.getCapability(itemStack, cap);
-                if (value.isPresent()) {
-                    return value;
-                }
-            }
-        }
-        return LazyOptional.empty();
     }
 
     @Override
