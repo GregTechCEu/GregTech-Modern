@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -9,9 +8,9 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,12 +20,13 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -35,6 +35,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -45,27 +46,21 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     public static final String LIGHTER_OPEN = "lighterOpen";
     private static final String USES_LEFT = "usesLeft";
     private static final IntIntPair DURABILITY_BAR_COLORS = GradientUtil.getGradient(0xF07F1D, 10);
-    private final ResourceLocation overrideLocation;
     private final boolean usesFluid;
     private final boolean hasMultipleUses;
     private final boolean canOpen;
-    private Item destroyItem = Items.AIR;
+    private Supplier<ItemStack> destroyItem = () -> ItemStack.EMPTY;
 
     private int maxUses = 0;
 
-    public LighterBehavior(boolean useFluid, boolean hasMultipleUses, boolean canOpen) {
-        this(null, useFluid, hasMultipleUses, canOpen);
-    }
-
-    public LighterBehavior(boolean useFluid, boolean hasMultipleUses, boolean canOpen, Item destroyItem, int maxUses) {
-        this(null, useFluid, hasMultipleUses, canOpen);
+    public LighterBehavior(boolean useFluid, boolean hasMultipleUses, boolean canOpen, Supplier<ItemStack> destroyItem,
+                           int maxUses) {
+        this(useFluid, hasMultipleUses, canOpen);
         this.maxUses = maxUses;
         this.destroyItem = destroyItem;
     }
 
-    public LighterBehavior(@Nullable ResourceLocation overrideLocation, boolean useFluid, boolean hasMultipleUses,
-                           boolean canOpen) {
-        this.overrideLocation = overrideLocation;
+    public LighterBehavior(boolean useFluid, boolean hasMultipleUses, boolean canOpen) {
         this.usesFluid = useFluid;
         this.hasMultipleUses = hasMultipleUses;
         this.canOpen = canOpen;
@@ -84,94 +79,48 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        // ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
+        Level level = context.getLevel();
         Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
-        BlockState state = context.getLevel().getBlockState(pos);
+        Direction clickedFace = context.getClickedFace();
+        BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
-        BlockPos offset = pos.offset(context.getClickedFace().getNormal());
 
-        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && !player.isCrouching())) {
-            if (block instanceof TntBlock tnt && consumeFuel(player, itemStack)) {
-                tnt.onCaughtFire(null, context.getLevel(), pos, null, player);
-                context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
-                        Block.UPDATE_ALL_IMMEDIATE);
-                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
-                        1.0F,
-                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                return InteractionResult.SUCCESS;
+        if ((!canOpen || (tag.getBoolean(LIGHTER_OPEN)) && (player == null || !player.isShiftKeyDown()))) {
+            if ((block instanceof TntBlock || block instanceof GTExplosiveBlock)) {
+                if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
+
+                state.onCaughtFire(level, pos, clickedFace, player);
+                FluidState fluidState = level.getFluidState(pos);
+                level.setBlock(pos, fluidState.createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
-            if (block instanceof GTExplosiveBlock explosive && consumeFuel(player, itemStack)) {
-                explosive.explode(context.getLevel(), pos, player);
-                context.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(),
-                        Block.UPDATE_ALL_IMMEDIATE);
-                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
-                        1.0F,
-                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                return InteractionResult.SUCCESS;
-            }
-            if (block instanceof CandleBlock) {
-                if (CandleBlock.canLight(state) && !CandleBlock.isLit(state) && consumeFuel(player, itemStack)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
-                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
-                            SoundSource.PLAYERS, 1.0F,
-                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                    return InteractionResult.SUCCESS;
-                } else return InteractionResult.PASS;
-            }
-            if (block instanceof CandleCakeBlock) {
-                if (CandleCakeBlock.canLight(state) && !CandleCakeBlock.isLit(state) &&
-                        consumeFuel(player, itemStack)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
-                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
-                            SoundSource.PLAYERS, 1.0F,
-                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                    return InteractionResult.SUCCESS;
-                } else return InteractionResult.PASS;
-            }
-            if (block instanceof CampfireBlock) {
-                if (CampfireBlock.canLight(state) && !CampfireBlock.isLitCampfire(state) &&
-                        consumeFuel(player, itemStack)) {
-                    context.getLevel().setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
-                    player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE,
-                            SoundSource.PLAYERS, 1.0F,
-                            GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                    return InteractionResult.SUCCESS;
-                } else return InteractionResult.PASS;
-            }
-            if (block instanceof SoulSandBlock && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
-                context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-                if (!context.getLevel().isClientSide) {
-                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
-                }
-                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
-                        1.0F,
-                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                return InteractionResult.PASS;
-            }
-            if (block == Blocks.SOUL_SOIL && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
-                context.getLevel().setBlock(offset, Blocks.SOUL_FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-                if (!context.getLevel().isClientSide) {
-                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
-                }
-                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
-                        1.0F,
-                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                return InteractionResult.PASS;
+            if ((CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state))) {
+                if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
+
+                level.setBlock(pos, state.setValue(LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+                level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
+                        1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
 
-            if (context.getLevel().isEmptyBlock(offset) &&
-                    BaseFireBlock.canBePlacedAt(context.getLevel(), offset, context.getHorizontalDirection()) &&
-                    block != Blocks.FIRE && block != Blocks.SOUL_FIRE && consumeFuel(player, itemStack)) {
-                context.getLevel().setBlock(offset, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-                if (!context.getLevel().isClientSide) {
-                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, offset, itemStack);
+            BlockPos offset = pos.relative(clickedFace);
+            if (BaseFireBlock.canBePlacedAt(level, offset, context.getHorizontalDirection())) {
+                if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
+
+                level.playSound(player, offset, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
+                        1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                BlockState fireState = BaseFireBlock.getState(level, offset);
+                level.setBlock(offset, fireState, Block.UPDATE_ALL_IMMEDIATE);
+                level.gameEvent(player, GameEvent.BLOCK_PLACE, pos);
+
+                if (player instanceof ServerPlayer serverPlayer) {
+                    CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, offset, itemStack);
+                    itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
                 }
-                player.level().playSound(null, player.getOnPos(), SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS,
-                        1.0F,
-                        GTValues.RNG.nextFloat() * 0.4F + 0.8F);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
         return InteractionResult.PASS;
@@ -227,8 +176,11 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
             }
         } else if (hasMultipleUses) {
             if (usesLeft == 0) {
-                stack.setCount(0);
-                player.addItem(new ItemStack(destroyItem));
+                stack.shrink(1);
+                ItemStack brokenStack = this.destroyItem.get();
+                if (!player.addItem(brokenStack)) {
+                    player.drop(brokenStack, true);
+                }
             } else {
                 stack.getOrCreateTag().putInt(USES_LEFT, usesLeft);
             }

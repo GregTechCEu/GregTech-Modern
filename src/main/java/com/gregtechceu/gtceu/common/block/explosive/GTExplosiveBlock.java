@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,8 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     protected abstract GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
-                                                      @NotNull LivingEntity exploder);
+                                                      @Nullable LivingEntity exploder);
 
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
@@ -68,13 +68,20 @@ public abstract class GTExplosiveBlock extends Block {
         return false;
     }
 
-    public void explode(Level world, BlockPos pos, LivingEntity exploder) {
-        if (!world.isClientSide) {
-            GTExplosiveEntity entity = createEntity(world, pos, exploder);
+    @Override
+    public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction face,
+                             @Nullable LivingEntity igniter) {
+        explode(level, pos, igniter);
+    }
+
+    public void explode(Level level, BlockPos pos, @Nullable LivingEntity exploder) {
+        if (!level.isClientSide) {
+            GTExplosiveEntity entity = createEntity(level, pos, exploder);
             entity.setFuse(fuseLength);
-            world.addFreshEntity(entity);
-            world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TNT_PRIMED,
+            level.addFreshEntity(entity);
+            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TNT_PRIMED,
                     SoundSource.BLOCKS, 1.0f, 1.0f);
+            level.gameEvent(entity, GameEvent.PRIME_FUSE, pos);
         }
     }
 
@@ -105,16 +112,11 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        if (explodeOnMine) {
-            Entity entity = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
-            if (entity != null && !entity.isCrouching() && entity instanceof LivingEntity living) {
-                this.explode(params.getLevel(), BlockPos.containing(params.getParameter(LootContextParams.ORIGIN)),
-                        living);
-                return List.of();
-            }
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (explodeOnMine && !player.isShiftKeyDown()) {
+            this.explode(level, pos, player);
         }
-        return super.getDrops(state, params);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
