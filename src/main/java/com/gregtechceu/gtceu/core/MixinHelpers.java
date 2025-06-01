@@ -76,12 +76,12 @@ public class MixinHelpers {
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(
                                 TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get())),
                                 GTValues.CUSTOM_TAG_SOURCE)));
-                        tagMap.merge(materialTag.location(), tags, GTUtil::mergeLists);
+                        tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(tags);
                     }
 
                     if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
                         OreProperty ore = material.getProperty(PropertyKey.ORE);
-                        Material washedIn = ore.getWashedIn().getFirst();
+                        Material washedIn = ore.getWashedIn().first();
                         if (washedIn.isNull()) return;
                         ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
                         ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
@@ -90,8 +90,8 @@ public class MixinHelpers {
                         itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(
                                 TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get())),
                                 GTValues.CUSTOM_TAG_SOURCE)));
-                        tagMap.merge(generalTag, tags, GTUtil::mergeLists);
-                        tagMap.merge(specificTag, tags, GTUtil::mergeLists);
+                        tagMap.computeIfAbsent(generalTag, path -> new ArrayList<>()).addAll(tags);
+                        tagMap.computeIfAbsent(specificTag, path -> new ArrayList<>()).addAll(tags);
                     }
                 }
             });

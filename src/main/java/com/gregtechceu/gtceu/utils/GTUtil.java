@@ -297,11 +297,6 @@ public class GTUtil {
         return getRandomItem(GTValues.RNG, randomList);
     }
 
-    public static <T> List<T> mergeLists(@NotNull List<T> first, @NotNull List<? extends T> second) {
-        first.addAll(second);
-        return first;
-    }
-
     @SuppressWarnings("unchecked")
     public static <T, R> Class<T> getActualTypeParameter(Class<? extends R> thisClass, int index) {
         Type type = thisClass.getGenericSuperclass();
