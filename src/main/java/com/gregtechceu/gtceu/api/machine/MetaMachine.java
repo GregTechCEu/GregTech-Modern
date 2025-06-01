@@ -39,11 +39,11 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
@@ -818,7 +818,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
         String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
                 getDefinition().getId().getPath());
-        if (LocalizationUtils.exist(mainKey)) {
+        if (Language.getInstance().has(mainKey)) {
             tooltips.add(0, Component.translatable(mainKey));
         }
     }

@@ -34,9 +34,11 @@ import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -46,6 +48,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -1078,10 +1081,18 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder biome(ResourceLocation biome, boolean reverse) {
-        return addCondition(new BiomeCondition(biome).setReverse(reverse));
+        return biome(ResourceKey.create(Registries.BIOME, biome), reverse);
     }
 
     public GTRecipeBuilder biome(ResourceLocation biome) {
+        return biome(biome, false);
+    }
+
+    public GTRecipeBuilder biome(ResourceKey<Biome> biome, boolean reverse) {
+        return addCondition(new BiomeCondition(biome).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder biome(ResourceKey<Biome> biome) {
         return biome(biome, false);
     }
 

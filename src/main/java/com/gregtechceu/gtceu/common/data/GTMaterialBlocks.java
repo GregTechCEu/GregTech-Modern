@@ -114,11 +114,12 @@ public class GTMaterialBlocks {
             if (ore.getKey().isIgnored(material)) continue;
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
-            var entry = registrate
-                    .block("%s%s_ore".formatted(
-                            oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "",
-                            material.getName()),
-                            properties -> new OreBlock(properties, oreTag, material, true))
+            String typePrefix = "";
+            if (oreTag == TagPrefix.ore) {
+                typePrefix = FormattingUtil.toLowerCaseUnderscore(oreTag.name) + "_";
+            }
+            var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
+                    properties -> new OreBlock(properties, oreTag, material, true))
                     .initialProperties(() -> {
                         if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to
                                                                  // stone
