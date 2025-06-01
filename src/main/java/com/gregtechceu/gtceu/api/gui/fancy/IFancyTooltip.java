@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public interface IFancyTooltip {
@@ -25,7 +26,7 @@ public interface IFancyTooltip {
         return null;
     }
 
-    record Basic(Supplier<IGuiTexture> icon, Supplier<List<Component>> content, Supplier<Boolean> predicate,
+    record Basic(Supplier<IGuiTexture> icon, Supplier<List<Component>> content, BooleanSupplier predicate,
                  Supplier<TooltipComponent> componentSupplier)
             implements IFancyTooltip {
 
@@ -46,7 +47,7 @@ public interface IFancyTooltip {
 
         @Override
         public boolean showFancyTooltip() {
-            return predicate.get();
+            return predicate.getAsBoolean();
         }
     }
 }

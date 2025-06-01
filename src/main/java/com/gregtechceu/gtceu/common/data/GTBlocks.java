@@ -1429,7 +1429,7 @@ public class GTBlocks {
     }
 
     public static boolean doMetalPipe(Material material) {
-        return GTValues.FOOLS.get() && material.hasProperty(PropertyKey.INGOT) &&
+        return GTValues.FOOLS.getAsBoolean() && material.hasProperty(PropertyKey.INGOT) &&
                 !material.hasProperty(PropertyKey.POLYMER) && !material.hasProperty(PropertyKey.WOOD);
     }
 

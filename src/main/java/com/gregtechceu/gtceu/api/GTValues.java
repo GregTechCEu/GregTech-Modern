@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.api;
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 import static net.minecraft.ChatFormatting.*;
 
@@ -279,14 +280,14 @@ public class GTValues {
      */
     public static boolean HT = false;
 
-    public static Supplier<Boolean> FOOLS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("04") && yearMonthDay[2].equals("01");
+    public static BooleanSupplier FOOLS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };
 
-    public static Supplier<Boolean> XMAS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("12") && (yearMonthDay[2].equals("24") || yearMonthDay[2].equals("25"));
+    public static BooleanSupplier XMAS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.DECEMBER && (now.getDayOfMonth() == 24 || now.getDayOfMonth() == 25);
     };
 
     public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";

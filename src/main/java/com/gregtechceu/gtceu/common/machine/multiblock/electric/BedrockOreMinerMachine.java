@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -76,9 +75,9 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
                 // Ore names
                 textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
                         .withStyle(ChatFormatting.GREEN));
-                List<Map.Entry<Integer, Material>> drilledOres = getRecipeLogic().getVeinMaterials();
+                List<WeightedMaterial> drilledOres = getRecipeLogic().getVeinMaterials();
                 for (var entry : drilledOres) {
-                    Component fluidInfo = entry.getValue().getLocalizedName().withStyle(ChatFormatting.GREEN);
+                    Component fluidInfo = entry.material().getLocalizedName().withStyle(ChatFormatting.GREEN);
                     textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo)
                             .withStyle(ChatFormatting.GRAY));
                 }

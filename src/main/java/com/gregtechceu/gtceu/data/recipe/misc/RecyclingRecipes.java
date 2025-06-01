@@ -23,6 +23,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -428,14 +429,14 @@ public class RecyclingRecipes {
      */
     private static List<MaterialStack> combineStacks(List<MaterialStack> rawList) {
         // Combine any stacks in the List that have the same Item.
-        Map<Material, Long> materialStacksExploded = new HashMap<>();
+        Object2LongOpenHashMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
         for (MaterialStack ms : rawList) {
-            long amount = materialStacksExploded.getOrDefault(ms.material(), 0L);
-            materialStacksExploded.put(ms.material(), ms.amount() + amount);
+            materialStacksExploded.addTo(ms.material(), ms.amount());
         }
-        return materialStacksExploded.entrySet().stream()
-                .map(e -> new MaterialStack(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+        return materialStacksExploded.object2LongEntrySet()
+                .stream()
+                .map(e -> new MaterialStack(e.getKey(), e.getLongValue()))
+                .toList();
     }
 
     private static List<ItemStack> finalizeOutputs(List<MaterialStack> materials, int maxOutputs,

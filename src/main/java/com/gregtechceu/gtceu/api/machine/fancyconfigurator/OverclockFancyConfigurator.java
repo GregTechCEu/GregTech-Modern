@@ -18,9 +18,10 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -76,7 +77,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
     public Widget createConfigurator() {
         return new WidgetGroup(0, 0, 120, 40) {
 
-            final Map<Integer, WidgetGroup> lightGroups = new HashMap<>();
+            final Int2ObjectMap<WidgetGroup> lightGroups = new Int2ObjectOpenHashMap<>();
 
             @Override
             public void initWidget() {

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.OreVeinWorldEntry;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -23,7 +24,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 public class BedrockOreMinerLogic extends RecipeLogic {
 
@@ -31,7 +31,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Getter
     @Nullable
-    private List<Map.Entry<Integer, Material>> veinMaterials;
+    private List<WeightedMaterial> veinMaterials;
 
     public BedrockOreMinerLogic(BedrockOreMinerMachine machine) {
         super(machine);
@@ -69,8 +69,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            Material material = veinMaterials
-                    .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
+            WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
+            if (wm == null) return null;
+            Material material = wm.material();
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material, getOreToProduce());
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup

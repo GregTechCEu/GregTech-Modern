@@ -884,6 +884,7 @@ public class FirstDegreeMaterials {
         MagnesiumChloride = new Material.Builder(GTCEu.id("magnesium_chloride"))
                 .dust(1)
                 .color(0xeee4e9).secondaryColor(0xD40D5C)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 1, Chlorine, 2)
                 .buildAndRegister();
 
@@ -943,6 +944,7 @@ public class FirstDegreeMaterials {
         SodiumBicarbonate = new Material.Builder(GTCEu.id("sodium_bicarbonate"))
                 .dust(1)
                 .color(0xFFFFFF).secondaryColor(0xa7d2df).iconSet(ROUGH)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Hydrogen, 1, Carbon, 1, Oxygen, 3)
                 .buildAndRegister();
 
@@ -1665,6 +1667,11 @@ public class FirstDegreeMaterials {
                 .color(0x0cbdd7)
                 .components(Hydrogen, 2, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS, true)
+                .buildAndRegister();
+
+        IlmeniteSlag = new Material.Builder(GTCEu.id("ilmenite_slag"))
+                .dust()
+                .color(0x8B0000).iconSet(SAND)
                 .buildAndRegister();
     }
 }

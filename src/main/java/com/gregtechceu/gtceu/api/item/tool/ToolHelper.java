@@ -67,6 +67,7 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -241,9 +242,9 @@ public class ToolHelper {
     public static ItemStack getAndSetToolData(GTToolType toolType, Material material, int maxDurability,
                                               int harvestLevel,
                                               float toolSpeed, float attackDamage) {
-        var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
-        if (entry == null) return ItemStack.EMPTY;
-        ItemStack stack = entry.get().getRaw();
+        var tool = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
+        if (tool == null) return ItemStack.EMPTY;
+        ItemStack stack = tool.get().getRaw();
         stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
         CompoundTag toolTag = getToolTag(stack);
         toolTag.putInt(MAX_DURABILITY_KEY, maxDurability);
@@ -252,11 +253,12 @@ public class ToolHelper {
         toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
-            toolProperty.getEnchantments().forEach((enchantment, level) -> {
-                if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    stack.enchant(enchantment, level);
+            for (var entry : Object2IntMaps.fastIterable(toolProperty.getEnchantments())) {
+                var enchantment = entry.getKey();
+                if (tool.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
+                    stack.enchant(enchantment, entry.getIntValue());
                 }
-            });
+            }
         }
         return stack;
     }

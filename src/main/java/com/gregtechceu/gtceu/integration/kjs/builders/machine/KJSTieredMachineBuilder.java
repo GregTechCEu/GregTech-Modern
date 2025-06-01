@@ -89,7 +89,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                    tankScalingFunction.apply(tier), true));
+                                    tankScalingFunction.applyAsInt(tier), true));
                 }
             }
             definitions[tier] = builder.register();

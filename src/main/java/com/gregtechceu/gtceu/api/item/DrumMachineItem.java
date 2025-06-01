@@ -41,7 +41,7 @@ public class DrumMachineItem extends MetaMachineItem {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(
                     () -> new ThermalFluidHandlerItemStack(
                             itemStack,
-                            Math.toIntExact(GTMachineUtils.DRUM_CAPACITY.get(getDefinition())),
+                            GTMachineUtils.DRUM_CAPACITY.getInt(getDefinition()),
                             property.getMaxFluidTemperature(), property.isGasProof(), property.isAcidProof(),
                             property.isCryoProof(), property.isPlasmaProof())));
         }

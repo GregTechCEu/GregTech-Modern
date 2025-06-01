@@ -47,8 +47,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public final ResourceLocation registryName;
     public final String group;
-    public final TreeMap<RecipeCapability<?>, Integer> maxInputs = new TreeMap<>(RecipeCapability.COMPARATOR);
-    public final TreeMap<RecipeCapability<?>, Integer> maxOutputs = new TreeMap<>(RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
+    public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
+            RecipeCapability.COMPARATOR);
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Getter

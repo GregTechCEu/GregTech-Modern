@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -143,11 +144,11 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public void appendTooltips(List<String[]> items, List<Component> tooltips, String selected) {
-            Map<String, Integer> counter = new HashMap<>();
+            Object2IntOpenHashMap<String> counter = new Object2IntOpenHashMap<>();
             for (var array : items) {
                 for (String item : array) {
                     if (ProspectingTexture.SELECTED_ALL.equals(selected) || selected.equals(getUniqueID(item))) {
-                        counter.put(item, counter.getOrDefault(item, 0) + 1);
+                        counter.addTo(item, 1);
                     }
                 }
             }
@@ -294,7 +295,7 @@ public abstract class ProspectorMode<T> {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
-                                new OreInfo(entry.getFirst(), entry.getSecond(), left, oreVein.getOreYield()));
+                                new OreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }
                 }
             }

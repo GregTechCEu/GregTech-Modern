@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +36,7 @@ public interface IDurabilityBar extends IItemDecoratorComponent {
 
     /** The first and last colors of a gradient. Default to Green durability gradient (null Pair). */
     @Nullable
-    default Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+    default IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
         return null;
     }
 

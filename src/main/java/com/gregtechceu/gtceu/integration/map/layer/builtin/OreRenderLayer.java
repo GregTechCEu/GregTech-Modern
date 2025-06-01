@@ -67,7 +67,7 @@ public class OreRenderLayer extends MapRenderLayer {
         tooltip.add(title);
 
         for (var filler : vein.definition().veinGenerator().getAllEntries()) {
-            filler.getKey().ifLeft(state -> {
+            filler.vein().ifLeft(state -> {
                 tooltip.add(Component.literal(ConfigHolder.INSTANCE.compat.minimap.oreNamePrefix)
                         .append(state.getBlock().getName()));
             }).ifRight(material -> {
