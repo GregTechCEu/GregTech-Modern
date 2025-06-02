@@ -490,23 +490,28 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected enum Permissions implements EnumSelectorWidget.SelectableEnum {
 
-        PUBLIC,
-        PRIVATE;
+        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled",
+                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5)),
+
+        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
+                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
+
+        private final String tooltip;
+        private final IGuiTexture icon;
+
+        Permissions(String tooltip, IGuiTexture icon) {
+            this.tooltip = tooltip;
+            this.icon = icon;
+        }
 
         @Override
         public @NotNull String getTooltip() {
-            return switch (this) {
-                case PUBLIC -> "cover.ender_fluid_link.private.tooltip.disabled";
-                case PRIVATE -> "cover.ender_fluid_link.private.tooltip.enabled";
-            };
+            return tooltip;
         }
 
         @Override
         public @NotNull IGuiTexture getIcon() {
-            return switch (this) {
-                case PUBLIC -> GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5);
-                case PRIVATE -> GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5);
-            };
+            return icon;
         }
     }
 }
