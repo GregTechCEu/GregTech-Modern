@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -162,18 +163,44 @@ public abstract class ChanceLogic {
                                                          @NotNull ChanceBoostFunction boostFunction,
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
+            // Have to set up a system where all chances are set to be out of 10000
+            List<Integer> chancesOutOfTenThousand = new java.util.ArrayList<>(chancedEntries.stream()
+                    .map(orig -> (int) (((float) orig.chance / (float) orig.maxChance) * (float) getMaxChancedValue()))
+                    .toList());
+            int chanceTotal = 0;
+            for (int chance : chancesOutOfTenThousand) {
+                chanceTotal += chance;
+            }
+
+            // Here, if the newly calculated chances don't add up to 10000, they're renormalized
+            if (chanceTotal != getMaxChancedValue()) {
+                int chanceTotalDecremented = getMaxChancedValue();
+                for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
+                    int newChance = (int) (chancesOutOfTenThousand.get(i) *
+                            ((float) getMaxChancedValue() / (float) chanceTotal));
+                    // last chance ends up being set to the remainder in case things don't line up
+                    if (i == chancesOutOfTenThousand.size() - 1) {
+                        chancesOutOfTenThousand.set(i, chanceTotalDecremented);
+                    } else {
+                        chancesOutOfTenThousand.set(i, newChance);
+                    }
+                    chanceTotalDecremented -= newChance;
+                }
+            }
+
+            // Finally, generate a new Content list with the changes
+            List<Content> normalizedEntries = new ArrayList<>();
+            for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
+                normalizedEntries.add(new Content(chancedEntries.get(i).content, chancesOutOfTenThousand.get(i),
+                        getMaxChancedValue(), chancedEntries.get(i).tierChanceBoost));
+            }
+
+            // Use the new, normalized list for the logic
             ImmutableList.Builder<Content> builder = ImmutableList.builder();
-            int maxChance;
-            boolean firstMaxChanceSet;
             for (int i = 0; i < times; ++i) {
                 Content selected = null;
-                maxChance = 0;
-                firstMaxChanceSet = false;
-                for (Content entry : chancedEntries) {
-                    if (!firstMaxChanceSet) {
-                        maxChance = entry.maxChance;
-                        firstMaxChanceSet = true;
-                    }
+                int maxChance = getMaxChancedValue();
+                for (Content entry : normalizedEntries) {
                     int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                     int cached = getCachedChance(entry, cache);
                     int chance = newChance + cached;
