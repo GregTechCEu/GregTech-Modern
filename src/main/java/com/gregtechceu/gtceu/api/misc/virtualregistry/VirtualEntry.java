@@ -45,16 +45,16 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
             colorString = colorString.substring(colorString.length() - 8);
         }
 
-        int alpha = 255;  // make alpha 100%
         int red = Integer.parseInt(colorString.substring(0, 2), 16);
         int green = Integer.parseInt(colorString.substring(2, 4), 16);
         int blue = Integer.parseInt(colorString.substring(4, 6), 16);
+        int alpha = Integer.parseInt(colorString.substring(6, 8), 16);
 
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
     public static @NotNull String formatColorString(String colorString) {
-        return String.format("%8s", colorString).replace(' ', '0').toUpperCase();
+        return String.format("%-8s", colorString).replace(' ', '0').toUpperCase();
     }
 
     @Override

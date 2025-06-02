@@ -47,8 +47,8 @@ public class ColorBlockWidget extends Widget {
             currentColor = colorSupplier.getAsInt();
         }
         final int BORDER_COLOR = 0xFF000000;
-
-        graphics.fill(x, y, x + width, y + height, currentColor);
+        int opaqueColor = (currentColor & 0x00FFFFFF) | 0xFF000000;
+        graphics.fill(x, y, x + width, y + height, opaqueColor);
         DrawerHelper.drawBorder(graphics, x, y, width, height, BORDER_COLOR, 1);
     }
 }
