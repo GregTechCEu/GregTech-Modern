@@ -28,7 +28,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
 
     public void setColor(String color) {
         this.color = parseColor(color);
-        this.colorStr = color.toUpperCase();
+        this.colorStr = color.toUpperCase(Locale.ROOT);
     }
 
     public void setColor(int color) {
