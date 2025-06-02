@@ -496,22 +496,14 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
                 GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
 
+        @Getter
         private final String tooltip;
+        @Getter
         private final IGuiTexture icon;
 
         Permissions(String tooltip, IGuiTexture icon) {
             this.tooltip = tooltip;
             this.icon = icon;
-        }
-
-        @Override
-        public @NotNull String getTooltip() {
-            return tooltip;
-        }
-
-        @Override
-        public @NotNull IGuiTexture getIcon() {
-            return icon;
         }
     }
 }
