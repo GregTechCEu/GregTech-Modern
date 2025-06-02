@@ -38,7 +38,7 @@ public class ColorBlockWidget extends Widget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-         if (isMouseOverElement(mouseX, mouseY)) {
+        if (isMouseOverElement(mouseX, mouseY)) {
             playButtonClickSound();
             isShowAlpha = !isShowAlpha;
             return true;
