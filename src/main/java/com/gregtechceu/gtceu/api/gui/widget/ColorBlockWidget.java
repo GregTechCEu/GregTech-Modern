@@ -21,6 +21,7 @@ public class ColorBlockWidget extends Widget {
     private IntSupplier colorSupplier;
     @Getter
     private int currentColor;
+    private static boolean isShowAlpha = false;
 
     public ColorBlockWidget(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -35,6 +36,16 @@ public class ColorBlockWidget extends Widget {
         }
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+         if (isMouseOverElement(mouseX, mouseY)) {
+            playButtonClickSound();
+            isShowAlpha = !isShowAlpha;
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
@@ -47,7 +58,7 @@ public class ColorBlockWidget extends Widget {
             currentColor = colorSupplier.getAsInt();
         }
         final int BORDER_COLOR = 0xFF000000;
-        int opaqueColor = (currentColor & 0x00FFFFFF) | 0xFF000000;
+        int opaqueColor = isShowAlpha ? currentColor : (currentColor & 0x00FFFFFF) | 0xFF000000;
         graphics.fill(x, y, x + width, y + height, opaqueColor);
         DrawerHelper.drawBorder(graphics, x, y, width, height, BORDER_COLOR, 1);
     }
