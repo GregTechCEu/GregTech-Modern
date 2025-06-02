@@ -32,7 +32,8 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
     }
 
     public void setColor(int color) {
-        setColor(Integer.toHexString(color));
+        this.color = color;
+        this.colorStr = Integer.toHexString(color).toUpperCase(Locale.ROOT);
     }
 
     public static int parseColor(String colorString) {
