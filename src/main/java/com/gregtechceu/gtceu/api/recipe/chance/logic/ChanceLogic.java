@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.compress.harmony.pack200.IntList;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -164,9 +165,18 @@ public abstract class ChanceLogic {
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
             // Have to set up a system where all chances are set to be out of 10000
-            List<Integer> chancesOutOfTenThousand = new java.util.ArrayList<>(chancedEntries.stream()
-                    .map(orig -> (int) (((float) orig.chance / (float) orig.maxChance) * (float) getMaxChancedValue()))
-                    .toList());
+            IntList chances = new IntList();
+
+            for (Content orig : chancedEntries) {
+                if (orig.maxChance == 100) {
+                    chances.add(orig.chance);
+                } else {
+                    chances.add((int) ((orig.chance / (float) orig.maxChance) * getMaxChancedValue()));
+                }
+            }
+
+            int[] chancesOutOfTenThousand = chances.toArray();
+
             int chanceTotal = 0;
             for (int chance : chancesOutOfTenThousand) {
                 chanceTotal += chance;
@@ -175,14 +185,14 @@ public abstract class ChanceLogic {
             // Here, if the newly calculated chances don't add up to 10000, they're renormalized
             if (chanceTotal != getMaxChancedValue()) {
                 int chanceTotalDecremented = getMaxChancedValue();
-                for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
-                    int newChance = (int) (chancesOutOfTenThousand.get(i) *
+                for (int i = 0; i < chancesOutOfTenThousand.length; i++) {
+                    int newChance = (int) (chancesOutOfTenThousand[i] *
                             ((float) getMaxChancedValue() / (float) chanceTotal));
                     // last chance ends up being set to the remainder in case things don't line up
-                    if (i == chancesOutOfTenThousand.size() - 1) {
-                        chancesOutOfTenThousand.set(i, chanceTotalDecremented);
+                    if (i == chancesOutOfTenThousand.length - 1) {
+                        chancesOutOfTenThousand[i] = chanceTotalDecremented;
                     } else {
-                        chancesOutOfTenThousand.set(i, newChance);
+                        chancesOutOfTenThousand[i] = newChance;
                     }
                     chanceTotalDecremented -= newChance;
                 }
@@ -190,8 +200,8 @@ public abstract class ChanceLogic {
 
             // Finally, generate a new Content list with the changes
             List<Content> normalizedEntries = new ArrayList<>();
-            for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
-                normalizedEntries.add(new Content(chancedEntries.get(i).content, chancesOutOfTenThousand.get(i),
+            for (int i = 0; i < chancesOutOfTenThousand.length; i++) {
+                normalizedEntries.add(new Content(chancedEntries.get(i).content, chancesOutOfTenThousand[i],
                         getMaxChancedValue(), chancedEntries.get(i).tierChanceBoost));
             }
 
