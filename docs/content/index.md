@@ -25,4 +25,4 @@ You can download an offline version of this wiki here:
 ## Want to Contribute?
 
 If you want to contribute to this documentation site, feel free to read the instructions and open a pull request on
-[its GitHub repository](https://github.com/GregTechCEu/GregTech-Modern/tree/1.20.1/docs).
+the [GitHub repository](https://github.com/GregTechCEu/GregTech-Modern/tree/1.20.1/docs).
