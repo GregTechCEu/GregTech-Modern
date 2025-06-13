@@ -523,8 +523,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
             var tips = cover.sideTips(player, pos, state, toolTypes, side);

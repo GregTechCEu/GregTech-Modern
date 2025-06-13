@@ -366,8 +366,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
