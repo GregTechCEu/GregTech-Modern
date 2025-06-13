@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,13 +82,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Override
     public void onArmorTick(ItemStack stack, Level level, Player player) {
-        super.onArmorTick(stack, level, player);
         this.armorLogic.onArmorTick(level, player, stack);
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return super.getMaxDamage(stack);
     }
 
     @Override
@@ -111,9 +104,23 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
-    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage,
-                            EquipmentSlot slot) {
-        armorLogic.damageArmor(entity, stack, source, damage, slot);
+    // Some trickery to always receive damage events without ever actually breaking the armor
+    @Override
+    public boolean canBeDepleted() {
+        return true;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {}
+
+    @Override
+    public boolean isDamaged(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        return armorLogic.damageArmor(entity, stack, entity.getLastDamageSource(), amount, this.getEquipmentSlot());
     }
 
     @Override

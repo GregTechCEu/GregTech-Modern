@@ -8,12 +8,15 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -41,7 +44,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle,
-                           IComponentCapability {
+                           IComponentCapability, IItemDecoratorComponent {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -181,14 +184,16 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
-        if (electricItem != null && electricItem.canProvideChargeExternally()) {
-            addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
-                    electricItem.getTier());
+        if (electricItem == null) return;
+        addCurrentChargeTooltip(tooltipComponents, electricItem.getCharge(), electricItem.getMaxCharge(),
+                electricItem.getTier(), electricItem.canProvideChargeExternally());
+        if (electricItem.canProvideChargeExternally()) {
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
         }
     }
 
-    public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier) {
+    public static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier,
+                                               boolean showTimeRemaining) {
         double percentage = (double) currentCharge / (double) maxCharge;
 
         Instant start = Instant.now();
@@ -200,38 +205,37 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         long maxChargeTime;
         String unit;
 
-        if (durationCurrent.getSeconds() <= 60) {
-            maxChargeTime = durationMax.getSeconds();
-            currentChargeTime = durationCurrent.toSeconds();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
-        } else if (durationCurrent.toMinutes() <= 60) {
-            maxChargeTime = durationMax.toMinutes();
-            currentChargeTime = durationCurrent.toMinutes();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
-        } else {
-            maxChargeTime = durationMax.toHours();
-            currentChargeTime = durationCurrent.toHours();
-            unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
+        ChatFormatting color = ChatFormatting.RED;
+        if (percentage > 0.5) {
+            color = ChatFormatting.GREEN;
+        } else if (percentage > 0.3) {
+            color = ChatFormatting.YELLOW;
         }
 
-        if (percentage > 0.5) {
-            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.0",
+        if (showTimeRemaining) {
+            if (durationCurrent.getSeconds() <= 60) {
+                maxChargeTime = durationMax.getSeconds();
+                currentChargeTime = durationCurrent.toSeconds();
+                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
+            } else if (durationCurrent.toMinutes() <= 60) {
+                maxChargeTime = durationMax.toMinutes();
+                currentChargeTime = durationCurrent.toMinutes();
+                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
+            } else {
+                maxChargeTime = durationMax.toHours();
+                currentChargeTime = durationCurrent.toHours();
+                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
+            }
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
                     GTValues.VNF[tier],
-                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
-                    .withStyle(ChatFormatting.GREEN));
-        } else if (percentage > 0.3) {
-            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.1",
-                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                    GTValues.VNF[tier],
-                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
-                    .withStyle(ChatFormatting.YELLOW));
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                    unit)
+                    .withStyle(color));
         } else {
-            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed.2",
+            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                    GTValues.VNF[tier],
-                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime), unit)
-                    .withStyle(ChatFormatting.RED));
+                    GTValues.VNF[tier]).withStyle(color));
         }
     }
 
@@ -261,5 +265,15 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     public static ElectricStats createBattery(long maxCharge, int tier, boolean rechargeable) {
         return ElectricStats.create(maxCharge, tier, rechargeable, true);
+    }
+
+    @Override
+    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        if (electricItem != null) {
+            return ToolChargeBarRenderer.renderElectricBar(guiGraphics, electricItem.getCharge(),
+                    electricItem.getMaxCharge(), xOffset, yOffset, stack.isBarVisible());
+        }
+        return false;
     }
 }

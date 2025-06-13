@@ -25,11 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/5/25
- * @implNote PumpHatchPartRenderer
- */
 public class PumpHatchPartRenderer extends MachineRenderer {
 
     public static final ResourceLocation PIPE_OUT = GTCEu.id("block/overlay/machine/overlay_pipe_out");

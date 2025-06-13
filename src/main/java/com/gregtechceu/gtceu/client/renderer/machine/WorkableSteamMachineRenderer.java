@@ -25,11 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SteamBoilerRenderer
- */
 public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
 
     public static final ResourceLocation VENT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_steam_vent");
@@ -44,18 +39,13 @@ public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
-                              ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, side, rand,
-                modelFacing, modelState, modelData, renderType);
-        var upwardsFacing = Direction.NORTH;
-        if (machine != null && machine.allowExtendedFacing()) {
-            upwardsFacing = machine.getUpwardsFacing();
-        }
+                              ModelState modelState) {
+        super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
+            quads.addAll(overlayModel.bakeQuads(side, modelState, workable.isActive(),
                     workable.isWorkingEnabled()));
         } else {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
+            quads.addAll(overlayModel.bakeQuads(side, modelState, false, false));
         }
         if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
             if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {

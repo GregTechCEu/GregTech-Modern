@@ -8,11 +8,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.stream.Stream;
 
-/**
- * @author KilaBash
- * @date 2023/7/26
- * @implNote IngredientAccessor
- */
 @Mixin(Ingredient.class)
 public interface IngredientAccessor {
 

@@ -15,11 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- * @implNote TieredHullMachineRenderer
- */
 public class TieredHullMachineRenderer extends MachineRenderer {
 
     public TieredHullMachineRenderer(int tier, ResourceLocation modelLocation) {

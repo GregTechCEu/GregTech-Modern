@@ -10,11 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote events are fired for machine
- */
 public interface IMachineLife extends IMachineFeature {
 
     /**

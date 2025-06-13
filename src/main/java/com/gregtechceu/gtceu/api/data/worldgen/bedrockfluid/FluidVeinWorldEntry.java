@@ -10,11 +10,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/7/11
- * @implNote FluidVeinWorldEntry
- */
 public class FluidVeinWorldEntry {
 
     @Nullable

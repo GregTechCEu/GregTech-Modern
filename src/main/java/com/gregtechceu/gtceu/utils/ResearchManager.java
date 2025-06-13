@@ -16,14 +16,15 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,16 +68,12 @@ public final class ResearchManager {
      * @return the research id
      */
     @Nullable
-    public static Pair<GTRecipeType, String> readResearchId(@NotNull ItemStack stack) {
+    public static ResearchItem readResearchId(@NotNull ItemStack stack) {
         CompoundTag compound = stack.getTag();
         if (!hasResearchTag(compound)) return null;
 
         CompoundTag researchCompound = compound.getCompound(RESEARCH_NBT_TAG);
-        String researchId = researchCompound.getString(RESEARCH_ID_NBT_TAG);
-        ResourceLocation researchRecipeType = ResourceLocation
-                .tryParse(researchCompound.getString(RESEARCH_TYPE_NBT_TAG));
-        return researchId.isEmpty() || researchRecipeType == null ? null :
-                Pair.of(GTRegistries.RECIPE_TYPES.get(researchRecipeType), researchId);
+        return ResearchItem.CODEC.parse(NbtOps.INSTANCE, researchCompound).result().orElse(null);
     }
 
     /**
@@ -154,6 +151,16 @@ public final class ResearchManager {
                     .researchScan(true)
                     .save(provider);
         }
+    }
+
+    public record ResearchItem(@NotNull String researchId, @NotNull GTRecipeType recipeType) {
+
+        // spotless:off
+        public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
+                GTRegistries.RECIPE_TYPES.codec().fieldOf("research_type").forGetter(ResearchItem::recipeType)
+        ).apply(instance, ResearchItem::new));
+        // spotless:on
     }
 
     public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomRecipeLogic {

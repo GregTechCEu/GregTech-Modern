@@ -13,11 +13,6 @@ import net.minecraft.world.level.block.Block;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/2/27
- * @implNote MaterialBlockRenderer
- */
 public class MaterialBlockRenderer {
 
     public static final String LAYER_2_SUFFIX = "_layer2";

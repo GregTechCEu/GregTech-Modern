@@ -22,11 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote WorkableCasingMachineRenderer
- */
 public class WorkableCasingMachineRenderer extends MachineRenderer {
 
     protected final WorkableOverlayModel overlayModel;
@@ -47,18 +42,27 @@ public class WorkableCasingMachineRenderer extends MachineRenderer {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
-                              ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, side, rand,
-                modelFacing, modelState, modelData, renderType);
-        var upwardsFacing = Direction.NORTH;
-        if (machine != null && machine.allowExtendedFacing()) {
-            upwardsFacing = machine.getUpwardsFacing();
-        }
+                              ModelState modelState) {
+        super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof IWorkable workable) {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, workable.isActive(),
-                    workable.isWorkingEnabled()));
+            overlayModel.bakeQuads(side, modelState, workable.isActive(), workable.isWorkingEnabled())
+                    .forEach(quad -> quads.add(Quad.from(quad, reBakeOverlayQuadsOffset()).rebake()));
         } else {
-            quads.addAll(overlayModel.bakeQuads(side, frontFacing, upwardsFacing, false, false));
+            overlayModel.bakeQuads(side, modelState, false, false)
+                    .forEach(quad -> quads.add(Quad.from(quad, reBakeOverlayQuadsOffset()).rebake()));
         }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
+        super.onPrepareTextureAtlas(atlasName, register);
+        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+            overlayModel.registerTextureAtlas(register);
+        }
+    }
+
+    public float reBakeOverlayQuadsOffset() {
+        return 0.004f;
     }
 }

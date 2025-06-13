@@ -20,14 +20,9 @@ import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote PartRenderer
- */
+@SuppressWarnings("removal")
 public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer implements IPartRenderer {
 
     protected IModelRenderer overlayModel;
@@ -45,19 +40,11 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState, modelData,
                 renderType);
         // expand the overlay quads ever so slightly to combat z-fighting.
-        var overlayQuads = new LinkedList<>(overlayModel.getRotatedModel(frontFacing)
-                .getQuads(definition.defaultBlockState(), side, rand));
-        if (machine != null) {
-            renderCovers(overlayQuads, side, rand, machine.getCoverContainer(), modelFacing, machine.getPos(),
-                    machine.getLevel(),
-                    modelState);
-        }
-        quads.addAll(overlayQuads.stream()
-                .map(quad -> Quad.from(quad, this.reBakeOverlayQuadsOffset()).rebake())
-                .toList());
+        overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand)
+                .forEach(quad -> quads.add(Quad.from(quad, overlayQuadsOffset()).rebake()));
     }
 
-    public float reBakeOverlayQuadsOffset() {
-        return 0.002f;
+    public float overlayQuadsOffset() {
+        return 0.004f;
     }
 }

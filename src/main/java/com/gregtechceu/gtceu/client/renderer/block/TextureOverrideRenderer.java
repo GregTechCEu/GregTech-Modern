@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.SpriteOverrider;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
@@ -14,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
-import com.mojang.math.Transformation;
 import lombok.Getter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -47,8 +48,8 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
     protected Map<String, ResourceLocation> override;
     @Nullable
     protected Supplier<Map<String, ResourceLocation>> overrideSupplier;
-    protected Transformation transformation = null;
-    protected BakedModel cachedModel = null;
+    @OnlyIn(Dist.CLIENT)
+    protected Map<ModelState, BakedModel> bakedModelCache;
 
     public TextureOverrideRenderer(ResourceLocation model, @NotNull Map<String, ResourceLocation> override) {
         this.modelLocation = model;
@@ -74,6 +75,14 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
         if (GTCEu.isClientSide()) {
             registerEvent();
         }
+    }
+
+    @Override
+    public void initRenderer() {
+        if (GTCEu.isClientSide()) {
+            this.bakedModelCache = new ConcurrentHashMap<>();
+        }
+        super.initRenderer();
     }
 
     public void setTextureOverride(Map<String, ResourceLocation> override) {
@@ -123,13 +132,12 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public BakedModel getRotatedModel(ModelState rotation) {
-        if (transformation == null || !transformation.equals(rotation.getRotation())) {
-            cachedModel = getModel()
-                    .bake(ModelFactory.getModeBaker(), new SpriteOverrider(override), rotation, modelLocation);
-            transformation = rotation.getRotation();
-        }
-        return cachedModel;
+    public BakedModel getRotatedModel(ModelState modelState) {
+        return bakedModelCache.computeIfAbsent(modelState, state -> getModel().bake(
+                ModelFactory.getModeBaker(),
+                new SpriteOverrider(override),
+                modelState,
+                modelLocation));
     }
 
     public BakedModel getBaseModel() {
@@ -145,7 +153,32 @@ public abstract class TextureOverrideRenderer extends BaseBakedModel {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
+    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
+        super.onPrepareTextureAtlas(atlasName, register);
+        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
+            if (bakedModelCache != null) {
+                bakedModelCache.clear();
+            }
+            if (overrideSupplier != null) override = overrideSupplier.get();
+            for (ResourceLocation value : override.values()) {
+                register.accept(value);
+            }
+        }
+    }
+
+    @Override
     public void onAdditionalModel(Consumer<ResourceLocation> consumer) {
         super.onAdditionalModel(consumer);
+    }
+
+    @Override
+    public void updateModelWithoutReloadingResource(ResourceLocation modelLocation) {
+        super.updateModelWithoutReloadingResource(modelLocation);
+        if (LDLib.isClient()) {
+            if (bakedModelCache != null) {
+                bakedModelCache.clear();
+            }
+        }
     }
 }

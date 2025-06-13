@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -16,12 +18,15 @@ import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -36,14 +41,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- * @implNote QuantumChestRenderer
- */
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     private static final float MIN = 0.16f;
@@ -59,54 +62,54 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
         super(tier, modelLocation);
     }
 
-    //@Override
-    //@OnlyIn(Dist.CLIENT)
-    //public boolean hasTESR(BlockEntity blockEntity) {
-    //    return true;
-    //}
-    //
-    //@Override
-    //public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
-    //                       MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
-    //    if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
-    //    model = getItemBakedModel();
-    //    if (model != null && stack.hasTag()) {
-    //        poseStack.pushPose();
-    //        model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
-    //        poseStack.translate(-0.5D, -0.5D, -0.5D);
-    //
-    //        FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
-    //        long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-    //        if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-    //        long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
-    //        // Don't need to handle locked fluids here since they don't get saved to the item
-    //        renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, maxAmount, FluidStack.EMPTY,
-    //                stack.is(CREATIVE_FLUID_ITEM));
-    //
-    //        poseStack.popPose();
-    //    }
-    //    super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
-    //}
-    //
-    //@Override
-    //@OnlyIn(Dist.CLIENT)
-    //public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
-    //                   int combinedLight, int combinedOverlay) {
-    //    if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-    //            machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-    //        poseStack.pushPose();
-    //        var frontFacing = machine.getFrontFacing();
-    //        var upwardFacing = machine.getUpwardsFacing();
-    //        poseStack.translate(.5, .5, .5);
-    //        rotateMatrix(poseStack.last().pose(),
-    //                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
-    //                frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
-    //        poseStack.translate(-.5, -.5, -.5);
-    //        renderTank(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(),
-    //                machine.getMaxAmount(), machine.getLockedFluid(), machine instanceof CreativeTankMachine);
-    //        poseStack.popPose();
-    //    }
-    //}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean hasTESR(BlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
+                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+        if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
+        model = getItemBakedModel();
+        if (model != null && stack.hasTag()) {
+            poseStack.pushPose();
+            model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
+            poseStack.translate(-0.5D, -0.5D, -0.5D);
+
+            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
+            // Don't need to handle locked fluids here since they don't get saved to the item
+            renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, maxAmount, FluidStack.EMPTY,
+                    stack.is(CREATIVE_FLUID_ITEM));
+
+            poseStack.popPose();
+        }
+        super.renderItem(stack, transformType, leftHand, poseStack, buffer, combinedLight, combinedOverlay, model);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
+                       int combinedLight, int combinedOverlay) {
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
+                machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
+            poseStack.pushPose();
+            var frontFacing = machine.getFrontFacing();
+            var upwardFacing = machine.getUpwardsFacing();
+            poseStack.translate(.5, .5, .5);
+            rotateMatrix(poseStack.last().pose(),
+                    upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
+                    frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
+            poseStack.translate(-.5, -.5, -.5);
+            renderTank(poseStack, buffer, frontFacing, machine.getStored(), machine.getStoredAmount(),
+                    machine.getMaxAmount(), machine.getLockedFluid(), machine instanceof CreativeTankMachine);
+            poseStack.popPose();
+        }
+    }
 
     @OnlyIn(Dist.CLIENT)
     public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing, FluidStack stored,

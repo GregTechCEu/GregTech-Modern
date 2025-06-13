@@ -63,20 +63,19 @@ import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
+import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharSet;
+import it.unimi.dsi.fastutil.chars.CharSets;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote ToolHelper
- */
 public class ToolHelper {
 
     public static final String TOOL_TAG_KEY = "GT.Tool";
@@ -127,33 +126,27 @@ public class ToolHelper {
     public static final String RELOCATE_MOB_DROPS_KEY = "RelocateMobDrops";
 
     // Crafting Symbols
-    private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
+    private static final Char2ReferenceMap<GTToolType> symbols = new Char2ReferenceOpenHashMap<>();
 
     private ToolHelper() {/**/}
 
     /**
-     * @return finds the registered crafting symbol with the tool
-     */
-    public static Character getSymbolFromTool(GTToolType tool) {
-        return symbols.inverse().get(tool);
-    }
-
-    /**
      * @return finds the registered tool with the crafting symbol
      */
-    public static GTToolType getToolFromSymbol(Character symbol) {
+    public static GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
     }
 
-    public static Set<Character> getToolSymbols() {
-        return symbols.keySet();
+    @UnmodifiableView
+    public static CharSet getToolSymbols() {
+        return CharSets.unmodifiable(symbols.keySet());
     }
 
     /**
      * Registers the tool against a crafting symbol, this is used in
      * {@link com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper}
      */
-    public static void registerToolSymbol(Character symbol, GTToolType tool) {
+    public static void registerToolSymbol(char symbol, GTToolType tool) {
         symbols.put(symbol, tool);
     }
 
@@ -249,9 +242,9 @@ public class ToolHelper {
     public static ItemStack getAndSetToolData(GTToolType toolType, Material material, int maxDurability,
                                               int harvestLevel,
                                               float toolSpeed, float attackDamage) {
-        var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
-        if (entry == null) return ItemStack.EMPTY;
-        ItemStack stack = entry.get().getRaw();
+        var tool = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
+        if (tool == null) return ItemStack.EMPTY;
+        ItemStack stack = tool.get().getRaw();
         stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
         CompoundTag toolTag = getToolTag(stack);
         toolTag.putInt(MAX_DURABILITY_KEY, maxDurability);
@@ -260,11 +253,12 @@ public class ToolHelper {
         toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
-            toolProperty.getEnchantments().forEach((enchantment, level) -> {
-                if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    stack.enchant(enchantment, level);
+            for (var entry : Object2IntMaps.fastIterable(toolProperty.getEnchantments())) {
+                var enchantment = entry.getKey();
+                if (tool.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
+                    stack.enchant(enchantment, entry.getIntValue());
                 }
-            });
+            }
         }
         return stack;
     }

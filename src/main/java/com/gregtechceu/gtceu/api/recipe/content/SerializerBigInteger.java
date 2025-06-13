@@ -10,11 +10,6 @@ import com.mojang.serialization.Lifecycle;
 
 import java.math.BigInteger;
 
-/**
- * @author KilaBash
- * @date 2022/06/22
- * @implNote SerializerBigInteger
- */
 public class SerializerBigInteger implements IContentSerializer<BigInteger> {
 
     public static final Codec<BigInteger> CODEC = Codec.STRING.comapFlatMap(str -> {

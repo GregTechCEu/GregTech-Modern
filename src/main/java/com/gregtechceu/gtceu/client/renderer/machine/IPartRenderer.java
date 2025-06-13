@@ -18,11 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote IPartRenderer
- */
 public interface IPartRenderer {
 
     /**
@@ -45,8 +40,8 @@ public interface IPartRenderer {
                             modelState);
                     return true;
                 }
-                renderer.renderBaseModel(quads, block.definition, controller.self(), frontFacing, side,
-                        rand, modelData, renderType);
+                machineRenderer.renderBaseModel(quads, block.definition, controller.self(), frontFacing, side,
+                        modelState, rand, modelData, renderType);
                 return true;
             }
         }

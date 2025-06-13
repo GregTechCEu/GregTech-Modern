@@ -11,11 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
-/**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote TagUtil
- */
 public class TagUtil {
 
     public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {

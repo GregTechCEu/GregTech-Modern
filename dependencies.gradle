@@ -48,8 +48,10 @@ dependencies {
     // Teams
     modCompileOnly(forge.ftblibrary)
     modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftbquests)
     modCompileOnly(forge.resourcefullib)
     modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.heracles)
 
     // Maps
     modCompileOnly(forge.ftbchunks)
@@ -64,7 +66,7 @@ dependencies {
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.kotlinforforge)
+    modRuntimeOnly(forge.spark)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modRuntimeOnly(forge.emi)
@@ -83,6 +85,10 @@ dependencies {
 
     modExtraRuntimeOnly(forge.ftblibrary)
     modExtraRuntimeOnly(forge.ftbteams)
+    modExtraRuntimeOnly(forge.ftbquests)
+
+    modExtraRuntimeOnly(forge.heracles)
+    modExtraRuntimeOnly(forge.resourcefullib)
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
@@ -92,7 +98,7 @@ dependencies {
     modExtraRuntimeOnly(forge.gamestages)
     modExtraRuntimeOnly(forge.bookshelf)
 
-    modExtraRuntimeOnly(forge.spark)
+    modExtraRuntimeOnly(forge.kotlinforforge)
     modExtraRuntimeOnly(forge.observable)
     //////////////////////////
 

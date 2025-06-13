@@ -12,10 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/3/2
- */
 public interface IToolGridHighlight {
 
     default boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,

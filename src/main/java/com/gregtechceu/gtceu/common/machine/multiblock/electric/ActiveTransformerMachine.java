@@ -28,13 +28,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
@@ -84,7 +84,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         // capture all energy containers
         List<IEnergyContainer> powerInput = new ArrayList<>();
         List<IEnergyContainer> powerOutput = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
 
         for (IMultiPart part : getPrioritySortedParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
@@ -122,7 +123,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
 
     @NotNull
     private List<IMultiPart> getPrioritySortedParts() {
-        return getParts().stream().sorted(Comparator.comparing(part -> {
+        return getParts().stream().sorted(Comparator.comparingInt(part -> {
             if (part instanceof MetaMachine partMachine) {
                 Block partBlock = partMachine.getBlockState().getBlock();
 

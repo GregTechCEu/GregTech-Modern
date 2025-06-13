@@ -23,11 +23,6 @@ import lombok.Getter;
 
 import java.util.Map;
 
-/**
- * @author Irgendwer01
- * @date 2023/11/4
- * @implNote ShapedEnergyTransferRecipe
- */
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {

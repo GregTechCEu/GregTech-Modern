@@ -11,9 +11,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.server.level.ServerLevel;
 
 /**
- * @author screret
- * @date 2024/6/9
- * @apiNote common interface for localized hazard (e.g. radiation) emitters like nuclear reactors.
+ * common interface for localized hazard (e.g. radiation) emitters like nuclear reactors.
  */
 public interface ILocalizedHazardEmitter extends IMachineFeature {
 

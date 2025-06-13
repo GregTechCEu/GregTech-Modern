@@ -51,6 +51,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -617,7 +618,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
-        return outputItems(IntProviderIngredient.create(SizedIngredient.create(output), intProvider));
+        return outputItems(IntProviderIngredient.of(SizedIngredient.create(output), intProvider));
     }
 
     public GTRecipeBuilder outputItemsRanged(Item input, IntProvider intProvider) {
@@ -1014,7 +1015,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder addData(String key, Float data) {
+    public GTRecipeBuilder addData(String key, float data) {
         this.data.putFloat(key, data);
         return this;
     }
@@ -1124,6 +1125,22 @@ public class GTRecipeBuilder {
         return daytime(false);
     }
 
+    public GTRecipeBuilder heraclesQuest(String questId, boolean isReverse) {
+        if (!GTCEu.Mods.isHeraclesLoaded()) {
+            GTCEu.LOGGER.error("Heracles not loaded!");
+            return this;
+        }
+        if (questId.isEmpty()) {
+            GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
+            return this;
+        }
+        return addCondition(new HeraclesQuestCondition(isReverse, questId));
+    }
+
+    public GTRecipeBuilder heraclesQuest(String questId) {
+        return heraclesQuest(questId, false);
+    }
+
     public GTRecipeBuilder gameStage(String stageName) {
         return gameStage(stageName, false);
     }
@@ -1134,6 +1151,27 @@ public class GTRecipeBuilder {
             return this;
         }
         return addCondition(new GameStageCondition(isReverse, stageName));
+    }
+
+    public GTRecipeBuilder ftbQuest(String questId, boolean isReverse) {
+        if (!GTCEu.Mods.isFTBQuestsLoaded()) {
+            GTCEu.LOGGER.error("FTBQuests is not loaded!");
+            return this;
+        }
+        if (questId.isEmpty()) {
+            GTCEu.LOGGER.error("Quest ID cannot be empty for recipe {}", this.id);
+            return this;
+        }
+        long qID = QuestObjectBase.parseCodeString(questId);
+        if (qID == 0L) {
+            GTCEu.LOGGER.error("Quest {} not found for recipe {}", questId, this.id);
+            return this;
+        }
+        return addCondition(new FTBQuestCondition(isReverse, qID));
+    }
+
+    public GTRecipeBuilder ftbQuest(String questId) {
+        return ftbQuest(questId, false);
     }
 
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
@@ -1366,7 +1404,7 @@ public class GTRecipeBuilder {
         consumer.accept(build());
     }
 
-    public void addOutputMaterialInfo() {
+    private void addOutputMaterialInfo() {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {

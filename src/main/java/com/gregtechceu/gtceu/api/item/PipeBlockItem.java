@@ -25,11 +25,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/6/23
- * @implNote PipeBlockItem
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class PipeBlockItem extends BlockItem {

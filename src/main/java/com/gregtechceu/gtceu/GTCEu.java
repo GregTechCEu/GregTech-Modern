@@ -185,6 +185,14 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_FTB_TEAMS);
         }
 
+        public static boolean isHeraclesLoaded() {
+            return isModLoaded(GTValues.MODID_HERACLES);
+        }
+
+        public static boolean isFTBQuestsLoaded() {
+            return isModLoaded(GTValues.MODID_FTB_QUEST);
+        }
+
         public static boolean isArgonautsLoaded() {
             return isModLoaded(GTValues.MODID_ARGONAUTS);
         }

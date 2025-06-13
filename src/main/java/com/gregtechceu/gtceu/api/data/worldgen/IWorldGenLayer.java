@@ -10,11 +10,6 @@ import com.mojang.serialization.Codec;
 
 import java.util.Set;
 
-/**
- * @author Screret
- * @date 2023/6/9
- * @implNote IWorldGenLayer
- */
 public interface IWorldGenLayer extends StringRepresentable {
 
     Codec<IWorldGenLayer> CODEC = ExtraCodecs.stringResolverCodec(StringRepresentable::getSerializedName,

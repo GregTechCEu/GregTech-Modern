@@ -47,10 +47,10 @@ public class WorldAcceleratorRenderer extends TieredHullMachineRenderer {
                 renderType);
         if (machine instanceof WorldAcceleratorMachine worldAcceleratorMachine) {
             WorkableOverlayModel model = getModeModel(worldAcceleratorMachine.isRandomTickMode());
-            quads.addAll(model.bakeQuads(side, frontFacing, Direction.NORTH, worldAcceleratorMachine.isActive(),
+            quads.addAll(model.bakeQuads(side, modelState, worldAcceleratorMachine.isActive(),
                     worldAcceleratorMachine.isWorkingEnabled()));
         } else {
-            quads.addAll(getModeModel(true).bakeQuads(side, frontFacing, Direction.NORTH, false, false));
+            quads.addAll(getModeModel(true).bakeQuads(side, modelState, false, false));
         }
     }
 }

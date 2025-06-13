@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -162,10 +162,10 @@ public class GTMaterials {
         block.setIgnored(Lapotron);
         block.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
 
-        rock.setIgnored(Marble, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
+        rock.setIgnored(Marble, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
         rock.setIgnored(Granite, Blocks.GRANITE);
         rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
+        rock.setIgnored(GraniteRed, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
         rock.setIgnored(Andesite, Blocks.ANDESITE);
         rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
         rock.setIgnored(Diorite, Blocks.DIORITE);
@@ -179,8 +179,8 @@ public class GTMaterials {
         rock.setIgnored(Basalt, Blocks.BASALT);
         rock.setIgnored(Blackstone, Blocks.BLACKSTONE);
         block.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
-        block.setIgnored(Concrete, SupplierMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
+        block.setIgnored(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        block.setIgnored(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
@@ -273,8 +273,12 @@ public class GTMaterials {
     @NotNull
     public static Material get(String name) {
         var mat = GTCEuAPI.materialManager.getMaterial(name);
-        // mat could be null here due to the registry grabbing a material that isn't in the map
-        return mat == null ? GTMaterials.NULL : mat;
+        // material could be null here due to the registry grabbing a material that isn't in the map
+        if (mat == null) {
+            GTCEu.LOGGER.warn("{} is not a known Material", name);
+            return GTMaterials.NULL;
+        }
+        return mat;
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
@@ -663,6 +667,7 @@ public class GTMaterials {
     public static Material DiethylenetriaminepentaaceticAcid;
     public static Material SodiumNitrite;
     public static Material HydrogenPeroxide;
+    public static Material IlmeniteSlag;
 
     /**
      * Organic chemistry
@@ -885,6 +890,11 @@ public class GTMaterials {
     public static Material PCBCoolant;
     public static Material Sculk;
     public static Material Wax;
+    public static Material BauxiteSlurry;
+    public static Material CrackedBauxiteSlurry;
+    public static Material BauxiteSludge;
+    public static Material DecalcifiedBauxiteSludge;
+    public static Material BauxiteSlag;
 
     /**
      * Second Degree Compounds

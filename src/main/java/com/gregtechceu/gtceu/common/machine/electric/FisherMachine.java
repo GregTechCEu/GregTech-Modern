@@ -69,11 +69,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author h3tr
- * @date 2023/7/13
- * @implNote FisherMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FisherMachine extends TieredEnergyMachine
@@ -536,7 +531,7 @@ public class FisherMachine extends TieredEnergyMachine
                 // remove the output facing when wrenching the current one to disable it
                 setOutputFacingItems(null);
             }
-
+            playerIn.swing(hand);
             return InteractionResult.CONSUME;
         }
 

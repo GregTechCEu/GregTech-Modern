@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,10 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -46,8 +42,7 @@ import static com.gregtechceu.gtceu.data.pack.GTDynamicDataPack.writeJson;
 public class GTDynamicResourcePack implements PackResources {
 
     protected static final ObjectSet<String> CLIENT_DOMAINS = new ObjectOpenHashSet<>();
-    @ApiStatus.Internal
-    public static final ConcurrentMap<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
+    protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
 
     private final String name;
 
@@ -65,7 +60,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void clearClient() {
-        DATA.clear();
+        CONTENTS.clearData();
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
@@ -74,7 +69,7 @@ public class GTDynamicResourcePack implements PackResources {
             Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
             writeJson(l, null, parent, obj);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        CONTENTS.addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -87,7 +82,7 @@ public class GTDynamicResourcePack implements PackResources {
             Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
             writeJson(l, null, parent, obj);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        CONTENTS.addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -100,7 +95,7 @@ public class GTDynamicResourcePack implements PackResources {
             Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
             writeJson(l, null, parent, stateJson);
         }
-        DATA.put(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
+        CONTENTS.addToData(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
@@ -113,7 +108,7 @@ public class GTDynamicResourcePack implements PackResources {
             Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
             writeByteArray(l, null, parent, data);
         }
-        DATA.put(l, data);
+        CONTENTS.addToData(l, data);
     }
 
     public static void addItemTexture(ResourceLocation loc, byte[] data) {
@@ -122,7 +117,7 @@ public class GTDynamicResourcePack implements PackResources {
             Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/assets");
             writeByteArray(l, null, parent, data);
         }
-        DATA.put(l, data);
+        CONTENTS.addToData(l, data);
     }
 
     @ApiStatus.Internal
@@ -153,8 +148,7 @@ public class GTDynamicResourcePack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {
-            if (DATA.containsKey(location))
-                return () -> new ByteArrayInputStream(DATA.get(location));
+            return CONTENTS.getResource(location);
         }
         return null;
     }
@@ -162,15 +156,7 @@ public class GTDynamicResourcePack implements PackResources {
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
         if (packType == PackType.CLIENT_RESOURCES) {
-            if (!path.endsWith("/")) path += "/";
-            final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath))
-                    .forEach((id) -> {
-                        IoSupplier<InputStream> resource = this.getResource(packType, id);
-                        if (resource != null) {
-                            resourceOutput.accept(id, resource);
-                        }
-                    });
+            CONTENTS.listResources(namespace, path, resourceOutput);
         }
     }
 
