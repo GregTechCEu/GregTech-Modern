@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ActiveBlock extends AppearanceBlock {
 
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty ACTIVE = GTBlockStateProperties.ACTIVE;
 
     public ActiveBlock(Properties properties) {
         super(properties);

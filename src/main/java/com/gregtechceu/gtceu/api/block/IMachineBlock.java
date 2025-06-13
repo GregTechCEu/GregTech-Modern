@@ -15,13 +15,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
 import org.jetbrains.annotations.Nullable;
 
 public interface IMachineBlock extends EntityBlock {
-
-    DirectionProperty UPWARDS_FACING_PROPERTY = DirectionProperty.create("upwards_facing", Direction.Plane.HORIZONTAL);
 
     default Block self() {
         return (Block) this;

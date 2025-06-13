@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.client.renderer.block.LampRenderer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
@@ -37,9 +38,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LampBlock extends Block implements IBlockRendererProvider {
 
-    public static final BooleanProperty BLOOM = BooleanProperty.create("bloom");
+    public static final BooleanProperty BLOOM = GTBlockStateProperties.BLOOM;
     public static final BooleanProperty LIGHT = BlockStateProperties.LIT;
-    public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
+    public static final BooleanProperty INVERTED = GTBlockStateProperties.INVERTED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public static final String TAG_INVERTED = "inverted";
@@ -60,7 +61,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
         this.color = color;
         this.bordered = bordered;
         registerDefaultState(defaultBlockState()
-                .setValue(BLOOM, true)
+                .setValue(GTBlockStateProperties.BLOOM, true)
                 .setValue(LIGHT, true)
                 .setValue(INVERTED, false)
                 .setValue(POWERED, false));
@@ -82,7 +83,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
     }
 
     public static boolean isBloomEnabled(BlockState state) {
-        return state.getValue(BLOOM);
+        return state.getValue(GTBlockStateProperties.BLOOM);
     }
 
     public static boolean isInverted(CompoundTag tag) {
@@ -99,7 +100,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
 
     public CompoundTag getTagFromState(BlockState state) {
         CompoundTag tag = new CompoundTag();
-        tag.putBoolean(TAG_BLOOM, state.getValue(BLOOM));
+        tag.putBoolean(TAG_BLOOM, state.getValue(GTBlockStateProperties.BLOOM));
         tag.putBoolean(TAG_LIT, state.getValue(LIGHT));
         tag.putBoolean(TAG_INVERTED, state.getValue(INVERTED));
         return tag;
@@ -117,7 +118,7 @@ public class LampBlock extends Block implements IBlockRendererProvider {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(INVERTED, BLOOM, LIGHT, POWERED));
+        super.createBlockStateDefinition(builder.add(INVERTED, GTBlockStateProperties.BLOOM, LIGHT, POWERED));
     }
 
     @Override
