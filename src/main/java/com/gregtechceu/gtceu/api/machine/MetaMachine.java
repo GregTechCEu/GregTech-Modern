@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
@@ -62,7 +63,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -70,7 +70,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +86,6 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
  * All fundamental features will be implemented here.
  * To add additional features, you can see {@link IMachineFeature}
  */
-@SuppressWarnings("removal")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighlight,
@@ -683,11 +681,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return getDefinition().getAppearance().get();
     }
 
-    @MustBeInvokedByOverriders
-    public void onModelDataUpdate(ModelData.Builder builder) {
-        for (MachineTrait trait : this.getTraits()) {
-            trait.onModelDataUpdate(builder);
-        }
+    public MachineRenderState getRenderState() {
+        return this.getHolder().getRenderState();
+    }
+
+    public void setRenderState(MachineRenderState state) {
+        this.getHolder().setRenderState(state);
     }
 
     @Override

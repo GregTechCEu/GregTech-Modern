@@ -36,6 +36,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -71,8 +72,8 @@ public class BlockHighlightRenderer {
                         gridHighlight = new IToolGridHighlight() {
 
                             @Override
-                            public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
-                                                            Set<GTToolType> toolTypes, Direction side) {
+                            public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
+                                                                      Set<GTToolType> toolTypes, Direction side) {
                                 return behavior.showSideTip(state, side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION :
                                         null;
                             }

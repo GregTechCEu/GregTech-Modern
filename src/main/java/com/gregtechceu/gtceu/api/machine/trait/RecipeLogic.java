@@ -27,15 +27,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -44,14 +44,19 @@ import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
-    public enum Status {
+    public enum Status implements StringRepresentable {
         IDLE,
         WORKING,
         WAITING,
-        SUSPEND
+        SUSPEND;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
-    public static final ModelProperty<RecipeLogic.Status> STATUS_MODEL_PROPERTY = new ModelProperty<>();
+    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = EnumProperty.create("recipe_logic_status", RecipeLogic.Status.class);
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
@@ -147,8 +152,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         duration = 0;
         isActive = false;
         lastFailedMatches = null;
-        if (status != Status.SUSPEND)
+        if (status != Status.SUSPEND) {
             status = Status.IDLE;
+            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
+        }
         updateTickSubscription();
     }
 
@@ -370,6 +377,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
+            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
@@ -526,11 +534,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             soundEntry.release();
             workingSound = null;
         }
-    }
-
-    @Override
-    public void onModelDataUpdate(ModelData.Builder builder) {
-        builder.with(STATUS_MODEL_PROPERTY, this.getStatus());
     }
 
     @Override

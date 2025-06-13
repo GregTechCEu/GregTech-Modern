@@ -21,9 +21,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -38,6 +37,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -62,10 +63,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -80,6 +78,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
+
+    @Getter
+    protected final Map<Property<?>, Comparable<?>> renderProperties = new IdentityHashMap<>();
     @Setter // non-final for KJS
     protected Function<ResourceLocation, DEFINITION> definition;
     @Setter // non-final for KJS
@@ -180,6 +181,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
+        if (type != GTRecipeTypes.DUMMY_RECIPES) {
+            renderProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        }
         return this;
     }
 
@@ -188,6 +192,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
+        renderProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return this;
     }
 
@@ -282,6 +287,44 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> renderProperty(Property<?> property) {
+        return renderProperty(property, null);
+    }
+
+    public <T extends Comparable<T>> MachineBuilder<DEFINITION> renderProperty(Property<T> property, @Nullable T defaultValue) {
+        this.renderProperties.put(property, defaultValue);
+        return this;
+    }
+
+    @Tolerate
+    public MachineBuilder<DEFINITION> renderProperties(Property<?>... properties) {
+        return this.renderProperties(List.of(properties));
+    }
+
+    @Tolerate
+    public MachineBuilder<DEFINITION> renderProperties(Collection<Property<?>> properties) {
+        for (Property<?> prop : properties) {
+            this.renderProperties.put(prop, null);
+        }
+        return this;
+    }
+
+    @Tolerate
+    public MachineBuilder<DEFINITION> renderProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
+        this.renderProperties.putAll(properties);
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> removeRenderProperty(Property<?> property) {
+        this.renderProperties.remove(property);
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> clearRenderProperties() {
+        this.renderProperties.clear();
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> recipeModifier(RecipeModifier recipeModifier) {
         this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
                 new RecipeModifierList(recipeModifier);
@@ -333,10 +376,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected void setupStateDefinition(MachineDefinition definition) {
+        StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(definition);
+        this.renderProperties.keySet().forEach(builder::add);
+        definition.setStateDefinition(builder.create(MachineDefinition::defaultRenderState, MachineRenderState::new));
+
+        MachineRenderState defaultState = definition.getStateDefinition().any();
+        for (Map.Entry<Property<?>, Comparable<?>> entry : this.renderProperties.entrySet()) {
+            if (entry.getValue() == null) continue;
+            defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
+        }
+
+        definition.registerDefaultState(definition.getStateDefinition().any());
+    }
+
     @HideFromJS
     public DEFINITION register() {
         var definition = createDefinition();
 
+        setupStateDefinition(definition);
+        definition.setRotationState(rotationState);
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
             blockBuilder.lang(langValue);
@@ -398,7 +458,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         }
         definition.setAppearance(appearance);
         definition.setAllowExtendedFacing(allowExtendedFacing);
-        definition.setRenderer(GTCEu.isClientSide() ? renderer.get() : null);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
@@ -414,10 +473,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 DEFINITION extends MachineDefinition> BlockBuilder<Block, Registrate> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
                                                                                                        DEFINITION definition) {
             return builder.registrate.block(builder.name, properties -> {
-                RotationState.set(builder.rotationState);
                 MachineDefinition.setBuilt(definition);
                 var b = builder.blockFactory.apply(properties, definition);
-                RotationState.clear();
                 MachineDefinition.clearBuilt();
                 return b.self();
             })

@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,8 +48,6 @@ public abstract class MachineTrait implements IEnhancedManaged {
     public void onMachineLoad() {}
 
     public void onMachineUnLoad() {}
-
-    public void onModelDataUpdate(ModelData.Builder builder) {}
 
     public MachineRenderState getRenderState() {
         return getMachine().getRenderState();

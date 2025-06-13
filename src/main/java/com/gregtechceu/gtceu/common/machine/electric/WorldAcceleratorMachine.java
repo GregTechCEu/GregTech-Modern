@@ -32,14 +32,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +56,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     // Hard-coded blacklist for blockentities
     private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
 
-    public static final ModelProperty<Boolean> RANDOM_TICK_MODEL_PROPERTY = new ModelProperty<>();
+    public static final BooleanProperty RANDOM_TICK_PROPERTY = BooleanProperty.create("random_tick_mode");
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -213,12 +212,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         }
     }
 
-    @Override
-    public void onModelDataUpdate(ModelData.Builder builder) {
-        super.onModelDataUpdate(builder);
-        builder.with(RANDOM_TICK_MODEL_PROPERTY, this.isRandomTickMode());
-    }
-
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
         updateSubscription();
@@ -252,6 +245,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
+            setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, isRandomTickMode));
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();

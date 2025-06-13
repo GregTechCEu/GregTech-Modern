@@ -25,8 +25,8 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,12 +48,18 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
-    public enum State {
+    public enum State implements StringRepresentable {
         IDLE,
         RUNNING,
-        FINISHED
+        FINISHED;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
-    public static final ModelProperty<ChargerMachine.State> STATE_MODEL_PROPERTY = new ModelProperty<>();
+
+    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = EnumProperty.create("charger_state", ChargerMachine.State.class);
 
     @Persisted
     @Getter
@@ -179,13 +186,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
+            setRenderState(getRenderState().setValue(STATE_PROPERTY, newState));
         }
-    }
-
-    @Override
-    public void onModelDataUpdate(ModelData.Builder builder) {
-        super.onModelDataUpdate(builder);
-        builder.with(STATE_MODEL_PROPERTY, this.getState());
     }
 
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {

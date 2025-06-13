@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.tterrag.registrate.Registrate;
@@ -298,6 +299,41 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder abilities(PartAbility... abilities) {
         return (MultiblockMachineBuilder) super.abilities(abilities);
+    }
+
+    @Override
+    public MultiblockMachineBuilder renderProperty(Property<?> property) {
+        return (MultiblockMachineBuilder) super.renderProperty(property);
+    }
+
+    @Override
+    public <T extends Comparable<T>> MultiblockMachineBuilder renderProperty(Property<T> property, @Nullable T defaultValue) {
+        return (MultiblockMachineBuilder) super.renderProperty(property, defaultValue);
+    }
+
+    @Override
+    public MultiblockMachineBuilder renderProperties(Property<?>... properties) {
+        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    }
+
+    @Override
+    public MultiblockMachineBuilder renderProperties(Collection<Property<?>> properties) {
+        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    }
+
+    @Override
+    public MultiblockMachineBuilder renderProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
+        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    }
+
+    @Override
+    public MultiblockMachineBuilder removeRenderProperty(Property<?> property) {
+        return (MultiblockMachineBuilder) super.removeRenderProperty(property);
+    }
+
+    @Override
+    public MultiblockMachineBuilder clearRenderProperties() {
+        return (MultiblockMachineBuilder) super.clearRenderProperties();
     }
 
     @Override
