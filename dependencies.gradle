@@ -10,6 +10,9 @@ dependencies {
     // Configuration
     jarJar(modApi(forge.configuration.get()))
 
+    // Configuration
+    jarJar(modApi(forge.ctm.get()))
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     annotationProcessor(forge.mixinExtras.common)
