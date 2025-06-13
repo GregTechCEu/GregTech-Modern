@@ -25,7 +25,7 @@ public class BlockModelMixin {
     @Shadow
     public String name;
     @Unique
-    ThreadLocal<SpriteOverrider> gtceu$spriteOverriderThreadLocal = new ThreadLocal<>();
+    private final ThreadLocal<SpriteOverrider> gtceu$spriteOverriderThreadLocal = new ThreadLocal<>();
 
     // We want to remap our materials
     @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/renderer/block/model/BlockModel;Ljava/util/function/Function;Lnet/minecraft/client/resources/model/ModelState;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/client/resources/model/BakedModel;",
