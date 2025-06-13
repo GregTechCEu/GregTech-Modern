@@ -132,7 +132,8 @@ public class GTModels {
                     .forAllStates(state -> {
                         if (state.getValue(LampBlock.LIGHT)) {
                             ModelBuilder<?> model = prov.models()
-                                    .getBuilder(ctx.getName() + (state.getValue(GTBlockStateProperties.BLOOM) ? "_bloom" : ""))
+                                    .getBuilder(ctx.getName() +
+                                            (state.getValue(GTBlockStateProperties.BLOOM) ? "_bloom" : ""))
                                     .parent(parentOn);
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
@@ -248,8 +249,10 @@ public class GTModels {
                     .texture("bot_all", coilType.getTexture())
                     .texture("top_all", coilType.getTexture().withSuffix("_bloom"));
             prov.getVariantBuilder(block)
-                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive)
+                    .addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active)
+                    .addModel();
         };
     }
 
@@ -272,8 +275,10 @@ public class GTModels {
                     .texture("bot_all", casingType.getTexture())
                     .texture("top_all", new ResourceLocation(casingType.getTexture() + "_bloom"));
             prov.getVariantBuilder(block)
-                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive)
+                    .addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active)
+                    .addModel();
         };
     }
 
@@ -290,8 +295,10 @@ public class GTModels {
             ModelFile inactive = prov.models().getExistingFile(modelPath);
             ModelFile active = prov.models().getExistingFile(modelPath.withSuffix("_active"));
             prov.getVariantBuilder(block)
-                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive)
+                    .addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active)
+                    .addModel();
         };
     }
 

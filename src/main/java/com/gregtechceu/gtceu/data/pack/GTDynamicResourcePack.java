@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.mojang.serialization.JsonOps;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -21,6 +20,7 @@ import net.minecraft.server.packs.resources.IoSupplier;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
@@ -122,7 +122,8 @@ public class GTDynamicResourcePack implements PackResources {
 
     public static void addAtlasSpriteSource(ResourceLocation atlasLoc, SpriteSource source) {
         ResourceLocation l = getAtlasLocation(atlasLoc);
-        JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, Collections.singletonList(source))
+        JsonElement sourceJson = SpriteSources.FILE_CODEC
+                .encodeStart(JsonOps.INSTANCE, Collections.singletonList(source))
                 .getOrThrow(false,
                         error -> GTCEu.LOGGER.error("Failed to encode atlas sprite source. {}", error));
         byte[] sourceBytes = sourceJson.toString().getBytes(StandardCharsets.UTF_8);

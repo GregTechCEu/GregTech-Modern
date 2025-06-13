@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -26,6 +23,12 @@ import net.minecraftforge.client.model.geometry.BlockGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -134,7 +136,8 @@ public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideMod
 
         @OnlyIn(Dist.CLIENT)
         @Nullable
-        protected BakedModel getBlockBakedModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state) {
+        protected BakedModel getBlockBakedModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
+                                                @Nullable BlockState state) {
             ModelState modelState = null;
             if (modelState != null) {
                 return modelCaches.computeIfAbsent(modelState, ms -> getModel().bake(
@@ -171,15 +174,15 @@ public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideMod
         // @Override
         // @OnlyIn(Dist.CLIENT)
         // public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        //     if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
-        //         if (bakedModelCache != null) {
-        //             bakedModelCache.clear();
-        //         }
-        //         if (overrideSupplier != null) override = overrideSupplier.get();
-        //         for (ResourceLocation value : override.values()) {
-        //             register.accept(value);
-        //         }
-        //     }
+        // if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
+        // if (bakedModelCache != null) {
+        // bakedModelCache.clear();
+        // }
+        // if (overrideSupplier != null) override = overrideSupplier.get();
+        // for (ResourceLocation value : override.values()) {
+        // register.accept(value);
+        // }
+        // }
         // }
 
         @Override
@@ -206,8 +209,5 @@ public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideMod
         public @NotNull ItemOverrides getOverrides() {
             return ItemOverrides.EMPTY;
         }
-
     }
-
-
 }

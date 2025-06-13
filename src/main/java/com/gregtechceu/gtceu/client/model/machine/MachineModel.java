@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
-import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.model.machine.impl.IPartRenderer;
+import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -30,6 +30,9 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +75,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    public List<BakedQuad> getMachineQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+    public List<BakedQuad> getMachineQuads(@Nullable BlockState state, @Nullable Direction side,
+                                           @NotNull RandomSource rand,
                                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
         BlockAndTintGetter level = modelData.get(LEVEL);
         BlockPos pos = modelData.get(POS);

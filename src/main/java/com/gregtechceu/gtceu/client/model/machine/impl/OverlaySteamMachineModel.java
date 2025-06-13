@@ -36,10 +36,12 @@ public class OverlaySteamMachineModel extends SteamHullMachineModel implements I
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
-                              Direction frontFacing, @Nullable Direction quadFace, RandomSource rand, Direction modelFacing,
+                              Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
+                              Direction modelFacing,
                               ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
         super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
                 renderType);
-        quads.addAll(overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), quadFace, rand));
+        quads.addAll(
+                overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), quadFace, rand));
     }
 }

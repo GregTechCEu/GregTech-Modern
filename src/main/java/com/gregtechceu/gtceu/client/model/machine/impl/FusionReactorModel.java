@@ -30,19 +30,19 @@ public class FusionReactorModel extends WorkableCasingMachineModel {
     // @Override
     // @OnlyIn(Dist.CLIENT)
     // public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
-    //                    int combinedLight, int combinedOverlay) {
-    //     if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-    //             machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
-    //         if (!machine.recipeLogic.isWorking() && delta <= 0) {
-    //             return;
-    //         }
-    //         if (GTCEu.Mods.isShimmerLoaded()) {
-    //             PoseStack finalStack = RenderUtils.copyPoseStack(stack);
-    //             BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
-    //         } else {
-    //             renderLightRing(machine, partialTicks, stack, buffer);
-    //         }
-    //     }
+    // int combinedLight, int combinedOverlay) {
+    // if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
+    // machineBlockEntity.getMetaMachine() instanceof FusionReactorMachine machine) {
+    // if (!machine.recipeLogic.isWorking() && delta <= 0) {
+    // return;
+    // }
+    // if (GTCEu.Mods.isShimmerLoaded()) {
+    // PoseStack finalStack = RenderUtils.copyPoseStack(stack);
+    // BloomUtils.entityBloom(source -> renderLightRing(machine, partialTicks, finalStack, source));
+    // } else {
+    // renderLightRing(machine, partialTicks, stack, buffer);
+    // }
+    // }
     // }
 
     @OnlyIn(Dist.CLIENT)

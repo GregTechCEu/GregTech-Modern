@@ -49,6 +49,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     public enum State implements StringRepresentable {
+
         IDLE,
         RUNNING,
         FINISHED;
@@ -59,7 +60,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         }
     }
 
-    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = EnumProperty.create("charger_state", ChargerMachine.State.class);
+    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = EnumProperty.create("charger_state",
+            ChargerMachine.State.class);
 
     @Persisted
     @Getter

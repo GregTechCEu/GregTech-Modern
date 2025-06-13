@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IDynamicBakedModel;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.chisel.ctm.client.util.Quad;
@@ -68,6 +69,7 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
 
     public static ModelBaker getModelBaker() {
         return new ModelBaker() {
+
             @Override
             public @Nullable BakedModel bake(@NotNull ResourceLocation location, @NotNull ModelState transform,
                                              @NotNull Function<Material, TextureAtlasSprite> sprites) {

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

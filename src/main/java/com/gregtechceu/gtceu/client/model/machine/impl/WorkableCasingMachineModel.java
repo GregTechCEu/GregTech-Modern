@@ -4,17 +4,17 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
 
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-
 import net.minecraftforge.client.model.data.ModelData;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,10 +56,10 @@ public class WorkableCasingMachineModel extends MachineModel {
     // @Override
     // @OnlyIn(Dist.CLIENT)
     // public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-    //     super.onPrepareTextureAtlas(atlasName, register);
-    //     if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-    //         overlayModel.registerTextureAtlas(register);
-    //     }
+    // super.onPrepareTextureAtlas(atlasName, register);
+    // if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+    // overlayModel.registerTextureAtlas(register);
+    // }
     // }
 
     public float reBakeOverlayQuadsOffset() {

@@ -19,10 +19,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.model.machine.*;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtceu.client.model.machine.*;
 import com.gregtechceu.gtceu.common.data.GTModels;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -295,7 +295,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return renderProperty(property, null);
     }
 
-    public <T extends Comparable<T>> MachineBuilder<DEFINITION> renderProperty(Property<T> property, @Nullable T defaultValue) {
+    public <T extends Comparable<T>> MachineBuilder<DEFINITION> renderProperty(Property<T> property,
+                                                                               @Nullable T defaultValue) {
         this.renderProperties.put(property, defaultValue);
         return this;
     }
@@ -382,7 +383,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void setupStateDefinition(MachineDefinition definition) {
-        StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(definition);
+        StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
+                definition);
         this.renderProperties.keySet().forEach(builder::add);
         definition.setStateDefinition(builder.create(MachineDefinition::defaultRenderState, MachineRenderState::new));
 

@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+
 import org.jetbrains.annotations.NotNull;
 
 public class SteamSolarBoiler extends SteamBoilerMachine {

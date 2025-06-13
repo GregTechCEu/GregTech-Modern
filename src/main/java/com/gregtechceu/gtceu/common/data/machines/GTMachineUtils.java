@@ -29,8 +29,8 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.model.machine.*;
+import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
@@ -305,8 +305,9 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .renderProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
                         .renderer(() -> new ChargerModel(tier))
-                        .langValue("%s %sx Turbo Charger".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
-                                itemSlotSize))
+                        .langValue(
+                                "%s %sx Turbo Charger".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                        itemSlotSize))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),

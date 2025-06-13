@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;

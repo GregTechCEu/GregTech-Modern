@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.gson.*;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BlockModelDefinition;
 import net.minecraft.client.renderer.block.model.MultiVariant;
@@ -18,6 +15,11 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +50,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         JsonObject properties = GsonHelper.getAsJsonObject(jsonObject, "properties");
 
         Map<String, MultiVariant> variants = new HashMap<>();
-        for(Map.Entry<String, JsonElement> entry : properties.entrySet()) {
+        for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
             variants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariant.class));
         }
         return new UnbakedMachineModel(machineId, variants);
@@ -58,7 +60,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         UnbakedModel missingModel = BaseBakedModel.getModelBakery().getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
         ResourceLocation machineId = model.getDefinition().getId();
-        StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = model.getDefinition().getStateDefinition();
+        StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = model.getDefinition()
+                .getStateDefinition();
         ImmutableList<MachineRenderState> possibleStates = stateDefinition.getPossibleStates();
         Map<MachineRenderState, UnbakedModel> statesToModels = new IdentityHashMap<>();
 
@@ -76,8 +79,10 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                         UnbakedModel lastModel = curStatesToModels.put(state, multiVariantModel);
                         if (lastModel != null) {
                             curStatesToModels.put(state, missingModel);
-                            throw new RuntimeException("Overlapping definition with: " + model.getUnresolvedModels().entrySet()
-                                    .stream().filter((entry) -> entry.getValue() == lastModel).findFirst().get().getKey());
+                            throw new RuntimeException(
+                                    "Overlapping definition with: " + model.getUnresolvedModels().entrySet()
+                                            .stream().filter((entry) -> entry.getValue() == lastModel).findFirst().get()
+                                            .getKey());
                         }
                     });
                 } catch (Exception e) {
@@ -89,7 +94,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             modelsToStates.forEach((modelLoc, state) -> {
                 UnbakedModel unbaked = statesToModels.get(state);
                 if (unbaked == null) {
-                    LOGGER.warn("Exception loading model for machine: '{}' missing model for variant: '{}'", machineId, modelLoc);
+                    LOGGER.warn("Exception loading model for machine: '{}' missing model for variant: '{}'", machineId,
+                            modelLoc);
                     statesToModels.put(state, missingModel);
                 }
             });
@@ -97,7 +103,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         return statesToModels;
     }
 
-    private static Predicate<MachineRenderState> predicate(StateDefinition<MachineDefinition, MachineRenderState> container, String variant) {
+    private static Predicate<MachineRenderState> predicate(StateDefinition<MachineDefinition, MachineRenderState> container,
+                                                           String variant) {
         Map<Property<?>, Comparable<?>> properties = Maps.newHashMap();
 
         for (String propertyEntry : COMMA_SPLITTER.split(variant)) {
@@ -109,7 +116,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                     String value = keyValue.next();
                     Comparable<?> comparable = getValueHelper(property, value);
                     if (comparable == null) {
-                        throw new RuntimeException("Unknown value: '" + value + "' for machine model state property: '" + key + "' " + property.getPossibleValues());
+                        throw new RuntimeException("Unknown value: '" + value +
+                                "' for machine model state property: '" + key + "' " + property.getPossibleValues());
                     }
 
                     properties.put(property, comparable);

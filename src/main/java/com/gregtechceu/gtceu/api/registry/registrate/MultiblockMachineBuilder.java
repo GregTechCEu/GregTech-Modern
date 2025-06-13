@@ -307,7 +307,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public <T extends Comparable<T>> MultiblockMachineBuilder renderProperty(Property<T> property, @Nullable T defaultValue) {
+    public <T extends Comparable<T>> MultiblockMachineBuilder renderProperty(Property<T> property,
+                                                                             @Nullable T defaultValue) {
         return (MultiblockMachineBuilder) super.renderProperty(property, defaultValue);
     }
 

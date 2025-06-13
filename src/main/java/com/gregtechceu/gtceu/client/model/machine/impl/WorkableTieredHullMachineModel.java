@@ -47,10 +47,10 @@ public class WorkableTieredHullMachineModel extends TieredHullMachineModel {
     // @Override
     // @OnlyIn(Dist.CLIENT)
     // public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-    //     super.onPrepareTextureAtlas(atlasName, register);
-    //     if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-    //         overlayModel.registerTextureAtlas(register);
-    //     }
+    // super.onPrepareTextureAtlas(atlasName, register);
+    // if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
+    // overlayModel.registerTextureAtlas(register);
+    // }
     // }
 
     public float overlayQuadsOffset() {
