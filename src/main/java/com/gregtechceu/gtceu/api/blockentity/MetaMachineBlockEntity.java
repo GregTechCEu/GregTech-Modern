@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 
@@ -20,6 +21,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -49,16 +51,15 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
+    @Getter
+    @Setter
+    private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
 
-    protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+        this.renderState = getDefinition().defaultRenderState();
         this.metaMachine = getDefinition().createMetaMachine(this);
-    }
-
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos,
-                                                           BlockState blockState) {
-        return new MetaMachineBlockEntity(type, pos, blockState);
     }
 
     public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {}
@@ -103,8 +104,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         return metaMachine.sideTips(player, pos, state, toolTypes, side);
     }
 

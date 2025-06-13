@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -26,7 +27,18 @@ public interface IMachineBlock extends EntityBlock {
 
     MachineDefinition getDefinition();
 
-    RotationState getRotationState();
+    default RotationState getRotationState() {
+        return getDefinition().getRotationState();
+    }
+
+    default Direction getFrontFacing(BlockState state) {
+        return getRotationState() == RotationState.NONE ? Direction.NORTH : state.getValue(getRotationState().property);
+    }
+
+    @Nullable
+    default MetaMachine getMachine(BlockGetter level, BlockPos pos) {
+        return MetaMachine.getMachine(level, pos);
+    }
 
     static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
                            int index) {
@@ -65,5 +77,9 @@ public interface IMachineBlock extends EntityBlock {
             }
         }
         return null;
+    }
+
+    default boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
+        return getMachine(level, pos).canConnectRedstone(side);
     }
 }

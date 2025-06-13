@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -242,9 +242,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
-                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+                blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();

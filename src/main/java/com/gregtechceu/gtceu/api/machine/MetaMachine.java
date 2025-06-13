@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
@@ -553,6 +553,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return holder.getDefinition();
     }
 
+    public RotationState getRotationState() {
+        return getDefinition().getRotationState();
+    }
+
     /**
      * Called to obtain list of AxisAlignedBB used for collision testing, highlight rendering
      * and ray tracing this meta tile entity's block in world
@@ -570,19 +574,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public Direction getFrontFacing() {
-        var blockState = getBlockState();
-        if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
-            return machineBlock.getFrontFacing(blockState);
-        }
-        return Direction.NORTH;
+        return getRotationState() == RotationState.NONE ? Direction.NORTH :
+                getBlockState().getValue(getRotationState().property);
     }
 
     public final boolean hasFrontFacing() {
-        var blockState = getBlockState();
-        if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
-            return machineBlock.getRotationState() != RotationState.NONE;
-        }
-        return false;
+        return getRotationState() != RotationState.NONE;
     }
 
     public boolean isFacingValid(Direction facing) {
@@ -599,11 +596,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 return false;
             }
         }
-        var blockState = getBlockState();
-        if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock) {
-            return metaMachineBlock.rotationState.test(facing);
-        }
-        return false;
+        return getRotationState().test(facing);
     }
 
     public void setFrontFacing(Direction facing) {
@@ -615,9 +608,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
 
         var blockState = getBlockState();
-        if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock && isFacingValid(facing)) {
-            getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(metaMachineBlock.rotationState.property, facing));
+        if (isFacingValid(facing)) {
+            getLevel().setBlockAndUpdate(getPos(), blockState.setValue(getRotationState().property, facing));
         }
 
         if (getLevel() != null && !getLevel().isClientSide) {
@@ -628,11 +620,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public static @NotNull Direction getUpwardFacing(@Nullable MetaMachine machine) {
         return machine == null || !machine.allowExtendedFacing() ? Direction.NORTH :
-                machine.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY);
+                machine.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING);
     }
 
     public Direction getUpwardsFacing() {
-        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) :
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING) :
                 Direction.NORTH;
     }
 
@@ -646,9 +638,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         }
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
-                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+                blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
