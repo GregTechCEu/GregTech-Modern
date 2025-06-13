@@ -68,7 +68,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
                 WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineBlockEntity::new);
     }
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
@@ -77,6 +77,6 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
                 machine::create,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineBlockEntity::new);
     }
 }

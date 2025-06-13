@@ -124,7 +124,7 @@ public class GTRegistrate extends Registrate {
     public MachineBuilder<MachineDefinition> machine(String name,
                                                      Function<IMachineBlockEntity, MetaMachine> metaMachine) {
         return MachineBuilder.create(this, name, MachineDefinition::createDefinition, metaMachine,
-                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
     }
 
     public Stream<MachineBuilder<MachineDefinition>> machine(String name,
@@ -133,7 +133,7 @@ public class GTRegistrate extends Registrate {
         return Arrays.stream(tiers)
                 .mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT),
                         MachineDefinition::createDefinition, holder -> metaMachine.apply(holder, tier),
-                        MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity));
+                        MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new));
     }
 
     public MultiblockMachineBuilder multiblock(String name,
@@ -148,7 +148,7 @@ public class GTRegistrate extends Registrate {
     public MultiblockMachineBuilder multiblock(String name,
                                                Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
         return MultiblockMachineBuilder.createMulti(this, name, metaMachine, MetaMachineBlock::new,
-                MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineItem::new, MetaMachineBlockEntity::new);
     }
 
     public SoundEntryBuilder sound(String name) {
