@@ -25,6 +25,8 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -50,6 +52,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         RUNNING,
         FINISHED
     }
+    public static final ModelProperty<ChargerMachine.State> STATE_MODEL_PROPERTY = new ModelProperty<>();
 
     @Persisted
     @Getter
@@ -177,6 +180,12 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         if (state != newState) {
             state = newState;
         }
+    }
+
+    @Override
+    public void onModelDataUpdate(ModelData.Builder builder) {
+        super.onModelDataUpdate(builder);
+        builder.with(STATE_MODEL_PROPERTY, this.getState());
     }
 
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {

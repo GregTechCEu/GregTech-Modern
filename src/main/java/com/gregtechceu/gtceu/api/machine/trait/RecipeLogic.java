@@ -34,6 +34,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -49,6 +51,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         SUSPEND
     }
 
+    public static final ModelProperty<RecipeLogic.Status> STATUS_MODEL_PROPERTY = new ModelProperty<>();
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
@@ -523,6 +526,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             soundEntry.release();
             workingSound = null;
         }
+    }
+
+    @Override
+    public void onModelDataUpdate(ModelData.Builder builder) {
+        builder.with(STATUS_MODEL_PROPERTY, this.getStatus());
     }
 
     @Override

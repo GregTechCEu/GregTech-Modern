@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +49,16 @@ public abstract class MachineTrait implements IEnhancedManaged {
     public void onMachineLoad() {}
 
     public void onMachineUnLoad() {}
+
+    public void onModelDataUpdate(ModelData.Builder builder) {}
+
+    public MachineRenderState getRenderState() {
+        return getMachine().getRenderState();
+    }
+
+    public void setRenderState(MachineRenderState state) {
+        getMachine().setRenderState(state);
+    }
 
     /**
      * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.

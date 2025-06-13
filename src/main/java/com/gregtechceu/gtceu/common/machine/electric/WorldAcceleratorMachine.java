@@ -38,6 +38,8 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,6 +56,8 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     // Hard-coded blacklist for blockentities
     private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
+
+    public static final ModelProperty<Boolean> RANDOM_TICK_MODEL_PROPERTY = new ModelProperty<>();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -207,6 +211,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
             tickSubs.unsubscribe();
             tickSubs = null;
         }
+    }
+
+    @Override
+    public void onModelDataUpdate(ModelData.Builder builder) {
+        super.onModelDataUpdate(builder);
+        builder.with(RANDOM_TICK_MODEL_PROPERTY, this.isRandomTickMode());
     }
 
     public void setWorkingEnabled(boolean workingEnabled) {
