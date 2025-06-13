@@ -13,13 +13,17 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtceu.client.renderer.machine.*;
+import com.gregtechceu.gtceu.client.model.machine.*;
+import com.gregtechceu.gtceu.common.data.GTModels;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -87,7 +91,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Setter
-    private Supplier<MachineRenderer> renderer;
+    private Supplier<MachineModel> renderer;
     @Setter
     private VoxelShape shape = Shapes.block();
     @Setter
@@ -208,7 +212,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> modelRenderer(Supplier<ResourceLocation> model) {
-        this.renderer = () -> new MachineRenderer(model.get());
+        this.renderer = () -> new MachineModel(model.get());
         return this;
     }
 
@@ -217,49 +221,49 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> tieredHullRenderer(ResourceLocation model) {
-        return renderer(() -> new TieredHullMachineRenderer(tier, model));
+        return renderer(() -> new TieredHullMachineModel(tier, model));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
-        return renderer(() -> new OverlayTieredMachineRenderer(tier,
+        return renderer(() -> new OverlayTieredMachineModel(tier,
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullRenderer(String name) {
-        return renderer(() -> new OverlaySteamMachineRenderer(
+        return renderer(() -> new OverlaySteamMachineModel(
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullRenderer(ResourceLocation workableModel) {
-        return renderer(() -> new WorkableTieredHullMachineRenderer(tier, workableModel));
+        return renderer(() -> new WorkableTieredHullMachineModel(tier, workableModel));
     }
 
     public MachineBuilder<DEFINITION> simpleGeneratorMachineRenderer(ResourceLocation workableModel) {
-        return renderer(() -> new SimpleGeneratorMachineRenderer(tier, workableModel));
+        return renderer(() -> new SimpleGeneratorMachineModel(tier, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullRenderer(boolean isHighPressure,
                                                                 ResourceLocation workableModel) {
-        return renderer(() -> new WorkableSteamMachineRenderer(isHighPressure, workableModel));
+        return renderer(() -> new WorkableSteamMachineModel(isHighPressure, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing,
                                                              ResourceLocation workableModel) {
-        return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel));
+        return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing,
                                                              ResourceLocation workableModel, boolean tint) {
-        return renderer(() -> new WorkableCasingMachineRenderer(baseCasing, workableModel, tint));
+        return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel, tint));
     }
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel,
                                                                   boolean tint) {
-        return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel, tint));
+        return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel, tint));
     }
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
-        return renderer(() -> new WorkableSidedCasingMachineRenderer(basePath, overlayModel));
+        return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel));
     }
 
     public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {
@@ -441,7 +445,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
 
         if (renderer == null) {
-            renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+            renderer = () -> new MachineModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {
@@ -483,7 +487,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
                     // .tag(GTToolType.WRENCH.harvestTag)
-                    .blockstate(NonNullBiConsumer.noop())
+                    .blockstate(GTModels.createMachineModel(definition))
                     .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }

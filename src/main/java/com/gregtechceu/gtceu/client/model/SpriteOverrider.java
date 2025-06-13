@@ -10,11 +10,15 @@ import java.util.Map;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
-public record SpriteOverrider(Map<String, ResourceLocation> override)
+public record SpriteOverrider(Map<String, ResourceLocation> override, Function<Material, TextureAtlasSprite> getter)
         implements Function<Material, TextureAtlasSprite> {
+
+    public SpriteOverrider(Map<String, ResourceLocation> override) {
+        this(override, Material::sprite);
+    }
 
     @Override
     public TextureAtlasSprite apply(Material material) {
-        return material.sprite();
+        return getter.apply(material);
     }
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.*;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -131,17 +132,17 @@ public class GTModels {
                     .forAllStates(state -> {
                         if (state.getValue(LampBlock.LIGHT)) {
                             ModelBuilder<?> model = prov.models()
-                                    .getBuilder(ctx.getName() + (state.getValue(LampBlock.BLOOM) ? "_bloom" : ""))
+                                    .getBuilder(ctx.getName() + (state.getValue(GTBlockStateProperties.BLOOM) ? "_bloom" : ""))
                                     .parent(parentOn);
                             if (border) {
                                 model.texture("active", "block/lamps/" + color.getName());
-                                if (state.getValue(LampBlock.BLOOM)) {
+                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
                                     model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
                                 } else {
                                     model.texture("active_overlay", "block/lamps/" + color.getName());
                                 }
                             } else {
-                                if (state.getValue(LampBlock.BLOOM)) {
+                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
                                     model.texture("active",
                                             "block/lamps/" + color.getName() + "_borderless_emissive");
                                 } else {
@@ -247,8 +248,8 @@ public class GTModels {
                     .texture("bot_all", coilType.getTexture())
                     .texture("top_all", coilType.getTexture().withSuffix("_bloom"));
             prov.getVariantBuilder(block)
-                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
         };
     }
 
@@ -271,8 +272,8 @@ public class GTModels {
                     .texture("bot_all", casingType.getTexture())
                     .texture("top_all", new ResourceLocation(casingType.getTexture() + "_bloom"));
             prov.getVariantBuilder(block)
-                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
         };
     }
 
@@ -289,8 +290,8 @@ public class GTModels {
             ModelFile inactive = prov.models().getExistingFile(modelPath);
             ModelFile active = prov.models().getExistingFile(modelPath.withSuffix("_active"));
             prov.getVariantBuilder(block)
-                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
         };
     }
 
@@ -306,6 +307,25 @@ public class GTModels {
             prov.getVariantBuilder(block)
                     .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
                     .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createMachineModel(MachineDefinition definition) {
+        return (ctx, prov) -> {
+            Block block = ctx.getEntry();
+            if (!(block instanceof IMachineBlock machineBlock)) {
+                return;
+            }
+            prov.models().getBuilder(definition.getId())
+
+            ModelFile inactive = prov.models().cubeBottomTop(name, definition.side(), definition.bottom(), definition.top());
+            ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/fire_box_active"))
+                    .texture("side", definition.side())
+                    .texture("bottom", definition.bottom())
+                    .texture("top", definition.top());
+            prov.getVariantBuilder(block)
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
         };
     }
 
@@ -378,26 +398,21 @@ public class GTModels {
             MultiVariantGenerator generator = MultiVariantGenerator.multiVariant(block.self());
             if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
                 PropertyDispatch dispatch = PropertyDispatch
-                        .properties(block.getRotationState().property, IMachineBlock.UPWARDS_FACING_PROPERTY,
-                                BlockProperties.SERVER_TICK)
-                        .generate((front, up, tick) -> {
+                        .properties(block.getRotationState().property, GTBlockStateProperties.UPWARDS_FACING)
+                        .generate((front, up) -> {
                             return Variant.variant().with(VariantProperties.MODEL, modelId);
                         });
                 generator.with(dispatch);
             } else if (block.getRotationState() != RotationState.NONE) {
                 PropertyDispatch dispatch = PropertyDispatch
-                        .properties(block.getRotationState().property, BlockProperties.SERVER_TICK)
-                        .generate((front, tick) -> {
+                        .property(block.getRotationState().property)
+                        .generate((front) -> {
                             return Variant.variant().with(VariantProperties.MODEL, modelId);
                         });
                 generator.with(dispatch);
             } else {
-                PropertyDispatch dispatch = PropertyDispatch
-                        .property(BlockProperties.SERVER_TICK)
-                        .generate((tick) -> {
-                            return Variant.variant().with(VariantProperties.MODEL, modelId);
-                        });
-                generator.with(dispatch);
+                generator = MultiVariantGenerator.multiVariant(block.self(),
+                        Variant.variant().with(VariantProperties.MODEL, modelId));
             }
             GTDynamicResourcePack.addBlockState(blockId, generator);
         }

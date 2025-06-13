@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.renderer.machine.*;
+import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
@@ -107,7 +107,7 @@ public class GTMultiMachines {
             .multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
-            .renderer(() -> new PrimitiveBlastFurnaceRenderer(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
+            .renderer(() -> new PrimitiveBlastFurnaceModel(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
                     GTCEu.id("block/multiblock/primitive_blast_furnace")))
             .hasTESR(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
@@ -617,7 +617,7 @@ public class GTMultiMachines {
                     .where('F', blocks(FIREBOX_BRONZE.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
-            .renderer(() -> new LargeBoilerRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+            .renderer(() -> new LargeBoilerModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     BoilerFireboxType.BRONZE_FIREBOX,
                     GTCEu.id("block/multiblock/steam_oven")))
             .register();
@@ -708,7 +708,7 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .renderer(() -> new FusionReactorRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
+                    .renderer(() -> new FusionReactorModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor")))
                     .hasTESR(true)
                     .register(),
@@ -769,8 +769,8 @@ public class GTMultiMachines {
                             .where('#', any())
                             .build())
                     .allowExtendedFacing(true)
-                    .renderer(() -> new LargeMinerRenderer(
-                            MinerRenderer.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
+                    .renderer(() -> new LargeMinerModel(
+                            MinerModel.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner")))
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"

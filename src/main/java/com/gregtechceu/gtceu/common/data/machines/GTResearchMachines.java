@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
+import com.gregtechceu.gtceu.client.model.machine.impl.HPCAPartModel;
+import com.gregtechceu.gtceu.client.model.machine.impl.OverlayTieredActiveMachineModel;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -114,7 +114,7 @@ public class GTResearchMachines {
             .tier(ZPM)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
-            .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"),
+            .renderer(() -> new OverlayTieredActiveMachineModel(ZPM, GTCEu.id("block/machine/part/object_holder"),
                     GTCEu.id("block/machine/part/object_holder_active")))
             .register();
 
@@ -424,7 +424,7 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartRenderer(
+                .renderer(() -> new HPCAPartModel(
                         isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
                         GTCEu.id("block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))));
@@ -442,7 +442,7 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartRenderer(
+                .renderer(() -> new HPCAPartModel(
                         isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
                         activeTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + activeTexture),

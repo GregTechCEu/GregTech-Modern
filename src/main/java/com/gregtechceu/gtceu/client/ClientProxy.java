@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.client.model.UnbakedMachineModel;
+import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
@@ -126,7 +127,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onRegisterModelLoaders(final ModelEvent.RegisterGeometryLoaders e) {
-        e.register("machine", UnbakedMachineModel.Loader.INSTANCE);
+    public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register("machine", MachineModelLoader.INSTANCE);
+        event.register("texture_override", TextureOverrideModel.Loader.INSTANCE);
     }
 }

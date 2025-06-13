@@ -1,0 +1,48 @@
+package com.gregtechceu.gtceu.client.model.machine.impl;
+
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+
+import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class LargeMinerModel extends WorkableCasingMachineModel {
+
+    public static final AABB BEHIND_BLOCK = new AABB(0, -0.005, 1, 1, 1, 2);
+
+    public LargeMinerModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        super(baseCasing, workableModel);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
+                              @Nullable Direction modelFacing, ModelState modelState,
+                              @NotNull ModelData modelData, RenderType renderType) {
+        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
+                renderType);
+        if (machine instanceof IMultiController controller && controller.isFormed() && quadFace == Direction.DOWN &&
+                modelFacing != null) {
+            quads.add(StaticFaceBakery.bakeFace(BEHIND_BLOCK, modelFacing,
+                    ModelFactory.getBlockSprite(MinerModel.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
+        }
+    }
+}

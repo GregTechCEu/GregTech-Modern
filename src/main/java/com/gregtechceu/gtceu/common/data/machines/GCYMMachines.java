@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeChemicalBathRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeMixerRenderer;
+import com.gregtechceu.gtceu.client.model.machine.impl.gcym.LargeChemicalBathModel;
+import com.gregtechceu.gtceu.client.model.machine.impl.gcym.LargeMixerModel;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -108,7 +108,7 @@ public class GCYMMachines {
                     Component.translatable("gtceu.ore_washer"), Component.translatable("gtceu.chemical_bath")))
             .rotationState(RotationState.ALL)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
-            .renderer(() -> new LargeChemicalBathRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .renderer(() -> new LargeChemicalBathModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_chemical_bath")))
             .hasTESR(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
@@ -168,7 +168,7 @@ public class GCYMMachines {
                     Component.translatable("gtceu.mixer")))
             .rotationState(RotationState.ALL)
             .recipeType(MIXER_RECIPES)
-            .renderer(() -> new LargeMixerRenderer(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
+            .renderer(() -> new LargeMixerModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
                     GTCEu.id("block/multiblock/gcym/large_mixer")))
             .hasTESR(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;

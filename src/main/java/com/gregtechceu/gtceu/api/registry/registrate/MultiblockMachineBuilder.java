@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.client.renderer.machine.MachineRenderer;
+import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -130,7 +130,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder renderer(@Nullable Supplier<MachineRenderer> renderer) {
+    public MultiblockMachineBuilder renderer(@Nullable Supplier<MachineModel> renderer) {
         return (MultiblockMachineBuilder) super.renderer(renderer);
     }
 

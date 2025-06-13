@@ -29,7 +29,8 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.machine.*;
+import com.gregtechceu.gtceu.client.model.machine.impl.*;
+import com.gregtechceu.gtceu.client.model.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
@@ -224,7 +225,7 @@ public class GTMachineUtils {
                                 index == 3 ? GTValues.VC[tier] :
                                         index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor)
                                                 .intValue() : -1)
-                        .renderer(() -> new TransformerRenderer(tier, baseAmp))
+                        .renderer(() -> new TransformerModel(tier, baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 langName))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
@@ -259,7 +260,7 @@ public class GTMachineUtils {
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
-                        .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
+                        .renderer(() -> new SimpleGeneratorMachineModel(tier, GTCEu.id("block/generators/" + name)))
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.applyAsInt(tier), false))
                         .register(),
@@ -272,7 +273,7 @@ public class GTMachineUtils {
                 .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
                 .recipeModifier(SimpleSteamMachine::recipeModifier)
-                .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/" + name)))
+                .renderer(() -> new WorkableSteamMachineModel(pressure, GTCEu.id("block/machines/" + name)))
                 .register());
     }
 
@@ -281,7 +282,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
+                        .renderer(() -> new BatteryBufferModel(tier, batterySlotSize))
                         .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 batterySlotSize, "x Battery Buffer"))
                         .tooltips(
@@ -302,9 +303,10 @@ public class GTMachineUtils {
                 (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .renderer(() -> new ChargerRenderer(tier))
-                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
-                                itemSlotSize, "x Turbo Charger"))
+                        .renderProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
+                        .renderer(() -> new ChargerModel(tier))
+                        .langValue("%s %sx Turbo Charger".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                itemSlotSize))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
@@ -326,7 +328,7 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
                                 amperage))
-                        .renderer(() -> new ConverterRenderer(tier, amperage))
+                        .renderer(() -> new ConverterModel(tier, amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
@@ -376,7 +378,7 @@ public class GTMachineUtils {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
-                .renderer(() -> new CrateRenderer(
+                .renderer(() -> new CrateModel(
                         GTCEu.id("block/machine/crate/" + (wooden ? "wooden" : "metal") + "_crate")))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -389,11 +391,11 @@ public class GTMachineUtils {
                 .machine(material.getName() + "_drum", MachineDefinition::createDefinition,
                         holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new,
                         (holder, prop) -> DrumMachineItem.create(holder, prop, material),
-                        MetaMachineBlockEntity::createBlockEntity)
+                        MetaMachineBlockEntity::new)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(
-                        () -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
+                        () -> new MachineModel(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
                 .tooltipBuilder((stack, list) -> {
                     TANK_TOOLTIPS.accept(stack, list);
                     if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
@@ -514,7 +516,7 @@ public class GTMachineUtils {
                 .recoveryItems(
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
-                .renderer(() -> new LargeBoilerRenderer(texture, firebox,
+                .renderer(() -> new LargeBoilerModel(texture, firebox,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name))))
                 .tooltips(
                         Component.translatable("gtceu.multiblock.large_boiler.max_temperature", maxTemperature + 274,
