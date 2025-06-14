@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -71,10 +72,22 @@ public class MixinHelpers {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material();
                 if (material.isNull()) return;
+                var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
+
                 var materialTags = entry.tagPrefix().getAllItemTags(material);
                 for (TagKey<Item> materialTag : materialTags) {
-                    var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
+                }
+
+                if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
+                    OreProperty ore = material.getProperty(PropertyKey.ORE);
+                    Material washedIn = ore.getWashedIn().first();
+                    if (washedIn.isNull()) return;
+                    ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
+                    ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
+
+                    tagMap.computeIfAbsent(generalTag, path -> new ArrayList<>()).addAll(entries);
+                    tagMap.computeIfAbsent(specificTag, path -> new ArrayList<>()).addAll(entries);
                 }
             });
 

@@ -297,13 +297,13 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
      */
 
     @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                            EquipmentSlot equipmentSlot) {
+    public int damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                           EquipmentSlot equipmentSlot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
-        if (item == null) {
-            return;
+        if (item != null) {
+            item.discharge(energyPerUse / 100L * damage, item.getTier(), true, false, false);
         }
-        item.discharge(energyPerUse / 100L * damage, item.getTier(), true, false, false);
+        return super.damageArmor(entity, itemStack, source, damage, equipmentSlot);
     }
 
     @Override
