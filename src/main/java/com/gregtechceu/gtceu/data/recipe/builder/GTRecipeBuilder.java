@@ -1507,8 +1507,8 @@ public class GTRecipeBuilder {
      * @param EUt           the EUt of the recipe
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
-    public record ResearchRecipeEntry(@NotNull String researchId, @Nullable ItemStack researchItem,
-                                      @Nullable FluidStack researchFluid,
+    public record ResearchRecipeEntry(@NotNull String researchId,
+                                      @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
                                       @NotNull ItemStack dataStack, int duration, int EUt, int CWUt) {
 
     }

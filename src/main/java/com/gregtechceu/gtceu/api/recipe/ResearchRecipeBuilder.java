@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> {
 
-    protected ItemStack itemResearchStack;
-    protected FluidStack fluidResearchStack;
+    protected ItemStack itemResearchStack = ItemStack.EMPTY;
+    protected FluidStack fluidResearchStack = FluidStack.EMPTY;
     protected ItemStack dataStack;
     protected String researchId;
     protected int eut;
@@ -54,8 +54,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
     }
 
     protected void validateResearchItem() {
-        if (itemResearchStack == null && fluidResearchStack == null) {
-            throw new IllegalArgumentException("Must have either item or fluid research stack not null!");
+        if (itemResearchStack.isEmpty() && fluidResearchStack.isEmpty()) {
+            throw new IllegalArgumentException("Research recipe must have an item or fluid stack!");
         }
 
         if (researchId == null) {

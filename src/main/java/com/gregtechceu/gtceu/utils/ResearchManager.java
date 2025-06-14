@@ -123,7 +123,7 @@ public final class ResearchManager {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
-            if (entry.researchItem() == null && entry.researchFluid() == null)
+            if (entry.researchItem().isEmpty() && entry.researchFluid().isEmpty())
                 throw new IllegalStateException("Both entry types in the research entry are null!");
 
             createDefaultResearchRecipe(builder.recipeType, entry.researchId(), entry.researchItem(),
@@ -133,7 +133,7 @@ public final class ResearchManager {
     }
 
     public static void createDefaultResearchRecipe(@NotNull GTRecipeType recipeType, @NotNull String researchId,
-                                                   @Nullable ItemStack researchItem, @Nullable FluidStack researchFluid,
+                                                   @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
                                                    @NotNull ItemStack dataItem,
                                                    int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
@@ -143,11 +143,11 @@ public final class ResearchManager {
 
         if (CWUt > 0) {
             var builder = GTRecipeTypes.RESEARCH_STATION_RECIPES
-                    .recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
+                    .recipeBuilder(researchId)
                     .inputItems(dataItem.getItem());
 
-            if (researchItem != null) builder.inputItems(researchItem);
-            if (researchFluid != null) builder.inputFluids(researchFluid);
+            if (!researchItem.isEmpty()) builder.inputItems(researchItem);
+            if (!researchFluid.isEmpty()) builder.inputFluids(researchFluid);
 
             builder.outputItems(dataItem)
                     .EUt(EUt)
@@ -158,8 +158,8 @@ public final class ResearchManager {
             var builder = GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
                     .inputItems(dataItem.getItem());
 
-            if (researchItem != null) builder.inputItems(researchItem);
-            if (researchFluid != null) builder.inputFluids(researchFluid);
+            if (!researchItem.isEmpty()) builder.inputItems(researchItem);
+            if (!researchFluid.isEmpty()) builder.inputFluids(researchFluid);
 
             builder.outputItems(dataItem)
                     .duration(duration)

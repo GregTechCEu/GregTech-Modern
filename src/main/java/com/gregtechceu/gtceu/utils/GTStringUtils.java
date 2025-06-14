@@ -25,6 +25,6 @@ public class GTStringUtils {
     @NotNull
     public static String fluidStackToString(@NotNull FluidStack stack) {
         ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid());
-        return stack.getAmount() + "x" + fluidId.getNamespace() + "_" + fluidId.getPath();
+        return stack.getAmount() + "x_" + fluidId.getNamespace() + "_" + fluidId.getPath();
     }
 }
