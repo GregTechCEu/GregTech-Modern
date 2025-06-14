@@ -59,7 +59,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         if (researchId == null) {
-            if (itemResearchStack != null) researchId = GTStringUtils.itemStackToString(itemResearchStack);
+            if (!itemResearchStack.isEmpty()) researchId = GTStringUtils.itemStackToString(itemResearchStack);
             else researchId = GTStringUtils.fluidStackToString(fluidResearchStack);
         }
 
