@@ -19,11 +19,6 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-/**
- * @author KilaBash
- * @date 2022/8/27
- * @implNote ForgeCommonEventListener
- */
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class ForgeClientEventListener {

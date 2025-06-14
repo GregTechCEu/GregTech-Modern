@@ -30,7 +30,7 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
         // reset the ingredient if it's an int provider.
         if (ingredient instanceof IntProviderIngredient intProvider) {
             intProvider.setItemStacks(null);
-            intProvider.setSampledCount(null);
+            intProvider.setSampledCount(-1);
         }
         this.ingredient = SizedIngredient.create(ingredient, count);
     }
@@ -95,9 +95,9 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
     public OutputItem withRolls(IntProvider rolls) {
         IntProviderIngredient ingredient;
         if (this.ingredient.getInner() instanceof IntProviderIngredient intProvider) {
-            ingredient = new IntProviderIngredient(intProvider.getInner(), rolls);
+            ingredient = IntProviderIngredient.of(intProvider.getInner(), rolls);
         } else {
-            ingredient = new IntProviderIngredient(this.ingredient.getInner(), rolls);
+            ingredient = IntProviderIngredient.of(this.ingredient.getInner(), rolls);
         }
         return new ExtendedOutputItem(ingredient, this.ingredient.getAmount());
     }

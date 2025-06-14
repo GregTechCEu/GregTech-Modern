@@ -62,6 +62,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -181,7 +182,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             if (isPartIgnored(part)) continue;
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
@@ -201,7 +203,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
         getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
-        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
+        this.tier = Math.min(GTValues.MAX, GTUtil.getFloorTierByVoltage(getMaxVoltage()));
     }
 
     @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability

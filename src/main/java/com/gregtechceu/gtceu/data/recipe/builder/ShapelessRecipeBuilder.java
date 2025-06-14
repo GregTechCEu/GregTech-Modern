@@ -26,11 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote SmeltingRecipeBuilder
- */
 @Accessors(chain = true, fluent = true)
 public class ShapelessRecipeBuilder {
 

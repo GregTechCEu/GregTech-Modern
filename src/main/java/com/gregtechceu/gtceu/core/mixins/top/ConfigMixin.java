@@ -13,6 +13,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mcjty.theoneprobe.config.Config;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,9 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Mixin(value = Config.class, remap = false)
 public class ConfigMixin {
@@ -46,7 +46,7 @@ public class ConfigMixin {
     @Inject(method = "getHarvestabilityTags",
             at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"))
     private static void gtceu$injectHarvestTags(CallbackInfoReturnable<Map<ResourceLocation, String>> cir) {
-        Set<Integer> passedTiers = new HashSet<>();
+        IntSet passedTiers = new IntOpenHashSet();
         for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (mat.hasProperty(PropertyKey.TOOL)) {
                 MaterialToolTier tier = mat.getToolTier();

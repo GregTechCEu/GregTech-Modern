@@ -84,14 +84,6 @@ public class ReactorRecipes {
                 .outputFluids(SiliconeRubber.getFluid(1296))
                 .duration(600).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("titanium_tetrachloride")
-                .inputItems(dust, Carbon, 2)
-                .inputItems(dust, Rutile)
-                .inputFluids(Chlorine.getFluid(4000))
-                .outputFluids(CarbonMonoxide.getFluid(2000))
-                .outputFluids(TitaniumTetrachloride.getFluid(1000))
-                .duration(400).EUt(VA[HV]).save(provider);
-
         CHEMICAL_RECIPES.recipeBuilder("polydimethylsiloxane_from_dimethyldichlorosilane")
                 .inputFluids(Dimethyldichlorosilane.getFluid(1000))
                 .inputFluids(Water.getFluid(1000))
@@ -552,13 +544,6 @@ public class ReactorRecipes {
                 .inputFluids(CarbonDioxide.getFluid(1000))
                 .outputItems(dust, Magnesite, 5)
                 .duration(80).EUt(VA[LV]).save(provider);
-
-        CHEMICAL_RECIPES.recipeBuilder("quicklime_from_calcite")
-                .circuitMeta(1)
-                .inputItems(dust, Calcite, 5)
-                .outputItems(dust, Quicklime, 2)
-                .outputFluids(CarbonDioxide.getFluid(1000))
-                .duration(240).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("magnesia_from_magnesite")
                 .inputItems(dust, Magnesite, 5)

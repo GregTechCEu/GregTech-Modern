@@ -28,9 +28,7 @@ import static com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlot
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawText;
 
 /**
- * @author GlodBlock
- * @ Display a certain {@link FluidStack} element.
- * @date 2023/4/19-0:30
+ * Display a certain {@link FluidStack} element.
  */
 public class AEFluidDisplayWidget extends Widget {
 

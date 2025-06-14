@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
+import com.google.common.base.Suppliers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -119,9 +120,9 @@ public class OreVeinUtil {
 
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         JsonElement codecInput = resolveBiomeCodecInput(biomes);
-        return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
+        return Suppliers.memoize(() -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .parse(registryOps, codecInput)
-                .getOrThrow(false, GTCEu.LOGGER::error);
+                .getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     private static JsonElement resolveBiomeCodecInput(List<String> biomes) {

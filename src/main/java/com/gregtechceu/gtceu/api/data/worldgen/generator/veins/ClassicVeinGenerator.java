@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
@@ -79,25 +78,13 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
-        primary.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, primary.layers)));
-        secondary.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, secondary.layers)));
-        between.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, between.layers)));
-        sporadic.target
-                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                        material -> Stream.of(Either.<BlockState, Material>right(material)))
-                .forEach(entry -> result.add(Map.entry(entry, 1)));
-        return result;
+    public List<VeinEntry> getAllEntries() {
+        List<VeinEntry> entries = new ArrayList<>(primary.size() + secondary.size() + between.size() + sporadic.size());
+        VeinGenerator.mapTarget(primary.target, primary.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(secondary.target, secondary.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(between.target, between.layers).forEach(entries::add);
+        VeinGenerator.mapTarget(sporadic.target, 1).forEach(entries::add);
+        return entries;
     }
 
     @Override
@@ -283,6 +270,10 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         public Layer copy() {
             return new Layer(this.target.mapBoth(ArrayList::new, Function.identity()), layers);
+        }
+
+        public int size() {
+            return target.left().isPresent() ? target.left().get().size() : 1;
         }
 
         public static class Builder {

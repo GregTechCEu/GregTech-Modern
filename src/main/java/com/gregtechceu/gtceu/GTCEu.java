@@ -42,7 +42,7 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
+        return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnderscore(path));
     }
 
     public static String appendIdString(String id) {

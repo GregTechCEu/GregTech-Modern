@@ -18,11 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote BlockModelMixin
- */
 @Mixin(BlockModel.class)
 public class BlockModelMixin {
 

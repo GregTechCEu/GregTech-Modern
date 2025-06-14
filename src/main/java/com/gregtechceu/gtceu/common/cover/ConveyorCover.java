@@ -56,11 +56,6 @@ import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote ConveyorCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ConveyorCover extends CoverBehavior implements IUICover, IControllable {

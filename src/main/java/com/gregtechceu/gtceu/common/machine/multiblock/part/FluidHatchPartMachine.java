@@ -45,11 +45,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote FluidHatchPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot {

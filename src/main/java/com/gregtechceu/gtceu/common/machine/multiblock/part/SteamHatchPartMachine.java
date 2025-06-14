@@ -19,11 +19,6 @@ import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote SteamHatchPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamHatchPartMachine extends FluidHatchPartMachine {

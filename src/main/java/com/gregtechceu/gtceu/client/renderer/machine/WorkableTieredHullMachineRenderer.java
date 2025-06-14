@@ -22,11 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote WorkableTieredHullMachineRenderer
- */
 public class WorkableTieredHullMachineRenderer extends TieredHullMachineRenderer {
 
     protected final WorkableOverlayModel overlayModel;

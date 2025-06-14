@@ -55,11 +55,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/27
- * @implNote MaterialBlock
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MaterialBlock extends AppearanceBlock {

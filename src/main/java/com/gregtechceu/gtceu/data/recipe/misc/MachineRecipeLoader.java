@@ -1071,25 +1071,12 @@ public class MachineRecipeLoader {
                 .outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_gem").duration(320).EUt(100).inputItems(gem, Sapphire)
                 .outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("titanium_from_tetrachloride").duration(800).EUt(VA[HV])
-                .inputItems(dust, Magnesium, 2).inputFluids(TitaniumTetrachloride.getFluid(1000))
-                .outputItems(ingotHot, Titanium).outputItems(dust, MagnesiumChloride, 6)
-                .blastFurnaceTemp(Titanium.getBlastTemperature() + 200).save(provider);
         BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron)
                 .inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0)
                 .blastFurnaceTemp(1000).save(provider);
         BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron)
                 .inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, "1/9", 0)
                 .blastFurnaceTemp(1000).save(provider);
-
-        BLAST_RECIPES.recipeBuilder("rutile_from_ilmenite")
-                .inputItems(dust, Ilmenite, 10)
-                .inputItems(dust, Carbon, 4)
-                .outputItems(ingot, WroughtIron, 2)
-                .outputItems(dust, Rutile, 4)
-                .outputFluids(CarbonDioxide.getFluid(2000))
-                .blastFurnaceTemp(1700)
-                .duration(1600).EUt(VA[HV]).save(provider);
 
         BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
                 .inputItems(block, Glass)

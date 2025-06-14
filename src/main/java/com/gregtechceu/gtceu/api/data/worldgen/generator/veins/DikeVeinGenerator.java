@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -38,8 +39,6 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 @AllArgsConstructor
@@ -61,15 +60,12 @@ public class DikeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        return this.blocks.stream()
-                .flatMap(definition -> definition.block.map(
-                        state -> state.stream()
-                                .map(target -> Map.entry(Either.<BlockState, Material>left(target.state),
-                                        definition.weight)),
-                        material -> Stream
-                                .of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))))
-                .collect(Collectors.toList());
+    public List<VeinEntry> getAllEntries() {
+        List<VeinEntry> entries = new ArrayList<>(this.blocks.size());
+        for (var def : this.blocks) {
+            VeinGenerator.mapTarget(def.block, def.weight).forEach(entries::add);
+        }
+        return entries;
     }
 
     @Override
@@ -115,13 +111,10 @@ public class DikeVeinGenerator extends VeinGenerator {
         return generatedBlocks;
     }
 
-    private void placeBlock(
-                            BulkSectionAccess level, LevelChunkSection section, long randomSeed, BlockPos pos,
+    private void placeBlock(BulkSectionAccess level, LevelChunkSection section, long randomSeed, BlockPos pos,
                             GTOreDefinition entry) {
         var rand = new XoroshiroRandomSource(randomSeed);
-        List<? extends Map.Entry<Integer, DikeBlockDefinition>> entries = blocks.stream()
-                .map(b -> Map.entry(b.weight, b)).toList();
-        DikeBlockDefinition blockDefinition = blocks.get(GTUtil.getRandomItem(rand, entries, entries.size()));
+        DikeBlockDefinition blockDefinition = GTUtil.getRandomItem(rand, blocks);
         BlockState current = level.getBlockState(pos);
 
         int x = SectionPos.sectionRelative(pos.getX());
@@ -183,8 +176,8 @@ public class DikeVeinGenerator extends VeinGenerator {
         return this;
     }
 
-    public record DikeBlockDefinition(Either<List<TargetBlockState>, Material> block, int weight,
-                                      int minY, int maxY) {
+    public record DikeBlockDefinition(Either<List<TargetBlockState>, Material> block, int weight, int minY, int maxY)
+            implements WeightedEntry {
 
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("block")

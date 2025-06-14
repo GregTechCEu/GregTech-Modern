@@ -10,12 +10,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,7 +118,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where only the first ingredient succeeding its roll will be produced
      */
-    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+    public static final ChanceLogic FIRST = new ChanceLogic("first") {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
@@ -135,6 +138,88 @@ public abstract class ChanceLogic {
                     }
                     updateCachedChance(entry.content, cache, newChance / 2 + cached);
                     if (selected != null) break;
+                }
+                if (selected != null) builder.add(selected);
+            }
+            return builder.build();
+        }
+
+        @Override
+        public @NotNull Component getTranslation() {
+            return Component.translatable("gtceu.chance_logic.first");
+        }
+
+        @Override
+        public String toString() {
+            return "ChanceLogic{FIRST}";
+        }
+    };
+
+    /**
+     * Chanced Output Logic where only one of the ingredients will be output, in a manner weighted to the input chances
+     */
+    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+
+        @Override
+        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+                                                         @NotNull ChanceBoostFunction boostFunction,
+                                                         int recipeTier, int chanceTier,
+                                                         @Nullable Object2IntMap<?> cache, int times) {
+            // Have to set up a system where all chances are set to be out of 10000
+            IntList chancesOutOfTenThousand = new IntArrayList();
+
+            for (Content orig : chancedEntries) {
+                if (orig.maxChance == getMaxChancedValue()) {
+                    chancesOutOfTenThousand.add(orig.chance);
+                } else {
+                    chancesOutOfTenThousand.add((int) ((orig.chance / (float) orig.maxChance) * getMaxChancedValue()));
+                }
+            }
+
+            int chanceTotal = 0;
+            for (int chance : chancesOutOfTenThousand) {
+                chanceTotal += chance;
+            }
+
+            // Here, if the newly calculated chances don't add up to 10000, they're renormalized
+            if (chanceTotal != getMaxChancedValue()) {
+                int chanceTotalDecremented = getMaxChancedValue();
+                for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
+                    int newChance = (int) (chancesOutOfTenThousand.getInt(i) *
+                            ((float) getMaxChancedValue() / (float) chanceTotal));
+                    // last chance ends up being set to the remainder in case things don't line up
+                    if (i == chancesOutOfTenThousand.size() - 1) {
+                        chancesOutOfTenThousand.set(i, chanceTotalDecremented);
+                    } else {
+                        chancesOutOfTenThousand.set(i, newChance);
+                    }
+                    chanceTotalDecremented -= newChance;
+                }
+            }
+
+            // Finally, generate a new Content list with the changes
+            List<Content> normalizedEntries = new ArrayList<>();
+            for (int i = 0; i < chancesOutOfTenThousand.size(); i++) {
+                normalizedEntries.add(new Content(chancedEntries.get(i).content, chancesOutOfTenThousand.getInt(i),
+                        getMaxChancedValue(), chancedEntries.get(i).tierChanceBoost));
+            }
+
+            // Use the new, normalized list for the logic
+            ImmutableList.Builder<Content> builder = ImmutableList.builder();
+            for (int i = 0; i < times; ++i) {
+                Content selected = null;
+                int maxChance = getMaxChancedValue();
+                for (Content entry : normalizedEntries) {
+                    int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
+                    int cached = getCachedChance(entry, cache);
+                    int chance = newChance + cached;
+                    if (passesChance(chance, maxChance)) {
+                        selected = entry;
+                        newChance -= maxChance;
+                    }
+                    updateCachedChance(entry.content, cache, newChance / 2 + cached);
+                    if (selected != null) break;
+                    maxChance -= newChance;
                 }
                 if (selected != null) builder.add(selected);
             }

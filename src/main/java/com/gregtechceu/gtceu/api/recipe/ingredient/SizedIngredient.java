@@ -77,12 +77,12 @@ public class SizedIngredient extends Ingredient {
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
             return circuit.copy();
         } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
-            var copied = new IntProviderIngredient(intProviderIngredient.inner, intProviderIngredient.countProvider);
+            var copied = IntProviderIngredient.of(intProviderIngredient.inner, intProviderIngredient.countProvider);
             if (intProviderIngredient.itemStacks != null) {
                 copied.itemStacks = Arrays.stream(intProviderIngredient.itemStacks).map(ItemStack::copy)
                         .toArray(ItemStack[]::new);
             }
-            if (intProviderIngredient.sampledCount != null) {
+            if (intProviderIngredient.sampledCount != -1) {
                 copied.sampledCount = intProviderIngredient.sampledCount;
             }
             return copied;

@@ -25,11 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote ConveyorCoverRenderer
- */
 public class ConveyorCoverRenderer implements ICoverRenderer {
 
     public final static ConveyorCoverRenderer INSTANCE = new ConveyorCoverRenderer();

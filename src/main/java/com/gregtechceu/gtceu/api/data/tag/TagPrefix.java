@@ -22,10 +22,9 @@ import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -1040,9 +1039,9 @@ public class TagPrefix {
 
     public TagPrefix(String name, boolean invertedName) {
         this.name = name;
-        this.idPattern = "%s_" + FormattingUtil.toLowerCaseUnder(name);
+        this.idPattern = "%s_" + getLowerCaseName();
         this.invertedName = invertedName;
-        this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
+        this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
         PREFIXES.put(name, this);
     }
 
@@ -1218,8 +1217,12 @@ public class TagPrefix {
                 hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
     }
 
+    public String getLowerCaseName() {
+        return FormattingUtil.toLowerCaseUnderscore(this.name);
+    }
+
     public String getUnlocalizedName() {
-        return "tagprefix." + FormattingUtil.toLowerCaseUnderscore(name);
+        return "tagprefix." + getLowerCaseName();
     }
 
     public MutableComponent getLocalizedName(Material material) {
@@ -1227,16 +1230,15 @@ public class TagPrefix {
     }
 
     public String getUnlocalizedName(Material material) {
-        String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
         String matSpecificKey = String.format("item.%s.%s", material.getModid(),
                 this.idPattern.formatted(material.getName()));
-        if (LocalizationUtils.exist(matSpecificKey)) {
+        if (Language.getInstance().has(matSpecificKey)) {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("tagprefix.polymer.%s", formattedPrefix);
+            String localizationKey = String.format("tagprefix.polymer.%s", getLowerCaseName());
             // Not every polymer tag prefix gets a special name
-            if (LocalizationUtils.exist(localizationKey)) {
+            if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;
             }
         }

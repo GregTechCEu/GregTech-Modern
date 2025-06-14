@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -20,11 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/3/19
- * @implNote LangHandler
- */
 public class LangHandler {
 
     public static void init(RegistrateLangProvider provider) {
@@ -1333,6 +1327,7 @@ public class LangHandler {
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");
         provider.add("gtceu.chance_logic.xor", "XOR");
+        provider.add("gtceu.chance_logic.first", "FIRST");
         provider.add("gtceu.chance_logic.none", "NONE");
 
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
@@ -1513,7 +1508,7 @@ public class LangHandler {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);
-        while (LocalizationUtils.exist(next)) {
+        while (Language.getInstance().has(next)) {
             outputKeys.add(next);
             next = getSubKey(key, ++i);
         }
@@ -1553,7 +1548,7 @@ public class LangHandler {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);
-        while (LocalizationUtils.exist(next)) {
+        while (Language.getInstance().has(next)) {
             outputKeys.add(next);
             next = getSubKey(key, ++i);
         }

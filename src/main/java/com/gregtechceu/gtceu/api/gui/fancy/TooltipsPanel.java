@@ -15,11 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/6/27
- * @implNote TooltipsPanel
- */
 public class TooltipsPanel extends Widget {
 
     @Getter
