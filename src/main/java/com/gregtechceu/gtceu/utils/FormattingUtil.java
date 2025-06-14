@@ -110,6 +110,20 @@ public class FormattingUtil {
     }
 
     /**
+     * Check if {@code string} has any uppercase characters.
+     *
+     * @param string the string to check
+     * @return if the string has any uppercase characters.
+     */
+    public static boolean hasUpperCase(String string) {
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            if (Character.isUpperCase(ch)) return true;
+        }
+        return false;
+    }
+
+    /**
      * apple_orange.juice => Apple Orange (Juice)
      */
     public static String toEnglishName(Object internalName) {
