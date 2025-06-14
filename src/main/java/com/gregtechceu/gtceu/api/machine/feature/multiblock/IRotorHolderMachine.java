@@ -18,11 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote IRotorHolderMachine
- */
 public interface IRotorHolderMachine extends IMultiPart {
 
     int SPEED_INCREMENT = 1;

@@ -11,9 +11,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author GlodBlock
- * @Description An export only slot to hold {@link appeng.api.stacks.GenericStack}
- * @date 2023/4/22-13:42
+ * An export only slot to hold {@link appeng.api.stacks.GenericStack}
  */
 public abstract class ExportOnlyAESlot implements IConfigurableSlot, ITagSerializable<CompoundTag>,
                                        IContentChangeAware {

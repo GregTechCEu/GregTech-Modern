@@ -31,7 +31,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -142,7 +141,6 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.maximumRadius = maximumRadius;
         this.isDone = false;
         this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
-        this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
@@ -352,7 +350,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     protected boolean doPostProcessing(NonNullList<ItemStack> blockDrops, BlockState blockState,
                                        LootParams.Builder builder) {
-        ItemStack oreDrop = blockDrops.get(0);
+        ItemStack oreDrop = new ItemStack(blockState.getBlock());
+        if (oreDrop.isEmpty()) return false;
 
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
@@ -360,7 +359,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
         var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
 
-        while (matches != null && matches.hasNext()) {
+        while (matches.hasNext()) {
             GTRecipe match = matches.next();
             if (match == null) continue;
 

@@ -26,11 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote FacadeItem
- */
 public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionId, ICustomRenderer {
 
     @NotNull

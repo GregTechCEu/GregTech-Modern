@@ -44,11 +44,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/16
- * @implNote LargeBoilerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
@@ -83,12 +78,28 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     //////////////////////////////////////
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-
+    public void onStructureFormed() {
+        super.onStructureFormed();
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
         }
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        if (temperatureSubs != null) {
+            temperatureSubs.unsubscribe();
+            temperatureSubs = null;
+        }
+        super.onUnload();
     }
 
     protected void updateSteamSubscription() {
@@ -111,11 +122,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
             currentTemperature -= getCoolDownRate();
         }
 
-        if (getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
+        if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
+            double maxDrain = (double) (currentTemperature * throttle * TICKS_PER_STEAM_GENERATION) /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
-            var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
+            var drainWater = List.of(FluidIngredient.of(Math.max(1, (int) Math.ceil(maxDrain)), Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
             inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
@@ -135,11 +146,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
+                double drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
                         maxDrain - drainWater.get(0).getAmount();
 
                 boolean hasDrainedWater = drained > 0;
-                steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
+                steamGenerated = (int) (drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater);
 
                 if (hasDrainedWater) {
                     // fill steam

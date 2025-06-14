@@ -19,11 +19,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote GTRecipePayload
- */
 public class GTRecipePayload extends ObjectTypedPayload<GTRecipe> {
 
     private static RecipeManager getRecipeManager() {

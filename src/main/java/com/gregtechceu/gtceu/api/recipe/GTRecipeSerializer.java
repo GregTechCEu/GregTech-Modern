@@ -29,11 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeSerializer
- */
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());

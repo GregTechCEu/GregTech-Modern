@@ -83,11 +83,6 @@ import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote GTBlocks
- */
 @SuppressWarnings("removal")
 public class GTBlocks {
     //////////////////////////////////////
@@ -1396,7 +1391,7 @@ public class GTBlocks {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
                 GTMaterialItems.toUnify.put(entry, blockSupplier);
-                ItemMaterialData.registerMaterialInfoItems(entry, blockSupplier);
+                ItemMaterialData.registerMaterialEntry(blockSupplier, entry);
             });
             return builder;
         };
@@ -1434,7 +1429,7 @@ public class GTBlocks {
     }
 
     public static boolean doMetalPipe(Material material) {
-        return GTValues.FOOLS.get() && material.hasProperty(PropertyKey.INGOT) &&
+        return GTValues.FOOLS.getAsBoolean() && material.hasProperty(PropertyKey.INGOT) &&
                 !material.hasProperty(PropertyKey.POLYMER) && !material.hasProperty(PropertyKey.WOOD);
     }
 

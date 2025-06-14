@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class GTLayerPattern {
 
@@ -101,6 +103,11 @@ public class GTLayerPattern {
             this.minSize = minSize;
             this.maxSize = maxSize;
             this.weight = weight;
+        }
+
+        public Stream<VeinGenerator.VeinEntry> asVeinEntries() {
+            return targets.stream()
+                    .flatMap(target -> VeinGenerator.mapTarget(target, weight));
         }
 
         public Either<List<TargetBlockState>, Material> rollBlock(RandomSource random) {

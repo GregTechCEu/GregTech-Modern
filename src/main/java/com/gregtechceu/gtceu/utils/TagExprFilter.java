@@ -11,9 +11,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * @author brachy84
- */
 public class TagExprFilter {
 
     public static class TagExprParser {

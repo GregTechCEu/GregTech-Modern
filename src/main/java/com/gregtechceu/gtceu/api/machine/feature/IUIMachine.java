@@ -12,9 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote A machine that has gui. can be opened via right click.
+ * A machine that has gui. can be opened via right click.
  */
 public interface IUIMachine extends IUIHolder, IMachineFeature {
 

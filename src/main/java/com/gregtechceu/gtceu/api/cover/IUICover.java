@@ -10,11 +10,6 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.world.entity.player.Player;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote IUICover
- */
 public interface IUICover extends IUIHolder {
 
     default CoverBehavior self() {

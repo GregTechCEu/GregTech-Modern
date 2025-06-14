@@ -88,10 +88,9 @@ public class ScrapeBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF,
+            level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF,
                     SoundSource.PLAYERS, 1.0F, 1.0F);
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         return InteractionResult.PASS;

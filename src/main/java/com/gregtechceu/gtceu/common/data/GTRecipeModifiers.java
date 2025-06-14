@@ -28,11 +28,6 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 
-/**
- * @author KilaBash
- * @date 2023/7/9
- * @implNote GTRecipeModifiers
- */
 public class GTRecipeModifiers {
 
     /**

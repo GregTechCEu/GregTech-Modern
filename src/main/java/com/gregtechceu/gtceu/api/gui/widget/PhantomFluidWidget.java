@@ -34,6 +34,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.stack.EmiStack;
 import lombok.Getter;
+import lombok.Setter;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,15 +46,21 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@LDLRegister(name = "phantom_fluid_slot", group = "widget.container", priority = 50)
+@LDLRegister(name = "gtm_phantom_fluid_slot", group = "widget.gtm_container", priority = 50)
 public class PhantomFluidWidget extends TankWidget implements IGhostIngredientTarget, IConfigurableWidget {
 
-    private final Supplier<FluidStack> phantomFluidGetter;
-    private final Consumer<FluidStack> phantomFluidSetter;
+    @Setter
+    private Supplier<FluidStack> phantomFluidGetter;
+    @Setter
+    private Consumer<FluidStack> phantomFluidSetter;
 
     @Nullable
     @Getter
     protected FluidStack lastPhantomStack;
+
+    public PhantomFluidWidget() {
+        super();
+    }
 
     public PhantomFluidWidget(@Nullable IFluidHandler fluidTank, int tank, int x, int y, int width, int height,
                               Supplier<FluidStack> phantomFluidGetter, Consumer<FluidStack> phantomFluidSetter) {

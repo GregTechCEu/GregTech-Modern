@@ -45,11 +45,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote FluidRecipeCapability
- */
 public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();

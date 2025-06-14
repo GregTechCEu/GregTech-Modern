@@ -6,11 +6,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/7/4
- * @implNote IEditableUI
- */
 public interface IEditableUI<W extends Widget, T> {
 
     W createDefault();

@@ -22,11 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ThermalFluidStats
- */
 public class ThermalFluidStats implements IItemComponent, IComponentCapability, IAddInformation {
 
     public final int capacity;

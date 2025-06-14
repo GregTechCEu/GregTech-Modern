@@ -9,11 +9,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote GTBlockEntities
- */
 public class GTBlockEntities {
 
     @SuppressWarnings("unchecked")

@@ -4,11 +4,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote GTFoods
- */
 public class GTFoods {
 
     public final static FoodProperties CHOCOLATE = new FoodProperties.Builder()

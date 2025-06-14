@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.FluidTags;
@@ -34,11 +34,6 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/11
- * @implNote TooltipsHandler
- */
 @OnlyIn(Dist.CLIENT)
 public class TooltipsHandler {
 
@@ -67,7 +62,7 @@ public class TooltipsHandler {
         String translationKey = stack.getDescriptionId();
         if (translationKey.startsWith(ITEM_PREFIX) || translationKey.startsWith(BLOCK_PREFIX)) {
             String tooltipKey = translationKey + ".tooltip";
-            if (I18n.exists(tooltipKey)) {
+            if (Language.getInstance().has(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
                 List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);

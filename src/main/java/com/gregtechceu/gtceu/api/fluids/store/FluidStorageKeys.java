@@ -6,20 +6,19 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import org.jetbrains.annotations.NotNull;
 
 public final class FluidStorageKeys {
 
     public static final FluidStorageKey LIQUID = new FluidStorageKey(GTCEu.id("liquid"),
-            "liquids",
             MaterialIconType.liquid,
             m -> prefixedRegisteredName("liquid_", FluidStorageKeys.LIQUID, m),
             m -> m.hasProperty(PropertyKey.DUST) ? "gtceu.fluid.liquid_generic" : "gtceu.fluid.generic",
             FluidState.LIQUID, 0);
 
     public static final FluidStorageKey GAS = new FluidStorageKey(GTCEu.id("gas"),
-            "gases",
             MaterialIconType.gas,
             m -> postfixedRegisteredName("_gas", FluidStorageKeys.GAS, m),
             m -> {
@@ -37,14 +36,12 @@ public final class FluidStorageKeys {
             FluidState.GAS, 0);
 
     public static final FluidStorageKey PLASMA = new FluidStorageKey(GTCEu.id("plasma"),
-            "plasmas",
             MaterialIconType.plasma,
             m -> m.getName() + "_plasma",
             m -> "gtceu.fluid.plasma",
             FluidState.PLASMA, -1);
 
-    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"),
-            "molten",
+    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), CustomTags.MOLTEN_FLUIDS,
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),
             m -> "gtceu.fluid.molten",

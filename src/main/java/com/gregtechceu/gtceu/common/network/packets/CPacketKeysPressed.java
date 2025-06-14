@@ -7,11 +7,12 @@ import com.lowdragmc.lowdraglib.networking.IPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.booleans.BooleanBooleanPair;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 @NoArgsConstructor
 public class CPacketKeysPressed implements IPacket {
 
@@ -34,11 +35,11 @@ public class CPacketKeysPressed implements IPacket {
 
     @Override
     public void decode(FriendlyByteBuf buf) {
-        this.updateKeys = new Pair[KeyBind.VALUES.length];
-        Pair<Boolean, Boolean>[] updateKeys = (Pair<Boolean, Boolean>[]) this.updateKeys;
+        this.updateKeys = new BooleanBooleanPair[KeyBind.VALUES.length];
+        BooleanBooleanPair[] updateKeys = (BooleanBooleanPair[]) this.updateKeys;
         int size = buf.readVarInt();
         for (int i = 0; i < size; i++) {
-            updateKeys[buf.readVarInt()] = Pair.of(buf.readBoolean(), buf.readBoolean());
+            updateKeys[buf.readVarInt()] = BooleanBooleanPair.of(buf.readBoolean(), buf.readBoolean());
         }
     }
 
@@ -46,11 +47,11 @@ public class CPacketKeysPressed implements IPacket {
     public void execute(IHandlerContext handler) {
         if (handler.getPlayer() != null) {
             KeyBind[] keybinds = KeyBind.VALUES;
-            Pair<Boolean, Boolean>[] updateKeys = (Pair<Boolean, Boolean>[]) this.updateKeys;
+            BooleanBooleanPair[] updateKeys = (BooleanBooleanPair[]) this.updateKeys;
             for (int i = 0; i < updateKeys.length; i++) {
-                Pair<Boolean, Boolean> pair = updateKeys[i];
+                BooleanBooleanPair pair = updateKeys[i];
                 if (pair != null) {
-                    keybinds[i].update(pair.getFirst(), pair.getSecond(), handler.getPlayer());
+                    keybinds[i].update(pair.firstBoolean(), pair.secondBoolean(), handler.getPlayer());
                 }
             }
         }

@@ -22,11 +22,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Arrays;
 import java.util.Locale;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote GTCovers
- */
 public class GTCovers {
 
     public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.LV,

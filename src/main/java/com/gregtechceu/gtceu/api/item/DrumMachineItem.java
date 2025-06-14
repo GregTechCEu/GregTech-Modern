@@ -15,11 +15,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2023/3/28
- * @implNote DrumMachineItem
- */
 public class DrumMachineItem extends MetaMachineItem {
 
     @NotNull
@@ -46,7 +41,7 @@ public class DrumMachineItem extends MetaMachineItem {
             return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(
                     () -> new ThermalFluidHandlerItemStack(
                             itemStack,
-                            Math.toIntExact(GTMachineUtils.DRUM_CAPACITY.get(getDefinition())),
+                            GTMachineUtils.DRUM_CAPACITY.getInt(getDefinition()),
                             property.getMaxFluidTemperature(), property.isGasProof(), property.isAcidProof(),
                             property.isCryoProof(), property.isPlasmaProof())));
         }

@@ -22,11 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote MetaMachineItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetaMachineItem extends BlockItem implements IItemRendererProvider {
