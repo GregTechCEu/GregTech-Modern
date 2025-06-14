@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.RenderType;
@@ -116,7 +115,7 @@ public class GTMaterialBlocks {
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
             String typePrefix = "";
-            if (oreTag == TagPrefix.ore) {
+            if (oreTag != TagPrefix.ore) {
                 typePrefix = FormattingUtil.toLowerCaseUnderscore(oreTag.name) + "_";
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
