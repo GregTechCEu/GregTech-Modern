@@ -949,6 +949,8 @@ public class TagPrefix {
 
     public static final TagPrefix surfaceRock = new TagPrefix("surfaceRock")
             .langValue("%s Surface Rock")
+            .defaultTagPath("surface_rocks/%s")
+            .unformattedTagPath("surface_rocks")
             .materialAmount(GTValues.M / 3);
 
     public static class Conditions {
