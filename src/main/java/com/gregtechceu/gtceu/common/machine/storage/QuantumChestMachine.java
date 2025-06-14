@@ -282,7 +282,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     }
 
     private static boolean isDoubleHit(UUID uuid) {
-        return (System.currentTimeMillis() - INTERACTION_LOGGER.getOrDefault(uuid, System.currentTimeMillis())) < 300;
+        return (System.currentTimeMillis() - INTERACTION_LOGGER.getLong(uuid)) < 300;
     }
 
     @Override

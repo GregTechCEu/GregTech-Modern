@@ -37,11 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote PipeBlockRenderer
- */
 public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
 
     @Getter

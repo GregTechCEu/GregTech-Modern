@@ -110,11 +110,6 @@ import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
-/**
- * @author KilaBash
- * @date 2022/8/27
- * @implNote ForgeCommonEventListener
- */
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
 
@@ -270,8 +265,8 @@ public class ForgeCommonEventListener {
             if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
                 IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
                 MobEffectInstance effect = event.getEffectInstance();
-                Integer cost = QuarkTechSuite.potionRemovalCost.get(effect.getEffect());
-                if (cost != null) {
+                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
+                if (cost != -1) {
                     cost = cost * (effect.getAmplifier() + 1);
                     if (helmet.canUse(cost)) {
                         helmet.discharge(cost, helmet.getTier(), true, false, false);

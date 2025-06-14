@@ -15,4 +15,4 @@ jobs:
         with:
           update-cache: true
       - name: Clean
-        run: ./gradlew clean --build-cache
+        run: ./gradlew clean

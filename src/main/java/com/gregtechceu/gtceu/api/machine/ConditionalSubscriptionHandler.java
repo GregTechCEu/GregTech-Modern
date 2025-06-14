@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.level.Level;
 
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 /**
  * Handles a subscription that is only active in specific conditions.
@@ -20,11 +20,11 @@ public class ConditionalSubscriptionHandler {
 
     private final ITickSubscription handler;
     private final Runnable runnable;
-    private final Supplier<Boolean> condition;
+    private final BooleanSupplier condition;
 
     private TickableSubscription subscription;
 
-    public ConditionalSubscriptionHandler(ITickSubscription handler, Runnable runnable, Supplier<Boolean> condition) {
+    public ConditionalSubscriptionHandler(ITickSubscription handler, Runnable runnable, BooleanSupplier condition) {
         this.handler = handler;
         this.runnable = runnable;
         this.condition = condition;
@@ -54,7 +54,7 @@ public class ConditionalSubscriptionHandler {
      * Updates the subscription according to whether it should currently be active.
      */
     public void updateSubscription() {
-        if (condition.get()) {
+        if (condition.getAsBoolean()) {
             subscription = handler.subscribeServerTick(subscription, runnable);
         } else if (subscription != null) {
             subscription.unsubscribe();

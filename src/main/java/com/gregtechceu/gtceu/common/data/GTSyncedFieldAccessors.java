@@ -11,11 +11,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote GTSyncedFieldAccessors
- */
 public class GTSyncedFieldAccessors {
 
     public static final IAccessor GT_RECIPE_TYPE_ACCESSOR = new GTRecipeTypeAccessor();

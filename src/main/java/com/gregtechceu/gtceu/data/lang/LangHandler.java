@@ -20,11 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/3/19
- * @implNote LangHandler
- */
 public class LangHandler {
 
     public static void init(RegistrateLangProvider provider) {
@@ -1333,6 +1328,7 @@ public class LangHandler {
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");
         provider.add("gtceu.chance_logic.xor", "XOR");
+        provider.add("gtceu.chance_logic.first", "FIRST");
         provider.add("gtceu.chance_logic.none", "NONE");
 
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");

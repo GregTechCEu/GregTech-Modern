@@ -51,10 +51,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.registerTieredMachines;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-/**
- * @author Rundas
- * @implNote Gregicality Multiblocks
- */
 public class GCYMMachines {
 
     public static void init() {}

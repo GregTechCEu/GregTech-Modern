@@ -59,11 +59,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTRegistrate
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GTRegistrate extends Registrate {

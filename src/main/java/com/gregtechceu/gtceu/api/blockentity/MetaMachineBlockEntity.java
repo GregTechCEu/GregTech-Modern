@@ -44,11 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote MetaMachineBlockEntity
- */
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();

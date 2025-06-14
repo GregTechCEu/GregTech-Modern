@@ -8,11 +8,6 @@ import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote ConfigHolder
- */
 @Config(id = GTCEu.MOD_ID)
 public class ConfigHolder {
 

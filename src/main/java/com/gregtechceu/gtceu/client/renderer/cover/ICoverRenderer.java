@@ -20,10 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote ICoverRenderer
- *           Do not use it as a block renderer alone. It should be called from {@link ICoverableRenderer}
+ * Do not use it as a block renderer alone. It should be called from {@link ICoverableRenderer}
  */
 public interface ICoverRenderer extends IRenderer {
 

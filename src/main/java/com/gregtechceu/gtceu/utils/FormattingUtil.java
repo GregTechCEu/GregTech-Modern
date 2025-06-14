@@ -18,11 +18,6 @@ import java.util.stream.Collectors;
 
 import static net.minecraft.ChatFormatting.YELLOW;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote FormattingUtil
- */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
 public class FormattingUtil {
 

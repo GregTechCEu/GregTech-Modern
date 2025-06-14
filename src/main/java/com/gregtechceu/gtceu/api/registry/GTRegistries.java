@@ -36,11 +36,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-/**
- * @author KilaBash
- * @date 2023/2/13
- * @implNote ElementRegistry
- */
 public final class GTRegistries {
 
     // GT Registry

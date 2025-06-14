@@ -18,11 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringSized;
 
-/**
- * @Author GlodBlock
- * @Description The amount set widget for config slot
- * @Date 2023/4/21-21:20
- */
 public class AmountSetWidget extends Widget {
 
     private int index = -1;

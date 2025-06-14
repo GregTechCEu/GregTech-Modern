@@ -15,11 +15,6 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 import com.mojang.serialization.Codec;
 
-/**
- * @author KilaBash
- * @date 2023/3/25
- * @implNote GTPlacerTypes
- */
 public class GTPlacerTypes {
 
     public static final TrunkPlacerType<RubberTrunkPlacer> RUBBER_TRUNK = registerTruckPlacer("rubber",

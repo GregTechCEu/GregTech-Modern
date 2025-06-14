@@ -22,11 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote RecipeHelper
- */
 public class RecipeHelper {
 
     public static long getInputEUt(GTRecipe recipe) {

@@ -82,7 +82,6 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(BlockProperties.SERVER_TICK);
         RotationState rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
             pBuilder.add(rotationState.property);

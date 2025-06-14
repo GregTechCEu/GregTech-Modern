@@ -24,11 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Predicate;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote NotifiableFluidTank
- */
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
 

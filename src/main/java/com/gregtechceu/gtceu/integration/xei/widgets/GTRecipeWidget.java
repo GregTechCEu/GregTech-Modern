@@ -45,11 +45,6 @@ import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote GTRecipeWidget
- */
 public class GTRecipeWidget extends WidgetGroup {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipeContentGroup";

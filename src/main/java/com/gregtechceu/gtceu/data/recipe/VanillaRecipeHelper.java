@@ -28,11 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote VanillaRecipeHelper
- */
 public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
@@ -601,7 +596,7 @@ public class VanillaRecipeHelper {
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
                     if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, outputCount, inputCountMap, ms, lastChar);
+                        addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                     }
                 }
                 continue;
@@ -610,14 +605,14 @@ public class VanillaRecipeHelper {
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
             if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
-                addMaterialStack(materialStacksExploded, outputCount, inputCountMap, materialStack, lastChar);
+                addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
             if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
-                    addMaterialStack(materialStacksExploded, outputCount, inputCountMap, ms, lastChar);
+                    addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }
             }
         }
@@ -626,8 +621,7 @@ public class VanillaRecipeHelper {
     }
 
     private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<Material> materialStacksExploded,
-                                         int outputStackCount, @NotNull Char2IntFunction inputCountMap,
-                                         @NotNull MaterialStack ms, char c) {
-        materialStacksExploded.merge(ms.material(), (ms.amount() * inputCountMap.get(c) / outputStackCount), Long::sum);
+                                         int inputCount, int outputCount, @NotNull MaterialStack ms) {
+        materialStacksExploded.addTo(ms.material(), (ms.amount() * inputCount / outputCount));
     }
 }

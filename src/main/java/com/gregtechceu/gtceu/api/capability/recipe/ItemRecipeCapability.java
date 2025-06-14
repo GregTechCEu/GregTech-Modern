@@ -49,7 +49,6 @@ import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,11 +58,6 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
@@ -83,7 +77,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
-            return new IntProviderIngredient(intProviderIngredient.getInner(),
+            return IntProviderIngredient.of(intProviderIngredient.getInner(),
                     new FlooredInt(
                             new AddedFloat(
                                     new MultipliedFloat(
@@ -415,14 +409,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
-            Pair<GTRecipeType, String> researchData = null;
+            ResearchManager.ResearchItem researchData = null;
             for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
                 researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
                 if (researchData != null) break;
             }
             if (researchData != null) {
-                Collection<GTRecipe> possibleRecipes = researchData.getFirst()
-                        .getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> possibleRecipes = researchData.recipeType()
+                        .getDataStickEntry(researchData.researchId());
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {

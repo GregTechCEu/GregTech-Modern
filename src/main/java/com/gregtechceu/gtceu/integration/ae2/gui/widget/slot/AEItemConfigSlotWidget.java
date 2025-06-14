@@ -24,11 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawItemStack;
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
-/**
- * @Author GlodBlock
- * @Description A configurable slot for {@link ItemStack}
- * @Date 2023/4/22-0:48
- */
 public class AEItemConfigSlotWidget extends AEConfigSlotWidget implements IGhostItemTarget {
 
     public AEItemConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
