@@ -123,36 +123,28 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
         }
 
         if (isFormed() && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
-            // drain water
-            double maxDrain = (double) (currentTemperature * throttle * TICKS_PER_STEAM_GENERATION) /
+            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION /
                     (ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater * 100);
-            var drainWater = List.of(FluidIngredient.of(Math.max(1, (int) Math.ceil(maxDrain)), Fluids.WATER));
-            List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
-            inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
-            inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
             if (currentTemperature < 100) {
                 steamGenerated = 0;
-                for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, null, true);
-                    if (drainWater == null || drainWater.isEmpty() || drainWater.get(0).getAmount() > 0) {
-                        break;
-                    }
-                }
-            } else if (maxDrain > 0) {
-                // if maxDrain is 0 because throttle or TICKS_PER_STEAM_GENERATION is too low, skip trying to make steam
+            } else if (maxDrain > 0) { // if maxDrain is 0 because throttle is too low, skip trying to make steam
+                // drain water
+                var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
+                List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
+                inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
+                inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater == null || drainWater.isEmpty()) {
                         break;
                     }
                 }
-                double drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
+                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
                         maxDrain - drainWater.get(0).getAmount();
 
-                boolean hasDrainedWater = drained > 0;
-                steamGenerated = (int) (drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater);
+                steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
-                if (hasDrainedWater) {
+                if (drained > 0) {
                     // fill steam
                     var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
