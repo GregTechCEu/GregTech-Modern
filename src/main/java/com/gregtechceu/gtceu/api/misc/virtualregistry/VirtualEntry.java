@@ -54,7 +54,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
     }
 
     public static @NotNull String formatColorString(String colorString) {
-        return String.format("%-8s", colorString).replace(' ', '0').toUpperCase();
+        return String.format("%-8s", colorString).replace(' ', '0').toUpperCase(Locale.ROOT);
     }
 
     @Override
