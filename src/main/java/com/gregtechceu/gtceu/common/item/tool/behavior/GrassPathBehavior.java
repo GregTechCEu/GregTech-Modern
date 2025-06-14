@@ -92,10 +92,9 @@ public class GrassPathBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHOVEL_FLATTEN,
+            level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.SHOVEL_FLATTEN,
                     SoundSource.PLAYERS, 1.0F, 1.0F);
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
 
         return InteractionResult.PASS;

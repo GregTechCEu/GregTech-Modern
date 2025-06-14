@@ -120,6 +120,8 @@ public class CustomTags {
     public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
 
+    public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
+
     // Mineability tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
     public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");
@@ -197,9 +199,10 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE,
             "chemical_immune");
 
-    public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
-    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
+    public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
+
+    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
 }

@@ -24,13 +24,14 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.mojang.datafixers.util.Pair;
-import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -78,11 +79,8 @@ public class ItemMaterialData {
                                              @NotNull MaterialEntry materialEntry) {
         registerItemEntry(supplier, materialEntry);
         ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
-        if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
-            registerRegistryObjectEntry(registryObject, materialEntry);
-        } else if (supplier instanceof BlockEntry<?> entry) {
-            registerBlockEntry(entry, materialEntry);
-        } else if (supplier instanceof MemoizedBlockSupplier<?> blockSupplier) {
+        var blockSupplier = convertToBlock(supplier);
+        if (blockSupplier != null) {
             registerBlockEntry(blockSupplier, materialEntry);
         }
     }
@@ -131,19 +129,28 @@ public class ItemMaterialData {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static void registerRegistryObjectEntry(@NotNull RegistryObject<? extends ItemLike> registryObject,
-                                                    @NotNull MaterialEntry materialEntry) {
-        var key = registryObject.getKey();
-        if (key != null && key.isFor(Registries.BLOCK)) {
-            registerBlockEntry((Supplier<? extends Block>) registryObject, materialEntry);
-        }
-    }
-
     private static void registerBlockEntry(@NotNull Supplier<? extends Block> supplier,
                                            @NotNull MaterialEntry materialEntry) {
         MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
                 .add(supplier);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static @Nullable Supplier<? extends Block> convertToBlock(@NotNull Supplier<? extends ItemLike> supplier) {
+        if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
+            var key = registryObject.getKey();
+            if (key != null && key.isFor(Registries.BLOCK)) {
+                return (Supplier<? extends Block>) registryObject;
+            }
+        } else if (supplier instanceof RegistryEntry<? extends ItemLike> entry) {
+            var key = entry.getKey();
+            if (key.isFor(Registries.BLOCK)) {
+                return (Supplier<? extends Block>) entry;
+            }
+        } else if (supplier instanceof MemoizedBlockSupplier<?> blockSupplier) {
+            return blockSupplier;
+        }
+        return null;
     }
 
     public static void reinitializeMaterialData() {
