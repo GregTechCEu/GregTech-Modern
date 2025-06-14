@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.biome.Biome;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,18 +28,19 @@ public class BiomeCondition extends RecipeCondition {
 
     public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder
             .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(ResourceLocation.CODEC.fieldOf("biome").forGetter(val -> val.biome))
+                    .and(ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome))
                     .apply(instance, BiomeCondition::new));
 
     public final static BiomeCondition INSTANCE = new BiomeCondition();
-    private ResourceLocation biome = new ResourceLocation("dummy");
+    @Getter
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, new ResourceLocation("dummy"));
 
-    public BiomeCondition(boolean isReverse, ResourceLocation biome) {
+    public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {
         super(isReverse);
         this.biome = biome;
     }
 
-    public BiomeCondition(ResourceLocation biome) {
+    public BiomeCondition(ResourceKey<Biome> biome) {
         this.biome = biome;
     }
 
@@ -55,11 +57,8 @@ public class BiomeCondition extends RecipeCondition {
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.biome.tooltip",
-                LocalizationUtils.format("biome.%s.%s", biome.getNamespace(), biome.getPath()));
-    }
-
-    public ResourceLocation getBiome() {
-        return biome;
+                Component.translatableWithFallback(biome.location().toLanguageKey("biome"),
+                        biome.location().toString()));
     }
 
     @Override
@@ -79,28 +78,28 @@ public class BiomeCondition extends RecipeCondition {
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
-        config.addProperty("biome", biome.toString());
+        config.addProperty("biome", biome.location().toString());
         return config;
     }
 
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        biome = new ResourceLocation(
-                GsonHelper.getAsString(config, "biome", "dummy"));
+        biome = ResourceKey.create(Registries.BIOME,
+                new ResourceLocation(GsonHelper.getAsString(config, "biome", "dummy")));
         return this;
     }
 
     @Override
     public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        biome = new ResourceLocation(buf.readUtf());
+        biome = buf.readResourceKey(Registries.BIOME);
         return this;
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buf) {
         super.toNetwork(buf);
-        buf.writeUtf(biome.toString());
+        buf.writeResourceKey(biome);
     }
 }

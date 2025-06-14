@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -33,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -123,10 +121,11 @@ public class DataAccessHatchMachine extends TieredPartMachine
         recipes.clear();
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);
-            Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+            ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
             boolean isValid = ResearchManager.isStackDataItem(stack, isDataBank);
             if (researchData != null && isValid) {
-                Collection<GTRecipe> collection = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> collection = researchData.recipeType()
+                        .getDataStickEntry(researchData.researchId());
                 if (collection != null) {
                     recipes.addAll(collection);
                 }
