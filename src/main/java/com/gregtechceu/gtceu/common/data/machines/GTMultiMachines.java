@@ -1008,6 +1008,7 @@ public class GTMultiMachines {
     public static final MultiblockMachineDefinition CHARCOAL_PILE_IGNITER = REGISTRATE
             .multiblock("charcoal_pile_igniter", CharcoalPileIgniterMachine::new)
             .rotationState(RotationState.NONE)
+            .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
             .pattern((def) -> FactoryBlockPattern.start()
                     .aisle("     ", " XXX ", " XXX ", " XXX ", "     ")
