@@ -5,18 +5,23 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,23 +44,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
-
-    private static final Set<Block> WALL_BLOCKS = new ObjectOpenHashSet<>();
-    static {
-        WALL_BLOCKS.add(Blocks.DIRT);
-        WALL_BLOCKS.add(Blocks.COARSE_DIRT);
-        WALL_BLOCKS.add(Blocks.PODZOL);
-        WALL_BLOCKS.add(Blocks.GRASS_BLOCK);
-        WALL_BLOCKS.add(Blocks.DIRT_PATH);
-        WALL_BLOCKS.add(Blocks.SAND);
-        WALL_BLOCKS.add(Blocks.RED_SAND);
-
-    }
 public class CharcoalPileIgniterMachine extends MultiblockControllerMachine implements IWorkable, IMufflableMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
@@ -116,7 +110,7 @@ public class CharcoalPileIgniterMachine extends MultiblockControllerMachine impl
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
@@ -220,23 +214,10 @@ public class CharcoalPileIgniterMachine extends MultiblockControllerMachine impl
                 .aisle(c)
                 .where('S', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .where('B', Predicates.blocks(Blocks.BRICKS))
-                .where('W', wallPredicate())
+                .where('W', Predicates.blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS))
                 .where('L', logPredicate())
                 .where('A', Predicates.any())
                 .build();
-    }
-
-    private TraceabilityPredicate wallPredicate() {
-        return new TraceabilityPredicate(multiblockState -> {
-            boolean match = false;
-            for (var b : WALL_BLOCKS) {
-                if (multiblockState.getBlockState().getBlock() == b) {
-                    match = true;
-                    break;
-                }
-            }
-            return match;
-        }, null);
     }
 
     private TraceabilityPredicate logPredicate() {
@@ -298,7 +279,7 @@ public class CharcoalPileIgniterMachine extends MultiblockControllerMachine impl
     }
 
     private static boolean isBlockWall(Level level, BlockPos.MutableBlockPos pos, Direction direction) {
-        return WALL_BLOCKS.contains(level.getBlockState(pos.move(direction)).getBlock());
+        return level.getBlockState(pos.move(direction)).is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS);
     }
 
     private static boolean isBlockFloor(Level level, BlockPos.MutableBlockPos pos) {
