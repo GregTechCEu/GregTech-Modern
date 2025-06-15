@@ -44,7 +44,6 @@ import java.util.*;
 
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
-public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
     private static final Set<Block> WALL_BLOCKS = new ObjectOpenHashSet<>();
     static {
@@ -57,15 +56,16 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         WALL_BLOCKS.add(Blocks.RED_SAND);
 
     }
+public class CharcoalPileIgniterMachine extends MultiblockControllerMachine implements IWorkable, IMufflableMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CharcoalPileIgniterMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
-    private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
+            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
+
+    private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
     @DescSynced
     private int lDist = 0;
@@ -78,11 +78,21 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @DescSynced
     private int hDist = 0;
     @Getter
+    @Setter
     @DescSynced
     @RequireRerender
     private boolean isActive;
-    private int progressTime = 0;
-    private int maxTime = 0;
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    protected boolean isMuffled;
+    @Getter
+    @Persisted
+    private int progress = 0;
+    @Getter
+    @Persisted
+    private int maxProgress = 0;
     private TickableSubscription burnLogsSubscription;
 
     public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
@@ -92,7 +102,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        updateMaxProgessTime();
+        recalculateMaxProgress();
         burnLogsSubscription = subscribeServerTick(this::tick);
         tick();
     }
@@ -101,8 +111,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     public void onStructureInvalid() {
         super.onStructureInvalid();
         resetState();
-        this.progressTime = 0;
-        this.maxTime = 0;
+        this.progress = 0;
+        this.maxProgress = 0;
     }
 
     @Override
@@ -117,24 +127,20 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     private void resetState() {
-        unsubscribe(burnLogsSubscription);
-        isActive = false;
-    }
-
-    @Override
-    public int getProgress() {
-        return progressTime;
-    }
-
-    @Override
-    public int getMaxProgress() {
-        return maxTime;
+        if (burnLogsSubscription != null) {
+            unsubscribe(burnLogsSubscription);
+            burnLogsSubscription = null;
+        }
+        setActive(false);
     }
 
     @Override
     public boolean isWorkingEnabled() {
         return true;
     }
+
+    @Override
+    public void setWorkingEnabled(boolean isWorkingAllowed) {}
 
     @Override
     public BlockPattern getPattern() {
@@ -248,13 +254,15 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         if (level == null) return;
         Direction front = getFrontFacing();
         Direction back = front.getOpposite();
-        Direction left = front.getCounterClockWise();
-        Direction right = left.getOpposite();
+        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, getUpwardsFacing(), false);
+        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, getUpwardsFacing(), false);
 
-        BlockPos.MutableBlockPos lPos = getPos().mutable().move(Direction.DOWN);
-        BlockPos.MutableBlockPos rPos = getPos().mutable().move(Direction.DOWN);
-        BlockPos.MutableBlockPos fPos = getPos().mutable().move(Direction.DOWN);
-        BlockPos.MutableBlockPos bPos = getPos().mutable().move(Direction.DOWN);
+        BlockPos down = getPos().relative(Direction.DOWN);
+
+        BlockPos.MutableBlockPos lPos = down.mutable();
+        BlockPos.MutableBlockPos rPos = down.mutable();
+        BlockPos.MutableBlockPos fPos = down.mutable();
+        BlockPos.MutableBlockPos bPos = down.mutable();
         BlockPos.MutableBlockPos hPos = getPos().mutable();
 
         int lDist = 0;
@@ -294,15 +302,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     private static boolean isBlockFloor(Level level, BlockPos.MutableBlockPos pos) {
-        return level.getBlockState(pos.move(Direction.DOWN)).getBlock() == Blocks.BRICKS;
+        return level.getBlockState(pos.move(Direction.DOWN)).is(Blocks.BRICKS);
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    private void updateMaxProgessTime() {
-        this.maxTime = Math.max(1, (int) Math.sqrt(logPos.size() * 240_000));
+    private void recalculateMaxProgress() {
+        this.maxProgress = Math.max(1, (int) Math.sqrt(logPos.size() * 240_000));
     }
 
     @Override
@@ -335,10 +339,10 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     public void tick() {
-        if (isActive && maxTime > 0) {
-            if (++progressTime == maxTime) {
-                progressTime = 0;
-                maxTime = 0;
+        if (isActive && maxProgress > 0) {
+            if (++progress == maxProgress) {
+                progress = 0;
+                maxProgress = 0;
                 convertLogBlocks();
                 isActive = false;
             }
@@ -348,7 +352,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private void convertLogBlocks() {
         Level level = getLevel();
         for (BlockPos pos : logPos) {
-            level.setBlock(pos, GTBlocks.BRITTLE_CHARCOAL.getDefaultState(), Block.UPDATE_ALL);
+            level.setBlockAndUpdate(pos, GTBlocks.BRITTLE_CHARCOAL.getDefaultState());
         }
         logPos.clear();
     }
