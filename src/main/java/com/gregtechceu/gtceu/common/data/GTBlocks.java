@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.common.block.*;
+import com.gregtechceu.gtceu.common.block.explosive.GTExplosiveBlock;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -685,6 +687,7 @@ public class GTBlocks {
             .properties(p -> p.destroyTime(0.5F).sound(SoundType.WOOD).mapColor(MapColor.STONE)
                     .pushReaction(PushReaction.BLOCK))
             .tag(BlockTags.MINEABLE_WITH_AXE)
+            .loot(GTExplosiveBlock::createGTExplosiveLootTable)
             .simpleItem()
             .register();
 
@@ -697,6 +700,7 @@ public class GTBlocks {
                     GTCEu.id("block/misc/industrial_tnt_side"),
                     new ResourceLocation("minecraft", "block/tnt_bottom"),
                     new ResourceLocation("minecraft", "block/tnt_top"))))
+            .loot(GTExplosiveBlock::createGTExplosiveLootTable)
             .simpleItem()
             .register();
 
@@ -1202,17 +1206,7 @@ public class GTBlocks {
             .lang("Brittle Charcoal")
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
             .blockstate(GTModels.cubeAllModel("brittle_charcoal", GTCEu.id("block/misc/brittle_charcoal")))
-            .item((b, p) -> new BlockItem(b, p) {
-
-                @Override
-                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                            TooltipFlag isAdvanced) {
-                    super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-                    tooltipComponents.add(1, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.0"));
-                    tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
-                }
-            })
-            .build()
+            .simpleItem()
             .register();
 
     public static void generateStoneBlocks() {

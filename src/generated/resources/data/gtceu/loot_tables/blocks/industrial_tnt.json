@@ -11,6 +11,16 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "block": "gtceu:industrial_tnt",
+              "function": "minecraft:copy_state",
+              "properties": [
+                "unstable",
+                "can_redstone_activate"
+              ]
+            }
+          ],
           "name": "gtceu:industrial_tnt"
         }
       ],
