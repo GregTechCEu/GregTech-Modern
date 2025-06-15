@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -32,9 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -364,32 +361,28 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             return super.onUse(state, level, pos, player, hand, hit);
         }
 
-        BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof IMachineBlockEntity machineBe) {
-            MetaMachine mte = machineBe.getMetaMachine();
-            if (mte instanceof CharcoalPileIgniterMachine cpi && cpi.isFormed() && !cpi.isActive()) {
-                boolean isLighter = false;
-                SoundEvent sound = stack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE :
-                        SoundEvents.FLINTANDSTEEL_USE;
+        if (this.isFormed() && !this.isActive()) {
+            boolean isLighter = false;
+            SoundEvent sound = stack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE :
+                    SoundEvents.FLINTANDSTEEL_USE;
 
-                if (stack.getItem() instanceof ComponentItem compItem) {
-                    for (var component : compItem.getComponents()) {
-                        if (component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
-                            isLighter = true;
-                            break;
-                        }
+            if (stack.getItem() instanceof ComponentItem compItem) {
+                for (var component : compItem.getComponents()) {
+                    if (component instanceof LighterBehavior lighter && lighter.consumeFuel(player, stack)) {
+                        isLighter = true;
+                        break;
                     }
                 }
-                if (!isLighter && stack.isDamageableItem()) {
-                    stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
-                } else if (!isLighter) {
-                    stack.shrink(1);
-                }
-
-                level.playSound(null, pos, sound, SoundSource.PLAYERS, 1.0f, 1.0f);
-                cpi.setActive(true);
-                return InteractionResult.sidedSuccess(level.isClientSide);
             }
+            if (!isLighter && stack.isDamageableItem()) {
+                stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+            } else if (!isLighter) {
+                stack.shrink(1);
+            }
+
+            level.playSound(null, pos, sound, SoundSource.PLAYERS, 1.0f, 1.0f);
+            this.setActive(true);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return super.onUse(state, level, pos, player, hand, hit);
     }
