@@ -142,6 +142,8 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createBlockTag("needs_neutronium_tool");
 
     // Tool tags
+    public static final TagKey<Item> TOOLS_IGNITER = TagUtil.createItemTag("tools/igniter");
+
     public static final TagKey<Item> BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
     public static final TagKey<Item> BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");
     public static final TagKey<Item> CHAINSAWS = TagUtil.createItemTag("tools/chainsaws");

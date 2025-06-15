@@ -392,14 +392,14 @@ public class GTItems {
             .lang("Matches")
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, false, false)))
-            .tag(ItemTags.CREEPER_IGNITERS)
+            .tag(CustomTags.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::create)
             .lang("Matchbox")
             .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, true, false, () -> new ItemStack(Items.PAPER, 1), 16)))
-            .tag(ItemTags.CREEPER_IGNITERS)
+            .tag(CustomTags.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::create)
             .lang("Invar Lighter")
@@ -411,7 +411,7 @@ public class GTItems {
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
-            .tag(ItemTags.CREEPER_IGNITERS)
+            .tag(CustomTags.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
             .item("platinum_lighter", ComponentItem::create)
@@ -424,7 +424,7 @@ public class GTItems {
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
-            .tag(ItemTags.CREEPER_IGNITERS)
+            .tag(CustomTags.TOOLS_IGNITER)
             .register();
 
     public static ItemEntry<Item> CARBON_FIBERS = REGISTRATE.item("carbon_fibers", Item::new)

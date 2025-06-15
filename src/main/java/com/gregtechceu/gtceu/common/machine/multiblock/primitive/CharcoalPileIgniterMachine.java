@@ -342,7 +342,7 @@ public class CharcoalPileIgniterMachine extends MultiblockControllerMachine impl
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.is(ItemTags.CREEPER_IGNITERS)) {
+        if (!stack.is(CustomTags.TOOLS_IGNITER)) {
             return super.onUse(state, level, pos, player, hand, hit);
         }
 
