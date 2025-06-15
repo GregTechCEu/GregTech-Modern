@@ -126,6 +126,26 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         return InteractionResult.PASS;
     }
 
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player,
+                                                  LivingEntity interactionTarget, InteractionHand usedHand) {
+        CompoundTag tag = stack.getOrCreateTag();
+        Level level = player.level();
+
+        if ((!canOpen || tag.getBoolean(LIGHTER_OPEN)) && !player.isShiftKeyDown()) {
+            if (interactionTarget instanceof Creeper creeper) {
+                if (!consumeFuel(player, stack)) return InteractionResult.PASS;
+                level.playSound(player, creeper, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
+                        1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+                if (!level.isClientSide) {
+                    creeper.ignite();
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
     public boolean consumeFuel(Player player, ItemStack stack) {
         if (player != null && player.isCreative())
             return true;
