@@ -141,8 +141,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder hasTESR(boolean hasTESR) {
-        return (MultiblockMachineBuilder) super.hasTESR(hasTESR);
+    public MultiblockMachineBuilder hasBER(boolean hasBER) {
+        return (MultiblockMachineBuilder) super.hasBER(hasBER);
     }
 
     @Override

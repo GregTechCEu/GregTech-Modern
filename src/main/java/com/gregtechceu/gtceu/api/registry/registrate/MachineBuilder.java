@@ -77,7 +77,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
 
-    protected final Registrate registrate;
+    protected final GTRegistrate registrate;
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
@@ -102,7 +102,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean allowExtendedFacing = false;
     @Setter
-    private boolean hasTESR;
+    private boolean hasBER;
     @Setter
     private boolean renderMultiblockWorldPreview = true;
     @Setter
@@ -414,8 +414,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 .blockEntity(name, (type, pos, state) -> blockEntityFactory.apply(type, pos, state).self())
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
-        if (hasTESR) {
-            blockEntityBuilder = blockEntityBuilder.renderer(() -> GTRendererProvider::getOrCreate);
+        if (hasBER) {
+            blockEntityBuilder = blockEntityBuilder.renderer(() -> BakedModelWithBERRenderer::new);
         }
         var blockEntity = blockEntityBuilder.register();
         definition.setRecipeTypes(recipeTypes);

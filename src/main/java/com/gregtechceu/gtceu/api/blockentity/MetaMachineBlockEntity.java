@@ -13,14 +13,14 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
+import com.gregtechceu.gtceu.client.model.IBakedModelWithBER;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -263,19 +263,16 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
      * Why, Forge, Why?
      * Why must you make me add a method for no good reason?
      */
+    @SuppressWarnings("unchecked")
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        GTRendererProvider instance = GTRendererProvider.getInstance();
-        if (instance != null) {
-            IRenderer renderer = instance.getRenderer(this);
-            if (renderer != null) {
-                if (renderer.getViewDistance() == 64 /* the default */) {
-                    return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
-                }
+        var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        var model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
-                int viewDistHalf = renderer.getViewDistance() / 2;
-                return new AABB(worldPosition).inflate(viewDistHalf);
+        if (model instanceof IBakedModelWithBER<?> modelWithBER) {
+            if (modelWithBER.getBlockEntityType() == this.getType()) {
+                return ((IBakedModelWithBER<MetaMachineBlockEntity>) modelWithBER).getRenderBoundingBox(this);
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
