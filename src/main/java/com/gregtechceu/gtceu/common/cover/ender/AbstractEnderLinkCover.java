@@ -51,7 +51,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AbstractEnderLinkCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);
-    public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("[0-9a-fA-F]*");
+    public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("^[0-9a-fA-F]{0,8}$");
 
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
