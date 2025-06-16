@@ -39,8 +39,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
     }
 
     public static int parseColor(String colorString) {
-        colorString = formatColorString(colorString);
-
         if (colorString.length() < 8) {
             colorString += "F".repeat(8 - colorString.length());
         }
@@ -51,10 +49,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
         int alpha = Integer.parseInt(colorString.substring(6, 8), 16);
 
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
-    }
-
-    public static @NotNull String formatColorString(String colorString) {
-        return String.format("%-8s", colorString).replace(' ', '0').toUpperCase(Locale.ROOT);
     }
 
     @Override

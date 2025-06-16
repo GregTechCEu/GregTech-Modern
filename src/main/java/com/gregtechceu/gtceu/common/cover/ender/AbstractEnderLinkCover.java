@@ -174,7 +174,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         if (isRemote()) return;
         VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
                 VirtualEntry::canRemove);
-        this.colorStr = VirtualEntry.formatColorString(name);
+        this.colorStr = name;
         setVirtualEntry();
     }
 
