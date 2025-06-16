@@ -1,24 +1,14 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.mixins.BlockModelAccessor;
 
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.ElementsModel;
 import net.minecraftforge.client.model.geometry.BlockGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
@@ -34,16 +24,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideModel> {
 
     @NotNull
-    @Getter
     @Setter
     protected Map<String, ResourceLocation> textureOverride;
     @Nullable
@@ -71,11 +58,15 @@ public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideMod
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
+        spriteGetter = new SpriteOverrider(getTextureOverride(), spriteGetter);
+
         if (context instanceof BlockGeometryBakingContext blockCtx) {
-            UnbakedModel parent = blockCtx.owner.parent;
-            if (parent == null) return null;
-            ResourceLocation parentLoc = blockCtx.owner.getParentLocation();
-            return parent.bake(baker, new SpriteOverrider(getTextureOverride(), spriteGetter), modelState, parentLoc);
+            BlockModel model = blockCtx.owner;
+            if (model == null) return null;
+            // replicate UnbakedGeometryHelper's default logic
+            var elementsModel = new ElementsModel(((BlockModelAccessor) model).gtceu$getRawElements());
+            return elementsModel.bake(blockCtx, baker, spriteGetter, modelState,
+                    model.getOverrides(baker, model, spriteGetter), modelLocation);
         }
 
         return null;
@@ -102,112 +93,6 @@ public class TextureOverrideModel implements IUnbakedGeometry<TextureOverrideMod
                 }
             }
             return new TextureOverrideModel(overrides);
-        }
-    }
-
-    public static class Baked extends BaseBakedModel {
-
-        @OnlyIn(Dist.CLIENT)
-        @Getter
-        protected Map<ModelState, BakedModel> modelCaches;
-
-        protected BakedModel parentModel;
-
-        public Baked(BakedModel parent) {
-            this.parentModel = parent;
-            if (GTCEu.isClientSide()) {
-                registerEvent();
-            }
-            initRenderer();
-        }
-
-        public void initRenderer() {
-            if (GTCEu.isClientSide()) {
-                this.bakedModelCache = new ConcurrentHashMap<>();
-            }
-        }
-
-        @Override
-        public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                                 @NotNull RandomSource rand,
-                                                 @NotNull ModelData extraData, @Nullable RenderType renderType) {
-            return super.getQuads(state, side, rand);
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        @Nullable
-        protected BakedModel getBlockBakedModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
-                                                @Nullable BlockState state) {
-            ModelState modelState = null;
-            if (modelState != null) {
-                return modelCaches.computeIfAbsent(modelState, ms -> getModel().bake(
-                        getModelBaker(),
-                        BaseBakedModel::spriteGetter,
-                        ms, modelLocation));
-            }
-            return modelCaches.computeIfAbsent(BlockModelRotation.X0_Y0, ms -> getModel().bake(
-                    getModelBaker(),
-                    BaseBakedModel::spriteGetter,
-                    ms, modelLocation));
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        @Override
-        public BakedModel getRotatedModel(ModelState modelState) {
-            return bakedModelCache.computeIfAbsent(modelState, state -> getModel().bake(
-                    ModelFactory.getModeBaker(),
-                    new SpriteOverrider(textureOverride),
-                    modelState,
-                    modelLocation));
-        }
-
-        @Override
-        public BakedModel getBaseModel() {
-            if (this.baseModel == null) {
-                this.baseModel = getModelBakery().getModel(modelLocation)
-                        .bake(getModelBaker(), new SpriteOverrider(getTextureOverride()),
-                                BlockModelRotation.X0_Y0, modelLocation);
-            }
-            return this.baseModel;
-        }
-
-        // @Override
-        // @OnlyIn(Dist.CLIENT)
-        // public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        // if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) { // prepare for override.
-        // if (bakedModelCache != null) {
-        // bakedModelCache.clear();
-        // }
-        // if (overrideSupplier != null) override = overrideSupplier.get();
-        // for (ResourceLocation value : override.values()) {
-        // register.accept(value);
-        // }
-        // }
-        // }
-
-        @Override
-        public boolean useAmbientOcclusion() {
-            return true;
-        }
-
-        @Override
-        public boolean isGui3d() {
-            return true;
-        }
-
-        @Override
-        public boolean usesBlockLight() {
-            return true;
-        }
-
-        @Override
-        public boolean isCustomRenderer() {
-            return false;
-        }
-
-        @Override
-        public @NotNull ItemOverrides getOverrides() {
-            return ItemOverrides.EMPTY;
         }
     }
 }
