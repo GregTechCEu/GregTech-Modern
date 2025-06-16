@@ -31,11 +31,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.ModelProvider;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.client.model.generators.*;
 
 import com.google.gson.JsonObject;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -45,8 +41,15 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Locale;
 
 public class GTModels {
+
+    public static final ResourceLocation MACHINE_MODEL_LOADER = GTCEu.id("machine");
+    public static final ResourceLocation TEXTURE_OVERRIDE_MODEL_LOADER = GTCEu.id("texture_override");
+
+    public static final String OVERLAY_PREFIX = "overlay_";
+    public static final String EMISSIVE_POSTFIX = "_emissive";
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,
                                              RegistrateBlockstateProvider prov, ResourceLocation modelLocation) {
@@ -55,30 +58,7 @@ public class GTModels {
 
     public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx,
                                              RegistrateBlockstateProvider prov) {
-        prov.simpleBlock(ctx.getEntry(), prov.models().cross(ForgeRegistries.BLOCKS.getKey(ctx.getEntry()).getPath(),
-                prov.blockTexture(ctx.getEntry())));
-    }
-
-    public static void cellModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov) {
-        // empty model
-        prov.getBuilder("item/" + prov.name(ctx::getEntry) + "_empty")
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", prov.modLoc("item/%s/base".formatted(prov.name(ctx))));
-
-        // filled model
-        prov.getBuilder("item/" + prov.name(ctx::getEntry) + "_filled")
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", prov.modLoc("item/%s/base".formatted(prov.name(ctx))))
-                .texture("layer1", prov.modLoc("item/%s/overlay".formatted(prov.name(ctx))));
-
-        // root model
-        prov.generated(ctx::getEntry, prov.modLoc("item/%s/base".formatted(prov.name(ctx))))
-                .override().predicate(GTCEu.id("fluid_cell"), 0)
-                .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s_empty".formatted(prov.name(ctx)))))
-                .end()
-                .override().predicate(GTCEu.id("fluid_cell"), 1)
-                .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s_filled".formatted(prov.name(ctx)))))
-                .end();
+        prov.simpleBlock(ctx.getEntry(), prov.models().cross(ctx.getName(), prov.blockTexture(ctx.getEntry())));
     }
 
     public static <
@@ -92,7 +72,7 @@ public class GTModels {
                         .parent(new ModelFile.UncheckedModelFile("item/generated"));
                 subModelBuilder.texture("layer0", prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i + 1)));
 
-                rootModel = rootModel.override().predicate(predicate, i / 100f)
+                rootModel = rootModel.override().predicate(predicate, (float) i / modelNumber)
                         .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i))))
                         .end();
             }
@@ -384,44 +364,6 @@ public class GTModels {
                     GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()), newJson);
                 }
             }
-        }
-    }
-
-    public static void registerMachineModels() {
-        for (MachineDefinition definition : GTRegistries.MACHINES) {
-            IMachineBlock block = definition.get();
-            ResourceLocation blockId = definition.getId();
-            ResourceLocation modelId = blockId.withPrefix("block/");
-            JsonObject json = new JsonObject();
-            json.addProperty("machine", blockId.toString());
-            json.addProperty("is_item", false);
-            json.addProperty("loader", "gtceu:machine");
-            GTDynamicResourcePack.addBlockModel(blockId, json);
-
-            JsonObject itemJson = json.deepCopy();
-            itemJson.addProperty("is_item", true);
-            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(definition.getItem()), itemJson);
-
-            MultiVariantGenerator generator = MultiVariantGenerator.multiVariant(block.self());
-            if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
-                PropertyDispatch dispatch = PropertyDispatch
-                        .properties(block.getRotationState().property, GTBlockStateProperties.UPWARDS_FACING)
-                        .generate((front, up) -> {
-                            return Variant.variant().with(VariantProperties.MODEL, modelId);
-                        });
-                generator.with(dispatch);
-            } else if (block.getRotationState() != RotationState.NONE) {
-                PropertyDispatch dispatch = PropertyDispatch
-                        .property(block.getRotationState().property)
-                        .generate((front) -> {
-                            return Variant.variant().with(VariantProperties.MODEL, modelId);
-                        });
-                generator.with(dispatch);
-            } else {
-                generator = MultiVariantGenerator.multiVariant(block.self(),
-                        Variant.variant().with(VariantProperties.MODEL, modelId));
-            }
-            GTDynamicResourcePack.addBlockState(blockId, generator);
         }
     }
 }

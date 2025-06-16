@@ -111,14 +111,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
     @Setter
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
+    @Nullable
     @Setter
     private Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
+    @Nullable
     @Setter
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
     @Getter // getter for KJS
-    private GTRecipeType[] recipeTypes;
+    private @Nullable GTRecipeType @Nullable [] recipeTypes = null;
     @Getter
     @Setter // getter for KJS
     private int tier;
@@ -131,6 +133,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
+    @Nullable
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
@@ -156,6 +159,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean regressWhenWaiting = true;
 
+    @Nullable
     @Setter
     private Supplier<BlockState> appearance;
     @Getter // getter for KJS
@@ -183,6 +187,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.definition = definition;
     }
 
+    @SuppressWarnings("NullableProblems")
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         if (type != GTRecipeTypes.DUMMY_RECIPES) {
@@ -191,6 +196,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Tolerate
     public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
         for (GTRecipeType type : types) {
@@ -262,7 +268,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> tooltips(Component... components) {
+    @SuppressWarnings("NullableProblems")
+    public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
         tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
         return this;
     }
@@ -390,6 +397,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @HideFromJS
     public DEFINITION register() {
+        this.registrate.object(name);
         var definition = createDefinition();
 
         setupStateDefinition(definition);
@@ -411,7 +419,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         var item = itemBuilder.register();
 
         var blockEntityBuilder = registrate
-                .blockEntity(name, (type, pos, state) -> blockEntityFactory.apply(type, pos, state).self())
+                .blockEntity((type, pos, state) -> blockEntityFactory.apply(type, pos, state).self())
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {
@@ -465,39 +473,43 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     static class BlockBuilderWrapper {
 
-        @SuppressWarnings("removal")
-        public static <
-                DEFINITION extends MachineDefinition> BlockBuilder<Block, Registrate> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
-                                                                                                       DEFINITION definition) {
-            return builder.registrate.block(builder.name, properties -> {
-                MachineDefinition.setBuilt(definition);
-                var b = builder.blockFactory.apply(properties, definition);
-                MachineDefinition.clearBuilt();
-                return b.self();
-            })
-                    .color(() -> () -> IMachineBlock::colorTinted)
+    // spotless:off
+    protected static class BlockBuilderWrapper {
+
+        @SuppressWarnings("unchecked")
+        public static <DEFINITION extends MachineDefinition> BlockBuilder<? extends IMachineBlock, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
+                                                                                                                                                     DEFINITION definition) {
+            return (BlockBuilder<? extends IMachineBlock, ? extends AbstractRegistrate<?>>) builder.registrate
+                    .block(properties -> makeBlock(builder, definition, properties))
                     .initialProperties(() -> Blocks.DISPENSER)
+                    .properties(builder.blockProp)
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
                     // .tag(GTToolType.WRENCH.harvestTag)
                     .blockstate(GTModels.createMachineModel(definition))
-                    .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
-    }
 
-    static class ItemBuilderWrapper {
-
-        public static <
-                DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, Registrate> makeItemBuilder(MachineBuilder<DEFINITION> builder,
-                                                                                                               BlockEntry<Block> block) {
-            return builder.registrate
-                    .item(builder.name,
-                            properties -> builder.itemFactory.apply((IMachineBlock) block.get(), properties))
-                    .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
-                    .model(NonNullBiConsumer.noop())
-                    .color(() -> () -> builder.itemColor::apply)
-                    .properties(builder.itemProp);
+        private static <DEFINITION extends MachineDefinition> Block makeBlock(MachineBuilder<DEFINITION> builder, DEFINITION definition,
+                                                                              BlockBehaviour.Properties properties) {
+            MachineDefinition.setBuilt(definition);
+            var b = builder.blockFactory.apply(properties, definition);
+            MachineDefinition.clearBuilt();
+            return b.self();
         }
     }
+
+    protected static class ItemBuilderWrapper {
+
+        public static <DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, ? extends AbstractRegistrate<?>> makeItemBuilder(MachineBuilder<DEFINITION> builder,
+                                                                                                                                           BlockEntry<? extends IMachineBlock> block) {
+            return builder.registrate
+                    .item(properties -> builder.itemFactory.apply(block.get(), properties))
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
+                    .properties(builder.itemProp)
+                    .model(NonNullBiConsumer.noop())
+                    .color(() -> () -> builder.itemColor::apply);
+        }
+    }
+    // spotless:on
 }

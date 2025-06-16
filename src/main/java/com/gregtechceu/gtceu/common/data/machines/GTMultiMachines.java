@@ -109,7 +109,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
             .renderer(() -> new PrimitiveBlastFurnaceModel(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
                     GTCEu.id("block/multiblock/primitive_blast_furnace")))
-            .hasTESR(true)
+            .hasBER(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX", "XXX")
@@ -710,7 +710,7 @@ public class GTMultiMachines {
                     })
                     .renderer(() -> new FusionReactorModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor")))
-                    .hasTESR(true)
+                    .hasBER(true)
                     .register(),
             LuV, ZPM, UV);
 

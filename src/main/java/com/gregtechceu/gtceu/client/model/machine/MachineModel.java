@@ -29,7 +29,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,10 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartRenderer {
+import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
-    public static final ModelProperty<BlockAndTintGetter> LEVEL = new ModelProperty<>();
-    public static final ModelProperty<BlockPos> POS = new ModelProperty<>();
+public final class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartRenderer {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");

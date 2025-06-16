@@ -35,10 +35,10 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             .registerTypeAdapter(Variant.class, new Variant.Deserializer())
             .registerTypeAdapter(MultiVariant.class, new MultiVariant.Deserializer())
             .create();
-
-    private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
+
+    private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
 
     private MachineModelLoader() {}
 

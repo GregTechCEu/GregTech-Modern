@@ -131,16 +131,12 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     private MachineRenderState defaultRenderState;
 
-    protected MachineDefinition(ResourceLocation id) {
+    public MachineDefinition(ResourceLocation id) {
         this.id = id;
     }
 
     public final void registerDefaultState(MachineRenderState state) {
         this.defaultRenderState = state;
-    }
-
-    public static MachineDefinition createDefinition(ResourceLocation id) {
-        return new MachineDefinition(id);
     }
 
     public Block getBlock() {
@@ -183,7 +179,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Override
     public String toString() {
-        return "[Definition: %s]".formatted(id);
+        return id.toString();
     }
 
     public String getDescriptionId() {

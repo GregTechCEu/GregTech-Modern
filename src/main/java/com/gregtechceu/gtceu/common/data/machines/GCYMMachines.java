@@ -110,7 +110,7 @@ public class GCYMMachines {
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
             .renderer(() -> new LargeChemicalBathModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_chemical_bath")))
-            .hasTESR(true)
+            .hasBER(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
             .appearanceBlock(CASING_WATERTIGHT)
@@ -170,7 +170,7 @@ public class GCYMMachines {
             .recipeType(MIXER_RECIPES)
             .renderer(() -> new LargeMixerModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
                     GTCEu.id("block/multiblock/gcym/large_mixer")))
-            .hasTESR(true)
+            .hasBER(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
             .appearanceBlock(CASING_REACTION_SAFE)

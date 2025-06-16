@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
+import com.gregtechceu.gtceu.common.data.GTModels;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -128,7 +129,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register("machine", MachineModelLoader.INSTANCE);
-        event.register("texture_override", TextureOverrideModel.Loader.INSTANCE);
+        event.register(GTModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
+        event.register(GTModels.TEXTURE_OVERRIDE_MODEL_LOADER.getPath(), TextureOverrideModel.Loader.INSTANCE);
     }
 }

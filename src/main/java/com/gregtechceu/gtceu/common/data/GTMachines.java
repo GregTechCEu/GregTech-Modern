@@ -520,7 +520,7 @@ public class GTMachines {
                 }
             })
             .renderer(() -> new QuantumTankModel(MAX, GTCEu.id("block/machine/creative_tank")))
-            .hasTESR(true)
+            .hasBER(true)
             .register();
 
     public static final MachineDefinition CREATIVE_ITEM = REGISTRATE
@@ -537,7 +537,7 @@ public class GTMachines {
                 }
             })
             .renderer(() -> new QuantumChestModel(MAX, GTCEu.id("block/machine/creative_chest")))
-            .hasTESR(true)
+            .hasBER(true)
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
@@ -557,7 +557,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestModel(tier))
-                    .hasTESR(true)
+                    .hasBER(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
@@ -574,7 +574,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .renderer(() -> new QuantumChestModel(tier))
-                    .hasTESR(true)
+                    .hasBER(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_total",
@@ -591,7 +591,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankModel(tier))
-                    .hasTESR(true)
+                    .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
@@ -608,7 +608,7 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .renderer(() -> new QuantumTankModel(tier))
-                    .hasTESR(true)
+                    .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
