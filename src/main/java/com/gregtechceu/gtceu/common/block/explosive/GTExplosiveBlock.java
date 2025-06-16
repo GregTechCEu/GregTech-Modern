@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.block.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -98,11 +98,11 @@ public abstract class GTExplosiveBlock extends Block {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
+        if (!stack.isEmpty() && stack.is(CustomTags.TOOLS_IGNITER)) {
             this.explode(level, pos, player);
             level.removeBlock(pos, false);
-            if (stack.getItem() == Items.FLINT_AND_STEEL) {
-                stack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(hand));
+            if (stack.isDamageableItem()) {
+                stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
             } else if (!player.isCreative()) {
                 stack.shrink(1);
             }

@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,6 +36,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -262,6 +262,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
      * whilst still placing a fire block if the block can't do that.
      * <p>
      * Most modded TNTs implement this method in one way or another, but don't have tags or extend {@link TntBlock}.
+     * 
      * @author screret
      */
     private static boolean classImplementsOnCaughtFire(Class<? extends Block> clazz) {
@@ -291,8 +292,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                     BlockState.class, Level.class, BlockPos.class, Direction.class, LivingEntity.class);
             int modifiers = onCaughtFire.getModifiers();
             // the method is implemented if it's: 1. not a default method, 2. public, 3. not static, 4. not abstract
-            exists = !onCaughtFire.getDeclaringClass().isInterface()
-                    && Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && !Modifier.isAbstract(modifiers);
+            exists = !onCaughtFire.getDeclaringClass().isInterface() && Modifier.isPublic(modifiers) &&
+                    !Modifier.isStatic(modifiers) && !Modifier.isAbstract(modifiers);
 
             IMPLS_CACHE.put(onCaughtFire.getDeclaringClass(), exists);
         } catch (NoSuchMethodException e) {
