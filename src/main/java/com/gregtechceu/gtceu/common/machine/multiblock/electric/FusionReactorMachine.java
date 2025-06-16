@@ -34,6 +34,8 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -57,6 +59,8 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
+
+    public static final ModelProperty<Integer> MODEL_DATA_COLOR = new ModelProperty<>();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -298,6 +302,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                 LocalizationUtils.format("gtceu.recipe.eu_to_start",
                         FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
+    }
+
+    @Override
+    public void updateModelData(ModelData.Builder builder) {
+        super.updateModelData(builder);
+        builder.with(MODEL_DATA_COLOR, this.color);
     }
 
     //////////////////////////////////////

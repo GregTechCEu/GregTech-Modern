@@ -63,6 +63,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -70,6 +71,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -679,6 +681,13 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (appearance != null) return appearance;
         }
         return getDefinition().getAppearance().get();
+    }
+
+    @MustBeInvokedByOverriders
+    public void updateModelData(ModelData.Builder builder) {
+        for (MachineTrait trait : this.getTraits()) {
+            trait.updateModelData(builder);
+        }
     }
 
     public MachineRenderState getRenderState() {
