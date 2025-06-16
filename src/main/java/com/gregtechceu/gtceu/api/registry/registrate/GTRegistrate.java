@@ -23,6 +23,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -143,7 +144,29 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new SoundEntryBuilder(name);
     }
 
+    // Blocks
     @Override
+    public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(NonNullFunction<BlockBehaviour.Properties, T> factory) {
+        return block(this, factory);
+    }
+
+    @Override
+    public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(String name,
+                                                                   NonNullFunction<BlockBehaviour.Properties, T> factory) {
+        return block(this, name, factory);
+    }
+
+    @Override
+    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent,
+                                                           NonNullFunction<BlockBehaviour.Properties, T> factory) {
+        return block(parent, currentName(), factory);
+    }
+
+    @Override
+    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name,
+                                                           NonNullFunction<BlockBehaviour.Properties, T> factory) {
+        return (GTBlockBuilder<T, P>) entry(name,
+                callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
     private RegistryEntry<CreativeModeTab> currentTab;

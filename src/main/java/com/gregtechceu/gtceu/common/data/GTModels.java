@@ -2,28 +2,26 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
@@ -297,23 +295,45 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createMachineModel(MachineDefinition definition) {
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
             if (!(block instanceof IMachineBlock machineBlock)) {
-                return;
+                throw new IllegalArgumentException(
+                        "passed block must be a machine block, is " + block.getClass().getName());
             }
-            prov.models().getBuilder(definition.getId())
+            MachineDefinition definition = machineBlock.getDefinition();
 
-            ModelFile inactive = prov.models().cubeBottomTop(name, definition.side(), definition.bottom(), definition.top());
-            ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/fire_box_active"))
-                    .texture("side", definition.side())
-                    .texture("bottom", definition.bottom())
-                    .texture("top", definition.top());
-            prov.getVariantBuilder(block)
-                    .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(GTBlockStateProperties.ACTIVE, true).modelForState().modelFile(active).addModel();
+            MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
+                    .customLoader(MachineModelBuilder.begin(definition));
+            model.configureModel(ctx, prov, builder);
+
+            final ModelFile built = builder.end();
+            var generator = prov.multiVariantGenerator(block,
+                    Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
+            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
+            if (dispatch != null) {
+                generator.with(dispatch);
+            }
         };
+    }
+
+    public static ResourceLocation getHullTexture(int tier) {
+        return GTCEu.id("block/casings/voltage/%s".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
+    }
+
+    public static ResourceLocation getHullTexture(int tier, String key) {
+        return getHullTexture(tier).withSuffix("/" + key);
+    }
+
+    public static void hullTexture(BlockModelBuilder model, String key, int tier) {
+        model.texture(key, getHullTexture(tier, key));
+    }
+
+    public static void hullTextures(BlockModelBuilder model, int tier) {
+        hullTexture(model, "bottom", tier);
+        hullTexture(model, "top", tier);
+        hullTexture(model, "side", tier);
     }
 
     /**

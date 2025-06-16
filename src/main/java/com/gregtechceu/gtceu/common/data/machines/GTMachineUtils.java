@@ -303,7 +303,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .renderProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
+                        .modelProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
                         .renderer(() -> new ChargerModel(tier))
                         .langValue(
                                 "%s %sx Turbo Charger".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,

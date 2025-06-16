@@ -485,8 +485,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .properties(builder.blockProp)
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
-                    // .tag(GTToolType.WRENCH.harvestTag)
-                    .blockstate(GTModels.createMachineModel(definition))
+                    .exBlockstate(builder.model != null ? builder.model : createMachineModel(builder.machineModel))
+                    .color(() -> () -> IMachineBlock::colorTinted)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
 
