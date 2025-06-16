@@ -340,7 +340,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             int textInputWidth = (GROUP_WIDTH - GROUP_X * 2) - currentX - WIDGET_BOARD - 2;
             return new ConfirmTextInputWidget(currentX, 0, textInputWidth, WIDGET_BOARD, cover.colorStr,
                     cover::setChannelName, text -> {
-                        if (text == null || !COLOR_INPUT_PATTERN.matcher(text).matches() || text.length() > 8) {
+                        if (text == null || !COLOR_INPUT_PATTERN.matcher(text).matches()) {
                             return VirtualTank.DEFAULT_COLOR;
                         }
                         return text;
