@@ -243,6 +243,25 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         return VirtualEntry.parseColor(this.colorStr);
     }
 
+    protected enum Permissions implements EnumSelectorWidget.SelectableEnum {
+
+        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled",
+                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5)),
+
+        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
+                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
+
+        @Getter
+        private final String tooltip;
+        @Getter
+        private final IGuiTexture icon;
+
+        Permissions(String tooltip, IGuiTexture icon) {
+            this.tooltip = tooltip;
+            this.icon = icon;
+        }
+    }
+
     protected static class VirtualEntryWidget extends WidgetGroup {
 
         private static final int WIDGET_BOARD = 20;
@@ -296,7 +315,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
             mainChannelGroup.addWidget(new ConfirmTextInputWidget(0, WIDGET_BOARD + 2, GROUP_WIDTH - WIDGET_BOARD,
                     WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription,
-                    t -> t == null ? "" : t).setTooltip("cover.ender_fluid_link.tooltip.channel_description"));
+                    t -> t == null ? "" : t, null).setTooltip("cover.ender_fluid_link.tooltip.channel_description"));
 
             mainGroup.addWidget(mainChannelGroup);
             mainGroup.addWidget(createWorkingEnabledButton());
@@ -342,6 +361,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                     cover::setChannelName, text -> {
                         if (text == null || !COLOR_INPUT_PATTERN.matcher(text).matches()) {
                             return VirtualTank.DEFAULT_COLOR;
+                        }
+                        return text;
+                    }, text -> {
+                        if (text.length() < 8) {
+                            text += "F".repeat(8 - text.length());
                         }
                         return text;
                     }).setTooltip("cover.ender_fluid_link.tooltip.channel_name");
@@ -485,25 +509,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 }
                 addChannelWidgets(entries);
             }
-        }
-    }
-
-    protected enum Permissions implements EnumSelectorWidget.SelectableEnum {
-
-        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5)),
-
-        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
-
-        @Getter
-        private final String tooltip;
-        @Getter
-        private final IGuiTexture icon;
-
-        Permissions(String tooltip, IGuiTexture icon) {
-            this.tooltip = tooltip;
-            this.icon = icon;
         }
     }
 }

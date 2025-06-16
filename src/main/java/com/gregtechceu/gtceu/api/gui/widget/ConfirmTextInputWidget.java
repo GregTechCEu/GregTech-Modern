@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -19,18 +20,25 @@ import java.util.function.Function;
 public class ConfirmTextInputWidget extends WidgetGroup {
 
     private final Consumer<String> textResponder;
-    private final Function<String, String> validator;
+    @Nullable
+    private final Function<String, String> returnValidator;
+    private Function<String, String> validator = (s) -> s;
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private String inputText = "";
     @Setter
     private String tooltip = "";
 
-    public ConfirmTextInputWidget(int x, int y, int width, int height, String text, Consumer<String> textResponder,
-                                  Function<String, String> validator) {
+    public ConfirmTextInputWidget(int x, int y, int width, int height, String text,
+                                  Consumer<String> textResponder,
+                                  @Nullable Function<String, String> validator,
+                                  @Nullable Function<String, String> returnValidator) {
         super(x, y, width, height);
         this.textResponder = textResponder;
-        this.validator = validator;
+        this.returnValidator = returnValidator;
+        if (validator != null) {
+            this.validator = validator;
+        }
         if (text != null) {
             this.inputText = text;
         }
@@ -44,7 +52,12 @@ public class ConfirmTextInputWidget extends WidgetGroup {
                 0,
                 getSizeHeight(),
                 getSizeHeight(),
-                pressed -> textResponder.accept(inputText))
+                pressed -> {
+                    if (returnValidator != null) {
+                        inputText = returnValidator.apply(inputText);
+                    }
+                    textResponder.accept(inputText);
+                })
                 .setButtonTexture(
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, GuiTextures.BUTTON_CHECK)));
         this.addWidget(new TextFieldWidget(

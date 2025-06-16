@@ -40,7 +40,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag>, ITa
 
     public static int parseColor(String colorString) {
         if (colorString.length() < 8) {
-            colorString += "F".repeat(8 - colorString.length());
+            throw new IllegalArgumentException("Invalid color string: " + colorString);
         }
 
         int red = Integer.parseInt(colorString.substring(0, 2), 16);
