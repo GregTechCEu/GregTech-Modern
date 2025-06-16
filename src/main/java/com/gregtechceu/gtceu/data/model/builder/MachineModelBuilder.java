@@ -133,7 +133,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             for (Property<?> p : ignored) {
                 propertyValues.remove(p);
             }
-            PartialState<T> partialState = new PartialState<T>(owner, propertyValues, this);
+            PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
             if (seen.add(partialState)) {
                 setModels(partialState, mapper.apply(fullState));
             }

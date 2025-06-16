@@ -2,12 +2,12 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"overlay_screen": "gtceu:block/overlay/machine/overlay_screen_glass",
-		"overlay_qchest": "gtceu:block/overlay/machine/overlay_qchest_emissive",
+		"particle": "#side",
 		"bottom": "gtceu:block/casings/voltage/lv/bottom",
 		"top": "gtceu:block/casings/voltage/lv/top",
-		"particle": "gtceu:block/casings/voltage/lv/side",
-		"side": "gtceu:block/casings/voltage/lv/side"
+		"side": "gtceu:block/casings/voltage/lv/side",
+		"overlay_screen": "gtceu:block/overlay/machine/overlay_screen_glass",
+		"overlay_qchest": "gtceu:block/overlay/machine/overlay_qchest_emissive",
 	},
 	"elements": [
 		{

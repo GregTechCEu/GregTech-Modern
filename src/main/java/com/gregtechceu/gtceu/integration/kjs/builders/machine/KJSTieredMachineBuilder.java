@@ -78,7 +78,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                     holder -> machine.create(holder, tier, tankScalingFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
-                    .workableTieredHullRenderer(id.withPrefix("block/machines/"))
+                    .workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
             if (builder.recipeTypes() != null && builder.recipeTypes().length > 0) {

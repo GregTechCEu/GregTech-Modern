@@ -1,7 +1,6 @@
 {
-  "parent": "gtceu:block/cube_2_layer/tinted_top/default",
+  "parent": "gtceu:block/cube_2_layer/tinted_bot/all_bot",
   "textures": {
-    "particle": "#bot_all",
     "top_down": "#top_all",
     "top_up": "#top_all",
     "top_north": "#top_all",

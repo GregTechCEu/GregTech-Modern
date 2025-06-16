@@ -20,7 +20,7 @@ public class GTAEMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
-            .overlayTieredHullRenderer("me_item_bus.import")
+            .overlayTieredHullModel("me_item_bus.import")
             .tooltips(
                     Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.me.item_import.tooltip"),
@@ -34,7 +34,7 @@ public class GTAEMachines {
             .tier(LuV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
-            .overlayTieredHullRenderer("me_item_bus.import")
+            .overlayTieredHullModel("me_item_bus.import")
             .tooltips(
                     Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
@@ -50,7 +50,7 @@ public class GTAEMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_ITEMS)
-            .overlayTieredHullRenderer("me_item_bus.export")
+            .overlayTieredHullModel("me_item_bus.export")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.me.item_export.tooltip"),
                     Component.translatable("gtceu.machine.me.export.tooltip"),
@@ -63,7 +63,7 @@ public class GTAEMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
-            .overlayTieredHullRenderer("me_fluid_hatch.import")
+            .overlayTieredHullModel("me_fluid_hatch.import")
             .tooltips(
                     Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
                     Component.translatable("gtceu.machine.me.fluid_import.tooltip"),
@@ -77,7 +77,7 @@ public class GTAEMachines {
             .tier(LuV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
-            .overlayTieredHullRenderer("me_fluid_hatch.import")
+            .overlayTieredHullModel("me_fluid_hatch.import")
             .tooltips(
                     Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
                     Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.0"),
@@ -93,7 +93,7 @@ public class GTAEMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_FLUIDS)
-            .overlayTieredHullRenderer("me_fluid_hatch.export")
+            .overlayTieredHullModel("me_fluid_hatch.export")
             .tooltips(
                     Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
                     Component.translatable("gtceu.machine.me.fluid_export.tooltip"),
@@ -107,7 +107,7 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
                     PartAbility.EXPORT_ITEMS)
             .rotationState(RotationState.ALL)
-            .overlayTieredHullRenderer("me_pattern_buffer")
+            .overlayTieredHullModel("me_pattern_buffer")
             .langValue("ME Pattern Buffer")
             .tooltips(
                     Component.translatable("block.gtceu.pattern_buffer.desc.0"),
@@ -122,7 +122,7 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
                     PartAbility.EXPORT_ITEMS)
             .rotationState(RotationState.ALL)
-            .overlayTieredHullRenderer("me_pattern_buffer_proxy")
+            .overlayTieredHullModel("me_pattern_buffer_proxy")
             .langValue("ME Pattern Buffer Proxy")
             .tooltips(
                     Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),

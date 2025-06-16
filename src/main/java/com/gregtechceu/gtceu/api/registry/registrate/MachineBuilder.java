@@ -20,14 +20,13 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.machine.*;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.BakedModelWithBERRenderer;
+import com.gregtechceu.gtceu.common.data.GTModels;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -93,16 +92,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected Function<ResourceLocation, DEFINITION> definition;
     @Setter // non-final for KJS
     protected Function<IMachineBlockEntity, MetaMachine> machine;
-    @Setter
-    private ModelConstructor machineModel = (ctx, prov, builder) -> {};
     @Nullable
     @Setter
-    private NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> model;
+    private ModelConstructor model = null;
+    @Nullable
+    @Setter
+    private NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> blockModel = null;
     @Getter
     protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
-    @Nullable
-    @Setter
-    private Supplier<MachineModel> renderer;
     @Setter
     private VoxelShape shape = Shapes.block();
     @Setter
@@ -202,7 +199,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         if (type != GTRecipeTypes.DUMMY_RECIPES) {
-            this.setupDefaultRecipeMachineModels();
+            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         }
         return this;
     }
@@ -213,96 +210,68 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
-        this.setupDefaultRecipeMachineModels();
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return this;
     }
 
     protected MachineBuilder<DEFINITION> setupDefaultRecipeMachineModels() {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-
-        machineModel((ctx, prov, builder) -> {
-            final ResourceLocation baseModel = GTCEu.id("block/machine/hull_machine");
-            WorkableOverlays overlays = WorkableOverlays.get(
-                    this.id.withPrefix("block/machines/"),
-                    prov.getExistingFileHelper());
-
-            builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
-
-                BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), baseModel);
-                hullTextures(model, this.tier);
-                for (var entry : overlays.getTextures().entrySet()) {
-                    var face = entry.getKey();
-                    var textures = entry.getValue();
-
-                    ResourceLocation overlay = textures.getTexture(status);
-                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
-
-                    if (overlay == null) continue;
-                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
-                    if (overlayEmissive != null) {
-                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
-                    }
-                }
-
-                return ConfiguredMachineModel.builder().modelFile(model).build();
-            });
-        });
+        model(GTModels.createWorkableTieredHullMachineModel(this.id.withPrefix("block/machines/")));
         return this;
     }
 
-    public MachineBuilder<DEFINITION> model(Supplier<ResourceLocation> model) {
-        this.renderer = () -> new MachineModel(model.get());
+    public MachineBuilder<DEFINITION> simpleModel(ResourceLocation modelName) {
+        model(GTModels.createBasicMachineModel(modelName));
         return this;
     }
 
-    public MachineBuilder<DEFINITION> defaultModelRenderer() {
-        return model(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+    public MachineBuilder<DEFINITION> defaultModel() {
+        return simpleModel(new ResourceLocation(registrate.getModid(), "block/" + name));
     }
 
-    public MachineBuilder<DEFINITION> tieredHullRenderer(ResourceLocation model) {
-        return renderer(() -> new TieredHullMachineModel(tier, model));
+    public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
+        return model(GTModels.createTieredHullMachineModel(model));
     }
 
-    public MachineBuilder<DEFINITION> overlayTieredHullRenderer(String name) {
+    public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
         return renderer(() -> new OverlayTieredMachineModel(tier,
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder<DEFINITION> overlaySteamHullRenderer(String name) {
+    public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
         return renderer(() -> new OverlaySteamMachineModel(
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
-    public MachineBuilder<DEFINITION> workableTieredHullRenderer(ResourceLocation workableModel) {
-        return renderer(() -> new WorkableTieredHullMachineModel(tier, workableModel));
+    public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
+        return model(GTModels.createWorkableTieredHullMachineModel(workableModel));
     }
 
-    public MachineBuilder<DEFINITION> simpleGeneratorMachineRenderer(ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
         return renderer(() -> new SimpleGeneratorMachineModel(tier, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableSteamHullRenderer(boolean isHighPressure,
-                                                                ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
+                                                             ResourceLocation workableModel) {
         return renderer(() -> new WorkableSteamMachineModel(isHighPressure, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing,
-                                                             ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
+                                                          ResourceLocation workableModel) {
         return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableCasingRenderer(ResourceLocation baseCasing,
-                                                             ResourceLocation workableModel, boolean tint) {
+    public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
+                                                          ResourceLocation workableModel, boolean tint) {
         return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel, tint));
     }
 
-    public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel,
-                                                                  boolean tint) {
+    public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel,
+                                                               boolean tint) {
         return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel, tint));
     }
 
-    public MachineBuilder<DEFINITION> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
+    public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
         return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel));
     }
 
@@ -361,12 +330,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> removeRenderProperty(Property<?> property) {
+    public MachineBuilder<DEFINITION> removeModelProperty(Property<?> property) {
         this.modelProperties.remove(property);
         return this;
     }
 
-    public MachineBuilder<DEFINITION> clearRenderProperties() {
+    public MachineBuilder<DEFINITION> clearModelProperties() {
         this.modelProperties.clear();
         return this;
     }
@@ -488,8 +457,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setAfterWorking(this.afterWorking);
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
 
-        if (renderer == null) {
-            renderer = () -> new MachineModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+        if (model == null && blockModel == null) {
+            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {
@@ -533,7 +502,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .properties(builder.blockProp)
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
-                    .exBlockstate(builder.model != null ? builder.model : createMachineModel(builder.machineModel))
+                    .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
                     .color(() -> () -> IMachineBlock::colorTinted)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }

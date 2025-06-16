@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
+import lombok.Getter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -40,7 +41,9 @@ public class OverlayEnergyIORenderer {
     public static final OverlayEnergyIORenderer ENERGY_OUT_64A = new OverlayEnergyIORenderer(
             "block/overlay/machine/overlay_energy_64a_tinted", "block/overlay/machine/overlay_energy_64a_out");
 
+    @Getter
     private final ResourceLocation tintedPart;
+    @Getter
     private final ResourceLocation ioPart;
 
     public OverlayEnergyIORenderer(String tintedPart, String ioPart) {

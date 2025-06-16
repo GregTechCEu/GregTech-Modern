@@ -66,7 +66,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                     String.format("%s_%s", tierName, this.id.getPath()),
                     holder -> machine.create(holder, tier));
 
-            builder.workableTieredHullRenderer(id.withPrefix("block/machines/"))
+            builder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
             definitions[tier] = builder.register();

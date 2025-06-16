@@ -20,6 +20,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,8 @@ public class ConverterMachine extends TieredEnergyMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
+    public static final BooleanProperty FE_TO_EU_PROPERTY = BooleanProperty.create("fe_to_eu");
 
     public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
         super(holder, tier, args, amps);

@@ -195,50 +195,50 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder model(Supplier<ResourceLocation> model) {
-        return (MultiblockMachineBuilder) super.model(model);
+    public MultiblockMachineBuilder simpleModel(ResourceLocation model) {
+        return (MultiblockMachineBuilder) super.simpleModel(model);
     }
 
     @Override
-    public MultiblockMachineBuilder defaultModelRenderer() {
-        return (MultiblockMachineBuilder) super.defaultModelRenderer();
+    public MultiblockMachineBuilder defaultModel() {
+        return (MultiblockMachineBuilder) super.defaultModel();
     }
 
     @Override
-    public MultiblockMachineBuilder tieredHullRenderer(ResourceLocation model) {
-        return (MultiblockMachineBuilder) super.tieredHullRenderer(model);
+    public MultiblockMachineBuilder tieredHullModel(ResourceLocation model) {
+        return (MultiblockMachineBuilder) super.tieredHullModel(model);
     }
 
     @Override
-    public MultiblockMachineBuilder overlayTieredHullRenderer(String name) {
-        return (MultiblockMachineBuilder) super.overlayTieredHullRenderer(name);
+    public MultiblockMachineBuilder overlayTieredHullModel(String name) {
+        return (MultiblockMachineBuilder) super.overlayTieredHullModel(name);
     }
 
     @Override
-    public MultiblockMachineBuilder workableTieredHullRenderer(ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.workableTieredHullRenderer(workableModel);
+    public MultiblockMachineBuilder workableTieredHullModel(ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableTieredHullModel(workableModel);
     }
 
     @Override
-    public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel);
+    public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder) super.workableCasingModel(baseCasing, overlayModel);
     }
 
     @Override
-    public MultiblockMachineBuilder workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation overlayModel,
-                                                           boolean tint) {
-        return (MultiblockMachineBuilder) super.workableCasingRenderer(baseCasing, overlayModel, tint);
+    public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel,
+                                                        boolean tint) {
+        return (MultiblockMachineBuilder) super.workableCasingModel(baseCasing, overlayModel, tint);
     }
 
     @Override
-    public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel,
-                                                                boolean tint) {
-        return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
+    public MultiblockMachineBuilder sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel,
+                                                             boolean tint) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(basePath, overlayModel, tint);
     }
 
     @Override
-    public MultiblockMachineBuilder sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.sidedWorkableCasingRenderer(basePath, overlayModel);
+    public MultiblockMachineBuilder sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(basePath, overlayModel);
     }
 
     @Override
@@ -262,13 +262,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder overlaySteamHullRenderer(String name) {
-        return (MultiblockMachineBuilder) super.overlaySteamHullRenderer(name);
+    public MultiblockMachineBuilder overlaySteamHullModel(String name) {
+        return (MultiblockMachineBuilder) super.overlaySteamHullModel(name);
     }
 
     @Override
-    public MultiblockMachineBuilder workableSteamHullRenderer(boolean isHighPressure, ResourceLocation workableModel) {
-        return (MultiblockMachineBuilder) super.workableSteamHullRenderer(isHighPressure, workableModel);
+    public MultiblockMachineBuilder workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.workableSteamHullModel(isHighPressure, workableModel);
     }
 
     @Override
@@ -318,13 +318,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder removeRenderProperty(Property<?> property) {
-        return (MultiblockMachineBuilder) super.removeRenderProperty(property);
+    public MultiblockMachineBuilder removeModelProperty(Property<?> property) {
+        return (MultiblockMachineBuilder) super.removeModelProperty(property);
     }
 
     @Override
-    public MultiblockMachineBuilder clearRenderProperties() {
-        return (MultiblockMachineBuilder) super.clearRenderProperties();
+    public MultiblockMachineBuilder clearModelProperties() {
+        return (MultiblockMachineBuilder) super.clearModelProperties();
     }
 
     @Override

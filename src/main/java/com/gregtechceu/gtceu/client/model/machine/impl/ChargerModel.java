@@ -24,58 +24,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ChargerModel extends TieredHullMachineModel {
+public class ChargerModel {
 
-    public final static ResourceLocation CHARGER_IDLE = GTCEu.id("block/machines/charger/overlay_charger_idle");
-    public final static ResourceLocation CHARGER_RUNNING = GTCEu.id("block/machines/charger/overlay_charger_running");
-    public final static ResourceLocation CHARGER_RUNNING_EMISSIVE = GTCEu
+    public static final ResourceLocation CHARGER_IDLE = GTCEu.id("block/machines/charger/overlay_charger_idle");
+    public static final ResourceLocation CHARGER_RUNNING = GTCEu.id("block/machines/charger/overlay_charger_running");
+    public static final ResourceLocation CHARGER_RUNNING_EMISSIVE = GTCEu
             .id("block/machines/charger/overlay_charger_running_emissive");
-    public final static ResourceLocation CHARGER_FINISHED = GTCEu.id("block/machines/charger/overlay_charger_finished");
-    public final static ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu
+    public static final ResourceLocation CHARGER_FINISHED = GTCEu.id("block/machines/charger/overlay_charger_finished");
+    public static final ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu
             .id("block/machines/charger/overlay_charger_finished_emissive");
-
-    public ChargerModel(int tier) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
-                              Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              Direction modelFacing,
-                              ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
-                renderType);
-        var state = ChargerMachine.State.IDLE;
-        if (machine instanceof ChargerMachine charger) {
-            state = charger.getState();
-        }
-
-        if (quadFace != frontFacing || modelFacing == null) {
-            return;
-        }
-        switch (state) {
-            case IDLE -> quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE),
-                    modelState, -1, 0, false, true));
-            case RUNNING -> {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                        ModelFactory.getBlockSprite(CHARGER_RUNNING),
-                        modelState, -1, 0, true, true));
-                if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
-                            modelState, -101, 15, true, false));
-                }
-            }
-            case FINISHED -> {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED),
-                        modelState, -1, 0, true, true));
-                if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
-                            modelState, -101, 15, true, false));
-                }
-            }
-        }
-    }
 }

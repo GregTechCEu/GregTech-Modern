@@ -67,7 +67,7 @@ public class GCYMMachines {
                     } + " Parallel Control Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
-                    .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                    .workableTieredHullModel(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                     .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"))
                     .register(),
             IV, LuV, ZPM, UV);
@@ -96,7 +96,7 @@ public class GCYMMachines {
                     .where('G', Predicates.blocks(CRUSHING_WHEELS.get()))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
                     GTCEu.id("block/multiblock/gcym/large_maceration_tower"))
             .register();
 
@@ -156,7 +156,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_centrifuge"))
             .register();
 
@@ -214,7 +214,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .register();
 
@@ -241,7 +241,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .register();
 
@@ -269,7 +269,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
                     GTCEu.id("block/multiblock/gcym/large_packer"))
             .register();
 
@@ -301,7 +301,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_assembler"))
             .register();
 
@@ -337,7 +337,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_circuit_assembler"))
             .register();
 
@@ -367,7 +367,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_arc_smelter"))
             .register();
 
@@ -399,7 +399,7 @@ public class GCYMMachines {
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
                     GTCEu.id("block/multiblock/gcym/large_engraving_laser"))
             .register();
 
@@ -428,7 +428,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_sifting_funnel"))
             .register();
 
@@ -484,7 +484,7 @@ public class GCYMMachines {
                                 coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
@@ -524,7 +524,7 @@ public class GCYMMachines {
                     .where('T', blocks(CASING_STEEL_PIPE.get()))
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_autoclave"))
             .register();
 
@@ -552,7 +552,7 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_material_press"))
             .register();
 
@@ -584,7 +584,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_brewer"))
             .register();
 
@@ -613,7 +613,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_cutter"))
             .register();
 
@@ -704,7 +704,7 @@ public class GCYMMachines {
                 return shapeInfos;
             })
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();
 
@@ -730,7 +730,7 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_STEEL_PIPE.get()))
                     .where('A', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extractor"))
             .register();
 
@@ -760,7 +760,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extruder"))
             .register();
 
@@ -789,7 +789,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_solidifier"))
             .register();
 
@@ -815,7 +815,7 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_TITANIUM_GEARBOX.get()))
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_wiremill"))
             .register();
 
@@ -981,7 +981,7 @@ public class GCYMMachines {
                                 coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
@@ -1032,7 +1032,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"))
             .register();
 }

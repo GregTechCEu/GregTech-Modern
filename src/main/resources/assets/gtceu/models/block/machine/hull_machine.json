@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "gtceu:block/casings/voltage/lv/side",
+    "particle": "#side",
     "bottom": "gtceu:block/casings/voltage/lv/bottom",
     "top": "gtceu:block/casings/voltage/lv/top",
     "side": "gtceu:block/casings/voltage/lv/side"

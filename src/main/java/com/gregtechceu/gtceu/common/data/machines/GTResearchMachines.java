@@ -105,7 +105,7 @@ public class GTResearchMachines {
                             COMPUTER_CASING.getDefaultState())
                     .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
-            .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
+            .sidedWorkableCasingModel("block/casings/hpca/advanced_computer_casing",
                     GTCEu.id("block/multiblock/research_station"))
             .register();
 
@@ -145,7 +145,7 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2, 1))
                             .or(autoAbilities(true, false, false)))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/hpca/high_power_casing"),
                     GTCEu.id("block/multiblock/data_bank"))
             .register();
 
@@ -184,7 +184,7 @@ public class GTResearchMachines {
                     .where('M', GTMachines.MAINTENANCE_HATCH, Direction.NORTH)
                     .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
                     .build())
-            .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel("block/casings/hpca/computer_casing",
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
 
@@ -286,7 +286,7 @@ public class GTResearchMachines {
 
                 return shapeInfo;
             })
-            .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel("block/casings/hpca/computer_casing",
                     GTCEu.id("block/multiblock/hpca"))
             .register();
 
@@ -323,7 +323,7 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 9),
                     Component.translatable("gtceu.universal.disabled"))
-            .overlayTieredHullRenderer("data_access_hatch")
+            .overlayTieredHullModel("data_access_hatch")
             .register();
 
     public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE
@@ -335,7 +335,7 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 16),
                     Component.translatable("gtceu.universal.disabled"))
-            .overlayTieredHullRenderer("data_access_hatch")
+            .overlayTieredHullModel("data_access_hatch")
             .register();
 
     public static final MachineDefinition CREATIVE_DATA_ACCESS_HATCH = REGISTRATE
@@ -349,7 +349,7 @@ public class GTResearchMachines {
                 CREATIVE_TOOLTIPS.accept(s, list);
                 list.add(Component.translatable("gtceu.universal.enabled"));
             })
-            .overlayTieredHullRenderer("data_access_hatch_creative")
+            .overlayTieredHullModel("data_access_hatch_creative")
             .register();
 
     //////////////////////////////////////
@@ -414,7 +414,7 @@ public class GTResearchMachines {
                 .tier(tier)
                 .rotationState(RotationState.ALL)
                 .abilities(abilities)
-                .overlayTieredHullRenderer(model);
+                .overlayTieredHullModel(model);
     }
 
     private static MachineBuilder<MachineDefinition> registerHPCAPart(String name, String displayName,

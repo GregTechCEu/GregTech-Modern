@@ -12,10 +12,13 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
@@ -36,6 +39,8 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateItemModelProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,6 +53,8 @@ public class GTModels {
 
     public static final String OVERLAY_PREFIX = "overlay_";
     public static final String EMISSIVE_POSTFIX = "_emissive";
+
+    // region BLOCK MODELS
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,
                                              RegistrateBlockstateProvider prov, ResourceLocation modelLocation) {
@@ -295,6 +302,80 @@ public class GTModels {
         };
     }
 
+    // endregion
+
+    // region MACHINE MODELS
+
+    public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
+        return (ctx, prov, builder) -> {
+            BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), parentModel);
+            hullTextures(model, builder.getOwner().getTier());
+
+            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
+            builder.forAllStates(state -> models);
+        };
+    }
+
+    public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModelName) {
+        return (ctx, prov, builder) -> {
+            final ExistingFileHelper helper = prov.getExistingFileHelper();
+
+            ResourceLocation parentModelName = GTCEu.id("block/machine/hull_machine");
+            var parentModel = new ModelFile.ExistingModelFile(parentModelName, helper);
+            var overlayModel = new ModelFile.ExistingModelFile(overlayModelName, helper);
+
+            var baseLayer = new BlockModelBuilder(ctx.getId(), helper).parent(parentModel);
+
+            var model = prov.models().getBuilder(ctx.getName())
+                    .customLoader(CompositeModelBuilder::begin)
+                    .child("base", hullTextures(baseLayer, builder.getOwner().getTier()))
+                    .child("overlay", new BlockModelBuilder(ctx.getId(), helper).parent(overlayModel))
+                    .end();
+            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
+            builder.forAllStates(state -> models);
+        };
+    }
+
+    public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation textureDir) {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/overlay_machine");
+            WorkableOverlays overlays = WorkableOverlays.get(textureDir, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+
+                BlockModelBuilder model = prov.models().withExistingParent(
+                        ctx.getName() + "_" + status.getSerializedName(),
+                        parentModel);
+                hullTextures(model, builder.getOwner().getTier());
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay == null) continue;
+                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+
+                return ConfiguredMachineModel.builder().modelFile(model).build();
+            });
+        };
+    }
+
+    public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
+        return (ctx, prov, builder) -> {
+            builder.forAllStates(state -> {
+                ModelFile model = new ModelFile.ExistingModelFile(baseModel, prov.getExistingFileHelper());
+                return ConfiguredMachineModel.builder().modelFile(model).build();
+            });
+        };
+    }
+
     public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
@@ -330,11 +411,16 @@ public class GTModels {
         model.texture(key, getHullTexture(tier, key));
     }
 
-    public static void hullTextures(BlockModelBuilder model, int tier) {
+    public static BlockModelBuilder hullTextures(BlockModelBuilder model, int tier) {
         hullTexture(model, "bottom", tier);
         hullTexture(model, "top", tier);
         hullTexture(model, "side", tier);
+        return model;
     }
+
+    // endregion
+
+    // region RUNTIME GEN
 
     /**
      * register fluid models for materials
@@ -386,4 +472,6 @@ public class GTModels {
             }
         }
     }
+
+    // endregion
 }
