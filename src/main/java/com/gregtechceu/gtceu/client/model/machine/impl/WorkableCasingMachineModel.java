@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class WorkableCasingMachineModel extends MachineModel {
 
-    protected final WorkableOverlayModel overlayModel;
+    protected final WorkableOverlays overlayModel;
     protected final ResourceLocation baseCasing;
 
     public WorkableCasingMachineModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
@@ -32,7 +32,7 @@ public class WorkableCasingMachineModel extends MachineModel {
 
     public WorkableCasingMachineModel(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
         super(tint ? GTCEu.id("block/cube/tinted/all") : GTCEu.id("block/cube/all"));
-        this.overlayModel = new WorkableOverlayModel(workableModel);
+        this.overlayModel = new WorkableOverlays(workableModel);
         this.baseCasing = baseCasing;
         setTextureOverride(Map.of("all", baseCasing));
     }

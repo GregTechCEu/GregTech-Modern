@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class WorkableSidedCasingMachineModel extends MachineModel {
 
-    protected final WorkableOverlayModel overlayModel;
+    protected final WorkableOverlays overlayModel;
 
     public WorkableSidedCasingMachineModel(String basePath, ResourceLocation workableModel) {
         this(basePath, workableModel, true);
@@ -38,7 +38,7 @@ public class WorkableSidedCasingMachineModel extends MachineModel {
                 "bottom", GTCEu.id(basePath + "/bottom"),
                 "top", GTCEu.id(basePath + "/top"),
                 "side", GTCEu.id(basePath + "/side")));
-        this.overlayModel = new WorkableOverlayModel(workableModel);
+        this.overlayModel = new WorkableOverlays(workableModel);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -25,11 +25,11 @@ import java.util.List;
 public class WorkableSteamMachineModel extends SteamHullMachineModel {
 
     public static final ResourceLocation VENT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_steam_vent");
-    protected final WorkableOverlayModel overlayModel;
+    protected final WorkableOverlays overlayModel;
 
     public WorkableSteamMachineModel(boolean isHighTier, ResourceLocation overlay) {
         super(isHighTier, GTCEu.id("block/machine/hull_machine"));
-        this.overlayModel = new WorkableOverlayModel(overlay);
+        this.overlayModel = new WorkableOverlays(overlay);
     }
 
     @Override

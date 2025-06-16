@@ -195,8 +195,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder modelRenderer(Supplier<ResourceLocation> model) {
-        return (MultiblockMachineBuilder) super.modelRenderer(model);
+    public MultiblockMachineBuilder model(Supplier<ResourceLocation> model) {
+        return (MultiblockMachineBuilder) super.model(model);
     }
 
     @Override
@@ -292,29 +292,29 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder renderProperty(Property<?> property) {
-        return (MultiblockMachineBuilder) super.renderProperty(property);
+    public MultiblockMachineBuilder modelProperty(Property<?> property) {
+        return (MultiblockMachineBuilder) super.modelProperty(property);
     }
 
     @Override
-    public <T extends Comparable<T>> MultiblockMachineBuilder renderProperty(Property<T> property,
-                                                                             @Nullable T defaultValue) {
-        return (MultiblockMachineBuilder) super.renderProperty(property, defaultValue);
+    public <T extends Comparable<T>> MultiblockMachineBuilder modelProperty(Property<T> property,
+                                                                            @Nullable T defaultValue) {
+        return (MultiblockMachineBuilder) super.modelProperty(property, defaultValue);
     }
 
     @Override
-    public MultiblockMachineBuilder renderProperties(Property<?>... properties) {
-        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    public MultiblockMachineBuilder modelProperties(Property<?>... properties) {
+        return (MultiblockMachineBuilder) super.modelProperties(properties);
     }
 
     @Override
-    public MultiblockMachineBuilder renderProperties(Collection<Property<?>> properties) {
-        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    public MultiblockMachineBuilder modelProperties(Collection<Property<?>> properties) {
+        return (MultiblockMachineBuilder) super.modelProperties(properties);
     }
 
     @Override
-    public MultiblockMachineBuilder renderProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
-        return (MultiblockMachineBuilder) super.renderProperties(properties);
+    public MultiblockMachineBuilder modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
+        return (MultiblockMachineBuilder) super.modelProperties(properties);
     }
 
     @Override

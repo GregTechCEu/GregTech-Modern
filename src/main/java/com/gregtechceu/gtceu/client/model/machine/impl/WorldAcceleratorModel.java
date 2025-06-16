@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 
 import net.minecraft.client.renderer.RenderType;
@@ -23,15 +23,15 @@ import java.util.List;
 
 public class WorldAcceleratorModel extends TieredHullMachineModel {
 
-    private final WorkableOverlayModel blockEntityModeModel, randomTickModeModel;
+    private final WorkableOverlays blockEntityModeModel, randomTickModeModel;
 
     public WorldAcceleratorModel(int tier, ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
-        blockEntityModeModel = new WorkableOverlayModel(beModeModelPath);
-        randomTickModeModel = new WorkableOverlayModel(rtModeModelPath);
+        blockEntityModeModel = new WorkableOverlays(beModeModelPath);
+        randomTickModeModel = new WorkableOverlays(rtModeModelPath);
     }
 
-    private WorkableOverlayModel getModeModel(boolean isRandomTickMode) {
+    private WorkableOverlays getModeModel(boolean isRandomTickMode) {
         if (isRandomTickMode) {
             return randomTickModeModel;
         }
@@ -47,7 +47,7 @@ public class WorldAcceleratorModel extends TieredHullMachineModel {
         super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
                 renderType);
         if (machine instanceof WorldAcceleratorMachine worldAcceleratorMachine) {
-            WorkableOverlayModel model = getModeModel(worldAcceleratorMachine.isRandomTickMode());
+            WorkableOverlays model = getModeModel(worldAcceleratorMachine.isRandomTickMode());
             quads.addAll(model.bakeQuads(quadFace, modelState, worldAcceleratorMachine.isActive(),
                     worldAcceleratorMachine.isWorkingEnabled()));
         } else {

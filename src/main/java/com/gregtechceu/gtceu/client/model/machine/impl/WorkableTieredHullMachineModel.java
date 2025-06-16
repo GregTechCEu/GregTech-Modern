@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlayModel;
+import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -21,11 +21,11 @@ import java.util.List;
 
 public class WorkableTieredHullMachineModel extends TieredHullMachineModel {
 
-    protected final WorkableOverlayModel overlayModel;
+    protected final WorkableOverlays overlayModel;
 
     public WorkableTieredHullMachineModel(int tier, ResourceLocation workableModel) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
-        this.overlayModel = new WorkableOverlayModel(workableModel);
+        this.overlayModel = new WorkableOverlays(workableModel);
     }
 
     @Override

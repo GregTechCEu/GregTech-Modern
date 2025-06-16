@@ -425,7 +425,7 @@ public class GTMachines {
                     .rotationState(RotationState.NONE)
                     .langValue("%s World Accelerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
-                    .renderProperty(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY, true)
+                    .modelProperty(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY, true)
                     .renderer(() -> new WorldAcceleratorModel(tier, GTCEu.id("block/machines/world_accelerator_te"),
                             GTCEu.id("block/machines/world_accelerator")))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -895,7 +895,7 @@ public class GTMachines {
 
     public static final MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
-            .modelRenderer(() -> GTCEu.id("block/machine/part/coke_oven_hatch"))
+            .model(() -> GTCEu.id("block/machine/part/coke_oven_hatch"))
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)

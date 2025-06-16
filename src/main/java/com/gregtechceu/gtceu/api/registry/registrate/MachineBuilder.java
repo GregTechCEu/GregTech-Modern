@@ -19,14 +19,16 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.*;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
-import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
-import com.gregtechceu.gtceu.common.data.GTModels;
+import com.gregtechceu.gtceu.client.renderer.BakedModelWithBERRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
+import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -45,10 +47,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 
-import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -72,6 +76,8 @@ import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.data.GTModels.*;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -83,12 +89,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
 
-    @Getter
-    protected final Map<Property<?>, Comparable<?>> renderProperties = new IdentityHashMap<>();
     @Setter // non-final for KJS
     protected Function<ResourceLocation, DEFINITION> definition;
     @Setter // non-final for KJS
     protected Function<IMachineBlockEntity, MetaMachine> machine;
+    @Setter
+    private ModelConstructor machineModel = (ctx, prov, builder) -> {};
+    @Nullable
+    @Setter
+    private NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> model;
+    @Getter
+    protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
     @Nullable
     @Setter
     private Supplier<MachineModel> renderer;
@@ -191,7 +202,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         if (type != GTRecipeTypes.DUMMY_RECIPES) {
-            renderProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+            this.setupDefaultRecipeMachineModels();
         }
         return this;
     }
@@ -202,19 +213,51 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
-        renderProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        this.setupDefaultRecipeMachineModels();
         return this;
     }
 
+    protected MachineBuilder<DEFINITION> setupDefaultRecipeMachineModels() {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+
+        machineModel((ctx, prov, builder) -> {
+            final ResourceLocation baseModel = GTCEu.id("block/machine/hull_machine");
+            WorkableOverlays overlays = WorkableOverlays.get(
+                    this.id.withPrefix("block/machines/"),
+                    prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+
+                BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), baseModel);
+                hullTextures(model, this.tier);
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay == null) continue;
+                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+
+                return ConfiguredMachineModel.builder().modelFile(model).build();
+            });
+        });
+        return this;
     }
 
-    public MachineBuilder<DEFINITION> modelRenderer(Supplier<ResourceLocation> model) {
+    public MachineBuilder<DEFINITION> model(Supplier<ResourceLocation> model) {
         this.renderer = () -> new MachineModel(model.get());
         return this;
     }
 
     public MachineBuilder<DEFINITION> defaultModelRenderer() {
-        return modelRenderer(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
+        return model(() -> new ResourceLocation(registrate.getModid(), "block/" + name));
     }
 
     public MachineBuilder<DEFINITION> tieredHullRenderer(ResourceLocation model) {
@@ -289,42 +332,42 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public MachineBuilder<DEFINITION> renderProperty(Property<?> property) {
-        return renderProperty(property, null);
+    public MachineBuilder<DEFINITION> modelProperty(Property<?> property) {
+        return modelProperty(property, null);
     }
 
-    public <T extends Comparable<T>> MachineBuilder<DEFINITION> renderProperty(Property<T> property,
-                                                                               @Nullable T defaultValue) {
-        this.renderProperties.put(property, defaultValue);
+    public <T extends Comparable<T>> MachineBuilder<DEFINITION> modelProperty(Property<T> property,
+                                                                              @Nullable T defaultValue) {
+        this.modelProperties.put(property, defaultValue);
         return this;
     }
 
     @Tolerate
-    public MachineBuilder<DEFINITION> renderProperties(Property<?>... properties) {
-        return this.renderProperties(List.of(properties));
+    public MachineBuilder<DEFINITION> modelProperties(Property<?>... properties) {
+        return this.modelProperties(List.of(properties));
     }
 
     @Tolerate
-    public MachineBuilder<DEFINITION> renderProperties(Collection<Property<?>> properties) {
+    public MachineBuilder<DEFINITION> modelProperties(Collection<Property<?>> properties) {
         for (Property<?> prop : properties) {
-            this.renderProperties.put(prop, null);
+            this.modelProperties.put(prop, null);
         }
         return this;
     }
 
     @Tolerate
-    public MachineBuilder<DEFINITION> renderProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
-        this.renderProperties.putAll(properties);
+    public MachineBuilder<DEFINITION> modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
+        this.modelProperties.putAll(properties);
         return this;
     }
 
     public MachineBuilder<DEFINITION> removeRenderProperty(Property<?> property) {
-        this.renderProperties.remove(property);
+        this.modelProperties.remove(property);
         return this;
     }
 
     public MachineBuilder<DEFINITION> clearRenderProperties() {
-        this.renderProperties.clear();
+        this.modelProperties.clear();
         return this;
     }
 
@@ -383,11 +426,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected void setupStateDefinition(MachineDefinition definition) {
         StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
                 definition);
-        this.renderProperties.keySet().forEach(builder::add);
+        this.modelProperties.keySet().forEach(builder::add);
         definition.setStateDefinition(builder.create(MachineDefinition::defaultRenderState, MachineRenderState::new));
 
         MachineRenderState defaultState = definition.getStateDefinition().any();
-        for (Map.Entry<Property<?>, Comparable<?>> entry : this.renderProperties.entrySet()) {
+        for (var entry : this.modelProperties.entrySet()) {
             if (entry.getValue() == null) continue;
             defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
         }
@@ -471,7 +514,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return definition;
     }
 
-    static class BlockBuilderWrapper {
+    @FunctionalInterface
+    public interface ModelConstructor {
+
+        void configureModel(@NotNull DataGenContext<Block, Block> context, @NotNull GTBlockstateProvider provider,
+                            @NotNull MachineModelBuilder<BlockModelBuilder> builder);
+    }
 
     // spotless:off
     protected static class BlockBuilderWrapper {
