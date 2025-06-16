@@ -1,38 +1,56 @@
 package com.gregtechceu.gtceu.api.pattern.util;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import java.util.function.UnaryOperator;
 
 /**
  * Relative direction when facing horizontally
  */
 public enum RelativeDirection {
 
-    UP(f -> Direction.UP, Direction.Axis.Y),
-    DOWN(f -> Direction.DOWN, Direction.Axis.Y),
-    LEFT(Direction::getCounterClockWise, Direction.Axis.X),
-    RIGHT(Direction::getClockWise, Direction.Axis.X),
-    FRONT(Function.identity(), Direction.Axis.Z),
-    BACK(Direction::getOpposite, Direction.Axis.Z);
+    UP(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP, Direction.UP),
+    DOWN(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.DOWN, Direction.DOWN),
+    LEFT(dir -> {
+        if (dir == Direction.UP) return Direction.EAST;
+        else if (dir == Direction.DOWN) return Direction.WEST;
+        else return dir.getCounterClockWise();
+    }, Direction.WEST),
+    RIGHT(dir -> {
+        if (dir == Direction.UP) return Direction.WEST;
+        else if (dir == Direction.DOWN) return Direction.EAST;
+        else return dir.getClockWise();
+    }, Direction.EAST),
+    FRONT(UnaryOperator.identity(), Direction.NORTH),
+    BACK(Direction::getOpposite, Direction.SOUTH);
 
-    final Function<Direction, Direction> actualFacing;
-    public final Direction.Axis axis;
+    private static final RelativeDirection[] BY_GLOBAL_DIRECTION = new RelativeDirection[GTUtil.DIRECTIONS.length];
 
-    RelativeDirection(Function<Direction, Direction> actualFacing, Direction.Axis axis) {
+    static {
+        for (var direction : values()) {
+            BY_GLOBAL_DIRECTION[direction.global.ordinal()] = direction;
+        }
+    }
+
+    private final UnaryOperator<Direction> actualFacing;
+    /**
+     * Equivalent global direction to this relative direction
+     * with {@link Direction#NORTH NORTH} as the "forward" direction.
+     */
+    public final Direction global;
+
+    RelativeDirection(UnaryOperator<Direction> actualFacing, Direction global) {
         this.actualFacing = actualFacing;
-        this.axis = axis;
+        this.global = global;
     }
 
     public Direction getActualFacing(Direction facing) {
-        return getRelativeFacing(facing, Direction.NORTH, false);
-    }
-
-    public boolean isSameAxis(RelativeDirection dir) {
-        return this.axis == dir.axis;
+        return actualFacing.apply(facing);
     }
 
     public Vec3i applyVec3i(Direction facing) {
@@ -195,5 +213,9 @@ public enum RelativeDirection {
         oZ += relForward.getStepZ() * forwardOffset;
 
         return pos.offset(oX, oY, oZ);
+    }
+
+    public static RelativeDirection fromGlobalDirection(Direction direction) {
+        return BY_GLOBAL_DIRECTION[direction.ordinal()];
     }
 }

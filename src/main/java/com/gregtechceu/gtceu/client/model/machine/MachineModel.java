@@ -64,7 +64,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand,
                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
-        if (modelData.has(LEVEL) && modelData.has(POS)) {
+        if (modelData.has(MODEL_DATA_LEVEL) && modelData.has(MODEL_DATA_POS)) {
             return getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
@@ -78,8 +78,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public List<BakedQuad> getMachineQuads(@Nullable BlockState state, @Nullable Direction side,
                                            @NotNull RandomSource rand,
                                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
-        BlockAndTintGetter level = modelData.get(LEVEL);
-        BlockPos pos = modelData.get(POS);
+        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
+        BlockPos pos = modelData.get(MODEL_DATA_POS);
 
         var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         if (machine != null) {
@@ -161,16 +161,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @Override
     public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
                                            @NotNull BlockState state, @NotNull ModelData modelData) {
-        ModelData.Builder builder = super.getModelData(level, pos, state, modelData)
-                .derive()
-                .with(LEVEL, level)
-                .with(POS, pos);
-        MetaMachine machine = MetaMachine.getMachine(level, pos);
-        if (machine != null) {
-            machine.onModelDataUpdate(builder);
-        }
-
-        return builder.build();
+        return super.getModelData(level, pos, state, modelData);
     }
 
     @Override
