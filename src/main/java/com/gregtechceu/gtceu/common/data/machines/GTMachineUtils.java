@@ -389,7 +389,7 @@ public class GTMachineUtils {
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = REGISTRATE
-                .machine(material.getName() + "_drum", MachineDefinition::createDefinition,
+                .machine(material.getName() + "_drum", MachineDefinition::new,
                         holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new,
                         (holder, prop) -> DrumMachineItem.create(holder, prop, material),
                         MetaMachineBlockEntity::new)

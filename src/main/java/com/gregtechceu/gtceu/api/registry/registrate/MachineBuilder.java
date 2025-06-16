@@ -167,12 +167,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Nullable
     private String langValue = null;
 
-    protected MachineBuilder(Registrate registrate, String name,
-                             Function<ResourceLocation, DEFINITION> definition,
-                             Function<IMachineBlockEntity, MetaMachine> machine,
-                             BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
-                             BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                             TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+    public MachineBuilder(GTRegistrate registrate, String name,
+                          Function<ResourceLocation, DEFINITION> definition,
+                          Function<IMachineBlockEntity, MetaMachine> machine,
+                          BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
+                          BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                          TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
         super(new ResourceLocation(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
@@ -200,15 +200,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    public static <
-            DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> create(Registrate registrate, String name,
-                                                                                    Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                    Function<IMachineBlockEntity, MetaMachine> metaMachine,
-                                                                                    BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
-                                                                                    BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                    TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder<>(registrate, name, definitionFactory, metaMachine, blockFactory, itemFactory,
-                blockEntityFactory);
     }
 
     public MachineBuilder<DEFINITION> modelRenderer(Supplier<ResourceLocation> model) {

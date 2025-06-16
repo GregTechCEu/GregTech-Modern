@@ -32,7 +32,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
@@ -61,7 +61,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GTRegistrate extends Registrate {
+public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     private final AtomicBoolean registered = new AtomicBoolean(false);
 
@@ -87,16 +87,15 @@ public class GTRegistrate extends Registrate {
     }
 
     @Override
-    public Registrate registerEventListeners(IEventBus bus) {
+    public GTRegistrate registerEventListeners(IEventBus bus) {
         if (!registered.getAndSet(true)) {
             return super.registerEventListeners(bus);
         }
         return this;
     }
 
-    protected <
-            P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                          Consumer<CreativeModeTab.Builder> config) {
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
+                                                                                             Consumer<CreativeModeTab.Builder> config) {
         return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
             var builder = CreativeModeTab.builder()
                     .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
@@ -117,23 +116,14 @@ public class GTRegistrate extends Registrate {
                                                                                      BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
                                                                                      BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                      TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return MachineBuilder.create(this, name, definitionFactory, metaMachine, blockFactory, itemFactory,
-                blockEntityFactory);
+        return new MachineBuilder<>(this, name, definitionFactory, metaMachine,
+                blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MachineBuilder<MachineDefinition> machine(String name,
                                                      Function<IMachineBlockEntity, MetaMachine> metaMachine) {
-        return MachineBuilder.create(this, name, MachineDefinition::createDefinition, metaMachine,
+        return new MachineBuilder<>(this, name, MachineDefinition::new, metaMachine,
                 MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
-    }
-
-    public Stream<MachineBuilder<MachineDefinition>> machine(String name,
-                                                             BiFunction<IMachineBlockEntity, Integer, MetaMachine> metaMachine,
-                                                             int... tiers) {
-        return Arrays.stream(tiers)
-                .mapToObj(tier -> MachineBuilder.create(this, name + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT),
-                        MachineDefinition::createDefinition, holder -> metaMachine.apply(holder, tier),
-                        MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new));
     }
 
     public MultiblockMachineBuilder multiblock(String name,
@@ -141,14 +131,14 @@ public class GTRegistrate extends Registrate {
                                                BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
                                                BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return MultiblockMachineBuilder.createMulti(this, name, metaMachine, blockFactory, itemFactory,
-                blockEntityFactory);
+        return new MultiblockMachineBuilder(this, name, metaMachine,
+                blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder multiblock(String name,
                                                Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        return MultiblockMachineBuilder.createMulti(this, name, metaMachine, MetaMachineBlock::new,
-                MetaMachineItem::new, MetaMachineBlockEntity::new);
+        return new MultiblockMachineBuilder(this, name, metaMachine,
+                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
     }
 
     public SoundEntryBuilder sound(String name) {

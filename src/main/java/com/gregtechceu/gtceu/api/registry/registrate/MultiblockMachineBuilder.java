@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -79,23 +78,14 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Setter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay = (m, l) -> {};
 
-    protected MultiblockMachineBuilder(Registrate registrate, String name,
-                                       Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                       BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
-                                       BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory,
+    public MultiblockMachineBuilder(GTRegistrate registrate, String name,
+                                    Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
+                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
+                                    BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                    TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+        super(registrate, name, MultiblockMachineDefinition::new, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
-    }
-
-    public static MultiblockMachineBuilder createMulti(Registrate registrate, String name,
-                                                       Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                                       BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
-                                                       BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MultiblockMachineBuilder(registrate, name, metaMachine, blockFactory, itemFactory,
-                blockEntityFactory);
     }
 
     public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
