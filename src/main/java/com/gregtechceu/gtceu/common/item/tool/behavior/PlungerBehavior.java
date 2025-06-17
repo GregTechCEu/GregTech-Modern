@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.misc.forge.VoidFluidHandlerItemStack;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -43,21 +44,20 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        if (context.getPlayer() == null || !context.getPlayer().isShiftKeyDown()) {
+        Player player = context.getPlayer();
+        Level level = context.getLevel();
+        if (player != null && !player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
 
         IFluidHandler fluidHandler;
-
-        if (context.getLevel()
-                .getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity metaMachineBlockEntity) {
-            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
+        if (level.getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity mmbe) {
+            fluidHandler = mmbe.getMetaMachine().getFluidHandlerCap(context.getClickedFace(), false);
         } else {
-            fluidHandler = FluidUtil
-                    .getFluidHandler(context.getLevel(), context.getClickedPos(), context.getClickedFace()).resolve()
+            // noinspection DataFlowIssue
+            fluidHandler = FluidUtil.getFluidHandler(level, context.getClickedPos(), context.getClickedFace())
                     .orElse(null);
         }
-
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
@@ -65,8 +65,8 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
         FluidStack drained = fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
         if (!drained.isEmpty()) {
             fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
-            ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
-            return InteractionResult.CONSUME;
+            ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
     }

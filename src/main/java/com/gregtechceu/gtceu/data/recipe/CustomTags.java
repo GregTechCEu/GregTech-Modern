@@ -199,9 +199,10 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE,
             "chemical_immune");
 
-    public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createFluidTag("lighter_fluid");
-    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
+    public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
+
+    public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
 }

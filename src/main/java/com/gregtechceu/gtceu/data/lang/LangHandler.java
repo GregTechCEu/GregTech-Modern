@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -451,6 +450,10 @@ public class LangHandler {
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
+        provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
+        provider.add("cover.ender_fluid_link.tooltip.channel_name", "Set channel name with input text");
+        provider.add("cover.ender_fluid_link.tooltip.list_button", "Show channel list");
+        provider.add("cover.ender_fluid_link.tooltip.clear_button", "Clear channel description");
         multilineLang(provider, "cover.ender_fluid_link.private.tooltip.disabled",
                 "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");
@@ -900,8 +903,8 @@ public class LangHandler {
         provider.add("metaitem.cover.digital.mode.fluid.disabled", "Click to enable Fluid Mode");
         provider.add("metaitem.cover.digital.mode.fluid.enabled", "Fluid Mode enabled");
 
-        provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
-        provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
+        provider.add("gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
+        provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
         provider.add("gtceu.universal.liters", "%s mB");
         provider.add("gtceu.universal.kiloliters", "%s B");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
@@ -1509,7 +1512,7 @@ public class LangHandler {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);
-        while (LocalizationUtils.exist(next)) {
+        while (Language.getInstance().has(next)) {
             outputKeys.add(next);
             next = getSubKey(key, ++i);
         }
@@ -1549,7 +1552,7 @@ public class LangHandler {
         var outputKeys = new ArrayList<String>();
         var i = 0;
         var next = getSubKey(key, i);
-        while (LocalizationUtils.exist(next)) {
+        while (Language.getInstance().has(next)) {
             outputKeys.add(next);
             next = getSubKey(key, ++i);
         }

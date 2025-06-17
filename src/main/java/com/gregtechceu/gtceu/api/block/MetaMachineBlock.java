@@ -14,11 +14,11 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -202,7 +202,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
-        if (LocalizationUtils.exist(mainKey)) {
+        if (Language.getInstance().has(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));
         }
     }
