@@ -76,10 +76,8 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.ITEM;
-import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.TOOL;
-import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
-import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
+import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.client.model.IBakedModelWithBER;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,11 +28,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BakedModelWithBERRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
+public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 
     private final BlockEntityRendererProvider.Context context;
 
-    public BakedModelWithBERRenderer(BlockEntityRendererProvider.Context context) {
+    public BlockEntityWithBERModelRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
 
@@ -43,10 +43,10 @@ public class BakedModelWithBERRenderer<T extends BlockEntity> implements BlockEn
         BlockState blockState = blockEntity.getBlockState();
         BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
 
-        if (model instanceof IBakedModelWithBER<?> berModel) {
+        if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() != blockEntity.getType()) return;
 
-            ((IBakedModelWithBER<T>) berModel).render(blockEntity, partialTick,
+            ((IBlockEntityRendererBakedModel<T>) berModel).render(blockEntity, partialTick,
                     poseStack, buffer, packedLight, packedOverlay, context);
         } else {
             Level level = blockEntity.getLevel();
@@ -75,9 +75,9 @@ public class BakedModelWithBERRenderer<T extends BlockEntity> implements BlockEn
         BlockState blockState = blockEntity.getBlockState();
         BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
 
-        if (model instanceof IBakedModelWithBER<?> berModel) {
+        if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() == blockEntity.getType()) {
-                return ((IBakedModelWithBER<T>) berModel).shouldRenderOffScreen(blockEntity);
+                return ((IBlockEntityRendererBakedModel<T>) berModel).shouldRenderOffScreen(blockEntity);
             }
         }
         return BlockEntityRenderer.super.shouldRenderOffScreen(blockEntity);
@@ -88,9 +88,9 @@ public class BakedModelWithBERRenderer<T extends BlockEntity> implements BlockEn
         BlockState blockState = blockEntity.getBlockState();
         BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
 
-        if (model instanceof IBakedModelWithBER<?> berModel) {
+        if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() == blockEntity.getType()) {
-                return ((IBakedModelWithBER<T>) berModel).shouldRender(blockEntity, cameraPos);
+                return ((IBlockEntityRendererBakedModel<T>) berModel).shouldRender(blockEntity, cameraPos);
             }
         }
         return BlockEntityRenderer.super.shouldRender(blockEntity, cameraPos);

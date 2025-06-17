@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.client.model;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import team.chisel.ctm.client.util.Quad;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -27,8 +25,7 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
 
     public static final Set<BaseBakedModel> LISTENERS = new HashSet<>();
 
-    @OnlyIn(Dist.CLIENT)
-    protected Map<ModelState, BakedModel> bakedModelCache;
+    public BaseBakedModel() {}
 
     public void onAdditionalModel(Consumer<ResourceLocation> consumer) {}
 
@@ -37,10 +34,36 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
     }
 
     @Override
+    public boolean useAmbientOcclusion() {
+        return true;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return true;
+    }
+
+    @Override
+    public boolean usesBlockLight() {
+        return true;
+    }
+
+    @Override
+    public boolean isCustomRenderer() {
+        return false;
+    }
+
+    @Override
+    public @NotNull ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
+    }
+
+    @Override
     public @NotNull TextureAtlasSprite getParticleIcon() {
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(MissingTextureAtlasSprite.getLocation());
     }
+
 
     public static BakedQuad offsetQuad(BakedQuad baked, float by) {
         Quad quad = Quad.from(baked);

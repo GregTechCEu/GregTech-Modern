@@ -22,8 +22,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
-import com.gregtechceu.gtceu.client.renderer.BakedModelWithBERRenderer;
-import com.gregtechceu.gtceu.common.data.GTModels;
+import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -75,7 +74,7 @@ import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.common.data.GTModels.*;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -216,12 +215,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     protected MachineBuilder<DEFINITION> setupDefaultRecipeMachineModels() {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        model(GTModels.createWorkableTieredHullMachineModel(this.id.withPrefix("block/machines/")));
+        model(createWorkableTieredHullMachineModel(this.id.withPrefix("block/machines/")));
         return this;
     }
 
     public MachineBuilder<DEFINITION> simpleModel(ResourceLocation modelName) {
-        model(GTModels.createBasicMachineModel(modelName));
+        model(createBasicMachineModel(modelName));
         return this;
     }
 
@@ -230,12 +229,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
-        return model(GTModels.createTieredHullMachineModel(model));
+        return model(createTieredHullMachineModel(model));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
-        return renderer(() -> new OverlayTieredMachineModel(tier,
+        return model(createOverlayTieredHullMachineModel(
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
+    }
+
+    public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
+        return model(createOverlayTieredHullMachineModel(overlayModel));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
@@ -244,7 +247,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
-        return model(GTModels.createWorkableTieredHullMachineModel(workableModel));
+        return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
@@ -435,7 +438,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
         if (hasBER) {
-            blockEntityBuilder = blockEntityBuilder.renderer(() -> BakedModelWithBERRenderer::new);
+            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
         var blockEntity = blockEntityBuilder.register();
         definition.setRecipeTypes(recipeTypes);

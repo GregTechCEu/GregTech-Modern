@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
-import com.gregtechceu.gtceu.client.model.IBakedModelWithBER;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 
@@ -270,9 +270,9 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
         var model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
-        if (model instanceof IBakedModelWithBER<?> modelWithBER) {
+        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
             if (modelWithBER.getBlockEntityType() == this.getType()) {
-                return ((IBakedModelWithBER<MetaMachineBlockEntity>) modelWithBER).getRenderBoundingBox(this);
+                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER).getRenderBoundingBox(this);
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
