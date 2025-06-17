@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -22,11 +23,16 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final Map<String, MultiVariant> unresolvedModels;
     @Getter
+    private final List<DynamicMachineRendererType> dynamicRenderers;
+    @Getter
     private final Map<MachineRenderState, UnbakedModel> resolvedModels = new HashMap<>();
 
-    public UnbakedMachineModel(ResourceLocation machineId, Map<String, MultiVariant> unresolvedModels) {
+    public UnbakedMachineModel(ResourceLocation machineId,
+                               Map<String, MultiVariant> unresolvedModels,
+                               List<DynamicMachineRendererType> dynamicRenderers) {
         this.definition = GTRegistries.MACHINES.get(machineId);
         this.unresolvedModels = unresolvedModels;
+        this.dynamicRenderers = dynamicRenderers;
     }
 
     @Override
@@ -39,6 +45,10 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
         });
 
         MachineModel model = new MachineModel(this.getDefinition(), baseModels);
+        dynamicRenderers.stream()
+                .map(type -> type.makeModel(model))
+                .forEach(model::addDynamicRenderer);
+
         model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
         return model;
     }

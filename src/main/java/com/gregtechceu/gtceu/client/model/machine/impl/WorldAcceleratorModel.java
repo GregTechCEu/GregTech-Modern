@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
+import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 
 import net.minecraft.client.renderer.RenderType;
@@ -26,7 +26,7 @@ public class WorldAcceleratorModel extends TieredHullMachineModel {
     private final WorkableOverlays blockEntityModeModel, randomTickModeModel;
 
     public WorldAcceleratorModel(int tier, ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
         blockEntityModeModel = new WorkableOverlays(beModeModelPath);
         randomTickModeModel = new WorkableOverlays(rtModeModelPath);
     }

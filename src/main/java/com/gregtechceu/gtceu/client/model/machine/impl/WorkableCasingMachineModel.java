@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
+import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

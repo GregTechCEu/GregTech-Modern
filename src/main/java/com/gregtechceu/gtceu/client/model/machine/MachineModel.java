@@ -7,17 +7,19 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
-import com.gregtechceu.gtceu.client.model.machine.impl.IPartRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRenderer;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -26,8 +28,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
 import lombok.Getter;
@@ -39,23 +45,37 @@ import java.util.*;
 
 import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
-public final class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartRenderer {
+public class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartModelRenderer, IMachineRendererModel<MetaMachine> {
+
+    public static final float COVER_OVERLAY_OFFSET = 0.008f;
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
 
+    @Getter
     private final MachineDefinition definition;
-    private final Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
+    private final Map<MachineRenderState, BakedModel> modelsByState = new IdentityHashMap<>();
+    private final List<DynamicMachineRenderer<?>> dynamicRenderers = new ArrayList<>();
 
     @Getter
     @Setter
     private TextureAtlasSprite particleIcon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
             .apply(MissingTextureAtlasSprite.getLocation());
 
-    public MachineModel(MachineDefinition definition, Map<MachineRenderState, BakedModel> baseModels) {
+    public MachineModel(MachineDefinition definition, Map<MachineRenderState, BakedModel> modelsByState) {
         this.definition = definition;
-        this.baseModels.putAll(baseModels);
+        this.modelsByState.putAll(modelsByState);
+    }
+
+    public MachineModel addDynamicRenderer(DynamicMachineRenderer<?> renderer) {
+        if (renderer.getDefinition() != this.definition) {
+            throw new IllegalArgumentException(
+                    "Cannot add a dynamic renderer with a different machine type, input: %s; has %s"
+                    .formatted(renderer.getDefinition().getId(), this.definition.getId()));
+        }
+        this.dynamicRenderers.add(renderer);
+        return this;
     }
 
     @Override
@@ -126,7 +146,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                     pos, level, blockModelState);
             var iterator = quads.listIterator(start);
             while (iterator.hasNext()) {
-                iterator.set(offsetQuad(iterator.next(), coverOverlayOffset()));
+                iterator.set(offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
             }
             return quads;
         }
@@ -137,10 +157,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
                               @Nullable Direction modelFacing, ModelState modelState,
                               @NotNull ModelData modelData, RenderType renderType) {
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed() &&
-                renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, modelFacing,
-                        modelState, modelData, renderType)) {
-            return;
+        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+            if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, modelFacing,
+                    modelState, modelData, renderType)) {
+                return;
+            }
         }
         renderBaseModel(quads, definition, machine, modelState, quadFace, rand, modelData, renderType);
     }
@@ -148,44 +169,74 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                                 ModelState modelState, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, RenderType renderType) {
-        if (machine == null) {
-            return;
-        }
-        List<BakedQuad> q = baseModels.get(machine.getRenderState())
-                .getQuads(definition.defaultBlockState(), side, rand, modelData, renderType);
-        quads.addAll(q);
-    }
-
-    @Override
-    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
-                                           @NotNull BlockState state, @NotNull ModelData modelData) {
-        return super.getModelData(level, pos, state, modelData);
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    public boolean isGui3d() {
-        return true;
-    }
-
-    public boolean usesBlockLight() {
-        return true;
+        if (machine == null) return;
+        quads.addAll(modelsByState.get(machine.getRenderState())
+                .getQuads(machine.getBlockState(), side, rand, modelData, renderType));
     }
 
     @Override
     public boolean isCustomRenderer() {
+        if (dynamicRenderers.isEmpty()) return false;
+        for (DynamicMachineRenderer<?> renderer : dynamicRenderers) {
+            if (renderer.isCustomRenderer()) return true;
+        }
         return false;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public @NotNull ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
+    public void render(MetaMachine machine, float partialTick,
+                       PoseStack poseStack, MultiBufferSource buffer,
+                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+        if (dynamicRenderers.isEmpty()) return;
+        for (DynamicMachineRenderer model : dynamicRenderers) {
+            if (!model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+                continue;
+            }
+            model.render(machine, partialTick, poseStack, buffer, packedLight, packedOverlay, context);
+        }
     }
 
-    public float coverOverlayOffset() {
-        return 0.008f;
+    @Override
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
+                             PoseStack poseStack, MultiBufferSource buffer,
+                             int packedLight, int packedOverlay) {
+        if (dynamicRenderers.isEmpty()) return;
+        for (DynamicMachineRenderer<?> model : dynamicRenderers) {
+            model.renderByItem(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public AABB getRenderBoundingBox(MetaMachine machine) {
+        AABB bounds = IMachineRendererModel.super.getRenderBoundingBox(machine);
+        if (dynamicRenderers.isEmpty()) return bounds;
+        for (DynamicMachineRenderer model : dynamicRenderers) {
+            bounds = bounds.minmax(model.getRenderBoundingBox(machine));
+        }
+        return bounds;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public boolean shouldRenderOffScreen(MetaMachine machine) {
+        if (dynamicRenderers.isEmpty()) return false;
+        for (DynamicMachineRenderer renderer : dynamicRenderers) {
+            if (renderer.shouldRenderOffScreen(machine)) return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
+        if (dynamicRenderers.isEmpty()) return false;
+        for (DynamicMachineRenderer model : dynamicRenderers) {
+            if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

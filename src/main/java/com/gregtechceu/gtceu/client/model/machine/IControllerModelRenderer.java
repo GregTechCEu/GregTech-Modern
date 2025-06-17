@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.model.machine.impl;
+package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface IControllerRenderer {
+public interface IControllerModelRenderer {
 
     /**
      * Render a specific model for given part.

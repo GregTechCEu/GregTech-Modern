@@ -31,7 +31,7 @@ public class OverlayTieredActiveMachineModel extends TieredHullMachineModel {
 
     public OverlayTieredActiveMachineModel(int tier, ResourceLocation overlayModel,
                                            ResourceLocation activeOverlayModel) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
         this.overlayModel = new IModelRenderer(overlayModel);
         this.activeOverlayModel = new IModelRenderer(activeOverlayModel);
     }

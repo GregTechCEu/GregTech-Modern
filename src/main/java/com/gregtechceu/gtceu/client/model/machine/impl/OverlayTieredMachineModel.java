@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
+import com.gregtechceu.gtceu.client.model.machine.IPartModelRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -22,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @SuppressWarnings("removal")
-public class OverlayTieredMachineModel extends TieredHullMachineModel implements IPartRenderer {
+public class OverlayTieredMachineModel extends TieredHullMachineModel implements IPartModelRenderer {
 
     protected IModelRenderer overlayModel;
 
     public OverlayTieredMachineModel(int tier, ResourceLocation overlayModel) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
         this.overlayModel = new IModelRenderer(overlayModel);
     }
 

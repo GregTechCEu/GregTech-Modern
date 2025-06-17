@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -30,7 +29,6 @@ import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
@@ -50,7 +48,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
@@ -283,9 +280,9 @@ public class GTMachineUtils {
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .renderer(() -> new BatteryBufferModel(tier, batterySlotSize))
-                        .langValue("%s %s%s".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
-                                batterySlotSize, "x Battery Buffer"))
+                        .model(GTMachineModels.createBatteryBufferModel(batterySlotSize))
+                        .langValue("%s %sx Battery Buffer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                                batterySlotSize))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                         batterySlotSize),
@@ -305,32 +302,7 @@ public class GTMachineUtils {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .modelProperty(ChargerMachine.STATE_PROPERTY, ChargerMachine.State.IDLE)
-                        .model((ctx, prov, modelBuilder) -> {
-                            final ResourceLocation parentModel = GTCEu.id("block/machine/overlay_machine");
-
-                            modelBuilder.forAllStates(renderState -> {
-                                ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
-
-                                BlockModelBuilder model = prov.models().withExistingParent(
-                                        ctx.getName() + "_" + state.getSerializedName(),
-                                        parentModel);
-                                hullTextures(model, modelBuilder.getOwner().getTier());
-                                switch (state) {
-                                    case IDLE -> {
-                                        model.texture("overlay_front", ChargerModel.CHARGER_IDLE);
-                                    }
-                                    case RUNNING -> {
-                                        model.texture("overlay_front", ChargerModel.CHARGER_RUNNING);
-                                        model.texture("overlay_front_emissive", ChargerModel.CHARGER_RUNNING_EMISSIVE);
-                                    }
-                                    case FINISHED -> {
-                                        model.texture("overlay_front", ChargerModel.CHARGER_FINISHED);
-                                        model.texture("overlay_front_emissive", ChargerModel.CHARGER_FINISHED_EMISSIVE);
-                                    }
-                                }
-                                return ConfiguredMachineModel.builder().modelFile(model).build();
-                            });
-                        })
+                        .model(GTMachineModels.createChargerModel())
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 itemSlotSize))
@@ -356,65 +328,7 @@ public class GTMachineUtils {
                         .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
                                 amperage))
                         .modelProperty(ConverterMachine.FE_TO_EU_PROPERTY, false)
-                        .model((ctx, prov, modelBuilder) -> {
-                            final ResourceLocation parentModel = GTCEu.id("block/machine/overlay_machine");
-                            final OverlayEnergyIORenderer energyIn;
-                            final OverlayEnergyIORenderer energyOut;
-
-                            switch (amperage) {
-                                case 4 -> {
-                                    energyIn = ENERGY_IN_4A;
-                                    energyOut = ENERGY_OUT_4A;
-                                }
-                                case 8 -> {
-                                    energyIn = ENERGY_IN_8A;
-                                    energyOut = ENERGY_OUT_8A;
-                                }
-                                case 16 -> {
-                                    energyIn = ENERGY_IN_16A;
-                                    energyOut = ENERGY_OUT_16A;
-                                }
-                                default -> {
-                                    energyIn = ENERGY_IN_1A;
-                                    energyOut = ENERGY_OUT_1A;
-                                }
-                            }
-                            // FIXME make a custom parent model for the converter so it has:
-                            // - base hull layer
-                            // - TWO front face layers for the EU I/O
-                            // - ONE layer on all other sides with the FE I/O
-                            BlockModelBuilder feToEuModel = prov.models()
-                                    .withExistingParent(ctx.getName() + "_fe_to_eu", parentModel)
-                                    .texture("overlay_front", )
-                                    .texture("overlay_side", )
-                                    .texture("overlay_back", "#overlay_side")
-                                    .texture("overlay_top", "#overlay_side")
-                                    .texture("overlay_bottom", "#overlay_side");
-                            BlockModelBuilder euToFeModel = prov.models()
-                                    .withExistingParent(ctx.getName() + "_eu_to_fe", parentModel)
-                                    .texture()
-                                    .texture("overlay_side", )
-                                    .texture("overlay_back", "#overlay_side")
-                                    .texture("overlay_top", "#overlay_side")
-                                    .texture("overlay_bottom", "#overlay_side");
-
-                            modelBuilder.partialState()
-                                    .with(ConverterMachine.FE_TO_EU_PROPERTY, false)
-                                    .setModels(ConfiguredMachineModel.builder().modelFile(untaped).build())
-                                    .partialState()
-                                    .with(ConverterMachine.FE_TO_EU_PROPERTY, true)
-                                    .setModels(ConfiguredMachineModel.builder().modelFile(taped).build())
-                                    .end();
-
-                            modelBuilder.forAllStates(state -> {
-                                boolean feToEu = state.getValue(ConverterMachine.FE_TO_EU_PROPERTY);
-
-                                hullTextures(model, modelBuilder.getOwner().getTier());
-
-                                return ConfiguredMachineModel.builder().modelFile(model).build();
-                            });
-                        })
-                        .renderer(() -> new ConverterModel(tier, amperage))
+                        .model(GTMachineModels.createConverterModel(amperage))
                         .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
@@ -465,32 +379,7 @@ public class GTMachineUtils {
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .modelProperty(CrateMachine.TAPED_PROPERTY, false)
-                .model((ctx, prov, builder) -> {
-                    ExistingFileHelper helper = prov.getExistingFileHelper();
-                    ResourceLocation baseModelName = wooden ?
-                            GTCEu.id("block/cube/all") :
-                            GTCEu.id("block/cube/tinted/all");
-                    ResourceLocation layerModelName = wooden ?
-                            GTCEu.id("block/cube_2_layer/all") :
-                            GTCEu.id("block/cube_2_layer/tinted_bot/all");
-
-                    var baseTextureName = GTCEu.id("block/storage/crates/" + (wooden ? "wooden" : "metal") + "_crate");
-
-                    ModelFile untaped = prov.models().withExistingParent(ctx.getName() + "_untaped", baseModelName)
-                            .texture("all", baseTextureName);
-
-                    ModelFile taped = prov.models().withExistingParent(ctx.getName() + "_taped", layerModelName)
-                            .texture("bot_all", baseTextureName)
-                            .texture("top_all", GTCEu.id("block/overlay/machine/overlay_crate_taped"));
-
-                    builder.partialState()
-                            .with(CrateMachine.TAPED_PROPERTY, false)
-                            .setModels(ConfiguredMachineModel.builder().modelFile(untaped).build())
-                            .partialState()
-                            .with(CrateMachine.TAPED_PROPERTY, true)
-                            .setModels(ConfiguredMachineModel.builder().modelFile(taped).build())
-                            .end();
-                })
+                .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();

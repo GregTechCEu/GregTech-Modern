@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 
 import net.minecraft.client.renderer.RenderType;
@@ -19,12 +20,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.gregtechceu.gtceu.client.model.machine.impl.OverlayEnergyIORenderer.*;
+import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 
 public class DiodeModel extends TieredHullMachineModel {
 
     public DiodeModel(int tier) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
     }
 
     @Override
@@ -35,8 +36,8 @@ public class DiodeModel extends TieredHullMachineModel {
                               ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
         super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
                 renderType);
-        OverlayEnergyIORenderer energyIn = ENERGY_IN_1A;
-        OverlayEnergyIORenderer energyOut = ENERGY_OUT_1A;
+        EnergyIOOverlay energyIn = ENERGY_IN_1A;
+        EnergyIOOverlay energyOut = ENERGY_OUT_1A;
         var amps = 1;
         if (machine instanceof DiodePartMachine diode) {
             amps = diode.getAmps();

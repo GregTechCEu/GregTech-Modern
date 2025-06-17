@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.client.model.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererRegistry;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererType;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BlockModelDefinition;
 import net.minecraft.client.renderer.block.model.MultiVariant;
@@ -53,7 +56,27 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
             variants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariant.class));
         }
-        return new UnbakedMachineModel(machineId, variants);
+
+        List<DynamicMachineRendererType> dynamicRenderers = new ArrayList<>();
+
+        JsonArray renderersJson = GsonHelper.getAsJsonArray(jsonObject, "dynamic_renderers", null);
+        if (renderersJson != null) {
+            for (JsonElement typeName : renderersJson) {
+                try {
+                    ResourceLocation name = new ResourceLocation(typeName.getAsString());
+                    DynamicMachineRendererType rendererType = DynamicMachineRendererRegistry.getType(name);
+                    if (rendererType == null) {
+                        throw new IllegalArgumentException("A Dynamic Renderer type named " + name + " does not exist");
+                    }
+                    dynamicRenderers.add(rendererType);
+                } catch (UnsupportedOperationException | ResourceLocationException | IllegalArgumentException e) {
+                    throw new JsonParseException("Entry " + typeName +
+                            " is not a valid Dynamic Renderer", e);
+                }
+            }
+        }
+
+        return new UnbakedMachineModel(machineId, variants, dynamicRenderers);
     }
 
     public static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model) {

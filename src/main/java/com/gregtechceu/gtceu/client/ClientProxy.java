@@ -17,10 +17,11 @@ import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
-import com.gregtechceu.gtceu.common.data.GTModels;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -125,6 +126,10 @@ public class ClientProxy extends CommonProxy {
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
+        event.enqueueWork(() -> {
+            FusionRingRenderer.initType();
+
+        });
     }
 
     @SubscribeEvent

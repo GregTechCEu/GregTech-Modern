@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.gregtechceu.gtceu.client.model.machine.impl.OverlayEnergyIORenderer.ENERGY_OUT_1A;
+import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.ENERGY_OUT_1A;
 
 public class SimpleGeneratorMachineModel extends WorkableTieredHullMachineModel {
 

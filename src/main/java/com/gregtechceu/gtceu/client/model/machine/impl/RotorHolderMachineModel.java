@@ -32,7 +32,7 @@ public class RotorHolderMachineModel extends TieredHullMachineModel {
     public static final ResourceLocation SPINNING = GTCEu.id("block/multiblock/large_turbine/rotor_spinning");
 
     public RotorHolderMachineModel(int tier) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
     }
 
     @Override

@@ -1,8 +1,7 @@
-package com.gregtechceu.gtceu.client.model.machine.impl;
+package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface IPartRenderer {
+public interface IPartModelRenderer {
 
     /**
      * Render part according to its controllers.
@@ -37,7 +36,7 @@ public interface IPartRenderer {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
 
-            if (model instanceof IControllerRenderer controllerRenderer) {
+            if (model instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side, rand, modelFacing,
                         modelState);
                 return true;

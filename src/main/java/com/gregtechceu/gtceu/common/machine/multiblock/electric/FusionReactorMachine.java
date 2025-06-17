@@ -60,8 +60,6 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 @MethodsReturnNonnullByDefault
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
-    public static final ModelProperty<Integer> MODEL_DATA_COLOR = new ModelProperty<>();
-
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
@@ -302,12 +300,6 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                 LocalizationUtils.format("gtceu.recipe.eu_to_start",
                         FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
-    }
-
-    @Override
-    public void updateModelData(ModelData.Builder builder) {
-        super.updateModelData(builder);
-        builder.with(MODEL_DATA_COLOR, this.color);
     }
 
     //////////////////////////////////////

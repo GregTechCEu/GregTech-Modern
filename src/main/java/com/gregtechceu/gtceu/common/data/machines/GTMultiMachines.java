@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.FusionRingRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
@@ -708,7 +709,7 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .renderer(() -> new FusionReactorModel(FusionReactorMachine.getCasingType(tier).getTexture(),
+                    .renderer(() -> new FusionRingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor")))
                     .hasBER(true)
                     .register(),

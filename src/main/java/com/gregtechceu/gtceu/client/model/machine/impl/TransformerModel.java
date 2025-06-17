@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 
 import net.minecraft.client.renderer.RenderType;
@@ -19,14 +20,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.gregtechceu.gtceu.client.model.machine.impl.OverlayEnergyIORenderer.*;
+import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 
 public class TransformerModel extends TieredHullMachineModel {
 
     private final int baseAmp;
 
     public TransformerModel(int tier, int baseAmp) {
-        super(tier, GTCEu.id("block/machine/hull_machine"));
+        super(tier, GTCEu.id("block/machine/template/hull_machine"));
         this.baseAmp = baseAmp;
     }
 
@@ -38,8 +39,8 @@ public class TransformerModel extends TieredHullMachineModel {
                               ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
         super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
                 renderType);
-        OverlayEnergyIORenderer otherFaceTexture = ENERGY_OUT_4A;
-        OverlayEnergyIORenderer frontFaceTexture = ENERGY_IN_1A;
+        EnergyIOOverlay otherFaceTexture = ENERGY_OUT_4A;
+        EnergyIOOverlay frontFaceTexture = ENERGY_IN_1A;
         var isTransformUp = false;
         if (machine instanceof TransformerMachine transformer) {
             isTransformUp = transformer.isTransformUp();
