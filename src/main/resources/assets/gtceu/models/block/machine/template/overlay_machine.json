@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/machine/hull_machine",
+    "parent": "gtceu:block/machine/template/hull_machine",
     "textures": {
         "particle": "#side",
 
@@ -7,11 +7,11 @@
         "top": "gtceu:block/casings/voltage/lv/top",
         "side": "gtceu:block/casings/voltage/lv/side",
 
-        "overlay_front": "gtceu:block/void",
+        "overlay_eu": "gtceu:block/void",
         "overlay_back": "gtceu:block/void",
         "overlay_top": "gtceu:block/void",
         "overlay_bottom": "gtceu:block/void",
-        "overlay_side": "gtceu:block/void",
+        "overlay_fe": "gtceu:block/void",
 
         "overlay_front_emissive": "gtceu:block/void",
         "overlay_back_emissive": "gtceu:block/void",

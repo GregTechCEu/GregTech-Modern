@@ -1,8 +1,7 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.models;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -10,21 +9,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.machine.WorkableOverlays;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
-import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
-import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
@@ -39,12 +30,9 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateItemModelProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Locale;
 
 public class GTModels {
 
@@ -300,122 +288,6 @@ public class GTModels {
                     .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
                     .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
         };
-    }
-
-    // endregion
-
-    // region MACHINE MODELS
-
-    public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
-        return (ctx, prov, builder) -> {
-            BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), parentModel);
-            hullTextures(model, builder.getOwner().getTier());
-
-            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
-            builder.forAllStates(state -> models);
-        };
-    }
-
-    public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModelName) {
-        return (ctx, prov, builder) -> {
-            final ExistingFileHelper helper = prov.getExistingFileHelper();
-
-            ResourceLocation parentModelName = GTCEu.id("block/machine/hull_machine");
-            var parentModel = new ModelFile.ExistingModelFile(parentModelName, helper);
-            var overlayModel = new ModelFile.ExistingModelFile(overlayModelName, helper);
-
-            var baseLayer = new BlockModelBuilder(ctx.getId(), helper).parent(parentModel);
-
-            var model = prov.models().getBuilder(ctx.getName())
-                    .customLoader(CompositeModelBuilder::begin)
-                    .child("base", hullTextures(baseLayer, builder.getOwner().getTier()))
-                    .child("overlay", new BlockModelBuilder(ctx.getId(), helper).parent(overlayModel))
-                    .end();
-            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
-            builder.forAllStates(state -> models);
-        };
-    }
-
-    public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation textureDir) {
-        return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/overlay_machine");
-            WorkableOverlays overlays = WorkableOverlays.get(textureDir, prov.getExistingFileHelper());
-
-            builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
-
-                BlockModelBuilder model = prov.models().withExistingParent(
-                        ctx.getName() + "_" + status.getSerializedName(),
-                        parentModel);
-                hullTextures(model, builder.getOwner().getTier());
-                for (var entry : overlays.getTextures().entrySet()) {
-                    var face = entry.getKey();
-                    var textures = entry.getValue();
-
-                    ResourceLocation overlay = textures.getTexture(status);
-                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
-
-                    if (overlay == null) continue;
-                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
-                    if (overlayEmissive != null) {
-                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
-                    }
-                }
-
-                return ConfiguredMachineModel.builder().modelFile(model).build();
-            });
-        };
-    }
-
-    public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
-        return (ctx, prov, builder) -> {
-            builder.forAllStates(state -> {
-                ModelFile model = new ModelFile.ExistingModelFile(baseModel, prov.getExistingFileHelper());
-                return ConfiguredMachineModel.builder().modelFile(model).build();
-            });
-        };
-    }
-
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
-        return (ctx, prov) -> {
-            Block block = ctx.getEntry();
-            if (!(block instanceof IMachineBlock machineBlock)) {
-                throw new IllegalArgumentException(
-                        "passed block must be a machine block, is " + block.getClass().getName());
-            }
-            MachineDefinition definition = machineBlock.getDefinition();
-
-            MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
-                    .customLoader(MachineModelBuilder.begin(definition));
-            model.configureModel(ctx, prov, builder);
-
-            final ModelFile built = builder.end();
-            var generator = prov.multiVariantGenerator(block,
-                    Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
-            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
-            if (dispatch != null) {
-                generator.with(dispatch);
-            }
-        };
-    }
-
-    public static ResourceLocation getHullTexture(int tier) {
-        return GTCEu.id("block/casings/voltage/%s".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
-    }
-
-    public static ResourceLocation getHullTexture(int tier, String key) {
-        return getHullTexture(tier).withSuffix("/" + key);
-    }
-
-    public static void hullTexture(BlockModelBuilder model, String key, int tier) {
-        model.texture(key, getHullTexture(tier, key));
-    }
-
-    public static BlockModelBuilder hullTextures(BlockModelBuilder model, int tier) {
-        hullTexture(model, "bottom", tier);
-        hullTexture(model, "top", tier);
-        hullTexture(model, "side", tier);
-        return model;
     }
 
     // endregion
