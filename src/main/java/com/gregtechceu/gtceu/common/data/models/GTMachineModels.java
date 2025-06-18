@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -118,6 +120,82 @@ public class GTMachineModels {
         };
     }
 
+    public static MachineBuilder.ModelConstructor createSteamHullMachineModel(ResourceLocation parentModel) {
+        return (ctx, prov, builder) -> {
+            BlockModelBuilder model = prov.models().nested()
+                    .parent(prov.models().getExistingFile(parentModel));
+            steamHullTextures(model);
+
+            builder.forAllStates(state -> model);
+        };
+    }
+
+    // spotless:off
+    public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModelName) {
+        return (ctx, prov, builder) -> {
+            ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_machine");
+
+            var model = prov.models().nested()
+                    .customLoader(CompositeModelBuilder::begin)
+                    .child("base", steamHullTextures(
+                            prov.models().nested()
+                                    .parent(prov.models().getExistingFile(parentModel)))
+                    )
+                    .child("overlay", prov.models().nested()
+                            .parent(prov.models().getExistingFile(overlayModelName)))
+                    .end();
+            builder.forAllStates(state -> model);
+        };
+    }
+    // spotless:on
+
+    public static final ResourceLocation VENT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_steam_vent");
+
+    // spotless:off
+    public static MachineBuilder.ModelConstructor createWorkableSteamHullMachineModel(boolean highPressure, ResourceLocation overlayDir) {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
+            WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
+                steamHullTextures(model, highPressure);
+
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+
+                Direction steamVent = state.getValue(IExhaustVentMachine.VENT_DIRECTION_PROPERTY);
+                model = prov.models().nested()
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("base", model)
+                        .child("steam_vent", prov.models().nested()
+                                .texture("steam_vent", VENT_OVERLAY)
+                                .element()
+                                .face(steamVent).texture("#steam_vent").cullface(steamVent).end()
+                                .end())
+                        .end();
+
+                return model;
+            });
+        };
+    }
+    // spotless:on
+
     public static MachineBuilder.ModelConstructor createWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                    ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
@@ -129,6 +207,43 @@ public class GTMachineModels {
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(parentModel));
+                hullTextures(model, builder.getOwner().getTier());
+
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+
+                return model;
+            });
+        };
+    }
+
+    // spotless:off
+    public static MachineBuilder.ModelConstructor createSidedWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
+                                                                                        ResourceLocation overlayDir) {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/casing_overlay_machine");
+            WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel))
+                        .texture("bottom", baseCasingTexture.withSuffix("/bottom"))
+                        .texture("top", baseCasingTexture.withSuffix("/top"))
+                        .texture("side", baseCasingTexture.withSuffix("/side"));
                 hullTextures(model, builder.getOwner().getTier());
 
                 for (var entry : overlays.getTextures().entrySet()) {
@@ -197,6 +312,28 @@ public class GTMachineModels {
         hullTexture(model, "top", tier);
         hullTexture(model, "side", tier);
         return model;
+    }
+    public static ResourceLocation getSteamHullTexture(String variant) {
+        return GTCEu.id("block/casings/steam/%s/".formatted(variant));
+    }
+
+    public static void steamHullTexture(BlockModelBuilder model, String key, String variant) {
+        model.texture(key, getSteamHullTexture(variant).withSuffix(key));
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, String variant) {
+        steamHullTexture(model, "bottom", variant);
+        steamHullTexture(model, "top", variant);
+        steamHullTexture(model, "side", variant);
+        return model;
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model) {
+        return steamHullTextures(model, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze");
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, boolean highTier) {
+        return steamHullTextures(model, highTier ? "bricked_steel" : "bricked_bronze");
     }
 
     public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texture) {

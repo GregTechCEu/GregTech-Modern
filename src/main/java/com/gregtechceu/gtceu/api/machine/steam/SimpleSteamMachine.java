@@ -26,6 +26,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +52,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    @Getter
     @Setter
     @Persisted
     private boolean needsVenting;
@@ -59,6 +61,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super(holder, isHighPressure, args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
+        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, getVentingDirection()));
     }
 
     //////////////////////////////////////
@@ -111,8 +114,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public boolean isNeedsVenting() {
-        return this.needsVenting;
+    public void setOutputFacing(@NotNull Direction outputFacing) {
+        super.setOutputFacing(outputFacing);
+        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, outputFacing));
     }
 
     @Override

@@ -234,9 +234,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
+        return overlaySteamHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
+    }
+
+    public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
         modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
-        return renderer(() -> new OverlaySteamMachineModel(
-                new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
+        return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
@@ -250,9 +253,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
+                                                             String workableModel) {
+        return workableSteamHullModel(isHighPressure, new ResourceLocation(registrate.getModid(), "block/machines/" + name));
+    }
+
+    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
                                                              ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        return renderer(() -> new WorkableSteamMachineModel(isHighPressure, workableModel));
+        return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,

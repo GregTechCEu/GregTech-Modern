@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -114,7 +115,8 @@ public class GTMachines {
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
                     .addOutputLimit(ItemRecipeCapability.CAP, 1)
-                    .renderer(() -> new WorkableSteamMachineModel(pressure, GTCEu.id("block/machines/macerator")))
+                    .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, Direction.SOUTH)
+                    .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_COMPRESSOR = registerSimpleSteamMachines(
             "compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
@@ -141,9 +143,10 @@ public class GTMachines {
                         int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
                     })
-                    .renderer(() -> new SteamMinerModel(isHP,
-                            isHP ? GTCEu.id("block/machines/high_pressure_steam_miner") :
-                                    GTCEu.id("block/machines/steam_miner")))
+                    .modelProperty(SteamMinerMachine.VENT_DIRECTION_PROPERTY, Direction.UP)
+                    .workableSteamHullModel(isHP, isHP ?
+                            GTCEu.id("block/machines/high_pressure_steam_miner") :
+                            GTCEu.id("block/machines/steam_miner"))
                     .register());
 
     //////////////////////////////////////
@@ -287,9 +290,9 @@ public class GTMachines {
     // ******** Electric ********//
     //////////////////////////////////////
     public static final MachineDefinition[] TRANSFORMER = registerTransformerMachines("", 1);
-    public static final MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp (2x) ", 2);
-    public static final MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp (4x) ", 4);
-    public static final MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power ", 16);
+    public static final MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp (2x)", 2);
+    public static final MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp (4x)", 4);
+    public static final MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power", 16);
 
     public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
     public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
