@@ -54,6 +54,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -225,9 +226,10 @@ public class GTMachineUtils {
                                 index == 3 ? GTValues.VC[tier] :
                                         index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor)
                                                 .intValue() : -1)
-                        .renderer(() -> new TransformerModel(tier, baseAmp))
+                        .modelProperty(TransformerMachine.TRANSFORM_UP_PROPERTY, false)
+                        .model(createTransformerModel(baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
-                                langName))
+                                langName.isEmpty() ? "" : langName + " "))
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
@@ -260,7 +262,7 @@ public class GTMachineUtils {
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
-                        .renderer(() -> new SimpleGeneratorMachineModel(tier, GTCEu.id("block/generators/" + name)))
+                        .simpleGeneratorModel(GTCEu.id("block/generators/" + name))
                         .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.applyAsInt(tier), false))
                         .register(),

@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -223,9 +222,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
-        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
-        return model(createOverlayTieredHullMachineModel(
-                new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
+        return overlayTieredHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
@@ -249,7 +246,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        return renderer(() -> new SimpleGeneratorMachineModel(tier, workableModel));
+        return model(createSimpleGeneratorModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
@@ -269,9 +266,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
+    public MachineBuilder<DEFINITION> sidedWorkableCasingModel(ResourceLocation baseCasing,
+                                                               ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel));
+        return model(createSidedWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
     public MachineBuilder<DEFINITION> appearanceBlock(Supplier<? extends Block> block) {

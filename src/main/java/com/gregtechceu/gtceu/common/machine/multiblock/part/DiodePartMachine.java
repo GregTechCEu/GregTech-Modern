@@ -123,7 +123,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     @Override
     public int tintColor(int index) {
-        if (index == 2) {
+        if (index == 2 || index == 3) {
             return GTValues.VC[getTier()];
         }
         return super.tintColor(index);

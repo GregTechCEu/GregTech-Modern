@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/machine/template/casing_machine",
+    "parent": "gtceu:block/cube/tinted/all",
     "textures": {
         "all": "gtceu:block/casings/solid/machine_casing_heatproof",
 

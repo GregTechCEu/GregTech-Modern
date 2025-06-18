@@ -222,8 +222,18 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder overlayTieredHullModel(ResourceLocation overlayModel) {
+        return (MultiblockMachineBuilder) super.overlayTieredHullModel(overlayModel);
+    }
+
+    @Override
     public MultiblockMachineBuilder workableTieredHullModel(ResourceLocation workableModel) {
         return (MultiblockMachineBuilder) super.workableTieredHullModel(workableModel);
+    }
+
+    @Override
+    public MultiblockMachineBuilder simpleGeneratorModel(ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.simpleGeneratorModel(workableModel);
     }
 
     @Override
@@ -232,8 +242,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
-        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(basePath, overlayModel);
+    public MultiblockMachineBuilder sidedWorkableCasingModel(ResourceLocation baseCasing,
+                                                             ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(baseCasing, workableModel);
     }
 
     @Override
@@ -277,7 +288,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder tooltips(Component... components) {
+    public MultiblockMachineBuilder tooltips(@Nullable Component... components) {
         return (MultiblockMachineBuilder) super.tooltips(components);
     }
 

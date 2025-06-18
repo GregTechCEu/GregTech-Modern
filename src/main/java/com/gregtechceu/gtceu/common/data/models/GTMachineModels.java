@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
+import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -33,9 +34,7 @@ import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 
-import java.util.IdentityHashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 
@@ -206,8 +205,8 @@ public class GTMachineModels {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
-                hullTextures(model, builder.getOwner().getTier());
+                        .parent(prov.models().getExistingFile(parentModel))
+                        .texture("all", baseCasingTexture);
 
                 for (var entry : overlays.getTextures().entrySet()) {
                     var face = entry.getKey();
@@ -270,7 +269,6 @@ public class GTMachineModels {
 
     // region helper functions
 
-    // spotless:off
     public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
@@ -296,15 +294,11 @@ public class GTMachineModels {
     // spotless:on
 
     public static ResourceLocation getHullTexture(int tier) {
-        return GTCEu.id("block/casings/voltage/%s".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
-    }
-
-    public static ResourceLocation getHullTexture(int tier, String key) {
-        return getHullTexture(tier).withSuffix("/" + key);
+        return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
     }
 
     public static void hullTexture(BlockModelBuilder model, String key, int tier) {
-        model.texture(key, getHullTexture(tier, key));
+        model.texture(key, getHullTexture(tier).withSuffix(key));
     }
 
     public static BlockModelBuilder hullTextures(BlockModelBuilder model, int tier) {
@@ -346,6 +340,48 @@ public class GTMachineModels {
     // endregion
 
     // region per-machine models
+
+    public static MachineBuilder.ModelConstructor createSimpleGeneratorModel(ResourceLocation overlayDir) {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
+            WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
+                hullTextures(model, builder.getOwner().getTier());
+
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+
+                var energyOverlayModel = prov.models().nested()
+                        .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/tinted/front_2")))
+                        .texture("overlay", ENERGY_OUT_1A.getIoPart())
+                        .texture("overlay_tinted", ENERGY_OUT_1A.getTintedPart());
+
+                model = prov.models().nested()
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("base", model)
+                        .child("energy_out", energyOverlayModel)
+                        .end();
+                return model;
+            });
+        };
+    }
 
     public static MachineBuilder.ModelConstructor createBatteryBufferModel(int inventorySize) {
         return (ctx, prov, builder) -> {
@@ -474,6 +510,27 @@ public class GTMachineModels {
                         .texture("overlay_in_tinted", energyIn.getTintedPart())
                         .texture("overlay_out_io", energyOut.getIoPart())
                         .texture("overlay_out_tinted", energyOut.getTintedPart());
+                hullTextures(model, builder.getOwner().getTier());
+                return model;
+            });
+        };
+    }
+
+    public static MachineBuilder.ModelConstructor createTransformerModel(int baseAmp) {
+        return (ctx, prov, builder) -> {
+            builder.forAllStates(renderState -> {
+                boolean transformUp = renderState.getValue(TransformerMachine.TRANSFORM_UP_PROPERTY);
+                EnergyIOOverlay frontFace = (transformUp ? OUT_OVERLAYS_FOR_AMP : IN_OVERLAYS_FOR_AMP)
+                        .get(baseAmp);
+                EnergyIOOverlay otherFace = (transformUp ? IN_OVERLAYS_FOR_AMP : OUT_OVERLAYS_FOR_AMP)
+                        .get(baseAmp * 4);
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
+                        .texture("overlay_in_io", frontFace.getIoPart())
+                        .texture("overlay_in_tinted", frontFace.getTintedPart())
+                        .texture("overlay_out_io", otherFace.getIoPart())
+                        .texture("overlay_out_tinted", otherFace.getTintedPart());
                 hullTextures(model, builder.getOwner().getTier());
                 return model;
             });

@@ -105,7 +105,7 @@ public class GTResearchMachines {
                             COMPUTER_CASING.getDefaultState())
                     .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
-            .sidedWorkableCasingModel("block/casings/hpca/advanced_computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/advanced_computer_casing"),
                     GTCEu.id("block/multiblock/research_station"))
             .register();
 
@@ -184,7 +184,7 @@ public class GTResearchMachines {
                     .where('M', GTMachines.MAINTENANCE_HATCH, Direction.NORTH)
                     .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
                     .build())
-            .sidedWorkableCasingModel("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
 
@@ -286,7 +286,7 @@ public class GTResearchMachines {
 
                 return shapeInfo;
             })
-            .sidedWorkableCasingModel("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/hpca"))
             .register();
 
