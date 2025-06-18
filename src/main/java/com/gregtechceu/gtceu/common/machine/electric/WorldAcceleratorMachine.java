@@ -106,10 +106,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
+            setRenderState(getRenderState().setValue(ACTIVE_PROPERTY, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
+            setRenderState(getRenderState().setValue(ACTIVE_PROPERTY, false));
         }
     }
 
@@ -214,6 +216,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
+        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, isWorkingEnabled));
         updateSubscription();
     }
 

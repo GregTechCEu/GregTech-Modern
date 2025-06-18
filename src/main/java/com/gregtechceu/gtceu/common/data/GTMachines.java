@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
-import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
@@ -431,7 +430,9 @@ public class GTMachines {
                     .langValue("%s World Accelerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .modelProperty(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY, true)
-                    .renderer(() -> new WorldAcceleratorModel(tier, GTCEu.id("block/machines/world_accelerator_te"),
+                    .modelProperty(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY, true)
+                    .modelProperty(WorldAcceleratorMachine.ACTIVE_PROPERTY, false)
+                    .model(createWorldAcceleratorModel(GTCEu.id("block/machines/world_accelerator_te"),
                             GTCEu.id("block/machines/world_accelerator")))
                     .tooltipBuilder((stack, tooltip) -> {
                         int randTickWorkingArea = 3 + (tier - 1) * 2;

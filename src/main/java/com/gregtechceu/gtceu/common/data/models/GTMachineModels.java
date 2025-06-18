@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -608,6 +609,49 @@ public class GTMachineModels {
 
         return builder.build();
     });
+
+    // spotless:off
+    public static MachineBuilder.ModelConstructor createWorldAcceleratorModel(ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
+            WorkableOverlays rtOverlays = WorkableOverlays.get(rtModeModelPath, prov.getExistingFileHelper());
+            WorkableOverlays beOverlays = WorkableOverlays.get(beModeModelPath, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                boolean rtMode = state.getValue(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY);
+                WorkableOverlays overlays = rtMode ? rtOverlays : beOverlays;
+
+                boolean active = state.getValue(WorldAcceleratorMachine.ACTIVE_PROPERTY);
+                boolean workingEnabled = state.getValue(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY);
+                RecipeLogic.Status status = active ?
+                        workingEnabled ?
+                                RecipeLogic.Status.WORKING :
+                                RecipeLogic.Status.SUSPEND :
+                        RecipeLogic.Status.IDLE;
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
+                hullTextures(model, builder.getOwner().getTier());
+
+                for (var entry : overlays.getTextures().entrySet()) {
+                    var face = entry.getKey();
+                    var textures = entry.getValue();
+
+                    ResourceLocation overlay = textures.getTexture(status);
+                    ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
+                    if (overlayEmissive != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+                    }
+                }
+                return model;
+            });
+        };
+    }
+    // spotless:on
 
     // endregion
 }

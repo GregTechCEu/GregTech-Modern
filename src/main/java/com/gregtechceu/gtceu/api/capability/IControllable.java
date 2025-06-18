@@ -1,6 +1,11 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 public interface IControllable {
+
+    BooleanProperty WORKING_ENABLED_PROPERTY = BooleanProperty.create("working_enabled");
+    BooleanProperty ACTIVE_PROPERTY = BooleanProperty.create("active");
 
     /**
      * @return true if the controllable is allowed to work
