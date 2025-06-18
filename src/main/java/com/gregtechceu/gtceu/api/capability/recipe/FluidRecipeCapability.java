@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -76,8 +77,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(
-                                new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                        if (ingredient.getCountProvider() == null) {
+                            ingredients.add(new MapFluidIngredient(
+                                    new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                        } else {
+                            ingredients.add(new MapFluidIngredient(new FluidStack(fluid,
+                                    ingredient.getCountProvider().sample(GTValues.RNG), ingredient.getNbt())));
+                        }
                     }
                 }
             }

@@ -1,17 +1,24 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -41,6 +48,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private int amount;
     @Getter
     private CompoundTag nbt;
+    @Getter
+    private IntProvider countProvider = null;
     private boolean changed = true;
 
     public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
@@ -49,9 +58,15 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.nbt = nbt;
     }
 
-    public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount,
-                                             @Nullable CompoundTag nbt) {
-        FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
+    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt,
+                           IntProvider countProvider) {
+        this(empty, amount, nbt);
+        this.countProvider = countProvider;
+    }
+
+    public static FluidIngredient fromValues(Stream<? extends Value> stream, int amount,
+                                             @Nullable CompoundTag nbt, IntProvider countProvider) {
+        FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt, countProvider);
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
 
@@ -59,6 +74,12 @@ public class FluidIngredient implements Predicate<FluidStack> {
         buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
         buffer.writeVarInt(amount);
         buffer.writeNbt(nbt);
+        // IntProvider.CODEC.parse(NbtOps.INSTANCE, Objects.requireNonNull(buffer.readNbt()).get("provider"))
+        // .getOrThrow(false, GTCEu.LOGGER::error)
+        CompoundTag providerTag = (CompoundTag) IntProvider.CODEC
+                .encodeStart(NbtOps.INSTANCE, countProvider == null ? UniformInt.of(amount, amount) : countProvider)
+                .getOrThrow(false, GTCEu.LOGGER::error);
+        buffer.writeNbt(providerTag);
     }
 
     public JsonElement toJson() {
@@ -75,12 +96,17 @@ public class FluidIngredient implements Predicate<FluidStack> {
             jsonArray.add(value.serialize());
         }
         jsonObject.add("value", jsonArray);
+        jsonObject.add("count_provider",
+                IntProvider.CODEC
+                        .encodeStart(JsonOps.INSTANCE,
+                                countProvider == null ? UniformInt.of(amount, amount) : countProvider)
+                        .getOrThrow(false, GTCEu.LOGGER::error));
         return jsonObject;
     }
 
     public FluidIngredient copy() {
         return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
-                this.nbt == null ? null : this.nbt.copy());
+                this.nbt == null ? null : this.nbt.copy(), this.countProvider);
     }
 
     @Override
@@ -145,6 +171,16 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public FluidStack[] getStacks() {
+        if (countProvider == null) {
+            return getRealStacks();
+        } else {
+            return Arrays.stream(getRealStacks())
+                    .map(stack -> new FluidStack(stack.getFluid(), getCountProvider().sample(GTValues.RNG)))
+                    .toArray(FluidStack[]::new);
+        }
+    }
+
+    public FluidStack[] getRealStacks() {
         if (changed || this.stacks == null) {
             List<FluidStack> fluidStacks = new ObjectArrayList<>(1);
             List<Fluid> found = new ObjectArrayList<>(1);
@@ -184,14 +220,30 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return FluidIngredient.of(Arrays.stream(items), amount, null);
     }
 
+    public static FluidIngredient of(IntProvider countProvider, Fluid... items) {
+        return FluidIngredient.of(Arrays.stream(items), countProvider, null);
+    }
+
+    private static FluidIngredient of(Stream<Fluid> stacks, IntProvider countProvider, CompoundTag nbt) {
+        return FluidIngredient.fromValues(
+                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 0, nbt,
+                countProvider);
+    }
+
     public static FluidIngredient of(FluidStack... stacks) {
         return FluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid),
                 stacks.length == 0 ? 0 : stacks[0].getAmount(), stacks.length == 0 ? null : stacks[0].getTag());
     }
 
+    public static FluidIngredient of(IntProvider countProvider, FluidStack... stacks) {
+        return FluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid),
+                countProvider, stacks.length == 0 ? null : stacks[0].getTag());
+    }
+
     public static FluidIngredient of(Stream<Fluid> stacks, int amount, CompoundTag nbt) {
         return FluidIngredient.fromValues(
-                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), amount, nbt);
+                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), amount, nbt,
+                null);
     }
 
     /**
@@ -200,17 +252,19 @@ public class FluidIngredient implements Predicate<FluidStack> {
      * @param tag the tag key
      */
     public static FluidIngredient of(TagKey<Fluid> tag, int amount) {
-        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, null);
+        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, null, null);
     }
 
     public static FluidIngredient of(TagKey<Fluid> tag, int amount, CompoundTag nbt) {
-        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, nbt);
+        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, nbt, null);
     }
 
     public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
         return FluidIngredient.fromValues(
                 buffer.readList(FluidStack::readFromPacket).stream().map(stack -> new FluidValue(stack.getFluid())),
-                buffer.readVarInt(), buffer.readNbt());
+                buffer.readVarInt(), buffer.readNbt(),
+                IntProvider.CODEC.parse(NbtOps.INSTANCE, Objects.requireNonNull(buffer.readNbt()))
+                        .getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     public static FluidIngredient fromJson(@Nullable JsonElement json) {
@@ -225,12 +279,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
+        IntProvider countProvider = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
+                .getOrThrow(false, GTCEu.LOGGER::error);
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
             return FluidIngredient.fromValues(
                     Stream.of(FluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"))), amount,
-                    nbt);
+                    nbt, countProvider);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "value");
             if (jsonArray.isEmpty() && !allowAir) {
@@ -241,7 +297,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                             StreamSupport.stream(jsonArray.spliterator(), false)
                                     .map(jsonElement -> FluidIngredient
                                             .valueFromJson(GsonHelper.convertToJsonObject(jsonElement, "fluid"))),
-                            amount, nbt);
+                            amount, nbt, countProvider);
         }
         throw new JsonSyntaxException("expected value to be either object or array.");
     }
@@ -251,7 +307,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
         if (json.has("fluid")) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(GsonHelper.getAsString(json, "fluid")));
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(json, "fluid")));
             return new FluidIngredient.FluidValue(fluid);
         }
         if (json.has("tag")) {
@@ -262,23 +318,16 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
     }
 
-    public static interface Value {
+    public interface Value {
 
-        public Collection<Fluid> getFluids();
+        Collection<Fluid> getFluids();
 
-        public JsonObject serialize();
+        JsonObject serialize();
 
-        public Value copy();
+        Value copy();
     }
 
-    public static class TagValue implements Value {
-
-        @Getter
-        private final TagKey<Fluid> tag;
-
-        public TagValue(TagKey<Fluid> tag) {
-            this.tag = tag;
-        }
+    public record TagValue(@Getter TagKey<Fluid> tag) implements Value {
 
         @Override
         public Collection<Fluid> getFluids() {
@@ -300,11 +349,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         public Value copy() {
             return new TagValue(this.tag);
         }
-
-        @Override
-        public int hashCode() {
-            return tag.hashCode();
-        }
     }
 
     public static class FluidValue implements Value {
@@ -323,7 +367,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public JsonObject serialize() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
+            jsonObject.addProperty("fluid",
+                    Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(this.fluid)).toString());
             return jsonObject;
         }
 

@@ -672,6 +672,10 @@ public interface GTRecipeSchema {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
+        public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
+            return output(FluidRecipeCapability.CAP, FluidIngredient.of(UniformInt.of(min, max), output.getFluid()));
+        }
+
         //////////////////////////////////////
         // ********** DATA ***********//
         //////////////////////////////////////
