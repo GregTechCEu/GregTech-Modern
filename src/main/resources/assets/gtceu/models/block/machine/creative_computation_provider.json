@@ -24,7 +24,6 @@
     {
       "from": [  0,  0,  0 ],
       "to":   [ 16, 16, 16 ],
-      "shade": false,
       "faces": {
         "down":  { "texture": "#top_all", "cullface": "down" },
         "up":    { "texture": "#top_all", "cullface": "up" },
@@ -39,12 +38,12 @@
       "to":   [ 16, 16, 16 ],
       "shade": false,
       "faces": {
-        "down":  { "texture": "#emissive_all", "cullface": "down", "tintindex": -101, "emissivity": 15 },
-        "up":    { "texture": "#emissive_all", "cullface": "up", "tintindex": -101, "emissivity": 15 },
+        "down":  { "texture": "#emissive_all", "cullface": "down",  "tintindex": -101, "emissivity": 15 },
+        "up":    { "texture": "#emissive_all", "cullface": "up",    "tintindex": -101, "emissivity": 15 },
         "north": { "texture": "#emissive_all", "cullface": "north", "tintindex": -101, "emissivity": 15 },
         "south": { "texture": "#emissive_all", "cullface": "south", "tintindex": -101, "emissivity": 15 },
-        "west":  { "texture": "#emissive_all", "cullface": "west", "tintindex": -101, "emissivity": 15 },
-        "east":  { "texture": "#emissive_all", "cullface": "east", "tintindex": -101, "emissivity": 15 }
+        "west":  { "texture": "#emissive_all", "cullface": "west",  "tintindex": -101, "emissivity": 15 },
+        "east":  { "texture": "#emissive_all", "cullface": "east",  "tintindex": -101, "emissivity": 15 }
       }
     }
   ]

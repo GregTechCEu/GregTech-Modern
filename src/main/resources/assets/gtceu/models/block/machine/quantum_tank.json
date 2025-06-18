@@ -7,18 +7,18 @@
 		"top": "gtceu:block/casings/voltage/lv/top",
 		"side": "gtceu:block/casings/voltage/lv/side",
 		"overlay_screen": "gtceu:block/overlay/machine/overlay_screen_glass",
-		"overlay_qchest": "gtceu:block/overlay/machine/overlay_qtank_emissive",
+		"overlay_qchest": "gtceu:block/overlay/machine/overlay_qtank_emissive"
 	},
 	"elements": [
 		{
 			"from": [0, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
-				"east": {"uv": [0, 0, 16, 16], "texture": "#side", "cullface": "east", "tintindex": 1},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#side", "cullface": "south", "tintindex": 1},
-				"west": {"uv": [0, 0, 16, 16], "texture": "#side", "cullface": "west", "tintindex": 1},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#top", "cullface": "up", "tintindex": 1},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#bottom", "cullface": "down", "tintindex": 1}
+				"east": {"texture": "#side", "cullface": "east", "tintindex": 1},
+				"south": {"texture": "#side", "cullface": "south", "tintindex": 1},
+				"west": {"texture": "#side", "cullface": "west", "tintindex": 1},
+				"up": {"texture": "#top", "cullface": "up", "tintindex": 1},
+				"down": {"texture": "#bottom", "cullface": "down", "tintindex": 1}
 			}
 		},
 		{

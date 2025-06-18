@@ -1,0 +1,57 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "#side",
+    "bottom": "gtceu:block/casings/voltage/lv/bottom",
+    "top": "gtceu:block/casings/voltage/lv/top",
+    "side": "gtceu:block/casings/voltage/lv/side",
+
+    "pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
+    "pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
+  },
+  "elements": [
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
+        "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
+        "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
+        "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
+        "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
+        "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
+      }
+    },
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "north": { "texture": "#pipe_in",  "rotation": 0,   "cullface": "north" },
+        "south": { "texture": "#pipe_out", "rotation": 0,   "cullface": "south" },
+        "up":    { "texture": "#overlay",  "rotation": 0,   "cullface": "up"    },
+        "down":  { "texture": "#overlay",  "rotation": 180, "cullface": "down"  },
+        "west":  { "texture": "#overlay",  "rotation": 90,  "cullface": "west"  },
+        "east":  { "texture": "#overlay",  "rotation": 270, "cullface": "east"  }
+      }
+    },
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "shade": false,
+      "faces": {
+        "up":    { "texture": "#overlay_emissive", "rotation": 0,   "cullface": "up",    "tintindex": -101, "emissivity": 15 },
+        "down":  { "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",  "tintindex": -101, "emissivity": 15 },
+        "west":  { "texture": "#overlay_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101, "emissivity": 15 },
+        "east":  { "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101, "emissivity": 15 }
+      }
+    },
+    {
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
+      "faces": {
+        "north": { "texture": "#hatch_in",  "cullface": "north" },
+        "south": { "texture": "#hatch_out", "cullface": "south" }
+      }
+    }
+  ]
+}

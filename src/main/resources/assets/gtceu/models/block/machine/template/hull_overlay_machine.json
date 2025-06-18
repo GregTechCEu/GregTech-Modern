@@ -1,17 +1,15 @@
 {
     "parent": "gtceu:block/machine/template/hull_machine",
     "textures": {
-        "particle": "#side",
-
         "bottom": "gtceu:block/casings/voltage/lv/bottom",
         "top": "gtceu:block/casings/voltage/lv/top",
         "side": "gtceu:block/casings/voltage/lv/side",
 
-        "overlay_eu": "gtceu:block/void",
+        "overlay_front": "gtceu:block/void",
         "overlay_back": "gtceu:block/void",
         "overlay_top": "gtceu:block/void",
         "overlay_bottom": "gtceu:block/void",
-        "overlay_fe": "gtceu:block/void",
+        "overlay_side": "gtceu:block/void",
 
         "overlay_front_emissive": "gtceu:block/void",
         "overlay_back_emissive": "gtceu:block/void",
@@ -33,8 +31,8 @@
             }
         },
         {
-            "from": [ -0.002, -0.002, -0.002 ],
-            "to":   [ 16.002, 16.002, 16.002 ],
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
             "faces": {
                 "north": { "texture": "#overlay_front",  "cullface": "north" },
                 "south": { "texture": "#overlay_back",   "cullface": "south" },
@@ -45,15 +43,16 @@
             }
         },
         {
-            "from": [ -0.003, -0.003, -0.003 ],
-            "to":   [ 16.003, 16.003, 16.003 ],
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "shade": false,
             "faces": {
-                "north": { "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101 },
-                "south": { "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101 },
-                "up":    { "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101 },
-                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down" , "tintindex": -101 },
-                "west":  { "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101 },
-                "east":  { "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101 }
+                "north": { "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101, "emissivity": 15 },
+                "south": { "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101, "emissivity": 15 },
+                "up":    { "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101, "emissivity": 15 },
+                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down" , "tintindex": -101, "emissivity": 15 },
+                "west":  { "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101, "emissivity": 15 },
+                "east":  { "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101, "emissivity": 15 }
             }
         }
     ]

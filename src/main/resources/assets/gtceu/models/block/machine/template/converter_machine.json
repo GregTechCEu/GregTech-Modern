@@ -25,8 +25,8 @@
             }
         },
         {
-            "from": [ -0.002, -0.002, -0.002 ],
-            "to":   [ 16.002, 16.002, 16.002 ],
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
             "faces": {
                 "north": { "texture": "#overlay_eu_io", "cullface": "north" },
                 "south": { "texture": "#overlay_fe",    "cullface": "south" },
@@ -37,8 +37,8 @@
             }
         },
         {
-            "from": [ -0.002, -0.002, -0.002 ],
-            "to":   [ 16.002, 16.002, 16.002 ],
+            "from": [  0,  0, 0 ],
+            "to":   [ 16, 16, 0 ],
             "faces": {
                 "north": { "texture": "#overlay_eu_tinted", "cullface": "north", "tintindex": 2 }
             }
