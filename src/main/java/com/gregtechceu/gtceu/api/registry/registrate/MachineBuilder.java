@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -222,15 +223,18 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(String name) {
+        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
         return model(createOverlayTieredHullMachineModel(
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
+        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
         return model(createOverlayTieredHullMachineModel(overlayModel));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {
+        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
         return renderer(() -> new OverlaySteamMachineModel(
                 new ResourceLocation(registrate.getModid(), "block/machine/part/" + name)));
     }
