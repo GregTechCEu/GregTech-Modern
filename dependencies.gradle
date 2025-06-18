@@ -10,9 +10,6 @@ dependencies {
     // Configuration
     jarJar(modApi(forge.configuration.get()))
 
-    // Configuration
-    jarJar(modApi(forge.ctm.get()))
-
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     annotationProcessor(forge.mixinExtras.common)
@@ -75,6 +72,9 @@ dependencies {
     modRuntimeOnly(forge.emi)
 //    modRuntimeOnly(forge.jei.forge.impl)
 //    modRuntimeOnly(forge.bundles.rei.runtime)
+
+    // CTM
+    // jarJar(modApi(forge.ctm.get()))
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
