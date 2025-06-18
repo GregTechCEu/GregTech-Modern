@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -46,7 +47,8 @@ import java.util.*;
 
 import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
-public class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartModelRenderer, IMachineRendererModel<MetaMachine> {
+public final class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartModelRenderer,
+        IMachineRendererModel<MetaMachine> {
 
     public static final float COVER_OVERLAY_OFFSET = 0.008f;
 
@@ -57,6 +59,7 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     @Getter
     private final MachineDefinition definition;
     private final Map<MachineRenderState, BakedModel> modelsByState;
+    @Getter
     private final List<DynamicRender<?, ?>> dynamicRenders;
 
     @Getter
@@ -70,6 +73,10 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
         this.definition = definition;
         this.modelsByState = modelsByState;
         this.dynamicRenders = dynamicRenders;
+
+        for (DynamicRender<?, ?> render : this.dynamicRenders) {
+            render.setParent(this);
+        }
     }
 
     @Override
@@ -100,7 +107,7 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
             ModelState machineModelState = GTMatrixUtils.createRotationState(frontFacing,
                     MetaMachine.getUpwardFacing(machine));
             ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
-            Direction modelFacing = side == null ? null : ModelFactory.modelFacing(side, frontFacing);
+            Direction modelFacing = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
             List<BakedQuad> quads = new LinkedList<>();
             // render machine additional quads
             renderMachine(quads, definition, machine, frontFacing, side, rand,
@@ -157,10 +164,10 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
                 return;
             }
         }
-        renderBaseModel(quads, definition, machine, modelState, quadFace, rand, modelData, renderType);
+        renderBaseModel(quads, machine, modelState, quadFace, rand, modelData, renderType);
     }
 
-    public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+    public void renderBaseModel(List<BakedQuad> quads, @Nullable MetaMachine machine,
                                 ModelState modelState, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, RenderType renderType) {
         if (machine == null) return;
@@ -183,8 +190,9 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
         if (dynamicRenders.isEmpty()) return;
+        Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
-            if (!model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+            if (!model.shouldRender(machine, cameraPos)) {
                 continue;
             }
             model.render(machine, partialTick, poseStack, buffer, packedLight, packedOverlay, context);

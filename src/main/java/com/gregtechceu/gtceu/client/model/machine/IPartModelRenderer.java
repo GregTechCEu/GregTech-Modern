@@ -37,12 +37,18 @@ public interface IPartModelRenderer {
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
 
             if (model instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side, rand, modelFacing,
-                        modelState);
+                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
+                        rand, modelFacing, modelState, modelData, renderType);
                 return true;
             } else if (model instanceof MachineModel machineModel) {
-                machineModel.renderBaseModel(quads, controller.self().getDefinition(), controller.self(),
-                        modelState, side, rand, modelData, renderType);
+                for (var render : machineModel.getDynamicRenders()) {
+                    if (render instanceof IControllerModelRenderer controllerRenderer) {
+                        controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
+                                rand, modelFacing, modelState, modelData, renderType);
+                        return true;
+                    }
+                }
+                machineModel.renderBaseModel(quads, controller.self(), modelState, side, rand, modelData, renderType);
                 return true;
             }
         }

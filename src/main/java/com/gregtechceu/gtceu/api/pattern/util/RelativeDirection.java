@@ -230,10 +230,6 @@ public enum RelativeDirection {
         return BY_GLOBAL_DIRECTION[direction.ordinal()];
     }
 
-    public static Direction getActualDirection(Direction original, Direction current, Direction direction) {
-        return findRelativeOf(original, current).getActualFacing(direction);
-    }
-
     /**
      * Finds the relative rotation between {@code base} and {@code relative}.
      * <br>
