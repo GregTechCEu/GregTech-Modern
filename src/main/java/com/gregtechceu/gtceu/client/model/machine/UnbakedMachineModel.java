@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -21,14 +22,14 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final MachineDefinition definition;
     @Getter
-    private final Map<String, MultiVariant> unresolvedModels;
+    private final Map<String, Either<ResourceLocation, UnbakedModel>> unresolvedModels;
     @Getter
     private final List<DynamicRender<?, ?>> dynamicRenders;
     @Getter
     private final Map<MachineRenderState, UnbakedModel> resolvedModels = new HashMap<>();
 
     public UnbakedMachineModel(ResourceLocation machineId,
-                               Map<String, MultiVariant> unresolvedModels,
+                               Map<String, Either<ResourceLocation, UnbakedModel>> unresolvedModels,
                                List<DynamicRender<?, ?>> dynamicRenders) {
         this.definition = GTRegistries.MACHINES.get(machineId);
         this.unresolvedModels = unresolvedModels;
@@ -52,7 +53,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Override
     public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
         this.resolvedModels.clear();
-        this.resolvedModels.putAll(MachineModelLoader.resolveStateModels(this));
+        this.resolvedModels.putAll(MachineModelLoader.resolveStateModels(this, modelGetter));
 
         for (UnbakedModel resolved : this.resolvedModels.values()) {
             resolved.resolveParents(modelGetter);

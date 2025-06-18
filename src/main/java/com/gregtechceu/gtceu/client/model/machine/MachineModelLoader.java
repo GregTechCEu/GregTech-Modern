@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.BlockModelDefinition;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
@@ -34,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -77,9 +80,15 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
 
         JsonObject variants = GsonHelper.getAsJsonObject(jsonObject, "variants");
 
-        Map<String, MultiVariant> parsedVariants = new HashMap<>();
+        Map<String, Either<ResourceLocation, UnbakedModel>> parsedVariants = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : variants.entrySet()) {
-            parsedVariants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariant.class));
+            JsonElement value = entry.getValue();
+            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+                String modelName = entry.getValue().getAsString();
+                parsedVariants.put(entry.getKey(), Either.left(new ResourceLocation(modelName)));
+            } else {
+                parsedVariants.put(entry.getKey(), Either.right(GSON.fromJson(value, BlockModel.class)));
+            }
         }
 
         List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
@@ -97,8 +106,9 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         return new UnbakedMachineModel(machineId, parsedVariants, dynamicRenders);
     }
 
-    protected static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model) {
-        UnbakedModel missingModel = ModelUtils.getModelBakery().getModel(ModelBakery.MISSING_MODEL_LOCATION);
+    protected static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model,
+                                                                              Function<ResourceLocation, UnbakedModel> modelGetter) {
+        UnbakedModel missingModel = modelGetter.apply(ModelBakery.MISSING_MODEL_LOCATION);
 
         ResourceLocation machineId = model.getDefinition().getId();
         StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = model.getDefinition()
@@ -112,14 +122,14 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         });
 
         try {
-            Map<MachineRenderState, UnbakedModel> curStatesToModels = new IdentityHashMap<>();
-
-            model.getUnresolvedModels().forEach((key, multiVariantModel) -> {
+            model.getUnresolvedModels().forEach((key, either) -> {
                 try {
                     possibleStates.stream().filter(predicate(stateDefinition, key)).forEach((state) -> {
-                        UnbakedModel prevModel = curStatesToModels.put(state, multiVariantModel);
+                        UnbakedModel curModel = either.map(modelGetter, Function.identity());
+
+                        UnbakedModel prevModel = statesToModels.put(state, curModel);
                         if (prevModel != null) {
-                            curStatesToModels.put(state, missingModel);
+                            statesToModels.put(state, missingModel);
                             throw new IllegalStateException(
                                     "Overlapping definition with: " + model.getUnresolvedModels().entrySet().stream()
                                             .filter((entry) -> entry.getValue() == prevModel)
@@ -132,7 +142,6 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                     LOGGER.warn("Exception loading model for machine: '{}' for variant: '{}': {}", machineId, key, e);
                 }
             });
-            statesToModels.putAll(curStatesToModels);
         } finally {
             modelsToStates.forEach((modelLoc, state) -> {
                 UnbakedModel unbaked = statesToModels.get(state);
