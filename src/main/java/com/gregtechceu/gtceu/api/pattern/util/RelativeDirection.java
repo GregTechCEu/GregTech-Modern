@@ -53,6 +53,17 @@ public enum RelativeDirection {
         return actualFacing.apply(facing);
     }
 
+    public RelativeDirection getOpposite() {
+        return switch (this) {
+            case UP -> DOWN;
+            case DOWN -> UP;
+            case LEFT -> RIGHT;
+            case RIGHT -> LEFT;
+            case FRONT -> BACK;
+            case BACK -> FRONT;
+        };
+    }
+
     public Vec3i applyVec3i(Direction facing) {
         return getActualFacing(facing).getNormal();
     }
@@ -217,5 +228,67 @@ public enum RelativeDirection {
 
     public static RelativeDirection fromGlobalDirection(Direction direction) {
         return BY_GLOBAL_DIRECTION[direction.ordinal()];
+    }
+
+    public static Direction getActualDirection(Direction original, Direction current, Direction direction) {
+        return findRelativeOf(original, current).getActualFacing(direction);
+    }
+
+    /**
+     * Finds the relative rotation between {@code base} and {@code relative}.
+     * <br>
+     * If {@code base} is vertical (e.g. {@link Direction#UP UP} or {@link Direction#DOWN DOWN}),
+     * the rotation is calculated with {@link Direction#NORTH NORTH} as the "forward" direction.
+     *
+     * @param base     the direction to offset
+     * @param relative the direction to offset by
+     * @return The relative rotation between {@code base} and {@code relative}
+     */
+    public static RelativeDirection findRelativeOf(Direction base, Direction relative) {
+        return findRelativeOf(base, relative, Direction.NORTH);
+    }
+
+    /**
+     * Finds the relative rotation between {@code base} and {@code relative}.
+     * <br>
+     * If {@code base} is vertical (e.g. {@link Direction#UP UP} or {@link Direction#DOWN DOWN}),
+     * the rotation is calculated with {@code forward} as the "forward" direction.
+     *
+     * @param base     the direction to offset
+     * @param relative the direction to offset by
+     * @param forward  the direction to use as "forward"
+     * @return The relative rotation between {@code base} and {@code relative}
+     */
+    public static RelativeDirection findRelativeOf(Direction base, Direction relative, Direction forward) {
+        // Check simple cases first
+        if (base == relative) return RelativeDirection.FRONT;
+        if (base.getOpposite() == relative) return RelativeDirection.BACK;
+
+        if (base.getAxis().isHorizontal()) { // base is one of N,S,W,E
+            if (relative == Direction.UP) return RelativeDirection.UP;
+            else if (relative == Direction.DOWN) return RelativeDirection.DOWN;
+            else if (relative == base.getCounterClockWise()) return RelativeDirection.LEFT;
+            else return RelativeDirection.RIGHT; // getClockWise
+        } else { // base is UP or DOWN
+            if (forward.getAxis() == Direction.Axis.Y) {
+                throw new IllegalStateException("forward must be a horizontal direction! is %s".formatted(forward));
+            }
+            Direction globalLeft = forward.getCounterClockWise();
+            Direction globalRight = forward.getClockWise();
+            Direction globalBack = forward.getOpposite();
+
+            if (relative == globalLeft) {
+                return RelativeDirection.LEFT;
+            } else if (relative == globalRight) {
+                return RelativeDirection.RIGHT;
+            } else { // relative is NORTH or SOUTH (assuming forward is NORTH)
+                RelativeDirection dir;
+                if (relative == globalBack) dir = RelativeDirection.UP;
+                else dir = RelativeDirection.DOWN; // relative == NORTH
+
+                if (base == Direction.DOWN) dir = dir.getOpposite();
+                return dir;
+            }
+        }
     }
 }
