@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
@@ -1037,7 +1038,8 @@ public class GTMachines {
                     .langValue("%s Diode".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
-                    .renderer(() -> new DiodeModel(tier))
+                    .modelProperty(DiodePartMachine.AMP_MODE_PROPERTY, DiodePartMachine.AmpMode.MODE_1A)
+                    .model(GTMachineModels.createDiodeModel())
                     .tooltips(Component.translatable("gtceu.machine.diode.tooltip_general"),
                             Component.translatable("gtceu.machine.diode.tooltip_starts_at"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in_out",

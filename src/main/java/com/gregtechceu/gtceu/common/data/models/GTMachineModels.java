@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.data.model.builder.ConfiguredMachineModel;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
@@ -206,10 +207,10 @@ public class GTMachineModels {
             var overlay = OUT_OVERLAYS_FOR_AMP.get(inventorySize);
             
             BlockModelBuilder model = prov.models()
-                    .withExistingParent(ctx.getName(), GTCEu.id("block/machine/template/converter_machine"))
-                    .texture("overlay_eu_io", overlay.getIoPart())
-                    .texture("overlay_eu_tinted", overlay.getTintedPart())
-                    .texture("overlay_fe", BLANK_TEXTURE);
+                    .withExistingParent(ctx.getName(), GTCEu.id("block/machine/template/transformer_like_machine"))
+                    .texture("overlay_in_io", overlay.getIoPart())
+                    .texture("overlay_in_tinted", overlay.getTintedPart())
+                    .texture("overlay_out_io", BLANK_TEXTURE);
             hullTextures(model, builder.getOwner().getTier());
 
             builder.partialState()
@@ -227,16 +228,16 @@ public class GTMachineModels {
             .id("block/machines/charger/overlay_charger_finished_emissive");
     
     public static MachineBuilder.ModelConstructor createChargerModel() {
-        return (ctx, prov, modelBuilder) -> {
+        return (ctx, prov, builder) -> {
             final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
 
-            modelBuilder.forAllStates(renderState -> {
+            builder.forAllStates(renderState -> {
                 ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
 
                 BlockModelBuilder model = prov.models().withExistingParent(
                         ctx.getName() + "/" + state.getSerializedName(),
                         parentModel);
-                hullTextures(model, modelBuilder.getOwner().getTier());
+                hullTextures(model, builder.getOwner().getTier());
                 switch (state) {
                     case IDLE -> {
                         model.texture("overlay_front", CHARGER_IDLE);
@@ -260,21 +261,21 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createConverterModel(int amperage) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/converter_machine");
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/transformer_like_machine");
             final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(amperage);
             final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(amperage);
 
             BlockModelBuilder euToFeModel = prov.models()
                     .withExistingParent(ctx.getName() + "_eu_to_fe", parentModel)
-                    .texture("overlay_eu_io", energyIn.getIoPart())
-                    .texture("overlay_eu_tinted", energyIn.getTintedPart())
-                    .texture("overlay_fe", CONVERTER_FE_OUT);
+                    .texture("overlay_in_io", energyIn.getIoPart())
+                    .texture("overlay_in_tinted", energyIn.getTintedPart())
+                    .texture("overlay_out_io", CONVERTER_FE_OUT);
             hullTextures(euToFeModel, builder.getOwner().getTier());
             BlockModelBuilder feToEuModel = prov.models()
                     .withExistingParent(ctx.getName() + "_fe_to_eu", parentModel)
-                    .texture("overlay_eu_io", energyOut.getIoPart())
-                    .texture("overlay_eu_tinted", energyOut.getTintedPart())
-                    .texture("overlay_fe", CONVERTER_FE_IN);
+                    .texture("overlay_in_io", energyOut.getIoPart())
+                    .texture("overlay_in_tinted", energyOut.getTintedPart())
+                    .texture("overlay_out_io", CONVERTER_FE_IN);
             hullTextures(feToEuModel, builder.getOwner().getTier());
 
             builder.partialState()
@@ -311,6 +312,27 @@ public class GTMachineModels {
                     .with(CrateMachine.TAPED_PROPERTY, true)
                     .setModels(ConfiguredMachineModel.builder().modelFile(taped).build())
                     .end();
+        };
+    }
+
+    public static MachineBuilder.ModelConstructor createDiodeModel() {
+        return (ctx, prov, builder) -> {
+            final ResourceLocation parentModel = GTCEu.id("block/machine/template/transformer_like_machine");
+
+            builder.forAllStates(renderState -> {
+                DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
+                final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
+                final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
+
+                BlockModelBuilder model = prov.models().withExistingParent(
+                        ctx.getName() + "/" + mode.getSerializedName(), parentModel)
+                        .texture("overlay_in_io", energyIn.getIoPart())
+                        .texture("overlay_in_tinted", energyIn.getTintedPart())
+                        .texture("overlay_out_io", energyOut.getIoPart())
+                        .texture("overlay_out_tinted", energyOut.getTintedPart());
+                hullTextures(model, builder.getOwner().getTier());
+                return ConfiguredMachineModel.builder().modelFile(model).build();
+            });
         };
     }
 

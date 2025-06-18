@@ -1,0 +1,53 @@
+{
+    "parent": "gtceu:block/machine/template/hull_machine",
+    "textures": {
+        "particle": "#side",
+
+        "bottom": "gtceu:block/casings/voltage/lv/bottom",
+        "top": "gtceu:block/casings/voltage/lv/top",
+        "side": "gtceu:block/casings/voltage/lv/side",
+
+        "overlay_in_io": "gtceu:block/overlay/machine/overlay_energy_1a_in",
+        "overlay_in_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+        "overlay_out_io": "gtceu:block/overlay/converter/converter_native_out",
+        "overlay_out_tinted": "gtceu:block/void"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
+            }
+        },
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#overlay_in_io",  "cullface": "north" },
+                "south": { "texture": "#overlay_out_io", "cullface": "south" },
+                "up":    { "texture": "#overlay_out_io", "cullface": "up"    },
+                "down":  { "texture": "#overlay_out_io", "cullface": "down"  },
+                "west":  { "texture": "#overlay_out_io", "cullface": "west"  },
+                "east":  { "texture": "#overlay_out_io", "cullface": "east"  }
+            }
+        },
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#overlay_in_tinted",  "cullface": "north", "tintindex": 2 },
+                "south": { "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 2 },
+                "up":    { "texture": "#overlay_out_tinted", "cullface": "up",    "tintindex": 2 },
+                "down":  { "texture": "#overlay_out_tinted", "cullface": "down",  "tintindex": 2 },
+                "west":  { "texture": "#overlay_out_tinted", "cullface": "west",  "tintindex": 2 },
+                "east":  { "texture": "#overlay_out_tinted", "cullface": "east",  "tintindex": 2 }
+            }
+        }
+    ]
+}
