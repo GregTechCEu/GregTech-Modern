@@ -12,10 +12,12 @@ import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
@@ -43,42 +45,40 @@ public class GTMachineModels {
     public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
             builder.forAllStates(state -> {
-                ModelFile model = new ModelFile.ExistingModelFile(baseModel, prov.getExistingFileHelper());
-                return ConfiguredMachineModel.builder().modelFile(model).build();
+                return prov.models().getExistingFile(baseModel);
             });
         };
     }
 
     public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
-            BlockModelBuilder model = prov.models().withExistingParent(ctx.getName(), parentModel);
+            BlockModelBuilder model = prov.models().nested()
+                    .parent(prov.models().getExistingFile(parentModel));
             hullTextures(model, builder.getOwner().getTier());
 
-            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
-            builder.forAllStates(state -> models);
+            builder.forAllStates(state -> model);
         };
     }
 
+    // spotless:off
     public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModelName) {
         return (ctx, prov, builder) -> {
-            final ExistingFileHelper helper = prov.getExistingFileHelper();
-
-            ResourceLocation parentModelName = GTCEu.id("block/machine/template/hull_machine");
-            var parentModel = new ModelFile.ExistingModelFile(parentModelName, helper);
-            var overlayModel = new ModelFile.ExistingModelFile(overlayModelName, helper);
+            ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_machine");
             
-            var model = prov.models().getBuilder(ctx.getName())
+            var model = prov.models().nested()
                     .customLoader(CompositeModelBuilder::begin)
                     .child("base", hullTextures(
-                            prov.models().nested().parent(parentModel),
+                            prov.models().nested()
+                                    .parent(prov.models().getExistingFile(parentModel)),
                             builder.getOwner().getTier())
                     )
-                    .child("overlay", prov.models().nested().parent(overlayModel))
+                    .child("overlay", prov.models().nested()
+                            .parent(prov.models().getExistingFile(overlayModelName)))
                     .end();
-            ConfiguredMachineModel[] models = ConfiguredMachineModel.builder().modelFile(model).build();
-            builder.forAllStates(state -> models);
+            builder.forAllStates(state -> model);
         };
     }
+    // spotless:on
 
     public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
@@ -88,10 +88,10 @@ public class GTMachineModels {
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
-                BlockModelBuilder model = prov.models().withExistingParent(
-                        ctx.getName() + "/" + status.getSerializedName(),
-                        parentModel);
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
                 hullTextures(model, builder.getOwner().getTier());
+
                 for (var entry : overlays.getTextures().entrySet()) {
                     var face = entry.getKey();
                     var textures = entry.getValue();
@@ -106,7 +106,7 @@ public class GTMachineModels {
                     }
                 }
 
-                return ConfiguredMachineModel.builder().modelFile(model).build();
+                return model;
             });
         };
     }
@@ -120,10 +120,10 @@ public class GTMachineModels {
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
-                BlockModelBuilder model = prov.models().withExistingParent(
-                        ctx.getName() + "/" + status.getSerializedName(),
-                        parentModel);
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
                 hullTextures(model, builder.getOwner().getTier());
+
                 for (var entry : overlays.getTextures().entrySet()) {
                     var face = entry.getKey();
                     var textures = entry.getValue();
@@ -138,7 +138,7 @@ public class GTMachineModels {
                     }
                 }
 
-                return ConfiguredMachineModel.builder().modelFile(model).build();
+                return model;
             });
         };
     }
@@ -147,6 +147,7 @@ public class GTMachineModels {
 
     // region helper functions
 
+    // spotless:off
     public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
@@ -169,6 +170,7 @@ public class GTMachineModels {
             }
         };
     }
+    // spotless:on
 
     public static ResourceLocation getHullTexture(int tier) {
         return GTCEu.id("block/casings/voltage/%s".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
@@ -204,26 +206,23 @@ public class GTMachineModels {
         return (ctx, prov, builder) -> {
             var overlay = OUT_OVERLAYS_FOR_AMP.get(inventorySize);
             
-            BlockModelBuilder model = prov.models()
-                    .withExistingParent(ctx.getName(), GTCEu.id("block/machine/template/transformer_like_machine"))
+            BlockModelBuilder model = prov.models().nested()
+                    .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", overlay.getIoPart())
                     .texture("overlay_in_tinted", overlay.getTintedPart())
                     .texture("overlay_out_io", BLANK_TEXTURE);
             hullTextures(model, builder.getOwner().getTier());
 
-            builder.partialState()
-                    .setModels(ConfiguredMachineModel.builder().modelFile(model).build())
-                    .end();
+            builder.forAllStates(state -> model);
         };
     }
 
+    // spotless:off
     public static final ResourceLocation CHARGER_IDLE = GTCEu.id("block/machines/charger/overlay_charger_idle");
     public static final ResourceLocation CHARGER_RUNNING = GTCEu.id("block/machines/charger/overlay_charger_running");
-    public static final ResourceLocation CHARGER_RUNNING_EMISSIVE = GTCEu
-            .id("block/machines/charger/overlay_charger_running_emissive");
+    public static final ResourceLocation CHARGER_RUNNING_EMISSIVE = GTCEu.id("block/machines/charger/overlay_charger_running_emissive");
     public static final ResourceLocation CHARGER_FINISHED = GTCEu.id("block/machines/charger/overlay_charger_finished");
-    public static final ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu
-            .id("block/machines/charger/overlay_charger_finished_emissive");
+    public static final ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu.id("block/machines/charger/overlay_charger_finished_emissive");
     
     public static MachineBuilder.ModelConstructor createChargerModel() {
         return (ctx, prov, builder) -> {
@@ -232,10 +231,10 @@ public class GTMachineModels {
             builder.forAllStates(renderState -> {
                 ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
 
-                BlockModelBuilder model = prov.models().withExistingParent(
-                        ctx.getName() + "/" + state.getSerializedName(),
-                        parentModel);
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(parentModel));
                 hullTextures(model, builder.getOwner().getTier());
+
                 switch (state) {
                     case IDLE -> {
                         model.texture("overlay_front", CHARGER_IDLE);
@@ -249,28 +248,30 @@ public class GTMachineModels {
                         model.texture("overlay_front_emissive", CHARGER_FINISHED_EMISSIVE);
                     }
                 }
-                return ConfiguredMachineModel.builder().modelFile(model).build();
+                return model;
             });
         };
     }
+    // spotless:on
+
+    public static final ResourceLocation TRANSFORMER_LIKE = GTCEu.id("block/machine/template/transformer_like_machine");
 
     public static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
     public static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
 
     public static MachineBuilder.ModelConstructor createConverterModel(int amperage) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/transformer_like_machine");
             final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(amperage);
             final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(amperage);
 
-            BlockModelBuilder euToFeModel = prov.models()
-                    .withExistingParent(ctx.getName() + "_eu_to_fe", parentModel)
+            BlockModelBuilder euToFeModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", energyIn.getIoPart())
                     .texture("overlay_in_tinted", energyIn.getTintedPart())
                     .texture("overlay_out_io", CONVERTER_FE_OUT);
             hullTextures(euToFeModel, builder.getOwner().getTier());
-            BlockModelBuilder feToEuModel = prov.models()
-                    .withExistingParent(ctx.getName() + "_fe_to_eu", parentModel)
+            BlockModelBuilder feToEuModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", energyOut.getIoPart())
                     .texture("overlay_in_tinted", energyOut.getTintedPart())
                     .texture("overlay_out_io", CONVERTER_FE_IN);
@@ -278,10 +279,10 @@ public class GTMachineModels {
 
             builder.partialState()
                     .with(ConverterMachine.FE_TO_EU_PROPERTY, false)
-                    .setModels(ConfiguredMachineModel.builder().modelFile(euToFeModel).build())
+                    .setModel(euToFeModel)
                     .partialState()
                     .with(ConverterMachine.FE_TO_EU_PROPERTY, true)
-                    .setModels(ConfiguredMachineModel.builder().modelFile(feToEuModel).build())
+                    .setModel(feToEuModel)
                     .end();
         };
     }
@@ -297,43 +298,98 @@ public class GTMachineModels {
 
             var baseTextureName = GTCEu.id("block/storage/crates/" + (wooden ? "wooden" : "metal") + "_crate");
 
-            ModelFile untaped = prov.models().withExistingParent(ctx.getName() + "_untaped", baseModelName)
+            ModelFile untaped = prov.models().nested()
+                    .parent(prov.models().getExistingFile(baseModelName))
                     .texture("all", baseTextureName);
-            ModelFile taped = prov.models().withExistingParent(ctx.getName() + "_taped", layerModelName)
+            ModelFile taped = prov.models().nested()
+                    .parent(prov.models().getExistingFile(layerModelName))
                     .texture("bot_all", baseTextureName)
                     .texture("top_all", GTCEu.id("block/overlay/machine/overlay_crate_taped"));
 
             builder.partialState()
                     .with(CrateMachine.TAPED_PROPERTY, false)
-                    .setModels(ConfiguredMachineModel.builder().modelFile(untaped).build())
+                    .setModel(untaped)
                     .partialState()
                     .with(CrateMachine.TAPED_PROPERTY, true)
-                    .setModels(ConfiguredMachineModel.builder().modelFile(taped).build())
+                    .setModel(taped)
                     .end();
         };
     }
 
     public static MachineBuilder.ModelConstructor createDiodeModel() {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/transformer_like_machine");
-
             builder.forAllStates(renderState -> {
                 DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
                 final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
                 final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
 
-                BlockModelBuilder model = prov.models().withExistingParent(
-                        ctx.getName() + "/" + mode.getSerializedName(), parentModel)
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                         .texture("overlay_in_io", energyIn.getIoPart())
                         .texture("overlay_in_tinted", energyIn.getTintedPart())
                         .texture("overlay_out_io", energyOut.getIoPart())
                         .texture("overlay_out_tinted", energyOut.getTintedPart());
                 hullTextures(model, builder.getOwner().getTier());
-                return ConfiguredMachineModel.builder().modelFile(model).build();
+                return model;
+            });
+        };
+    }
+
+    // spotless:off
+    public static final ResourceLocation ROTOR_HOLDER_MODEL = GTCEu.id("block/machine/template/rotor_holder_machine");
+    public static final ResourceLocation ROTOR_HOLDER_BASE_RING = GTCEu.id("block/multiblock/large_turbine/base_ring");
+    public static final ResourceLocation ROTOR_HOLDER_BASE_BG = GTCEu.id("block/multiblock/large_turbine/base_bg");
+    public static final ResourceLocation ROTOR_HOLDER_IDLE = GTCEu.id("block/multiblock/large_turbine/rotor_idle");
+    public static final ResourceLocation ROTOR_HOLDER_SPINNING = GTCEu.id("block/multiblock/large_turbine/rotor_spinning");
+    // spotless:on
+
+    public static MachineBuilder.ModelConstructor createRotorHolderModel() {
+        return (ctx, prov, builder) -> {
+
+            builder.forAllStates(state -> {
+                var model = prov.models().nested()
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("holder", hullTextures(
+                                prov.models().nested()
+                                        .parent(prov.models().getExistingFile(ROTOR_HOLDER_MODEL)),
+                                builder.getOwner().getTier())
+                        );
+
+                boolean isFormed = state.getValue(RotorHolderPartMachine.IS_FORMED_PROPERTY);
+                if (!isFormed) {
+                    return model.end();
+                }
+                BlockModelBuilder rotorModel = prov.models().nested()
+                        .texture("ring", ROTOR_HOLDER_BASE_RING)
+                        .texture("base", ROTOR_HOLDER_BASE_BG)
+                        .element()
+                        .from(-16, -16, 0).to(32, 32, -0.002f)
+                        .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#ring").end()
+                        .end()
+                        .element()
+                        .from(-16, -16, 0).to(32, 32, -0.004f)
+                        .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#base").end()
+                        .end();
+                model.child("rotor", rotorModel);
+
+                if (!state.getValue(RotorHolderPartMachine.HAS_ROTOR_PROPERTY)) {
+                    return model.end();
+                }
+                boolean spinning = state.getValue(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY);
+                rotorModel.texture("rotor", spinning ? ROTOR_HOLDER_SPINNING : ROTOR_HOLDER_IDLE)
+                        .element()
+                        .from(-16, -16, 0).to(32, 32, -0.006f)
+                        .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#rotor").tintindex(2).end()
+                        .end();
+                if (state.getValue(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY)) {
+                    rotorModel.element(2)
+                            .emissivity(15, 15).ao(false)
+                            .face(Direction.NORTH).tintindex(-101);
+                }
+                return model.end();
             });
         };
     }
 
     // endregion
-
 }

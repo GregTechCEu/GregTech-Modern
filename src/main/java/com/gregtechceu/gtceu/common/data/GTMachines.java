@@ -1057,7 +1057,10 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
-                    .renderer(() -> new RotorHolderMachineModel(tier))
+                    .modelProperty(RotorHolderPartMachine.IS_FORMED_PROPERTY, false)
+                    .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
+                    .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
+                    .model(createRotorHolderModel())
                     .tooltips(LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
                             LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
                             Component.translatable("gtceu.universal.disabled"))
