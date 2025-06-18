@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.RenderType;
@@ -36,6 +37,6 @@ public class SteamMinerModel extends WorkableSteamMachineModel {
         super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
                 renderType);
         if (quadFace == Direction.DOWN) quads.add(StaticFaceBakery.bakeFace(modelFacing,
-                ModelFactory.getBlockSprite(MinerModel.PIPE_IN_OVERLAY), modelState));
+                ModelFactory.getBlockSprite(GTMachineModels.PIPE_IN_OVERLAY), modelState));
     }
 }

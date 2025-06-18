@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.RenderType;
@@ -42,7 +43,7 @@ public class LargeMinerModel extends WorkableCasingMachineModel {
         if (machine instanceof IMultiController controller && controller.isFormed() && quadFace == Direction.DOWN &&
                 elementSide != null) {
             quads.add(StaticFaceBakery.bakeFace(BEHIND_BLOCK, elementSide,
-                    ModelFactory.getBlockSprite(MinerModel.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
+                    ModelFactory.getBlockSprite(GTMachineModels.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
         }
     }
 }

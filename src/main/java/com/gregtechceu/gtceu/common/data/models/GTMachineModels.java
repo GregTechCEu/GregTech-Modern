@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.common.data.models;
 
+import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
@@ -17,6 +20,7 @@ import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
@@ -27,7 +31,9 @@ import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 
+import java.util.IdentityHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 
@@ -99,8 +105,9 @@ public class GTMachineModels {
                     ResourceLocation overlay = textures.getTexture(status);
                     ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
 
-                    if (overlay == null) continue;
-                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
                     if (overlayEmissive != null) {
                         model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
                     }
@@ -131,8 +138,9 @@ public class GTMachineModels {
                     ResourceLocation overlay = textures.getTexture(status);
                     ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
 
-                    if (overlay == null) continue;
-                    model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    if (overlay != null) {
+                        model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+                    }
                     if (overlayEmissive != null) {
                         model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
                     }
@@ -390,6 +398,22 @@ public class GTMachineModels {
             });
         };
     }
+
+    public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");
+    public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_MODELS = Util.make(() -> {
+        ImmutableMap.Builder<Material, ResourceLocation> builder = ImmutableMap.builder();
+        builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
+        builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
+        builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));
+        builder.put(GTMaterials.Steel, GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
+        builder.put(GTMaterials.StainlessSteel, GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"));
+        builder.put(GTMaterials.Titanium, GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
+        builder.put(GTMaterials.TungstenSteel, GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
+        builder.put(GTMaterials.Polytetrafluoroethylene, GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
+        builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
+
+        return builder.build();
+    });
 
     // endregion
 }

@@ -400,7 +400,7 @@ public class GTMachines {
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
-                    .renderer(() -> new MinerModel(tier, GTCEu.id("block/machines/miner")))
+                    .workableTieredHullModel(GTCEu.id("block/machines/miner"))
                     .tooltipBuilder((stack, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
                         long energyPerTick = GTValues.V[tier - 1];

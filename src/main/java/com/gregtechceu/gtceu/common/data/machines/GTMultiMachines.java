@@ -774,7 +774,7 @@ public class GTMultiMachines {
                             .build())
                     .allowExtendedFacing(true)
                     .renderer(() -> new LargeMinerModel(
-                            MinerModel.MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
+                            MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner")))
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"
