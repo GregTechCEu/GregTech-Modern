@@ -1,7 +1,8 @@
-package com.gregtechceu.gtceu.client.model.machine.impl;
+package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.client.model.machine.impl.TieredHullMachineModel;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -38,18 +39,18 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-public class QuantumTankModel extends TieredHullMachineModel {
+public class QuantumTankFluidRender extends TieredHullMachineModel {
 
     private static final float MIN = 0.16f;
     private static final float MAX = 0.84f;
 
     private static Item CREATIVE_FLUID_ITEM = null;
 
-    public QuantumTankModel(int tier) {
+    public QuantumTankFluidRender(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_tank"));
     }
 
-    public QuantumTankModel(int tier, ResourceLocation modelLocation) {
+    public QuantumTankFluidRender(int tier, ResourceLocation modelLocation) {
         super(tier, modelLocation);
     }
 

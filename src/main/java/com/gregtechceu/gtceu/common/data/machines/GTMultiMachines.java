@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -621,6 +622,7 @@ public class GTMultiMachines {
                     .where('F', blocks(FIREBOX_BRONZE.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(new BoilerMultiPartRender(BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
@@ -712,6 +714,7 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
+                    .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
                             .andThen(b -> b.addDynamicRenderer(new FusionRingRender())))

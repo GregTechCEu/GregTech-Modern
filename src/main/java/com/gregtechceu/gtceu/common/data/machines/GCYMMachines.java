@@ -11,12 +11,12 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.model.machine.impl.gcym.LargeChemicalBathModel;
-import com.gregtechceu.gtceu.client.model.machine.impl.gcym.LargeMixerModel;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.gcym.*;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -49,6 +49,7 @@ import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.registerTieredMachines;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GCYMMachines {
@@ -108,8 +109,6 @@ public class GCYMMachines {
                     Component.translatable("gtceu.ore_washer"), Component.translatable("gtceu.chemical_bath")))
             .rotationState(RotationState.ALL)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
-            .renderer(() -> new LargeChemicalBathModel(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_chemical_bath")))
             .hasBER(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
@@ -129,6 +128,10 @@ public class GCYMMachines {
                     .where(' ', Predicates.air())
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
+                    GTCEu.id("block/multiblock/gcym/large_maceration_tower"))
+                    .andThen(b -> b.addDynamicRenderer(new LargeChemicalBathFluidRender())))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
@@ -168,8 +171,6 @@ public class GCYMMachines {
                     Component.translatable("gtceu.mixer")))
             .rotationState(RotationState.ALL)
             .recipeType(MIXER_RECIPES)
-            .renderer(() -> new LargeMixerModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_mixer")))
             .hasBER(true)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                     GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
@@ -190,6 +191,10 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
+                    GTCEu.id("block/multiblock/gcym/large_mixer"))
+                    .andThen(b -> b.addDynamicRenderer(new LargeMixerFluidRender())))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE

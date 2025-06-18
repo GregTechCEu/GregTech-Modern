@@ -27,8 +27,10 @@ import static net.minecraft.util.FastColor.ARGB32.*;
 
 public class FusionRingRender extends DynamicRender<FusionReactorMachine, FusionRingRender> {
 
+    // spotless:off
     public static final Codec<FusionRingRender> CODEC = Codec.unit(FusionRingRender::new);
     public static final DynamicRenderType<FusionReactorMachine, FusionRingRender> TYPE = new DynamicRenderType<>(FusionRingRender.CODEC);
+    // spotless:on
 
     public static final float FADEOUT = 60;
 

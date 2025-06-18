@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.client.model.machine.impl;
+package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.model.machine.impl.TieredHullMachineModel;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
@@ -43,15 +44,15 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-public class QuantumChestModel extends TieredHullMachineModel {
+public class QuantumChestItemRender extends TieredHullMachineModel {
 
     private static Item CREATIVE_CHEST_ITEM = null;
 
-    public QuantumChestModel(int tier) {
+    public QuantumChestItemRender(int tier) {
         super(tier, GTCEu.id("block/machine/quantum_chest"));
     }
 
-    public QuantumChestModel(int tier, ResourceLocation modelLocation) {
+    public QuantumChestItemRender(int tier, ResourceLocation modelLocation) {
         super(tier, modelLocation);
     }
 

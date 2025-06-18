@@ -158,6 +158,17 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
                               @Nullable Direction elementSide, ModelState modelState,
                               @NotNull ModelData modelData, RenderType renderType) {
+        if (machine == null) {
+            quads.addAll(modelsByState.get(definition.defaultRenderState())
+                    .getQuads(null, quadFace, rand, modelData, renderType));
+            return;
+        }
+
+        if (!dynamicRenders.isEmpty()) {
+            for (var render : dynamicRenders) {
+                quads.addAll(render.getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
+            }
+        }
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
             if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, elementSide,
                     modelState, modelData, renderType)) {
@@ -167,10 +178,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         renderBaseModel(quads, machine, modelState, quadFace, rand, modelData, renderType);
     }
 
-    public void renderBaseModel(List<BakedQuad> quads, @Nullable MetaMachine machine,
+    public void renderBaseModel(List<BakedQuad> quads, @NotNull MetaMachine machine,
                                 ModelState modelState, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, RenderType renderType) {
-        if (machine == null) return;
         quads.addAll(modelsByState.get(machine.getRenderState())
                 .getQuads(machine.getBlockState(), side, rand, modelData, renderType));
     }
