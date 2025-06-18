@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -197,9 +196,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @SuppressWarnings("NullableProblems")
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
-        if (type != GTRecipeTypes.DUMMY_RECIPES) {
-            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        }
         return this;
     }
 
@@ -209,13 +205,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        return this;
-    }
-
-    protected MachineBuilder<DEFINITION> setupDefaultRecipeMachineModels() {
-        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
-        model(createWorkableTieredHullMachineModel(this.id.withPrefix("block/machines/")));
         return this;
     }
 
@@ -247,29 +236,29 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
     public MachineBuilder<DEFINITION> simpleGeneratorModel(ResourceLocation workableModel) {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return renderer(() -> new SimpleGeneratorMachineModel(tier, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
                                                              ResourceLocation workableModel) {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return renderer(() -> new WorkableSteamMachineModel(isHighPressure, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
                                                           ResourceLocation workableModel) {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel,
-                                                               boolean tint) {
-        return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel, tint));
-    }
-
     public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
+        modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return renderer(() -> new WorkableSidedCasingMachineModel(basePath, overlayModel));
     }
 
@@ -399,10 +388,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         MachineRenderState defaultState = definition.getStateDefinition().any();
         for (var entry : this.modelProperties.entrySet()) {
             if (entry.getValue() == null) continue;
-            defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
+            defaultState = defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
         }
 
-        definition.registerDefaultState(definition.getStateDefinition().any());
+        definition.registerDefaultState(defaultState);
     }
 
     @HideFromJS

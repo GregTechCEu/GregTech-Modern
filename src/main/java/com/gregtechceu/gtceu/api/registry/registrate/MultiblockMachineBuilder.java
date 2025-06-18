@@ -232,12 +232,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel,
-                                                             boolean tint) {
-        return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(basePath, overlayModel, tint);
-    }
-
-    @Override
     public MultiblockMachineBuilder sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel) {
         return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(basePath, overlayModel);
     }
