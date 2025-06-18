@@ -24,6 +24,6 @@ public interface IControllerModelRenderer {
      */
     @OnlyIn(Dist.CLIENT)
     void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                         @Nullable Direction side, RandomSource rand, Direction modelFacing,
+                         @Nullable Direction side, RandomSource rand, Direction elementSide,
                          ModelState modelState, @NotNull ModelData modelData, RenderType renderType);
 }

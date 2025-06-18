@@ -107,22 +107,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             ModelState machineModelState = GTMatrixUtils.createRotationState(frontFacing,
                     MetaMachine.getUpwardFacing(machine));
             ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
-            Direction modelFacing = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
+            Direction elementSide = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
             List<BakedQuad> quads = new LinkedList<>();
             // render machine additional quads
             renderMachine(quads, definition, machine, frontFacing, side, rand,
-                    modelFacing, machineModelState, modelData, renderType);
+                    elementSide, machineModelState, modelData, renderType);
 
             // render auto IO
             if (machine instanceof IAutoOutputItem autoOutputItem) {
                 var itemFace = autoOutputItem.getOutputFacingItems();
                 if (itemFace != null && side == itemFace) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                            elementSide, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
                             -1, 0, true, true));
                     if (autoOutputItem.isAutoOutputItems()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
+                                elementSide, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
                                 -101, 15, true, true));
                     }
                 }
@@ -131,11 +131,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 var fluidFace = autoOutputFluid.getOutputFacingFluids();
                 if (fluidFace != null && side == fluidFace) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                            elementSide, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
                             -1, 0, true, true));
                     if (autoOutputFluid.isAutoOutputFluids()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
+                                elementSide, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
                                 -101, 15, true, true));
                     }
                 }
@@ -143,7 +143,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
             // render covers
             int start = quads.size();
-            ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing,
+            ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), elementSide,
                     pos, level, blockModelState);
             var iterator = quads.listIterator(start);
             while (iterator.hasNext()) {
@@ -156,10 +156,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              @Nullable Direction modelFacing, ModelState modelState,
+                              @Nullable Direction elementSide, ModelState modelState,
                               @NotNull ModelData modelData, RenderType renderType) {
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, modelFacing,
+            if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, elementSide,
                     modelState, modelData, renderType)) {
                 return;
             }

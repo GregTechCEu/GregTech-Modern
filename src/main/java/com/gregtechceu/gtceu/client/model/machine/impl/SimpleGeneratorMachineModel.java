@@ -27,12 +27,12 @@ public class SimpleGeneratorMachineModel extends WorkableTieredHullMachineModel 
     @Override
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              Direction modelFacing,
-                              ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
+                              Direction elementSide, ModelState modelState,
+                              @NotNull ModelData modelData, RenderType renderType) {
+        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, elementSide, modelState, modelData,
                 renderType);
-        if (quadFace == frontFacing && modelFacing != null) {
-            ENERGY_OUT_1A.renderOverlay(quads, modelFacing, modelState, 2);
+        if (quadFace == frontFacing && elementSide != null) {
+            ENERGY_OUT_1A.renderOverlay(quads, elementSide, modelState, 2);
         }
     }
 }

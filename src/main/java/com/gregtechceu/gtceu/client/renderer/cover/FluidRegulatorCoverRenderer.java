@@ -39,10 +39,11 @@ public class FluidRegulatorCoverRenderer implements ICoverRenderer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
+                            @NotNull CoverBehavior coverBehavior, Direction elementSide, BlockPos pos,
                             BlockAndTintGetter level, ModelState modelState) {
-        if (side == coverBehavior.attachedSide && coverBehavior instanceof PumpCover pump && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing,
+        if (elementSide == null) return;
+        if (side == coverBehavior.attachedSide && coverBehavior instanceof PumpCover pump) {
+            quads.add(StaticFaceBakery.bakeFace(elementSide,
                     ModelFactory.getBlockSprite(pump.getIo() == IO.OUT ? PUMP_OVERLAY_OUT : PUMP_OVERLAY_IN),
                     modelState));
         }

@@ -35,9 +35,9 @@ public class TransformerModel extends TieredHullMachineModel {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              Direction modelFacing,
+                              Direction elementSide,
                               ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
+        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, elementSide, modelState, modelData,
                 renderType);
         EnergyIOOverlay otherFaceTexture = ENERGY_OUT_4A;
         EnergyIOOverlay frontFaceTexture = ENERGY_IN_1A;
@@ -65,10 +65,10 @@ public class TransformerModel extends TieredHullMachineModel {
             }
         }
 
-        if (quadFace == frontFacing && modelFacing != null) {
-            frontFaceTexture.renderOverlay(quads, modelFacing, modelState, 2);
-        } else if (quadFace != null && modelFacing != null) {
-            otherFaceTexture.renderOverlay(quads, modelFacing, modelState, 3);
+        if (quadFace == frontFacing && elementSide != null) {
+            frontFaceTexture.renderOverlay(quads, elementSide, modelState, 2);
+        } else if (quadFace != null && elementSide != null) {
+            otherFaceTexture.renderOverlay(quads, elementSide, modelState, 3);
         }
     }
 }

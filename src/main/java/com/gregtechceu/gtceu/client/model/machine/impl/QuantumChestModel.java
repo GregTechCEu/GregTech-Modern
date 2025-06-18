@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.model.machine.impl;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
@@ -57,7 +56,7 @@ public class QuantumChestModel extends TieredHullMachineModel {
     }
 
     @Override
-    public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+    public void renderBaseModel(List<BakedQuad> quads, @Nullable MetaMachine machine,
                                 ModelState modelState, @Nullable Direction side,
                                 RandomSource rand, @NotNull ModelData modelData, RenderType renderType) {
         quads.addAll(getRotatedModel(modelState).getQuads(definition.defaultBlockState(), side, rand));

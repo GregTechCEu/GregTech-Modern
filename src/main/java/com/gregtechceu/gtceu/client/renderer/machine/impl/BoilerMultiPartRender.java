@@ -97,7 +97,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                                @Nullable Direction renderSide, RandomSource rand, Direction modelFacing,
+                                @Nullable Direction renderSide, RandomSource rand, Direction elementSide,
                                 ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
         if (renderSide == null) {
             return;

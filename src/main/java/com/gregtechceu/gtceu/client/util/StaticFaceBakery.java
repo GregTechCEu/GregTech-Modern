@@ -19,6 +19,7 @@ import net.minecraftforge.client.model.ForgeFaceData;
 import net.minecraftforge.client.model.QuadTransformers;
 
 import com.mojang.math.Transformation;
+import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
@@ -99,7 +100,7 @@ public class StaticFaceBakery {
                                      TextureAtlasSprite sprite,
                                      Direction facing,
                                      ModelState transform,
-                                     @javax.annotation.Nullable BlockElementRotation partRotation,
+                                     @Nullable BlockElementRotation partRotation,
                                      boolean shade,
                                      int emissivity) {
         BlockFaceUV blockfaceuv = face.uv;
@@ -131,8 +132,7 @@ public class StaticFaceBakery {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);
         }
-        com.lowdragmc.lowdraglib.client.bakedpipeline.QuadTransformers.settingEmissivity(emissivity)
-                .processInPlace(quad);
+        QuadTransformers.settingEmissivity(emissivity).processInPlace(quad);
 
         return quad;
     }

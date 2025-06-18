@@ -36,13 +36,13 @@ public class MaintenanceHatchPartModel extends OverlayTieredMachineModel {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              @Nullable Direction modelFacing, ModelState modelState,
+                              @Nullable Direction elementSide, ModelState modelState,
                               @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
+        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, elementSide, modelState, modelData,
                 renderType);
-        if (quadFace == frontFacing && modelFacing != null && machine instanceof IMaintenanceMachine maintenanceHatch &&
+        if (quadFace == frontFacing && elementSide != null && machine instanceof IMaintenanceMachine maintenanceHatch &&
                 maintenanceHatch.isTaped()) {
-            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, modelFacing,
+            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, elementSide,
                     ModelFactory.getBlockSprite(MAINTENANCE_OVERLAY_TAPED), modelState, -1, 0, true, true));
         }
     }

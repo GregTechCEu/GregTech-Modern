@@ -81,9 +81,9 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
             var quads = new LinkedList<>(
                     pipeModel.bakeQuads(side, pipeNode.getVisualConnections(), pipeNode.getBlockedConnections()));
             var modelState = ModelFactory.getRotation(pipeNode.getCoverContainer().getFrontFacing());
-            var modelFacing = side == null ? null :
+            var elementSide = side == null ? null :
                     ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
-            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing, pos,
+            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), elementSide, pos,
                     level, modelState);
             if (!pipeNode.getFrameMaterial().isNull()) {
                 ResourceLocation rl = MaterialIconType.frameGt

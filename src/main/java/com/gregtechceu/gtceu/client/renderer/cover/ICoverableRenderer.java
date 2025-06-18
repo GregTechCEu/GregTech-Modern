@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -42,8 +43,9 @@ public interface ICoverableRenderer {
             if (coverable != null) {
                 var quads = new LinkedList<BakedQuad>();
                 var modelState = ModelFactory.getRotation(coverable.getFrontFacing());
-                var modelFacing = side == null ? null : ModelFactory.modelFacing(side, coverable.getFrontFacing());
-                renderCovers(quads, side, rand, coverable, modelFacing, pos, level, modelState);
+                Direction elementSide = side == null ? null :
+                        RelativeDirection.findRelativeOf(coverable.getFrontFacing(), side).global;
+                renderCovers(quads, side, rand, coverable, elementSide, pos, level, modelState);
                 return quads;
             }
         }

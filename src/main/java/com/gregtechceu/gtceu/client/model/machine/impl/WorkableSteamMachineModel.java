@@ -35,9 +35,9 @@ public class WorkableSteamMachineModel extends SteamHullMachineModel {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
-                              Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
-                              ModelState modelState) {
-        super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
+                              Direction frontFacing, @Nullable Direction side,
+                              RandomSource rand, Direction elementSide, ModelState modelState) {
+        super.renderMachine(quads, definition, machine, frontFacing, side, rand, elementSide, modelState);
         if (machine instanceof IWorkable workable) {
             quads.addAll(overlayModel.bakeQuads(side, modelState, workable.isActive(),
                     workable.isWorkingEnabled()));
@@ -45,9 +45,9 @@ public class WorkableSteamMachineModel extends SteamHullMachineModel {
             quads.addAll(overlayModel.bakeQuads(side, modelState, false, false));
         }
         if (machine instanceof IExhaustVentMachine exhaustVentMachine) {
-            if (side != null && exhaustVentMachine.getVentingDirection() == side && modelFacing != null) {
+            if (side != null && exhaustVentMachine.getVentingDirection() == side && elementSide != null) {
                 quads.add(
-                        StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
+                        StaticFaceBakery.bakeFace(elementSide, ModelFactory.getBlockSprite(VENT_OVERLAY), modelState));
             }
         }
     }

@@ -41,12 +41,12 @@ public class RobotArmCoverRenderer implements ICoverRenderer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos,
+                            @NotNull CoverBehavior coverBehavior, @Nullable Direction elementSide, BlockPos pos,
                             BlockAndTintGetter level, ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof RobotArmCover robotArm &&
-                modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ARM_OVERLAY), modelState));
-            quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                elementSide != null) {
+            quads.add(StaticFaceBakery.bakeFace(elementSide, ModelFactory.getBlockSprite(ARM_OVERLAY), modelState));
+            quads.add(StaticFaceBakery.bakeFace(elementSide,
                     ModelFactory.getBlockSprite(robotArm.getIo() == IO.OUT ? ARM_OVERLAY_OUT : AR_OVERLAY_IN),
                     modelState, -101, 15));
         }

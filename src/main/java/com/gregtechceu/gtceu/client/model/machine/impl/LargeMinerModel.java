@@ -35,13 +35,13 @@ public class LargeMinerModel extends WorkableCasingMachineModel {
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              @Nullable Direction modelFacing, ModelState modelState,
+                              @Nullable Direction elementSide, ModelState modelState,
                               @NotNull ModelData modelData, RenderType renderType) {
-        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, modelFacing, modelState, modelData,
+        super.renderMachine(quads, definition, machine, frontFacing, quadFace, rand, elementSide, modelState, modelData,
                 renderType);
         if (machine instanceof IMultiController controller && controller.isFormed() && quadFace == Direction.DOWN &&
-                modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(BEHIND_BLOCK, modelFacing,
+                elementSide != null) {
+            quads.add(StaticFaceBakery.bakeFace(BEHIND_BLOCK, elementSide,
                     ModelFactory.getBlockSprite(MinerModel.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
         }
     }

@@ -28,7 +28,7 @@ public interface IPartModelRenderer {
      */
     @OnlyIn(Dist.CLIENT)
     default boolean renderReplacedPartMachine(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
-                                              @Nullable Direction side, RandomSource rand, Direction modelFacing,
+                                              @Nullable Direction side, RandomSource rand, Direction elementSide,
                                               ModelState modelState, @NotNull ModelData modelData,
                                               RenderType renderType) {
         var controllers = part.getControllers();
@@ -38,13 +38,13 @@ public interface IPartModelRenderer {
 
             if (model instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
-                        rand, modelFacing, modelState, modelData, renderType);
+                        rand, elementSide, modelState, modelData, renderType);
                 return true;
             } else if (model instanceof MachineModel machineModel) {
                 for (var render : machineModel.getDynamicRenders()) {
                     if (render instanceof IControllerModelRenderer controllerRenderer) {
                         controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
-                                rand, modelFacing, modelState, modelData, renderType);
+                                rand, elementSide, modelState, modelData, renderType);
                         return true;
                     }
                 }

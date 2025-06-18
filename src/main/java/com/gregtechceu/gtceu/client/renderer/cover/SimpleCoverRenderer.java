@@ -48,12 +48,13 @@ public class SimpleCoverRenderer implements ICoverRenderer {
 
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
+                            @NotNull CoverBehavior coverBehavior, Direction elementSide, BlockPos pos,
                             BlockAndTintGetter level, ModelState modelState) {
-        if (side == coverBehavior.attachedSide && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
+        if (elementSide == null) return;
+        if (side == coverBehavior.attachedSide) {
+            quads.add(StaticFaceBakery.bakeFace(elementSide, ModelFactory.getBlockSprite(texture), modelState));
             if (emissiveTexture != null) {
-                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(emissiveTexture),
+                quads.add(StaticFaceBakery.bakeFace(elementSide, ModelFactory.getBlockSprite(emissiveTexture),
                         modelState));
             }
         }
