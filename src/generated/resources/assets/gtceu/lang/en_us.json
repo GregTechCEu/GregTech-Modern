@@ -3186,6 +3186,7 @@
   "gtceu.multiblock.cracking_unit.energy": "Energy Usage: %s%%",
   "gtceu.multiblock.data_bank.description": "The Data Bank is a multiblock structure used for sharing Assembly Line Research Data between multiple Assembly Lines. Additionally, it enables Assembly Lines to read more complex research data on Data Modules.",
   "gtceu.multiblock.data_bank.providing": "Providing data.",
+  "gtceu.multiblock.dimension": "§eDimensions: §r%sx%sx%s",
   "gtceu.multiblock.distillation_tower.description": "The Distillation Tower is a multiblock structure used for distilling the various types of Oil and some of their byproducts. Each layer must have exactly one output hatch, starting from the second one. The bottom layer can output items and insert fluids in any position.",
   "gtceu.multiblock.distillation_tower.distilling_fluid": "Distilling %s",
   "gtceu.multiblock.electric_blast_furnace.description": "The Electric Blast Furnace (EBF) is a multiblock structure used for smelting alloys, cooking metals and refining ores. It is required for obtaining high-tier alloys and metals, such as aluminium, stainless steel, titanium, and naquadah alloy.",

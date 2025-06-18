@@ -163,6 +163,8 @@ public class LangHandler {
         provider.add("gtceu.medical_condition.antidote.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
+        provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
+
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
