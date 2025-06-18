@@ -1,20 +1,17 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRenderer;
-import com.gregtechceu.gtceu.client.model.machine.IMachineRendererModel;
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererRegistry;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererType;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.BloomUtils;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 
 import com.lowdragmc.shimmer.client.shader.RenderUtils;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -28,22 +25,23 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import static net.minecraft.util.FastColor.ARGB32.*;
 
-public class FusionRingRenderer extends DynamicMachineRenderer<FusionReactorMachine> {
+public class FusionRingRender extends DynamicRender<FusionReactorMachine, FusionRingRender> {
 
-    public static final DynamicMachineRendererType TYPE = DynamicMachineRendererRegistry.register(GTCEu.id("fusion_ring"), FusionRingRenderer::new);
+    public static final Codec<FusionRingRender> CODEC = Codec.unit(FusionRingRender::new);
+    public static final DynamicRenderType<FusionReactorMachine, FusionRingRender> TYPE = new DynamicRenderType<>(FusionRingRender.CODEC);
 
     public static final float FADEOUT = 60;
 
     protected float delta = 0;
     protected int lastColor = -1;
 
-    public FusionRingRenderer(MachineModel parent) {
-        super(TYPE, parent);
+    public FusionRingRender() {
+        super();
     }
 
     @Override
-    public MachineDefinition getDefinition() {
-        return parent.getDefinition();
+    public DynamicRenderType<FusionReactorMachine, FusionRingRender> getType() {
+        return TYPE;
     }
 
     @Override

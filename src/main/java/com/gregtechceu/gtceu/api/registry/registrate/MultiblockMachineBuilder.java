@@ -18,9 +18,11 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -120,8 +122,13 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder renderer(@Nullable Supplier<MachineModel> renderer) {
-        return (MultiblockMachineBuilder) super.renderer(renderer);
+    public MultiblockMachineBuilder model(@Nullable ModelConstructor model) {
+        return (MultiblockMachineBuilder) super.model(model);
+    }
+
+    @Override
+    public MultiblockMachineBuilder blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> blockModel) {
+        return (MultiblockMachineBuilder) super.blockModel(blockModel);
     }
 
     @Override
@@ -222,12 +229,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel) {
         return (MultiblockMachineBuilder) super.workableCasingModel(baseCasing, overlayModel);
-    }
-
-    @Override
-    public MultiblockMachineBuilder workableCasingModel(ResourceLocation baseCasing, ResourceLocation overlayModel,
-                                                        boolean tint) {
-        return (MultiblockMachineBuilder) super.workableCasingModel(baseCasing, overlayModel, tint);
     }
 
     @Override

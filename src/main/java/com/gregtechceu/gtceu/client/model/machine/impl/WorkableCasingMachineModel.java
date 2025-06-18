@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
@@ -46,10 +47,10 @@ public class WorkableCasingMachineModel extends MachineModel {
                 modelFacing, modelState, modelData, renderType);
         if (machine instanceof IWorkable workable) {
             overlayModel.bakeQuads(quadFace, modelState, workable.isActive(), workable.isWorkingEnabled())
-                    .forEach(quad -> quads.add(offsetQuad(quad, reBakeOverlayQuadsOffset())));
+                    .forEach(quad -> quads.add(ModelUtils.offsetQuad(quad, reBakeOverlayQuadsOffset())));
         } else {
             overlayModel.bakeQuads(quadFace, modelState, false, false)
-                    .forEach(quad -> quads.add(offsetQuad(quad, reBakeOverlayQuadsOffset())));
+                    .forEach(quad -> quads.add(ModelUtils.offsetQuad(quad, reBakeOverlayQuadsOffset())));
         }
     }
 

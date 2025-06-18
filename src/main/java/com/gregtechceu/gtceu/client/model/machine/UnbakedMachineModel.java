@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererType;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -23,16 +23,16 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final Map<String, MultiVariant> unresolvedModels;
     @Getter
-    private final List<DynamicMachineRendererType> dynamicRenderers;
+    private final List<DynamicRender<?, ?>> dynamicRenders;
     @Getter
     private final Map<MachineRenderState, UnbakedModel> resolvedModels = new HashMap<>();
 
     public UnbakedMachineModel(ResourceLocation machineId,
                                Map<String, MultiVariant> unresolvedModels,
-                               List<DynamicMachineRendererType> dynamicRenderers) {
+                               List<DynamicRender<?, ?>> dynamicRenders) {
         this.definition = GTRegistries.MACHINES.get(machineId);
         this.unresolvedModels = unresolvedModels;
-        this.dynamicRenderers = dynamicRenderers;
+        this.dynamicRenders = dynamicRenders;
     }
 
     @Override
@@ -44,11 +44,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
             baseModels.put(machineState, unbaked.bake(baker, spriteGetter, state, modelLocation));
         });
 
-        MachineModel model = new MachineModel(this.getDefinition(), baseModels);
-        dynamicRenderers.stream()
-                .map(type -> type.makeModel(model))
-                .forEach(model::addDynamicRenderer);
-
+        MachineModel model = new MachineModel(this.getDefinition(), baseModels, dynamicRenders);
         model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
         return model;
     }

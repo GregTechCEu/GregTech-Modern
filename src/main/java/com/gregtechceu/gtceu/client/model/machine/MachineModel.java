@@ -8,7 +8,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
@@ -55,27 +56,20 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
 
     @Getter
     private final MachineDefinition definition;
-    private final Map<MachineRenderState, BakedModel> modelsByState = new IdentityHashMap<>();
-    private final List<DynamicMachineRenderer<?>> dynamicRenderers = new ArrayList<>();
+    private final Map<MachineRenderState, BakedModel> modelsByState;
+    private final List<DynamicRender<?, ?>> dynamicRenders;
 
     @Getter
     @Setter
     private TextureAtlasSprite particleIcon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
             .apply(MissingTextureAtlasSprite.getLocation());
 
-    public MachineModel(MachineDefinition definition, Map<MachineRenderState, BakedModel> modelsByState) {
+    public MachineModel(MachineDefinition definition,
+                        Map<MachineRenderState, BakedModel> modelsByState,
+                        List<DynamicRender<?, ?>> dynamicRenders) {
         this.definition = definition;
-        this.modelsByState.putAll(modelsByState);
-    }
-
-    public MachineModel addDynamicRenderer(DynamicMachineRenderer<?> renderer) {
-        if (renderer.getDefinition() != this.definition) {
-            throw new IllegalArgumentException(
-                    "Cannot add a dynamic renderer with a different machine type, input: %s; has %s"
-                    .formatted(renderer.getDefinition().getId(), this.definition.getId()));
-        }
-        this.dynamicRenderers.add(renderer);
-        return this;
+        this.modelsByState = modelsByState;
+        this.dynamicRenders = dynamicRenders;
     }
 
     @Override
@@ -105,7 +99,7 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
             MachineDefinition definition = machine.getDefinition();
             ModelState machineModelState = GTMatrixUtils.createRotationState(frontFacing,
                     MetaMachine.getUpwardFacing(machine));
-            ModelState blockModelState = BaseBakedModel.getModelStateFromDirection(frontFacing);
+            ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
             Direction modelFacing = side == null ? null : ModelFactory.modelFacing(side, frontFacing);
             List<BakedQuad> quads = new LinkedList<>();
             // render machine additional quads
@@ -146,7 +140,7 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
                     pos, level, blockModelState);
             var iterator = quads.listIterator(start);
             while (iterator.hasNext()) {
-                iterator.set(offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
+                iterator.set(ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
             }
             return quads;
         }
@@ -176,9 +170,9 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
 
     @Override
     public boolean isCustomRenderer() {
-        if (dynamicRenderers.isEmpty()) return false;
-        for (DynamicMachineRenderer<?> renderer : dynamicRenderers) {
-            if (renderer.isCustomRenderer()) return true;
+        if (dynamicRenders.isEmpty()) return false;
+        for (DynamicRender<?, ?> render : dynamicRenders) {
+            if (render.isCustomRenderer()) return true;
         }
         return false;
     }
@@ -188,8 +182,8 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     public void render(MetaMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
-        if (dynamicRenderers.isEmpty()) return;
-        for (DynamicMachineRenderer model : dynamicRenderers) {
+        if (dynamicRenders.isEmpty()) return;
+        for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
                 continue;
             }
@@ -201,8 +195,8 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                              PoseStack poseStack, MultiBufferSource buffer,
                              int packedLight, int packedOverlay) {
-        if (dynamicRenderers.isEmpty()) return;
-        for (DynamicMachineRenderer<?> model : dynamicRenderers) {
+        if (dynamicRenders.isEmpty()) return;
+        for (DynamicRender<?, ?> model : dynamicRenders) {
             model.renderByItem(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
         }
     }
@@ -211,8 +205,8 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     @Override
     public AABB getRenderBoundingBox(MetaMachine machine) {
         AABB bounds = IMachineRendererModel.super.getRenderBoundingBox(machine);
-        if (dynamicRenderers.isEmpty()) return bounds;
-        for (DynamicMachineRenderer model : dynamicRenderers) {
+        if (dynamicRenders.isEmpty()) return bounds;
+        for (DynamicRender model : dynamicRenders) {
             bounds = bounds.minmax(model.getRenderBoundingBox(machine));
         }
         return bounds;
@@ -221,9 +215,9 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRenderOffScreen(MetaMachine machine) {
-        if (dynamicRenderers.isEmpty()) return false;
-        for (DynamicMachineRenderer renderer : dynamicRenderers) {
-            if (renderer.shouldRenderOffScreen(machine)) return true;
+        if (dynamicRenders.isEmpty()) return false;
+        for (DynamicRender render : dynamicRenders) {
+            if (render.shouldRenderOffScreen(machine)) return true;
         }
         return false;
     }
@@ -231,8 +225,8 @@ public class MachineModel extends BaseBakedModel implements ICoverableRenderer, 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
-        if (dynamicRenderers.isEmpty()) return false;
-        for (DynamicMachineRenderer model : dynamicRenderers) {
+        if (dynamicRenders.isEmpty()) return false;
+        for (DynamicRender model : dynamicRenders) {
             if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
                 return true;
             }

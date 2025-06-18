@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
@@ -37,10 +38,10 @@ public class WorkableTieredHullMachineModel extends TieredHullMachineModel {
                 rand, modelFacing, modelState, modelData, renderType);
         if (machine instanceof IWorkable workable) {
             overlayModel.bakeQuads(quadFace, modelState, workable.isActive(), workable.isWorkingEnabled())
-                    .forEach(quad -> quads.add(offsetQuad(quad, overlayQuadsOffset())));
+                    .forEach(quad -> quads.add(ModelUtils.offsetQuad(quad, overlayQuadsOffset())));
         } else {
             overlayModel.bakeQuads(quadFace, modelState, false, false)
-                    .forEach(quad -> quads.add(offsetQuad(quad, overlayQuadsOffset())));
+                    .forEach(quad -> quads.add(ModelUtils.offsetQuad(quad, overlayQuadsOffset())));
         }
     }
 

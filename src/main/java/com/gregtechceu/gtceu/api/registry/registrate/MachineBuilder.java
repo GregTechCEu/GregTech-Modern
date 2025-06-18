@@ -261,12 +261,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
                                                           ResourceLocation workableModel) {
-        return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel));
-    }
-
-    public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
-                                                          ResourceLocation workableModel, boolean tint) {
-        return renderer(() -> new WorkableCasingMachineModel(baseCasing, workableModel, tint));
+        return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingModel(String basePath, ResourceLocation overlayModel,
@@ -491,6 +486,37 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
         void configureModel(@NotNull DataGenContext<Block, Block> context, @NotNull GTBlockstateProvider provider,
                             @NotNull MachineModelBuilder<BlockModelBuilder> builder);
+
+        default ModelConstructor andThen(ModelConstructor after) {
+            Objects.requireNonNull(after);
+            return (ctx, prov, builder) -> {
+                this.configureModel(ctx, prov, builder);
+                after.configureModel(ctx, prov, builder);
+            };
+        }
+
+        default ModelConstructor andThen(Consumer<MachineModelBuilder<BlockModelBuilder>> after) {
+            Objects.requireNonNull(after);
+            return (ctx, prov, builder) -> {
+                this.configureModel(ctx, prov, builder);
+                after.accept(builder);
+            };
+        }
+
+        default ModelConstructor compose(ModelConstructor before) {
+            Objects.requireNonNull(before);
+            return (ctx, prov, builder) -> {
+                before.configureModel(ctx, prov, builder);
+                this.configureModel(ctx, prov, builder);
+            };
+        }
+
+        default ModelConstructor compose(UnaryOperator<MachineModelBuilder<BlockModelBuilder>> before) {
+            Objects.requireNonNull(before);
+            return (ctx, prov, builder) -> {
+                this.configureModel(ctx, prov, before.apply(builder));
+            };
+        }
     }
 
     // spotless:off

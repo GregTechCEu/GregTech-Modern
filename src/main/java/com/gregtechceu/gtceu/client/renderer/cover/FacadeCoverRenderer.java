@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.client.model.ModelUtil;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -81,7 +81,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                 var pose = matrixStack.last();
 
                 var level = new FacadeBlockAndTintGetter(mc.level, BlockPos.ZERO, blockState, null);
-                var quads = new LinkedList<>(ModelUtil.getBakedModelQuads(model, level, BlockPos.ZERO, blockState,
+                var quads = new LinkedList<>(ModelUtils.getBakedModelQuads(model, level, BlockPos.ZERO, blockState,
                         Direction.NORTH, mc.level.random));
 
                 var cube = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
@@ -116,7 +116,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                 BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
                 BakedModel model = brd.getBlockModel(state);
                 if (side == coverBehavior.attachedSide) {
-                    quads.addAll(ModelUtil.getBakedModelQuads(model, level, pos, state, side, rand));
+                    quads.addAll(ModelUtils.getBakedModelQuads(model, level, pos, state, side, rand));
                 } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
                     var normal = coverBehavior.attachedSide.getNormal();
                     var cube = new AABB(
@@ -126,7 +126,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                             normal.getX() == 0 ? 1 : normal.getX() > 0 ? 1 : 0,
                             normal.getY() == 0 ? 1 : normal.getY() > 0 ? 1 : 0,
                             normal.getZ() == 0 ? 1 : normal.getZ() > 0 ? 1 : 0);
-                    for (BakedQuad quad : ModelUtil.getBakedModelQuads(model, level, pos, state,
+                    for (BakedQuad quad : ModelUtils.getBakedModelQuads(model, level, pos, state,
                             coverBehavior.attachedSide, rand)) {
                         quads.add(FaceQuad.builder(coverBehavior.attachedSide.getOpposite(), quad.getSprite())
                                 .cube(cube)

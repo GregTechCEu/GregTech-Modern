@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.gregtechceu.gtceu.client.model.machine.IPartModelRenderer;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -42,7 +43,7 @@ public class OverlayTieredMachineModel extends TieredHullMachineModel implements
                 renderType);
         // expand the overlay quads ever so slightly to combat z-fighting.
         overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), quadFace, rand)
-                .forEach(quad -> quads.add(offsetQuad(quad, overlayQuadsOffset())));
+                .forEach(quad -> quads.add(ModelUtils.offsetQuad(quad, overlayQuadsOffset())));
     }
 
     public float overlayQuadsOffset() {

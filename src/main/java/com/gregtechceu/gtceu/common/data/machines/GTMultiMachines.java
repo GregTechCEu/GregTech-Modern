@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.client.model.machine.impl.*;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.FusionRingRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.FusionRingRender;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
@@ -57,6 +57,7 @@ import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
 
@@ -709,8 +710,9 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .renderer(() -> new FusionRingRenderer(FusionReactorMachine.getCasingType(tier).getTexture(),
-                            GTCEu.id("block/multiblock/fusion_reactor")))
+                    .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
+                            GTCEu.id("block/multiblock/fusion_reactor"))
+                            .andThen(b -> b.addDynamicRenderer(new FusionRingRender())))
                     .hasBER(true)
                     .register(),
             LuV, ZPM, UV);

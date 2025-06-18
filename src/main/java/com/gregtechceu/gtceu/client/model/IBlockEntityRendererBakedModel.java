@@ -47,4 +47,10 @@ public interface IBlockEntityRendererBakedModel<T extends BlockEntity> extends B
         BlockPos pos = blockEntity.getBlockPos();
         return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
     }
+
+    @Override
+    default boolean isCustomRenderer() {
+        return true;
+    }
+
 }

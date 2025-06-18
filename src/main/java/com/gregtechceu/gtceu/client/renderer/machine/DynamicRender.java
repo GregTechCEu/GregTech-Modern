@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.IMachineRendererModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+import com.mojang.serialization.Codec;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
@@ -15,18 +18,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
-public abstract class DynamicMachineRenderer<T extends MetaMachine> extends BaseBakedModel
-        implements Comparable<DynamicMachineRenderer<T>>, IMachineRendererModel<T> {
+public abstract class DynamicRender<T extends MetaMachine, S extends DynamicRender<T, S>> extends BaseBakedModel
+        implements Comparable<DynamicRender<T, S>>, IMachineRendererModel<T> {
+
+    public static final Codec<DynamicRender<?, ?>> CODEC = DynamicRenderManager.TYPE_CODEC
+            .dispatchStable(DynamicRender::getType, DynamicRenderType::codec);
 
     @Getter
-    protected final MachineModel parent;
-    @Getter
-    private final DynamicMachineRendererType type;
+    @Setter
+    protected MachineModel parent;
 
-    public DynamicMachineRenderer(DynamicMachineRendererType type, MachineModel parent) {
-        this.type = type;
-        this.parent = parent;
+    public DynamicRender() {}
+
+    public abstract DynamicRenderType<T, S> getType();
+
+    @Override
+    public MachineDefinition getDefinition() {
+        return parent.getDefinition();
     }
 
     @Override
@@ -37,7 +48,13 @@ public abstract class DynamicMachineRenderer<T extends MetaMachine> extends Base
     }
 
     @Override
-    public int compareTo(@NotNull DynamicMachineRenderer<T> o) {
-        return this.type.compareTo(o.type);
+    public int compareTo(@NotNull DynamicRender<T, S> o) {
+        return this.getType().compareTo(o.getType());
     }
+
+    @Override
+    public boolean isCustomRenderer() {
+        return IMachineRendererModel.super.isCustomRenderer();
+    }
+
 }

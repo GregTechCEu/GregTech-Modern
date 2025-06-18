@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -27,7 +27,7 @@ public class WorkableOverlays {
         WorkableOverlays model = new WorkableOverlays(textureDir);
 
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
-            final String overlayPath = "/" + GTModels.OVERLAY_PREFIX + overlayFace.getName();
+            final String overlayPath = "/" + GTMachineModels.OVERLAY_PREFIX + overlayFace.getName();
 
             // normal
             var normalSprite = textureDir.withSuffix(overlayPath);

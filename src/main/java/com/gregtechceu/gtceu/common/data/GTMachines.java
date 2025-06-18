@@ -337,7 +337,7 @@ public class GTMachines {
     public static final MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
-                    .tieredHullModel(GTCEu.id("block/machine/pump_machine"))
+                    .tieredHullModel(GTCEu.id("block/machine/pump"))
                     .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -357,7 +357,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
-                    .tieredHullModel(GTCEu.id("block/machine/fisher_machine"))
+                    .tieredHullModel(GTCEu.id("block/machine/fisher"))
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
                             Component.translatable("gtceu.machine.fisher.speed", FisherMachine.calcMaxProgress(tier)),
@@ -377,7 +377,7 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"),
                             (tier + 1) * (tier + 1)))
-                    .tieredHullModel(GTCEu.id("block/machine/block_breaker_machine"))
+                    .workableTieredHullModel(GTCEu.id("block/machines/block_breaker"))
                     .langValue("%s Block Breaker %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.block_breaker.tooltip"),
                             Component.translatable("gtceu.machine.block_breaker.speed_bonus",
@@ -519,7 +519,7 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .renderer(() -> new QuantumTankModel(MAX, GTCEu.id("block/machine/creative_tank")))
+            .renderer(() -> new QuantumTankModel(MAX, GTCEu.id("block/machine/creative_container")))
             .hasBER(true)
             .register();
 
@@ -536,7 +536,7 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .renderer(() -> new QuantumChestModel(MAX, GTCEu.id("block/machine/creative_chest")))
+            .renderer(() -> new QuantumChestModel(MAX, GTCEu.id("block/machine/creative_container")))
             .hasBER(true)
             .register();
 

@@ -17,11 +17,12 @@ import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
-import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -127,14 +128,13 @@ public class ClientProxy extends CommonProxy {
             FTBChunksPlugin.addEventListeners();
         }
         event.enqueueWork(() -> {
-            FusionRingRenderer.initType();
-
+            DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
         });
     }
 
     @SubscribeEvent
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(GTModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
-        event.register(GTModels.TEXTURE_OVERRIDE_MODEL_LOADER.getPath(), TextureOverrideModel.Loader.INSTANCE);
+        event.register(GTMachineModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
+        event.register(GTMachineModels.TEXTURE_OVERRIDE_MODEL_LOADER.getPath(), TextureOverrideModel.Loader.INSTANCE);
     }
 }

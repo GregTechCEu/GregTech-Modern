@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererRegistry;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicMachineRendererType;
-import net.minecraft.ResourceLocationException;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BlockModelDefinition;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -17,12 +19,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> {
 
     public static final MachineModelLoader INSTANCE = new MachineModelLoader();
@@ -43,44 +50,55 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
 
     private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
 
+    private static final Map<ResourceLocation, List<DynamicRender<?, ?>>> DYNAMIC_RENDERERS = new HashMap<>();
+
     private MachineModelLoader() {}
+
+    @SubscribeEvent
+    public static void loadDynamicModels(ModelEvent.ModifyBakingResult event) {
+        if (DYNAMIC_RENDERERS.isEmpty()) return;
+
+        Map<ResourceLocation, BakedModel> models = event.getModels();
+        for (var entry : DYNAMIC_RENDERERS.entrySet()) {
+            ResourceLocation machineId = entry.getKey();
+            for (DynamicRender<?, ?> renderer : entry.getValue()) {
+                String rendererName = renderer.getType().getId().getPath();
+
+                String fakeModelPath = DynamicRenderManager.MODEL_ID_FORMATTER.apply(machineId.getPath(), rendererName);
+                models.put(machineId.withPath(fakeModelPath), renderer);
+            }
+        }
+    }
 
     @Override
     public UnbakedMachineModel read(JsonObject jsonObject,
                                     JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(jsonObject, "machine"));
 
-        JsonObject properties = GsonHelper.getAsJsonObject(jsonObject, "properties");
+        JsonObject variants = GsonHelper.getAsJsonObject(jsonObject, "variants");
 
-        Map<String, MultiVariant> variants = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : properties.entrySet()) {
-            variants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariant.class));
+        Map<String, MultiVariant> parsedVariants = new HashMap<>();
+        for (Map.Entry<String, JsonElement> entry : variants.entrySet()) {
+            parsedVariants.put(entry.getKey(), GSON.fromJson(entry.getValue(), MultiVariant.class));
         }
 
-        List<DynamicMachineRendererType> dynamicRenderers = new ArrayList<>();
+        List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
 
-        JsonArray renderersJson = GsonHelper.getAsJsonArray(jsonObject, "dynamic_renderers", null);
-        if (renderersJson != null) {
-            for (JsonElement typeName : renderersJson) {
-                try {
-                    ResourceLocation name = new ResourceLocation(typeName.getAsString());
-                    DynamicMachineRendererType rendererType = DynamicMachineRendererRegistry.getType(name);
-                    if (rendererType == null) {
-                        throw new IllegalArgumentException("A Dynamic Renderer type named " + name + " does not exist");
-                    }
-                    dynamicRenderers.add(rendererType);
-                } catch (UnsupportedOperationException | ResourceLocationException | IllegalArgumentException e) {
-                    throw new JsonParseException("Entry " + typeName +
-                            " is not a valid Dynamic Renderer", e);
-                }
+        JsonArray renderList = GsonHelper.getAsJsonArray(jsonObject, "dynamic_renders", null);
+        if (renderList != null) {
+            for (JsonElement entry : renderList) {
+                var render = DynamicRender.CODEC.parse(JsonOps.INSTANCE, entry)
+                        .getOrThrow(false, LOGGER::error);
+                dynamicRenders.add(render);
             }
+            DYNAMIC_RENDERERS.put(machineId, dynamicRenders);
         }
 
-        return new UnbakedMachineModel(machineId, variants, dynamicRenderers);
+        return new UnbakedMachineModel(machineId, parsedVariants, dynamicRenders);
     }
 
-    public static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model) {
-        UnbakedModel missingModel = BaseBakedModel.getModelBakery().getModel(ModelBakery.MISSING_MODEL_LOCATION);
+    protected static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model) {
+        UnbakedModel missingModel = ModelUtils.getModelBakery().getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
         ResourceLocation machineId = model.getDefinition().getId();
         StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = model.getDefinition()
@@ -99,13 +117,15 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             model.getUnresolvedModels().forEach((key, multiVariantModel) -> {
                 try {
                     possibleStates.stream().filter(predicate(stateDefinition, key)).forEach((state) -> {
-                        UnbakedModel lastModel = curStatesToModels.put(state, multiVariantModel);
-                        if (lastModel != null) {
+                        UnbakedModel prevModel = curStatesToModels.put(state, multiVariantModel);
+                        if (prevModel != null) {
                             curStatesToModels.put(state, missingModel);
-                            throw new RuntimeException(
-                                    "Overlapping definition with: " + model.getUnresolvedModels().entrySet()
-                                            .stream().filter((entry) -> entry.getValue() == lastModel).findFirst().get()
-                                            .getKey());
+                            throw new IllegalStateException(
+                                    "Overlapping definition with: " + model.getUnresolvedModels().entrySet().stream()
+                                            .filter((entry) -> entry.getValue() == prevModel)
+                                            .findFirst()
+                                            .map(Map.Entry::getKey)
+                                            .orElse("Invalid key?"));
                         }
                     });
                 } catch (Exception e) {

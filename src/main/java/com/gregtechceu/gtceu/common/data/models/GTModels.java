@@ -36,12 +36,6 @@ import java.io.IOException;
 
 public class GTModels {
 
-    public static final ResourceLocation MACHINE_MODEL_LOADER = GTCEu.id("machine");
-    public static final ResourceLocation TEXTURE_OVERRIDE_MODEL_LOADER = GTCEu.id("texture_override");
-
-    public static final String OVERLAY_PREFIX = "overlay_";
-    public static final String EMISSIVE_POSTFIX = "_emissive";
-
     // region BLOCK MODELS
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,

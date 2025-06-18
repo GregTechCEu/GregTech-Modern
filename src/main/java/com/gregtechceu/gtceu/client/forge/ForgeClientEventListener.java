@@ -56,13 +56,6 @@ public class ForgeClientEventListener {
     }
 
     @SubscribeEvent
-    public void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        for (BaseBakedModel renderer : BaseBakedModel.LISTENERS) {
-            renderer.onAdditionalModel(event::register);
-        }
-    }
-
-    @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientCacheManager.allowReinit();
     }

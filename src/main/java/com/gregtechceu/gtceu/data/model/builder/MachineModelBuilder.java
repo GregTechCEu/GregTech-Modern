@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.data.model.builder;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.common.data.GTModels;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
+import com.mojang.serialization.JsonOps;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -26,19 +29,21 @@ import java.util.function.Predicate;
 
 public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
-    public static <
-            T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, MachineModelBuilder<T>> begin(MachineDefinition owner) {
+    // spotless:off
+    public static <T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, MachineModelBuilder<T>> begin(MachineDefinition owner) {
         return (parent, existingFileHelper) -> new MachineModelBuilder<>(parent, existingFileHelper, owner);
     }
+    // spotless:on
 
     @Getter
     private final MachineDefinition owner;
+    private final List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
     @Getter
     private final Map<PartialState<T>, ConfiguredModelList> models = new LinkedHashMap<>();
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
-        super(GTModels.MACHINE_MODEL_LOADER, parent, existingFileHelper);
+        super(GTMachineModels.MACHINE_MODEL_LOADER, parent, existingFileHelper);
         this.owner = owner;
     }
 
@@ -56,7 +61,26 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 .forEach(entry -> variants.add(entry.getKey().toString(), entry.getValue().toJSON()));
 
         json.add("variants", variants);
+
+        JsonArray dynamicRenders = new JsonArray();
+        for (DynamicRender<?, ?> render : this.dynamicRenders) {
+            JsonElement serialized = DynamicRender.CODEC.encodeStart(JsonOps.INSTANCE, render)
+                    .getOrThrow(false, GTCEu.LOGGER::error);
+            dynamicRenders.add(serialized);
+        }
+        json.add("dynamic_renders", dynamicRenders);
+
         return json;
+    }
+
+    /**
+     * Add a {@link DynamicRender dynamic render} to this model.
+     *
+     * @param render  The {@link DynamicRender dynamic render} to add
+     */
+    public MachineModelBuilder<T> addDynamicRenderer(DynamicRender<?, ?> render) {
+        this.dynamicRenders.add(render);
+        return this;
     }
 
     /**

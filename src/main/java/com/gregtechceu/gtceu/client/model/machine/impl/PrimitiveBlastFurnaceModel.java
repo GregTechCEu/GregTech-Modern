@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jetbrains.annotations.NotNull;
 
 public class PrimitiveBlastFurnaceModel extends WorkableCasingMachineModel {
 
@@ -34,13 +35,8 @@ public class PrimitiveBlastFurnaceModel extends WorkableCasingMachineModel {
     }
 
     @Override
-    public boolean hasTESR(BlockEntity blockEntity) {
-        return true;
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
+    public void render(@NotNull BlockEntity blockEntity, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource buffer,
                        int combinedLight, int combinedOverlay) {
         super.render(blockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
 

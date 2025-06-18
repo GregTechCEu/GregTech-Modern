@@ -18,6 +18,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jetbrains.annotations.NotNull;
 
 public class LargeMixerModel extends WorkableCasingMachineModel {
 
@@ -50,7 +51,7 @@ public class LargeMixerModel extends WorkableCasingMachineModel {
     }
 
     @Override
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack stack, MultiBufferSource buffer,
+    public void render(@NotNull BlockEntity blockEntity, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource buffer,
                        int combinedLight, int combinedOverlay) {
         super.render(blockEntity, partialTicks, stack, buffer, combinedLight, combinedOverlay);
 
