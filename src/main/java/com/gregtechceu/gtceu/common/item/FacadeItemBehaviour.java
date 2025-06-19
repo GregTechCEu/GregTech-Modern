@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.NonNullList;
@@ -17,8 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +57,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         }
         var tagCompound = itemStack.getOrCreateTag();
         Tag stateTag = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, facadeState)
-                        .result().orElse(new CompoundTag());
+                .result().orElse(new CompoundTag());
         tagCompound.put("Facade", stateTag);
     }
 

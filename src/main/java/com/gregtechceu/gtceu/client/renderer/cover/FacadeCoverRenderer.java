@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -31,8 +29,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import net.minecraftforge.client.model.data.ModelData;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,6 +81,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
         int hash = facadeState.hashCode();
         ItemBakedModel model = CACHE.computeIfAbsent(hash, $ -> new ItemBakedModel() {
+
             @Override
             public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                                      @NotNull RandomSource rand) {
@@ -139,9 +140,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
                     var normal = coverBehavior.attachedSide.getNormal();
                     var cube = new AABB(
-                            normal.getX() >  0 ? 1 : 0,
-                            normal.getY() >  0 ? 1 : 0,
-                            normal.getZ() >  0 ? 1 : 0,
+                            normal.getX() > 0 ? 1 : 0,
+                            normal.getY() > 0 ? 1 : 0,
+                            normal.getZ() > 0 ? 1 : 0,
                             normal.getX() >= 0 ? 1 : 0,
                             normal.getY() >= 0 ? 1 : 0,
                             normal.getZ() >= 0 ? 1 : 0);

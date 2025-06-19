@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FacadeBlockAndTintGetter implements BlockAndTintGetter {
+
     public final BlockAndTintGetter parent;
     public final BlockPos pos;
     public final BlockState blockState;
@@ -68,5 +70,4 @@ public class FacadeBlockAndTintGetter implements BlockAndTintGetter {
     public int getMinBuildHeight() {
         return parent.getMinBuildHeight();
     }
-
 }
