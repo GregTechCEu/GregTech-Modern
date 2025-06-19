@@ -36,6 +36,8 @@ import java.io.IOException;
 
 public class GTModels {
 
+    public static final ResourceLocation BLANK_TEXTURE = GTCEu.id("block/void");
+
     // region BLOCK MODELS
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,

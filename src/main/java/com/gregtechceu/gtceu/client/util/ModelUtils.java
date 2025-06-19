@@ -6,6 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
@@ -75,6 +76,15 @@ public class ModelUtils {
 
     public static ModelBakery getModelBakery() {
         return getModelManager().getModelBakery();
+    }
+
+    public static TextureAtlasSprite getSprite(ResourceLocation atlas, ResourceLocation texture) {
+        return Minecraft.getInstance().getTextureAtlas(atlas).apply(texture);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static TextureAtlasSprite getBlockSprite(@NotNull ResourceLocation texture) {
+        return getSprite(TextureAtlas.LOCATION_BLOCKS, texture);
     }
 
     public static TextureAtlasSprite spriteGetter(Material material) {

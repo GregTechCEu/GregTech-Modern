@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,6 +23,6 @@ public interface IControllerModelRenderer {
      */
     @OnlyIn(Dist.CLIENT)
     void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                         @Nullable Direction side, RandomSource rand, Direction elementSide,
-                         ModelState modelState, @NotNull ModelData modelData, RenderType renderType);
+                         @Nullable Direction side, RandomSource rand, @Nullable Direction elementSide,
+                         @NotNull ModelData modelData, @Nullable RenderType renderType);
 }

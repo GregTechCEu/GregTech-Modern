@@ -131,10 +131,14 @@ public class ClientProxy extends CommonProxy {
             FTBChunksPlugin.addEventListeners();
         }
         event.enqueueWork(() -> {
+            DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
+            DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
+
             DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
+            DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
+
             DynamicRenderManager.register(GTCEu.id("large_chemical_bath_fluid"), LargeChemicalBathFluidRender.TYPE);
             DynamicRenderManager.register(GTCEu.id("large_mixer_fluid"), LargeMixerFluidRender.TYPE);
-            DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
         });
     }
 

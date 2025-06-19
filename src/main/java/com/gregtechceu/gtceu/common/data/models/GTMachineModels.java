@@ -38,14 +38,14 @@ import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
+import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
 public class GTMachineModels {
 
     // spotless:off
     public static final ResourceLocation MACHINE_MODEL_LOADER = GTCEu.id("machine");
     public static final ResourceLocation TEXTURE_OVERRIDE_MODEL_LOADER = GTCEu.id("texture_override");
-    
-    public static final ResourceLocation BLANK_TEXTURE = GTCEu.id("block/void");
+
     public static final String OVERLAY_PREFIX = "overlay_";
     public static final String EMISSIVE_POSTFIX = "_emissive";
 

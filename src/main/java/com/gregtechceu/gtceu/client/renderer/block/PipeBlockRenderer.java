@@ -86,8 +86,6 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
             ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), elementSide, pos,
                     level, modelState);
             if (!pipeNode.getFrameMaterial().isNull()) {
-                ResourceLocation rl = MaterialIconType.frameGt
-                        .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
                         .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                         .getDefaultState();

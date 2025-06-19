@@ -12,16 +12,12 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.utils.GTMatrixUtils;
-
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -89,7 +85,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             // if it doesn't have either of those properties, we're rendering an item.
             List<BakedQuad> quads = new ArrayList<>();
             renderMachine(quads, definition, null, Direction.NORTH,
-                    side, rand, side, BlockModelRotation.X0_Y0, modelData, renderType);
+                    side, rand, side, modelData, renderType);
             return quads;
         }
     }
@@ -104,25 +100,24 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         if (machine != null) {
             Direction frontFacing = machine.getFrontFacing();
             MachineDefinition definition = machine.getDefinition();
-            ModelState machineModelState = GTMatrixUtils.createRotationState(frontFacing,
-                    MetaMachine.getUpwardFacing(machine));
+
             ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
             Direction elementSide = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
             List<BakedQuad> quads = new LinkedList<>();
             // render machine additional quads
             renderMachine(quads, definition, machine, frontFacing, side, rand,
-                    elementSide, machineModelState, modelData, renderType);
+                    elementSide, modelData, renderType);
 
             // render auto IO
             if (machine instanceof IAutoOutputItem autoOutputItem) {
                 var itemFace = autoOutputItem.getOutputFacingItems();
                 if (itemFace != null && side == itemFace) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            elementSide, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                            elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
                             -1, 0, true, true));
                     if (autoOutputItem.isAutoOutputItems()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                elementSide, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
+                                elementSide, ModelUtils.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
                                 -101, 15, true, true));
                     }
                 }
@@ -131,11 +126,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 var fluidFace = autoOutputFluid.getOutputFacingFluids();
                 if (fluidFace != null && side == fluidFace) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            elementSide, ModelFactory.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                            elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
                             -1, 0, true, true));
                     if (autoOutputFluid.isAutoOutputFluids()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                elementSide, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
+                                elementSide, ModelUtils.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
                                 -101, 15, true, true));
                     }
                 }
@@ -156,8 +151,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
                               Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              @Nullable Direction elementSide, ModelState modelState,
-                              @NotNull ModelData modelData, RenderType renderType) {
+                              @Nullable Direction elementSide,
+                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (machine == null) {
             quads.addAll(modelsByState.get(definition.defaultRenderState())
                     .getQuads(null, quadFace, rand, modelData, renderType));
@@ -171,16 +166,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
             if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, elementSide,
-                    modelState, modelData, renderType)) {
+                    modelData, renderType)) {
                 return;
             }
         }
-        renderBaseModel(quads, machine, modelState, quadFace, rand, modelData, renderType);
+        renderBaseModel(quads, machine, quadFace, rand, modelData, renderType);
     }
 
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MetaMachine machine,
-                                ModelState modelState, @Nullable Direction side, RandomSource rand,
-                                @NotNull ModelData modelData, RenderType renderType) {
+                                @Nullable Direction side, RandomSource rand,
+                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
         quads.addAll(modelsByState.get(machine.getRenderState())
                 .getQuads(machine.getBlockState(), side, rand, modelData, renderType));
     }
@@ -198,14 +193,14 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @Override
     public void render(MetaMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+                       int packedLight, int packedOverlay) {
         if (dynamicRenders.isEmpty()) return;
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, cameraPos)) {
                 continue;
             }
-            model.render(machine, partialTick, poseStack, buffer, packedLight, packedOverlay, context);
+            model.render(machine, partialTick, poseStack, buffer, packedLight, packedOverlay);
         }
     }
 

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +21,7 @@ public interface IMachineRendererModel<T extends MetaMachine> extends IBlockEnti
     MachineDefinition getDefinition();
 
     void render(T machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
-                int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context);
+                int packedLight, int packedOverlay);
 
     default void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                       PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {}
@@ -50,13 +49,14 @@ public interface IMachineRendererModel<T extends MetaMachine> extends IBlockEnti
     @ApiStatus.NonExtendable
     @SuppressWarnings("unchecked")
     @Override
-    default void render(BlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
-                int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+    default void render(@NotNull BlockEntity blockEntity, float partialTick,
+                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+                        int packedLight, int packedOverlay) {
         if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
         if (machineBE.getDefinition() != getDefinition()) return;
 
         this.render((T) machineBE.getMetaMachine(), partialTick,
-                poseStack, buffer, packedLight, packedOverlay, context);
+                poseStack, buffer, packedLight, packedOverlay);
     }
 
     @ApiStatus.NonExtendable

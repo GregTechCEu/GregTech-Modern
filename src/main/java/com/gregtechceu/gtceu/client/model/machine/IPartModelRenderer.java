@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,9 +27,9 @@ public interface IPartModelRenderer {
      */
     @OnlyIn(Dist.CLIENT)
     default boolean renderReplacedPartMachine(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
-                                              @Nullable Direction side, RandomSource rand, Direction elementSide,
-                                              ModelState modelState, @NotNull ModelData modelData,
-                                              RenderType renderType) {
+                                              @Nullable Direction side, RandomSource rand,
+                                              @Nullable Direction elementSide,
+                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
@@ -38,17 +37,17 @@ public interface IPartModelRenderer {
 
             if (model instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
-                        rand, elementSide, modelState, modelData, renderType);
+                        rand, elementSide, modelData, renderType);
                 return true;
             } else if (model instanceof MachineModel machineModel) {
                 for (var render : machineModel.getDynamicRenders()) {
                     if (render instanceof IControllerModelRenderer controllerRenderer) {
                         controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
-                                rand, elementSide, modelState, modelData, renderType);
+                                rand, elementSide, modelData, renderType);
                         return true;
                     }
                 }
-                machineModel.renderBaseModel(quads, controller.self(), modelState, side, rand, modelData, renderType);
+                machineModel.renderBaseModel(quads, controller.self(), side, rand, modelData, renderType);
                 return true;
             }
         }

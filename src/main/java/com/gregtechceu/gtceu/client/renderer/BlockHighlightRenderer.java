@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
-import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.client.Camera;
@@ -102,11 +102,11 @@ public class BlockHighlightRenderer {
                         RenderSystem.defaultBlendFunc();
                         poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01,
                                 facing.getStepZ() * 0.01);
-                        RenderUtils.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
+                        RenderUtil.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
-                            RenderUtils.rotateToFace(poseStack, facing, Direction.SOUTH);
+                            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
                         } else {
-                            RenderUtils.rotateToFace(poseStack, facing, null);
+                            RenderUtil.rotateToFace(poseStack, facing, null);
                         }
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
@@ -322,11 +322,11 @@ public class BlockHighlightRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01, facing.getStepZ() * 0.01);
-        RenderUtils.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
+        RenderUtil.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
         if (facing.getAxis() == Direction.Axis.Y) {
-            RenderUtils.rotateToFace(poseStack, facing, Direction.SOUTH);
+            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
         } else {
-            RenderUtils.rotateToFace(poseStack, facing, null);
+            RenderUtil.rotateToFace(poseStack, facing, null);
         }
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
