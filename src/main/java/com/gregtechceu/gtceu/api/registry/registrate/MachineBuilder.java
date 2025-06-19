@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -549,6 +550,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
                     .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
+                    .blockstate(NonNullBiConsumer.noop())
                     .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
@@ -571,7 +573,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
                     .model((ctx, prov) -> {
-                        Optional<String> model = builder.registrate.getDataProvider(ProviderType.BLOCKSTATE)
+                        Optional<String> model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
                                 .flatMap(p -> p.getExistingVariantBuilder(block.get()))
                                 .map(b -> b.getModels().get(b.partialState()))
                                 .map(BlockStateProvider.ConfiguredModelList::toJSON)

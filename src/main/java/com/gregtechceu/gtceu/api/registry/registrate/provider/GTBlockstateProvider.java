@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
 
+import com.gregtechceu.gtceu.data.GregTechDatagen;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
@@ -30,8 +32,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
     public static final ExistingFileHelper.ResourceType MODEL_WITH_EXTENSION = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, "", "models");
     // spotless:on
 
+
+    private final AbstractRegistrate<?> parent;
+
     public GTBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput, ExistingFileHelper exFileHelper) {
         super(parent, packOutput, exFileHelper);
+        this.parent = parent;
+    }
+
+    @Override
+    protected void registerStatesAndModels() {
+        parent.genData(GregTechDatagen.BLOCKSTATE_PROVIDER, this);
     }
 
     public ExistingFileHelper getExistingFileHelper() {
