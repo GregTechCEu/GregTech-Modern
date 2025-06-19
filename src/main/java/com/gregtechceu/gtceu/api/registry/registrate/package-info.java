@@ -1,4 +1,7 @@
-@NotNullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import org.jetbrains.annotations.NotNullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
+
+import javax.annotation.ParametersAreNonnullByDefault;

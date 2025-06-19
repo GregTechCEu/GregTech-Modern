@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -230,6 +231,12 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         IWorkableMultiController.super.notifyStatusChanged(oldStatus, newStatus);
         if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
             updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
+        }
+        for (IMultiPart part : getParts()) {
+            MachineRenderState state = part.self().getRenderState();
+            if (state.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
+                part.self().setRenderState(state.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
+            }
         }
     }
 

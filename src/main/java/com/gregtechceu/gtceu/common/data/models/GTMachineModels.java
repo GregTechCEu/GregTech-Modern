@@ -34,12 +34,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
+/*
+ * TODO:
+ *  - Object holder model (REALLY easy)
+ *  - maint hatch models (REALLY easy)
+ *  - HPCA part models (IDK??)
+ *  - Large miner model (moderately easy)
+ *
+ * TODO (end)
+ *  - move GTMachineModels utility methods to the top of the file
+ */
 public class GTMachineModels {
 
     // spotless:off
@@ -73,7 +84,6 @@ public class GTMachineModels {
         };
     }
 
-    // spotless:off
     public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             var baseModel = prov.models().nested()
@@ -89,7 +99,6 @@ public class GTMachineModels {
             builder.forAllStates(state -> model);
         };
     }
-    // spotless:on
 
     public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
@@ -122,6 +131,34 @@ public class GTMachineModels {
         };
     }
 
+    // spotless:off
+    public static MachineBuilder.ModelConstructor createOverlayWorkableTieredHullMachineModel(ResourceLocation idleOverlayModel,
+                                                                                              ResourceLocation workingModel,
+                                                                                              @Nullable ResourceLocation waitingModel,
+                                                                                              @Nullable ResourceLocation pausedModel) {
+        return (ctx, prov, builder) -> {
+            var baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(HULL_MODEL));
+            hullTextures(baseModel, builder.getOwner().getTier());
+
+            builder.forAllStates(state -> {
+                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+                ResourceLocation overlayModel = switch (status) {
+                    case IDLE -> idleOverlayModel;
+                    case WORKING -> workingModel;
+                    case WAITING -> waitingModel != null ? waitingModel : workingModel;
+                    case SUSPEND -> pausedModel != null ? pausedModel : workingModel;
+                };
+                return prov.models().nested()
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("base", baseModel)
+                        .child("overlay", prov.models().nested()
+                                .parent(prov.models().getExistingFile(overlayModel)))
+                        .end();
+            });
+        };
+    }
+
     public static MachineBuilder.ModelConstructor createSteamHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder model = prov.models().nested()
@@ -132,7 +169,6 @@ public class GTMachineModels {
         };
     }
 
-    // spotless:off
     public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             var baseModel = prov.models().nested()
