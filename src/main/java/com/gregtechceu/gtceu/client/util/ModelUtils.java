@@ -17,7 +17,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.ModelEvent.ModifyBakingResult;
+import net.minecraftforge.client.event.ModelEvent.*;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
@@ -39,6 +39,7 @@ public class ModelUtils {
     private ModelUtils() {}
 
     private static final Set<Consumer<ModifyBakingResult>> BAKE_EVENT_LISTENERS = new ReferenceOpenHashSet<>();
+    private static final Set<Consumer<RegisterAdditional>> ADD_MODELS_EVENT_LISTENERS = new ReferenceOpenHashSet<>();
 
     private static final Function<Float, IQuadTransformer> OFFSET_BY = Util.memoize(by -> {
         if (by == 0.0f) return QuadTransformers.empty();
@@ -141,9 +142,20 @@ public class ModelUtils {
         BAKE_EVENT_LISTENERS.add(consumer);
     }
 
+    public static void registerAddModelsEventListener(Consumer<RegisterAdditional> consumer) {
+        ADD_MODELS_EVENT_LISTENERS.add(consumer);
+    }
+
     @SubscribeEvent
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         for (var consumer : BAKE_EVENT_LISTENERS) {
+            consumer.accept(event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRegisterAdditional(ModelEvent.RegisterAdditional event) {
+        for (var consumer : ADD_MODELS_EVENT_LISTENERS) {
             consumer.accept(event);
         }
     }

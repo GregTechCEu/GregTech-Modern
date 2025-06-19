@@ -7,7 +7,6 @@
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
     "client": [
         "BiomeColorsMixin",
-        "BlockModelAccessor",
         "BlockModelMixin",
         "ClientLevelAccessor",
         "GuiGraphicsAccessor",

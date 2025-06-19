@@ -1,0 +1,6 @@
+{
+    "parent": "gtceu:block/cover/conveyor",
+    "textures": {
+        "overlay_emissive": "block/cover/overlay_conveyor_inverted_emissive"
+    }
+}

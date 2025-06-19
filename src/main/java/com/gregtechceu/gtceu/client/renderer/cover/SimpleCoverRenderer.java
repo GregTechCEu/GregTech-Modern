@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -18,7 +20,10 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,25 +36,15 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     public SimpleCoverRenderer(ResourceLocation texture) {
         this.texture = texture;
         if (GTCEu.isClientSide()) {
-            registerEvent();
-        }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            register.accept(texture);
-            emissiveTexture = new ResourceLocation(texture.getNamespace(), texture.getPath() + "_emissive");
-            if (ResourceHelper.isTextureExist(emissiveTexture)) register.accept(emissiveTexture);
-            else emissiveTexture = null;
+            ModelUtils.registerAddModelsEventListener(this::loadModels);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
                             @NotNull CoverBehavior coverBehavior, Direction elementSide, BlockPos pos,
-                            BlockAndTintGetter level, ModelState modelState) {
+                            BlockAndTintGetter level, ModelState modelState,
+                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (elementSide == null) return;
         if (side == coverBehavior.attachedSide) {
             quads.add(StaticFaceBakery.bakeFace(elementSide, ModelFactory.getBlockSprite(texture), modelState));
@@ -58,5 +53,9 @@ public class SimpleCoverRenderer implements ICoverRenderer {
                         modelState));
             }
         }
+    }
+
+    protected void loadModels(ModelEvent.RegisterAdditional event) {
+        // is this required? I hope it isn't, because figuring all the simple renderers' models would be a pain.
     }
 }

@@ -29,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -83,7 +84,7 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
             var elementSide = side == null ? null :
                     ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
             ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), elementSide, pos,
-                    level, modelState);
+                    level, modelState, ModelData.EMPTY, null);
             if (!pipeNode.getFrameMaterial().isNull()) {
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
                         .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())

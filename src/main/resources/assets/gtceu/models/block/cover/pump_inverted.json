@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/overlay/front",
+    "textures": {
+        "particle": "#overlay",
+        "overlay": "gtceu:block/cover/overlay_pump_inverted"
+    }
+}

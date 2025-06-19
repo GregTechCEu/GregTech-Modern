@@ -139,7 +139,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             // render covers
             int start = quads.size();
             ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), elementSide,
-                    pos, level, blockModelState);
+                    pos, level, blockModelState, modelData, renderType);
             var iterator = quads.listIterator(start);
             while (iterator.hasNext()) {
                 iterator.set(ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
