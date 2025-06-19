@@ -92,6 +92,11 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
         return false;
     }
 
+    @Override
+    public boolean isCustomRenderer() {
+        return false;
+    }
+
     @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
