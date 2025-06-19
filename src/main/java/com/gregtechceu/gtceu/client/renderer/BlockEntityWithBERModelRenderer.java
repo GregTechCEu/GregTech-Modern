@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -30,10 +31,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 
-    private final BlockEntityRendererProvider.Context context;
+    private final BlockRenderDispatcher blockRenderDispatcher;
 
     public BlockEntityWithBERModelRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+        this.blockRenderDispatcher = context.getBlockRenderDispatcher();
     }
 
     @Override
@@ -41,13 +42,13 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
         BlockState blockState = blockEntity.getBlockState();
-        BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
+        BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() != blockEntity.getType()) return;
 
             ((IBlockEntityRendererBakedModel<T>) berModel).render(blockEntity, partialTick,
-                    poseStack, buffer, packedLight, packedOverlay, context);
+                    poseStack, buffer, packedLight, packedOverlay);
         } else {
             Level level = blockEntity.getLevel();
             BlockPos pos = blockEntity.getBlockPos();
@@ -62,7 +63,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
 
             for (RenderType renderType : model.getRenderTypes(blockState, random, modelData)) {
                 VertexConsumer consumer = buffer.getBuffer(renderType);
-                context.getBlockRenderDispatcher().getModelRenderer()
+                blockRenderDispatcher.getModelRenderer()
                         .tesselateBlock(level, model, blockState, pos,
                                 poseStack, consumer, true, random, randomSeed,
                                 OverlayTexture.NO_OVERLAY, modelData, renderType);
@@ -73,7 +74,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
     @Override
     public boolean shouldRenderOffScreen(T blockEntity) {
         BlockState blockState = blockEntity.getBlockState();
-        BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
+        BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() == blockEntity.getType()) {
@@ -86,7 +87,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
     @Override
     public boolean shouldRender(T blockEntity, Vec3 cameraPos) {
         BlockState blockState = blockEntity.getBlockState();
-        BakedModel model = context.getBlockRenderDispatcher().getBlockModel(blockState);
+        BakedModel model = blockRenderDispatcher.getBlockModel(blockState);
 
         if (model instanceof IBlockEntityRendererBakedModel<?> berModel) {
             if (berModel.getBlockEntityType() == blockEntity.getType()) {

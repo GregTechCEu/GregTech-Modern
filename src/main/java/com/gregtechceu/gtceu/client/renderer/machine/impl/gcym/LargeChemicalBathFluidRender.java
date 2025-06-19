@@ -51,7 +51,7 @@ public class LargeChemicalBathFluidRender extends DynamicRender<LargeChemicalBat
     @Override
     public void render(LargeChemicalBathMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+                       int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
         var lastRecipe = machine.recipeLogic.getLastRecipe();
         if (lastRecipe == null) {

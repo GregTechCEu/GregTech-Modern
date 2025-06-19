@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
-import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
@@ -23,9 +22,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -87,18 +84,19 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
 
     @Override
     public void render(LargeBoilerMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {}
+                       int packedLight, int packedOverlay) {}
 
     @Override
     public boolean shouldRender(LargeBoilerMachine machine, Vec3 cameraPos) {
         return false;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                                @Nullable Direction renderSide, RandomSource rand, Direction elementSide,
-                                ModelState modelState, @NotNull ModelData modelData, RenderType renderType) {
+                                @Nullable Direction renderSide, RandomSource rand, @Nullable Direction elementSide,
+                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (renderSide == null) {
             return;
         }
@@ -113,29 +111,26 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
 
         int controllerYMinus1 = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());
-
-        ModelState multiState = GTMatrixUtils.createRotationState(multiFront, multiUpward);
-        renderSide = multiState.getRotation().rotateTransform(renderSide);
-        // Not exactly one below the controller, so not a firebox
-        if (controllerYMinus1 != partY) {
-            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
-                    renderSide, multiState, rand, modelData, renderType);
-            return;
-        }
-        // firebox
-        if (machine instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
-            emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
-                    renderSide, multiState, rand, modelData, renderType);
+        if (controllerYMinus1 == partY) {
+            // firebox
+            if (machine instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
+                emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
+                        renderSide, rand, modelData, renderType);
+            } else {
+                emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
+                        renderSide, rand, modelData, renderType);
+            }
         } else {
-            emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
-                    renderSide, multiState, rand, modelData, renderType);
+            // Not exactly one below the controller, so not a firebox
+            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
+                    renderSide, rand, modelData, renderType);
         }
     }
 
     private static void emitQuads(List<BakedQuad> quads, @Nullable BakedModel model,
                                   BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                  Direction renderFace, ModelState modelState,
-                                  RandomSource rand, ModelData modelData, RenderType renderType) {
+                                  Direction renderFace, RandomSource rand,
+                                  ModelData modelData, @Nullable RenderType renderType) {
         if (model == null) return;
         modelData = model.getModelData(level, pos, state, modelData);
         // render both the culled & unculled quads

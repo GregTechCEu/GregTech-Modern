@@ -54,7 +54,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     @Override
     public void render(FusionReactorMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+                       int packedLight, int packedOverlay) {
         if (!machine.recipeLogic.isWorking() && delta <= 0) {
             return;
         }

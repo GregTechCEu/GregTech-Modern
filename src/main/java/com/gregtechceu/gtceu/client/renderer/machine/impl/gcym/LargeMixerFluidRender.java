@@ -50,7 +50,7 @@ public class LargeMixerFluidRender extends DynamicRender<LargeMixerMachine, Larg
     @Override
     public void render(LargeMixerMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay, BlockEntityRendererProvider.Context context) {
+                       int packedLight, int packedOverlay) {
 
         var lastRecipe = machine.recipeLogic.getLastRecipe();
         if (lastRecipe == null) {
