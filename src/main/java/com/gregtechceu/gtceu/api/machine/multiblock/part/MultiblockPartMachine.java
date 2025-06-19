@@ -80,8 +80,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             }
         }
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(HAS_CONTROLLER_PROPERTY)) {
-            setRenderState(renderState.setValue(HAS_CONTROLLER_PROPERTY, !controllers.isEmpty()));
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, !controllers.isEmpty()));
         }
     }
 

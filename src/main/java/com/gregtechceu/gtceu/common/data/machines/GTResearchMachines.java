@@ -65,7 +65,7 @@ public class GTResearchMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
-            .tooltipBuilder((s, l) -> l.addAll(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip")))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
@@ -118,7 +118,6 @@ public class GTResearchMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
-            .modelProperty(ObjectHolderMachine.HAS_CONTROLLER_PROPERTY, false)
             .model(createOverlayWorkableTieredHullMachineModel(GTCEu.id("block/machine/part/object_holder"),
                     GTCEu.id("block/machine/part/object_holder_active"), null, null))
             .register();
@@ -201,8 +200,7 @@ public class GTResearchMachines {
             // good API addition for packdevs
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltipBuilder((s, l) -> l
-                    .addAll(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip")))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AA", "CC", "CC", "CC", "AA")
                     .aisle("VA", "XV", "XV", "XV", "VA")

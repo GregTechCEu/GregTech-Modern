@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
@@ -305,7 +304,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .tier(LV)
             .tieredHullModel(GTCEu.id("block/machine/long_distance_item_pipeline_endpoint"))
-            .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip").toArray(Component[]::new))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
                     tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
@@ -1071,13 +1070,11 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
-                    .modelProperty(RotorHolderPartMachine.HAS_CONTROLLER_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
                     .model(createRotorHolderModel())
-                    .tooltips(LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
-                            LangHandler.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
-                            Component.translatable("gtceu.universal.disabled"))
+                    .tooltips(LangHandler.getMultiLang("gtceu.machine.rotor_holder.tooltip"))
+                    .tooltips(Component.translatable("gtceu.universal.disabled"))
                     .register(),
             GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -193,19 +194,26 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.definition = definition;
     }
 
-    @SuppressWarnings("NullableProblems")
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
+        initRecipeMachineModelProperties(type);
         return this;
     }
 
-    @SuppressWarnings("NullableProblems")
     @Tolerate
     public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
         for (GTRecipeType type : types) {
             this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         }
+        initRecipeMachineModelProperties(types);
         return this;
+    }
+
+    protected void initRecipeMachineModelProperties(GTRecipeType... types) {
+        if (types.length > 0 &&
+                Arrays.stream(types).noneMatch(type -> type == GTRecipeTypes.DUMMY_RECIPES)) {
+            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+        }
     }
 
     public MachineBuilder<DEFINITION> simpleModel(ResourceLocation modelName) {
@@ -226,7 +234,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
-        modelProperty(IMultiPart.HAS_CONTROLLER_PROPERTY, false);
         return model(createOverlayTieredHullMachineModel(overlayModel));
     }
 
@@ -235,7 +242,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
-        modelProperty(IMultiPart.HAS_CONTROLLER_PROPERTY, false);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
@@ -283,9 +289,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
-    @SuppressWarnings("NullableProblems")
     public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
-        tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
+        return tooltips(Arrays.asList(components));
+    }
+
+    public MachineBuilder<DEFINITION> tooltips(List<? extends @Nullable Component> components) {
+        tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
         return this;
     }
 
@@ -301,6 +310,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
+        // add the multi part-specific properties by default
+        modelProperty(IMultiController.IS_FORMED_PROPERTY, false);
         return this;
     }
 

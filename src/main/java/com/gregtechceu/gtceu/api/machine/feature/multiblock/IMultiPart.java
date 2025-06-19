@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -21,8 +20,6 @@ import java.util.List;
 import java.util.SortedSet;
 
 public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
-
-    BooleanProperty HAS_CONTROLLER_PROPERTY = BooleanProperty.create("has_controller");
 
     /**
      * Can it be shared among multi multiblock.

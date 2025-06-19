@@ -92,26 +92,20 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
-     * Assign some models to a given {@link PartialState partial state}.
+     * Assign a model to a given {@link PartialState partial state}.
      *
-     * @param state  The {@link PartialState partial state} for which to add
-     *               the models
-     * @param model A set of models to add to this state
+     * @param state The {@link PartialState partial state} for which to add the models
+     * @param model A model to add to this state
      * @return this builder
      * @throws NullPointerException     if {@code state} is {@code null}
-     * @throws IllegalArgumentException if {@code model} is {@code null}
-     * @throws IllegalArgumentException if {@code state}'s owning block differs from
-     *                                  the builder's
-     * @throws IllegalArgumentException if {@code state} partially matches another
-     *                                  state which has already been configured
+     * @throws NullPointerException     if {@code model} is {@code null}
+     * @throws IllegalArgumentException if {@code state}'s owning block differs from the builder's
      */
-    public MachineModelBuilder<T> addModel(PartialState<T> state, ModelFile model) {
+    public MachineModelBuilder<T> replaceModel(PartialState<T> state, ModelFile model) {
         Preconditions.checkNotNull(state, "state must not be null");
         Preconditions.checkNotNull(model, "model must not be null");
         Preconditions.checkArgument(state.getOwner() == owner,
                 "Cannot set model for a different block. Found: %s, Current: %s", state.getOwner(), owner);
-        Preconditions.checkArgument(disjointToAll(state) && !this.models.containsKey(state),
-                "Cannot set model for a state for which a partial match has already been configured");
         this.models.put(state, model);
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
             if (state.test(fullState)) {
@@ -122,18 +116,34 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
-     * Assign some models to a given {@link PartialState partial state},
+     * Assign a model to a given {@link PartialState partial state}.
+     *
+     * @param state The {@link PartialState partial state} for which to add the model
+     * @param model A model to add to this state
+     * @return this builder
+     * @throws IllegalArgumentException if {@code state} partially matches another
+     *                                  state which has already been configured
+     * @see #replaceModel(PartialState, ModelFile)
+     */
+    public MachineModelBuilder<T> addModel(PartialState<T> state, ModelFile model) {
+        Preconditions.checkArgument(disjointToAll(state),
+                "Cannot set model for a state for which a partial match has already been configured");
+        replaceModel(state, model);
+        return this;
+    }
+
+    /**
+     * Assign a model to a given {@link PartialState partial state},
      * throwing an exception if the state has already been configured. Otherwise,
      * simply calls {@link #addModel(PartialState, ModelFile)}.
      *
-     * @param state The {@link PartialState partial state} for which to set
-     *              the models
-     * @param model A set of models to assign to this state
+     * @param state The {@link PartialState partial state} for which to set the model
+     * @param model A model to assign to this state
      * @return this builder
      * @throws IllegalArgumentException if {@code state} has already been configured
      * @see #addModel(PartialState, ModelFile)
      */
-    public MachineModelBuilder<T> setModels(PartialState<T> state, ModelFile model) {
+    public MachineModelBuilder<T> setModel(PartialState<T> state, ModelFile model) {
         Preconditions.checkArgument(!models.containsKey(state),
                 "Cannot set model for a state that has already been configured: %s", state);
         addModel(state, model);
@@ -162,11 +172,33 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             }
             PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
             if (seen.add(partialState)) {
-                setModels(partialState, mapper.apply(fullState));
+                setModel(partialState, mapper.apply(fullState));
             }
         }
         return this;
     }
+
+    // spotless:off
+    public MachineModelBuilder<T> replaceForAllStates(BiFunction<MachineRenderState, @Nullable ModelFile, ModelFile> mapper) {
+        return replaceForAllStatesExcept(mapper);
+    }
+
+    public MachineModelBuilder<T> replaceForAllStatesExcept(BiFunction<MachineRenderState, @Nullable ModelFile, ModelFile> mapper,
+                                                            Property<?>... ignored) {
+        Set<PartialState<T>> seen = new HashSet<>();
+        for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
+            Map<Property<?>, Comparable<?>> propertyValues = Maps.newLinkedHashMap(fullState.getValues());
+            for (Property<?> p : ignored) {
+                propertyValues.remove(p);
+            }
+            PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
+            if (seen.add(partialState)) {
+                replaceModel(partialState, mapper.apply(fullState, getModels().get(partialState)));
+            }
+        }
+        return this;
+    }
+    // spotless:on
 
     public static class PartialState<B extends ModelBuilder<B>> implements Predicate<MachineRenderState> {
 
@@ -218,7 +250,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
          */
         public MachineModelBuilder<B> setModel(ModelFile model) {
             checkValidOwner();
-            return outerBuilder.setModels(this, model);
+            return outerBuilder.setModel(this, model);
         }
 
         @Override

@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -172,6 +173,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureFormed() {
         isFormed = true;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, true));
+        }
+
         this.parts.clear();
         Set<IMultiPart> set = getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet);
         for (IMultiPart part : set) {
@@ -192,6 +198,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureInvalid() {
         isFormed = false;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, false));
+        }
+
         for (IMultiPart part : parts) {
             part.removedFromController(this);
         }

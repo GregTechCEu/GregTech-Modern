@@ -88,6 +88,8 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         super(registrate, name, MultiblockMachineDefinition::new, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
+        // always add the formed property to multi controllers
+        modelProperty(IMultiController.IS_FORMED_PROPERTY, false);
     }
 
     public MultiblockMachineBuilder shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
@@ -289,6 +291,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
 
     @Override
     public MultiblockMachineBuilder tooltips(@Nullable Component... components) {
+        return (MultiblockMachineBuilder) super.tooltips(components);
+    }
+
+    @Override
+    public MultiblockMachineBuilder tooltips(List<? extends @Nullable Component> components) {
         return (MultiblockMachineBuilder) super.tooltips(components);
     }
 

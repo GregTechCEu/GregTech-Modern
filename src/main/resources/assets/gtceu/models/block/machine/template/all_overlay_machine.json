@@ -48,7 +48,7 @@
                 "north": { "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101, "emissivity": 15 },
                 "south": { "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101, "emissivity": 15 },
                 "up":    { "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101, "emissivity": 15 },
-                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down" , "tintindex": -101, "emissivity": 15 },
+                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down",  "tintindex": -101, "emissivity": 15 },
                 "west":  { "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101, "emissivity": 15 },
                 "east":  { "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101, "emissivity": 15 }
             }

@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/machine/template/hull_machine",
+    "parent": "gtceu:block/cube/tinted/bottom_top",
     "textures": {
         "overlay": "gtceu:block/overlay/machine/overlay_rotor_holder",
         "rotor": ""
