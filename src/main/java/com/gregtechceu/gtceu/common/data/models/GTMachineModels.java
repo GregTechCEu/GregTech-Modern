@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
+import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlays;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
@@ -47,9 +49,6 @@ import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverla
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
 /*
- * TODO:
- *  - HPCA part models (IDK??)
- *
  * TODO (end)
  *  - move GTMachineModels utility methods to the top of the file
  */
@@ -282,10 +281,10 @@ public class GTMachineModels {
             ResourceLocation overlay = textures.getTexture(status);
             ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
 
-            if (overlay != null) {
+            if (overlay != BLANK_TEXTURE) {
                 model.texture(OVERLAY_PREFIX + face.getName(), overlay);
             }
-            if (overlayEmissive != null) {
+            if (overlayEmissive != BLANK_TEXTURE) {
                 model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
             }
         }
@@ -315,10 +314,23 @@ public class GTMachineModels {
     public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
                                                               BlockModelBuilder baseModel,
                                                               ResourceLocation overlayModel) {
+        return makeOverlayCompositeModel(provider, baseModel,
+                provider.nested().parent(provider.getExistingFile(overlayModel)));
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
+                                                              BlockModelBuilder baseModelName,
+                                                              BlockModelBuilder overlayModel) {
+        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
+                                                              BlockModelBuilder baseModel,
+                                                              BlockModelBuilder overlayModel) {
         return provider.nested()
                 .customLoader(CompositeModelBuilder::begin)
                 .child("base", baseModel)
-                .child("overlay", provider.nested().parent(provider.getExistingFile(overlayModel)))
+                .child("overlay", overlayModel)
                 .end();
     }
 
@@ -686,7 +698,7 @@ public class GTMachineModels {
         };
     }
 
-    private static final ResourceLocation MAINTENANCE_TAPED_OVERLAY = GTCEu.id("block/overlay/machine/overlay_maintenance_taped");
+    public static final ResourceLocation MAINTENANCE_TAPED_OVERLAY = GTCEu.id("block/overlay/machine/overlay_maintenance_taped");
     // spotless:on
 
     public static MachineBuilder.ModelConstructor createMaintenanceModel(ResourceLocation overlayModel) {
@@ -706,6 +718,31 @@ public class GTMachineModels {
                                 .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front")))
                                 .texture("overlay", isTaped ? MAINTENANCE_TAPED_OVERLAY : BLANK_TEXTURE))
                         .end();
+            });
+        };
+    }
+
+    public static final ResourceLocation HPCA_PART_MODEL = GTCEu.id("block/computer_casing");
+    public static final ResourceLocation ADVANCED_HPCA_PART_MODEL = GTCEu.id("block/advanced_computer_casing");
+
+    public static MachineBuilder.ModelConstructor createHPCAPartModel(boolean advanced,
+                                                                      ResourceLocation normalTexture,
+                                                                      ResourceLocation damagedTexture) {
+        return (ctx, prov, builder) -> {
+            ResourceLocation baseModelName = advanced ? ADVANCED_HPCA_PART_MODEL : HPCA_PART_MODEL;
+            var baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(baseModelName));
+            HPCAOverlays overlays = HPCAOverlays.get(normalTexture, damagedTexture, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                boolean damaged = state.getValue(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY);
+                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
+
+                var overlayModel = prov.models().nested()
+                        .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front_emissive")))
+                        .texture("overlay", overlays.getTexture(active, damaged))
+                        .texture("overlay_emissive", overlays.getEmissiveTexture(active, damaged));
+                return makeOverlayCompositeModel(prov, baseModel, overlayModel);
             });
         };
     }

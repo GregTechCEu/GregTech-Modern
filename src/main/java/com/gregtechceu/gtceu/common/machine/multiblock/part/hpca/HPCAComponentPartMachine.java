@@ -1,14 +1,18 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -32,6 +36,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     @Persisted
     @DescSynced
     @RequireRerender
+    @UpdateListener(methodName = "onDamagedSynced")
     private boolean damaged;
 
     public HPCAComponentPartMachine(IMachineBlockEntity holder) {
@@ -82,6 +87,34 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         if (this.damaged != damaged) {
             this.damaged = damaged;
             markDirty();
+        }
+    }
+
+    @Override
+    public boolean beforeWorking(IWorkableMultiController controller) {
+        MachineRenderState state = getRenderState();
+        if (state.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+            setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, true));
+        }
+        return super.beforeWorking(controller);
+    }
+
+    @Override
+    public boolean afterWorking(IWorkableMultiController controller) {
+        MachineRenderState state = getRenderState();
+        if (state.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+            setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, false));
+        }
+        return super.afterWorking(controller);
+    }
+
+    @SuppressWarnings("unused")
+    protected void onDamagedSynced(boolean newDamaged, boolean oldDamaged) {
+        if (!canBeDamaged() || newDamaged == oldDamaged) return;
+
+        MachineRenderState state = getRenderState();
+        if (state.hasProperty(HPCA_PART_DAMAGED_PROPERTY)) {
+            setRenderState(state.setValue(HPCA_PART_DAMAGED_PROPERTY, newDamaged));
         }
     }
 

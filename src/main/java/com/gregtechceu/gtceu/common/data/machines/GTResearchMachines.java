@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -12,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.client.model.machine.impl.HPCAPartModel;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -25,10 +26,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -365,7 +363,8 @@ public class GTResearchMachines {
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
-            HPCAEmptyPartMachine::new, "empty", null, null, false).register();
+            HPCAEmptyPartMachine::new, "empty", false)
+            .register();
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_computation_component", "HPCA Computation Component",
             holder -> new HPCAComputationPartMachine(holder, false), "computation", false)
@@ -388,7 +387,7 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
-            holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", null, null, false)
+            holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", false)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1))
             .register();
@@ -427,35 +426,11 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartModel(
-                        isAdvanced,
+                .modelProperty(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY, false)
+                .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
+                .model(createHPCAPartModel(isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
-                        GTCEu.id("block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))));
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static MachineBuilder<MachineDefinition> registerHPCAPart(String name,
-                                                                      String displayName,
-                                                                      Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                      String texture,
-                                                                      @Nullable String activeTexture,
-                                                                      @Nullable String damagedTexture,
-                                                                      boolean isAdvanced) {
-        return REGISTRATE.machine(name, constructor)
-                .langValue(displayName)
-                .rotationState(RotationState.ALL)
-                .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartModel(
-                        isAdvanced,
-                        GTCEu.id("block/overlay/machine/hpca/" + texture),
-                        activeTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + activeTexture),
-                        activeTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + activeTexture + "_emissive"),
-                        damagedTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + damagedTexture),
-                        damagedTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_active"),
-                        damagedTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_emissive")));
+                        GTCEu.id("block/overlay/machine/hpca/damaged" + (isAdvanced ? "_advanced" : ""))));
     }
 
     public static void init() {}
