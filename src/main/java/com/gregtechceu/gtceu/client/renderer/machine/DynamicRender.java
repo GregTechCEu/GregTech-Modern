@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.IMachineRendererModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class DynamicRender<T extends MetaMachine, S extends DynamicRender<T, S>> extends BaseBakedModel
+public abstract class DynamicRender<T extends IMachineFeature, S extends DynamicRender<T, S>> extends BaseBakedModel
         implements Comparable<DynamicRender<T, S>>, IMachineRendererModel<T> {
 
     public static final Codec<DynamicRender<?, ?>> CODEC = DynamicRenderManager.TYPE_CODEC

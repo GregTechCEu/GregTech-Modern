@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.ResourceLocation;
@@ -35,8 +35,8 @@ public final class DynamicRenderManager {
 
     private static final BiMap<ResourceLocation, DynamicRenderType<?, ?>> DYNAMIC_RENDERER_TYPES = HashBiMap.create(5);
 
-    public static <T extends MetaMachine, S extends DynamicRender<T, S>> DynamicRenderType<T, S> register(ResourceLocation id,
-                                                                                                          DynamicRenderType<T, S> type) {
+    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> DynamicRenderType<T, S> register(ResourceLocation id,
+                                                                                                              DynamicRenderType<T, S> type) {
         if (DYNAMIC_RENDERER_TYPES.containsKey(id)) {
             throw new IllegalArgumentException("Cannot register multiple dynamic renderer types with the same id! Tried " + id);
         }
@@ -46,7 +46,7 @@ public final class DynamicRenderManager {
 
     @SuppressWarnings("unchecked")
     @Nullable
-    public static <T extends MetaMachine, S extends DynamicRender<T, S>> DynamicRenderType<T, S> getType(ResourceLocation id) {
+    public static <T extends IMachineFeature, S extends DynamicRender<T, S>> DynamicRenderType<T, S> getType(ResourceLocation id) {
         return (DynamicRenderType<T, S>) DYNAMIC_RENDERER_TYPES.get(id);
     }
 

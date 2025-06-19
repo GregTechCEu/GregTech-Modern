@@ -20,8 +20,6 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRen
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.gcym.LargeChemicalBathFluidRender;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.gcym.LargeMixerFluidRender;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
@@ -137,8 +135,7 @@ public class ClientProxy extends CommonProxy {
             DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
             DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
 
-            DynamicRenderManager.register(GTCEu.id("large_chemical_bath_fluid"), LargeChemicalBathFluidRender.TYPE);
-            DynamicRenderManager.register(GTCEu.id("large_mixer_fluid"), LargeMixerFluidRender.TYPE);
+            DynamicRenderManager.register(GTCEu.id("recipe_fluid"), RecipeFluidRender.TYPE);
         });
     }
 

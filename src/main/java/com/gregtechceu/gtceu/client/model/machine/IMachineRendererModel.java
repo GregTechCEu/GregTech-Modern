@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public interface IMachineRendererModel<T extends MetaMachine> extends IBlockEntityRendererBakedModel<BlockEntity> {
+public interface IMachineRendererModel<T extends IMachineFeature> extends IBlockEntityRendererBakedModel<BlockEntity> {
 
     MachineDefinition getDefinition();
 
@@ -31,11 +31,11 @@ public interface IMachineRendererModel<T extends MetaMachine> extends IBlockEnti
     }
 
     default boolean shouldRender(T machine, Vec3 cameraPos) {
-        return Vec3.atCenterOf(machine.getPos()).closerThan(cameraPos, this.getViewDistance());
+        return Vec3.atCenterOf(machine.self().getPos()).closerThan(cameraPos, this.getViewDistance());
     }
 
     default AABB getRenderBoundingBox(T machine) {
-        BlockPos pos = machine.getPos();
+        BlockPos pos = machine.self().getPos();
         return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
     }
 

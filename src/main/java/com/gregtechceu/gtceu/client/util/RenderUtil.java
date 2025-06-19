@@ -21,11 +21,11 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -128,7 +128,7 @@ public class RenderUtil {
         return vec3f(vertex.x + addX, vertex.y + addY, vertex.z + addZ);
     }
 
-    public static Fluid getRecipeFluidToRender(GTRecipe recipe) {
+    public static @Nullable Fluid getRecipeFluidToRender(GTRecipe recipe) {
         if (recipe == null) {
             return null;
         }

@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluid;
@@ -13,14 +17,15 @@ import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.gregtechceu.gtceu.client.util.RenderUtil.*;
 import static net.minecraft.util.FastColor.ARGB32.*;
 
 public class FluidBlockRenderer {
+
+    public static final MapCodec<FluidBlockRenderer> CODEC = Properties.CODEC
+            .xmap(FluidBlockRenderer::new, FluidBlockRenderer::getProperties);
 
     @Getter
     private final Properties properties;
@@ -131,9 +136,10 @@ public class FluidBlockRenderer {
         drawFace(pose, consumer, vertices, normal, u0, u1, v0, v1, r, g, b, a, combinedOverlay, combinedLight);
     }
 
-    public void drawFace(Matrix4f pose, VertexConsumer consumer, Vector3f[] vertices, Vector3f normal, float u0,
-                         float u1, float v0, float v1, int r, int g, int b, int a, int combinedOverlay,
-                         int combinedLight) {
+    public void drawFace(Matrix4f pose, VertexConsumer consumer, Vector3f[] vertices, Vector3f normal,
+                         float u0, float u1, float v0, float v1,
+                         int r, int g, int b, int a,
+                         int combinedOverlay, int combinedLight) {
         if (properties.isOverwriteLight()) combinedLight = properties.getLight();
 
         var vert = vertices[0];
@@ -164,6 +170,18 @@ public class FluidBlockRenderer {
     @Data
     public static class Properties {
 
+        // spotless:off
+        public static final MapCodec<Properties> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.FLOAT.fieldOf("offset_x").forGetter(Properties::getOffsetX),
+                Codec.FLOAT.fieldOf("offset_y").forGetter(Properties::getOffsetY),
+                Codec.FLOAT.fieldOf("offset_z").forGetter(Properties::getOffsetZ),
+                Codec.FLOAT.fieldOf("offset_face").forGetter(Properties::getOffsetFace),
+                Codec.BOOL.fieldOf("overwrite_light").forGetter(Properties::isOverwriteLight),
+                Codec.intRange(0, LightTexture.FULL_BRIGHT).fieldOf("light").forGetter(Properties::getLight),
+                Direction.CODEC.listOf().fieldOf("draw_faces").forGetter(p -> Arrays.asList(p.getDrawFaces()))
+        ).apply(instance, Properties::of));
+        // spotless:on
+
         private float offsetX = 0;
         private float offsetY = 0;
         private float offsetZ = 0;
@@ -174,6 +192,25 @@ public class FluidBlockRenderer {
         private Direction[] drawFaces = Direction.values();
 
         public Properties() {}
+
+        public static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
+                             boolean overwriteLight, int light, Direction... drawFaces) {
+            Properties p = new Properties();
+            p.setOffsetX(offsetX);
+            p.setOffsetY(offsetY);
+            p.setOffsetZ(offsetZ);
+            p.setOffsetFace(offsetFace);
+            p.setOverwriteLight(overwriteLight);
+            p.setLight(light);
+            p.setDrawFaces(drawFaces);
+            return p;
+        }
+
+        private static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
+                             boolean overwriteLight, int light, List<Direction> drawFaces) {
+            return of(offsetX, offsetY, offsetZ, offsetFace,
+                    overwriteLight, light, drawFaces.toArray(Direction[]::new));
+        }
     }
 
     public static class Builder {

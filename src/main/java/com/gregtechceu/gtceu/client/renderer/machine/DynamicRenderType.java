@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record DynamicRenderType<T extends MetaMachine, S extends DynamicRender<T, S>>(Codec<S> codec)
+public record DynamicRenderType<T extends IMachineFeature, S extends DynamicRender<T, S>>(Codec<S> codec)
         implements Comparable<DynamicRenderType<T, S>> {
 
     public ResourceLocation getId() {
