@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -64,6 +65,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
@@ -538,17 +540,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     // spotless:off
     protected static class BlockBuilderWrapper {
 
-        @SuppressWarnings("unchecked")
-        public static <DEFINITION extends MachineDefinition> BlockBuilder<? extends IMachineBlock, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
-                                                                                                                                                     DEFINITION definition) {
-            return (BlockBuilder<? extends IMachineBlock, ? extends AbstractRegistrate<?>>) builder.registrate
-                    .block(properties -> makeBlock(builder, definition, properties))
+        public static <DEFINITION extends MachineDefinition> BlockBuilder<Block, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION> builder,
+                                                                                                                                   DEFINITION definition) {
+            return builder.registrate.block(properties -> makeBlock(builder, definition, properties))
+                    .color(() -> () -> IMachineBlock::colorTinted)
                     .initialProperties(() -> Blocks.DISPENSER)
-                    .properties(builder.blockProp)
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
                     .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
-                    .color(() -> () -> IMachineBlock::colorTinted)
+                    .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
 
@@ -564,13 +564,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected static class ItemBuilderWrapper {
 
         public static <DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, ? extends AbstractRegistrate<?>> makeItemBuilder(MachineBuilder<DEFINITION> builder,
-                                                                                                                                           BlockEntry<? extends IMachineBlock> block) {
+                                                                                                                                           BlockEntry<Block> block) {
             return builder.registrate
-                    .item(properties -> builder.itemFactory.apply(block.get(), properties))
+                    .item(properties -> builder.itemFactory.apply((IMachineBlock) block.get(), properties))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
-                    .properties(builder.itemProp)
-                    .model(NonNullBiConsumer.noop())
-                    .color(() -> () -> builder.itemColor::apply);
+                    // copied from BlockBuilder#item
+                    .model((ctx, prov) -> {
+                        Optional<String> model = builder.registrate.getDataProvider(ProviderType.BLOCKSTATE)
+                                .flatMap(p -> p.getExistingVariantBuilder(block.get()))
+                                .map(b -> b.getModels().get(b.partialState()))
+                                .map(BlockStateProvider.ConfiguredModelList::toJSON)
+                                .filter(JsonElement::isJsonObject)
+                                .map(j -> j.getAsJsonObject().get("model"))
+                                .map(JsonElement::getAsString);
+                        if (model.isPresent()) {
+                            prov.withExistingParent(ctx.getName(), model.get());
+                        } else {
+                            prov.blockItem(block);
+                        }
+                    })
+                    .color(() -> () -> builder.itemColor::apply)
+                    .properties(builder.itemProp);
         }
     }
     // spotless:on
