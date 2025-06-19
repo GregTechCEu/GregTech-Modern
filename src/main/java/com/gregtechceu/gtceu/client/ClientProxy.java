@@ -143,5 +143,6 @@ public class ClientProxy extends CommonProxy {
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(GTMachineModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
         event.register(GTMachineModels.TEXTURE_OVERRIDE_MODEL_LOADER.getPath(), TextureOverrideModel.Loader.INSTANCE);
+        event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
     }
 }

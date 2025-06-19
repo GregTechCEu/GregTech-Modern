@@ -61,7 +61,7 @@ public class StaticFaceBakery {
         return bakeQuad(
                 new Vector3f((float) cube.minX * 16f, (float) cube.minY * 16f, (float) cube.minZ * 16f),
                 new Vector3f((float) cube.maxX * 16f, (float) cube.maxY * 16f, (float) cube.maxZ * 16f),
-                new BlockElementFace(cull ? face : null, tintIndex, "",
+                new BlockElementFace(cull ? face : null, tintIndex, sprite.contents().name().toString(),
                         new BlockFaceUV(new float[] { 0.0F, 0.0F, 16.0F, 16.0F }, 0)),
                 sprite,
                 face,
