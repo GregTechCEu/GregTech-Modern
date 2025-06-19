@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +9,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Data;
 import lombok.Getter;
 import org.joml.Matrix4f;
@@ -194,7 +194,7 @@ public class FluidBlockRenderer {
         public Properties() {}
 
         public static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
-                             boolean overwriteLight, int light, Direction... drawFaces) {
+                                    boolean overwriteLight, int light, Direction... drawFaces) {
             Properties p = new Properties();
             p.setOffsetX(offsetX);
             p.setOffsetY(offsetY);
@@ -207,7 +207,7 @@ public class FluidBlockRenderer {
         }
 
         private static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
-                             boolean overwriteLight, int light, List<Direction> drawFaces) {
+                                     boolean overwriteLight, int light, List<Direction> drawFaces) {
             return of(offsetX, offsetY, offsetZ, offsetFace,
                     overwriteLight, light, drawFaces.toArray(Direction[]::new));
         }

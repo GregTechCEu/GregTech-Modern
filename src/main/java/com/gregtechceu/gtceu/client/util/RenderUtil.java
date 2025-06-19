@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
@@ -171,6 +171,7 @@ public class RenderUtil {
 
     /**
      * rotate the given {@link PoseStack pose stack} to face towards {@code face} rotated by {@code spin}
+     * 
      * @param poseStack the {@link PoseStack pose stack} to modify
      * @param face      the direction that {@code poseStack} will face (e.g. the front of a machine)
      * @param spin      direction to "angle" the plane by (e.g. the upwards facing of a machine)

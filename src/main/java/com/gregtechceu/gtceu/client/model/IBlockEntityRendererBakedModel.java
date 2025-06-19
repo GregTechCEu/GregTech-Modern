@@ -38,5 +38,4 @@ public interface IBlockEntityRendererBakedModel<T extends BlockEntity> extends B
     default boolean isCustomRenderer() {
         return true;
     }
-
 }

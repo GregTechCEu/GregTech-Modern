@@ -53,7 +53,7 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
             Level level = blockEntity.getLevel();
             BlockPos pos = blockEntity.getBlockPos();
 
-            //noinspection DataFlowIssue,UnstableApiUsage
+            // noinspection DataFlowIssue,UnstableApiUsage
             ModelData modelData = level.getModelDataManager().getAt(pos);
             if (modelData == null) modelData = ModelData.EMPTY;
 

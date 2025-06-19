@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public interface IHPCAComponentHatch {

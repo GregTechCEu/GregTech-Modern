@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.data.model.builder;
 
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
-import com.mojang.serialization.JsonOps;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -19,6 +17,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +84,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     /**
      * Add a {@link DynamicRender dynamic render} to this model.
      *
-     * @param render  The {@link DynamicRender dynamic render} to add
+     * @param render The {@link DynamicRender dynamic render} to add
      */
     public MachineModelBuilder<T> addDynamicRenderer(DynamicRender<?, ?> render) {
         this.dynamicRenders.add(render);
@@ -320,5 +320,4 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             };
         }
     }
-
 }

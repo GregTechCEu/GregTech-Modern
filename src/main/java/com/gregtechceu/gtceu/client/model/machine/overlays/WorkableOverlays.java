@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic.Status;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
-
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

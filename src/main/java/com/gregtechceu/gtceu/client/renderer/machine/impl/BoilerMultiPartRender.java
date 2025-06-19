@@ -14,10 +14,6 @@ import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockModelShaper;
@@ -32,15 +28,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import net.minecraftforge.client.model.data.ModelData;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, BoilerMultiPartRender> implements IControllerModelRenderer {
+public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, BoilerMultiPartRender>
+                                   implements IControllerModelRenderer {
 
     // spotless:off
     public static final Codec<BoilerMultiPartRender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -138,7 +139,5 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
                 rand, modelData, renderType));
         quads.addAll(model.getQuads(state, renderFace,
                 rand, modelData, renderType));
-
     }
-
 }

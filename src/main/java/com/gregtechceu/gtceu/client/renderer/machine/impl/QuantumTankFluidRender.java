@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,9 +23,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.Codec;
+
+import java.util.EnumSet;
 
 import javax.annotation.Nullable;
-import java.util.EnumSet;
 
 import static com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumChestItemRender.*;
 
@@ -90,7 +91,6 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
                            boolean isCreative) {
         FluidStack fluid = !stored.isEmpty() ? stored : locked;
         if (fluid.isEmpty()) return;
-
 
         var ext = IClientFluidTypeExtensions.of(fluid.getFluid());
         var fluidSprite = Minecraft.getInstance()

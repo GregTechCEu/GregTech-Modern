@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data.models;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -15,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
-import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlays;
+import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
@@ -27,8 +26,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachi
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
@@ -41,6 +39,10 @@ import net.minecraftforge.client.model.generators.BlockModelProvider;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
+
+import com.google.common.collect.ImmutableMap;
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -440,8 +442,7 @@ public class GTMachineModels {
                         .child("holder", tieredHullTextures(
                                 prov.models().nested()
                                         .parent(prov.models().getExistingFile(ROTOR_HOLDER_MODEL)),
-                                builder.getOwner().getTier())
-                        );
+                                builder.getOwner().getTier()));
 
                 if (!state.getValue(IMultiController.IS_FORMED_PROPERTY)) {
                     return model.end();
@@ -555,7 +556,7 @@ public class GTMachineModels {
             ResourceLocation baseModelName = advanced ? ADVANCED_HPCA_PART_MODEL : HPCA_PART_MODEL;
             var baseModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(baseModelName));
-            HPCAOverlays overlays = HPCAOverlays.get(normalTexture, damagedTexture, prov.getExistingFileHelper());
+            HPCAOverlay overlays = HPCAOverlay.get(normalTexture, damagedTexture, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 boolean damaged = state.getValue(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY);

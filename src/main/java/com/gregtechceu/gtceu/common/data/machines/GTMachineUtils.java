@@ -286,7 +286,8 @@ public class GTMachineUtils {
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .model(GTMachineModels.createBatteryBufferModel(batterySlotSize))
-                        .langValue("%s %sx Battery Buffer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
+                        .langValue("%s %sx Battery Buffer".formatted(
+                                VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 batterySlotSize))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.item_storage_capacity",

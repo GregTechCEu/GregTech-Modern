@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
+import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+
+import net.minecraft.resources.ResourceLocation;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BinaryOperator;

@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -25,6 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -97,7 +97,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         poseStack.mulPose(new Quaternionf().rotateAxis(totalTick * Mth.TWO_PI / 80, 0, 1, 0));
         poseStack.scale(0.6f, 0.6f, 0.6f);
 
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED,
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
                 poseStack, buffer, Minecraft.getInstance().level,
                 Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
         poseStack.popPose();
@@ -155,5 +156,4 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         RenderSystem.enableDepthTest();
         poseStack.popPose();
     }
-
 }

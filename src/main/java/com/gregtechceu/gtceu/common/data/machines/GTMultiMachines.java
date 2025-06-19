@@ -40,10 +40,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -112,7 +112,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
                     GTCEu.id("block/multiblock/primitive_blast_furnace"))
-                    .andThen(b -> b.addDynamicRenderer(RecipeFluidRender.createPBFLavaRender())))
+                    .andThen(b -> b.addDynamicRenderer(FluidAreaRender.createPBFLavaRender())))
             .hasBER(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -624,7 +624,8 @@ public class GTMultiMachines {
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
-                    .andThen(b -> b.addDynamicRenderer(new BoilerMultiPartRender(BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
+                    .andThen(b -> b.addDynamicRenderer(
+                            new BoilerMultiPartRender(BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
             // TODO does this need a BER?
             .register();
 
@@ -779,7 +780,8 @@ public class GTMultiMachines {
                     .allowExtendedFacing(true)
                     .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                     .modelProperty(LargeMinerMachine.IS_FORMED_PROPERTY, false)
-                    .model(createWorkableCasingMachineModel(MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
+                    .model(createWorkableCasingMachineModel(
+                            MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner"))
                             .andThen((ctx, prov, modelBuilder) -> {
                                 // replace the parent model for the formed large miner

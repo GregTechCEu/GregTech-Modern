@@ -272,7 +272,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
 
         if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
             if (modelWithBER.getBlockEntityType() == this.getType()) {
-                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER).getRenderBoundingBox(this);
+                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER)
+                        .getRenderBoundingBox(this);
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));

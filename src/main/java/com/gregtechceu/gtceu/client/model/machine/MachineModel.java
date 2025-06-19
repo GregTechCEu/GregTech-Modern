@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -34,6 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ import java.util.*;
 import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer, IPartModelRenderer,
-        IMachineRendererModel<MetaMachine> {
+                                IMachineRendererModel<MetaMachine> {
 
     public static final float COVER_OVERLAY_OFFSET = 0.008f;
 

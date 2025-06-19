@@ -3,26 +3,29 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic.Status;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumMap;
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class HPCAOverlays {
+public class HPCAOverlay {
 
     // spotless:off
-    public static HPCAOverlays get(ResourceLocation normalSprite, ResourceLocation damagedSprite,
-                                   ExistingFileHelper fileHelper) {
+    public static HPCAOverlay get(ResourceLocation normalSprite, ResourceLocation damagedSprite,
+                                  ExistingFileHelper fileHelper) {
         // normal
         if (!fileHelper.exists(normalSprite, GTBlockstateProvider.TEXTURE)) {
-            return HPCAOverlays.EMPTY;
+            return HPCAOverlay.EMPTY;
         }
         ResourceLocation activeSprite = normalSprite.withSuffix("_active");
         if (!fileHelper.exists(activeSprite, GTBlockstateProvider.TEXTURE)) activeSprite = normalSprite;
@@ -43,24 +46,24 @@ public class HPCAOverlays {
         ResourceLocation damagedActiveSpriteEmissive = damagedActiveSprite.withSuffix("_emissive");
         if (!fileHelper.exists(damagedActiveSpriteEmissive, GTBlockstateProvider.TEXTURE)) damagedActiveSpriteEmissive = null;
 
-        return new HPCAOverlays(normalSprite, activeSprite, damagedSprite, damagedActiveSprite,
+        return new HPCAOverlay(normalSprite, activeSprite, damagedSprite, damagedActiveSprite,
                 normalSpriteEmissive, activeSpriteEmissive, damagedSpriteEmissive, damagedActiveSpriteEmissive);
     }
     // spotless:on
 
-    public static final HPCAOverlays EMPTY = new HPCAOverlays();
+    public static final HPCAOverlay EMPTY = new HPCAOverlay();
 
     private final Map<Status, ResourceLocation> textures = new EnumMap<>(Status.class);
     private final Map<Status, ResourceLocation> emissiveTextures = new EnumMap<>(Status.class);
 
-    public HPCAOverlays(@Nullable ResourceLocation normalSprite,
-                        @Nullable ResourceLocation activeSprite,
-                        @Nullable ResourceLocation damagedSprite,
-                        @Nullable ResourceLocation damagedActiveSprite,
-                        @Nullable ResourceLocation normalSpriteEmissive,
-                        @Nullable ResourceLocation activeSpriteEmissive,
-                        @Nullable ResourceLocation damagedSpriteEmissive,
-                        @Nullable ResourceLocation damagedActiveSpriteEmissive) {
+    public HPCAOverlay(@Nullable ResourceLocation normalSprite,
+                       @Nullable ResourceLocation activeSprite,
+                       @Nullable ResourceLocation damagedSprite,
+                       @Nullable ResourceLocation damagedActiveSprite,
+                       @Nullable ResourceLocation normalSpriteEmissive,
+                       @Nullable ResourceLocation activeSpriteEmissive,
+                       @Nullable ResourceLocation damagedSpriteEmissive,
+                       @Nullable ResourceLocation damagedActiveSpriteEmissive) {
         textures.put(Status.IDLE, normalSprite);
         emissiveTextures.put(Status.IDLE, normalSpriteEmissive);
 
@@ -73,7 +76,7 @@ public class HPCAOverlays {
         emissiveTextures.put(Status.SUSPEND, damagedSpriteEmissive);
     }
 
-    private HPCAOverlays() {}
+    private HPCAOverlay() {}
 
     private static Status getStatus(boolean active, boolean damaged) {
         if (damaged && active) return Status.WAITING;

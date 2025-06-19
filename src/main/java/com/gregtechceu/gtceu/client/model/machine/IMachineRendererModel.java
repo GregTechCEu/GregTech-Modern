@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> extends IBlock
                 int packedLight, int packedOverlay);
 
     default void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
-                      PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {}
+                              PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {}
 
     default boolean shouldRenderOffScreen(T machine) {
         return false;
@@ -96,5 +98,4 @@ public interface IMachineRendererModel<T extends IMachineFeature> extends IBlock
     }
 
     // endregion
-
 }

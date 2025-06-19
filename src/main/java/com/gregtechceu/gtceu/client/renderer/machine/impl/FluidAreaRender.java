@@ -8,9 +8,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,19 +19,22 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class RecipeFluidRender extends DynamicRender<IFluidRenderMulti, RecipeFluidRender> {
+public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaRender> {
 
     // spotless:off
     @SuppressWarnings("deprecation")
-    public static final Codec<RecipeFluidRender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            FluidBlockRenderer.CODEC.forGetter(RecipeFluidRender::getFluidBlockRenderer),
-            BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("fixed_fluid").forGetter(RecipeFluidRender::getFixedFluid)
-    ).apply(instance, RecipeFluidRender::new));
-    public static final DynamicRenderType<IFluidRenderMulti, RecipeFluidRender> TYPE = new DynamicRenderType<>(RecipeFluidRender.CODEC);
+    public static final Codec<FluidAreaRender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            FluidBlockRenderer.CODEC.forGetter(FluidAreaRender::getFluidBlockRenderer),
+            BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("fixed_fluid").forGetter(FluidAreaRender::getFixedFluid)
+    ).apply(instance, FluidAreaRender::new));
+    public static final DynamicRenderType<IFluidRenderMulti, FluidAreaRender> TYPE = new DynamicRenderType<>(FluidAreaRender.CODEC);
     // spotless:on
 
     @Getter
@@ -44,7 +44,7 @@ public class RecipeFluidRender extends DynamicRender<IFluidRenderMulti, RecipeFl
     private @Nullable ResourceLocation cachedRecipe;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public RecipeFluidRender(FluidBlockRenderer fluidBlockRenderer, Optional<Fluid> fixedFluid) {
+    public FluidAreaRender(FluidBlockRenderer fluidBlockRenderer, Optional<Fluid> fixedFluid) {
         this.fluidBlockRenderer = fluidBlockRenderer;
         if (fixedFluid.isPresent()) {
             this.fixedFluid = true;
@@ -54,22 +54,22 @@ public class RecipeFluidRender extends DynamicRender<IFluidRenderMulti, RecipeFl
         }
     }
 
-    public static RecipeFluidRender createLargeMachineRender() {
-        return new RecipeFluidRender(FluidBlockRenderer.Builder.create()
+    public static FluidAreaRender createLargeMachineRender() {
+        return new FluidAreaRender(FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
                 .setForcedLight(LightTexture.FULL_BRIGHT)
                 .getRenderer(), Optional.empty());
     }
 
-    public static RecipeFluidRender createPBFLavaRender() {
-        return new RecipeFluidRender(FluidBlockRenderer.Builder.create()
+    public static FluidAreaRender createPBFLavaRender() {
+        return new FluidAreaRender(FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
                 .setForcedLight(LightTexture.FULL_BRIGHT)
                 .getRenderer(), Optional.of(Fluids.LAVA.getSource()));
     }
 
     @Override
-    public DynamicRenderType<IFluidRenderMulti, RecipeFluidRender> getType() {
+    public DynamicRenderType<IFluidRenderMulti, FluidAreaRender> getType() {
         return TYPE;
     }
 

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
-import com.mojang.serialization.Codec;
+
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 
 public record DynamicRenderType<T extends IMachineFeature, S extends DynamicRender<T, S>>(Codec<S> codec)
@@ -16,5 +18,4 @@ public record DynamicRenderType<T extends IMachineFeature, S extends DynamicRend
     public int compareTo(@NotNull DynamicRenderType<T, S> o) {
         return this.getId().compareTo(o.getId());
     }
-
 }
