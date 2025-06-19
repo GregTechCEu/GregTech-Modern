@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
@@ -142,7 +143,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(GTMachineModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
-        event.register(GTMachineModels.TEXTURE_OVERRIDE_MODEL_LOADER.getPath(), TextureOverrideModel.Loader.INSTANCE);
+        event.register("texture_override", TextureOverrideModel.Loader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
     }
 }
