@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
@@ -15,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,34 +20,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote IMachineRenderer
- */
 public interface ICoverableRenderer {
-
-    @OnlyIn(Dist.CLIENT)
-    default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side,
-                                        RandomSource rand) {
-        var blockEntity = level == null ? null : level.getBlockEntity(pos);
-        if (blockEntity != null) {
-            var coverable = GTCapabilityHelper.getCoverable(blockEntity.getLevel(), blockEntity.getBlockPos(), null);
-            if (coverable != null) {
-                var quads = new LinkedList<BakedQuad>();
-                var modelState = ModelFactory.getRotation(coverable.getFrontFacing());
-                Direction elementSide = side == null ? null :
-                        RelativeDirection.findRelativeOf(coverable.getFrontFacing(), side).global;
-                renderCovers(quads, side, rand, coverable, elementSide, pos, level, modelState);
-                return quads;
-            }
-        }
-        return Collections.emptyList();
-    }
 
     @OnlyIn(Dist.CLIENT)
     default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,

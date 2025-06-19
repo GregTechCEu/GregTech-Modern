@@ -226,7 +226,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
-        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
+        modelProperty(IMultiPart.HAS_CONTROLLER_PROPERTY, false);
         return model(createOverlayTieredHullMachineModel(overlayModel));
     }
 
@@ -235,7 +235,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
-        modelProperty(IMultiPart.IS_FORMED_PROPERTY, false);
+        modelProperty(IMultiPart.HAS_CONTROLLER_PROPERTY, false);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
@@ -249,21 +249,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return model(createSimpleGeneratorModel(workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
-                                                             String workableModel) {
+    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, String workableModel) {
         return workableSteamHullModel(isHighPressure, new ResourceLocation(registrate.getModid(), "block/machines/" + name));
     }
 
-    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure,
-                                                             ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing,
-                                                          ResourceLocation workableModel) {
+    public MachineBuilder<DEFINITION> overlayCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+        return model(createOverlayCasingMachineModel(baseCasing, workableModel));
+    }
+
+    public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
+    }
+
+    public MachineBuilder<DEFINITION> sidedOverlayCasingModel(ResourceLocation baseCasing,
+                                                              ResourceLocation workableModel) {
+        return model(createSidedOverlayCasingMachineModel(baseCasing, workableModel));
     }
 
     public MachineBuilder<DEFINITION> sidedWorkableCasingModel(ResourceLocation baseCasing,

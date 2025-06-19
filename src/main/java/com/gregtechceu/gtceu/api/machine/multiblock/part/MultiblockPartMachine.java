@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
@@ -77,6 +78,10 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
                 controllers.add(controller);
             }
+        }
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(HAS_CONTROLLER_PROPERTY)) {
+            setRenderState(renderState.setValue(HAS_CONTROLLER_PROPERTY, !controllers.isEmpty()));
         }
     }
 

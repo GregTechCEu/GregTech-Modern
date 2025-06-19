@@ -908,7 +908,7 @@ public class GTMachines {
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
-            .renderer(PumpHatchPartModel::new)
+            .sidedOverlayCasingModel(GTCEu.id("block/casings/pump_deck"), GTCEu.id("block/machine/part/pump_hatch"))
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE
@@ -1062,7 +1062,7 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
-                    .modelProperty(RotorHolderPartMachine.IS_FORMED_PROPERTY, false)
+                    .modelProperty(RotorHolderPartMachine.HAS_CONTROLLER_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
                     .model(createRotorHolderModel())

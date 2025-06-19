@@ -41,6 +41,7 @@ import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverla
 
 public class GTMachineModels {
 
+    // spotless:off
     public static final ResourceLocation MACHINE_MODEL_LOADER = GTCEu.id("machine");
     public static final ResourceLocation TEXTURE_OVERRIDE_MODEL_LOADER = GTCEu.id("texture_override");
     
@@ -48,13 +49,17 @@ public class GTMachineModels {
     public static final String OVERLAY_PREFIX = "overlay_";
     public static final String EMISSIVE_POSTFIX = "_emissive";
 
+    public static final ResourceLocation HULL_MODEL = GTCEu.id("block/machine/template/hull_machine");
+    public static final ResourceLocation SIDED_OVERLAY_MODEL = GTCEu.id("block/machine/template/sided_overlay_machine");
+    public static final ResourceLocation ALL_OVERLAY_MODEL = GTCEu.id("block/machine/template/all_overlay_machine");
+    // spotless:on
+
     // region generic models
 
     public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(state -> {
-                return prov.models().getExistingFile(baseModel);
-            });
+            var model = prov.models().getExistingFile(baseModel);
+            builder.forAllStates(state -> model);
         };
     }
 
@@ -69,19 +74,17 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModelName) {
+    public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_machine");
-            
+            var baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(HULL_MODEL));
+            hullTextures(baseModel, builder.getOwner().getTier());
+
             var model = prov.models().nested()
                     .customLoader(CompositeModelBuilder::begin)
-                    .child("base", hullTextures(
-                            prov.models().nested()
-                                    .parent(prov.models().getExistingFile(parentModel)),
-                            builder.getOwner().getTier())
-                    )
+                    .child("base", baseModel)
                     .child("overlay", prov.models().nested()
-                            .parent(prov.models().getExistingFile(overlayModelName)))
+                            .parent(prov.models().getExistingFile(overlayModel)))
                     .end();
             builder.forAllStates(state -> model);
         };
@@ -90,14 +93,13 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 hullTextures(model, builder.getOwner().getTier());
 
                 for (var entry : overlays.getTextures().entrySet()) {
@@ -131,18 +133,20 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModelName) {
+    public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_machine");
+            var baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(HULL_MODEL));
+            steamHullTextures(baseModel);
 
             var model = prov.models().nested()
                     .customLoader(CompositeModelBuilder::begin)
                     .child("base", steamHullTextures(
                             prov.models().nested()
-                                    .parent(prov.models().getExistingFile(parentModel)))
+                                    .parent(prov.models().getExistingFile(HULL_MODEL)))
                     )
                     .child("overlay", prov.models().nested()
-                            .parent(prov.models().getExistingFile(overlayModelName)))
+                            .parent(prov.models().getExistingFile(overlayModel)))
                     .end();
             builder.forAllStates(state -> model);
         };
@@ -154,14 +158,13 @@ public class GTMachineModels {
     // spotless:off
     public static MachineBuilder.ModelConstructor createWorkableSteamHullMachineModel(boolean highPressure, ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 steamHullTextures(model, highPressure);
 
                 for (var entry : overlays.getTextures().entrySet()) {
@@ -195,18 +198,33 @@ public class GTMachineModels {
         };
     }
     // spotless:on
+    public static MachineBuilder.ModelConstructor createOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
+                                                                                  ResourceLocation overlayModel) {
+        return (ctx, prov, builder) -> {
+            BlockModelBuilder baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL))
+                    .texture("all", baseCasingTexture);
+
+            var model = prov.models().nested()
+                    .customLoader(CompositeModelBuilder::begin)
+                    .child("base", baseModel)
+                    .child("overlay", prov.models().nested()
+                            .parent(prov.models().getExistingFile(overlayModel)))
+                    .end();
+            builder.forAllStates(state -> model);
+        };
+    }
 
     public static MachineBuilder.ModelConstructor createWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                    ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel))
+                        .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL))
                         .texture("all", baseCasingTexture);
 
                 for (var entry : overlays.getTextures().entrySet()) {
@@ -230,21 +248,38 @@ public class GTMachineModels {
     }
 
     // spotless:off
+    public static MachineBuilder.ModelConstructor createSidedOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
+                                                                                       ResourceLocation overlayModel) {
+        return (ctx, prov, builder) -> {
+            BlockModelBuilder baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(HULL_MODEL))
+                    .texture("bottom", baseCasingTexture.withSuffix("/bottom"))
+                    .texture("top", baseCasingTexture.withSuffix("/top"))
+                    .texture("side", baseCasingTexture.withSuffix("/side"));
+
+            var model = prov.models().nested()
+                    .customLoader(CompositeModelBuilder::begin)
+                    .child("base", baseModel)
+                    .child("overlay", prov.models().nested()
+                            .parent(prov.models().getExistingFile(overlayModel)))
+                    .end();
+            builder.forAllStates(state -> model);
+        };
+    }
+
     public static MachineBuilder.ModelConstructor createSidedWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                         ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/casing_overlay_machine");
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel))
+                        .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL))
                         .texture("bottom", baseCasingTexture.withSuffix("/bottom"))
                         .texture("top", baseCasingTexture.withSuffix("/top"))
                         .texture("side", baseCasingTexture.withSuffix("/side"));
-                hullTextures(model, builder.getOwner().getTier());
 
                 for (var entry : overlays.getTextures().entrySet()) {
                     var face = entry.getKey();
@@ -308,6 +343,7 @@ public class GTMachineModels {
         hullTexture(model, "side", tier);
         return model;
     }
+
     public static ResourceLocation getSteamHullTexture(String variant) {
         return GTCEu.id("block/casings/steam/%s/".formatted(variant));
     }
@@ -344,14 +380,13 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createSimpleGeneratorModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 hullTextures(model, builder.getOwner().getTier());
 
                 for (var entry : overlays.getTextures().entrySet()) {
@@ -408,13 +443,11 @@ public class GTMachineModels {
     
     public static MachineBuilder.ModelConstructor createChargerModel() {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
-
             builder.forAllStates(renderState -> {
                 ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 hullTextures(model, builder.getOwner().getTier());
 
                 switch (state) {
@@ -471,20 +504,20 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createCrateModel(boolean wooden) {
         return (ctx, prov, builder) -> {
-            ResourceLocation baseModelName = wooden ?
+            ResourceLocation baseModel = wooden ?
                     GTCEu.id("block/cube/all") :
                     GTCEu.id("block/cube/tinted/all");
-            ResourceLocation layerModelName = wooden ?
+            ResourceLocation layerModel = wooden ?
                     GTCEu.id("block/cube_2_layer/all") :
                     GTCEu.id("block/cube_2_layer/tinted_bot/all");
 
             var baseTextureName = GTCEu.id("block/storage/crates/" + (wooden ? "wooden" : "metal") + "_crate");
 
             ModelFile untaped = prov.models().nested()
-                    .parent(prov.models().getExistingFile(baseModelName))
+                    .parent(prov.models().getExistingFile(baseModel))
                     .texture("all", baseTextureName);
             ModelFile taped = prov.models().nested()
-                    .parent(prov.models().getExistingFile(layerModelName))
+                    .parent(prov.models().getExistingFile(layerModel))
                     .texture("bot_all", baseTextureName)
                     .texture("top_all", GTCEu.id("block/overlay/machine/overlay_crate_taped"));
 
@@ -558,8 +591,7 @@ public class GTMachineModels {
                                 builder.getOwner().getTier())
                         );
 
-                boolean isFormed = state.getValue(RotorHolderPartMachine.IS_FORMED_PROPERTY);
-                if (!isFormed) {
+                if (!state.getValue(RotorHolderPartMachine.HAS_CONTROLLER_PROPERTY)) {
                     return model.end();
                 }
                 BlockModelBuilder rotorModel = prov.models().nested()
@@ -574,10 +606,10 @@ public class GTMachineModels {
                         .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#base").end()
                         .end();
                 model.child("rotor", rotorModel);
-
                 if (!state.getValue(RotorHolderPartMachine.HAS_ROTOR_PROPERTY)) {
                     return model.end();
                 }
+
                 boolean spinning = state.getValue(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY);
                 rotorModel.texture("rotor", spinning ? ROTOR_HOLDER_SPINNING : ROTOR_HOLDER_IDLE)
                         .element()
@@ -613,7 +645,6 @@ public class GTMachineModels {
     // spotless:off
     public static MachineBuilder.ModelConstructor createWorldAcceleratorModel(ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
         return (ctx, prov, builder) -> {
-            final ResourceLocation parentModel = GTCEu.id("block/machine/template/hull_overlay_machine");
             WorkableOverlays rtOverlays = WorkableOverlays.get(rtModeModelPath, prov.getExistingFileHelper());
             WorkableOverlays beOverlays = WorkableOverlays.get(beModeModelPath, prov.getExistingFileHelper());
 
@@ -630,7 +661,7 @@ public class GTMachineModels {
                         RecipeLogic.Status.IDLE;
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(parentModel));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 hullTextures(model, builder.getOwner().getTier());
 
                 for (var entry : overlays.getTextures().entrySet()) {

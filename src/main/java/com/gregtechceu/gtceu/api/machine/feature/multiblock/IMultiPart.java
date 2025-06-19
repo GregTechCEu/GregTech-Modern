@@ -22,7 +22,7 @@ import java.util.SortedSet;
 
 public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
-    BooleanProperty IS_FORMED_PROPERTY = BooleanProperty.create("is_formed");
+    BooleanProperty HAS_CONTROLLER_PROPERTY = BooleanProperty.create("has_controller");
 
     /**
      * Can it be shared among multi multiblock.
