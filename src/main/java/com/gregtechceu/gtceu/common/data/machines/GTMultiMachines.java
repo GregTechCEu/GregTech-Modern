@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.model.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -44,6 +43,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -777,9 +777,23 @@ public class GTMultiMachines {
                             .where('#', any())
                             .build())
                     .allowExtendedFacing(true)
-                    .renderer(() -> new LargeMinerModel(
-                            MATERIALS_TO_CASING_MODELS.get(LargeMinerMachine.getMaterial(tier)),
-                            GTCEu.id("block/multiblock/large_miner")))
+                    .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+                    .modelProperty(LargeMinerMachine.IS_FORMED_PROPERTY, false)
+                    .model(createWorkableCasingMachineModel(MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
+                            GTCEu.id("block/multiblock/large_miner"))
+                            .andThen((ctx, prov, modelBuilder) -> {
+                                // replace the parent model for the formed large miner
+                                modelBuilder.replaceForAllStates((state, model) -> {
+                                    if (!state.getValue(LargeMinerMachine.IS_FORMED_PROPERTY)) return model;
+
+                                    var parentModel = prov.models()
+                                            .getExistingFile(GTCEu.id("block/machine/large_miner_active"));
+
+                                    assert model != null;
+                                    ((BlockModelBuilder) model).parent(parentModel);
+                                    return model;
+                                });
+                            }))
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
