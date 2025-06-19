@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.core.Direction;
@@ -129,7 +130,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
             sidesToRender.add(gas ? Direction.DOWN : Direction.UP);
         }
         RenderBufferHelper.renderCube(builder, poseStack.last(), sidesToRender,
-                ext.getTintColor(fluid) | 0xff000000, 0xf000f0, fluidSprite,
+                ext.getTintColor(fluid) | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
                 MIN, minY, minZ, MAX, maxY, maxZ);
 
         drawAmountText(poseStack, buffer, frontFacing, storedAmount, isCreative);
