@@ -922,7 +922,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
-            .renderer(() -> new MaintenanceHatchPartModel(1, GTCEu.id("block/machine/part/maintenance")))
+            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance")))
             .register();
 
     public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE
@@ -931,8 +932,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
-            .renderer(
-                    () -> new MaintenanceHatchPartModel(3, GTCEu.id("block/machine/part/maintenance.configurable")))
+            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.configurable")))
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE
@@ -947,7 +948,8 @@ public class GTMachines {
                 tooltips.add(Component.literal("  ").append(Component
                         .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
             })
-            .renderer(() -> new MaintenanceHatchPartModel(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
+            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.cleaning")))
             .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE
@@ -955,7 +957,8 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
-            .renderer(() -> new MaintenanceHatchPartModel(3, GTCEu.id("block/machine/part/maintenance.full_auto")))
+            .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.full_auto")))
             .register();
 
     public static final MachineDefinition[] ITEM_PASSTHROUGH_HATCH = registerTieredMachines("item_passthrough_hatch",

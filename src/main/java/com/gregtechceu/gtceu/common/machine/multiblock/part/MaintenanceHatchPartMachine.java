@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -60,6 +61,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
@@ -72,6 +74,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Setter
     @Persisted
     @DescSynced
+    @UpdateListener(methodName = "onTapedUpdated")
     @RequireRerender
     private boolean isTaped;
     @Getter
@@ -132,6 +135,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         if (!isRemote()) {
             updateMaintenanceSubscription();
         }
+    }
+
+    @SuppressWarnings("unused")
+    public void onTapedUpdated(boolean newTaped, boolean oldTaped) {
+        setRenderState(getRenderState().setValue(MAINTENANCE_TAPED_PROPERTY, newTaped));
     }
 
     protected void updateMaintenanceSubscription() {

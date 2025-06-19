@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
@@ -718,7 +719,31 @@ public class GTMachineModels {
             });
         };
     }
+
+    private static final ResourceLocation MAINTENANCE_TAPED_OVERLAY = GTCEu.id("block/overlay/machine/overlay_maintenance_taped");
     // spotless:on
+
+    public static MachineBuilder.ModelConstructor createMaintenanceModel(ResourceLocation overlayModel) {
+        return (ctx, prov, builder) -> {
+            var baseModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(HULL_MODEL));
+            hullTextures(baseModel, builder.getOwner().getTier());
+
+            builder.forAllStates(state -> {
+                boolean isTaped = state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY);
+                var model = prov.models().nested()
+                        .customLoader(CompositeModelBuilder::begin)
+                        .child("base", baseModel)
+                        .child("overlay", prov.models().nested()
+                                .parent(prov.models().getExistingFile(overlayModel)))
+                        .child("tape", prov.models().nested()
+                                .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front")))
+                                .texture("overlay", isTaped ? MAINTENANCE_TAPED_OVERLAY : BLANK_TEXTURE))
+                        .end();
+                return model;
+            });
+        };
+    }
 
     // endregion
 }
