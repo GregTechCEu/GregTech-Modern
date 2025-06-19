@@ -8,11 +8,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.BooleanSupplier;
 
-/**
- * @author KilaBash
- * @date 2023/3/22
- * @implNote AutoReleasedSound
- */
 @OnlyIn(Dist.CLIENT)
 public class AutoReleasedSound extends AbstractTickableSoundInstance {
 

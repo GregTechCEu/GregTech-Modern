@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -20,7 +19,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +45,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+        ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) {
             if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
                 int[] posArray = stack.getOrCreateTag().getIntArray("pos");
@@ -58,7 +56,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                         Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
             }
         } else {
-            Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+            Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.assemblyline.title"));
                 Collection<ItemStack> added = new ObjectOpenHashSet<>();

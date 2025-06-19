@@ -17,11 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote TieredIOPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TieredIOPartMachine extends TieredPartMachine implements IControllable {

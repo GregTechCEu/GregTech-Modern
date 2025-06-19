@@ -214,13 +214,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        var match = RecipeHelper.matchRecipe(machine, recipe);
-        if (!match.isSuccess()) return match;
-
-        var matchTick = RecipeHelper.matchTickRecipe(machine, recipe);
-        if (!matchTick.isSuccess()) return matchTick;
-
-        return ActionResult.SUCCESS;
+        return RecipeHelper.matchContents(machine, recipe);
     }
 
     protected ActionResult checkRecipe(GTRecipe recipe) {

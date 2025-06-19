@@ -29,8 +29,10 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -38,6 +40,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.biome.Biome;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -356,7 +359,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputItemsRanged(Ingredient ingredient, int min, int max) {
-            return output(ItemRecipeCapability.CAP, new IntProviderIngredient(ingredient, UniformInt.of(min, max)));
+            return output(ItemRecipeCapability.CAP, IntProviderIngredient.of(ingredient, UniformInt.of(min, max)));
         }
 
         public GTRecipeJS outputItemsRanged(ItemStack stack, int min, int max) {
@@ -777,10 +780,18 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS biome(ResourceLocation biome, boolean reverse) {
-            return addCondition(new BiomeCondition(biome).setReverse(reverse));
+            return biome(ResourceKey.create(Registries.BIOME, biome), reverse);
         }
 
         public GTRecipeJS biome(ResourceLocation biome) {
+            return biome(biome, false);
+        }
+
+        public GTRecipeJS biome(ResourceKey<Biome> biome, boolean reverse) {
+            return addCondition(new BiomeCondition(biome).setReverse(reverse));
+        }
+
+        public GTRecipeJS biome(ResourceKey<Biome> biome) {
             return biome(biome, false);
         }
 
@@ -1062,7 +1073,7 @@ public interface GTRecipeSchema {
     RecipeKey<Long> DURATION = TimeComponent.TICKS.key("duration").optional(100L);
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
     RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
-            .defaultOptional();
+            .optional(new RecipeCondition[0]);
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 
     RecipeKey<CapabilityMap> ALL_INPUTS = GTRecipeComponents.IN.key("inputs").defaultOptional();

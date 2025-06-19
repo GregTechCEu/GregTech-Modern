@@ -25,11 +25,6 @@ import com.google.gson.JsonObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/28
- * @implNote FacadeCoverRecipe
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FacadeCoverRecipe implements CraftingRecipe {

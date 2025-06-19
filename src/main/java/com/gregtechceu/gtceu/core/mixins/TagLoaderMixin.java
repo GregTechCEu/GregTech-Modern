@@ -19,28 +19,21 @@ import java.util.List;
 import java.util.Map;
 
 @Mixin(value = TagLoader.class, priority = 500)
-public class TagLoaderMixin<T> implements IGTTagLoader<T> {
+public class TagLoaderMixin implements IGTTagLoader {
 
     @Nullable
     @Unique
-    private Registry<T> gtceu$storedRegistry;
+    private Registry<?> gtceu$storedRegistry;
 
     @Inject(method = "load", at = @At(value = "RETURN"))
     public void gtceu$load(ResourceManager resourceManager,
                            CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> cir) {
-        var tagMap = cir.getReturnValue();
-        if (gtceu$getRegistry() == null) return;
-        MixinHelpers.generateGTDynamicTags(tagMap, gtceu$getRegistry());
+        if (gtceu$storedRegistry == null) return;
+        MixinHelpers.generateGTDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
     }
 
     @Override
-    @Nullable
-    public Registry<T> gtceu$getRegistry() {
-        return gtceu$storedRegistry;
-    }
-
-    @Override
-    public void gtceu$setRegistry(Registry<T> registry) {
+    public void gtceu$setRegistry(Registry<?> registry) {
         this.gtceu$storedRegistry = registry;
     }
 }

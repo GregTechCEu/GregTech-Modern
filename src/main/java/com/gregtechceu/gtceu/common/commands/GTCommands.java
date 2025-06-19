@@ -48,11 +48,6 @@ import java.util.*;
 
 import static net.minecraft.commands.Commands.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/9
- * @implNote GTCommands
- */
 public class GTCommands {
 
     public static final SuggestionProvider<CommandSourceStack> OWNED_CAPES = (ctx, builder) -> {

@@ -29,11 +29,6 @@ import java.util.Collections;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SteamLiquidBoilerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamLiquidBoilerMachine extends SteamBoilerMachine {

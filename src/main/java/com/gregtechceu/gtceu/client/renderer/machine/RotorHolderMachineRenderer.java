@@ -24,13 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/7/10
- * @implNote RotorHolderMachineRenderer
- */
 public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
 
+    public static final AABB ROTOR_TEXTURE_SHAPE = new AABB(-1, -1, -0.01, 2, 2, 1.01);
     public static final ResourceLocation ROTOR_HOLDER_OVERLAY = GTCEu.id("block/overlay/machine/overlay_rotor_holder");
     public static final ResourceLocation BASE_RING = GTCEu.id("block/multiblock/large_turbine/base_ring");
     public static final ResourceLocation BASE_BG = GTCEu.id("block/multiblock/large_turbine/base_bg");
@@ -47,31 +43,26 @@ public class RotorHolderMachineRenderer extends TieredHullMachineRenderer {
                               Direction frontFacing, @Nullable Direction side, RandomSource rand,
                               @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        if (side == frontFacing && modelFacing != null) {
-            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY),
-                    modelState));
-            if (machine instanceof IRotorHolderMachine rotorHolderMachine) {
-                var aabb = new AABB(-1, -1, -0.01, 2, 2, 1.01);
-                if (rotorHolderMachine.isFormed()) {
-                    quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_RING),
-                            modelState, -101, 0, true, false));
-                    quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
-                            modelState, -101, 0, true, false));
-                    var material = rotorHolderMachine.getRotorMaterial();
-                    if (!material.isNull()) {
-                        boolean emissive = material.hasProperty(PropertyKey.ORE) &&
-                                material.getProperty(PropertyKey.ORE).isEmissive();
-                        if (rotorHolderMachine.isRotorSpinning()) {
-                            quads.add(
-                                    StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(SPINNING),
-                                            modelState, 2, emissive ? 12 : 5, true, true));
-                        } else {
-                            quads.add(StaticFaceBakery.bakeFace(aabb, modelFacing, ModelFactory.getBlockSprite(IDLE),
-                                    modelState, 2, emissive ? 12 : 5, true, true));
-                        }
-                    }
-                }
+        if (side != frontFacing || modelFacing == null) {
+            return;
+        }
+        quads.add(
+                StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(ROTOR_HOLDER_OVERLAY), modelState));
+        if (machine instanceof IRotorHolderMachine rotorHolderMachine && rotorHolderMachine.isFormed()) {
+            quads.add(StaticFaceBakery.bakeFace(ROTOR_TEXTURE_SHAPE, modelFacing,
+                    ModelFactory.getBlockSprite(BASE_RING), modelState, -101, 0, true, false));
+            quads.add(StaticFaceBakery.bakeFace(ROTOR_TEXTURE_SHAPE, modelFacing, ModelFactory.getBlockSprite(BASE_BG),
+                    modelState, -101, 0, true, false));
+            var material = rotorHolderMachine.getRotorMaterial();
+            if (material.isNull()) {
+                return;
             }
+            quads.add(StaticFaceBakery.bakeFace(ROTOR_TEXTURE_SHAPE, modelFacing,
+                    ModelFactory.getBlockSprite(rotorHolderMachine.isRotorSpinning() ? SPINNING : IDLE),
+                    modelState, 2,
+                    material.hasProperty(PropertyKey.ORE) && material.getProperty(PropertyKey.ORE).isEmissive() ? 12 :
+                            5,
+                    true, true));
         }
     }
 

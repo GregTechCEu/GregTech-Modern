@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collection;
-import java.util.Objects;
 
 public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFilter {
 
@@ -85,7 +85,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
 
     @Override
     public int hashCode() {
-        return Objects.hash(maxFluidTemperature, throughput, gasProof, channels);
+        return GTMath.hashInts(maxFluidTemperature, throughput, Boolean.hashCode(gasProof), channels);
     }
 
     @Override

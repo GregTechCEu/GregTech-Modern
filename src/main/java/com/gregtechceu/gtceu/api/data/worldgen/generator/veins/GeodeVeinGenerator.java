@@ -38,21 +38,18 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.material.FluidState;
 
-import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Accessors(chain = true, fluent = true)
@@ -117,19 +114,19 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+    public List<VeinEntry> getAllEntries() {
         RandomSource source = new LegacyRandomSource(0);
         return List.of(
-                Map.entry(geodeBlockSettings.fillingProvider
-                        .mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
-                Map.entry(geodeBlockSettings.innerLayerProvider
-                        .mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
-                Map.entry(geodeBlockSettings.alternateInnerLayerProvider
-                        .mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
-                Map.entry(geodeBlockSettings.middleLayerProvider
-                        .mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1),
-                Map.entry(geodeBlockSettings.outerLayerProvider
-                        .mapBoth(provider -> provider.getState(source, BlockPos.ZERO), Function.identity()), 1));
+                new VeinEntry(geodeBlockSettings.fillingProvider
+                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                new VeinEntry(geodeBlockSettings.innerLayerProvider
+                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                new VeinEntry(geodeBlockSettings.alternateInnerLayerProvider
+                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                new VeinEntry(geodeBlockSettings.middleLayerProvider
+                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1),
+                new VeinEntry(geodeBlockSettings.outerLayerProvider
+                        .mapLeft(provider -> provider.getState(source, BlockPos.ZERO)), 1));
     }
 
     @Override
@@ -145,11 +142,11 @@ public class GeodeVeinGenerator extends VeinGenerator {
         int offset2;
         int minOffset = this.minGenOffset;
         int maxOffset = this.maxGenOffset;
-        LinkedList<Pair<BlockPos, Integer>> points = Lists.newLinkedList();
         int distributionSample = this.distributionPoints.sample(random);
+        List<ObjectIntPair<BlockPos>> points = new ArrayList<>(distributionSample);
         WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(level.getSeed()));
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -4, 1.0);
-        LinkedList<BlockPos> list2 = Lists.newLinkedList();
+        List<BlockPos> list2 = new ArrayList<>(3);
         double wallDistance = (double) distributionSample / (double) this.outerWallDistance.getMaxValue();
         double fillingSize = 1.0 / Math.sqrt(geodeLayerSettings.filling);
         double innerSize = 1.0 / Math.sqrt(geodeLayerSettings.innerLayer + wallDistance);
@@ -168,7 +165,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                     ++invalidBlocksCount > this.invalidBlocksThreshold) {
                 return Map.of();
             }
-            points.add(Pair.of(origin2, this.pointOffset.sample(random)));
+            points.add(ObjectIntPair.of(origin2, this.pointOffset.sample(random)));
         }
         if (doCrack) {
             offset2 = random.nextInt(4);
@@ -191,7 +188,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                 list2.add(origin.offset(0, 1, 0));
             }
         }
-        ArrayList<BlockPos> positions = Lists.newArrayList();
+        List<BlockPos> positions = new ArrayList<>();
         Predicate<BlockState> placementPredicate = GeodeFeature.isReplaceable(this.geodeBlockSettings.cannotReplace);
         for (BlockPos pos : BlockPos.betweenClosed(origin.offset(minOffset, minOffset, minOffset),
                 origin.offset(maxOffset, maxOffset, maxOffset))) {
@@ -199,10 +196,10 @@ public class GeodeVeinGenerator extends VeinGenerator {
             double s = 0.0;
             double t = 0.0;
             for (var pair : points) {
-                s += Mth.fastInvSqrt(pos.distSqr(pair.getFirst()) + (double) pair.getSecond()) + noiseValue;
+                s += Mth.invSqrt(pos.distSqr(pair.first()) + (double) pair.secondInt()) + noiseValue;
             }
             for (BlockPos origin4 : list2) {
-                t += Mth.fastInvSqrt(pos.distSqr(origin4) + (double) geodeCrackSettings.crackPointOffset) + noiseValue;
+                t += Mth.invSqrt(pos.distSqr(origin4) + (double) geodeCrackSettings.crackPointOffset) + noiseValue;
             }
             if (s < outerSize) continue;
             if (!level.ensureCanWrite(pos))

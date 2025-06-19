@@ -30,11 +30,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * @author KilaBash
- * @date 2022/8/27
- * @implNote ForgeCommonEventListener
- */
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class ForgeClientEventListener {

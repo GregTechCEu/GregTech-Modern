@@ -54,8 +54,10 @@ public interface IArmorLogic {
         return false;
     }
 
-    default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                             EquipmentSlot equipmentSlot) {}
+    default int damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                            EquipmentSlot equipmentSlot) {
+        return 0;
+    }
 
     default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return ImmutableMultimap.of();

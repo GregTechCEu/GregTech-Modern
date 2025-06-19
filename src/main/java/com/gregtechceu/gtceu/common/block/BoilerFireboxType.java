@@ -6,11 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2023/3/9
- * @implNote BoilerFireBoxCasingBlock
- */
 public record BoilerFireboxType(String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
 
     public static BoilerFireboxType BRONZE_FIREBOX = new BoilerFireboxType("bronze_firebox",

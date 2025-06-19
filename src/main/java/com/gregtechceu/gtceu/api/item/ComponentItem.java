@@ -50,11 +50,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ComponentItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item

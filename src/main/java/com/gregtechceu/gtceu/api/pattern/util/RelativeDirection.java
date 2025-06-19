@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Relative direction when facing horizontally
@@ -107,7 +108,7 @@ public enum RelativeDirection {
         };
     }
 
-    public Function<BlockPos, Integer> getSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
+    public ToIntFunction<BlockPos> getSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
         // get the direction to go in for the part sorter
         Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 

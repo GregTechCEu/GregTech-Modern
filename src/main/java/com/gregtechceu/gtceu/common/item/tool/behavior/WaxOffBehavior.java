@@ -73,9 +73,9 @@ public class WaxOffBehavior implements IToolBehavior {
         } else
             return InteractionResult.PASS;
 
-        boolean pathed = false;
+        boolean waxed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos,
+            waxed |= level.setBlock(blockPos,
                     getUnWaxed(level.getBlockState(blockPos),
                             new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))),
                     Block.UPDATE_ALL);
@@ -87,11 +87,10 @@ public class WaxOffBehavior implements IToolBehavior {
                 break;
         }
 
-        if (pathed) {
+        if (waxed) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF,
                     SoundSource.PLAYERS, 1.0F, 1.0F);
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
 
         return InteractionResult.PASS;

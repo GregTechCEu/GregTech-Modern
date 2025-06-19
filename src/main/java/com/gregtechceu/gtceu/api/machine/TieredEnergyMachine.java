@@ -21,11 +21,6 @@ import net.minecraft.util.Mth;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote TieredMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TieredEnergyMachine extends TieredMachine implements ITieredMachine, IExplosionMachine {

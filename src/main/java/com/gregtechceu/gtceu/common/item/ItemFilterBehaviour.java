@@ -15,11 +15,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilterBehaviour
- */
 public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator) implements IItemUIFactory {
 
     @Override
