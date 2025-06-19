@@ -48,10 +48,6 @@ import java.util.Locale;
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
-/*
- * TODO (end)
- *  - move GTMachineModels utility methods to the top of the file
- */
 public class GTMachineModels {
 
     // spotless:off
@@ -242,179 +238,6 @@ public class GTMachineModels {
                 return addWorkableOverlays(overlays, status, model);
             });
         };
-    }
-
-    // endregion
-
-    // region helper functions
-
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
-        return (ctx, prov) -> {
-            Block block = ctx.getEntry();
-            if (!(block instanceof IMachineBlock machineBlock)) {
-                throw new IllegalArgumentException(
-                        "passed block must be a machine block, is " + block.getClass().getName());
-            }
-            MachineDefinition definition = machineBlock.getDefinition();
-
-            MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
-                    .customLoader(MachineModelBuilder.begin(definition));
-            model.configureModel(ctx, prov, builder);
-
-            final ModelFile built = builder.end();
-            var generator = prov.multiVariantGenerator(block,
-                    Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
-            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
-            if (dispatch != null) {
-                generator.with(dispatch);
-            }
-        };
-    }
-    // spotless:on
-
-    public static BlockModelBuilder addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
-                                                        BlockModelBuilder model) {
-        for (var entry : overlays.getTextures().entrySet()) {
-            var face = entry.getKey();
-            var textures = entry.getValue();
-
-            ResourceLocation overlay = textures.getTexture(status);
-            ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
-
-            if (overlay != BLANK_TEXTURE) {
-                model.texture(OVERLAY_PREFIX + face.getName(), overlay);
-            }
-            if (overlayEmissive != BLANK_TEXTURE) {
-                model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
-            }
-        }
-        return model;
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              ResourceLocation baseModelName,
-                                                              ResourceLocation overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
-                                                              ResourceLocation baseModelName,
-                                                              ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(baseModelName));
-        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              BlockModelBuilder baseModel,
-                                                              ResourceLocation overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModel, overlayModel);
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
-                                                              BlockModelBuilder baseModel,
-                                                              ResourceLocation overlayModel) {
-        return makeOverlayCompositeModel(provider, baseModel,
-                provider.nested().parent(provider.getExistingFile(overlayModel)));
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              BlockModelBuilder baseModelName,
-                                                              BlockModelBuilder overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
-                                                              BlockModelBuilder baseModel,
-                                                              BlockModelBuilder overlayModel) {
-        return provider.nested()
-                .customLoader(CompositeModelBuilder::begin)
-                .child("base", baseModel)
-                .child("overlay", overlayModel)
-                .end();
-    }
-
-    public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                       ResourceLocation overlayModel) {
-        return makeSteamHullOverlayCompositeModel(provider.models(), overlayModel);
-    }
-
-    public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockModelProvider provider,
-                                                                       ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
-        steamHullTextures(baseModel);
-        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                        MachineModelBuilder<BlockModelBuilder> builder,
-                                                                        ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider, builder.getOwner(), overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                        MachineDefinition machine,
-                                                                        ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider, machine.getTier(), overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                        int tier, ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider.models(), tier, overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockModelProvider provider,
-                                                                        int tier, ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
-        tieredHullTextures(baseModel, tier);
-        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
-    }
-
-    public static ResourceLocation getTieredHullTexture(int tier) {
-        return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
-    }
-
-    public static void tieredHullTexture(BlockModelBuilder model, String key, int tier) {
-        model.texture(key, getTieredHullTexture(tier).withSuffix(key));
-    }
-
-    public static BlockModelBuilder tieredHullTextures(BlockModelBuilder model, int tier) {
-        tieredHullTexture(model, "bottom", tier);
-        tieredHullTexture(model, "top", tier);
-        tieredHullTexture(model, "side", tier);
-        return model;
-    }
-
-    public static ResourceLocation getSteamHullTexture(String variant) {
-        return GTCEu.id("block/casings/steam/%s/".formatted(variant));
-    }
-
-    public static void steamHullTexture(BlockModelBuilder model, String key, String variant) {
-        model.texture(key, getSteamHullTexture(variant).withSuffix(key));
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, String variant) {
-        steamHullTexture(model, "bottom", variant);
-        steamHullTexture(model, "top", variant);
-        steamHullTexture(model, "side", variant);
-        return model;
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model) {
-        return steamHullTextures(model, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze");
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, boolean highTier) {
-        return steamHullTextures(model, highTier ? "bricked_steel" : "bricked_bronze");
-    }
-
-    public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texture) {
-        model.texture("bottom", texture);
-        model.texture("top", texture);
-        model.texture("side", texture);
-        return model;
     }
 
     // endregion
@@ -745,6 +568,179 @@ public class GTMachineModels {
                 return makeOverlayCompositeModel(prov, baseModel, overlayModel);
             });
         };
+    }
+
+    // endregion
+
+    // region helper functions
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
+        return (ctx, prov) -> {
+            Block block = ctx.getEntry();
+            if (!(block instanceof IMachineBlock machineBlock)) {
+                throw new IllegalArgumentException(
+                        "passed block must be a machine block, is " + block.getClass().getName());
+            }
+            MachineDefinition definition = machineBlock.getDefinition();
+
+            MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
+                    .customLoader(MachineModelBuilder.begin(definition));
+            model.configureModel(ctx, prov, builder);
+
+            final ModelFile built = builder.end();
+            var generator = prov.multiVariantGenerator(block,
+                    Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
+            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
+            if (dispatch != null) {
+                generator.with(dispatch);
+            }
+        };
+    }
+    // spotless:on
+
+    public static BlockModelBuilder addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
+                                                        BlockModelBuilder model) {
+        for (var entry : overlays.getTextures().entrySet()) {
+            var face = entry.getKey();
+            var textures = entry.getValue();
+
+            ResourceLocation overlay = textures.getTexture(status);
+            ResourceLocation overlayEmissive = textures.getEmissiveTexture(status);
+
+            if (overlay != BLANK_TEXTURE) {
+                model.texture(OVERLAY_PREFIX + face.getName(), overlay);
+            }
+            if (overlayEmissive != BLANK_TEXTURE) {
+                model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_POSTFIX, overlayEmissive);
+            }
+        }
+        return model;
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
+                                                              ResourceLocation baseModelName,
+                                                              ResourceLocation overlayModel) {
+        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
+                                                              ResourceLocation baseModelName,
+                                                              ResourceLocation overlayModel) {
+        BlockModelBuilder baseModel = provider.nested()
+                .parent(provider.getExistingFile(baseModelName));
+        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
+                                                              BlockModelBuilder baseModel,
+                                                              ResourceLocation overlayModel) {
+        return makeOverlayCompositeModel(provider.models(), baseModel, overlayModel);
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
+                                                              BlockModelBuilder baseModel,
+                                                              ResourceLocation overlayModel) {
+        return makeOverlayCompositeModel(provider, baseModel,
+                provider.nested().parent(provider.getExistingFile(overlayModel)));
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
+                                                              BlockModelBuilder baseModelName,
+                                                              BlockModelBuilder overlayModel) {
+        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
+    }
+
+    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
+                                                              BlockModelBuilder baseModel,
+                                                              BlockModelBuilder overlayModel) {
+        return provider.nested()
+                .customLoader(CompositeModelBuilder::begin)
+                .child("base", baseModel)
+                .child("overlay", overlayModel)
+                .end();
+    }
+
+    public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockStateProvider provider,
+                                                                       ResourceLocation overlayModel) {
+        return makeSteamHullOverlayCompositeModel(provider.models(), overlayModel);
+    }
+
+    public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockModelProvider provider,
+                                                                       ResourceLocation overlayModel) {
+        BlockModelBuilder baseModel = provider.nested()
+                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
+        steamHullTextures(baseModel);
+        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
+    }
+
+    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
+                                                                        MachineModelBuilder<BlockModelBuilder> builder,
+                                                                        ResourceLocation overlayModel) {
+        return makeTieredHullOverlayCompositeModel(provider, builder.getOwner(), overlayModel);
+    }
+
+    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
+                                                                        MachineDefinition machine,
+                                                                        ResourceLocation overlayModel) {
+        return makeTieredHullOverlayCompositeModel(provider, machine.getTier(), overlayModel);
+    }
+
+    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
+                                                                        int tier, ResourceLocation overlayModel) {
+        return makeTieredHullOverlayCompositeModel(provider.models(), tier, overlayModel);
+    }
+
+    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockModelProvider provider,
+                                                                        int tier, ResourceLocation overlayModel) {
+        BlockModelBuilder baseModel = provider.nested()
+                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
+        tieredHullTextures(baseModel, tier);
+        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
+    }
+
+    public static ResourceLocation getTieredHullTexture(int tier) {
+        return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
+    }
+
+    public static void tieredHullTexture(BlockModelBuilder model, String key, int tier) {
+        model.texture(key, getTieredHullTexture(tier).withSuffix(key));
+    }
+
+    public static BlockModelBuilder tieredHullTextures(BlockModelBuilder model, int tier) {
+        tieredHullTexture(model, "bottom", tier);
+        tieredHullTexture(model, "top", tier);
+        tieredHullTexture(model, "side", tier);
+        return model;
+    }
+
+    public static ResourceLocation getSteamHullTexture(String variant) {
+        return GTCEu.id("block/casings/steam/%s/".formatted(variant));
+    }
+
+    public static void steamHullTexture(BlockModelBuilder model, String key, String variant) {
+        model.texture(key, getSteamHullTexture(variant).withSuffix(key));
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, String variant) {
+        steamHullTexture(model, "bottom", variant);
+        steamHullTexture(model, "top", variant);
+        steamHullTexture(model, "side", variant);
+        return model;
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model) {
+        return steamHullTextures(model, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze");
+    }
+
+    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, boolean highTier) {
+        return steamHullTextures(model, highTier ? "bricked_steel" : "bricked_bronze");
+    }
+
+    public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texture) {
+        model.texture("bottom", texture);
+        model.texture("top", texture);
+        model.texture("side", texture);
+        return model;
     }
 
     // endregion
