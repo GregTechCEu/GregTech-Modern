@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
@@ -48,7 +49,6 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 /*
  * TODO:
  *  - HPCA part models (IDK??)
- *  - Large miner model (moderately easy)
  *
  * TODO (end)
  *  - move GTMachineModels utility methods to the top of the file
@@ -669,7 +669,7 @@ public class GTMachineModels {
                 boolean rtMode = state.getValue(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY);
                 WorkableOverlays overlays = rtMode ? rtOverlays : beOverlays;
 
-                boolean active = state.getValue(WorldAcceleratorMachine.ACTIVE_PROPERTY);
+                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
                 boolean workingEnabled = state.getValue(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY);
                 RecipeLogic.Status status = active ?
                         workingEnabled ?

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IMiner;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -431,7 +432,7 @@ public class GTMachines {
                     .recipeType(DUMMY_RECIPES)
                     .modelProperty(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY, true)
                     .modelProperty(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY, true)
-                    .modelProperty(WorldAcceleratorMachine.ACTIVE_PROPERTY, false)
+                    .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
                     .model(createWorldAcceleratorModel(GTCEu.id("block/machines/world_accelerator_te"),
                             GTCEu.id("block/machines/world_accelerator")))
                     .tooltipBuilder((stack, tooltip) -> {

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -106,12 +107,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
-            setRenderState(getRenderState().setValue(ACTIVE_PROPERTY, true));
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
-            setRenderState(getRenderState().setValue(ACTIVE_PROPERTY, false));
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, false));
         }
     }
 
