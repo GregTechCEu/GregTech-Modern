@@ -15,7 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Variant.Deserializer.class)
 public class VariantDeserializerMixin {
 
-    @ModifyReturnValue(method = "deserialize*", at = @At("RETURN"))
+    @ModifyReturnValue(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lnet/minecraft/client/renderer/block/model/Variant;",
+                       at = @At("RETURN"))
     public Variant gtceu$addZRotation(Variant variant, JsonElement json) {
         JsonObject jsonObject = json.getAsJsonObject();
         if (jsonObject.has(GTBlockstateProvider.Z_ROT_PROPERTY_NAME)) {

@@ -25,20 +25,6 @@ public enum RotationState implements Predicate<Direction> {
         this.property = property;
     }
 
-    static final ThreadLocal<RotationState> STATE = new ThreadLocal<>();
-
-    public static RotationState get() {
-        return STATE.get();
-    }
-
-    public static void set(RotationState state) {
-        STATE.set(state);
-    }
-
-    public static void clear() {
-        STATE.remove();
-    }
-
     @Override
     public boolean test(Direction dir) {
         return predicate.test(dir);
