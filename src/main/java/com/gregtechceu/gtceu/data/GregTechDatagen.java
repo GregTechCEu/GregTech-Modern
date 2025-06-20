@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.core.mixins.RegistrateDataProviderAccessor;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.model.BlockstateLoader;
 import com.gregtechceu.gtceu.data.tags.*;
 
 import com.tterrag.registrate.providers.ProviderType;
@@ -17,6 +18,8 @@ public class GregTechDatagen {
     public static void init() {
         // replace the default blockstate provider with this one
         RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
+
+        GTRegistration.REGISTRATE.addDataGenerator(BLOCKSTATE_PROVIDER, BlockstateLoader::init);
 
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.BLOCK_TAGS, BlockTagLoader::init);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, ItemTagLoader::init);
