@@ -1,0 +1,6 @@
+{
+    "parent": "gtceu:block/machine/template/rotor_holder/idle_emissive",
+    "textures": {
+        "rotor": "gtceu:block/multiblock/large_turbine/rotor_spinning"
+    }
+}
