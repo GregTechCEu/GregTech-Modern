@@ -104,11 +104,12 @@ public class LangHandler {
         provider.add("item.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
-        provider.add("gui.widget.incrementButton.default_tooltip",
-                "Hold Shift, Ctrl or both to change the amount");
-        provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
-        multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
-                "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
+
+        provider.add("gui.widget.increment_button.tooltip",
+                "Hold SHIFT, CTRL or both to change the amount");
+        provider.add("gui.widget.recipe_progress.tooltip", "Show Recipes");
+        multilineLang(provider, "gui.widget.recipe_memory.tooltip",
+                "§L-CLICK to automatically input this recipe into the crafting grid\n§SHIFT + L-CLICK to lock/unlock this recipe");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
 

@@ -117,7 +117,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
         this.addWidget(new ButtonWidget(0, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("-", buttonWidth)),
-                this::decrease).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+                this::decrease).setHoverTooltips("gui.widget.increment_button.tooltip"));
 
         this.textField = new TextFieldWidget(buttonWidth + 2, 0, textFieldWidth, 20,
                 () -> toText(valueSupplier.get()),
@@ -127,7 +127,7 @@ public abstract class NumberInputWidget<T extends Number> extends WidgetGroup {
 
         this.addWidget(new ButtonWidget(buttonWidth + textFieldWidth + 4, 0, buttonWidth, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, getButtonTexture("+", buttonWidth)),
-                this::increase).setHoverTooltips("gui.widget.incrementButton.default_tooltip"));
+                this::increase).setHoverTooltips("gui.widget.increment_button.tooltip"));
     }
 
     private IGuiTexture getButtonTexture(String prefix, int buttonWidth) {
