@@ -512,7 +512,7 @@ public class ItemLang {
         provider.add("behavior.lighter.tooltip.usage", "SHIFT + R-CLICK to open/close");
         provider.add("behavior.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
         provider.add("behavior.lighter.uses", "Remaining uses: %d");
-        provider.add("behavior.toggle_energy_consumer.tooltip", "Use to toggle mode");
+        provider.add("behavior.toggle_energy_consumer.tooltip", "SHIFT + R-CLICK to toggle mode");
         provider.add("behavior.hammer", "Turns on and off Muffling for Machines (by hitting them)");
         provider.add("behavior.wrench", "Rotates Blocks on Rightclick");
         provider.add("behavior.boor.by", "by %s");
@@ -535,8 +535,8 @@ public class ItemLang {
         provider.add("behavior.paintspray.black.tooltip", "Can paint things in Black");
         provider.add("behavior.paintspray.uses", "Remaining Uses: %d");
         provider.add("behavior.prospecting", "Usable for Prospecting");
-        provider.add("behavior.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
-        provider.add("behavior.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
+        provider.add("behavior.meta.machine.config.copy.tooltip", "§7SHIFT + R-CLICK to copy machine configuration");
+        provider.add("behavior.meta.machine.config.paste.tooltip", "§7R-CLICK to paste machine configuration");
         provider.add("behavior.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
         provider.add("behavior.setting.output.direction.tooltip", "%s output direction: %s");
         provider.add("behavior.setting.item_auto_output.tooltip", "%s auto-output is %s");
@@ -550,8 +550,8 @@ public class ItemLang {
         provider.add("item.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("behavior.prospector.added_waypoint", "Created waypoint named %s!");
-        provider.add("item.tricorder_scanner.tooltip", "Tricorder");
-        provider.add("item.debug_scanner.tooltip", "Tricorder");
+        provider.add("item.tricorder_scanner.tooltip", "Tricorder"); //unused
+        provider.add("item.debug_scanner.tooltip", "Tricorder"); //unused
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
