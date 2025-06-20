@@ -196,6 +196,7 @@ public class ItemLang {
     }
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
+        // When in doubt, all tooltips should be gray (§7)
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
         provider.add("item.gtceu.nano_saber.tooltip", "§7Ryujin no ken wo kurae!");
         provider.add("item.gtceu.plate_casting_mold.tooltip", "§7Mold for making Plates");
@@ -287,10 +288,8 @@ public class ItemLang {
         provider.add("item.gtceu.data_stick.tooltip", "§7A Low Capacity Data Storage");
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
         multilineLang(provider, "item.gtceu.programmed_circuit.tooltip",
-                "Use to open configuration GUI\nShift-Right-Click on a machine\nwith a circuit slot to set it to\nthis circuit's value.");
+                "Use to open configuration GUI\nSHIFT + R-CLICK on a machine\nwith a circuit slot to set it to\nthis circuit's value.");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
-        // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
-        // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
         provider.add("item.gtceu.silicon_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.phosphorus_boule.tooltip", "§7Raw Circuit");
@@ -482,7 +481,7 @@ public class ItemLang {
         provider.add("item.gtceu.basic_tape.tooltip",
                 "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items");
         provider.add("item.gtceu.terminal.tooltip",
-                "Shift + R-Click on a controller to automatically build the multi-block");
+                "SHIFT + R-CLICK on a controller to automatically build the multi-block");
 
         provider.add("item.gtceu.sus_record.desc", "§7sussy!");
 
@@ -510,7 +509,7 @@ public class ItemLang {
         provider.add("behavior.soft_hammer.disabled", "Working Disabled");
         provider.add("behavior.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
-        provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
+        provider.add("behaviour.lighter.tooltip.usage", "SHIFT + R-CLICK to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
         provider.add("behaviour.lighter.uses", "Remaining uses: %d");
         provider.add("behavior.toggle_energy_consumer.tooltip", "Use to toggle mode");
