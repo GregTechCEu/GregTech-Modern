@@ -372,7 +372,7 @@ public class GTMachineUtils {
                                                         EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
                                 Component.translatable("gtceu.universal.disabled"))
                         .abilities(ability)
-                        .overlayTieredHullModel("laser_hatch." + name)
+                        .overlayTieredHullModel("laser_" + name + "_hatch")
                         .register(),
                 HIGH_TIERS);
     }
