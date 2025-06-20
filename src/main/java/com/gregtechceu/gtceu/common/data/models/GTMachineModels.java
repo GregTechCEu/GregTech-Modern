@@ -163,6 +163,9 @@ public class GTMachineModels {
 
                 addWorkableOverlays(overlays, status, model);
 
+                if (!state.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+                    return model;
+                }
                 Direction steamVent = state.getValue(IExhaustVentMachine.VENT_DIRECTION_PROPERTY);
                 model = prov.models().nested()
                         .customLoader(CompositeModelBuilder::begin)
@@ -586,8 +589,8 @@ public class GTMachineModels {
             MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
                     .customLoader(MachineModelBuilder.begin(definition));
             model.configureModel(ctx, prov, builder);
-
             final ModelFile built = builder.end();
+
             var generator = prov.multiVariantGenerator(block,
                     Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
             PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
