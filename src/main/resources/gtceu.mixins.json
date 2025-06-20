@@ -50,6 +50,7 @@
         "PartialNBTIngredientAccessor",
         "PotionBrewingAccessor",
         "PrimedTntAccessor",
+        "RegistrateDataProviderAccessor",
         "RecipeManagerAccessor",
         "RecipeManagerInvoker",
         "RecipeManagerMixin",

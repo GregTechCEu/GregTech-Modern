@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
 
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
@@ -18,6 +19,8 @@ import com.google.gson.JsonPrimitive;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
@@ -35,13 +38,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     private final AbstractRegistrate<?> parent;
 
-    public GTBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput, ExistingFileHelper exFileHelper) {
+    public GTBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput, ExistingFileHelper exFileHelper,
+                                Map<ProviderType<?>, RegistrateProvider> existing) {
         super(parent, packOutput, exFileHelper);
         this.parent = parent;
+        // replace the default blockstate provider with this one
+        existing.put(ProviderType.BLOCKSTATE, this);
     }
 
     @Override
     protected void registerStatesAndModels() {
+        super.registerStatesAndModels();
         parent.genData(GregTechDatagen.BLOCKSTATE_PROVIDER, this);
     }
 

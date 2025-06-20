@@ -45,6 +45,7 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
         return (GTBlockBuilder<T, P>) setData(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
     }
 
+    // region default overrides
     // spotless:off
     @Override
     public GTBlockBuilder<T, P> properties(NonNullUnaryOperator<BlockBehaviour.Properties> func) {
@@ -128,11 +129,11 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     }
 
     // why is it final >:(
-
     // @SafeVarargs
     // public final BlockBuilder<T, P> tag(TagKey<Block>... tags) {
     //     return tag(ProviderType.BLOCK_TAGS, tags);
     // }
 
     // spotless:on
+    // endregion
 }
