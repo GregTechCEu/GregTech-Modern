@@ -400,7 +400,7 @@ public class GTMachineUtils {
                         MetaMachineBlockEntity::new)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .simpleModel(GTCEu.id("block/machine/template/drum" + (wooden ? "wooden" : "metal") + "_drum"))
+                .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
                 .tooltipBuilder((stack, list) -> {
                     TANK_TOOLTIPS.accept(stack, list);
                     if (material.hasProperty(PropertyKey.FLUID_PIPE)) {

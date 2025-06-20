@@ -18,17 +18,17 @@ public class BlockstateModelLoader {
             ResourceLocation modelName = TIERED_HULL_MODELS.get(tier);
 
             var model = models.withExistingParent(modelName.toString(), SIDED_OVERLAY_MODEL);
-            GTMachineModels.casingTextures(model, modelName.withSuffix("/"));
+            GTMachineModels.casingTextures(model, modelName);
         }
         // steam hulls
         {
             ResourceLocation modelName = LP_STEAM_HULL_MODEL;
             var model = models.withExistingParent(modelName.toString(), SIDED_OVERLAY_MODEL);
-            GTMachineModels.casingTextures(model, modelName.withSuffix("/"));
+            GTMachineModels.casingTextures(model, modelName);
 
             modelName = HP_STEAM_HULL_MODEL;
             model = models.withExistingParent(modelName.toString(), SIDED_OVERLAY_MODEL);
-            GTMachineModels.casingTextures(model, modelName.withSuffix("/"));
+            GTMachineModels.casingTextures(model, modelName);
         }
     }
 }

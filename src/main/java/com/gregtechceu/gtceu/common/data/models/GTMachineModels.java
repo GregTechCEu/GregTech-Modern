@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -23,7 +24,6 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -71,8 +71,8 @@ public class GTMachineModels {
         }
         map.defaultReturnValue(GTCEu.id("block/casings/voltage/lv"));
     });
-    public static final ResourceLocation LP_STEAM_HULL_OVERLAY_MODEL = GTCEu.id("block/machine/hull/low_pressure");
-    public static final ResourceLocation HP_STEAM_HULL_OVERLAY_MODEL = GTCEu.id("block/machine/hull/high_pressure");
+    public static final ResourceLocation LP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_bronze");
+    public static final ResourceLocation HP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_steel");
 
     public static final ResourceLocation BRONZE_STEAM_CASING_MODEL = GTCEu.id("bronze_machine_casing");
     public static final ResourceLocation STEEL_STEAM_CASING_MODEL = GTCEu.id("steel_machine_casing");
@@ -356,7 +356,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createCrateModel(boolean wooden) {
         return (ctx, prov, builder) -> {
-            String modelPath = "block/machine/template/crate" + (wooden ? "wooden" : "metal") + "_crate";
+            String modelPath = "block/machine/template/crate/" + (wooden ? "wooden" : "metal") + "_crate";
             ModelFile baseModel = prov.models().getExistingFile(GTCEu.id(modelPath));
             ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
@@ -443,17 +443,20 @@ public class GTMachineModels {
                         .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#base").end()
                         .end();
                 model.child("rotor", rotorModel);
-                if (!state.getValue(RotorHolderPartMachine.HAS_ROTOR_PROPERTY)) {
+                if (state.hasProperty(IRotorHolderMachine.HAS_ROTOR_PROPERTY) &&
+                        !state.getValue(IRotorHolderMachine.HAS_ROTOR_PROPERTY)) {
                     return model.end();
                 }
 
-                boolean spinning = state.getValue(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY);
+                boolean spinning = state.hasProperty(IRotorHolderMachine.ROTOR_SPINNING_PROPERTY) &&
+                        state.getValue(IRotorHolderMachine.ROTOR_SPINNING_PROPERTY);
                 rotorModel.texture("rotor", spinning ? ROTOR_HOLDER_SPINNING : ROTOR_HOLDER_IDLE)
                         .element()
                         .from(-16, -16, 0).to(32, 32, -0.006f)
                         .face(Direction.NORTH).uvs(0, 0, 1, 1).texture("#rotor").tintindex(2).end()
                         .end();
-                if (state.getValue(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY)) {
+                if (state.hasProperty(IRotorHolderMachine.EMISSIVE_ROTOR_PROPERTY) &&
+                        state.getValue(IRotorHolderMachine.EMISSIVE_ROTOR_PROPERTY)) {
                     rotorModel.element(2)
                             .emissivity(15, 15).ao(false)
                             .face(Direction.NORTH).tintindex(-101);
@@ -617,7 +620,7 @@ public class GTMachineModels {
     }
 
     public static ModelFile steamHullModel(BlockModelProvider provider, boolean highPressure) {
-        return provider.getExistingFile(highPressure ? HP_STEAM_HULL_OVERLAY_MODEL : LP_STEAM_HULL_OVERLAY_MODEL);
+        return provider.getExistingFile(highPressure ? HP_STEAM_HULL_MODEL : LP_STEAM_HULL_MODEL);
     }
 
     public static ModelFile steamCasingModel(BlockModelProvider provider, boolean steel) {
@@ -672,6 +675,9 @@ public class GTMachineModels {
     }
 
     public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texturePath) {
+        if (!texturePath.getPath().endsWith("/")) {
+            texturePath = texturePath.withSuffix("/");
+        }
         casingTexture(model, "bottom", texturePath);
         casingTexture(model, "top", texturePath);
         casingTexture(model, "side", texturePath);

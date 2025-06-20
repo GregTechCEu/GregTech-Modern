@@ -1073,6 +1073,7 @@ public class GTMachines {
                     .abilities(PartAbility.ROTOR_HOLDER)
                     .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
+                    .modelProperty(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY, false)
                     .model(createRotorHolderModel())
                     .tooltips(LangHandler.getMultiLang("gtceu.machine.rotor_holder.tooltip"))
                     .tooltips(Component.translatable("gtceu.universal.disabled"))
