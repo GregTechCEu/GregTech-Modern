@@ -24,15 +24,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaRender> {
+
+    private static final List<RelativeDirection> DEFAULT_FACES = Collections.singletonList(RelativeDirection.UP);
 
     // spotless:off
     @SuppressWarnings("deprecation")
     public static final Codec<FluidAreaRender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             FluidBlockRenderer.CODEC.forGetter(FluidAreaRender::getFluidBlockRenderer),
-            BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("fixed_fluid").forGetter(FluidAreaRender::getFixedFluid)
+            BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("fixed_fluid").forGetter(FluidAreaRender::getFixedFluid),
+            RelativeDirection.CODEC.listOf().optionalFieldOf("drawn_faces", DEFAULT_FACES).forGetter(FluidAreaRender::getDrawFaces)
     ).apply(instance, FluidAreaRender::new));
     public static final DynamicRenderType<IFluidRenderMulti, FluidAreaRender> TYPE = new DynamicRenderType<>(FluidAreaRender.CODEC);
     // spotless:on
@@ -40,11 +45,15 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
     @Getter
     private final FluidBlockRenderer fluidBlockRenderer;
     private final boolean fixedFluid;
+    @Getter
+    private final List<RelativeDirection> drawFaces;
+
     private @Nullable Fluid cachedFluid;
     private @Nullable ResourceLocation cachedRecipe;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public FluidAreaRender(FluidBlockRenderer fluidBlockRenderer, Optional<Fluid> fixedFluid) {
+    public FluidAreaRender(FluidBlockRenderer fluidBlockRenderer,
+                           Optional<Fluid> fixedFluid, List<RelativeDirection> drawFaces) {
         this.fluidBlockRenderer = fluidBlockRenderer;
         if (fixedFluid.isPresent()) {
             this.fixedFluid = true;
@@ -52,20 +61,21 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
         } else {
             this.fixedFluid = false;
         }
+        this.drawFaces = drawFaces.isEmpty() ? DEFAULT_FACES : drawFaces;
     }
 
     public static FluidAreaRender createLargeMachineRender() {
         return new FluidAreaRender(FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
                 .setForcedLight(LightTexture.FULL_BRIGHT)
-                .getRenderer(), Optional.empty());
+                .getRenderer(), Optional.empty(), DEFAULT_FACES);
     }
 
     public static FluidAreaRender createPBFLavaRender() {
         return new FluidAreaRender(FluidBlockRenderer.Builder.create()
                 .setFaceOffset(-0.125f)
                 .setForcedLight(LightTexture.FULL_BRIGHT)
-                .getRenderer(), Optional.of(Fluids.LAVA.getSource()));
+                .getRenderer(), Optional.of(Fluids.LAVA.getSource()), DEFAULT_FACES);
     }
 
     @Override
@@ -107,12 +117,14 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
         var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
         var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
-        var up = RelativeDirection.UP.getRelativeFacing(machine.self().getFrontFacing(),
-                machine.self().getUpwardsFacing(), machine.self().isFlipped());
-        if (up.getAxis() != Direction.Axis.Y) up = up.getOpposite();
+        for (RelativeDirection face : this.drawFaces) {
+            var dir = face.getRelativeFacing(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
+                    machine.self().isFlipped());
+            if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
-        fluidBlockRenderer.drawPlane(up, machine.getFluidBlockOffsets(), pose, consumer, cachedFluid,
-                RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+            fluidBlockRenderer.drawPlane(dir, machine.getFluidBlockOffsets(), pose, consumer, cachedFluid,
+                    RenderUtil.FluidTextureType.STILL, packedOverlay, machine.self().getPos());
+        }
 
         poseStack.popPose();
     }

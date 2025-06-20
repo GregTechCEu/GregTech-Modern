@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -38,10 +39,10 @@ public class FluidBlockRenderer {
         var newVertices = new Vector3f[4];
         float offsetX = properties.offsetX, offsetY = properties.offsetY, offsetZ = properties.offsetZ;
 
-        switch (face) {
-            case DOWN, UP -> offsetY += properties.offsetFace;
-            case NORTH, SOUTH -> offsetZ += properties.offsetFace;
-            case WEST, EAST -> offsetX += properties.offsetFace;
+        switch (face.getAxis()) {
+            case X -> offsetX += properties.offsetFace;
+            case Y -> offsetY += properties.offsetFace;
+            case Z -> offsetZ += properties.offsetFace;
         }
 
         for (int i = 0; i < 4; i++)
@@ -172,13 +173,13 @@ public class FluidBlockRenderer {
 
         // spotless:off
         public static final MapCodec<Properties> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                Codec.FLOAT.fieldOf("offset_x").forGetter(Properties::getOffsetX),
-                Codec.FLOAT.fieldOf("offset_y").forGetter(Properties::getOffsetY),
-                Codec.FLOAT.fieldOf("offset_z").forGetter(Properties::getOffsetZ),
-                Codec.FLOAT.fieldOf("offset_face").forGetter(Properties::getOffsetFace),
-                Codec.BOOL.fieldOf("overwrite_light").forGetter(Properties::isOverwriteLight),
-                Codec.intRange(0, LightTexture.FULL_BRIGHT).fieldOf("light").forGetter(Properties::getLight),
-                Direction.CODEC.listOf().fieldOf("draw_faces").forGetter(p -> Arrays.asList(p.getDrawFaces()))
+                Codec.FLOAT.optionalFieldOf("offset_x", 0.0f).forGetter(Properties::getOffsetX),
+                Codec.FLOAT.optionalFieldOf("offset_y", 0.0f).forGetter(Properties::getOffsetY),
+                Codec.FLOAT.optionalFieldOf("offset_z", 0.0f).forGetter(Properties::getOffsetZ),
+                Codec.FLOAT.optionalFieldOf("offset_face", 0.0f).forGetter(Properties::getOffsetFace),
+                Codec.BOOL.optionalFieldOf("overwrite_light", false).forGetter(Properties::isOverwriteLight),
+                Codec.intRange(0, LightEngine.MAX_LEVEL).optionalFieldOf("block_light", 0).forGetter(Properties::getBlockLight),
+                Codec.intRange(0, LightEngine.MAX_LEVEL).optionalFieldOf("sky_light", 0).forGetter(Properties::getSkyLight)
         ).apply(instance, Properties::of));
         // spotless:on
 
@@ -189,12 +190,10 @@ public class FluidBlockRenderer {
         private boolean overwriteLight = false;
         private int light = 0;
 
-        private Direction[] drawFaces = Direction.values();
-
         public Properties() {}
 
         public static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
-                                    boolean overwriteLight, int light, Direction... drawFaces) {
+                                    boolean overwriteLight, int light) {
             Properties p = new Properties();
             p.setOffsetX(offsetX);
             p.setOffsetY(offsetY);
@@ -202,14 +201,20 @@ public class FluidBlockRenderer {
             p.setOffsetFace(offsetFace);
             p.setOverwriteLight(overwriteLight);
             p.setLight(light);
-            p.setDrawFaces(drawFaces);
             return p;
         }
 
+        private int getBlockLight() {
+            return LightTexture.block(this.light);
+        }
+
+        private int getSkyLight() {
+            return LightTexture.sky(this.light);
+        }
+
         private static Properties of(float offsetX, float offsetY, float offsetZ, float offsetFace,
-                                     boolean overwriteLight, int light, List<Direction> drawFaces) {
-            return of(offsetX, offsetY, offsetZ, offsetFace,
-                    overwriteLight, light, drawFaces.toArray(Direction[]::new));
+                                     boolean overwriteLight, int blockLight, int skyLight) {
+            return of(offsetX, offsetY, offsetZ, offsetFace, overwriteLight, LightTexture.pack(blockLight, skyLight));
         }
     }
 
@@ -243,6 +248,12 @@ public class FluidBlockRenderer {
 
         public Builder setForcedLight(int light) {
             properties.setLight(light);
+            properties.setOverwriteLight(true);
+            return this;
+        }
+
+        public Builder setForcedLight(int block, int sky) {
+            properties.setLight(LightTexture.pack(block, sky));
             properties.setOverwriteLight(true);
             return this;
         }

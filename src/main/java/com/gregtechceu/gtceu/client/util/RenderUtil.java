@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
@@ -38,8 +40,11 @@ public class RenderUtil {
                 .apply(fluidTypeExtensions.getStillTexture())),
         FLOWING(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(fluidTypeExtensions.getFlowingTexture())),
-        OVERLAY(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getOverlayTexture()));
+        OVERLAY(fluidTypeExtensions -> {
+            ResourceLocation overlayTexture = fluidTypeExtensions.getOverlayTexture();
+            if (overlayTexture == null) overlayTexture = fluidTypeExtensions.getStillTexture();
+            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(overlayTexture);
+        });
 
         private final Function<IClientFluidTypeExtensions, TextureAtlasSprite> mapper;
 
@@ -60,33 +65,31 @@ public class RenderUtil {
         return new Vector3f(x, y, z);
     }
 
-    private static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = new HashMap<>() {
-
-        {
-            put(Direction.UP, new Vector3f[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
-            put(Direction.DOWN, new Vector3f[] { vec3f(1, 0, 1), vec3f(0, 0, 1), vec3f(0, 0, 0), vec3f(1, 0, 0) });
-            put(Direction.SOUTH, new Vector3f[] { vec3f(1, 1, 0), vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 1, 0) });
-            put(Direction.NORTH, new Vector3f[] { vec3f(0, 1, 1), vec3f(0, 0, 1), vec3f(1, 0, 1), vec3f(1, 1, 1) });
-            put(Direction.EAST, new Vector3f[] { vec3f(0, 1, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(0, 1, 1) });
-            put(Direction.WEST, new Vector3f[] { vec3f(1, 1, 1), vec3f(1, 0, 1), vec3f(1, 0, 0), vec3f(1, 1, 0) });
-        }
-    };
+    // spotless:off
+    private static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
+        map.put(Direction.UP, new Vector3f[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
+        map.put(Direction.DOWN, new Vector3f[] { vec3f(1, 0, 1), vec3f(0, 0, 1), vec3f(0, 0, 0), vec3f(1, 0, 0) });
+        map.put(Direction.SOUTH, new Vector3f[] { vec3f(1, 1, 0), vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 1, 0) });
+        map.put(Direction.NORTH, new Vector3f[] { vec3f(0, 1, 1), vec3f(0, 0, 1), vec3f(1, 0, 1), vec3f(1, 1, 1) });
+        map.put(Direction.EAST, new Vector3f[] { vec3f(0, 1, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(0, 1, 1) });
+        map.put(Direction.WEST, new Vector3f[] { vec3f(1, 1, 1), vec3f(1, 0, 1), vec3f(1, 0, 0), vec3f(1, 1, 0) });
+    });
+    // spotless:on
 
     public static Vector3f[] getVertices(Direction direction) {
         return DIRECTION_POSITION_MAP.get(direction);
     }
 
-    private static final Map<Direction, Vector3f> DIRECTION_NORMAL_MAP = new HashMap<>() {
-
-        {
-            put(Direction.UP, vec3f(0, 1, 0));
-            put(Direction.DOWN, vec3f(0, 1, 0));
-            put(Direction.SOUTH, vec3f(0, 0, 1));
-            put(Direction.NORTH, vec3f(0, 0, 1));
-            put(Direction.EAST, vec3f(1, 0, 0));
-            put(Direction.WEST, vec3f(1, 0, 0));
-        }
-    };
+    // spotless:off
+    private static final Map<Direction, Vector3f> DIRECTION_NORMAL_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
+        map.put(Direction.UP, vec3f(0, 1, 0));
+        map.put(Direction.DOWN, vec3f(0, 1, 0));
+        map.put(Direction.SOUTH, vec3f(0, 0, 1));
+        map.put(Direction.NORTH, vec3f(0, 0, 1));
+        map.put(Direction.EAST, vec3f(1, 0, 0));
+        map.put(Direction.WEST, vec3f(1, 0, 0));
+    });
+    // spotless:on
 
     public static Vector3f getNormal(Direction direction) {
         return DIRECTION_NORMAL_MAP.get(direction);
@@ -98,9 +101,9 @@ public class RenderUtil {
                 pos);
     }
 
-    public static void vertex(Matrix4f pose, VertexConsumer vertexConsumer, float x, float y, float z, int r, int g,
-                              int b, int a, float u, float v, int overlayCoords, int lightOverlay, float v0, float v1,
-                              float v2) {
+    public static void vertex(Matrix4f pose, VertexConsumer vertexConsumer, float x, float y, float z,
+                              int r, int g, int b, int a, float u, float v, int overlayCoords, int lightOverlay,
+                              float v0, float v1, float v2) {
         /*
          * For future reference:
          * The order of the vertex calls is important.
@@ -116,8 +119,8 @@ public class RenderUtil {
                 .endVertex();
     }
 
-    public static Vector3f transformVertex(Vector3f vertex, Direction direction, float offsetX, float offsetY,
-                                           float offsetZ) {
+    public static Vector3f transformVertex(Vector3f vertex, Direction direction,
+                                           float offsetX, float offsetY, float offsetZ) {
         float addX = offsetX, addY = offsetY, addZ = offsetZ;
         switch (direction) {
             case DOWN -> addY = -addY;
@@ -125,7 +128,7 @@ public class RenderUtil {
             case EAST -> addX = -addX;
         }
 
-        return vec3f(vertex.x + addX, vertex.y + addY, vertex.z + addZ);
+        return new Vector3f(vertex).add(addX, addY, addZ);
     }
 
     public static @Nullable Fluid getRecipeFluidToRender(GTRecipe recipe) {

@@ -5,14 +5,18 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.function.ToIntFunction;
 import java.util.function.UnaryOperator;
 
 /**
  * Relative direction when facing horizontally
  */
-public enum RelativeDirection {
+@SuppressWarnings("deprecation")
+public enum RelativeDirection implements StringRepresentable {
 
     UP(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP, Direction.UP),
     DOWN(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.DOWN, Direction.DOWN),
@@ -28,6 +32,9 @@ public enum RelativeDirection {
     }, Direction.EAST),
     FRONT(UnaryOperator.identity(), Direction.NORTH),
     BACK(Direction::getOpposite, Direction.SOUTH);
+
+    public static final StringRepresentable.EnumCodec<RelativeDirection> CODEC = StringRepresentable
+            .fromEnum(RelativeDirection::values);
 
     private static final RelativeDirection[] BY_GLOBAL_DIRECTION = new RelativeDirection[GTUtil.DIRECTIONS.length];
 
@@ -47,6 +54,11 @@ public enum RelativeDirection {
     RelativeDirection(UnaryOperator<Direction> actualFacing, Direction global) {
         this.actualFacing = actualFacing;
         this.global = global;
+    }
+
+    @Override
+    public @NotNull String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 
     public Direction getActualFacing(Direction facing) {
