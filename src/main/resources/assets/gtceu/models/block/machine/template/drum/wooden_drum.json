@@ -1,12 +1,8 @@
 {
-  "parent": "gtceu:block/cube/default",
+  "parent": "gtceu:block/cube/bottom_top",
   "textures": {
-    "particle": "gtceu:block/storage/drums/wooden_drum/side",
-    "down": "gtceu:block/storage/drums/wooden_drum/bottom",
-    "up": "gtceu:block/storage/drums/wooden_drum/top",
-    "north": "gtceu:block/storage/drums/wooden_drum/side",
-    "east": "gtceu:block/storage/drums/wooden_drum/side",
-    "south": "gtceu:block/storage/drums/wooden_drum/side",
-    "west": "gtceu:block/storage/drums/wooden_drum/side"
+    "bottom": "gtceu:block/storage/drums/wooden_drum/bottom",
+    "top": "gtceu:block/storage/drums/wooden_drum/top",
+    "side": "gtceu:block/storage/drums/wooden_drum/side"
   }
 }
