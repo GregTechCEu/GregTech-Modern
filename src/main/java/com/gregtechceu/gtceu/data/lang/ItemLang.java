@@ -288,15 +288,14 @@ public class ItemLang {
         provider.add("item.gtceu.data_stick.tooltip", "§7A Low Capacity Data Storage");
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
         multiLang(provider, "item.gtceu.programmed_circuit.tooltip",
-                        "Use to open configuration GUI",
-                        "SHIFT + R-CLICK on a machine",
-                        "with a circuit slot to set it to",
-                        "this circuit's value.");
+                "Use to open configuration GUI",
+                "SHIFT + R-CLICK on a machine",
+                "with a circuit slot to set it to",
+                "this circuit's value.");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
-        // multiLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
-        // given configuration.",
-                "",
-                "You can select a configuration in the Programmed Circuit configuration tab.");
+        // multiLang(provider, "item.gtceu.circuit.integrated.jei_description",
+        // "JEI is only showing recipes for the given configuration.",
+        // "You can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
         provider.add("item.gtceu.silicon_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.phosphorus_boule.tooltip", "§7Raw Circuit");
@@ -534,7 +533,7 @@ public class ItemLang {
         provider.add("item.gtceu.terminal.tooltip",
                 "SHIFT + R-CLICK on a controller to automatically build the multi-block");
 
-        multiLang(provider, "item.gtceu.sus_record.desc", 
+        multiLang(provider, "item.gtceu.sus_record.desc",
                 "§7Leonz - Among Us Drip",
                 "sussy!");
 

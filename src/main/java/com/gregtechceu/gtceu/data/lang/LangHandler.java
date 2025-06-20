@@ -113,8 +113,9 @@ public class LangHandler {
         provider.add("gui.widget.increment_button.tooltip",
                 "Hold SHIFT, CTRL or both to change the amount");
         provider.add("gui.widget.recipe_progress.tooltip", "Show Recipes");
-        multilineLang(provider, "gui.widget.recipe_memory.tooltip",
-                "§L-CLICK to automatically input this recipe into the crafting grid\n§SHIFT + L-CLICK to lock/unlock this recipe");
+        multiLang(provider, "gui.widget.recipe_memory.tooltip",
+                "§L-CLICK to automatically input this recipe into the crafting grid",
+                "§SHIFT + L-CLICK to lock/unlock this recipe");
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
 
@@ -134,8 +135,9 @@ public class LangHandler {
         provider.add("tile.gtceu.petrified_foam.name", "Petrified Foam");
         provider.add("tile.gtceu.reinforced_stone.name", "Reinforced Stone");
         provider.add("tile.gtceu.brittle_charcoal.name", "Brittle Charcoal");
-        multilineLang(provider, "tile.gtceu.brittle_charcoal.tooltip",
-                "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
+        multiLang(provider, "tile.gtceu.brittle_charcoal.tooltip",
+                "Produced by the Charcoal Pile Igniter.",
+                "Mine this to get Charcoal.");
 
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
@@ -156,12 +158,14 @@ public class LangHandler {
         provider.add("gtceu.machine.locked_safe.malfunctioning", "§cMalfunctioning!");
         provider.add("gtceu.machine.locked_safe.requirements", "§7Replacements required:");
 
-        multilineLang(provider, "gtceu.machine.workbench.tooltip",
-                "Better than Forestry\nHas Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
+        multiLang(provider, "gtceu.machine.workbench.tooltip",
+                "Better than Forestry",
+                "Has Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
         provider.add("gtceu.machine.workbench.tab.workbench", "Crafting");
         provider.add("gtceu.machine.workbench.tab.item_list", "Storage");
-        multilineLang(provider, "gtceu.machine.workbench.storage_note",
-                "(Available items from connected\ninventories usable for crafting)");
+        multiLang(provider, "gtceu.machine.workbench.storage_note",
+                "(Available items from connected",
+                "inventories usable for crafting)");
         provider.add("gtceu.item_list.item_stored", "§7Stored: %d");
         provider.add("gtceu.machine.workbench.tab.crafting", "Crafting");
         provider.add("gtceu.machine.workbench.tab.container", "Container");
@@ -248,10 +252,13 @@ public class LangHandler {
         provider.add("gtceu.gui.fluid_amount", "Fluid Amount:");
         provider.add("gtceu.gui.toggle_view.disabled", "Toggle View (Fluids)");
         provider.add("gtceu.gui.toggle_view.enabled", "Toggle View (Items)");
-        multilineLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");
-        multilineLang(provider, "gtceu.gui.overclock.disabled", "Overclocking Disabled.\nClick to Enable");
-        multilineLang(provider, "gtceu.gui.overclock.description",
-                "Overclock Button\n§7Recipes can overclock up to the set tier");
+        multiLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.",
+                "Click to Disable");
+        multiLang(provider, "gtceu.gui.overclock.disabled", "Overclocking Disabled.",
+                "Click to Enable");
+        multiLang(provider, "gtceu.gui.overclock.description",
+                "Overclock Button",
+                "§7Recipes can overclock up to the set tier");
         provider.add("gtceu.gui.overclock.off", "X");
         provider.add("gtceu.gui.sort", "Sort");
         provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
@@ -262,13 +269,13 @@ public class LangHandler {
         provider.add("gtceu.gui.item_auto_output.tooltip.disabled", "Item Auto-Output Disabled");
         provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Input Enabled");
         provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
-        multilineLang(provider, "gtceu.gui.charger_slot.tooltip",
+        multiLang(provider, "gtceu.gui.charger_slot.tooltip",
                 """
                         §fCharger Slot§r
                         §7Draws power from %s §7batteries§r
                         §7Charges %s §7tools and batteries
                         """);
-        multilineLang(provider, "gtceu.gui.configurator_slot.tooltip",
+        multiLang(provider, "gtceu.gui.configurator_slot.tooltip",
                 """
                         §fConfigurator Slot§r
                         §7Place a §6Programmed Circuit§7 in this slot to
@@ -284,21 +291,30 @@ public class LangHandler {
         provider.add("gtceu.gui.item_lock.tooltip.disabled", "Item Locking Disabled");
         provider.add("gtceu.gui.item_voiding_partial.tooltip.enabled", "Item Voiding Enabled");
         provider.add("gtceu.gui.item_voiding_partial.tooltip.disabled", "Item Voiding Disabled");
-        multilineLang(provider, "gtceu.gui.silktouch.enabled",
-                "Silk Touch Enabled: Click to Disable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.silktouch.disabled",
-                "Silk Touch Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.chunkmode.enabled",
-                "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.chunkmode.disabled",
-                "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        multilineLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        multilineLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        multilineLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
-        multilineLang(provider, "gtceu.gui.fisher_mode.tooltip",
-                "Toggle junk items\nOff costs 2 string per operation");
+        multiLang(provider, "gtceu.gui.silktouch.enabled",
+                "Silk Touch Enabled: Click to Disable.",
+                "§7Switching requires an idle machine.");
+        multiLang(provider, "gtceu.gui.silktouch.disabled",
+                "Silk Touch Disabled: Click to Enable.",
+                "§7Switching requires an idle machine.");
+        multiLang(provider, "gtceu.gui.chunkmode.enabled",
+                "Chunk Mode Enabled: Click to Disable.",
+                "§7Switching requires an idle machine.");
+        multiLang(provider, "gtceu.gui.chunkmode.disabled",
+                "Chunk Mode Disabled: Click to Enable.",
+                "§7Switching requires an idle machine.");
+        multiLang(provider, "gtceu.gui.multiblock_item_voiding", "Voiding Mode",
+                "§7Voiding §6Items");
+        multiLang(provider, "gtceu.gui.multiblock_fluid_voiding", "Voiding Mode",
+                "§7Voiding §9Fluids");
+        multiLang(provider, "gtceu.gui.multiblock_item_fluid_voiding",
+                "Voiding Mode",
+                "§7Voiding §6Items §7and §9Fluids");
+        multiLang(provider, "gtceu.gui.multiblock_no_voiding", "Voiding Mode",
+                "§7Voiding Nothing");
+        multiLang(provider, "gtceu.gui.fisher_mode.tooltip",
+                "Toggle junk items",
+                "Off costs 2 string per operation");
         provider.add("ore.spawnlocation.name", "Ore Spawn Information");
         multiLang(provider, "gtceu.jei.ore.surface_rock",
                 "Surface Rocks with this material denote vein spawn locations.",

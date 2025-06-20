@@ -523,8 +523,10 @@ public class MachineLang {
                 "Right Click with fire-starting items to start.",
                 "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
                 "Logs must be not be exposed to §eAir§7!");
-        multilineLang(provider, "gtceu.multiblock.charcoal_pile.description",
-                "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\nThe floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
+        multiLang(provider, "gtceu.multiblock.charcoal_pile.description",
+                "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.",
+                "The floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof. No air can be inside the pit.",
+                "Larger pits take more time to process logs, but are more efficient.");
 
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
@@ -595,10 +597,22 @@ public class MachineLang {
         // Primitive pump
         provider.add("gtceu.multiblock.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
-        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra1",
-                "Biome Coefficient:\n  Ocean, River: 1000 mB/s\n  Swamp: 800 mB/s\n  Jungle: 350 mB/s\n  Snowy: 300 mB/s\n  Plains, Forest: 250 mB/s\n  Taiga: 175 mB/s\n  Beach: 170 mB/s\n  Other: 100 mB/s");
-        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2",
-                "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
+        multiLang(provider, "gtceu.multiblock.primitive_water_pump.extra1",
+                "Biome Coefficient:",
+                "Ocean, River: 1000 mB/s",
+                "Swamp: 800 mB/s",
+                "Jungle: 350 mB/s",
+                "Snowy: 300 mB/s",
+                "Plains, Forest: 250 mB/s",
+                "Taiga: 175 mB/s",
+                "Beach: 170 mB/s",
+                "Other: 100 mB/s");
+        multiLang(provider, "gtceu.multiblock.primitive_water_pump.extra2",
+                "Hatch Multipliers:",
+                "Pump Hatch: 1x",
+                "ULV Output Hatch: 2x",
+                "LV Output Hatch: 4x",
+                "While raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
         // Parallel
         provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
@@ -806,8 +820,9 @@ public class MachineLang {
 
         // Maintenance tooltips
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
-        multilineLang(provider, "gtceu.machine.maintenance_hatch_configurable.tooltip",
-                "For finer control over Multiblocks\nStarts with no Maintenance problems!");
+        multiLang(provider, "gtceu.machine.maintenance_hatch_configurable.tooltip",
+                "For finer control over Multiblocks",
+                "Starts with no Maintenance problems!");
         provider.add("gtceu.machine.maintenance_hatch_full_auto.tooltip",
                 "For automatically maintaining Multiblocks");
         multiLang(provider, "gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip",
@@ -1030,7 +1045,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
         provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
-        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:" );
+        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
         provider.add("gtceu.multiblock.universal.distinct.no", "§cNo");
         provider.add("gtceu.multiblock.universal.distinct.yes", "§aYes");
         provider.add("gtceu.multiblock.universal.distinct.info",

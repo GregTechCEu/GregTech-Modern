@@ -166,8 +166,9 @@ public class ToolLang {
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
 
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
-        multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
-                "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
+        multiLang(provider, "item.gtceu.tool.mallet.tooltip",
+                "§8Sneak to Pause Machine After Current Recipe.",
+                "§8Stops/Starts Machines");
         provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold L-CLICK to dismantle Machines");
         provider.add("item.gtceu.tool.crowbar.tooltip", "§8Dismounts Covers");
         provider.add("item.gtceu.tool.screwdriver.tooltip", "§8Adjusts Covers and Machines");
