@@ -185,7 +185,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         } else {
             tooltipComponents.add(Component.translatable("behavior.paintspray.solvent.tooltip"));
         }
-        tooltipComponents.add(Component.translatable("behavior.paintspray.uses", remainingUses));
+        tooltipComponents.add(Component.translatable("behavior.uses", remainingUses));
     }
 
     @Override

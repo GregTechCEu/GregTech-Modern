@@ -552,7 +552,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behavior.soft_hammer.enabled" : "behavior.soft_hammer.disabled"));
+                        "behavior.soft_mallet.enabled" : "behavior.soft_mallet.disabled"));
             }
             return InteractionResult.CONSUME;
         }

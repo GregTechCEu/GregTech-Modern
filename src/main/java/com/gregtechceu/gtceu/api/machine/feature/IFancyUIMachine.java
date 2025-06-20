@@ -117,7 +117,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     controllable::isWorkingEnabled, (clickData, pressed) -> controllable.setWorkingEnabled(pressed))
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
-                                    pressed ? "behavior.soft_hammer.enabled" : "behavior.soft_hammer.disabled"))));
+                                    pressed ? "behavior.soft_mallet.enabled" : "behavior.soft_mallet.disabled"))));
         }
         if (this instanceof MetaMachine machine) {
             for (var direction : Direction.values()) {
