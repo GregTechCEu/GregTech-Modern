@@ -168,8 +168,8 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("behaviour.meta.machine.config.copy.tooltip"));
-        tooltipComponents.add(Component.translatable("behaviour.meta.machine.config.paste.tooltip"));
+        tooltipComponents.add(Component.translatable("behavior.meta.machine.config.copy.tooltip"));
+        tooltipComponents.add(Component.translatable("behavior.meta.machine.config.paste.tooltip"));
         if (!stack.hasTag()) return;
         if (Screen.hasShiftDown()) {
             tooltipComponents.add(Component.literal(""));
@@ -186,33 +186,33 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                         var itemData = data.getCompound(ITEM_CONFIG);
                         var itemComponent = Component.translatable("recipe.capability.item.name")
                                 .withStyle(ChatFormatting.GOLD);
-                        tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
+                        tooltipComponents.add(Component.translatable("behavior.setting.output.direction.tooltip",
                                 itemComponent,
                                 relativeDirectionComponent(origFront, intToDirection(itemData.getInt(DIRECTION)))));
                         tooltipComponents
-                                .add(Component.translatable("behaviour.setting.item_auto_output.tooltip", itemComponent,
+                                .add(Component.translatable("behavior.setting.item_auto_output.tooltip", itemComponent,
                                         (itemData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip", itemComponent,
+                                "behavior.setting.allow.input.from.output.tooltip", itemComponent,
                                 (itemData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? enabledComponent : disabledComponent)));
                     }
                     if (data.contains(FLUID_CONFIG)) {
                         var fluidData = data.getCompound(FLUID_CONFIG);
                         var fluidComponent = Component.translatable("recipe.capability.fluid.name")
                                 .withStyle(ChatFormatting.BLUE);
-                        tooltipComponents.add(Component.translatable("behaviour.setting.output.direction.tooltip",
+                        tooltipComponents.add(Component.translatable("behavior.setting.output.direction.tooltip",
                                 fluidComponent,
                                 relativeDirectionComponent(origFront, intToDirection(fluidData.getInt(DIRECTION)))));
                         tooltipComponents.add(
-                                Component.translatable("behaviour.setting.item_auto_output.tooltip", fluidComponent,
+                                Component.translatable("behavior.setting.item_auto_output.tooltip", fluidComponent,
                                         (fluidData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
-                                "behaviour.setting.allow.input.from.output.tooltip", fluidComponent,
+                                "behavior.setting.allow.input.from.output.tooltip", fluidComponent,
                                 (fluidData.getBoolean(INPUT_FROM_OUTPUT_SIDE) ? enabledComponent : disabledComponent)));
                     }
                 }
                 if (data.contains(MUFFLED)) {
-                    tooltipComponents.add(Component.translatable("behaviour.setting.muffled.tooltip",
+                    tooltipComponents.add(Component.translatable("behavior.setting.muffled.tooltip",
                             data.getBoolean(MUFFLED) ? enabledComponent : disabledComponent));
                 }
             }
