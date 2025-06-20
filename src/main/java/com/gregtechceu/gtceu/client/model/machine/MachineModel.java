@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
@@ -172,16 +173,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             }
         }
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            if (renderReplacedPartMachine(quads, part, frontFacing, quadFace, rand, elementSide,
+            if (renderReplacedPartMachine(quads, part, frontFacing, elementSide, modelFront, rand,
                     modelData, renderType)) {
                 return;
             }
         }
-        renderBaseModel(quads, machine, quadFace, rand, modelData, renderType);
+        renderBaseModel(quads, machine, elementSide, rand, modelData, renderType);
     }
 
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MetaMachine machine,
-                                @Nullable Direction side, RandomSource rand,
+                                @Nullable Direction elementSide, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (multiPart != null) {
             quads.addAll(multiPart.getMachineQuads(machine.getDefinition(), machine.getRenderState(),
@@ -191,7 +192,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                     .getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
         }
         quads.addAll(modelsByState.get(machine.getRenderState())
-                .getQuads(machine.getBlockState(), side, rand, modelData, renderType));
+                .getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
     }
 
     @Override

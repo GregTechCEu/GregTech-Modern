@@ -41,9 +41,9 @@ public abstract class DynamicRender<T extends IMachineFeature, S extends Dynamic
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             @NotNull RandomSource rand,
-                                             @NotNull ModelData extraData, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction elementSide,
+                                             @NotNull RandomSource rand, @NotNull ModelData extraData,
+                                             @Nullable RenderType renderType) {
         return List.of();
     }
 

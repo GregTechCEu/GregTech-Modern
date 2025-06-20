@@ -13,7 +13,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,27 +26,26 @@ public interface IPartModelRenderer {
      */
     @OnlyIn(Dist.CLIENT)
     default boolean renderReplacedPartMachine(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
-                                              @Nullable Direction side, RandomSource rand,
-                                              @Nullable Direction elementSide,
-                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                              @Nullable Direction elementSide, @Nullable Direction modelFront,
+                                              RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
 
             if (model instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
+                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, modelFront,
                         rand, elementSide, modelData, renderType);
                 return true;
             } else if (model instanceof MachineModel machineModel) {
                 for (var render : machineModel.getDynamicRenders()) {
                     if (render instanceof IControllerModelRenderer controllerRenderer) {
-                        controllerRenderer.renderPartModel(quads, controller, part, frontFacing, side,
+                        controllerRenderer.renderPartModel(quads, controller, part, frontFacing, modelFront,
                                 rand, elementSide, modelData, renderType);
                         return true;
                     }
                 }
-                machineModel.renderBaseModel(quads, controller.self(), side, rand, modelData, renderType);
+                machineModel.renderBaseModel(quads, controller.self(), elementSide, rand, modelData, renderType);
                 return true;
             }
         }

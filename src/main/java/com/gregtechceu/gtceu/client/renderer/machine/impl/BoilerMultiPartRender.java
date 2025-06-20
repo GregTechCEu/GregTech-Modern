@@ -101,9 +101,9 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                                @Nullable Direction renderSide, RandomSource rand, @Nullable Direction elementSide,
+                                @Nullable Direction elementSide, RandomSource rand, @Nullable Direction modelFront,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
-        if (renderSide == null) {
+        if (modelFront == null) {
             return;
         }
         BlockPos partPos = part.self().getPos();
@@ -121,28 +121,28 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
             // firebox
             if (machine instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
                 emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
-                        renderSide, rand, modelData, renderType);
+                        elementSide, rand, modelData, renderType);
             } else {
                 emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
-                        renderSide, rand, modelData, renderType);
+                        elementSide, rand, modelData, renderType);
             }
         } else {
             // Not exactly one below the controller, so not a firebox
             emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
-                    renderSide, rand, modelData, renderType);
+                    elementSide, rand, modelData, renderType);
         }
     }
 
     private static void emitQuads(List<BakedQuad> quads, @Nullable BakedModel model,
                                   BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                  Direction renderFace, RandomSource rand,
+                                  @Nullable Direction elementSide, RandomSource rand,
                                   ModelData modelData, @Nullable RenderType renderType) {
         if (model == null) return;
         modelData = model.getModelData(level, pos, state, modelData);
         // render both the culled & unculled quads
-        quads.addAll(model.getQuads(state, null,
-                rand, modelData, renderType));
-        quads.addAll(model.getQuads(state, renderFace,
-                rand, modelData, renderType));
+        quads.addAll(model.getQuads(state, null, rand, modelData, renderType));
+        if (elementSide != null) {
+            quads.addAll(model.getQuads(state, elementSide, rand, modelData, renderType));
+        }
     }
 }
