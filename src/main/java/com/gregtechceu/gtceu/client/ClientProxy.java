@@ -128,15 +128,17 @@ public class ClientProxy extends CommonProxy {
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
-        event.enqueueWork(() -> {
-            DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
-            DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
+        event.enqueueWork(ClientProxy::initializeDynamicRenders);
+    }
 
-            DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
-            DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
+    public static void initializeDynamicRenders() {
+        DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
 
-            DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
-        });
+        DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
+
+        DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
     }
 
     @SubscribeEvent
