@@ -231,7 +231,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                     unit)
                     .withStyle(color));
         } else {
-            tooltip.add(Component.translatable("item.generic.electric_item.tooltip",
+            tooltip.add(Component.translatable("item.electric.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
                     GTValues.VNF[tier]).withStyle(color));
         }

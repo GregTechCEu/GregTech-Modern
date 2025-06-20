@@ -69,8 +69,8 @@ public class LangHandler {
 
         provider.add("fluid.empty", "Empty");
         provider.add("item.generic.fluid_container.tooltip", "%d/%dL %s");
-        provider.add("item.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
-        provider.add("item.generic.electric_item.stored", "%d/%d EU (%s)");
+        provider.add("item.electric.tooltip", "%d/%d EU - Tier %s");
+        provider.add("item.electric.stored", "%d/%d EU (%s)");
         provider.add("item.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("item.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
