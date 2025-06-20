@@ -11,7 +11,7 @@ public final class FluidAttributes {
      */
     public static final FluidAttribute ACID = new FluidAttribute(GTCEu.id("acid"),
             list -> list.accept(Component.translatable("fluid.gtceu.tooltip.acid")),
-            list -> list.accept(Component.translatable("gtceu.fluid_pipe.acid_proof")));
+            list -> list.accept(Component.translatable("gtceu.fluid_container.acid_proof")));
 
     private FluidAttributes() {}
 }

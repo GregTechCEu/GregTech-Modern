@@ -10,6 +10,7 @@ public class BlockLang {
 
     public static void init(RegistrateLangProvider provider) {
         generateBlockKeys(provider);
+        generateFluidContainerKeys(provider);
         generatePipeKeys(provider);
     }
 
@@ -119,15 +120,18 @@ public class BlockLang {
         provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
 
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
-        provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
-        provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
-        provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
-        provider.add("gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
-        provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
-        provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
         provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
         provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
+    }
+
+    private static void generateFluidContainerKeys(RegistrateLangProvider provider) {
+        provider.add("gtceu.fluid_container.capacity", "§9Capacity: §f%d mB");
+        provider.add("gtceu.fluid_container.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("gtceu.fluid_container.channels", "§eChannels: §f%d");
+        provider.add("gtceu.fluid_container.gas_proof", "§7Can handle §6Gases");
+        provider.add("gtceu.fluid_container.acid_proof", "§7Can handle §6Acids");
+        provider.add("gtceu.fluid_container.cryo_proof", "§7Can handle §6Cryogenics");
+        provider.add("gtceu.fluid_container.plasma_proof", "§7Can handle §6all Plasmas");
+        provider.add("gtceu.fluid_container.not_gas_proof", "§4Gases may leak!");
     }
 }
