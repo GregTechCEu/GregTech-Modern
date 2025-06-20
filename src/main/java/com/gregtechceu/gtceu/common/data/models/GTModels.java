@@ -192,8 +192,7 @@ public class GTModels {
                     .withExistingParent("%s_hermetic_casing".formatted(tierName), GTCEu.id("block/hermetic_casing"))
                     .texture("bot_bottom", GTCEu.id("block/casings/voltage/%s/bottom".formatted(tierName)))
                     .texture("bot_top", GTCEu.id("block/casings/voltage/%s/top".formatted(tierName)))
-                    .texture("bot_side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))
-                    .texture("top_side", GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay")));
+                    .texture("bot_side", GTCEu.id("block/casings/voltage/%s/side".formatted(tierName))));
         };
     }
 
