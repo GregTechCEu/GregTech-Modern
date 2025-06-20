@@ -122,11 +122,13 @@ public class WorkableOverlays {
         private StatusTextures() {}
 
         public @NotNull ResourceLocation getTexture(@NotNull Status status) {
-            return textures.getOrDefault(status, GTModels.BLANK_TEXTURE);
+            ResourceLocation value = textures.get(status);
+            return value != null ? value : GTModels.BLANK_TEXTURE;
         }
 
         public @NotNull ResourceLocation getEmissiveTexture(@NotNull Status status) {
-            return emissiveTextures.getOrDefault(status, GTModels.BLANK_TEXTURE);
+            ResourceLocation value = emissiveTextures.get(status);
+            return value != null ? value : GTModels.BLANK_TEXTURE;
         }
     }
 }

@@ -86,10 +86,12 @@ public class HPCAOverlay {
     }
 
     public @NotNull ResourceLocation getTexture(boolean active, boolean damaged) {
-        return textures.getOrDefault(getStatus(active, damaged), GTModels.BLANK_TEXTURE);
+        ResourceLocation value = textures.get(getStatus(active, damaged));
+        return value != null ? value : GTModels.BLANK_TEXTURE;
     }
 
     public @NotNull ResourceLocation getEmissiveTexture(boolean active, boolean damaged) {
-        return emissiveTextures.getOrDefault(getStatus(active, damaged), GTModels.BLANK_TEXTURE);
+        ResourceLocation value = emissiveTextures.get(getStatus(active, damaged));
+        return value != null ? value : GTModels.BLANK_TEXTURE;
     }
 }

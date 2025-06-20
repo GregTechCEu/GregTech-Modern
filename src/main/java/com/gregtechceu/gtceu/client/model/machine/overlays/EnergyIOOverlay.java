@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import kroppeb.stareval.Util;
 import lombok.Getter;
 
 public class EnergyIOOverlay {
