@@ -112,7 +112,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
         tooltipComponents.add(Component.translatable("item.prospector.tooltip.radius", radius));
         tooltipComponents.add(Component.translatable("item.prospector.tooltip.modes"));
         for (ProspectorMode<?> mode : modes) {
-            tooltipComponents.add(Component.literal(" -").append(Component.translatable(mode.unlocalizedName))
+            tooltipComponents.add(Component.literal(" - ").append(Component.translatable(mode.unlocalizedName))
                     .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
         }
     }
