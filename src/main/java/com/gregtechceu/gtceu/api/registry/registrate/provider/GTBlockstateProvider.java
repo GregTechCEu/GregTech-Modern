@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
+import appeng.core.definitions.BlockDefinition;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -66,6 +67,12 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
         var multiVariant = MultiVariantGenerator.multiVariant(block, baseVariant);
         registeredBlocks.put(block, () -> multiVariant.get().getAsJsonObject());
         return multiVariant;
+    }
+
+    public MultiPartGenerator multiPartGenerator(Block block) {
+        var multipart = MultiPartGenerator.multiPart(block);
+        registeredBlocks.put(block, () -> multipart.get().getAsJsonObject());
+        return multipart;
     }
 
     public static @Nullable PropertyDispatch createFacingDispatch(MachineDefinition definition) {
