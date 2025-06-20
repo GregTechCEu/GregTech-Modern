@@ -528,7 +528,7 @@ public class ItemLang {
                 "§7Use on a frame to foam connected frames",
                 "Foam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
-        provider.add("item.gtceu.basic_tape.tooltip",
+        multiLang(provider, "item.gtceu.basic_tape.tooltip",
                 "§7Not strong enough for mechanical issues",
                 "Can be used to pick up crates without dropping their items");
         provider.add("item.gtceu.terminal.tooltip",
