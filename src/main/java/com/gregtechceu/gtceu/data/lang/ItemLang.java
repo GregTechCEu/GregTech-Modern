@@ -290,6 +290,8 @@ public class ItemLang {
         multilineLang(provider, "item.gtceu.programmed_circuit.tooltip",
                 "Use to open configuration GUI\nSHIFT + R-CLICK on a machine\nwith a circuit slot to set it to\nthis circuit's value.");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
+        // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
+        // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
         provider.add("item.gtceu.silicon_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.phosphorus_boule.tooltip", "§7Raw Circuit");
@@ -514,7 +516,7 @@ public class ItemLang {
         provider.add("behavior.lighter.uses", "Remaining uses: %d");
         provider.add("behavior.toggle_energy_consumer.tooltip", "SHIFT + R-CLICK to toggle mode");
         provider.add("behavior.hammer", "Turns on and off Muffling for Machines (by hitting them)");
-        provider.add("behavior.wrench", "Rotates Blocks on Rightclick");
+        provider.add("behavior.wrench", "Rotates Blocks on R-CLICK");
         provider.add("behavior.boor.by", "by %s");
         provider.add("behavior.paintspray.solvent.tooltip", "Can remove color from things");
         provider.add("behavior.paintspray.white.tooltip", "Can paint things in White");
