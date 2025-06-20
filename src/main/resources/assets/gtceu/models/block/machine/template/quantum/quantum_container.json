@@ -1,14 +1,8 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
+	"parent": "gtceu:block/cube/tinted/bottom_top",
 	"textures": {
 		"particle": "#side",
-		"bottom": "gtceu:block/casings/voltage/max/bottom",
-		"top": "gtceu:block/casings/voltage/max/top",
-		"side": "gtceu:block/casings/voltage/max/side",
-
-		"overlay_screen": "gtceu:block/overlay/machine/overlay_screen_glass",
-		"overlay_qchest": "gtceu:block/overlay/machine/overlay_creativecontainer_emissive"
+		"overlay_screen": "gtceu:block/overlay/machine/overlay_screen_glass"
 	},
 	"elements": [
 		{
@@ -35,7 +29,7 @@
 			"to":   [ 9, 12, 1 ],
 			"shade": false,
 			"faces": {
-				"north": { "uv": [4, 4, 12, 7], "texture": "#overlay_qchest", "cullface": "north", "tintindex": -101, "emissivity": 15 }
+				"north": { "uv": [4, 4, 12, 7], "texture": "#overlay_container", "cullface": "north", "tintindex": -101, "emissivity": 15 }
 			}
 		},
 		{

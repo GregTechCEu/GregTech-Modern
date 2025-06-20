@@ -526,7 +526,7 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .model(createBasicMachineModel(GTCEu.id("block/machine/creative_container"))
+            .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
             .hasBER(true)
             .register();
@@ -544,7 +544,7 @@ public class GTMachines {
                             FormattingUtil.formatNumbers(perCycle)));
                 }
             })
-            .model(createBasicMachineModel(GTCEu.id("block/machine/creative_container"))
+            .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
             .hasBER(true)
             .register();
@@ -565,7 +565,7 @@ public class GTMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
-                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/quantum_chest"))
+                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
                             .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
                     .hasBER(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -583,7 +583,7 @@ public class GTMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
-                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/quantum_chest"))
+                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
                             .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
                     .hasBER(true)
                     .tooltipBuilder(CHEST_TOOLTIPS)
@@ -601,7 +601,7 @@ public class GTMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
-                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/quantum_tank"))
+                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
                             .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
@@ -619,7 +619,7 @@ public class GTMachines {
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
-                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/quantum_tank"))
+                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
                             .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)

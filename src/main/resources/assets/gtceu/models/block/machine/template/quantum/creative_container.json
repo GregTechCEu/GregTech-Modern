@@ -1,0 +1,6 @@
+{
+	"parent": "gtceu:block/machine/template/quantum_container",
+	"textures": {
+		"overlay_container": "gtceu:block/overlay/machine/overlay_creativecontainer_emissive"
+	}
+}
