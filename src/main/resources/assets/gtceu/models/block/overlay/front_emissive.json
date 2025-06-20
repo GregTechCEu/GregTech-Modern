@@ -13,7 +13,7 @@
             "to":   [ 16, 16, 0 ],
             "shade": false,
             "faces": {
-                "north": { "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101, "emissivity": 15 }
+                "north": { "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101 }
             }
         }
     ]

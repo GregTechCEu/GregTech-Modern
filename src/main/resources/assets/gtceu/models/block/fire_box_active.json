@@ -20,12 +20,13 @@
     {
       "from": [  0,  0,  0 ],
       "to":   [ 16, 16, 16 ],
+      "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "north": { "texture": "#active_side", "cullface": "north", "tintindex": -101, "emissivity": 15 },
-        "south": { "texture": "#active_side", "cullface": "south", "tintindex": -101, "emissivity": 15 },
-        "west":  { "texture": "#active_side", "cullface": "west",  "tintindex": -101, "emissivity": 15 },
-        "east":  { "texture": "#active_side", "cullface": "east",  "tintindex": -101, "emissivity": 15 }
+        "north": { "texture": "#active_side", "cullface": "north", "tintindex": -101 },
+        "south": { "texture": "#active_side", "cullface": "south", "tintindex": -101 },
+        "west":  { "texture": "#active_side", "cullface": "west",  "tintindex": -101 },
+        "east":  { "texture": "#active_side", "cullface": "east",  "tintindex": -101 }
       }
     }
   ]

@@ -31,9 +31,10 @@
     {
       "from": [  0, 16,  0 ],
       "to":   [ 16, 16, 16 ],
+      "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "up": {"texture": "#screen_emissive", "cullface": "up", "tintindex": -101, "emissivity": 15 }
+        "up": {"texture": "#screen_emissive", "cullface": "up", "tintindex": -101 }
       }
     }
   ]

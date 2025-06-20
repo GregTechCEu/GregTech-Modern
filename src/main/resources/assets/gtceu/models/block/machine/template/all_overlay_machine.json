@@ -1,8 +1,6 @@
 {
     "parent": "gtceu:block/cube/tinted/all",
     "textures": {
-        "all": "gtceu:block/casings/solid/machine_casing_heatproof",
-
         "overlay_front": "gtceu:block/void",
         "overlay_back": "gtceu:block/void",
         "overlay_top": "gtceu:block/void",
@@ -43,14 +41,15 @@
         {
             "from": [  0,  0,  0 ],
             "to":   [ 16, 16, 16 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
-                "north": { "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101, "emissivity": 15 },
-                "south": { "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101, "emissivity": 15 },
-                "up":    { "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101, "emissivity": 15 },
-                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down",  "tintindex": -101, "emissivity": 15 },
-                "west":  { "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101, "emissivity": 15 },
-                "east":  { "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101, "emissivity": 15 }
+                "north": { "texture": "#overlay_front_emissive",  "cullface": "north", "tintindex": -101 },
+                "south": { "texture": "#overlay_back_emissive",   "cullface": "south", "tintindex": -101 },
+                "up":    { "texture": "#overlay_top_emissive",    "cullface": "up",    "tintindex": -101 },
+                "down":  { "texture": "#overlay_bottom_emissive", "cullface": "down",  "tintindex": -101 },
+                "west":  { "texture": "#overlay_side_emissive",   "cullface": "west",  "tintindex": -101 },
+                "east":  { "texture": "#overlay_side_emissive",   "cullface": "east",  "tintindex": -101 }
             }
         }
     ]

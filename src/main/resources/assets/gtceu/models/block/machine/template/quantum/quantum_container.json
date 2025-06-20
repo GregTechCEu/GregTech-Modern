@@ -27,9 +27,10 @@
 		{
 			"from": [ 4, 10, 1 ],
 			"to":   [ 9, 12, 1 ],
+			"forge_data": { "block_light": 15, "sky_light": 15 },
 			"shade": false,
 			"faces": {
-				"north": { "uv": [4, 4, 12, 7], "texture": "#overlay_container", "cullface": "north", "tintindex": -101, "emissivity": 15 }
+				"north": { "uv": [4, 4, 12, 7], "texture": "#overlay_container", "cullface": "north", "tintindex": -101 }
 			}
 		},
 		{

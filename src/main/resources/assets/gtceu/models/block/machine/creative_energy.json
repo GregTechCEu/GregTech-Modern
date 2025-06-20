@@ -23,14 +23,15 @@
     {
       "from": [  0,  0,  0 ],
       "to":   [ 16, 16, 16 ],
+      "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "down":  { "texture": "#overlay", "cullface": "down",  "tintindex": -101, "emissivity": 15 },
-        "up":    { "texture": "#overlay", "cullface": "up",    "tintindex": -101, "emissivity": 15 },
-        "north": { "texture": "#overlay", "cullface": "north", "tintindex": -101, "emissivity": 15 },
-        "south": { "texture": "#overlay", "cullface": "south", "tintindex": -101, "emissivity": 15 },
-        "west":  { "texture": "#overlay", "cullface": "west",  "tintindex": -101, "emissivity": 15 },
-        "east":  { "texture": "#overlay", "cullface": "east",  "tintindex": -101, "emissivity": 15 }
+        "down":  { "texture": "#overlay", "cullface": "down",  "tintindex": -101 },
+        "up":    { "texture": "#overlay", "cullface": "up",    "tintindex": -101 },
+        "north": { "texture": "#overlay", "cullface": "north", "tintindex": -101 },
+        "south": { "texture": "#overlay", "cullface": "south", "tintindex": -101 },
+        "west":  { "texture": "#overlay", "cullface": "west",  "tintindex": -101 },
+        "east":  { "texture": "#overlay", "cullface": "east",  "tintindex": -101 }
       }
     }
   ]

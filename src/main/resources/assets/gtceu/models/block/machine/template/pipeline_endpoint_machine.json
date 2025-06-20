@@ -37,12 +37,13 @@
     {
       "from": [  0,  0,  0 ],
       "to":   [ 16, 16, 16 ],
+      "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "up":    { "texture": "#overlay_emissive", "rotation": 0,   "cullface": "up",    "tintindex": -101, "emissivity": 15 },
-        "down":  { "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",  "tintindex": -101, "emissivity": 15 },
-        "west":  { "texture": "#overlay_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101, "emissivity": 15 },
-        "east":  { "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101, "emissivity": 15 }
+        "up":    { "texture": "#overlay_emissive", "rotation": 0,   "cullface": "up",    "tintindex": -101 },
+        "down":  { "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",  "tintindex": -101 },
+        "west":  { "texture": "#overlay_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101 },
+        "east":  { "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101 }
       }
     },
     {
