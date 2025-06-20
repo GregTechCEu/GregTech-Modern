@@ -49,6 +49,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 
     @Override
     public JsonObject toJson(JsonObject json) {
+        json = super.toJson(json);
+        
         json.addProperty("machine", owner.getId().toString());
 
         List<MachineRenderState> missingStates = Lists.newArrayList(owner.getStateDefinition().getPossibleStates());
