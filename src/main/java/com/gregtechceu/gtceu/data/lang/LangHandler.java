@@ -80,9 +80,9 @@ public class LangHandler {
         provider.add("item.programmed_circuit.configuration", "Configuration: %d");
 
         provider.add("item.machine_configuration.mode", "§aConfiguration Mode:§r %s");
-        provider.add("gtceu.mode.fluid", "§9Fluid§r");
-        provider.add("gtceu.mode.item", "§6Item§r");
-        provider.add("gtceu.mode.both", "§dBoth (Fluid And Item)§r");
+        provider.add("gtceu.tool.mode.fluid", "§9Fluid§r");
+        provider.add("gtceu.tool.mode.item", "§6Item§r");
+        provider.add("gtceu.tool.mode.both", "§dBoth (Fluid And Item)§r");
         provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
