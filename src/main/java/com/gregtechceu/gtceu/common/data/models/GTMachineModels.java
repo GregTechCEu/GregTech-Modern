@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -47,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
+import static com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController.IS_FORMED_PROPERTY;
 import static com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine.*;
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
@@ -411,39 +411,34 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static final ResourceLocation UNFORMED_ROTOR_HOLDER_MODEL = GTCEu.id("block/machine/template/rotor_holder/unformed");
-    public static final ResourceLocation EMPTY_ROTOR_HOLDER_MODEL = GTCEu.id("block/machine/template/rotor_holder/empty");
-    public static final ResourceLocation IDLE_ROTOR_HOLDER_MODEL = GTCEu.id("block/machine/template/rotor_holder/idle");
-    public static final ResourceLocation SPINNING_ROTOR_HOLDER_MODEL = GTCEu.id("block/machine/template/rotor_holder/spinning");
+    public static final ResourceLocation ROTOR_HOLDER_BLOCK = GTCEu.id("block/machine/template/rotor_holder/block");
+    public static final ResourceLocation ROTOR_HOLDER_OVERLAY = GTCEu.id("block/machine/template/rotor_holder/overlay");
+    public static final ResourceLocation ROTOR_HOLDER_ROTOR_IDLE = GTCEu.id("block/machine/template/rotor_holder/rotor_idle");
+    public static final ResourceLocation ROTOR_HOLDER_ROTOR_SPINNING = GTCEu.id("block/machine/template/rotor_holder/rotor_spinning");
     // spotless:on
 
     public static MachineBuilder.ModelConstructor createRotorHolderModel() {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(state -> {
-                if (!state.getValue(IMultiController.IS_FORMED_PROPERTY)) {
-                    var model = prov.models().nested()
-                            .parent(prov.models().getExistingFile(UNFORMED_ROTOR_HOLDER_MODEL));
-                    return tieredHullTextures(model, builder.getOwner().getTier());
-                }
-                if (state.hasProperty(HAS_ROTOR_PROPERTY) && !state.getValue(HAS_ROTOR_PROPERTY)) {
-                    var model = prov.models().nested()
-                            .parent(prov.models().getExistingFile(EMPTY_ROTOR_HOLDER_MODEL));
-                    tieredHullTextures(model, builder.getOwner().getTier());
-                }
+            var blockModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(ROTOR_HOLDER_BLOCK));
+            tieredHullTextures(blockModel, builder.getOwner().getTier());
 
-                ResourceLocation modelName;
-                if (state.hasProperty(ROTOR_SPINNING_PROPERTY) && state.getValue(ROTOR_SPINNING_PROPERTY)) {
-                    modelName = SPINNING_ROTOR_HOLDER_MODEL;
-                } else {
-                    modelName = IDLE_ROTOR_HOLDER_MODEL;
-                }
-                if (state.hasProperty(EMISSIVE_ROTOR_PROPERTY) && state.getValue(EMISSIVE_ROTOR_PROPERTY)) {
-                    modelName = modelName.withSuffix(EMISSIVE_SUFFIX);
-                }
-                var model = prov.models().nested().parent(prov.models().getExistingFile(modelName));
-                return tieredHullTextures(model, builder.getOwner().getTier());
-            });
+            builder.part(blockModel).end();
+            builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED_PROPERTY, true).end();
+            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_IDLE, false, false);
+            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_IDLE.withSuffix(EMISSIVE_SUFFIX), false, true);
+            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING, true, false);
+            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING.withSuffix(EMISSIVE_SUFFIX), true, true);
         };
+    }
+
+    private static void makeRotorHolderPart(MachineModelBuilder<BlockModelBuilder> builder, ResourceLocation model,
+                                            boolean spinning, boolean emissive) {
+        builder.part(model)
+                .condition(IS_FORMED_PROPERTY, true)
+                .condition(HAS_ROTOR_PROPERTY, true)
+                .condition(ROTOR_SPINNING_PROPERTY, spinning)
+                .condition(EMISSIVE_ROTOR_PROPERTY, emissive);
     }
 
     public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");

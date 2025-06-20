@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
@@ -174,17 +175,27 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
-     * Creates a builder for models to assign to a {@link MultiPartBlockStateBuilder.PartBuilder}, which when
-     * completed via {@link ConfiguredModel.Builder#addModel()} will assign the
-     * resultant set of models to the part and return it for further processing.
+     * Creates a {@link PartBuilder} with the passed model and returns it for further processing.
      *
+     * @param model the model to use
      * @return the model builder
-     * @see ConfiguredModel.Builder
+     * @see MachineModelBuilder#part(ResourceLocation)
      */
     public PartBuilder part(ModelFile model) {
         PartBuilder part = new PartBuilder(model);
         this.parts.add(part);
         return part;
+    }
+
+    /**
+     * Creates a {@link PartBuilder} with an existing model and returns it for further processing.
+     *
+     * @param model an existing model's name
+     * @return the model builder
+     * @see MachineModelBuilder#part(ModelFile)
+     */
+    public PartBuilder part(ResourceLocation model) {
+        return part(new ModelFile.ExistingModelFile(model, existingFileHelper));
     }
 
     public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ModelFile> mapper) {
@@ -390,8 +401,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             Preconditions.checkNotNull(prop, "Property must not be null");
             Preconditions.checkNotNull(values, "Value list must not be null");
             Preconditions.checkArgument(values.length > 0, "Value list must not be empty");
-            Preconditions.checkArgument(canApplyTo(owner),
-                    "Property %s is not valid for machine %s", prop, owner);
+            Preconditions.checkArgument(canApplyTo(owner), "Property %s is not valid for machine %s", prop, owner);
             this.nestedConditionGroups.clear();
             this.conditions.putAll(prop, Arrays.asList(values));
             return this;
@@ -443,7 +453,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             return MachineModelBuilder.this;
         }
 
-        JsonObject toJson() {
+        public JsonObject toJson() {
             JsonObject out = new JsonObject();
             if (!conditions.isEmpty()) {
                 out.add("when", conditionsToJson(this.conditions, this.useOr));
@@ -599,7 +609,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 return this;
             }
 
-            JsonObject toJson() {
+            public JsonObject toJson() {
                 if (!this.conditions.isEmpty()) {
                     return conditionsToJson(this.conditions, this.useOr);
                 } else if (!this.nestedConditionGroups.isEmpty()) {

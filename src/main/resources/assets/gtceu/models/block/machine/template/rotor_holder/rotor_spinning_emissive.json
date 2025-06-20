@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/machine/template/rotor_holder/idle_emissive",
+    "parent": "gtceu:block/machine/template/rotor_holder/rotor_idle_emissive",
     "textures": {
         "rotor": "gtceu:block/multiblock/large_turbine/rotor_spinning"
     }

@@ -103,8 +103,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
         super.onLoad();
         if (!isRemote()) {
             updateRotorSubscription();
-            rotorInvSubs = this.inventory.addChangedListener(this::onRotorInventoryChanged);
         }
+        rotorInvSubs = this.inventory.addChangedListener(this::onRotorInventoryChanged);
     }
 
     @Override
