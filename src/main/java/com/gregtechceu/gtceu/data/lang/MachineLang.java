@@ -1045,14 +1045,14 @@ public class MachineLang {
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
         provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
-        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
+        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses: ");
         provider.add("gtceu.multiblock.universal.distinct.no", "§cNo");
         provider.add("gtceu.multiblock.universal.distinct.yes", "§aYes");
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
         provider.add("gtceu.multiblock.parallel.exact", "Performing %d Recipes in Parallel");
-        provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
+        provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode: ");
         provider.add("gtceu.multiblock.multiple_recipemaps.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
         provider.add("gtceu.multiblock.multiple_recipemaps_recipes.tooltip", "Machine Modes: §e%s§r");

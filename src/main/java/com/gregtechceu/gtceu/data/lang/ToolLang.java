@@ -202,7 +202,7 @@ public class ToolLang {
     }
 
     public static void generateActionKeys(RegistrateLangProvider provider) {
-        provider.add("gtceu.tool_action.show_tooltips", "Hold SHIFT to show Tool Info");
+        provider.add("gtceu.tool_action.show_tooltips", "§7Hold SHIFT to show Tool Info");
         provider.add("gtceu.tool_action.screwdriver.auto_output_covers",
                 "§8Use Screwdriver to Allow Input from Output Side or access Covers");
         provider.add("gtceu.tool_action.screwdriver.toggle_mode_covers",

@@ -33,6 +33,7 @@ public class HudGuiOverlay implements IGuiOverlay {
         }
     }
 
+    // todo rename this to just renderHUDArmor
     private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
         if (stack.getItem() instanceof ArmorComponentItem valueItem) {
             if (valueItem.getArmorLogic() instanceof IItemHUDProvider provider) {
@@ -41,6 +42,7 @@ public class HudGuiOverlay implements IGuiOverlay {
         }
     }
 
+    // todo rename this to just renderHUDItem
     private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
         if (stack.getItem() instanceof ComponentItem valueItem) {
             for (IItemComponent behaviour : valueItem.getComponents()) {
