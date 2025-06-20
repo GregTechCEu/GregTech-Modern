@@ -44,7 +44,6 @@ import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -83,7 +82,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
-            var model = prov.models().getExistingFile(ensureProperModelPath(baseModel));
+            var model = prov.models().getExistingFile(baseModel);
             builder.forAllStates(state -> model);
         };
     }
@@ -91,7 +90,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder model = prov.models().nested()
-                    .parent(prov.models().getExistingFile(ensureProperModelPath(parentModel)));
+                    .parent(prov.models().getExistingFile(parentModel));
             tieredHullTextures(model, builder.getOwner().getTier());
 
             builder.forAllStates(state -> model);
@@ -629,7 +628,7 @@ public class GTMachineModels {
                                                               BlockModelBuilder baseModel,
                                                               ResourceLocation overlayModel) {
         return makeOverlayCompositeModel(provider, baseModel,
-                provider.nested().parent(provider.getExistingFile(ensureProperModelPath(overlayModel))));
+                provider.nested().parent(provider.getExistingFile(overlayModel)));
     }
 
     public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,

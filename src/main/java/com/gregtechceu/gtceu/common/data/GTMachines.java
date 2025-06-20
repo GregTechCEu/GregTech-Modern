@@ -665,7 +665,7 @@ public class GTMachines {
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_ITEMS)
-                    .overlayTieredHullModel("item_bus.import")
+                    .overlayTieredHullModel("item_input_bus")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -678,7 +678,7 @@ public class GTMachines {
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.EXPORT_ITEMS)
-                    .overlayTieredHullModel("item_bus.export")
+                    .overlayTieredHullModel("item_output_bus")
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -686,37 +686,37 @@ public class GTMachines {
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
-            "input_hatch", "Input Hatch", "fluid_hatch.import", "fluid_hatch.import",
+            "input_hatch", "Input Hatch", "fluid_input_hatch", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
-            "input_hatch_4x", "Quadruple Input Hatch", "fluid_hatch.import_4x", "fluid_hatch.import",
+            "input_hatch_4x", "Quadruple Input Hatch", "fluid_input_hatch_4x", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
-            "input_hatch_9x", "Nonuple Input Hatch", "fluid_hatch.import_9x", "fluid_hatch.import",
+            "input_hatch_9x", "Nonuple Input Hatch", "fluid_input_hatch_9x", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_9X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
-            "output_hatch", "Output Hatch", "fluid_hatch.export", "fluid_hatch.export",
+            "output_hatch", "Output Hatch", "fluid_output_hatch", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
-            "output_hatch_4x", "Quadruple Output Hatch", "fluid_hatch.export_4x", "fluid_hatch.export",
+            "output_hatch_4x", "Quadruple Output Hatch", "fluid_output_hatch_4x", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
-            "output_hatch_9x", "Nonuple Output Hatch", "fluid_hatch.export_9x", "fluid_hatch.export",
+            "output_hatch_9x", "Nonuple Output Hatch", "fluid_output_hatch_9x", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_9X);
@@ -734,7 +734,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
                             Component.translatable("gtceu.machine.energy_hatch.input.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.input")
+                    .overlayTieredHullModel("energy_input_hatch")
                     .register(),
             ALL_TIERS);
 
@@ -751,7 +751,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
                             Component.translatable("gtceu.machine.energy_hatch.output.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.output")
+                    .overlayTieredHullModel("energy_output_hatch")
                     .register(),
             ALL_TIERS);
 
@@ -768,7 +768,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
                             Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.input_4a")
+                    .overlayTieredHullModel("energy_input_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -785,7 +785,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
                             Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.output_4a")
+                    .overlayTieredHullModel("energy_output_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -802,7 +802,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
                             Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.input_16a")
+                    .overlayTieredHullModel("energy_input_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -819,7 +819,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
                             Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.output_16a")
+                    .overlayTieredHullModel("energy_output_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -837,7 +837,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
                             Component.translatable("gtceu.machine.substation_hatch.input.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.input_64a")
+                    .overlayTieredHullModel("energy_input_hatch_64a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -855,7 +855,7 @@ public class GTMachines {
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
                             Component.translatable("gtceu.machine.substation_hatch.output.tooltip"))
-                    .overlayTieredHullModel("energy_hatch.output_64a")
+                    .overlayTieredHullModel("energy_output_hatch_64a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
 
@@ -878,7 +878,7 @@ public class GTMachines {
             .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
-            .overlaySteamHullModel("item_bus.import")
+            .overlaySteamHullModel("item_input_bus")
             .langValue("Steam Input Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -889,7 +889,7 @@ public class GTMachines {
             .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
-            .overlaySteamHullModel("item_bus.export")
+            .overlaySteamHullModel("item_output_bus")
             .langValue("Steam Output Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -923,7 +923,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
-            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance")))
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance_hatch")))
             .register();
 
     public static final MachineDefinition CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE
@@ -933,7 +933,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
-            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.configurable")))
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/configurable_maintenance_hatch")))
             .register();
 
     public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE
@@ -949,7 +949,7 @@ public class GTMachines {
                         .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
             })
             .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
-            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.cleaning")))
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/cleaning_maintenance_hatch")))
             .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE
@@ -958,7 +958,7 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"))
             .modelProperty(MaintenanceHatchPartMachine.MAINTENANCE_TAPED_PROPERTY, false)
-            .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance.full_auto")))
+            .model(createMaintenanceModel(GTCEu.id("block/machine/part/auto_maintenance_hatch")))
             .register();
 
     public static final MachineDefinition[] ITEM_PASSTHROUGH_HATCH = registerTieredMachines("item_passthrough_hatch",
@@ -1010,7 +1010,7 @@ public class GTMachines {
                     .langValue("%s Dual Input Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(DUAL_INPUT_HATCH_ABILITIES)
-                    .overlayTieredHullModel("dual_hatch.import")
+                    .overlayTieredHullModel("dual_input_hatch")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable(
@@ -1032,7 +1032,7 @@ public class GTMachines {
                     .langValue("%s Dual Output Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(DUAL_OUTPUT_HATCH_ABILITIES)
-                    .overlayTieredHullModel("dual_hatch.export")
+                    .overlayTieredHullModel("dual_output_hatch")
                     .tooltips(
                             Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
                             Component.translatable(

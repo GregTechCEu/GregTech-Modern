@@ -38,21 +38,11 @@ public class GTModels {
 
     public static final ResourceLocation BLANK_TEXTURE = GTCEu.id("block/void");
 
-    public static ResourceLocation ensureProperModelPath(ResourceLocation model) {
-        if (model.getPath().contains("/") && !model.getPath().startsWith("block/")) {
-            model = model.withPrefix("block/");
-        }
-        if (model.getPath().contains(".") && !model.getPath().endsWith(".json")) {
-            model = model.withSuffix(".json");
-        }
-        return model;
-    }
-
     // region BLOCK MODELS
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,
                                              RegistrateBlockstateProvider prov, ResourceLocation modelLocation) {
-        prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(ensureProperModelPath(modelLocation)));
+        prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
     }
 
     public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx,
@@ -267,8 +257,8 @@ public class GTModels {
     public static NonNullBiConsumer<DataGenContext<Block, ActiveBlock>, RegistrateBlockstateProvider> createActiveModel(ResourceLocation modelPath) {
         return (ctx, prov) -> {
             ActiveBlock block = ctx.getEntry();
-            ModelFile inactive = prov.models().getExistingFile(ensureProperModelPath(modelPath));
-            ModelFile active = prov.models().getExistingFile(ensureProperModelPath(modelPath.withSuffix("_active")));
+            ModelFile inactive = prov.models().getExistingFile(modelPath);
+            ModelFile active = prov.models().getExistingFile(modelPath.withSuffix("_active"));
             prov.getVariantBuilder(block)
                     .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive)
                     .addModel()
