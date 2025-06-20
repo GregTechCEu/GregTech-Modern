@@ -1,0 +1,37 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uev_energy_input_hatch_4a",
+  "variants": {
+    "is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/uev"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/energy_input_hatch_4a"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/uev"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/energy_input_hatch_4a"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

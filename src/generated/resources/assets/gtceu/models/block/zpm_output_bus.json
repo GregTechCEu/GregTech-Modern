@@ -1,0 +1,37 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:zpm_output_bus",
+  "variants": {
+    "is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/item_output_bus"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/item_output_bus"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

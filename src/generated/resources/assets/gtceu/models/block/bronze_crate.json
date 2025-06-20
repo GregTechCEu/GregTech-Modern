@@ -1,0 +1,9 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:bronze_crate",
+  "variants": {
+    "taped=false": "gtceu:block/machine/template/crate/metal_crate",
+    "taped=true": "gtceu:block/machine/template/crate/metal_crate_taped"
+  }
+}

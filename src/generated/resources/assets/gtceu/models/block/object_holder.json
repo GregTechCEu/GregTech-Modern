@@ -1,0 +1,127 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:object_holder",
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/zpm"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/object_holder_active"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

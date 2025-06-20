@@ -1,0 +1,15 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:mv_buffer",
+  "variants": {
+    "": {
+      "parent": "gtceu:block/machine/buffer",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/mv/bottom",
+        "side": "gtceu:block/casings/voltage/mv/side",
+        "top": "gtceu:block/casings/voltage/mv/top"
+      }
+    }
+  }
+}

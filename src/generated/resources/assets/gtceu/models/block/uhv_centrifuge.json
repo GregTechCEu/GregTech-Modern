@@ -1,0 +1,43 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uhv_centrifuge",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/voltage/uhv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/centrifuge/overlay_back",
+        "overlay_front": "gtceu:block/machines/centrifuge/overlay_front",
+        "overlay_side": "gtceu:block/machines/centrifuge/overlay_side",
+        "overlay_top": "gtceu:block/machines/centrifuge/overlay_top"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/voltage/uhv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/centrifuge/overlay_back",
+        "overlay_front": "gtceu:block/machines/centrifuge/overlay_front",
+        "overlay_side": "gtceu:block/machines/centrifuge/overlay_side",
+        "overlay_top": "gtceu:block/machines/centrifuge/overlay_top"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/voltage/uhv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/centrifuge/overlay_back_active",
+        "overlay_front": "gtceu:block/machines/centrifuge/overlay_front_active",
+        "overlay_side": "gtceu:block/machines/centrifuge/overlay_side_active",
+        "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/voltage/uhv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/centrifuge/overlay_back_active",
+        "overlay_front": "gtceu:block/machines/centrifuge/overlay_front_active",
+        "overlay_side": "gtceu:block/machines/centrifuge/overlay_side_active",
+        "overlay_top": "gtceu:block/machines/centrifuge/overlay_top_active"
+      }
+    }
+  }
+}

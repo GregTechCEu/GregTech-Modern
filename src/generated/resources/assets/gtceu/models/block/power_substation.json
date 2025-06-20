@@ -1,0 +1,67 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:power_substation",
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front"
+      }
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front"
+      }
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/power_substation/overlay_front_active_emissive"
+      }
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/power_substation/overlay_front_active_emissive"
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front"
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front"
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/power_substation/overlay_front_active_emissive"
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_palladium_substation",
+        "overlay_front": "gtceu:block/multiblock/power_substation/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/power_substation/overlay_front_active_emissive"
+      }
+    }
+  }
+}

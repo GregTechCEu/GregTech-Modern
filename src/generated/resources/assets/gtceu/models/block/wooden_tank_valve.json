@@ -1,0 +1,43 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:wooden_tank_valve",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/wood_wall/bottom",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front",
+        "side": "gtceu:block/casings/wood_wall/side",
+        "top": "gtceu:block/casings/wood_wall/top"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/wood_wall/bottom",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front",
+        "side": "gtceu:block/casings/wood_wall/side",
+        "top": "gtceu:block/casings/wood_wall/top"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/wood_wall/bottom",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active",
+        "side": "gtceu:block/casings/wood_wall/side",
+        "top": "gtceu:block/casings/wood_wall/top"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/wood_wall/bottom",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active",
+        "side": "gtceu:block/casings/wood_wall/side",
+        "top": "gtceu:block/casings/wood_wall/top"
+      }
+    }
+  }
+}

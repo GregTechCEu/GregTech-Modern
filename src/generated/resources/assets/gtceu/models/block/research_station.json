@@ -1,0 +1,87 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:research_station",
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_active_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_active_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_active_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "textures": {
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "overlay_front": "gtceu:block/multiblock/research_station/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/multiblock/research_station/overlay_front_active_emissive",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
+      }
+    }
+  }
+}

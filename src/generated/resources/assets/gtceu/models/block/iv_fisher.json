@@ -1,0 +1,15 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:iv_fisher",
+  "variants": {
+    "": {
+      "parent": "gtceu:block/machine/fisher",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/iv/bottom",
+        "side": "gtceu:block/casings/voltage/iv/side",
+        "top": "gtceu:block/casings/voltage/iv/top"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:coke_oven_hatch",
+  "variants": {
+    "": "gtceu:block/machine/part/coke_oven_hatch"
+  }
+}

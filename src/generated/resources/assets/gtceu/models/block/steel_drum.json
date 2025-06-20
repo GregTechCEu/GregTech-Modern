@@ -1,0 +1,8 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:steel_drum",
+  "variants": {
+    "": "gtceu:block/machine/template/drum/metal_drum"
+  }
+}

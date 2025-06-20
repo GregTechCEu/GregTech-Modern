@@ -1,0 +1,8 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:long_distance_fluid_pipeline_endpoint",
+  "variants": {
+    "": "gtceu:block/machine/long_distance_fluid_pipeline_endpoint"
+  }
+}

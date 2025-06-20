@@ -1,0 +1,31 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hp_steam_solar_boiler",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/steam/bricked_steel",
+      "textures": {
+        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/steam/bricked_steel",
+      "textures": {
+        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/steam/bricked_steel",
+      "textures": {
+        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/steam/bricked_steel",
+      "textures": {
+        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+      }
+    }
+  }
+}

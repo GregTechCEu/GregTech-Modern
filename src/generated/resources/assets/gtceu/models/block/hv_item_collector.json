@@ -1,0 +1,35 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hv_item_collector",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/voltage/hv",
+      "textures": {
+        "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/voltage/hv",
+      "textures": {
+        "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/voltage/hv",
+      "textures": {
+        "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/voltage/hv",
+      "textures": {
+        "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active"
+      }
+    }
+  }
+}

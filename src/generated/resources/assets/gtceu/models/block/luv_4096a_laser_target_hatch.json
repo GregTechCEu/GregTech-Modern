@@ -1,0 +1,37 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:luv_4096a_laser_target_hatch",
+  "variants": {
+    "is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/luv"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/laser_target_hatch"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/luv"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/laser_target_hatch"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

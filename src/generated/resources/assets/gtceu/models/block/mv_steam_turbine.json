@@ -1,0 +1,107 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:mv_steam_turbine",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/machine/template/sided_overlay_machine",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/mv/bottom",
+            "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side",
+            "side": "gtceu:block/casings/voltage/mv/side",
+            "top": "gtceu:block/casings/voltage/mv/top"
+          }
+        },
+        "energy_out": {
+          "parent": "gtceu:block/overlay/tinted/front_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+            "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "energy_out"
+      ],
+      "loader": "forge:composite"
+    },
+    "recipe_logic_status=suspend": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/machine/template/sided_overlay_machine",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/mv/bottom",
+            "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side",
+            "side": "gtceu:block/casings/voltage/mv/side",
+            "top": "gtceu:block/casings/voltage/mv/top"
+          }
+        },
+        "energy_out": {
+          "parent": "gtceu:block/overlay/tinted/front_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+            "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "energy_out"
+      ],
+      "loader": "forge:composite"
+    },
+    "recipe_logic_status=waiting": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/machine/template/sided_overlay_machine",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/mv/bottom",
+            "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side_active",
+            "side": "gtceu:block/casings/voltage/mv/side",
+            "top": "gtceu:block/casings/voltage/mv/top"
+          }
+        },
+        "energy_out": {
+          "parent": "gtceu:block/overlay/tinted/front_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+            "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "energy_out"
+      ],
+      "loader": "forge:composite"
+    },
+    "recipe_logic_status=working": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/machine/template/sided_overlay_machine",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/mv/bottom",
+            "overlay_side": "gtceu:block/generators/steam_turbine/overlay_side_active",
+            "side": "gtceu:block/casings/voltage/mv/side",
+            "top": "gtceu:block/casings/voltage/mv/top"
+          }
+        },
+        "energy_out": {
+          "parent": "gtceu:block/overlay/tinted/front_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+            "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "energy_out"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

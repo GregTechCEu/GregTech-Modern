@@ -1,0 +1,43 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:mv_miner",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/voltage/mv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/miner/overlay_back",
+        "overlay_front": "gtceu:block/machines/miner/overlay_front",
+        "overlay_side": "gtceu:block/machines/miner/overlay_side",
+        "overlay_top": "gtceu:block/machines/miner/overlay_top"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/voltage/mv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/miner/overlay_back",
+        "overlay_front": "gtceu:block/machines/miner/overlay_front",
+        "overlay_side": "gtceu:block/machines/miner/overlay_side",
+        "overlay_top": "gtceu:block/machines/miner/overlay_top"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/voltage/mv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/miner/overlay_back",
+        "overlay_front": "gtceu:block/machines/miner/overlay_front",
+        "overlay_side": "gtceu:block/machines/miner/overlay_side",
+        "overlay_top": "gtceu:block/machines/miner/overlay_top"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/voltage/mv",
+      "textures": {
+        "overlay_back": "gtceu:block/machines/miner/overlay_back",
+        "overlay_front": "gtceu:block/machines/miner/overlay_front",
+        "overlay_side": "gtceu:block/machines/miner/overlay_side",
+        "overlay_top": "gtceu:block/machines/miner/overlay_top"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:opv_lathe",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/voltage/opv",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/lathe/overlay_front"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/voltage/opv",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/lathe/overlay_front"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/voltage/opv",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/lathe/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/machines/lathe/overlay_front_active_emissive"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/voltage/opv",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/lathe/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/machines/lathe/overlay_front_active_emissive"
+      }
+    }
+  }
+}

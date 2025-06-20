@@ -1,0 +1,37 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uv_substation_output_hatch_64a",
+  "variants": {
+    "is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/uv"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/energy_output_hatch_64a"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/casings/voltage/uv"
+        },
+        "overlay": {
+          "parent": "gtceu:block/machine/part/energy_output_hatch_64a"
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}

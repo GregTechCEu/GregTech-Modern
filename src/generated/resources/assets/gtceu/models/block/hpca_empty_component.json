@@ -1,0 +1,159 @@
+{
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hpca_empty_component",
+  "variants": {
+    "active=false,hpca_part_damaged=false,is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/empty",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=false,hpca_part_damaged=false,is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/empty",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=false,hpca_part_damaged=true,is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/damaged",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=false,hpca_part_damaged=true,is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/damaged",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=true,hpca_part_damaged=false,is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/empty",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=true,hpca_part_damaged=false,is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/empty",
+            "overlay_emissive": "gtceu:block/void"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=true,hpca_part_damaged=true,is_formed=false": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/damaged_active",
+            "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_active_emissive"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    },
+    "active=true,hpca_part_damaged=true,is_formed=true": {
+      "children": {
+        "base": {
+          "parent": "gtceu:block/computer_casing"
+        },
+        "overlay": {
+          "parent": "gtceu:block/overlay/front_emissive_2",
+          "textures": {
+            "overlay": "gtceu:block/overlay/machine/hpca/damaged_active",
+            "overlay_emissive": "gtceu:block/overlay/machine/hpca/damaged_active_emissive"
+          }
+        }
+      },
+      "item_render_order": [
+        "base",
+        "overlay"
+      ],
+      "loader": "forge:composite"
+    }
+  }
+}
