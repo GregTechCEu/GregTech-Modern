@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -8,6 +9,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
@@ -29,8 +32,10 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,6 +60,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public FluidIngredient copyInner(FluidIngredient content) {
+        if (content instanceof IntProviderFluidIngredient){
+            return ((IntProviderFluidIngredient)content).copy();
+        }
         return content.copy();
     }
 
@@ -69,7 +77,29 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
-        if (obj instanceof FluidIngredient ingredient) {
+        if (obj instanceof IntProviderFluidIngredient ingredient) {
+            for (FluidIngredient.Value value : ingredient.values) {
+                if (value instanceof FluidIngredient.TagValue tagValue) {
+                    ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
+                } else {
+                    Collection<Fluid> fluids = value.getFluids();
+                    for (Fluid fluid : fluids) {
+                        if (ingredient.getCountProvider() == null) {
+                            ingredients.add(new MapFluidIngredient(
+                                    new FluidStack(fluid,
+                                            ingredient.getAmount(),
+                                            ingredient.getNbt())));
+                        } else {
+                            ingredients.add(new MapFluidIngredient(
+                                    new FluidStack(fluid,
+                                            ingredient.getCountProvider().sample(GTValues.RNG),
+                                            ingredient.getNbt())));
+                        }
+                    }
+                }
+            }
+        }
+        else if (obj instanceof FluidIngredient ingredient) {
             for (FluidIngredient.Value value : ingredient.values) {
                 if (value instanceof FluidIngredient.TagValue tagValue) {
                     ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
@@ -341,7 +371,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
-
+                    if (this.of(content.content) instanceof IntProviderFluidIngredient fluid) {
+                        IntProvider countProvider = fluid.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                                        countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    }
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
@@ -386,7 +421,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
         /**
          * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
-         * 
+         *
          * @param recipe     Recipe
          * @param multiplier Initial multiplier
          * @return Limited multiplier
