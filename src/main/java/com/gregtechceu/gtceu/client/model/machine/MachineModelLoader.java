@@ -9,8 +9,9 @@ import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedMode
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -23,6 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.common.util.TransformationHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -47,6 +49,14 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(BlockModel.class, new ExtendedBlockModelDeserializer())
             .registerTypeAdapter(MultiPartSelector.class, new MultiPartSelector.Deserializer())
+            // need these here so the submodel parsing works
+            .registerTypeAdapter(BlockElement.class, new BlockElement.Deserializer())
+            .registerTypeAdapter(BlockElementFace.class, new BlockElementFace.Deserializer())
+            .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
+            .registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer())
+            .registerTypeAdapter(ItemTransforms.class, new ItemTransforms.Deserializer())
+            .registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
+            .registerTypeAdapter(Transformation.class, new TransformationHelper.Deserializer())
             .create();
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
@@ -79,11 +89,12 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         MachineDefinition definition = GTRegistries.MACHINES.get(machineId);
         Preconditions.checkNotNull(definition, "A machine with id " + machineId + " does not exist.");
 
-        JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "variants");
-
         Map<String, Either<ResourceLocation, UnbakedModel>> variants = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
-            variants.put(entry.getKey(), parseVariant(entry.getValue()));
+        if (json.has("variants")) {
+            JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "variants");
+            for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
+                variants.put(entry.getKey(), parseVariant(entry.getValue()));
+            }
         }
         @Nullable MultiPartUnbakedModel multiPart = null;
         if (json.has("multipart")) {

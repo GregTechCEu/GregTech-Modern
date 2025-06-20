@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine.multipart;
 
 import com.google.gson.*;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -36,6 +37,7 @@ public record MultiPartUnbakedModel(StateDefinition<MachineDefinition, MachineRe
     public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
         this.selectors().forEach((selector) -> {
             selector.setResolvedModel(selector.getModel().map(resolver, Function.identity()));
+            selector.getResolvedModel().resolveParents(resolver);
         });
     }
 
@@ -62,7 +64,7 @@ public record MultiPartUnbakedModel(StateDefinition<MachineDefinition, MachineRe
         List<MultiPartSelector> list = new ArrayList<>();
 
         for(JsonElement e : elements) {
-            list.add(context.deserialize(e, MultiPartSelector.class));
+            list.add(MachineModelLoader.GSON.fromJson(e, MultiPartSelector.class));
         }
 
         return list;

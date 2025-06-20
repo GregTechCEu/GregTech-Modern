@@ -626,7 +626,6 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(
                             new BoilerMultiPartRender(BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
-            // TODO does this need a BER?
             .register();
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor",
