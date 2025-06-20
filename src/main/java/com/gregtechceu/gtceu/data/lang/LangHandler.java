@@ -74,9 +74,10 @@ public class LangHandler {
         provider.add("item.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("item.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
+
         provider.add("item.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("item.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
-        provider.add("item.int_circuit.configuration", "Configuration: %d");
+        provider.add("item.programmed_circuit.configuration", "Configuration: %d");
 
         provider.add("item.machine_configuration.mode", "§aConfiguration Mode:§r %s");
         provider.add("gtceu.mode.fluid", "§9Fluid§r");
