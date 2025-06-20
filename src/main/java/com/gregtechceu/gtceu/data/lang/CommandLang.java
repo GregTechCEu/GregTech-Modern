@@ -46,7 +46,7 @@ public class CommandLang {
         provider.add("command.gtceu.recipecheck.end",
                 "Recipe conflict check found %d possible conflicts. Check the server log for more info");
         provider.add("command.gtceu.recipecheck.end_no_conflicts", "No recipe conflicts found!");
-        provider.add("command.gtceu.copy.copied_and_click", "copied to clipboard. Click to copy again");
+        provider.add("command.gtceu.copy.copied_and_click", "Copied to clipboard. Click to copy again");
         provider.add("command.gtceu.copy.click_to_copy", "Click to copy");
         provider.add("command.gtceu.copy.copied_start", "Copied [");
         provider.add("command.gtceu.copy.copied_end", "] to the clipboard");

@@ -19,8 +19,8 @@ public class LangHandler {
      * Percentages must be in green - §a
      * Keys must be in all caps
      * Key combos must follow the format KEY1 + KEY2 (for example, SHIFT + R-CLICK)
+     * Middle click must be written as MIDDLE-CLICK instead of M-CLICK
      *
-     * @param provider
      */
 
     public static void init(RegistrateLangProvider provider) {
@@ -52,31 +52,37 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot", "GTM Phantom Item Slot");
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
 
+        // Curios
         provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
-        // capabilities
+
+        // Capabilities
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
         provider.add("recipe.capability.item.name", "Item");
-        multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
-                "Right click to decrease the OC", "Middle click to reset the OC",
-                "Hold Shift to change by Perfect OC");
+        multiLang(provider, "gtceu.oc.tooltip",
+                "Min: %s",
+                "§7L-CLICK to increase the OC",
+                "§7R-CLICK to decrease the OC",
+                "§7MIDDLE-CLICK to reset the OC",
+                "§7Hold SHIFT to change by Perfect OC");
 
         provider.add("gtceu.multiblock.page_switcher.io.import", "§2Inputs");
         provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
         provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
 
-        provider.add("enchantment.disjunction", "Disjunction");
+        provider.add("enchantment.disjunction", "Disjunction"); // unused
 
-        provider.add("fluid.empty", "Empty");
-        provider.add("item.generic.fluid_container.tooltip", "%d/%dL %s");
+        provider.add("fluid.empty", "Empty"); // unused
+        provider.add("item.generic.fluid_container.tooltip", "%d/%dL %s"); // unused
+
         provider.add("item.electric.tooltip", "%d/%d EU - Tier %s");
         provider.add("item.electric.stored", "%d/%d EU (%s)");
         provider.add("item.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("item.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
 
-        provider.add("item.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
-        provider.add("item.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
+        provider.add("item.dust.tooltip.purify", "R-CLICK a Cauldron to get clean Dust");
+        provider.add("item.crushed.tooltip.purify", "R-CLICK a Cauldron to get Purified Ore");
         provider.add("item.programmed_circuit.configuration", "Configuration: %d");
 
         provider.add("item.machine_configuration.mode", "§aConfiguration Mode:§r %s");
@@ -93,17 +99,16 @@ public class LangHandler {
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
 
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
-        provider.add("item.clipboard.tooltip",
-                "Can be written on (without any writing Instrument). Right-click on Wall to place, and Shift-Right-Click to remove");
+        provider.add("item.gtceu.clipboard.tooltip",
+                "Can be written on (without any writing instrument). R-CLICK on wall to place, and SHIFT + R-CLICK to remove");
 
         provider.add("item.tool.tooltip.primary_material", "§fMaterial: §e%s");
         provider.add("item.tool.tooltip.durability", "§fDurability: §a%d / %d");
         provider.add("item.tool.tooltip.rotor.efficiency", "Turbine Efficiency: §9%d%%");
         provider.add("item.tool.tooltip.rotor.power", "Turbine Power: §9%d%%");
 
-        provider.add("item.record.sus.tooltip", "§7Leonz - Among Us Drip");
-        provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
-        provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
+        provider.add("item.gtceu.nan_certificate.tooltip", "§7Challenge Accepted!");
+        provider.add("item.gtceu.blacklight.tooltip", "§7Long-Wave §dUltraviolet§7 light source");
 
         provider.add("gui.widget.increment_button.tooltip",
                 "Hold SHIFT, CTRL or both to change the amount");
@@ -162,9 +167,9 @@ public class LangHandler {
         provider.add("gtceu.machine.workbench.tab.container", "Container");
 
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
-        provider.add("gtceu.machine.basic.input_from_output_side.allow", "Allow Input from Output Side: ");
+        provider.add("gtceu.machine.basic.input_from_output_side.allow", "§aAllow Input from Output Side: ");
         provider.add("gtceu.machine.basic.input_from_output_side.disallow",
-                "Disallow Input from Output Side: ");
+                "§cBlock Input from Output Side: ");
         provider.add("gtceu.machine.muffle.on", "Sound Muffling: Enabled");
         provider.add("gtceu.machine.muffle.off", "Sound Muffling: Disabled");
         provider.add("gtceu.machine.perfect_oc", "Does not lose energy efficiency when overclocked.");
@@ -258,9 +263,19 @@ public class LangHandler {
         provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Input Enabled");
         provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
         multilineLang(provider, "gtceu.gui.charger_slot.tooltip",
-                "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
+                """
+                        §fCharger Slot§r
+                        §7Draws power from %s §7batteries§r
+                        §7Charges %s §7tools and batteries
+                        """);
         multilineLang(provider, "gtceu.gui.configurator_slot.tooltip",
-                "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
+                """
+                        §fConfigurator Slot§r
+                        §7Place a §6Programmed Circuit§7 in this slot to
+                        §7change its configured value.
+                        §7Hold §6SHIFT§7 when clicking buttons to change by §65.
+                        §aA Programmed Circuit in this slot is also valid for recipe inputs.§r
+                        """);
         provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");
         provider.add("gtceu.gui.fluid_lock.tooltip.disabled", "Fluid Locking Disabled");
         provider.add("gtceu.gui.fluid_voiding_partial.tooltip.enabled", "Fluid Voiding Enabled");
@@ -401,17 +416,17 @@ public class LangHandler {
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
-        multiLang(provider, "gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
-                "right-click to tune the fluid auto output.");
+        multiLang(provider, "gtceu.gui.output_setting.tooltips", "L-CLICK to tune the item auto output",
+                "R-CLICK to tune the fluid auto output.");
         provider.add("gtceu.gui.item_auto_output.allow_input.enabled",
-                "allow items input from the output side");
+                "§aAllow§r item input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
-                "disable items input from the output side");
+                "§cBlock§r item input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
-                "allow fluids input from the output side");
+                "§aAllow§r fluid input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
-                "disable fluids input from the output side");
-        provider.add("gtceu.gui.auto_output.name", "auto");
+                "§cBlock§r fluid input from the output side");
+        provider.add("gtceu.gui.auto_output.name", "Auto Output");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
@@ -451,8 +466,8 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
         provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
-        provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
-        provider.add("gtceu.gui.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.remove", "§7R-CLICK to §4clear§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.set_only", "§7L-CLICK to §bset§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
         provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
 
@@ -465,7 +480,7 @@ public class LangHandler {
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
 
         provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
-        provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
+        provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%§7% chance of happening§r");
 
         provider.add("gtceu.direction.tooltip.up", "Up");
         provider.add("gtceu.direction.tooltip.down", "Down");

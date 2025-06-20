@@ -11,7 +11,7 @@ public class HazardLang {
     }
 
     private static void generateHazardKeys(RegistrateLangProvider provider) {
-        provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold SHIFT to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
         provider.add("gtceu.medical_condition.chemical_burns", "§5Chemical burns");
         provider.add("gtceu.medical_condition.poison", "§2Poisonous");
@@ -33,7 +33,7 @@ public class HazardLang {
 
         provider.add("gtceu.hazard_trigger.skin_contact", "Skin contact");
         provider.add("gtceu.hazard_trigger.none", "Nothing");
-        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold SHIFT to show details");
         provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
         provider.add("gtceu.medical_condition.antidote.description.effect_removed",
                 "Removes %s%% of current conditions' effects");

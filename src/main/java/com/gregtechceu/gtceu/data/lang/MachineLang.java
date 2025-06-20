@@ -347,7 +347,7 @@ public class MachineLang {
                 "Collect within an area of %sx%s blocks");
         provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself");
         provider.add("gtceu.machine.quantum_chest.tooltip", "§7Better than Storage Drawers");
-        provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount:");
+        provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount: ");
         provider.add("gtceu.machine.quantum_tank.tooltip", "§7Compact place to store all your fluids");
 
         provider.add("gtceu.machine.buffer.tooltip", "A Small Buffer to store Items and Fluids");
@@ -536,7 +536,7 @@ public class MachineLang {
                 "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
                 "Energy consumption: %d EU/s for each screen.");
         multiLang(provider, "gtceu.multiblock.monitor_screen.tooltip",
-                "The GUI can be opened with a right-click of a screwdriver.",
+                "The GUI can be opened with a R-CLICK of a screwdriver.",
                 "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
                 "The screen also supports plugins.");
 
@@ -547,7 +547,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.steam.duration_modifier",
                 "Takes §f1.5x §7base duration to process, not affected by number of items.");
         provider.add("gtceu.machine.steam.steam_hatch.tooltip", "§eAccepted Fluid: §fSteam");
-        provider.add("gtceu.machine.steam_bus.tooltip", "Does not work with non-steam multiblocks");
+        provider.add("gtceu.machine.steam_bus.tooltip", "§7Does not work with non-steam multiblocks");
         provider.add("gtceu.multiblock.steam_oven.description",
                 "A Multi Smelter at the Steam Age. Requires at least 6 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch. Steam Hatch must be on the bottom layer, no more than one.");
         provider.add("gtceu.multiblock.require_steam_parts", "Requires Steam Hatches and Buses!");
@@ -731,10 +731,10 @@ public class MachineLang {
         provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
 
         // Hatch tooltips
-        provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
-        provider.add("gtceu.machine.item_bus.export.tooltip", "Item Output for Multiblocks");
-        provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
-        provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
+        provider.add("gtceu.machine.item_bus.import.tooltip", "§7Item Input for Multiblocks");
+        provider.add("gtceu.machine.item_bus.export.tooltip", "§7Item Output for Multiblocks");
+        provider.add("gtceu.machine.fluid_hatch.import.tooltip", "§7Fluid Input for Multiblocks");
+        provider.add("gtceu.machine.fluid_hatch.export.tooltip", "§7Fluid Output for Multiblocks");
         provider.add("block.gtceu.pattern_buffer.desc.0",
                 "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
         provider.add("block.gtceu.pattern_buffer.desc.1",
@@ -750,7 +750,7 @@ public class MachineLang {
         provider.add("gtceu.tooltip.proxy_bind",
                 "§fBinding to a Pattern Buffer at %s %s %s");
 
-        provider.add("gui.gtceu.share_inventory.title", "Shared Item Inventory");
+        provider.add("gui.gtceu.share_inventory.title", "Shared §6Item Inventory");
         provider.add("gui.gtceu.share_inventory.desc.0", "Shares inserted items with all patterns within buffer!");
         provider.add("gui.gtceu.share_inventory.desc.1", "Allows powerful automation by storing catalysts");
         provider.add("gui.gtceu.share_tank.title", "Shared Tank Inventory");
@@ -759,8 +759,8 @@ public class MachineLang {
         provider.add("gui.gtceu.rename.desc", "Rename Pattern Buffer");
         provider.add("gui.gtceu.refund_all.desc", "Return Stored Contents to AE2");
 
-        provider.add("gtceu.machine.dual_hatch.import.tooltip", "Item and Fluid Input for Multiblocks");
-        provider.add("gtceu.machine.dual_hatch.export.tooltip", "Item and Fluid Output for Multiblocks");
+        provider.add("gtceu.machine.dual_hatch.import.tooltip", "§6Item and Fluid Input for Multiblocks");
+        provider.add("gtceu.machine.dual_hatch.export.tooltip", "§6Item and Fluid Output for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input.tooltip", "Energy Input for Multiblocks");
         provider.add("gtceu.machine.energy_hatch.input_hi_amp.tooltip",
                 "Multiple Ampere Energy Input for Multiblocks");
@@ -791,7 +791,7 @@ public class MachineLang {
         provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
                 "Auto-Pull Disabled");
         provider.add("gtceu.machine.me.copy_paste.tooltip",
-                "Sneak right-click with Data Stick to copy settings, right-click to apply");
+                "SHIFT + R-CLICK with Data Stick to copy settings, right-click to apply");
         provider.add("gtceu.machine.me.import_copy_settings",
                 "Saved settings to Data Stick");
         provider.add("gtceu.machine.me.import_paste_settings",
@@ -1030,9 +1030,9 @@ public class MachineLang {
         provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
         provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
-        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
-        provider.add("gtceu.multiblock.universal.distinct.no", "No");
-        provider.add("gtceu.multiblock.universal.distinct.yes", "Yes");
+        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:" );
+        provider.add("gtceu.multiblock.universal.distinct.no", "§cNo");
+        provider.add("gtceu.multiblock.universal.distinct.yes", "§aYes");
         provider.add("gtceu.multiblock.universal.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
         provider.add("gtceu.multiblock.parallel", "Performing up to %d Recipes in Parallel");
@@ -1043,9 +1043,9 @@ public class MachineLang {
         provider.add("gtceu.multiblock.multiple_recipemaps_recipes.tooltip", "Machine Modes: §e%s§r");
         provider.add("gtceu.multiblock.multiple_recipemaps.switch_message",
                 "The machine must be off to switch modes!");
-        provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
+        provider.add("gtceu.multiblock.preview.zoom", "Use mouse wheel, or R-CLICK + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
-        provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
+        provider.add("gtceu.multiblock.preview.select", "R-CLICK to check candidates");
         provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
         provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");

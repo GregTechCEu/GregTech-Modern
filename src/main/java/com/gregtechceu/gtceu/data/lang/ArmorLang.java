@@ -64,7 +64,7 @@ public class ArmorLang {
         provider.add("armor.gtceu.energy_share.disable", "Energy Supply: Gadgets charging disabled");
         provider.add("armor.gtceu.energy_share.tooltip", "Supply mode: %s");
         provider.add("armor.gtceu.energy_share.tooltip.guide",
-                "To change mode shift-right click when holding item");
+                "To change mode, SHIFT + R-CLICK when holding item");
     }
 
     private static void generateHudKeys(RegistrateLangProvider provider) {

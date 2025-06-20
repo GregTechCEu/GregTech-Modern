@@ -168,7 +168,7 @@ public class ToolLang {
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
         multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
                 "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
-        provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold left click to dismantle Machines");
+        provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold L-CLICK to dismantle Machines");
         provider.add("item.gtceu.tool.crowbar.tooltip", "§8Dismounts Covers");
         provider.add("item.gtceu.tool.screwdriver.tooltip", "§8Adjusts Covers and Machines");
         provider.add("item.gtceu.tool.butchery_knife.tooltip", "§8Has a slow Attack Rate");
@@ -176,9 +176,9 @@ public class ToolLang {
         provider.add("item.gtceu.tool.mining_hammer.tooltip",
                 "§8Mines a large area at once (unless you're crouching)");
         provider.add("item.gtceu.tool.spade.tooltip", "§8Mines a large area at once (unless you're crouching)");
-        provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
-        provider.add("item.gtceu.tool.hv_wrench.tooltip", "§8Hold left click to dismantle Machines");
-        provider.add("item.gtceu.tool.iv_wrench.tooltip", "§8Hold left click to dismantle Machines");
+        // provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold a L-CLICK to dismantle Machines");
+        // provider.add("item.gtceu.tool.hv_wrench.tooltip", "§8Hold a L-CLICK to dismantle Machines");
+        // provider.add("item.gtceu.tool.iv_wrench.tooltip", "§8Hold a L-CLICK to dismantle Machines");
         provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");

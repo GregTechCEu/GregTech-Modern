@@ -849,7 +849,7 @@ public class GTMachines {
     public static final MachineDefinition[] MUFFLER_HATCH = registerTieredMachines("muffler_hatch",
             MufflerPartMachine::new,
             (tier, builder) -> builder
-                    .langValue("Muffler Hatch " + VNF[tier])
+                    .langValue(VNF[tier] + " Muffler Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.MUFFLER)
                     .overlayTieredHullRenderer("muffler_hatch")

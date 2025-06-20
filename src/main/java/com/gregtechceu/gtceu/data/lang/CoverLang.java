@@ -45,7 +45,13 @@ public class CoverLang {
         // fluid filter
         provider.add("cover.fluid_filter.title", "Fluid Filter");
         multilineLang(provider, "cover.fluid_filter.config_amount",
-                "Scroll wheel up increases amount, down decreases.\nShift[§6x10§r],Ctrl[§ex100§r],Shift+Ctrl[§ax1000§r]\nRight click increases amount, left click decreases.\nHold shift to double/halve.\nMiddle click to clear");
+                        """
+                        Scroll wheel up increases amount, down decreases amount.\n
+                        SHIFT[§6x10§r],CTRL[§ex100§r],SHIFT + CTRL[§ax1000§r]\n
+                        R-CLICK increases amount, L-CLICK decreases amount.\n
+                        Hold SHIFT to double/halve amount.\n
+                        MIDDLE-CLICK to clear
+                        """);
         provider.add("cover.fluid_filter.mode.filter_fill", "Filter Fill");
         provider.add("cover.fluid_filter.mode.filter_drain", "Filter Drain");
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
@@ -102,11 +108,11 @@ public class CoverLang {
 
         // cover universal whatever that is
         provider.add("cover.universal.manual_import_export.mode.disabled",
-                "Manual I/O: §bDisabled\n§7Items / Fluids will only move as specified by the cover and its filter.");
+                "Manual I/O: §cDisabled\n§7Items/fluids will only move as specified by the cover and its filter.");
         provider.add("cover.universal.manual_import_export.mode.filtered",
-                "Manual I/O: §bFiltered\n§7Items / Fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
+                "Manual I/O: §bFiltered\n§7Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
         provider.add("cover.universal.manual_import_export.mode.unfiltered",
-                "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
+                "Manual I/O: §bUnfiltered\n§7Items/fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
         multilineLang(provider, "cover.universal.manual_import_export.mode.description",
                 "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
@@ -119,7 +125,12 @@ public class CoverLang {
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
         multilineLang(provider, "cover.robotic_arm.transfer_mode.description",
-                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
+                        """
+                        §eTransfer Any§r - In this mode, cover will transfer as many items matching its filter as possible.
+                        §eSupply Exact§r - In this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.
+                        §eKeep Exact§r - In this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.
+                        §7Tip: L/R-CLICK on filter slots to change item amount, press SHIFT to change amount faster.
+                        """);
 
         // pump
         provider.add("cover.pump.title", "Pump Cover Settings (%s)");
@@ -133,7 +144,12 @@ public class CoverLang {
         // fluid regulator
         provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
         multilineLang(provider, "cover.fluid_regulator.transfer_mode.description",
-                "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
+                        """
+                        §eTransfer Any§r - In this mode, cover will transfer as many fluids matching its filter as possible.
+                        §eSupply Exact§r - In this mode, cover will supply fluids in portions specified in the window underneath this button. If the amount of fluids is less than portion size, fluids won't be moved.
+                        §eKeep Exact§r - In this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.
+                        §7Tip: SHIFT will multiply increase/decrease amount by 10, and CTRL will multiply by 100.
+                        """);
         provider.add("cover.fluid_regulator.supply_exact", "Supply Exact: %s");
         provider.add("cover.fluid_regulator.keep_exact", "Keep Exact: %s");
 
@@ -157,8 +173,8 @@ public class CoverLang {
 
         // ender fluid
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
-        provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
-        provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
+        provider.add("cover.ender_fluid_link.iomode.enabled", "I/O §aEnabled");
+        provider.add("cover.ender_fluid_link.iomode.disabled", "I/O §cDisabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
         provider.add("cover.ender_fluid_link.tooltip.channel_name", "Set channel name with input text");
         provider.add("cover.ender_fluid_link.tooltip.list_button", "Show channel list");
@@ -167,7 +183,7 @@ public class CoverLang {
                 "Switch to private tank mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.ender_fluid_link.private.tooltip.enabled", "Switch to public tank mode");
         multilineLang(provider, "cover.ender_fluid_link.incomplete_hex",
-                "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the gui will lose edits!");
+                "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the GUI will lose edits!");
 
         // detector
         provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
@@ -176,7 +192,8 @@ public class CoverLang {
         var detectorLatchDescription = """
                 Change the redstone behavior of this Cover.
                 §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
-                §eLatched§7 - output 15 until above max, then output 0 until below min""";
+                §eLatched§7 - output 15 until above max, then output 0 until below min
+                """;
         multilineLang(provider, "cover.advanced_detector.latch.enabled",
                 "Behavior: Latched\n\n" + detectorLatchDescription);
         multilineLang(provider, "cover.advanced_detector.latch.disabled",

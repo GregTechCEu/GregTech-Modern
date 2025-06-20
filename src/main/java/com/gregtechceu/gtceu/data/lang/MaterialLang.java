@@ -110,11 +110,11 @@ public class MaterialLang {
         provider.add("fluid.gtceu.empty", "Empty");
         provider.add("fluid.gtceu.amount", "§9Amount: %d/%d mB");
         provider.add("fluid.gtceu.click_to_fill",
-                "§7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).");
+                "§7Click with a Fluid Container to §bfill §7the tank (SHIFT + L-CLICK for a full stack).");
         provider.add("fluid.gtceu.click_combined",
-                "§7Click with a Fluid Container to §cempty §7or §bfill §7the tank (Shift-click for a full stack).");
+                "§7Click with a Fluid Container to §cempty §7or §bfill §7the tank (SHIFT + L-CLICK for a full stack).");
         provider.add("fluid.gtceu.click_to_empty",
-                "§7Click with a Fluid Container to §cempty §7the tank (Shift-click for a full stack).");
+                "§7Click with a Fluid Container to §cempty §7the tank (SHIFT + L-CLICK for a full stack).");
 
         // tooltips
         provider.add("fluid.gtceu.tooltip.temperature", "§cTemperature: %d K");
