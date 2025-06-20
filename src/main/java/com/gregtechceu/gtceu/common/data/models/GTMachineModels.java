@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
@@ -24,9 +25,10 @@ import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
@@ -36,13 +38,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockModelProvider;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -62,6 +64,19 @@ public class GTMachineModels {
     public static final ResourceLocation SIDED_MODEL = GTCEu.id("block/cube/tinted/bottom_top");
     public static final ResourceLocation SIDED_OVERLAY_MODEL = GTCEu.id("block/machine/template/sided_overlay_machine");
     public static final ResourceLocation ALL_OVERLAY_MODEL = GTCEu.id("block/machine/template/all_overlay_machine");
+
+    public static final Int2ObjectMap<ResourceLocation> TIERED_HULL_MODELS = Util.make(new Int2ObjectOpenHashMap<>(), map -> {
+        for (int tier : GTValues.ALL_TIERS) {
+            String vn = GTValues.VN[tier].toLowerCase(Locale.ROOT);
+            map.put(tier, GTCEu.id("block/casings/voltage/" + vn));
+        }
+        map.defaultReturnValue(GTCEu.id("block/casings/voltage/lv"));
+    });
+    public static final ResourceLocation LP_STEAM_HULL_OVERLAY_MODEL = GTCEu.id("block/machine/hull/low_pressure");
+    public static final ResourceLocation HP_STEAM_HULL_OVERLAY_MODEL = GTCEu.id("block/machine/hull/high_pressure");
+
+    public static final ResourceLocation BRONZE_STEAM_CASING_MODEL = GTCEu.id("bronze_machine_casing");
+    public static final ResourceLocation STEEL_STEAM_CASING_MODEL = GTCEu.id("steel_machine_casing");
     // spotless:on
 
     // region generic models
@@ -75,8 +90,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
-            BlockModelBuilder model = prov.models().nested()
-                    .parent(prov.models().getExistingFile(parentModel));
+            BlockModelBuilder model = prov.models().nested().parent(prov.models().getExistingFile(parentModel));
             tieredHullTextures(model, builder.getOwner().getTier());
 
             builder.forAllStates(state -> model);
@@ -85,7 +99,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            var model = makeTieredHullOverlayCompositeModel(prov, builder, overlayModel);
+            var model = makeTieredHullOverlayCompositeModel(prov.models(), builder, overlayModel);
             builder.forAllStates(state -> model);
         };
     }
@@ -97,10 +111,7 @@ public class GTMachineModels {
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
-                BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
-                tieredHullTextures(model, builder.getOwner().getTier());
-
+                BlockModelBuilder model = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
                 return addWorkableOverlays(overlays, status, model);
             });
         };
@@ -112,9 +123,7 @@ public class GTMachineModels {
                                                                                               @Nullable ResourceLocation waitingModel,
                                                                                               @Nullable ResourceLocation pausedModel) {
         return (ctx, prov, builder) -> {
-            var baseModel = prov.models().nested()
-                    .parent(prov.models().getExistingFile(SIDED_MODEL));
-            tieredHullTextures(baseModel, builder.getOwner().getTier());
+            var baseModel = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
 
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
@@ -124,25 +133,18 @@ public class GTMachineModels {
                     case WAITING -> waitingModel != null ? waitingModel : workingModel;
                     case SUSPEND -> pausedModel != null ? pausedModel : workingModel;
                 };
-                return makeOverlayCompositeModel(prov, baseModel, overlayModel);
+                return makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
             });
-        };
-    }
-
-    public static MachineBuilder.ModelConstructor createSteamHullMachineModel(ResourceLocation parentModel) {
-        return (ctx, prov, builder) -> {
-            BlockModelBuilder model = prov.models().nested()
-                    .parent(prov.models().getExistingFile(parentModel));
-            steamHullTextures(model);
-
-            builder.forAllStates(state -> model);
         };
     }
 
     public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            var model = makeSteamHullOverlayCompositeModel(prov, overlayModel);
-            builder.forAllStates(state -> model);
+            builder.forAllStates(state -> {
+                boolean steelSteamMultis = state.hasProperty(SteamMachine.STEEL_STEAM_MULTIBLOCKS) &&
+                        state.getValue(SteamMachine.STEEL_STEAM_MULTIBLOCKS);
+                return makeSteamHullOverlayCompositeModel(prov.models(), steelSteamMultis, overlayModel);
+            });
         };
     }
     // spotless:on
@@ -157,10 +159,7 @@ public class GTMachineModels {
             builder.forAllStates(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
-                BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
-                steamHullTextures(model, highPressure);
-
+                BlockModelBuilder model = prov.models().nested().parent(steamHullModel(prov.models(), highPressure));
                 addWorkableOverlays(overlays, status, model);
 
                 if (!state.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
@@ -190,7 +189,7 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(ALL_MODEL))
                     .texture("all", baseCasingTexture);
 
-            var model = makeOverlayCompositeModel(prov, baseModel, overlayModel);
+            var model = makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
             builder.forAllStates(state -> model);
         };
     }
@@ -216,12 +215,10 @@ public class GTMachineModels {
                                                                                        ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder baseModel = prov.models().nested()
-                    .parent(prov.models().getExistingFile(SIDED_MODEL))
-                    .texture("bottom", baseCasingTexture.withSuffix("/bottom"))
-                    .texture("top", baseCasingTexture.withSuffix("/top"))
-                    .texture("side", baseCasingTexture.withSuffix("/side"));
+                    .parent(prov.models().getExistingFile(SIDED_MODEL));
+            casingTextures(baseModel, baseCasingTexture);
 
-            var model = makeOverlayCompositeModel(prov, baseModel, overlayModel);
+            var model = makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
             builder.forAllStates(state -> model);
         };
     }
@@ -235,10 +232,8 @@ public class GTMachineModels {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL))
-                        .texture("bottom", baseCasingTexture.withSuffix("/bottom"))
-                        .texture("top", baseCasingTexture.withSuffix("/top"))
-                        .texture("side", baseCasingTexture.withSuffix("/side"));
+                        .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL));
+                casingTextures(model, baseCasingTexture);
                 return addWorkableOverlays(overlays, status, model);
             });
         };
@@ -361,30 +356,17 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createCrateModel(boolean wooden) {
         return (ctx, prov, builder) -> {
-            ResourceLocation baseModel = wooden ?
-                    GTCEu.id("block/cube/all") :
-                    GTCEu.id("block/cube/tinted/all");
-            ResourceLocation layerModel = wooden ?
-                    GTCEu.id("block/cube_2_layer/all") :
-                    GTCEu.id("block/cube_2_layer/tinted_bot/all");
+            String modelPath = "block/machine/template/crate" + (wooden ? "wooden" : "metal") + "_crate";
+            ModelFile baseModel = prov.models().getExistingFile(GTCEu.id(modelPath));
+            ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
-            var baseTextureName = GTCEu.id("block/storage/crates/" + (wooden ? "wooden" : "metal") + "_crate");
-
-            ModelFile untaped = prov.models().nested()
-                    .parent(prov.models().getExistingFile(baseModel))
-                    .texture("all", baseTextureName);
-            ModelFile taped = prov.models().nested()
-                    .parent(prov.models().getExistingFile(layerModel))
-                    .texture("bot_all", baseTextureName)
-                    .texture("top_all", GTCEu.id("block/overlay/machine/overlay_crate_taped"));
-
-            builder.partialState()
-                    .with(CrateMachine.TAPED_PROPERTY, false)
-                    .setModel(untaped)
-                    .partialState()
-                    .with(CrateMachine.TAPED_PROPERTY, true)
-                    .setModel(taped)
-                    .end();
+            builder.forAllStates(state -> {
+                if (state.hasProperty(CrateMachine.TAPED_PROPERTY) && state.getValue(CrateMachine.TAPED_PROPERTY)) {
+                    return tapedModel;
+                } else {
+                    return baseModel;
+                }
+            });
         };
     }
 
@@ -529,12 +511,17 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createMaintenanceModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            var baseModel = prov.models().nested()
-                    .parent(prov.models().getExistingFile(SIDED_MODEL));
-            tieredHullTextures(baseModel, builder.getOwner().getTier());
-
             builder.forAllStates(state -> {
                 boolean isTaped = state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY);
+
+                if (!isTaped) {
+                    return makeTieredHullOverlayCompositeModel(prov.models(), builder, overlayModel);
+                }
+
+                var baseModel = prov.models().nested()
+                        .parent(prov.models().getExistingFile(SIDED_MODEL));
+                tieredHullTextures(baseModel, builder.getOwner().getTier());
+
                 return prov.models().nested()
                         .customLoader(CompositeModelBuilder::begin)
                         .child("base", baseModel)
@@ -542,7 +529,7 @@ public class GTMachineModels {
                                 .parent(prov.models().getExistingFile(overlayModel)))
                         .child("tape", prov.models().nested()
                                 .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front")))
-                                .texture("overlay", isTaped ? MAINTENANCE_TAPED_OVERLAY : BLANK_TEXTURE))
+                                .texture("overlay", MAINTENANCE_TAPED_OVERLAY))
                         .end();
             });
         };
@@ -568,7 +555,7 @@ public class GTMachineModels {
                         .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front_emissive")))
                         .texture("overlay", overlays.getTexture(active, damaged))
                         .texture("overlay_emissive", overlays.getEmissiveTexture(active, damaged));
-                return makeOverlayCompositeModel(prov, baseModel, overlayModel);
+                return makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
             });
         };
     }
@@ -620,24 +607,21 @@ public class GTMachineModels {
         return model;
     }
 
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              ResourceLocation baseModelName,
-                                                              ResourceLocation overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
+    public static ModelFile tieredHullModel(BlockModelProvider provider,
+                                            MachineModelBuilder<BlockModelBuilder> builder) {
+        return tieredHullModel(provider, builder.getOwner().getTier());
     }
 
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
-                                                              ResourceLocation baseModelName,
-                                                              ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(baseModelName));
-        return makeOverlayCompositeModel(provider, baseModel, overlayModel);
+    public static ModelFile tieredHullModel(BlockModelProvider provider, int tier) {
+        return provider.getExistingFile(TIERED_HULL_MODELS.get(tier));
     }
 
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              BlockModelBuilder baseModel,
-                                                              ResourceLocation overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModel, overlayModel);
+    public static ModelFile steamHullModel(BlockModelProvider provider, boolean highPressure) {
+        return provider.getExistingFile(highPressure ? HP_STEAM_HULL_OVERLAY_MODEL : LP_STEAM_HULL_OVERLAY_MODEL);
+    }
+
+    public static ModelFile steamCasingModel(BlockModelProvider provider, boolean steel) {
+        return provider.getExistingFile(steel ? STEEL_STEAM_CASING_MODEL : BRONZE_STEAM_CASING_MODEL);
     }
 
     public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
@@ -645,12 +629,6 @@ public class GTMachineModels {
                                                               ResourceLocation overlayModel) {
         return makeOverlayCompositeModel(provider, baseModel,
                 provider.nested().parent(provider.getExistingFile(overlayModel)));
-    }
-
-    public static BlockModelBuilder makeOverlayCompositeModel(BlockStateProvider provider,
-                                                              BlockModelBuilder baseModelName,
-                                                              BlockModelBuilder overlayModel) {
-        return makeOverlayCompositeModel(provider.models(), baseModelName, overlayModel);
     }
 
     public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
@@ -663,41 +641,21 @@ public class GTMachineModels {
                 .end();
     }
 
-    public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                       ResourceLocation overlayModel) {
-        return makeSteamHullOverlayCompositeModel(provider.models(), overlayModel);
-    }
-
     public static BlockModelBuilder makeSteamHullOverlayCompositeModel(BlockModelProvider provider,
-                                                                       ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
-        steamHullTextures(baseModel);
+                                                                       boolean steel, ResourceLocation overlayModel) {
+        BlockModelBuilder baseModel = provider.nested().parent(steamCasingModel(provider, steel));
         return makeOverlayCompositeModel(provider, baseModel, overlayModel);
     }
 
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
+    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockModelProvider provider,
                                                                         MachineModelBuilder<BlockModelBuilder> builder,
                                                                         ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider, builder.getOwner(), overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                        MachineDefinition machine,
-                                                                        ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider, machine.getTier(), overlayModel);
-    }
-
-    public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockStateProvider provider,
-                                                                        int tier, ResourceLocation overlayModel) {
-        return makeTieredHullOverlayCompositeModel(provider.models(), tier, overlayModel);
+        return makeTieredHullOverlayCompositeModel(provider, builder.getOwner().getTier(), overlayModel);
     }
 
     public static BlockModelBuilder makeTieredHullOverlayCompositeModel(BlockModelProvider provider,
                                                                         int tier, ResourceLocation overlayModel) {
-        BlockModelBuilder baseModel = provider.nested()
-                .parent(provider.getExistingFile(SIDED_OVERLAY_MODEL));
-        tieredHullTextures(baseModel, tier);
+        BlockModelBuilder baseModel = provider.nested().parent(tieredHullModel(provider, tier));
         return makeOverlayCompositeModel(provider, baseModel, overlayModel);
     }
 
@@ -705,44 +663,18 @@ public class GTMachineModels {
         return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
     }
 
-    public static void tieredHullTexture(BlockModelBuilder model, String key, int tier) {
-        model.texture(key, getTieredHullTexture(tier).withSuffix(key));
-    }
-
     public static BlockModelBuilder tieredHullTextures(BlockModelBuilder model, int tier) {
-        tieredHullTexture(model, "bottom", tier);
-        tieredHullTexture(model, "top", tier);
-        tieredHullTexture(model, "side", tier);
-        return model;
+        return casingTextures(model, getTieredHullTexture(tier));
     }
 
-    public static ResourceLocation getSteamHullTexture(String variant) {
-        return GTCEu.id("block/casings/steam/%s/".formatted(variant));
+    public static void casingTexture(BlockModelBuilder model, String key, ResourceLocation texturePath) {
+        model.texture(key, texturePath.withSuffix(key));
     }
 
-    public static void steamHullTexture(BlockModelBuilder model, String key, String variant) {
-        model.texture(key, getSteamHullTexture(variant).withSuffix(key));
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, String variant) {
-        steamHullTexture(model, "bottom", variant);
-        steamHullTexture(model, "top", variant);
-        steamHullTexture(model, "side", variant);
-        return model;
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model) {
-        return steamHullTextures(model, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks ? "steel" : "bronze");
-    }
-
-    public static BlockModelBuilder steamHullTextures(BlockModelBuilder model, boolean highTier) {
-        return steamHullTextures(model, highTier ? "bricked_steel" : "bricked_bronze");
-    }
-
-    public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texture) {
-        model.texture("bottom", texture);
-        model.texture("top", texture);
-        model.texture("side", texture);
+    public static BlockModelBuilder casingTextures(BlockModelBuilder model, ResourceLocation texturePath) {
+        casingTexture(model, "bottom", texturePath);
+        casingTexture(model, "top", texturePath);
+        casingTexture(model, "side", texturePath);
         return model;
     }
 

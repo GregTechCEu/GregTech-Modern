@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import lombok.Getter;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,6 +22,8 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
+
+    public static final BooleanProperty STEEL_STEAM_MULTIBLOCKS = BooleanProperty.create("steel_steam_multiblocks");
 
     @Getter
     public final boolean isHighPressure;

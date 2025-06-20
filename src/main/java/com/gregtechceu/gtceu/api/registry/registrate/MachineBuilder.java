@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -245,6 +246,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
+        modelProperty(SteamMachine.STEEL_STEAM_MULTIBLOCKS, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
