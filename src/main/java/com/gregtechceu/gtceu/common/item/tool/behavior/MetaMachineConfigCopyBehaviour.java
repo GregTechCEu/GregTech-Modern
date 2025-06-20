@@ -186,11 +186,13 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                         var itemData = data.getCompound(ITEM_CONFIG);
                         var itemComponent = Component.translatable("recipe.capability.item.name")
                                 .withStyle(ChatFormatting.GOLD);
-                        tooltipComponents.add(Component.translatable("behavior.machine_memory_card.setting.output_direction",
+                        tooltipComponents.add(Component.translatable(
+                                "behavior.machine_memory_card.setting.output_direction",
                                 itemComponent,
                                 relativeDirectionComponent(origFront, intToDirection(itemData.getInt(DIRECTION)))));
                         tooltipComponents
-                                .add(Component.translatable("behavior.machine_memory_card.setting.item_auto_output", itemComponent,
+                                .add(Component.translatable("behavior.machine_memory_card.setting.item_auto_output",
+                                        itemComponent,
                                         (itemData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
                                 "behavior.machine_memory_card.setting.allow_input_from_output", itemComponent,
@@ -200,11 +202,13 @@ public class MetaMachineConfigCopyBehaviour implements IInteractionItem, IAddInf
                         var fluidData = data.getCompound(FLUID_CONFIG);
                         var fluidComponent = Component.translatable("recipe.capability.fluid.name")
                                 .withStyle(ChatFormatting.BLUE);
-                        tooltipComponents.add(Component.translatable("behavior.machine_memory_card.setting.output_direction",
+                        tooltipComponents.add(Component.translatable(
+                                "behavior.machine_memory_card.setting.output_direction",
                                 fluidComponent,
                                 relativeDirectionComponent(origFront, intToDirection(fluidData.getInt(DIRECTION)))));
                         tooltipComponents.add(
-                                Component.translatable("behavior.machine_memory_card.setting.item_auto_output", fluidComponent,
+                                Component.translatable("behavior.machine_memory_card.setting.item_auto_output",
+                                        fluidComponent,
                                         (fluidData.getBoolean(AUTO) ? enabledComponent : disabledComponent)));
                         tooltipComponents.add(Component.translatable(
                                 "behavior.machine_memory_card.setting.allow_input_from_output", fluidComponent,

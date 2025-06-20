@@ -92,7 +92,8 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         FluidPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", properties.getThroughput()));
-        tooltip.add(Component.translatable("gtceu.fluid_container.max_temperature", properties.getMaxFluidTemperature()));
+        tooltip.add(Component.translatable("gtceu.fluid_container.max_temperature",
+                properties.getMaxFluidTemperature()));
 
         if (properties.getChannels() > 1) {
             tooltip.add(Component.translatable("gtceu.fluid_container.channels", properties.getChannels()));

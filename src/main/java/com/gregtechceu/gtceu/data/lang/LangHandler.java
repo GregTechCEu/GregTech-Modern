@@ -18,7 +18,7 @@ public class LangHandler {
      * Enabled/Active must be in green - §a
      * Potion effects must be in yellow - §e
      * Time must be in red - §c
-         * Percentages must be in green - §a
+     * Percentages must be in green - §a
      * Keys must be in all caps
      * Key combos must follow the format KEY1 + KEY2 (for example, SHIFT + R-CLICK)
      * Middle click must be written as MIDDLE-CLICK instead of M-CLICK
@@ -53,7 +53,6 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.widget.container.gtm_fluid_slot", "GTM Fluid Slot");
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot", "GTM Phantom Item Slot");
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
-
 
         // Commonly used strings
         provider.add("gtceu.divider", "=========================");

@@ -521,7 +521,7 @@ public class ItemLang {
         provider.add("item.gtceu.gelled_toluene.tooltip", "§7Raw Explosive");
         provider.add("item.gtceu.purple.drink.tooltip",
                 "§7How about Lemonade. Or some Ice Tea? I got Purple Drink!");
-        multiLang(provider, "item.gtceu.foam_sprayer.tooltip", //unused
+        multiLang(provider, "item.gtceu.foam_sprayer.tooltip", // unused
                 "§7Sprays §9Construction Foam§r",
                 "§7Use on a frame to foam connected frames",
                 "Foam can be colored");
@@ -560,15 +560,15 @@ public class ItemLang {
 
         provider.add("behavior.toggle_energy_consumer.tooltip", "§7SHIFT + R-CLICK to toggle mode");
 
-        provider.add("behavior.boor.by", "by %s"); //unused
+        provider.add("behavior.boor.by", "by %s"); // unused
 
-        provider.add("behavior.soft_mallet", "Activates and Deactivates Machines"); //unused
+        provider.add("behavior.soft_mallet", "Activates and Deactivates Machines"); // unused
         provider.add("behavior.soft_mallet.enabled", "Working Enabled");
         provider.add("behavior.soft_mallet.disabled", "Working Disabled");
         provider.add("behavior.soft_mallet.idle_after_cycle", "Pause machine after current cycle");
-        provider.add("behavior.hammer", "§7Turns on and off Muffling for Machines (by hitting them)"); //unused
-        provider.add("behavior.wrench", "§7Rotates Blocks on R-CLICK"); //unused
-        provider.add("behavior.hoe", "Can till dirt"); //unused
+        provider.add("behavior.hammer", "§7Turns on and off Muffling for Machines (by hitting them)"); // unused
+        provider.add("behavior.wrench", "§7Rotates Blocks on R-CLICK"); // unused
+        provider.add("behavior.hoe", "Can till dirt"); // unused
 
         provider.add("behavior.lighter.tooltip.description", "§7Can light things on fire");
         provider.add("behavior.lighter.tooltip.usage", "§7SHIFT + R-CLICK to open/close");
@@ -576,7 +576,8 @@ public class ItemLang {
 
         provider.add("behavior.paintspray.solvent.tooltip", "§7Can remove color from things");
         provider.add("behavior.paintspray.white.tooltip", "§7Can paint things in §fWhite");
-        provider.add("behavior.paintspray.orange.tooltip", "§7Can paint things in §6Orange"); // gold is closest to orange
+        provider.add("behavior.paintspray.orange.tooltip", "§7Can paint things in §6Orange"); // gold is closest to
+                                                                                              // orange
         provider.add("behavior.paintspray.magenta.tooltip", "§7Can paint things in §dMagenta");
         provider.add("behavior.paintspray.light_blue.tooltip", "§7Can paint things in §bLight Blue");
         provider.add("behavior.paintspray.yellow.tooltip", "§7Can paint things in §eYellow");
@@ -587,16 +588,18 @@ public class ItemLang {
         provider.add("behavior.paintspray.cyan.tooltip", "§7Can paint things in §3Cyan");
         provider.add("behavior.paintspray.purple.tooltip", "§7Can paint things in §5Purple");
         provider.add("behavior.paintspray.blue.tooltip", "§7Can paint things in §9Blue");
-        provider.add("behavior.paintspray.brown.tooltip", "§7Can paint things in §4Brown");// dark red is closest to brown
+        provider.add("behavior.paintspray.brown.tooltip", "§7Can paint things in §4Brown");// dark red is closest to
+                                                                                           // brown
         provider.add("behavior.paintspray.green.tooltip", "§7Can paint things in §2Green");
         provider.add("behavior.paintspray.red.tooltip", "§7Can paint things in §cRed");
         provider.add("behavior.paintspray.black.tooltip", "§7Can paint things in §0Black");
 
-        provider.add("behavior.prospecting", "Usable for Prospecting"); //unused
+        provider.add("behavior.prospecting", "Usable for Prospecting"); // unused
 
         provider.add("behavior.machine_memory_card.copy.tooltip", "§7SHIFT + R-CLICK to copy machine configuration");
         provider.add("behavior.machine_memory_card.paste.tooltip", "§7R-CLICK to paste machine configuration");
-        provider.add("behavior.machine_memory_card.setting.allow_input_from_output", "%s §7input from output side is %s");
+        provider.add("behavior.machine_memory_card.setting.allow_input_from_output",
+                "%s §7input from output side is %s");
         provider.add("behavior.machine_memory_card.setting.output_direction", "%s §7output direction: %s");
         provider.add("behavior.machine_memory_card.setting.item_auto_output", "%s §7auto-output is %s");
         provider.add("behavior.machine_memory_card.setting.muffled", "§7Muffling %s");
@@ -613,9 +616,11 @@ public class ItemLang {
         provider.add("item.tricorder_scanner.tooltip", "Tricorder"); // unused
         provider.add("item.portable_debug_scanner.tooltip", "Tricorder");
         provider.add("behavior.portable_debug_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s --- %s (§a%s%%)");
-        provider.add("behavior.portable_debug_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: Unknown (§a%s%%)");
+        provider.add("behavior.portable_debug_scanner.bedrock_fluid.amount_unknown",
+                "Fluid In Deposit: Unknown (§a%s%%)");
         provider.add("behavior.portable_debug_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
-        provider.add("behavior.portable_debug_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
+        provider.add("behavior.portable_debug_scanner.environmental_hazard",
+                "Environmental Hazard In Chunk: %s§r - %s ppm");
         provider.add("behavior.portable_debug_scanner.environmental_hazard.nothing",
                 "Environmental Hazard In Chunk: §6Nothing§r");
         provider.add("behavior.portable_debug_scanner.local_hazard", "Local Hazard In Area: %s§r - %s ppm");
