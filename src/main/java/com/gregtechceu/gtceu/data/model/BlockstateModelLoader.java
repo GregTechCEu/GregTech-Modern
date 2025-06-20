@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.model;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
@@ -9,7 +8,7 @@ import net.minecraftforge.client.model.generators.BlockModelProvider;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
-public class BlockstateLoader {
+public class BlockstateModelLoader {
 
     public static void init(GTBlockstateProvider provider) {
         BlockModelProvider models = provider.models();
@@ -23,10 +22,13 @@ public class BlockstateLoader {
         }
         // steam hulls
         {
-            var model = models.withExistingParent(LP_STEAM_HULL_OVERLAY_MODEL.toString(), SIDED_OVERLAY_MODEL);
-            GTMachineModels.casingTextures(model, GTCEu.id("block/casings/steam/bricked_bronze/"));
-            model = models.withExistingParent(HP_STEAM_HULL_OVERLAY_MODEL.toString(), SIDED_OVERLAY_MODEL);
-            GTMachineModels.casingTextures(model, GTCEu.id("block/casings/steam/bricked_steel/"));
+            ResourceLocation modelName = LP_STEAM_HULL_MODEL;
+            var model = models.withExistingParent(modelName.toString(), SIDED_OVERLAY_MODEL);
+            GTMachineModels.casingTextures(model, modelName.withSuffix("/"));
+
+            modelName = HP_STEAM_HULL_MODEL;
+            model = models.withExistingParent(modelName.toString(), SIDED_OVERLAY_MODEL);
+            GTMachineModels.casingTextures(model, modelName.withSuffix("/"));
         }
     }
 }
