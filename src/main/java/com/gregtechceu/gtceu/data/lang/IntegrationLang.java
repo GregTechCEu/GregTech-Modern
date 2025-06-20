@@ -43,6 +43,14 @@ public class IntegrationLang {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
             provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
         }
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.bauxite_vein_end", "End Bauxite Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_end", "End Magnetite Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_ow", "Magnetite Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.manganese_vein_nether", "Nether Manganese Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.magnetite_vein_ow", "Manganese Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.pitchblende_vein_end", "End Pitchblende Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.redstone_vein_ow", "Redstone Vein");
+        LangUtil.replace(provider, "gtceu.jei.ore_vein.redstone_vein_nether", "Nether Redstone Vein");
 
         provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
