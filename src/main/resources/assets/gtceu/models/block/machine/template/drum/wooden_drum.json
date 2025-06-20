@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/cube/bottom_top",
+  "parent": "block/cube_bottom_top",
   "textures": {
     "bottom": "gtceu:block/storage/drums/wooden_drum/bottom",
     "top": "gtceu:block/storage/drums/wooden_drum/top",
