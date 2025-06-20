@@ -404,10 +404,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (!playerIn.isShiftKeyDown() || !controllable.isWorkingEnabled()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+                        "behavior.soft_hammer.enabled" : "behavior.soft_hammer.disabled"));
             } else {
                 controllable.setSuspendAfterFinish(true);
-                playerIn.sendSystemMessage(Component.translatable("behaviour.soft_hammer.idle_after_cycle"));
+                playerIn.sendSystemMessage(Component.translatable("behavior.soft_hammer.idle_after_cycle"));
             }
         }
         return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
