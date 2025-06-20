@@ -61,7 +61,7 @@ public class GTModels {
                         .parent(new ModelFile.UncheckedModelFile("item/generated"));
                 subModelBuilder.texture("layer0", prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i + 1)));
 
-                rootModel = rootModel.override().predicate(predicate, (float) i / modelNumber)
+                rootModel = rootModel.override().predicate(predicate, i / 100f)
                         .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i))))
                         .end();
             }
