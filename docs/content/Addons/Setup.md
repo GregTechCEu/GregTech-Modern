@@ -104,4 +104,4 @@ Most content in your addon (including recipes, machines, recipe types, items, et
     ```
     
 !!! note
-    `init()` does NOT need to be empty, or even called `init()`. As long as any method from the appropriate class is called in the appropriate method or registered in the appropriate event bus listener, it will register your contet.
+    `init()` does NOT need to be empty, or even called `init()`. As long as any method from the appropriate class is called in the appropriate method or registered in the appropriate event bus listener, it will register your content.
