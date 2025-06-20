@@ -112,6 +112,8 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     protected int lastTankCapacity;
     @Setter
     protected Runnable changeListener;
+    @Setter
+    protected boolean showAmountOverlay = true;
 
     public TankWidget() {
         this(null, 0, 0, 18, 18, true, true);
@@ -388,7 +390,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
                         ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             }
 
-            if (showAmount && !renderedFluid.isEmpty()) {
+            if (showAmount && showAmountOverlay && !renderedFluid.isEmpty()) {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 1);
                 String s = TextFormattingUtil.formatLongToCompactStringBuckets(renderedFluid.getAmount(), 3) + "B";
