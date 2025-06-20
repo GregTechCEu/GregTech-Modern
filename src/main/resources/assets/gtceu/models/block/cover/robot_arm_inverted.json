@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/overlay/front_emissive",
+    "parent": "gtceu:block/overlay/front_emissive_2",
     "textures": {
         "particle": "#overlay",
         "overlay": "gtceu:block/cover/overlay_arm",

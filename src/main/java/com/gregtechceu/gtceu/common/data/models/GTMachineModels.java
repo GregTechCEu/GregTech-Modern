@@ -535,7 +535,7 @@ public class GTMachineModels {
                 boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
 
                 var overlayModel = prov.models().nested()
-                        .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front_emissive")))
+                        .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/front_emissive_2")))
                         .texture("overlay", overlays.getTexture(active, damaged))
                         .texture("overlay_emissive", overlays.getEmissiveTexture(active, damaged));
                 return makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
