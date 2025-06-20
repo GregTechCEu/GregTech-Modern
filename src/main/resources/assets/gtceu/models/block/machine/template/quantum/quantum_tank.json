@@ -1,5 +1,5 @@
 {
-	"parent": "gtceu:block/machine/template/quantum_container",
+	"parent": "gtceu:block/machine/template/quantum/quantum_container",
 	"textures": {
 		"overlay_container": "gtceu:block/overlay/machine/overlay_qtank_emissive"
 	}
