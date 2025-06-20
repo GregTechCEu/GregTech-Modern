@@ -83,14 +83,15 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
-            var model = prov.models().getExistingFile(baseModel);
+            var model = prov.models().getExistingFile(ensureProperModelPath(baseModel));
             builder.forAllStates(state -> model);
         };
     }
 
     public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
-            BlockModelBuilder model = prov.models().nested().parent(prov.models().getExistingFile(parentModel));
+            BlockModelBuilder model = prov.models().nested()
+                    .parent(prov.models().getExistingFile(ensureProperModelPath(parentModel)));
             tieredHullTextures(model, builder.getOwner().getTier());
 
             builder.forAllStates(state -> model);
@@ -628,7 +629,7 @@ public class GTMachineModels {
                                                               BlockModelBuilder baseModel,
                                                               ResourceLocation overlayModel) {
         return makeOverlayCompositeModel(provider, baseModel,
-                provider.nested().parent(provider.getExistingFile(overlayModel)));
+                provider.nested().parent(provider.getExistingFile(ensureProperModelPath(overlayModel))));
     }
 
     public static BlockModelBuilder makeOverlayCompositeModel(BlockModelProvider provider,
