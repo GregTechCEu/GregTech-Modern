@@ -20,13 +20,12 @@ If you're more experienced with Java, you can setup your mod from scratch too!
     - GTCEu Modern
     - LDLib
     - Registrate
-    - KubeJS
-    - Rhino
 
     Optional, but useful dependencies:
 
     - Just Enough Items
     - EMI
+    - Jade
     - Configuration (by Toma)
 
 Open the cloned repo/unzipped folder into your IDE of choice (IntelliJ IDEA is highly recommended!) 
