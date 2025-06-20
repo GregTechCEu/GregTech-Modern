@@ -430,8 +430,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         this.registrate.object(name);
         var definition = createDefinition();
 
-        setupStateDefinition(definition);
         definition.setRotationState(rotationState);
+        setupStateDefinition(definition);
+        if (model == null && blockModel == null) {
+            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+        }
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
             blockBuilder.lang(langValue);
@@ -475,9 +478,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setAfterWorking(this.afterWorking);
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
 
-        if (model == null && blockModel == null) {
-            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
-        }
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {
                 if (type != null && type.getIconSupplier() == null) {
