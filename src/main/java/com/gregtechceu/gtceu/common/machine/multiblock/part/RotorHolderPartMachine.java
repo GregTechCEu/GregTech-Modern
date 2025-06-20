@@ -90,8 +90,10 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     @Override
     public int tintColor(int index) {
-        if (index == 2) {
-            return getRotorMaterial().getMaterialARGB();
+        if (index >= 2) {
+            return getRotorMaterial().getLayerARGB(index - 2);
+        } else if (index <= -103) {
+            return getRotorMaterial().getLayerARGB(index + 2);
         }
         return super.tintColor(index);
     }
