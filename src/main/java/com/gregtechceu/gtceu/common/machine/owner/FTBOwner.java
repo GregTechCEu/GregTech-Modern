@@ -98,7 +98,7 @@ public non-sealed class FTBOwner extends MachineOwner {
     @Override
     public void displayInfo(List<Component> compList) {
         super.displayInfo(compList);
-        compList.add(Component.translatable("behavior.portable_scanner.team_name", getName()));
+        compList.add(Component.translatable("behavior.portable_debug_scanner.team_name", getName()));
         MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 

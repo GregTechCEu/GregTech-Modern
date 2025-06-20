@@ -54,7 +54,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
     }
 
     public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
+        compList.add(Component.translatable("behavior.portable_debug_scanner.machine_ownership", getTypeDisplayName()));
     }
 
     @UnmodifiableView
@@ -115,7 +115,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
         } else {
             online += ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(playerUUID) != null;
         }
-        compList.add(Component.translatable("behavior.portable_scanner.player_name",
+        compList.add(Component.translatable("behavior.portable_debug_scanner.player_name",
                 playerName, Component.translatable(online)));
     }
 

@@ -84,7 +84,7 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
     @Override
     public void displayInfo(List<Component> compList) {
         super.displayInfo(compList);
-        compList.add(Component.translatable("behavior.portable_scanner.guild_name", getName()));
+        compList.add(Component.translatable("behavior.portable_debug_scanner.guild_name", getName()));
         MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 
