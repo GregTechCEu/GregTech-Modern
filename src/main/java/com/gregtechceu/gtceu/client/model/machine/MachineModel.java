@@ -55,6 +55,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @Getter
     private final MachineDefinition definition;
     private final Map<MachineRenderState, BakedModel> modelsByState;
+    private final @Nullable MultiPartBakedModel multiPart;
     @Getter
     private final List<DynamicRender<?, ?>> dynamicRenders;
 
@@ -65,9 +66,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     public MachineModel(MachineDefinition definition,
                         Map<MachineRenderState, BakedModel> modelsByState,
+                        @Nullable MultiPartBakedModel multiPart,
                         List<DynamicRender<?, ?>> dynamicRenders) {
         this.definition = definition;
         this.modelsByState = modelsByState;
+        this.multiPart = multiPart;
         this.dynamicRenders = dynamicRenders;
 
         for (DynamicRender<?, ?> render : this.dynamicRenders) {
@@ -84,78 +87,82 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
             List<BakedQuad> quads = new ArrayList<>();
-            renderMachine(quads, definition, null, Direction.NORTH,
+            renderMachine(quads, definition, null, state, Direction.NORTH,
                     side, rand, side, modelData, renderType);
             return quads;
         }
     }
 
-    public List<BakedQuad> getMachineQuads(@Nullable BlockState state, @Nullable Direction side,
+    public List<BakedQuad> getMachineQuads(@Nullable BlockState blockState, @Nullable Direction side,
                                            @NotNull RandomSource rand,
                                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
         BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
         BlockPos pos = modelData.get(MODEL_DATA_POS);
 
         var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
-        if (machine != null) {
-            Direction frontFacing = machine.getFrontFacing();
-            MachineDefinition definition = machine.getDefinition();
+        if (machine == null) return Collections.emptyList();
 
-            ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
-            Direction elementSide = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
-            List<BakedQuad> quads = new LinkedList<>();
-            // render machine additional quads
-            renderMachine(quads, definition, machine, frontFacing, side, rand,
-                    elementSide, modelData, renderType);
+        Direction frontFacing = machine.getFrontFacing();
+        MachineDefinition definition = machine.getDefinition();
 
-            // render auto IO
-            if (machine instanceof IAutoOutputItem autoOutputItem) {
-                var itemFace = autoOutputItem.getOutputFacingItems();
-                if (itemFace != null && side == itemFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
-                            -1, 0, true, true));
-                    if (autoOutputItem.isAutoOutputItems()) {
-                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                elementSide, ModelUtils.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
-                                -101, 15, true, true));
-                    }
+        ModelState blockModelState = ModelUtils.getModelStateFromDirection(frontFacing);
+        Direction elementSide = side == null ? null : RelativeDirection.findRelativeOf(frontFacing, side).global;
+        List<BakedQuad> quads = new LinkedList<>();
+        // render machine additional quads
+        renderMachine(quads, definition, machine, blockState, frontFacing, side, rand,
+                elementSide, modelData, renderType);
+
+        // render auto IO
+        if (machine instanceof IAutoOutputItem autoOutputItem) {
+            var itemFace = autoOutputItem.getOutputFacingItems();
+            if (itemFace != null && side == itemFace) {
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
+                        elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                        -1, 0, true, true));
+                if (autoOutputItem.isAutoOutputItems()) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
+                            elementSide, ModelUtils.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
+                            -101, 15, true, true));
                 }
             }
-            if (machine instanceof IAutoOutputFluid autoOutputFluid) {
-                var fluidFace = autoOutputFluid.getOutputFacingFluids();
-                if (fluidFace != null && side == fluidFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                            elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
-                            -1, 0, true, true));
-                    if (autoOutputFluid.isAutoOutputFluids()) {
-                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                elementSide, ModelUtils.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
-                                -101, 15, true, true));
-                    }
-                }
-            }
-
-            // render covers
-            int start = quads.size();
-            ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), elementSide,
-                    pos, level, blockModelState, modelData, renderType);
-            var iterator = quads.listIterator(start);
-            while (iterator.hasNext()) {
-                iterator.set(ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
-            }
-            return quads;
         }
-        return Collections.emptyList();
+        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
+            var fluidFace = autoOutputFluid.getOutputFacingFluids();
+            if (fluidFace != null && side == fluidFace) {
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
+                        elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                        -1, 0, true, true));
+                if (autoOutputFluid.isAutoOutputFluids()) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
+                            elementSide, ModelUtils.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
+                            -101, 15, true, true));
+                }
+            }
+        }
+
+        // render covers
+        int start = quads.size();
+        ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), elementSide,
+                pos, level, blockModelState, modelData, renderType);
+        var iterator = quads.listIterator(start);
+        while (iterator.hasNext()) {
+            iterator.set(ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
+        }
+        return quads;
     }
 
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
-                              Direction frontFacing, @Nullable Direction quadFace, RandomSource rand,
-                              @Nullable Direction elementSide,
+                              @Nullable BlockState blockState, Direction frontFacing,
+                              @Nullable Direction elementSide, RandomSource rand, @Nullable Direction modelFront,
                               @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (machine == null) {
-            quads.addAll(modelsByState.get(definition.defaultRenderState())
-                    .getQuads(null, quadFace, rand, modelData, renderType));
+            if (multiPart != null) {
+                quads.addAll(multiPart.getMachineQuads(definition, definition.defaultRenderState(),
+                        blockState, elementSide, rand, modelData, renderType));
+            } else {
+                quads.addAll(modelsByState.get(definition.defaultRenderState())
+                        .getQuads(blockState, elementSide, rand, modelData, renderType));
+            }
             return;
         }
 
@@ -176,6 +183,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MetaMachine machine,
                                 @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        if (multiPart != null) {
+            quads.addAll(multiPart.getMachineQuads(machine.getDefinition(), machine.getRenderState(),
+                    machine.getBlockState(), elementSide, rand, modelData, renderType));
+        } else {
+            quads.addAll(modelsByState.get(machine.getRenderState())
+                    .getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
+        }
         quads.addAll(modelsByState.get(machine.getRenderState())
                 .getQuads(machine.getBlockState(), side, rand, modelData, renderType));
     }

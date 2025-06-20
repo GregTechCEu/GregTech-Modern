@@ -1,19 +1,18 @@
 package com.gregtechceu.gtceu.data.model.builder;
 
+import com.google.common.collect.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -40,6 +39,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     private final List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
     @Getter
     private final Map<PartialState<T>, ModelFile> models = new LinkedHashMap<>();
+    @Getter
+    private final List<PartBuilder> parts = new ArrayList<>();
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
@@ -50,19 +51,31 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     @Override
     public JsonObject toJson(JsonObject json) {
         json = super.toJson(json);
-        
+
         json.addProperty("machine", owner.getId().toString());
+        StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = owner.getStateDefinition();
+        if (getModels().isEmpty() && getParts().isEmpty()) {
+            throw new IllegalStateException("A machine model must have either a variant or multipart model!");
+        }
 
-        List<MachineRenderState> missingStates = Lists.newArrayList(owner.getStateDefinition().getPossibleStates());
-        missingStates.removeAll(coveredStates);
-        Preconditions.checkState(missingStates.isEmpty(),
-                "Render state for machine %s does not cover all states. Missing: %s", owner, missingStates);
-        JsonObject variants = new JsonObject();
-        getModels().entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(PartialState.comparingByProperties()))
-                .forEach(entry -> variants.add(entry.getKey().toString(), modelToJson(entry.getValue())));
-
-        json.add("variants", variants);
+        if (!getModels().isEmpty()) {
+            List<MachineRenderState> missingStates = Lists.newArrayList(stateDefinition.getPossibleStates());
+            missingStates.removeAll(coveredStates);
+            Preconditions.checkState(missingStates.isEmpty(),
+                    "Render state for machine %s does not cover all states. Missing: %s", owner, missingStates);
+            JsonObject variants = new JsonObject();
+            getModels().entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey(PartialState.comparingByProperties()))
+                    .forEach(entry -> variants.add(entry.getKey().toString(), modelToJson(entry.getValue())));
+            json.add("variants", variants);
+        }
+        if (!getParts().isEmpty()) {
+            JsonArray parts = new JsonArray();
+            for (PartBuilder part : getParts()) {
+                parts.add(part.toJson());
+            }
+            json.add("multipart", parts);
+        }
 
         JsonArray dynamicRenders = new JsonArray();
         for (DynamicRender<?, ?> render : this.dynamicRenders) {
@@ -160,6 +173,20 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         return new PartialState<>(owner, this);
     }
 
+    /**
+     * Creates a builder for models to assign to a {@link MultiPartBlockStateBuilder.PartBuilder}, which when
+     * completed via {@link ConfiguredModel.Builder#addModel()} will assign the
+     * resultant set of models to the part and return it for further processing.
+     *
+     * @return the model builder
+     * @see ConfiguredModel.Builder
+     */
+    public PartBuilder part(ModelFile model) {
+        PartBuilder part = new PartBuilder(model);
+        this.parts.add(part);
+        return part;
+    }
+
     public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ModelFile> mapper) {
         return forAllStatesExcept(mapper);
     }
@@ -211,12 +238,12 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         @Nullable
         private final MachineModelBuilder<B> outerBuilder;
 
-        PartialState(MachineDefinition owner, @Nullable MachineModelBuilder<B> outerBuilder) {
+        private PartialState(MachineDefinition owner, @Nullable MachineModelBuilder<B> outerBuilder) {
             this(owner, ImmutableMap.of(), outerBuilder);
         }
 
-        PartialState(MachineDefinition owner, Map<Property<?>, Comparable<?>> setStates,
-                     @Nullable MachineModelBuilder<B> outerBuilder) {
+        private PartialState(MachineDefinition owner, Map<Property<?>, Comparable<?>> setStates,
+                             @Nullable MachineModelBuilder<B> outerBuilder) {
             this.owner = owner;
             this.outerBuilder = outerBuilder;
             for (Map.Entry<Property<?>, Comparable<?>> entry : setStates.entrySet()) {
@@ -320,6 +347,266 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 }
                 return 0;
             };
+        }
+
+    }
+
+    public class PartBuilder {
+
+        public ModelFile model;
+        public boolean useOr;
+        public final Multimap<Property<?>, Comparable<?>> conditions = MultimapBuilder.linkedHashKeys()
+                .arrayListValues().build();
+        public final List<ConditionGroup> nestedConditionGroups = new ArrayList<>();
+
+        private PartBuilder(ModelFile model) {
+            this.model = model;
+        }
+
+        /**
+         * Makes this part get applied if any of the conditions/condition groups are true,
+         * instead of all of them needing to be true.
+         */
+        public PartBuilder useOr() {
+            this.useOr = true;
+            return this;
+        }
+
+        /**
+         * Set a condition for this part, which consists of a property and a set of
+         * valid values. Can be called multiple times for multiple different properties.
+         *
+         * @param <T>    the type of the property value
+         * @param prop   the property
+         * @param values a set of valid values
+         * @return this builder
+         * @throws NullPointerException     if {@code prop} is {@code null}
+         * @throws NullPointerException     if {@code values} is {@code null}
+         * @throws IllegalArgumentException if {@code values} is empty
+         * @throws IllegalArgumentException if {@code prop} is not applicable to the current machine's state
+         */
+        @SafeVarargs
+        private final <T extends Comparable<T>> PartBuilder replaceWithCondition(Property<T> prop, T... values) {
+            Preconditions.checkNotNull(prop, "Property must not be null");
+            Preconditions.checkNotNull(values, "Value list must not be null");
+            Preconditions.checkArgument(values.length > 0, "Value list must not be empty");
+            Preconditions.checkArgument(canApplyTo(owner),
+                    "Property %s is not valid for machine %s", prop, owner);
+            this.nestedConditionGroups.clear();
+            this.conditions.putAll(prop, Arrays.asList(values));
+            return this;
+        }
+
+        /**
+         * Set a condition for this part, which consists of a property and a set of
+         * valid values. Can be called multiple times for multiple different properties.
+         *
+         * @param <T>    the type of the property value
+         * @param prop   the property
+         * @param values a set of valid values
+         * @return this builder
+         * @throws IllegalArgumentException if {@code prop} has already been configured
+         * @throws IllegalStateException    if {@code !nestedConditionGroups.isEmpty()}
+         * @see PartBuilder#replaceWithCondition(Property, Comparable[])
+         */
+        @SafeVarargs
+        public final <T extends Comparable<T>> PartBuilder condition(Property<T> prop, T... values) {
+            Preconditions.checkArgument(!conditions.containsKey(prop),
+                    "Cannot set condition for property \"%s\" more than once", prop.getName());
+            Preconditions.checkState(nestedConditionGroups.isEmpty(),
+                    "Can't have normal conditions if there are already nested condition groups");
+            return this.replaceWithCondition(prop, values);
+        }
+
+        /**
+         * Allows having nested groups of conditions.
+         */
+        private final ConditionGroup replaceWithNestedGroup() {
+            this.conditions.clear();
+            ConditionGroup group = new ConditionGroup();
+            this.nestedConditionGroups.add(group);
+            return group;
+        }
+
+        /**
+         * Allows having nested groups of conditions if there are not any normal conditions.
+         * @throws IllegalStateException if {@code !conditions.isEmpty()}
+         * @see PartBuilder#replaceWithNestedGroup()
+         */
+        public final ConditionGroup nestedGroup() {
+            Preconditions.checkState(conditions.isEmpty(),
+                    "Can't have nested condition groups if there are already normal conditions");
+            return replaceWithNestedGroup();
+        }
+
+        public MachineModelBuilder<T> end() {
+            return MachineModelBuilder.this;
+        }
+
+        JsonObject toJson() {
+            JsonObject out = new JsonObject();
+            if (!conditions.isEmpty()) {
+                out.add("when", conditionsToJson(this.conditions, this.useOr));
+            } else if (!nestedConditionGroups.isEmpty()) {
+                out.add("when", groupsToJson(this.nestedConditionGroups, this.useOr));
+            }
+            out.add("apply", modelToJson(this.model));
+            return out;
+        }
+
+        public boolean canApplyTo(MachineDefinition b) {
+            return b.getStateDefinition().getProperties().containsAll(this.conditions.keySet());
+        }
+
+        private JsonObject groupsToJson(List<ConditionGroup> conditions, boolean useOr) {
+            JsonObject groupJson = new JsonObject();
+            JsonArray innerGroupJson = new JsonArray();
+            groupJson.add(useOr ? "OR" : "AND", innerGroupJson);
+            for (ConditionGroup group : conditions) {
+                innerGroupJson.add(group.toJson());
+            }
+            return groupJson;
+        }
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        private JsonObject conditionsToJson(Multimap<Property<?>, Comparable<?>> conditions, boolean useOr) {
+            JsonObject groupJson = new JsonObject();
+            for (var entry : conditions.asMap().entrySet()) {
+                StringBuilder activeString = new StringBuilder();
+                for (Comparable<?> val : entry.getValue()) {
+                    if (!activeString.isEmpty()) activeString.append("|");
+                    activeString.append(((Property) entry.getKey()).getName(val));
+                }
+                groupJson.addProperty(entry.getKey().getName(), activeString.toString());
+            }
+            if (useOr) {
+                JsonArray innerWhen = new JsonArray();
+                for (var entry : groupJson.entrySet()) {
+                    JsonObject obj = new JsonObject();
+                    obj.add(entry.getKey(), entry.getValue());
+                    innerWhen.add(obj);
+                }
+                groupJson = new JsonObject();
+                groupJson.add("OR", innerWhen);
+            }
+            return groupJson;
+        }
+
+        public class ConditionGroup {
+
+            public final Multimap<Property<?>, Comparable<?>> conditions = MultimapBuilder.linkedHashKeys()
+                    .arrayListValues()
+                    .build();
+            public final List<ConditionGroup> nestedConditionGroups = new ArrayList<>();
+            private ConditionGroup parent = null;
+            public boolean useOr;
+
+            /**
+             * Set a condition for this part, which consists of a property and a set of
+             * valid values. Can be called multiple times for multiple different properties.
+             *
+             * @param <T>    the type of the property value
+             * @param prop   the property
+             * @param values a set of valid values
+             * @return this builder
+             * @throws NullPointerException     if {@code prop} is {@code null}
+             * @throws NullPointerException     if {@code values} is {@code null}
+             * @throws IllegalArgumentException if {@code values} is empty
+             * @throws IllegalArgumentException if {@code prop} is not applicable to the current machine's state
+             */
+            @SafeVarargs
+            private final <T extends Comparable<T>> ConditionGroup replaceWithCondition(Property<T> prop, T... values) {
+                Preconditions.checkNotNull(prop, "Property must not be null");
+                Preconditions.checkNotNull(values, "Value list must not be null");
+                Preconditions.checkArgument(values.length > 0, "Value list must not be empty");
+                Preconditions.checkArgument(canApplyTo(owner),
+                        "Property %s is not valid for machine %s", prop, owner);
+                this.nestedConditionGroups.clear();
+                this.conditions.putAll(prop, Arrays.asList(values));
+                return this;
+            }
+
+            /**
+             * Set a condition for this part, which consists of a property and a set of
+             * valid values. Can be called multiple times for multiple different properties.
+             *
+             * @param <T>    the type of the property value
+             * @param prop   the property
+             * @param values a set of valid values
+             * @return this builder
+             * @throws IllegalArgumentException if {@code prop} has already been configured
+             * @throws IllegalStateException    if {@code !nestedConditionGroups.isEmpty()}
+             * @see ConditionGroup#replaceWithCondition(Property, Comparable[])
+             */
+            @SafeVarargs
+            public final <T extends Comparable<T>> ConditionGroup condition(Property<T> prop, T... values) {
+                Preconditions.checkArgument(!conditions.containsKey(prop),
+                        "Cannot set condition for property \"%s\" more than once", prop.getName());
+                Preconditions.checkState(nestedConditionGroups.isEmpty(),
+                        "Can't have normal conditions if there are already nested condition groups");
+                return this.replaceWithCondition(prop, values);
+            }
+
+            /**
+             * Allows having nested groups of conditions.
+             */
+            private final ConditionGroup replaceWithNestedGroup() {
+                this.conditions.clear();
+                ConditionGroup group = new ConditionGroup();
+                group.parent = this;
+                this.nestedConditionGroups.add(group);
+                return group;
+            }
+
+            /**
+             * Allows having nested groups of conditions if there are not any normal conditions.
+             * @throws IllegalStateException if {@code !conditions.isEmpty()}
+             * @see ConditionGroup#replaceWithNestedGroup()
+             */
+            public final ConditionGroup nestedGroup() {
+                Preconditions.checkState(conditions.isEmpty(),
+                        "Can't have nested condition groups if there are already normal conditions");
+                return replaceWithNestedGroup();
+            }
+
+            /**
+             * Ends this nested condition group and returns the parent condition group
+             *
+             * @throws IllegalStateException If this is not a nested condition group
+             */
+            public ConditionGroup endNestedGroup() {
+                if (parent == null)
+                    throw new IllegalStateException("This condition group is not nested, use end() instead");
+                return parent;
+            }
+
+            /**
+             * Ends this condition group and returns the part builder
+             *
+             * @throws IllegalStateException If this is a nested condition group
+             */
+            public PartBuilder end() {
+                if (this.parent != null)
+                    throw new IllegalStateException("This is a nested condition group, use endNestedGroup() instead");
+                return PartBuilder.this;
+            }
+
+            /**
+             * Makes this part get applied if any of the conditions/condition groups are true, instead of all of them needing to be true.
+             */
+            public ConditionGroup useOr() {
+                this.useOr = true;
+                return this;
+            }
+
+            JsonObject toJson() {
+                if (!this.conditions.isEmpty()) {
+                    return conditionsToJson(this.conditions, this.useOr);
+                } else if (!this.nestedConditionGroups.isEmpty()) {
+                    return groupsToJson(this.nestedConditionGroups, this.useOr);
+                }
+                return new JsonObject();
+            }
         }
     }
 }

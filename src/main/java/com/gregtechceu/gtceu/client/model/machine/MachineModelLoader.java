@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
+import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartSelector;
+import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedModel;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.BlockModelDefinition;
-import net.minecraft.client.renderer.block.model.MultiVariant;
-import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,9 +45,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
 
     public static final MachineModelLoader INSTANCE = new MachineModelLoader();
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BlockModelDefinition.class, new BlockModelDefinition.Deserializer())
-            .registerTypeAdapter(Variant.class, new Variant.Deserializer())
-            .registerTypeAdapter(MultiVariant.class, new MultiVariant.Deserializer())
+            .registerTypeAdapter(BlockModel.class, new ExtendedBlockModelDeserializer())
+            .registerTypeAdapter(MultiPartSelector.class, new MultiPartSelector.Deserializer())
             .create();
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
@@ -73,26 +74,29 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     }
 
     @Override
-    public UnbakedMachineModel read(JsonObject jsonObject,
-                                    JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(jsonObject, "machine"));
+    public UnbakedMachineModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
+        ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(json, "machine"));
+        MachineDefinition definition = GTRegistries.MACHINES.get(machineId);
+        Preconditions.checkNotNull(definition, "A machine with id " + machineId + " does not exist.");
 
-        JsonObject variants = GsonHelper.getAsJsonObject(jsonObject, "variants");
+        JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "variants");
 
-        Map<String, Either<ResourceLocation, UnbakedModel>> parsedVariants = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : variants.entrySet()) {
-            JsonElement value = entry.getValue();
-            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
-                String modelName = entry.getValue().getAsString();
-                parsedVariants.put(entry.getKey(), Either.left(new ResourceLocation(modelName)));
-            } else {
-                parsedVariants.put(entry.getKey(), Either.right(GSON.fromJson(value, BlockModel.class)));
-            }
+        Map<String, Either<ResourceLocation, UnbakedModel>> variants = new HashMap<>();
+        for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
+            variants.put(entry.getKey(), parseVariant(entry.getValue()));
+        }
+        @Nullable MultiPartUnbakedModel multiPart = null;
+        if (json.has("multipart")) {
+            JsonArray multipartJson = GsonHelper.getAsJsonArray(json, "multipart");
+            multiPart = MultiPartUnbakedModel.deserialize(definition, multipartJson, context);
+        }
+        if (variants.isEmpty() && (multiPart == null || multiPart.getModels().isEmpty())) {
+            throw new JsonParseException("Model for machine %s doesn't have 'variants' or 'multipart' defined"
+                    .formatted(machineId));
         }
 
         List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
-
-        JsonArray renderList = GsonHelper.getAsJsonArray(jsonObject, "dynamic_renders", null);
+        JsonArray renderList = GsonHelper.getAsJsonArray(json, "dynamic_renders", null);
         if (renderList != null) {
             for (JsonElement entry : renderList) {
                 var render = DynamicRender.CODEC.parse(JsonOps.INSTANCE, entry)
@@ -102,18 +106,27 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             DYNAMIC_RENDERERS.put(machineId, dynamicRenders);
         }
 
-        return new UnbakedMachineModel(machineId, parsedVariants, dynamicRenders);
+        return new UnbakedMachineModel(definition, variants, multiPart, dynamicRenders);
     }
 
     protected static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model,
-                                                                              Function<ResourceLocation, UnbakedModel> modelGetter) {
-        UnbakedModel missingModel = modelGetter.apply(ModelBakery.MISSING_MODEL_LOCATION);
+                                                                              Function<ResourceLocation, UnbakedModel> resolver) {
+        UnbakedModel missingModel = resolver.apply(ModelBakery.MISSING_MODEL_LOCATION);
 
         ResourceLocation machineId = model.getDefinition().getId();
         StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = model.getDefinition()
                 .getStateDefinition();
         ImmutableList<MachineRenderState> possibleStates = stateDefinition.getPossibleStates();
         Map<MachineRenderState, UnbakedModel> statesToModels = new IdentityHashMap<>();
+
+        MultiPartUnbakedModel multiPartModel;
+        if (model.getMultiPart() != null) {
+            multiPartModel = model.getMultiPart();
+            multiPartModel.resolveParents(resolver);
+            possibleStates.forEach((state) -> statesToModels.put(state, multiPartModel));
+        } else {
+            multiPartModel = null;
+        }
 
         Map<ModelResourceLocation, MachineRenderState> modelsToStates = new HashMap<>();
         possibleStates.forEach((state) -> {
@@ -124,10 +137,10 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             model.getUnresolvedModels().forEach((key, either) -> {
                 try {
                     possibleStates.stream().filter(predicate(stateDefinition, key)).forEach((state) -> {
-                        UnbakedModel curModel = either.map(modelGetter, Function.identity());
+                        UnbakedModel curModel = either.map(resolver, Function.identity());
 
                         UnbakedModel prevModel = statesToModels.put(state, curModel);
-                        if (prevModel != null) {
+                        if (prevModel != null && prevModel != multiPartModel) {
                             statesToModels.put(state, missingModel);
                             throw new IllegalStateException(
                                     "Overlapping definition with: " + model.getUnresolvedModels().entrySet().stream()
@@ -199,5 +212,14 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
 
     public static ModelResourceLocation stateToModelLocation(ResourceLocation location, MachineRenderState state) {
         return new ModelResourceLocation(location, BlockModelShaper.statePropertiesToString(state.getValues()));
+    }
+
+    public static Either<ResourceLocation, UnbakedModel> parseVariant(JsonElement value) {
+        if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+            String modelName = value.getAsString();
+            return Either.left(new ResourceLocation(modelName));
+        } else {
+            return Either.right(GSON.fromJson(value, BlockModel.class));
+        }
     }
 }
