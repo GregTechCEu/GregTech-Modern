@@ -51,7 +51,8 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
         resolvedModels.forEach((machineState, unbaked) -> {
             baseModels.put(machineState, unbaked.bake(baker, spriteGetter, state, modelLocation));
         });
-        MultiPartBakedModel multiPart = this.multiPart.bake(baker, spriteGetter, state, modelLocation);
+        MultiPartBakedModel multiPart = this.multiPart == null ? null :
+                this.multiPart.bake(baker, spriteGetter, state, modelLocation);
 
         MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart, dynamicRenders);
         model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
