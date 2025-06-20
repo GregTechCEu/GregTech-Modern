@@ -552,8 +552,8 @@ public class ItemLang {
         provider.add("item.prospector.tooltip.modes", "Available Modes:");
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("behavior.prospector.added_waypoint", "Created waypoint named %s!");
-        provider.add("item.tricorder_scanner.tooltip", "Tricorder"); //unused
-        provider.add("item.debug_scanner.tooltip", "Tricorder"); //unused
+        provider.add("item.tricorder_scanner.tooltip", "Tricorder"); // unused
+        provider.add("item.debug_scanner.tooltip", "Tricorder"); // unused
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");

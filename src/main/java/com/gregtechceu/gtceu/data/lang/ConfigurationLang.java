@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.format.ConfigFormats;
@@ -22,7 +21,8 @@ public class ConfigurationLang {
         dfs(provider, new HashSet<>(),
                 Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getValueMap());
     }
-    //depth first search === dfs
+
+    // depth first search === dfs
     private static void dfs(RegistrateLangProvider provider, Set<String> added, Map<String, ConfigValue<?>> map) {
         for (var entry : map.entrySet()) {
             var id = entry.getValue().getId();

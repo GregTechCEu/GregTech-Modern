@@ -25,7 +25,7 @@ public class MaterialLang {
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
 
-        //1.20.1...
+        // 1.20.1...
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
@@ -98,10 +98,7 @@ public class MaterialLang {
         replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
     }
 
-    private static void generateFluidKeys(RegistrateLangProvider provider){
-
-
-
+    private static void generateFluidKeys(RegistrateLangProvider provider) {
         provider.add("fluid.gtceu.liquid_generic", "Liquid %s");
         provider.add("fluid.gtceu.generic", "%s");
         provider.add("fluid.gtceu.gas_generic", "%s Gas");
@@ -109,7 +106,7 @@ public class MaterialLang {
         provider.add("fluid.gtceu.plasma", "%s Plasma");
         provider.add("fluid.gtceu.molten", "Molten %s");
 
-        //ui
+        // ui
         provider.add("fluid.gtceu.empty", "Empty");
         provider.add("fluid.gtceu.amount", "§9Amount: %d/%d mB");
         provider.add("fluid.gtceu.click_to_fill",
@@ -119,7 +116,7 @@ public class MaterialLang {
         provider.add("fluid.gtceu.click_to_empty",
                 "§7Click with a Fluid Container to §cempty §7the tank (Shift-click for a full stack).");
 
-        //tooltips
+        // tooltips
         provider.add("fluid.gtceu.tooltip.temperature", "§cTemperature: %d K");
         provider.add("fluid.gtceu.tooltip.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("fluid.gtceu.tooltip.gas", "§aState: Gaseous");
@@ -127,5 +124,4 @@ public class MaterialLang {
         provider.add("fluid.gtceu.tooltip.plasma", "§aState: Plasma");
         provider.add("fluid.gtceu.tooltip.acid", "§6Acidic! Handle with care!");
     }
-
 }

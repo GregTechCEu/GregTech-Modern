@@ -114,7 +114,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.progress_tick", " / %s t");
     }
 
-    /** Xaero, JourneyMap*/
+    /** Xaero, JourneyMap */
     private static void initMinimapLang(RegistrateLangProvider provider) {
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
 
@@ -129,7 +129,7 @@ public class IntegrationLang {
         provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
     }
 
-    /** FTB Teams, Argonauts*/
+    /** FTB Teams, Argonauts */
     private static void initOwnershipLang(RegistrateLangProvider provider) {
         provider.add("gtceu.ownership.name.player", "Player");
         provider.add("gtceu.ownership.name.ftb", "FTB Teams");

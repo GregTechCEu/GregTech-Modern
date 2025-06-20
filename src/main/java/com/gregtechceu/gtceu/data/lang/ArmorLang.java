@@ -38,14 +38,11 @@ public class ArmorLang {
         provider.add("armor.gtceu.jetpack.hover.disable", "Jetpack: Hover Mode Disabled");
         provider.add("armor.gtceu.jetpack.emergency_hover_mode", "§aEmergency Hover Mode Enabled!");
 
-
         // action bar messages
         provider.add("armor.gtceu.message.nightvision.enabled", "NightVision: §aOn");
         provider.add("armor.gtceu.message.nightvision.disabled", "NightVision: §cOff");
         provider.add("armor.gtceu.message.nightvision.error", "Not enough power!");
-
-
-     }
+    }
 
     private static void generateTooltipKeys(RegistrateLangProvider provider) {
         provider.add("item.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
