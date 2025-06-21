@@ -46,6 +46,7 @@ ftblibrary-cm = "5567591"
 ftbteams-cm = "5267190"
 ftbquests-cm = "6167056"
 ftbchunks-cm = "5956390"
+overgeared = "6678833"
 
 
 [libraries]
@@ -95,6 +96,7 @@ spark               = { module = "curse.maven:spark-361579", version.ref = "spar
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
 gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
+overgeared          = { module = "curse.maven:overgeared-1277786", version.ref = "overgeared" }
 ## cursemaven as a backup ##
 ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
 ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }

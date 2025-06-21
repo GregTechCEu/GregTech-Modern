@@ -103,7 +103,8 @@ public class GTValues {
                 .toArray();
     }
 
-    public static final String MODID_TOP = "theoneprobe",
+    public static final String
+            MODID_TOP = "theoneprobe",
             MODID_JEI = "jei",
             MODID_REI = "roughlyenoughitems",
             MODID_EMI = "emi",
@@ -127,7 +128,8 @@ public class GTValues {
             MODID_ARGONAUTS = "argonauts",
             MODID_HERACLES = "heracles",
             MODID_GAMESTAGES = "gamestages",
-            MODID_FTB_QUEST = "ftbquests";
+            MODID_FTB_QUEST = "ftbquests",
+            MODID_OVERGEARED = "overgeared";
     /**
      * Spray painting compat modids
      */

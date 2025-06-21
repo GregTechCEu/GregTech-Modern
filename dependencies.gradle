@@ -63,6 +63,9 @@ dependencies {
     // GameStages
     modCompileOnly(forge.gamestages)
 
+    // Overgeared
+    modCompileOnly(forge.overgeared)
+
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)

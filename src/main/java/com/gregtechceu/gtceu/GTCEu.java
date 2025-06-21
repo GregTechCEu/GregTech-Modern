@@ -211,5 +211,9 @@ public class GTCEu {
         public static boolean isGameStagesLoaded() {
             return isModLoaded(GTValues.MODID_GAMESTAGES);
         }
+
+        public static boolean isOvergearedLoaded() {
+            return isModLoaded(GTValues.MODID_OVERGEARED);
+        }
     }
 }
