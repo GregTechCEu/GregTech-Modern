@@ -701,6 +701,123 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
 
+    // made of 3 Ingots.
+    public static final TagPrefix toolHeadPickaxe = new TagPrefix("pickaxeHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Pickaxe Head")
+            .materialAmount(GTValues.M * 3)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadPickaxe)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.PICKAXE)));
+
+    // made of 3 Ingots.
+    public static final TagPrefix toolHeadAxe = new TagPrefix("axeHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Axe Head")
+            .materialAmount(GTValues.M * 3)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadAxe)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.AXE)));
+
+    // made of 1 Ingot.
+    public static final TagPrefix toolHeadShovel = new TagPrefix("shovelHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Shovel Head")
+            .materialAmount(GTValues.M)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadShovel)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SHOVEL)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolHeadHoe = new TagPrefix("hoeHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Hoe Head")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadHoe)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.HOE)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolBladeSword = new TagPrefix("swordBlade")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Sword Blade")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolBladeSword)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SWORD)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolHeadHammer = new TagPrefix("hammerHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Hammer Head")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadHammer)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.HARD_HAMMER)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolHeadFile = new TagPrefix("fileHead")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s File Head")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolHeadFile)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.FILE)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolBladeSaw = new TagPrefix("sawBlade")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Saw Blade")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolBladeSaw)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SAW)));
+
+    // made of 2 Ingots.
+    public static final TagPrefix toolBladeScythe = new TagPrefix("scytheBlade")
+            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
+            .langValue("%s Scythe Blade")
+            .materialAmount(GTValues.M * 2)
+            .maxStackSize(16)
+            .materialIconType(MaterialIconType.toolBladeScythe)
+            .unificationEnabled(true)
+            .enableRecycling()
+            .generateItem(true)
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCYTHE)));
+
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix("turbineBlade")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)

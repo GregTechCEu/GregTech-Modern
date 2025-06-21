@@ -71,18 +71,18 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType gear = new MaterialIconType("gear");
     public static final MaterialIconType foil = new MaterialIconType("foil");
 
-    public static final MaterialIconType toolHeadSword = new MaterialIconType("toolHeadSword");
+    public static final MaterialIconType toolBladeSword = new MaterialIconType("toolBladeSword");
     public static final MaterialIconType toolHeadPickaxe = new MaterialIconType("toolHeadPickaxe");
     public static final MaterialIconType toolHeadShovel = new MaterialIconType("toolHeadShovel");
     public static final MaterialIconType toolHeadAxe = new MaterialIconType("toolHeadAxe");
     public static final MaterialIconType toolHeadHoe = new MaterialIconType("toolHeadHoe");
     public static final MaterialIconType toolHeadHammer = new MaterialIconType("toolHeadHammer");
     public static final MaterialIconType toolHeadFile = new MaterialIconType("toolHeadFile");
-    public static final MaterialIconType toolHeadSaw = new MaterialIconType("toolHeadSaw");
+    public static final MaterialIconType toolBladeSaw = new MaterialIconType("toolBladeSaw");
     public static final MaterialIconType toolHeadBuzzSaw = new MaterialIconType("toolHeadBuzzSaw");
     public static final MaterialIconType toolHeadDrill = new MaterialIconType("toolHeadDrill");
     public static final MaterialIconType toolHeadChainsaw = new MaterialIconType("toolHeadChainsaw");
-    public static final MaterialIconType toolHeadScythe = new MaterialIconType("toolHeadScythe");
+    public static final MaterialIconType toolBladeScythe = new MaterialIconType("toolBladeScythe");
     public static final MaterialIconType toolHeadScrewdriver = new MaterialIconType("toolHeadScrewdriver");
     public static final MaterialIconType toolHeadWrench = new MaterialIconType("toolHeadWrench");
     public static final MaterialIconType toolHeadWireCutter = new MaterialIconType("toolHeadWireCutter");
