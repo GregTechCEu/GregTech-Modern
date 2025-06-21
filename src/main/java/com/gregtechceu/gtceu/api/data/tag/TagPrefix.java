@@ -262,7 +262,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(
-                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750));
+                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750)
+                            .or(material -> material.hasFlag(MaterialFlags.FORCE_GENERATE_HOT_INGOT)));
 
     // A regular Ingot.
     public static final TagPrefix ingot = new TagPrefix("ingot")

@@ -130,6 +130,10 @@ public class MaterialFlags {
             .requireProps(PropertyKey.DUST)
             .build();
 
+    public static final MaterialFlag FORCE_GENERATE_HOT_INGOT = new MaterialFlag.Builder("force_generate_hot_ingot")
+            .requireProps(PropertyKey.INGOT)
+            .build();
+
     /**
      * This will prevent material from creating Shapeless recipes for dust to block and vice versa
      * Also preventing extruding and alloy smelting recipes via SHAPE_EXTRUDING/MOLD_BLOCK
