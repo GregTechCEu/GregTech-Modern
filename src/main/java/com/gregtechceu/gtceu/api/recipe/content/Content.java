@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
@@ -111,12 +112,11 @@ public class Content {
             int min = ingredient.getCountProvider().getMinValue();
             int max = ingredient.getCountProvider().getMaxValue();
             String s = String.format("%s-%s", min, max);
-            int color = 0xFFFFFF;
+            int color = 0xEEEE00;
             Font fontRenderer = Minecraft.getInstance().font;
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
                 s = "X-Y";
-                color = 0xEE0000;
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
@@ -130,15 +130,24 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            int amount = ingredient.getAmount();
             Font fontRenderer = Minecraft.getInstance().font;
+            int amount = ingredient.getAmount();
             String s = FormattingUtil.formatBuckets(amount);
+            int color = 0xFFFFFF;
+            if (content instanceof IntProviderFluidIngredient provider){
+                color = 0xEEEE00;
+                amount = provider.getCountProvider().getMaxValue();
+                s = "[" + FormattingUtil.formatBuckets(amount) + "]";
+                if (s.length() > 5) {
+                    s = "X-Y";
+                }
+            }
             if (fontRenderer.width(s) > 32)
                 s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
             if (fontRenderer.width(s) > 32)
                 s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
-                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+                    (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
     }

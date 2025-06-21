@@ -56,29 +56,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
-        buffer.writeVarInt(amount);
-        buffer.writeNbt(nbt);
-    }
-
-    public JsonElement toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.amount);
-        if (this.nbt != null) {
-            jsonObject.addProperty("nbt", this.nbt.getAsString());
-        }
-        if (this.values.length == 1) {
-            jsonObject.add("value", this.values[0].serialize());
-        }
-        JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
-            jsonArray.add(value.serialize());
-        }
-        jsonObject.add("value", jsonArray);
-        return jsonObject;
-    }
-
     public FluidIngredient copy() {
         return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
                 this.nbt == null ? null : this.nbt.copy());
@@ -214,6 +191,29 @@ public class FluidIngredient implements Predicate<FluidStack> {
                 buffer.readVarInt(), buffer.readNbt());
     }
 
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
+        buffer.writeVarInt(amount);
+        buffer.writeNbt(nbt);
+    }
+
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("amount", this.amount);
+        if (this.nbt != null) {
+            jsonObject.addProperty("nbt", this.nbt.getAsString());
+        }
+        if (this.values.length == 1) {
+            jsonObject.add("value", this.values[0].serialize());
+        }
+        JsonArray jsonArray = new JsonArray();
+        for (FluidIngredient.Value value : this.values) {
+            jsonArray.add(value.serialize());
+        }
+        jsonObject.add("value", jsonArray);
+        return jsonObject;
+    }
+
     public static FluidIngredient fromJson(@Nullable JsonElement json) {
         return FluidIngredient.fromJson(json, true);
     }
@@ -226,6 +226,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
+        if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
+            return IntProviderFluidIngredient.fromJson (json, true);
+        }
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {

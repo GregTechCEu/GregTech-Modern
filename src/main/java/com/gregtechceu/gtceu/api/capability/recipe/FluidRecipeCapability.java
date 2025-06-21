@@ -125,7 +125,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
-            if (item instanceof FluidIngredient fluid) {
+            if (item instanceof IntProviderFluidIngredient fluid){
+                list.add(fluid);
+            }
+            else if (item instanceof FluidIngredient fluid) {
                 boolean isEqual = false;
                 for (Object obj : list) {
                     if (obj instanceof FluidIngredient fluidIngredient) {
@@ -236,7 +239,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         Map<FluidIngredient, Integer> notConsumableMap = new HashMap<>();
         for (Content content : recipe.getInputContents(FluidRecipeCapability.CAP)) {
             FluidIngredient fluidInput = FluidRecipeCapability.CAP.of(content.content);
-            int fluidAmount = fluidInput.getAmount();
+            int fluidAmount = (fluidInput instanceof IntProviderFluidIngredient provider) ?
+                    provider.getCountProvider().getMaxValue() :
+                    fluidInput.getAmount();
             if (content.chance == 0) {
                 notConsumableMap.computeIfPresent(fluidInput,
                         (k, v) -> v + fluidAmount);

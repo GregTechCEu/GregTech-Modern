@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.gson.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +53,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider countProvider){
         super(Stream.empty(),1000,null);
         this.inner = inner;
+        this.values = inner.values;
         this.countProvider = countProvider;
     }
 
@@ -62,12 +61,22 @@ public class IntProviderFluidIngredient extends FluidIngredient{
                            IntProvider provider) {
         super(Stream.empty(), 1000, nbt);
         this.inner = FluidIngredient.fromValues(ingredient, 1000, nbt);
+        this.values = inner.values;
+        this.countProvider = provider;
+    }
+
+    protected IntProviderFluidIngredient(Stream<? extends FluidIngredient.Value> ingredient, int amount, @Nullable CompoundTag nbt,
+                                         IntProvider provider) {
+        super(Stream.empty(), amount, nbt);
+        this.inner = FluidIngredient.fromValues(ingredient, 1000, nbt);
+        this.values = inner.values;
         this.countProvider = provider;
     }
 
     protected IntProviderFluidIngredient(IntProviderFluidIngredient original){
         super(Arrays.stream(original.inner.values).map(Value::copy), original.amount, original.nbt == null ? null : original.nbt.copy());
         this.inner=original.inner;
+        this.values = inner.values;
         this.countProvider= original.countProvider;
         this.sampledCount=original.sampledCount;
         this.fluidStacks=original.fluidStacks;
@@ -76,11 +85,11 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     protected IntProviderFluidIngredient(IntProviderFluidIngredient original, boolean roll){
         super(Arrays.stream(original.inner.values).map(Value::copy), original.amount, original.nbt == null ? null : original.nbt.copy());
         this.inner=original.inner;
+        this.values = inner.values;
         this.countProvider= original.countProvider;
         if (roll){
             this.sampledCount = -1;
             this.fluidStacks=null;
-            original.amount = this.getSampledCount(GTValues.RNG);
             this.fluidStacks=this.getStacks();
         }
         else{
@@ -90,12 +99,12 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     }
 
     public static IntProviderFluidIngredient fromValues(Stream<? extends Value> stream,
-                                             @Nullable CompoundTag nbt, @Nullable IntProvider countProvider) {
+                                             int amount, @Nullable CompoundTag nbt, @Nullable IntProvider countProvider) {
         if (countProvider != null) {
             Preconditions.checkArgument(countProvider.getMinValue() >= 0,
                     "IntProviderFluidIngredient must have a min value of at least 0.");
         }
-        IntProviderFluidIngredient ingredient = new IntProviderFluidIngredient(stream, nbt, countProvider);
+        IntProviderFluidIngredient ingredient = new IntProviderFluidIngredient(stream, amount, nbt, countProvider);
 //        return ingredient.getInner().isEmpty() ? FluidIngredient.EMPTY : ingredient;
         return ingredient;
     }
@@ -105,41 +114,6 @@ public class IntProviderFluidIngredient extends FluidIngredient{
         return new IntProviderFluidIngredient(this, true);
     }
 
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
-
-        buffer.writeNbt(nbt);
-        // IntProvider.CODEC.parse(NbtOps.INSTANCE, Objects.requireNonNull(buffer.readNbt()).get("provider"))
-        // .getOrThrow(false, GTCEu.LOGGER::error)
-        CompoundTag providerTag = (CompoundTag) IntProvider.CODEC
-                .encodeStart(NbtOps.INSTANCE, countProvider == null ? UniformInt.of(0, 0) : countProvider)
-                .getOrThrow(false, GTCEu.LOGGER::error);
-        buffer.writeNbt(providerTag);
-    }
-
-    @Override
-    public JsonElement toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.sampledCount);
-        if (this.nbt != null) {
-            jsonObject.addProperty("nbt", this.nbt.getAsString());
-        }
-        if (this.values.length == 1) {
-            jsonObject.add("value", this.values[0].serialize());
-        }
-        JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
-            jsonArray.add(value.serialize());
-        }
-        jsonObject.add("value", jsonArray);
-        jsonObject.add("count_provider",
-                IntProvider.CODEC
-                        .encodeStart(JsonOps.INSTANCE,
-                                countProvider == null ? UniformInt.of(0, 0) : countProvider)
-                        .getOrThrow(false, GTCEu.LOGGER::error));
-        return jsonObject;
-    }
 
 //    @Override
 //    public FluidStack[] getStacks() {
@@ -154,11 +128,13 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     @Override
     public FluidStack[] getStacks() {
-        if (fluidStacks == null) {
-
-            fluidStacks = Arrays.stream(inner.getStacks())
-                    .map(stack -> new FluidStack(stack.getFluid(), getSampledCount(GTValues.RNG)))
-                    .toArray(FluidStack[]::new);
+        if (changed || fluidStacks == null) {
+            inner.setAmount(getSampledCount(GTValues.RNG));
+            this.fluidStacks = inner.getStacks();
+//            fluidStacks = Arrays.stream(inner.getStacks())
+//                    .map(stack -> new FluidStack(stack.getFluid(), getSampledCount(GTValues.RNG)))
+//                    .toArray(FluidStack[]::new);
+            this.changed=false;
         }
         return fluidStacks;
     }
@@ -166,6 +142,8 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     public int getSampledCount(@NotNull RandomSource random){
         if (sampledCount == -1){
             sampledCount = countProvider.sample(random);
+            this.amount = sampledCount;
+            this.changed = true;
         }
         return sampledCount;
     }
@@ -178,7 +156,6 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     public IntProviderFluidIngredient replicate (){
         IntProviderFluidIngredient replica = new IntProviderFluidIngredient(this.inner, this.countProvider);
-        replica.setAmount(replica.getSampledCount(GTValues.RNG));
         replica.getSampledCount(GTValues.RNG);
         return new IntProviderFluidIngredient(replica);
     }
@@ -206,7 +183,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     private static IntProviderFluidIngredient of(Stream<Fluid> stacks, IntProvider countProvider, CompoundTag nbt) {
         return IntProviderFluidIngredient.fromValues(
-                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), nbt,
+                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 1000, nbt,
                 countProvider);
     }
     public static IntProviderFluidIngredient of(IntProvider countProvider, FluidStack... stacks) {
@@ -216,23 +193,61 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     public static IntProviderFluidIngredient of(Stream<Fluid> stacks,  CompoundTag nbt) {
         return IntProviderFluidIngredient.fromValues(
-                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), nbt,
+                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 1000, nbt,
                 null);
     }
     public static IntProviderFluidIngredient of(TagKey<Fluid> tag) {
-        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), null, null);
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, null, null);
     }
 
     public static IntProviderFluidIngredient of(TagKey<Fluid> tag, CompoundTag nbt) {
-        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), nbt, null);
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, nbt, null);
+    }
+
+    @Override
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
+        buffer.writeInt(amount);
+        buffer.writeNbt(nbt);
+        CompoundTag providerTag = (CompoundTag) IntProvider.CODEC
+                .encodeStart(NbtOps.INSTANCE, countProvider == null ? UniformInt.of(0, 0) : countProvider)
+                .getOrThrow(false, GTCEu.LOGGER::error);
+        buffer.writeNbt(providerTag);
     }
 
     public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
         return IntProviderFluidIngredient.fromValues(
                 buffer.readList(FluidStack::readFromPacket).stream().map(stack -> new FluidValue(stack.getFluid())),
+                buffer.readInt(),
                 buffer.readNbt(),
                 IntProvider.CODEC.parse(NbtOps.INSTANCE, Objects.requireNonNull(buffer.readNbt()))
                         .getOrThrow(false, GTCEu.LOGGER::error));
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("amount", this.sampledCount);
+        if (this.nbt != null) {
+            jsonObject.addProperty("nbt", this.nbt.getAsString());
+        }
+        if (changed){
+            getStacks();
+        }
+        if (this.values.length == 1) {
+            jsonObject.add("value", this.values[0].serialize());
+        }
+        JsonArray jsonArray = new JsonArray();
+        for (FluidIngredient.Value value : this.values) {
+            jsonArray.add(value.serialize());
+        }
+        jsonObject.add("value", jsonArray);
+        jsonObject.add("count_provider",
+                IntProvider.CODEC
+                        .encodeStart(JsonOps.INSTANCE,
+                                countProvider == null ? UniformInt.of(0, 0) : countProvider)
+                        .getOrThrow(false, GTCEu.LOGGER::error));
+        return jsonObject;
     }
 
     public static IntProviderFluidIngredient fromJson(@Nullable JsonElement json, boolean allowAir) {
@@ -243,13 +258,14 @@ public class IntProviderFluidIngredient extends FluidIngredient{
             throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
+        int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         IntProvider countProvider = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
             return IntProviderFluidIngredient.fromValues(
                     Stream.of(IntProviderFluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"))),
-                    nbt, countProvider);
+                    amount, nbt, countProvider);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "value");
             if (jsonArray.isEmpty() && !allowAir) {
@@ -260,7 +276,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
                             StreamSupport.stream(jsonArray.spliterator(), false)
                                     .map(jsonElement -> IntProviderFluidIngredient
                                             .valueFromJson(GsonHelper.convertToJsonObject(jsonElement, "fluid"))),
-                            nbt, countProvider);
+                            amount, nbt, countProvider);
         }
         throw new JsonSyntaxException("expected value to be either object or array.");
     }
