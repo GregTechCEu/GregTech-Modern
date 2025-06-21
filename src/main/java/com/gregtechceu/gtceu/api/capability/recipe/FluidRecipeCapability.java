@@ -125,10 +125,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
-            if (item instanceof IntProviderFluidIngredient fluid){
-                list.add(fluid);
-            }
-            else if (item instanceof FluidIngredient fluid) {
+//            if (item instanceof IntProviderFluidIngredient fluid){
+//                list.add(fluid);
+//            }
+//            else
+                if (item instanceof FluidIngredient fluid) {
                 boolean isEqual = false;
                 for (Object obj : list) {
                     if (obj instanceof FluidIngredient fluidIngredient) {
@@ -367,6 +368,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (isXEI) tank.setShowAmount(false);
             if (content != null) {
+                boolean isRanged = this.of(content.content) instanceof IntProviderFluidIngredient;
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
                 tank.setXEIChance(chance);
@@ -376,9 +378,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
-                    if (this.of(content.content) instanceof IntProviderFluidIngredient fluid) {
-                        IntProvider countProvider = fluid.getCountProvider();
-                        tooltips.add(Component.translatable("gtceu.gui.content.count_range",
+                    if (isRanged) {
+                        IntProvider countProvider = ((IntProviderFluidIngredient)ingredient).getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
                                         countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }

@@ -2345,6 +2345,7 @@
   "gtceu.gui.content.chance_tier_boost_minus": "Додатковий шанс: -%s%%/рівень",
   "gtceu.gui.content.chance_tier_boost_plus": "Додатковий шанс: +%s%%/рівень",
   "gtceu.gui.content.count_range": "%s-%sx",
+  "gtceu.gui.content.fluid_range": "%s-%smB",
   "gtceu.gui.content.per_tick": "§aСпожито/Вироблено за такт§r",
   "gtceu.gui.content.tips.per_second_short": "§a/секунда§r",
   "gtceu.gui.content.tips.per_tick_short": "§a/такт§r",

@@ -50,17 +50,17 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
 //    public static final IntProviderFluidIngredient EMPTY = new IntProviderFluidIngredient(Stream.empty(), null, UniformInt.of(0, 0));
 
-    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider countProvider){
-        super(Stream.empty(),1000,null);
+    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider){
+        super(Stream.empty(),provider.getMaxValue(),null);
         this.inner = inner;
         this.values = inner.values;
-        this.countProvider = countProvider;
+        this.countProvider = provider;
     }
 
     protected IntProviderFluidIngredient(Stream<? extends FluidIngredient.Value> ingredient, @Nullable CompoundTag nbt,
                            IntProvider provider) {
-        super(Stream.empty(), 1000, nbt);
-        this.inner = FluidIngredient.fromValues(ingredient, 1000, nbt);
+        super(Stream.empty(), provider.getMaxValue(), nbt);
+        this.inner = FluidIngredient.fromValues(ingredient, provider.getMaxValue(), nbt);
         this.values = inner.values;
         this.countProvider = provider;
     }
@@ -68,7 +68,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     protected IntProviderFluidIngredient(Stream<? extends FluidIngredient.Value> ingredient, int amount, @Nullable CompoundTag nbt,
                                          IntProvider provider) {
         super(Stream.empty(), amount, nbt);
-        this.inner = FluidIngredient.fromValues(ingredient, 1000, nbt);
+        this.inner = FluidIngredient.fromValues(ingredient, provider.getMaxValue(), nbt);
         this.values = inner.values;
         this.countProvider = provider;
     }

@@ -5272,6 +5272,7 @@
     "gtceu.chance_logic.xor": "XOR",
     "gtceu.creative.computation.average": "Среднее запрошенное CWUt",
     "gtceu.gui.content.count_range": "%s-%sx",
+    "gtceu.gui.content.fluid_range": "%s-%smB",
     "gtceu.gui.content.chance_base_logic": "Шанс: %s%% (%s)",
     "gtceu.scanner.copy_stick_empty": "§oПустая флешка",
     "gtceu.scanner.copy_stick_from": "§oОригинал копии",
