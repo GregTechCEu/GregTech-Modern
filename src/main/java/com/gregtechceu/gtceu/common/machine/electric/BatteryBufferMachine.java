@@ -211,6 +211,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
         @Override
         public void serverTick() {
+            if (!isWorkingEnabled()) {
+                return;
+            }
+            
             var outFacing = getFrontFacing();
             var energyContainer = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(outFacing),
                     outFacing.getOpposite());
