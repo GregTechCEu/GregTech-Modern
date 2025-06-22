@@ -1,8 +1,0 @@
-{
-  "dynamic_renders": [],
-  "loader": "gtceu:machine",
-  "machine": "gtceu:creative_energy",
-  "variants": {
-    "": "gtceu:block/machine/creative_energy"
-  }
-}

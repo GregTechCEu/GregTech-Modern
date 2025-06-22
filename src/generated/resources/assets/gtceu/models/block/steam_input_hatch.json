@@ -1,67 +1,24 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:steam_input_hatch",
   "variants": {
-    "is_formed=false,steel_steam_multiblocks=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/bronze_machine_casing"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/steam_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "steel=false": {
+      "parent": "gtceu:block/machine/part/steam_hatch",
+      "textures": {
+        "bottom": "gtceu:block/casings/steam/bronze/bottom",
+        "side": "gtceu:block/casings/steam/bronze/side",
+        "top": "gtceu:block/casings/steam/bronze/top"
+      }
     },
-    "is_formed=false,steel_steam_multiblocks=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/steel_machine_casing"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/steam_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,steel_steam_multiblocks=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/bronze_machine_casing"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/steam_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,steel_steam_multiblocks=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/steel_machine_casing"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/steam_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "steel=true": {
+      "parent": "gtceu:block/machine/part/steam_hatch",
+      "textures": {
+        "bottom": "gtceu:block/casings/steam/steel/bottom",
+        "side": "gtceu:block/casings/steam/steel/side",
+        "top": "gtceu:block/casings/steam/steel/top"
+      }
     }
   }
 }

@@ -1,127 +1,34 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:object_holder",
   "variants": {
-    "is_formed=false,recipe_logic_status=idle": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/casings/voltage/zpm",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/object_holder/overlay_front"
+      }
     },
-    "is_formed=false,recipe_logic_status=suspend": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/casings/voltage/zpm",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/object_holder/overlay_front"
+      }
     },
-    "is_formed=false,recipe_logic_status=waiting": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/casings/voltage/zpm",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/object_holder/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/machines/object_holder/overlay_front_active_emissive"
+      }
     },
-    "is_formed=false,recipe_logic_status=working": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,recipe_logic_status=idle": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,recipe_logic_status=suspend": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,recipe_logic_status=waiting": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,recipe_logic_status=working": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/zpm"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/object_holder_active"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/casings/voltage/zpm",
+      "textures": {
+        "overlay_front": "gtceu:block/machines/object_holder/overlay_front_active",
+        "overlay_front_emissive": "gtceu:block/machines/object_holder/overlay_front_active_emissive"
+      }
     }
   }
 }

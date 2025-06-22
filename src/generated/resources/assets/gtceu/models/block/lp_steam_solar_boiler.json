@@ -1,31 +1,52 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:lp_steam_solar_boiler",
-  "variants": {
-    "recipe_logic_status=idle": {
-      "parent": "gtceu:block/casings/steam/bricked_bronze",
-      "textures": {
-        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+  "multipart": [
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
       }
     },
-    "recipe_logic_status=suspend": {
-      "parent": "gtceu:block/casings/steam/bricked_bronze",
-      "textures": {
-        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
       }
     },
-    "recipe_logic_status=waiting": {
-      "parent": "gtceu:block/casings/steam/bricked_bronze",
-      "textures": {
-        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
       }
     },
-    "recipe_logic_status=working": {
-      "parent": "gtceu:block/casings/steam/bricked_bronze",
-      "textures": {
-        "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
       }
     }
-  }
+  ]
 }

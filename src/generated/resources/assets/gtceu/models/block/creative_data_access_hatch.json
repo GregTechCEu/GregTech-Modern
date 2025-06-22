@@ -1,37 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:creative_data_access_hatch",
   "variants": {
-    "is_formed=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/max"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/data_access_hatch_creative"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/max"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/data_access_hatch_creative"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/data_access_hatch_creative",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/max/bottom",
+        "side": "gtceu:block/casings/voltage/max/side",
+        "top": "gtceu:block/casings/voltage/max/top"
+      }
     }
   }
 }

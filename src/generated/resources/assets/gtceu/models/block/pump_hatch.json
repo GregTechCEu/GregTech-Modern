@@ -1,47 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:pump_hatch",
   "variants": {
-    "is_formed=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/cube/tinted/bottom_top",
-          "textures": {
-            "bottom": "gtceu:block/casings/pump_deck/bottom",
-            "side": "gtceu:block/casings/pump_deck/side",
-            "top": "gtceu:block/casings/pump_deck/top"
-          }
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/pump_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/cube/tinted/bottom_top",
-          "textures": {
-            "bottom": "gtceu:block/casings/pump_deck/bottom",
-            "side": "gtceu:block/casings/pump_deck/side",
-            "top": "gtceu:block/casings/pump_deck/top"
-          }
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/pump_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/pump_hatch",
+      "textures": {
+        "bottom": "gtceu:block/casings/pump_deck/bottom",
+        "side": "gtceu:block/casings/pump_deck/side",
+        "top": "gtceu:block/casings/pump_deck/top"
+      }
     }
   }
 }

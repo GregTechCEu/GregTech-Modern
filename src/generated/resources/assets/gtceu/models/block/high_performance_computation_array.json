@@ -1,10 +1,11 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:high_performance_computation_array",
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
@@ -14,7 +15,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=suspend": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
@@ -24,7 +25,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=waiting": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
@@ -34,7 +35,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=working": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
@@ -44,7 +45,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=idle": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
@@ -54,7 +55,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=suspend": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
@@ -64,7 +65,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=waiting": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
@@ -74,7 +75,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=working": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",

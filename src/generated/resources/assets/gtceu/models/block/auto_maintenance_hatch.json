@@ -1,91 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:auto_maintenance_hatch",
   "variants": {
-    "is_formed=false,maintenance_taped=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/ulv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/auto_maintenance_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=false,maintenance_taped=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/cube/tinted/bottom_top",
-          "textures": {
-            "bottom": "gtceu:block/casings/voltage/ulv/bottom",
-            "side": "gtceu:block/casings/voltage/ulv/side",
-            "top": "gtceu:block/casings/voltage/ulv/top"
-          }
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/auto_maintenance_hatch"
-        },
-        "tape": {
-          "parent": "gtceu:block/overlay/front",
-          "textures": {
-            "overlay": "gtceu:block/overlay/machine/overlay_maintenance_taped"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay",
-        "tape"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,maintenance_taped=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/ulv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/auto_maintenance_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true,maintenance_taped=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/cube/tinted/bottom_top",
-          "textures": {
-            "bottom": "gtceu:block/casings/voltage/ulv/bottom",
-            "side": "gtceu:block/casings/voltage/ulv/side",
-            "top": "gtceu:block/casings/voltage/ulv/top"
-          }
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/auto_maintenance_hatch"
-        },
-        "tape": {
-          "parent": "gtceu:block/overlay/front",
-          "textures": {
-            "overlay": "gtceu:block/overlay/machine/overlay_maintenance_taped"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay",
-        "tape"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/auto_maintenance_hatch",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+        "side": "gtceu:block/casings/voltage/ulv/side",
+        "top": "gtceu:block/casings/voltage/ulv/top"
+      }
     }
   }
 }

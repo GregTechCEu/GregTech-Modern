@@ -1,37 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:opv_energy_input_hatch_16a",
   "variants": {
-    "is_formed=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/opv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/energy_input_hatch_16a"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/opv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/energy_input_hatch_16a"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/energy_input_hatch_16a",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/opv/bottom",
+        "side": "gtceu:block/casings/voltage/opv/side",
+        "top": "gtceu:block/casings/voltage/opv/top"
+      }
     }
   }
 }

@@ -1,37 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:me_pattern_buffer",
   "variants": {
-    "is_formed=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/luv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/me_pattern_buffer"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/luv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/me_pattern_buffer"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/me_pattern_buffer",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/luv/bottom",
+        "side": "gtceu:block/casings/voltage/luv/side",
+        "top": "gtceu:block/casings/voltage/luv/top"
+      }
     }
   }
 }

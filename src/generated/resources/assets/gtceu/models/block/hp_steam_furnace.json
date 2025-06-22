@@ -1,895 +1,256 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:hp_steam_furnace",
-  "variants": {
-    "recipe_logic_status=idle,steam_vent=down": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "down": {
-                  "cullface": "down",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
+  "multipart": [
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_steel"
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "recipe_logic_status": "idle"
+      }
     },
-    "recipe_logic_status=idle,steam_vent=east": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "east": {
-                  "cullface": "east",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_steel"
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "recipe_logic_status": "working"
+      }
     },
-    "recipe_logic_status=idle,steam_vent=north": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "north": {
-                  "cullface": "north",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_steel"
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
     },
-    "recipe_logic_status=idle,steam_vent=south": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "south": {
-                  "cullface": "south",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
+    {
+      "apply": {
+        "parent": "gtceu:block/casings/steam/bricked_steel"
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
     },
-    "recipe_logic_status=idle,steam_vent=up": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "up": {
-                  "cullface": "up",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "down": {
+                "cullface": "down",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "down"
+      }
     },
-    "recipe_logic_status=idle,steam_vent=west": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "west": {
-                  "cullface": "west",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "up": {
+                "cullface": "up",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "up"
+      }
     },
-    "recipe_logic_status=suspend,steam_vent=down": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "down": {
-                  "cullface": "down",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "north": {
+                "cullface": "north",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "north"
+      }
     },
-    "recipe_logic_status=suspend,steam_vent=east": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "east": {
-                  "cullface": "east",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "south": {
+                "cullface": "south",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "south"
+      }
     },
-    "recipe_logic_status=suspend,steam_vent=north": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "north": {
-                  "cullface": "north",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "west": {
+                "cullface": "west",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "west"
+      }
     },
-    "recipe_logic_status=suspend,steam_vent=south": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "south": {
-                  "cullface": "south",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
+    {
+      "apply": {
+        "elements": [
+          {
+            "faces": {
+              "east": {
+                "cullface": "east",
+                "texture": "#steam_vent",
+                "uv": [
+                  0.0,
+                  0.0,
+                  16.0,
+                  16.0
+                ]
+              }
+            },
+            "from": [
+              -0.002,
+              -0.002,
+              -0.002
+            ],
+            "to": [
+              16.002,
+              16.002,
+              16.002
+            ]
           }
+        ],
+        "textures": {
+          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
         }
       },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=suspend,steam_vent=up": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "up": {
-                  "cullface": "up",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=suspend,steam_vent=west": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "west": {
-                  "cullface": "west",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=down": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "down": {
-                  "cullface": "down",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=east": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "east": {
-                  "cullface": "east",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=north": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "north": {
-                  "cullface": "north",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=south": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "south": {
-                  "cullface": "south",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=up": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "up": {
-                  "cullface": "up",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=waiting,steam_vent=west": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "west": {
-                  "cullface": "west",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=down": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "down": {
-                  "cullface": "down",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=east": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "east": {
-                  "cullface": "east",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=north": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "north": {
-                  "cullface": "north",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=south": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "south": {
-                  "cullface": "south",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=up": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "up": {
-                  "cullface": "up",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
-    },
-    "recipe_logic_status=working,steam_vent=west": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/steam/bricked_steel"
-        },
-        "steam_vent": {
-          "elements": [
-            {
-              "faces": {
-                "west": {
-                  "cullface": "west",
-                  "texture": "#steam_vent"
-                }
-              },
-              "from": [
-                0,
-                0,
-                0
-              ],
-              "to": [
-                16,
-                16,
-                16
-              ]
-            }
-          ],
-          "textures": {
-            "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-          }
-        }
-      },
-      "item_render_order": [
-        "base",
-        "steam_vent"
-      ],
-      "loader": "forge:composite"
+      "when": {
+        "steam_vent": "east"
+      }
     }
-  }
+  ]
 }

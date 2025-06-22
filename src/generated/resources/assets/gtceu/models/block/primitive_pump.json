@@ -1,10 +1,11 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:primitive_pump",
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -13,7 +14,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=suspend": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -22,7 +23,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=waiting": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -31,7 +32,7 @@
       }
     },
     "is_formed=false,recipe_logic_status=working": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -40,7 +41,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=idle": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -49,7 +50,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=suspend": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -58,7 +59,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=waiting": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",
@@ -67,7 +68,7 @@
       }
     },
     "is_formed=true,recipe_logic_status=working": {
-      "parent": "gtceu:block/machine/template/all_overlay_machine",
+      "parent": "gtceu:block/machine/template/sided_overlay_machine",
       "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
         "overlay_front": "gtceu:block/multiblock/primitive_pump/overlay_front",

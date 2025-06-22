@@ -1,37 +1,16 @@
 {
+  "parent": "minecraft:block/block",
   "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:lv_item_passthrough_hatch",
   "variants": {
-    "is_formed=false": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/lv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/item_passthrough_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
-    },
-    "is_formed=true": {
-      "children": {
-        "base": {
-          "parent": "gtceu:block/casings/voltage/lv"
-        },
-        "overlay": {
-          "parent": "gtceu:block/machine/part/item_passthrough_hatch"
-        }
-      },
-      "item_render_order": [
-        "base",
-        "overlay"
-      ],
-      "loader": "forge:composite"
+    "": {
+      "parent": "gtceu:block/machine/part/item_passthrough_hatch",
+      "textures": {
+        "bottom": "gtceu:block/casings/voltage/lv/bottom",
+        "side": "gtceu:block/casings/voltage/lv/side",
+        "top": "gtceu:block/casings/voltage/lv/top"
+      }
     }
   }
 }
