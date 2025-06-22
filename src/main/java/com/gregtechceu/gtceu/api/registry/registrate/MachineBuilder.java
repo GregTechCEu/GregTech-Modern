@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.MultiVariantGeneratorAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -560,7 +561,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .properties(BlockBehaviour.Properties::noLootTable)
                     .addLayer(() -> RenderType::cutoutMipped)
                     .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
-                    .blockstate(NonNullBiConsumer.noop())
                     .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
         }
@@ -583,15 +583,23 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
                     .model((ctx, prov) -> {
-                        Optional<String> model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
+                        var model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
+                                        .flatMap(p -> p.getExistingMultiVariantGenerator(block.get()))
+                                        .map(g -> ((MultiVariantGeneratorAccessor)g).gtceu$getBaseVariants())
+                                        .filter(l -> !l.isEmpty()).map(l -> l.get(0))
+                                        .map(Variant::get);
+                        if (model.isPresent()) {
+                            prov.withExistingParent(ctx.getName(),
+                                    model.get().getAsJsonObject().get("model").getAsString());
+                            return;
+                        }
+                        model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
                                 .flatMap(p -> p.getExistingVariantBuilder(block.get()))
                                 .map(b -> b.getModels().get(b.partialState()))
-                                .map(BlockStateProvider.ConfiguredModelList::toJSON)
-                                .filter(JsonElement::isJsonObject)
-                                .map(j -> j.getAsJsonObject().get("model"))
-                                .map(JsonElement::getAsString);
+                                .map(BlockStateProvider.ConfiguredModelList::toJSON);
                         if (model.isPresent()) {
-                            prov.withExistingParent(ctx.getName(), model.get());
+                            prov.withExistingParent(ctx.getName(),
+                                    model.get().getAsJsonObject().get("model").getAsString());
                         } else {
                             prov.blockItem(block);
                         }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
-import appeng.core.definitions.BlockDefinition;
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -14,6 +14,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.gson.JsonPrimitive;
@@ -22,6 +23,7 @@ import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
@@ -47,7 +49,6 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        super.registerStatesAndModels();
         parent.genData(GregTechDatagen.BLOCKSTATE_PROVIDER, this);
     }
 
@@ -57,20 +58,20 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     public MultiVariantGenerator multiVariantGenerator(Block block) {
         var multiVariant = MultiVariantGenerator.multiVariant(block);
-        registeredBlocks.put(block, () -> multiVariant.get().getAsJsonObject());
+        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiVariant));
         return multiVariant;
     }
 
     public MultiVariantGenerator multiVariantGenerator(Block block, Variant baseVariant) {
         var multiVariant = MultiVariantGenerator.multiVariant(block, baseVariant);
-        registeredBlocks.put(block, () -> multiVariant.get().getAsJsonObject());
+        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiVariant));
         return multiVariant;
     }
 
     public MultiPartGenerator multiPartGenerator(Block block) {
-        var multipart = MultiPartGenerator.multiPart(block);
-        registeredBlocks.put(block, () -> multipart.get().getAsJsonObject());
-        return multipart;
+        var multiPart = MultiPartGenerator.multiPart(block);
+        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiPart));
+        return multiPart;
     }
 
     public static @Nullable PropertyDispatch createFacingDispatch(MachineDefinition definition) {
@@ -128,5 +129,31 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
             case 270 -> VariantProperties.Rotation.R270;
             default -> throw new IllegalArgumentException("Invalid angle: " + angle);
         };
+    }
+
+    protected Optional<BlockStateGeneratorWrapper> getExistingBlockStateGenerator(Block block) {
+        return Optional.ofNullable(registeredBlocks.get(block))
+                .filter(g -> g instanceof BlockStateGeneratorWrapper)
+                .map(g -> (BlockStateGeneratorWrapper) g);
+    }
+
+    public Optional<MultiVariantGenerator> getExistingMultiVariantGenerator(Block block) {
+        return getExistingBlockStateGenerator(block)
+                .filter(g -> g.generator() instanceof MultiVariantGenerator)
+                .map(g -> (MultiVariantGenerator) g.generator());
+    }
+
+    public Optional<MultiPartGenerator> getExistingMultipartGenerator(Block block) {
+        return getExistingBlockStateGenerator(block)
+                .filter(g -> g.generator() instanceof MultiPartGenerator)
+                .map(g -> (MultiPartGenerator) g.generator());
+    }
+
+    public record BlockStateGeneratorWrapper(BlockStateGenerator generator) implements IGeneratedBlockState {
+
+        @Override
+        public JsonObject toJson() {
+            return generator.get().getAsJsonObject();
+        }
     }
 }

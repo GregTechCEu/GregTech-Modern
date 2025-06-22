@@ -16,7 +16,7 @@ public class GregTechDatagen {
                     event.getGenerator().getPackOutput(), event.getExistingFileHelper(), existing));
 
     public static void initPre() {
-        // replace the default blockstate provider with this ours
+        // replace the default blockstate provider with ours
         RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
 
         GTRegistration.REGISTRATE.addDataGenerator(BLOCKSTATE_PROVIDER, BlockstateModelLoader::init);

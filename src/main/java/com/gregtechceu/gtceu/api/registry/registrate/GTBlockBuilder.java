@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
+import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 
@@ -19,7 +20,9 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
@@ -39,7 +42,7 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     }
 
     public GTBlockBuilder<T, P> exBlockstate(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cons) {
-        setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop());
+        // setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop());
         return setDataGeneric(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
     }
 
@@ -73,7 +76,34 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     @Override
     public <I extends Item> ItemBuilder<I, BlockBuilder<T, P>> item(NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
-        return super.item(factory);
+        final var sup = asSupplier();
+        return getOwner().<I, BlockBuilder<T, P>> item(this, getName(), p -> factory.apply(getEntry(), p))
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // FIXME Need a beetter API for "unsetting" providers
+                .model((ctx, prov) -> {
+                    Optional<String> model = getOwner().getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
+                            .flatMap(p -> p.getExistingVariantBuilder(getEntry()))
+                            .map(b -> b.getModels().get(b.partialState()))
+                            .map(BlockStateProvider.ConfiguredModelList::toJSON)
+                            .filter(JsonElement::isJsonObject)
+                            .map(j -> j.getAsJsonObject().get("model"))
+                            .map(JsonElement::getAsString);
+                    if (model.isPresent()) {
+                        prov.withExistingParent(ctx.getName(), model.get());
+                        return;
+                    }
+                    model = getOwner().getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
+                            .flatMap(p -> p.getExistingVariantBuilder(getEntry()))
+                            .map(b -> b.getModels().get(b.partialState()))
+                            .map(BlockStateProvider.ConfiguredModelList::toJSON)
+                            .filter(JsonElement::isJsonObject)
+                            .map(j -> j.getAsJsonObject().get("model"))
+                            .map(JsonElement::getAsString);
+                    if (model.isPresent()) {
+                        prov.withExistingParent(ctx.getName(), model.get());
+                    } else {
+                        prov.blockItem(sup);
+                    }
+                });
     }
 
     @Override
@@ -98,7 +128,7 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     @Override
     public GTBlockBuilder<T, P> blockstate(NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> cons) {
-        return (GTBlockBuilder<T, P>) super.blockstate(cons);
+        return (GTBlockBuilder<T, P>) setData(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
     }
 
     @Override
@@ -131,6 +161,17 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     // public final BlockBuilder<T, P> tag(TagKey<Block>... tags) {
     //     return tag(ProviderType.BLOCK_TAGS, tags);
     // }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <D extends RegistrateProvider> BlockBuilder<T, P> setData(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, T>, D> cons) {
+        if (type == ProviderType.BLOCKSTATE) {
+            return super.setData((ProviderType<? extends D>) GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
+        } else {
+            return super.setData(type, cons);
+        }
+    }
 
     public <D extends RegistrateProvider> GTBlockBuilder<T, P> setDataGeneric(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, ? extends Block>, D> cons) {
         getOwner().setDataGenerator(this, type, prov -> cons.accept(DataGenContext.from(this), prov));
