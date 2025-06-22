@@ -47,11 +47,11 @@ public enum RelativeDirection implements StringRepresentable {
      * Equivalent global direction to this relative direction
      * with {@link Direction#NORTH NORTH} as the "forward" direction.
      */
-    public final Direction equivalentGlobal;
+    public final Direction global;
 
-    RelativeDirection(UnaryOperator<Direction> actualDirection, Direction equivalentGlobal) {
+    RelativeDirection(UnaryOperator<Direction> actualDirection, Direction global) {
         this.actualDirection = actualDirection;
-        this.equivalentGlobal = equivalentGlobal;
+        this.global = global;
     }
 
     @Override

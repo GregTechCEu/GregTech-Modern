@@ -44,7 +44,7 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        if (Strings.isBlank(path)) {
+        if (path.isBlank()) {
             return TEMPLATE_LOCATION;
         }
 
