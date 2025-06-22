@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 public class FilteredFluidHandlerItemStack extends FluidHandlerItemStack {
 
-    Predicate<FluidStack> filter;
+    protected final Predicate<FluidStack> filter;
 
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.

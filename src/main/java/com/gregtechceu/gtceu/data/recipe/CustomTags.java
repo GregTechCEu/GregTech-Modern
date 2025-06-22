@@ -142,6 +142,8 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createBlockTag("needs_neutronium_tool");
 
     // Tool tags
+    public static final TagKey<Item> TOOLS_IGNITER = TagUtil.createItemTag("tools/igniter");
+
     public static final TagKey<Item> BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
     public static final TagKey<Item> BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");
     public static final TagKey<Item> CHAINSAWS = TagUtil.createItemTag("tools/chainsaws");
@@ -190,6 +192,8 @@ public class CustomTags {
     public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");
     public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powders");
     public static final TagKey<Block> CLEANROOM_FLOORS = TagUtil.createModBlockTag("cleanroom_floors");
+    public static final TagKey<Block> CHARCOAL_PILE_IGNITER_WALLS = TagUtil.createModBlockTag(
+            "charcoal_pile_igniter_walls");
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
     public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");
