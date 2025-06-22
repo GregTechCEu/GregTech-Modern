@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "gtceu:block/casings/voltage/max/side",
+    "particle": "#bot_side",
     "bot_bottom": "gtceu:block/casings/voltage/max/bottom",
     "bot_top": "gtceu:block/casings/voltage/max/top",
     "bot_side": "gtceu:block/casings/voltage/max/side",
@@ -22,29 +22,29 @@
       }
     },
     {
-      "from": [  0,  0,  0 ],
-      "to":   [ 16, 16, 16 ],
+      "from": [ -0.002, -0.002, -0.002 ],
+      "to":   [ 16.002, 16.002, 16.002 ],
       "faces": {
-        "down":  { "texture": "#top_all", "cullface": "down" },
-        "up":    { "texture": "#top_all", "cullface": "up" },
-        "north": { "texture": "#top_all", "cullface": "north" },
-        "south": { "texture": "#top_all", "cullface": "south" },
-        "west":  { "texture": "#top_all", "cullface": "west" },
-        "east":  { "texture": "#top_all", "cullface": "east" }
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "down" },
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "up" },
+        "north": { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "north" },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "south" },
+        "west":  { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "west" },
+        "east":  { "uv": [0, 0, 16, 16], "texture": "#top_all", "cullface": "east" }
       }
     },
     {
-      "from": [  0,  0,  0 ],
-      "to":   [ 16, 16, 16 ],
+      "from": [ -0.004, -0.004, -0.004 ],
+      "to":   [ 16.004, 16.004, 16.004 ],
       "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "down":  { "texture": "#emissive_all", "cullface": "down",  "tintindex": -101 },
-        "up":    { "texture": "#emissive_all", "cullface": "up",    "tintindex": -101 },
-        "north": { "texture": "#emissive_all", "cullface": "north", "tintindex": -101 },
-        "south": { "texture": "#emissive_all", "cullface": "south", "tintindex": -101 },
-        "west":  { "texture": "#emissive_all", "cullface": "west",  "tintindex": -101 },
-        "east":  { "texture": "#emissive_all", "cullface": "east",  "tintindex": -101 }
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "down",  "tintindex": -101 },
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "up",    "tintindex": -101 },
+        "north": { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "north", "tintindex": -101 },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "south", "tintindex": -101 },
+        "west":  { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "west",  "tintindex": -101 },
+        "east":  { "uv": [0, 0, 16, 16], "texture": "#emissive_all", "cullface": "east",  "tintindex": -101 }
       }
     }
   ]

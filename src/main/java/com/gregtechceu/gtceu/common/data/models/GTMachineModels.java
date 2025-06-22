@@ -58,8 +58,6 @@ public class GTMachineModels {
     public static final String OVERLAY_PREFIX = "overlay_";
     public static final String EMISSIVE_SUFFIX = "_emissive";
 
-    public static final ResourceLocation ALL_MODEL = GTCEu.id("block/cube/tinted/all");
-    public static final ResourceLocation SIDED_MODEL = GTCEu.id("block/cube/tinted/bottom_top");
     public static final ResourceLocation SIDED_OVERLAY_MODEL = GTCEu.id("block/machine/template/sided_overlay_machine");
     public static final ResourceLocation ALL_OVERLAY_MODEL = GTCEu.id("block/machine/template/all_overlay_machine");
 
@@ -149,8 +147,8 @@ public class GTMachineModels {
                 var rotatedModel = prov.models().nested()
                         .texture("steam_vent", VENT_OVERLAY)
                         .element()
-                        .from(0, 0, 0).to(16, 16, 16)
-                        .face(face).texture("#steam_vent").cullface(face).end()
+                        .from(-0.002f, -0.002f, -0.002f).to(16.002f, 16.002f, 16.002f)
+                        .face(face).uvs(0, 0, 16, 16).texture("#steam_vent").cullface(face).end()
                         .end();
                 builder.part(rotatedModel).condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, face);
             }
@@ -202,7 +200,7 @@ public class GTMachineModels {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(ALL_OVERLAY_MODEL));
+                        .parent(prov.models().getExistingFile(SIDED_OVERLAY_MODEL));
                 casingTextures(model, baseCasingTexture);
                 return addWorkableOverlays(overlays, status, model);
             });

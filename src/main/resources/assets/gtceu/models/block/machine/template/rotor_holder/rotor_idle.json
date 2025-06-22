@@ -5,7 +5,7 @@
     },
     "elements": [
         {
-            "from": [ -16, -16,  0     ],
+            "from": [ -16, -16, -0.006 ],
             "to":   [  32,  32, -0.006 ],
             "faces": {
                 "north": { "uv": [ 0, 0, 48, 48 ], "texture": "#rotor", "cullface": "north", "tintindex": 2 }
