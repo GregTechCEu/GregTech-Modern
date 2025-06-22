@@ -555,10 +555,11 @@ public class GTMachineModels {
             MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
                     .customLoader(MachineModelBuilder.begin(definition));
             modelInitializer.configureModel(ctx, prov, builder);
-            final ModelFile built = builder.end();
+            final BlockModelBuilder model = builder.end();
+            model.parent(prov.models().getExistingFile(prov.mcLoc("block/block")));
 
             var generator = prov.multiVariantGenerator(block,
-                    Variant.variant().with(VariantProperties.MODEL, built.getLocation()));
+                    Variant.variant().with(VariantProperties.MODEL, model.getLocation()));
             PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
             if (dispatch != null) {
                 generator.with(dispatch);
