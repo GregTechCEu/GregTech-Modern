@@ -80,14 +80,14 @@ public class GTMachineModels {
 
     // region generic models
 
-    public static MachineBuilder.ModelConstructor createBasicMachineModel(ResourceLocation baseModel) {
+    public static MachineBuilder.ModelInitializer createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
             var model = prov.models().getExistingFile(baseModel);
             builder.forAllStates(state -> model);
         };
     }
 
-    public static MachineBuilder.ModelConstructor createTieredHullMachineModel(ResourceLocation parentModel) {
+    public static MachineBuilder.ModelInitializer createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder model = prov.models().nested()
                     .parent(prov.models().getExistingFile(parentModel));
@@ -97,14 +97,14 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createOverlayTieredHullMachineModel(ResourceLocation overlayModel) {
+    public static MachineBuilder.ModelInitializer createOverlayTieredHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             var model = makeTieredHullOverlayCompositeModel(prov.models(), builder, overlayModel);
             builder.forAllStates(state -> model);
         };
     }
 
-    public static MachineBuilder.ModelConstructor createWorkableTieredHullMachineModel(ResourceLocation overlayDir) {
+    public static MachineBuilder.ModelInitializer createWorkableTieredHullMachineModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
@@ -118,7 +118,7 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createOverlayWorkableTieredHullMachineModel(ResourceLocation idleOverlayModel,
+    public static MachineBuilder.ModelInitializer createOverlayWorkableTieredHullMachineModel(ResourceLocation idleOverlayModel,
                                                                                               ResourceLocation workingModel,
                                                                                               @Nullable ResourceLocation waitingModel,
                                                                                               @Nullable ResourceLocation pausedModel) {
@@ -138,7 +138,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
+    public static MachineBuilder.ModelInitializer createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             builder.forAllStates(state -> {
                 boolean steelSteamMultis = state.hasProperty(SteamMachine.STEEL_STEAM_MULTIBLOCKS) &&
@@ -152,7 +152,7 @@ public class GTMachineModels {
     public static final ResourceLocation VENT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_steam_vent");
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createWorkableSteamHullMachineModel(boolean highPressure, ResourceLocation overlayDir) {
+    public static MachineBuilder.ModelInitializer createWorkableSteamHullMachineModel(boolean highPressure, ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
@@ -182,7 +182,7 @@ public class GTMachineModels {
         };
     }
     // spotless:on
-    public static MachineBuilder.ModelConstructor createOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
+    public static MachineBuilder.ModelInitializer createOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                   ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder baseModel = prov.models().nested()
@@ -194,7 +194,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
+    public static MachineBuilder.ModelInitializer createWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                    ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
@@ -211,7 +211,7 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createSidedOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
+    public static MachineBuilder.ModelInitializer createSidedOverlayCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                        ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder baseModel = prov.models().nested()
@@ -223,7 +223,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createSidedWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
+    public static MachineBuilder.ModelInitializer createSidedWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
                                                                                         ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
@@ -243,7 +243,7 @@ public class GTMachineModels {
 
     // region per-machine models
 
-    public static MachineBuilder.ModelConstructor createSimpleGeneratorModel(ResourceLocation overlayDir) {
+    public static MachineBuilder.ModelInitializer createSimpleGeneratorModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
@@ -271,7 +271,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createBatteryBufferModel(int inventorySize) {
+    public static MachineBuilder.ModelInitializer createBatteryBufferModel(int inventorySize) {
         return (ctx, prov, builder) -> {
             var overlay = OUT_OVERLAYS_FOR_AMP.get(inventorySize);
             
@@ -293,7 +293,7 @@ public class GTMachineModels {
     public static final ResourceLocation CHARGER_FINISHED = GTCEu.id("block/machines/charger/overlay_charger_finished");
     public static final ResourceLocation CHARGER_FINISHED_EMISSIVE = GTCEu.id("block/machines/charger/overlay_charger_finished_emissive");
     
-    public static MachineBuilder.ModelConstructor createChargerModel() {
+    public static MachineBuilder.ModelInitializer createChargerModel() {
         return (ctx, prov, builder) -> {
             builder.forAllStates(renderState -> {
                 ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
@@ -326,7 +326,7 @@ public class GTMachineModels {
     public static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
     public static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
 
-    public static MachineBuilder.ModelConstructor createConverterModel(int amperage) {
+    public static MachineBuilder.ModelInitializer createConverterModel(int amperage) {
         return (ctx, prov, builder) -> {
             final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(amperage);
             final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(amperage);
@@ -354,7 +354,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createCrateModel(boolean wooden) {
+    public static MachineBuilder.ModelInitializer createCrateModel(boolean wooden) {
         return (ctx, prov, builder) -> {
             String modelPath = "block/machine/template/crate/" + (wooden ? "wooden" : "metal") + "_crate";
             ModelFile baseModel = prov.models().getExistingFile(GTCEu.id(modelPath));
@@ -370,7 +370,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createDiodeModel() {
+    public static MachineBuilder.ModelInitializer createDiodeModel() {
         return (ctx, prov, builder) -> {
             builder.forAllStates(renderState -> {
                 DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
@@ -389,7 +389,7 @@ public class GTMachineModels {
         };
     }
 
-    public static MachineBuilder.ModelConstructor createTransformerModel(int baseAmp) {
+    public static MachineBuilder.ModelInitializer createTransformerModel(int baseAmp) {
         return (ctx, prov, builder) -> {
             builder.forAllStates(renderState -> {
                 boolean transformUp = renderState.getValue(TransformerMachine.TRANSFORM_UP_PROPERTY);
@@ -417,7 +417,7 @@ public class GTMachineModels {
     public static final ResourceLocation ROTOR_HOLDER_ROTOR_SPINNING = GTCEu.id("block/machine/template/rotor_holder/rotor_spinning");
     // spotless:on
 
-    public static MachineBuilder.ModelConstructor createRotorHolderModel() {
+    public static MachineBuilder.ModelInitializer createRotorHolderModel() {
         return (ctx, prov, builder) -> {
             var blockModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(ROTOR_HOLDER_BLOCK));
@@ -458,7 +458,7 @@ public class GTMachineModels {
     });
 
     // spotless:off
-    public static MachineBuilder.ModelConstructor createWorldAcceleratorModel(ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
+    public static MachineBuilder.ModelInitializer createWorldAcceleratorModel(ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
         return (ctx, prov, builder) -> {
             WorkableOverlays rtOverlays = WorkableOverlays.get(rtModeModelPath, prov.getExistingFileHelper());
             WorkableOverlays beOverlays = WorkableOverlays.get(beModeModelPath, prov.getExistingFileHelper());
@@ -487,7 +487,7 @@ public class GTMachineModels {
     public static final ResourceLocation MAINTENANCE_TAPED_OVERLAY = GTCEu.id("block/overlay/machine/overlay_maintenance_taped");
     // spotless:on
 
-    public static MachineBuilder.ModelConstructor createMaintenanceModel(ResourceLocation overlayModel) {
+    public static MachineBuilder.ModelInitializer createMaintenanceModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             builder.forAllStates(state -> {
                 boolean isTaped = state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY);
@@ -516,7 +516,7 @@ public class GTMachineModels {
     public static final ResourceLocation HPCA_PART_MODEL = GTCEu.id("block/computer_casing");
     public static final ResourceLocation ADVANCED_HPCA_PART_MODEL = GTCEu.id("block/advanced_computer_casing");
 
-    public static MachineBuilder.ModelConstructor createHPCAPartModel(boolean advanced,
+    public static MachineBuilder.ModelInitializer createHPCAPartModel(boolean advanced,
                                                                       ResourceLocation normalTexture,
                                                                       ResourceLocation damagedTexture) {
         return (ctx, prov, builder) -> {
@@ -542,7 +542,8 @@ public class GTMachineModels {
 
     // region helper functions
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelConstructor model) {
+    // spotless:off
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelInitializer modelInitializer) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
             if (!(block instanceof IMachineBlock machineBlock)) {
@@ -553,7 +554,7 @@ public class GTMachineModels {
 
             MachineModelBuilder<BlockModelBuilder> builder = prov.models().getBuilder(ctx.getName())
                     .customLoader(MachineModelBuilder.begin(definition));
-            model.configureModel(ctx, prov, builder);
+            modelInitializer.configureModel(ctx, prov, builder);
             final ModelFile built = builder.end();
 
             var generator = prov.multiVariantGenerator(block,

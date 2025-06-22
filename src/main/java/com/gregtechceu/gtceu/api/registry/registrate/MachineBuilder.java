@@ -97,7 +97,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Setter
-    private ModelConstructor model = null;
+    private MachineBuilder.ModelInitializer model = null;
     @Nullable
     @Setter
     private NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> blockModel = null;
@@ -504,12 +504,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     @FunctionalInterface
-    public interface ModelConstructor {
+    public interface ModelInitializer {
 
         void configureModel(@NotNull DataGenContext<Block, Block> context, @NotNull GTBlockstateProvider provider,
                             @NotNull MachineModelBuilder<BlockModelBuilder> builder);
 
-        default ModelConstructor andThen(ModelConstructor after) {
+        default ModelInitializer andThen(ModelInitializer after) {
             Objects.requireNonNull(after);
             return (ctx, prov, builder) -> {
                 this.configureModel(ctx, prov, builder);
@@ -517,7 +517,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             };
         }
 
-        default ModelConstructor andThen(Consumer<MachineModelBuilder<BlockModelBuilder>> after) {
+        default ModelInitializer andThen(Consumer<MachineModelBuilder<BlockModelBuilder>> after) {
             Objects.requireNonNull(after);
             return (ctx, prov, builder) -> {
                 this.configureModel(ctx, prov, builder);
@@ -525,7 +525,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             };
         }
 
-        default ModelConstructor compose(ModelConstructor before) {
+        default ModelInitializer compose(ModelInitializer before) {
             Objects.requireNonNull(before);
             return (ctx, prov, builder) -> {
                 before.configureModel(ctx, prov, builder);
@@ -533,7 +533,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             };
         }
 
-        default ModelConstructor compose(UnaryOperator<MachineModelBuilder<BlockModelBuilder>> before) {
+        default ModelInitializer compose(UnaryOperator<MachineModelBuilder<BlockModelBuilder>> before) {
             Objects.requireNonNull(before);
             return (ctx, prov, builder) -> {
                 this.configureModel(ctx, prov, before.apply(builder));

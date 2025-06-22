@@ -125,7 +125,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder model(@Nullable ModelConstructor model) {
+    public MultiblockMachineBuilder model(@Nullable MachineBuilder.ModelInitializer model) {
         return (MultiblockMachineBuilder) super.model(model);
     }
 
