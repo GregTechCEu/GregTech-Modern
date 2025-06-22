@@ -308,14 +308,25 @@ public class ToolHelper {
         ItemStack stack = context.getItemInHand();
         Direction playerFacing = player != null ? player.getDirection() : Direction.NORTH;
 
-        boolean topDown = hitFace != Direction.DOWN;
         Direction depthDirection = hitFace.getOpposite();
-        Direction topDirection = hitFace.getAxis().isVertical() ? playerFacing : Direction.UP;
-        Direction sideDirection = (hitFace.getAxis().isVertical() ? playerFacing : hitFace).getClockWise();
+        Direction topDirection = Direction.UP;
+        Direction sideDirection = hitFace;
+        // Special case for any additional row > 1: https://i.imgur.com/Dvcx7Vg.png
+        // Same behaviour as the Flux Bore
+        int aoeRowStart = aoeDefinition.row == 0 ? 0 : -1;
+        int aoeRowEnd = aoeDefinition.row == 0 ? 0 : aoeDefinition.row * 2 - 1;
+
+        if (hitFace.getAxis().isVertical()) {
+            topDirection = playerFacing;
+            sideDirection = playerFacing;
+            aoeRowStart = -aoeDefinition.row;
+            aoeRowEnd = aoeDefinition.row;
+        }
+        sideDirection = sideDirection.getClockWise();
+
         List<BlockPos> validPositions = new ArrayList<>();
         for (int depth = 0; depth <= aoeDefinition.layer; depth++) {
-            int top = topDown ? aoeDefinition.row : -aoeDefinition.row;
-            while (topDown ? top >= -aoeDefinition.row : top <= aoeDefinition.row) {
+            for (int top = aoeRowEnd; top >= aoeRowStart; top--) {
                 for (int side = -aoeDefinition.column; side <= aoeDefinition.column; side++) {
                     var pos = context.getClickedPos()
                             .relative(depthDirection, depth)
@@ -329,11 +340,6 @@ public class ToolHelper {
                     if (predicate.test(posContext)) {
                         validPositions.add(pos);
                     }
-                }
-                if (topDown) {
-                    top--;
-                } else {
-                    top++;
                 }
             }
         }
