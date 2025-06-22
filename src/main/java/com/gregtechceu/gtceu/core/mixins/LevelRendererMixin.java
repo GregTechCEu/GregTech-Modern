@@ -85,8 +85,8 @@ public abstract class LevelRendererMixin {
         if (progresses == null || progresses.isEmpty() || !mainHandItem.isCorrectToolForDrops(hitResultState)) return;
         BlockDestructionProgress progress = progresses.last();
 
-        var positions = ToolHelper.getHarvestableBlocks(mainHandItem,
-                ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, result);
+        UseOnContext context = new UseOnContext(minecraft.player, InteractionHand.MAIN_HAND, hitResult);
+        var positions = ToolHelper.getHarvestableBlocks(aoeDefinition, context);
 
         Vec3 vec3 = camera.getPosition();
         double camX = vec3.x();
@@ -123,15 +123,16 @@ public abstract class LevelRendererMixin {
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (state.isAir() || !level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) ||
-                minecraft.player.isShiftKeyDown() || !ToolHelper.hasBehaviorsTag(mainHandItem)) {
+        if (state.isAir() || minecraft.player.isShiftKeyDown() || !level.isInWorldBounds(pos) ||
+                !mainHandItem.isCorrectToolForDrops(state) || !ToolHelper.hasBehaviorsTag(mainHandItem) ||
+                !(minecraft.hitResult instanceof BlockHitResult hitResult)) {
             gtceu$renderContextAwareOutline(poseStack, consumer, entity, camX, camY, camZ, pos, state);
             ci.cancel();
             return;
         }
 
-        var positions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level,
-                minecraft.player, minecraft.hitResult);
+        UseOnContext context = new UseOnContext(minecraft.player, InteractionHand.MAIN_HAND, hitResult);
+        var positions = ToolHelper.getHarvestableBlocks(ToolHelper.getAoEDefinition(mainHandItem), context);
         positions.sort((o1, o2) -> {
             if (level.getBlockState(o1).getBlock() instanceof MaterialBlock) {
                 if (level.getBlockState(o2).getBlock() instanceof MaterialBlock) {

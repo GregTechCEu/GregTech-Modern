@@ -38,6 +38,7 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -48,6 +49,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -56,7 +58,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IForgeShearable;
@@ -68,12 +69,12 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ToolHelper {
@@ -292,12 +293,6 @@ public class ToolHelper {
         return false;
     }
 
-    @FunctionalInterface
-    public interface AOEFunction {
-
-        boolean apply(ItemStack stack, Level level, Player player, BlockPos start, UseOnContext context);
-    }
-
     public static AoESymmetrical getMaxAoEDefinition(ItemStack stack) {
         return AoESymmetrical.readMax(getBehaviorsTag(stack));
     }
@@ -306,32 +301,33 @@ public class ToolHelper {
         return AoESymmetrical.read(getBehaviorsTag(stack), getMaxAoEDefinition(stack));
     }
 
-    public static List<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                            Player player, HitResult rayTraceResult,
-                                            AOEFunction function) {
-        if (!(rayTraceResult instanceof BlockHitResult hitResult)) {
-            return List.of();
-        }
-        var playerFacing = player.getDirection();
-        var hitFacing = hitResult.getDirection();
-        var topDown = hitFacing != Direction.DOWN;
-        var depthDirection = hitFacing.getOpposite();
-        var topDirection = hitFacing.getAxis().isVertical() ? playerFacing : Direction.UP;
-        var sideDirection = playerFacing.getClockWise();
-        var validPositions = new ArrayList<BlockPos>();
+    public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
+                                            UseOnContext context) {
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        Direction hitFace = context.getClickedFace();
+        ItemStack stack = context.getItemInHand();
+        Direction playerFacing = player != null ? player.getDirection() : Direction.NORTH;
+
+        boolean topDown = hitFace != Direction.DOWN;
+        Direction depthDirection = hitFace.getOpposite();
+        Direction topDirection = hitFace.getAxis().isVertical() ? playerFacing : Direction.UP;
+        Direction sideDirection = (hitFace.getAxis().isVertical() ? playerFacing : hitFace).getClockWise();
+        List<BlockPos> validPositions = new ArrayList<>();
         for (int depth = 0; depth <= aoeDefinition.layer; depth++) {
             int top = topDown ? aoeDefinition.row : -aoeDefinition.row;
             while (topDown ? top >= -aoeDefinition.row : top <= aoeDefinition.row) {
                 for (int side = -aoeDefinition.column; side <= aoeDefinition.column; side++) {
-                    var pos = hitResult.getBlockPos()
+                    var pos = context.getClickedPos()
                             .relative(depthDirection, depth)
                             .relative(topDirection, top)
                             .relative(sideDirection, side);
-                    if (!player.mayUseItemAt(pos.relative(hitFacing), hitFacing, stack)) {
+                    if (player != null && !player.mayUseItemAt(pos.relative(hitFace), hitFace, stack)) {
                         continue;
                     }
-                    if (function.apply(stack, world, player, pos,
-                            new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, hitResult))) {
+                    UseOnContext posContext = new UseOnContext(level, player, context.getHand(), stack,
+                            context.getHitResult().withPosition(pos));
+                    if (predicate.test(posContext)) {
                         validPositions.add(pos);
                     }
                 }
@@ -345,22 +341,23 @@ public class ToolHelper {
         return validPositions;
     }
 
-    public static List<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                      Player player, HitResult rayTraceResult) {
-        return iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, ToolHelper::isBlockAoEHarvestable);
+    public static List<BlockPos> getHarvestableBlocks(AoESymmetrical aoeDefinition, UseOnContext context) {
+        return iterateAoE(aoeDefinition, ToolHelper::isBlockAoEHarvestable, context);
     }
 
-    private static boolean isBlockAoEHarvestable(ItemStack stack, Level world, Player player, BlockPos pos,
-                                                 UseOnContext context) {
-        if (world.getBlockState(pos).isAir()) return false;
+    private static boolean isBlockAoEHarvestable(UseOnContext context) {
+        Level level = context.getLevel();
+        ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+        if (level.getBlockState(pos).isAir()) return false;
 
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof LiquidBlock) return false;
 
         BlockPos hitBlockPos = context.getClickedPos();
-        BlockState hitBlockState = world.getBlockState(hitBlockPos);
-        if (state.getDestroySpeed(world, pos) < 0 ||
-                state.getDestroySpeed(world, pos) - hitBlockState.getDestroySpeed(world, hitBlockPos) > 8) {
+        BlockState hitBlockState = level.getBlockState(hitBlockPos);
+        if (state.getDestroySpeed(level, pos) < 0 ||
+                state.getDestroySpeed(level, pos) - hitBlockState.getDestroySpeed(level, hitBlockPos) > 8) {
             // If mining a block takes significantly longer than the center block, do not mine it.
             // Originally this was just a check for if it is at all harder of a block, however that
             // would cause some annoyances, like Grass Block not being broken if a Dirt Block was the
@@ -523,12 +520,23 @@ public class ToolHelper {
             return List.of();
         }
 
-        HitResult rayTraceResult = getPlayerDefaultRaytrace(player);
-        return getHarvestableBlocks(stack, aoeDefinition, player.level(), player, rayTraceResult);
+        BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
+        UseOnContext context = new UseOnContext(player, player.getUsedItemHand(), hitResult);
+        return getHarvestableBlocks(aoeDefinition, context);
     }
 
-    public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
-        return player.pick(getPlayerBlockReach(player), 1.0f, false);
+    public static BlockHitResult getPlayerDefaultRaytrace(@NotNull Player player) {
+        return entityPickBlock(player, getPlayerBlockReach(player), 1.0f, false);
+    }
+
+    public static BlockHitResult entityPickBlock(Entity entity, double hitDistance, float partialTicks,
+                                                 boolean hitFluids) {
+        Vec3 eyePos = entity.getEyePosition(partialTicks);
+        Vec3 lookVec = entity.getViewVector(partialTicks);
+        Vec3 maxDistance = eyePos.add(lookVec.x * hitDistance, lookVec.y * hitDistance, lookVec.z * hitDistance);
+        ClipContext context = new ClipContext(eyePos, maxDistance, ClipContext.Block.OUTLINE,
+                hitFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, entity);
+        return entity.level().clip(context);
     }
 
     /**
