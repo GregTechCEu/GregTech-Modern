@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
@@ -34,24 +35,26 @@ public class IntProviderIngredient extends Ingredient {
     @Getter
     protected final IntProvider countProvider;
     @Setter
-    protected Integer sampledCount = null;
+    protected int sampledCount = -1;
     @Getter
     protected final Ingredient inner;
     @Setter
     protected ItemStack[] itemStacks = null;
 
-    public IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
+    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
     }
 
-    public IntProviderIngredient(@NotNull TagKey<Item> tag, IntProvider amount) {
-        this(Ingredient.of(tag), amount);
+    public static IntProviderIngredient of(Ingredient inner, IntProvider countProvider) {
+        Preconditions.checkArgument(countProvider.getMinValue() >= 0,
+                "IntProviderIngredient must have a min value of at least 0.");
+        return new IntProviderIngredient(inner, countProvider);
     }
 
-    public static IntProviderIngredient create(Ingredient inner, IntProvider countProvider) {
-        return new IntProviderIngredient(inner, countProvider);
+    public static IntProviderIngredient ofTag(@NotNull TagKey<Item> tag, IntProvider countProvider) {
+        return of(Ingredient.of(tag), countProvider);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class IntProviderIngredient extends Ingredient {
     }
 
     public int getSampledCount(@NotNull RandomSource random) {
-        if (sampledCount == null) {
+        if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
         }
         return sampledCount;

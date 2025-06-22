@@ -14,11 +14,6 @@ import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author screret
- * @date 2023/7/11
- * @implNote TieredWorkableElectricMultiblockMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine

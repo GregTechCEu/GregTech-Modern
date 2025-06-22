@@ -19,7 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.apache.commons.lang3.tuple.MutablePair;
+import it.unimi.dsi.fastutil.booleans.BooleanBooleanMutablePair;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -112,7 +112,7 @@ public enum KeyBind {
     @OnlyIn(Dist.CLIENT)
     private boolean isPressed, isKeyDown;
 
-    private final WeakHashMap<ServerPlayer, MutablePair<Boolean, Boolean>> mapping = new WeakHashMap<>();
+    private final WeakHashMap<ServerPlayer, BooleanBooleanMutablePair> mapping = new WeakHashMap<>();
 
     // For Vanilla/Other Mod keybinds
     // Double Supplier to keep client classes from loading
@@ -150,12 +150,12 @@ public enum KeyBind {
     }
 
     public void update(boolean pressed, boolean keyDown, ServerPlayer player) {
-        MutablePair<Boolean, Boolean> pair = this.mapping.get(player);
+        BooleanBooleanMutablePair pair = this.mapping.get(player);
         if (pair == null) {
-            this.mapping.put(player, MutablePair.of(pressed, keyDown));
+            this.mapping.put(player, BooleanBooleanMutablePair.of(pressed, keyDown));
         } else {
-            pair.left = pressed;
-            pair.right = keyDown;
+            pair.left(pressed);
+            pair.right(keyDown);
         }
     }
 
@@ -163,8 +163,8 @@ public enum KeyBind {
         if (player.level().isClientSide) {
             return isPressed();
         } else {
-            MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);
-            return pair != null && pair.left;
+            BooleanBooleanMutablePair pair = this.mapping.get((ServerPlayer) player);
+            return pair != null && pair.leftBoolean();
         }
     }
 
@@ -172,8 +172,8 @@ public enum KeyBind {
         if (player.level().isClientSide) {
             return isKeyDown();
         } else {
-            MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);
-            return pair != null && pair.right;
+            BooleanBooleanMutablePair pair = this.mapping.get((ServerPlayer) player);
+            return pair != null && pair.rightBoolean();
         }
     }
 }

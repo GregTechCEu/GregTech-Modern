@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -31,11 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/6/28
- * @implNote IFancyUIMachine
- */
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
 
     @Override
@@ -124,9 +118,6 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
                                     pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
-        }
-        if (this instanceof IOverclockMachine overclockMachine) {
-            configuratorPanel.attachConfigurators(new OverclockFancyConfigurator(overclockMachine));
         }
         if (this instanceof MetaMachine machine) {
             for (var direction : Direction.values()) {

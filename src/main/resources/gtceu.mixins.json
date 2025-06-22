@@ -6,6 +6,7 @@
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
     "client": [
+        "AbstractClientPlayerAccessor",
         "BiomeColorsMixin",
         "BlockModelMixin",
         "ClientLevelAccessor",
@@ -15,6 +16,7 @@
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",
+        "PlayerInfoAccessor",
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
@@ -32,17 +34,14 @@
         "BlockPropertiesAccessor",
         "ChunkGeneratorMixin",
         "ChunkMixin",
-        "CreeperMixin",
         "EntityMixin",
         "IFoliagePlacerTypeAccessor",
-        "IHolderReferenceAccessor",
         "IngredientAccessor",
         "IntersectionIngredientAccessor",
         "InventoryMixin",
         "ItemValueAccessor",
         "ITrunkPlacerTypeAccessor",
         "LevelMixin",
-        "LivingEntityMixin",
         "LootDataManagerMixin",
         "LootPoolAccessor",
         "OreConfigurationMixin",
@@ -66,6 +65,7 @@
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "ldlib.ModularWrapperWidgetMixin",
         "ldlib.SyncUtilsMixin",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
@@ -74,5 +74,5 @@
     "injectors": {
         "defaultRequire": 1,
         "maxShiftBy": 5
-  }
+    }
 }

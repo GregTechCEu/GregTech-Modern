@@ -7,11 +7,6 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 
 import appeng.api.stacks.GenericStack;
 
-/**
- * @Author GlodBlock
- * @Description Display {@link net.minecraftforge.fluids.FluidStack} config
- * @Date 2023/4/21-1:45
- */
 public class AEFluidConfigWidget extends ConfigWidget {
 
     private final ExportOnlyAEFluidList fluidList;

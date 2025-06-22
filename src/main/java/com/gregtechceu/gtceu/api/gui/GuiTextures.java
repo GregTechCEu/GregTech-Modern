@@ -3,11 +3,6 @@ package com.gregtechceu.gtceu.api.gui;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote GuiTextures
- */
 @SuppressWarnings("unused")
 public class GuiTextures {
 
@@ -127,6 +122,10 @@ public class GuiTextures {
     public static final ResourceTexture BUTTON_LEFT = new ResourceTexture("gtceu:textures/gui/widget/left.png");
     public static final ResourceTexture BUTTON_PUBLIC_PRIVATE = new ResourceTexture(
             "gtceu:textures/gui/widget/button_public_private.png");
+    public static final ResourceTexture BUTTON_CHECK = new ResourceTexture(
+            "gtceu:textures/gui/widget/button_check.png");
+    public static final ResourceTexture BUTTON_LIST = new ResourceTexture(
+            "gtceu:textures/gui/widget/button_list.png");
     public static final ResourceTexture BUTTON_RIGHT = new ResourceTexture("gtceu:textures/gui/widget/right.png");
     public static final ResourceTexture BUTTON_SILK_TOUCH_MODE = new ResourceTexture(
             "gtceu:textures/gui/widget/button_silk_touch_mode.png");

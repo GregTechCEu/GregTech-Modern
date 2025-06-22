@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -28,12 +29,13 @@ public class RotateRailBehavior implements IToolBehavior {
     @NotNull
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof BaseRailBlock) {
-            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90),
-                    Block.UPDATE_ALL)) {
-                ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
-                return InteractionResult.SUCCESS;
+            if (level.setBlock(pos, state.rotate(level, pos, Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
+                ToolHelper.onActionDone(context.getPlayer(), stack, level, context.getClickLocation());
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
         return InteractionResult.PASS;

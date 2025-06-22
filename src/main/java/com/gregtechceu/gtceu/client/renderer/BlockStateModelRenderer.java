@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/3/24
- * @implNote BlockStateModelRenderer
- */
 public class BlockStateModelRenderer implements IRenderer {
 
     private final Map<BlockState, IRenderer> models;

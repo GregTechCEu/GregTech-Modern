@@ -80,7 +80,7 @@ public class LargeMixerRenderer extends WorkableCasingMachineRenderer {
                 var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
                 var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
-                var up = RelativeDirection.UP.getRelativeFacing(lm.getFrontFacing(), lm.getUpwardsFacing(),
+                var up = RelativeDirection.UP.getRelative(lm.getFrontFacing(), lm.getUpwardsFacing(),
                         lm.isFlipped());
                 if (up != Direction.UP && up != Direction.DOWN) up = up.getOpposite();
                 fluidBlockRenderer.drawPlane(up, lm.getFluidBlockOffsets(), pose, consumer, cachedFluid,

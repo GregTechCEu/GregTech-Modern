@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksWaypointHandler;
 import com.gregtechceu.gtceu.integration.map.journeymap.JourneymapWaypointHandler;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaeroWaypointHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceKey;
@@ -17,7 +18,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class WaypointManager {
@@ -104,7 +104,7 @@ public class WaypointManager {
 
         @Override
         public int hashCode() {
-            return Objects.hash(dim, x, y, z);
+            return GTMath.hashInts(dim.hashCode(), x, y, z);
         }
     }
 }

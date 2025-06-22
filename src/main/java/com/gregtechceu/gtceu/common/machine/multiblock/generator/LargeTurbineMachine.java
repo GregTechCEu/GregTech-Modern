@@ -31,11 +31,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/7/9
- * @implNote LargeCombustionEngineMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeTurbineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {

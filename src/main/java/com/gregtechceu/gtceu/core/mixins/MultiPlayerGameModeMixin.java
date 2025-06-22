@@ -17,11 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote MultiPlayerGameModeMixin
- */
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
 

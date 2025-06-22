@@ -23,11 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-/**
- * @author JuiceyBeans
- * @date 2024/10/12
- * @implNote CampfireRecipeBuilder
- */
 @Accessors(chain = true, fluent = true)
 public class CampfireRecipeBuilder {
 

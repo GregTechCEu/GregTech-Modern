@@ -24,11 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote ConveyorCoverRenderer
- */
 public class FluidRegulatorCoverRenderer implements ICoverRenderer {
 
     public final static FluidRegulatorCoverRenderer INSTANCE = new FluidRegulatorCoverRenderer();

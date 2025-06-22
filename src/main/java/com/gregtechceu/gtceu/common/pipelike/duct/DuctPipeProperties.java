@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Objects;
-
 public class DuctPipeProperties {
 
     /**
@@ -35,7 +33,7 @@ public class DuctPipeProperties {
 
     @Override
     public int hashCode() {
-        return Objects.hash(transferRate);
+        return Float.hashCode(transferRate);
     }
 
     @Override
