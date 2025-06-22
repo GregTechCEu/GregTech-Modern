@@ -62,7 +62,7 @@ public class HigherDegreeMaterials {
         Energium = new Material.Builder(GTCEu.id("energium"))
                 .gem()
                 .color(0xff0000).secondaryColor(0xff3f3f).iconSet(DIAMOND) // filler numbers
-                .flags(NO_UNIFICATION, DISABLE_DECOMPOSITION)
+                .flags(NO_UNIFICATION, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Redstone, 5, Ruby, 4)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
@@ -70,7 +70,7 @@ public class HigherDegreeMaterials {
         Lapotron = new Material.Builder(GTCEu.id("lapotron"))
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
-                .flags(NO_UNIFICATION, DISABLE_DECOMPOSITION)
+                .flags(NO_UNIFICATION, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Energium, 3, Lapis, 2)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
                 .buildAndRegister();
