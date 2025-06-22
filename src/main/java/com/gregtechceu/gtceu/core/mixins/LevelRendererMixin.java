@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -15,10 +16,12 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +41,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -68,6 +72,9 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     private @Nullable ClientLevel level;
+
+    @Unique
+    private final RandomSource gtceu$modelRandom = RandomSource.create();
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
@@ -164,14 +171,16 @@ public abstract class LevelRendererMixin {
         assert level != null;
         var rendererCfg = ConfigHolder.INSTANCE.client.renderer;
         int rgb = 0;
-        var doRenderColoredOutline = false;
+        boolean doRenderColoredOutline = false;
+
         // spotless:off
-        if (state.getBlock() instanceof MaterialBlock matBlock) {
+        // if it's translucent and a material block, always do the colored outline
+        MaterialEntry materialEntry = gtceu$getTranslucentBlockMaterial(state, pos);
+        if (!materialEntry.isEmpty()) {
             doRenderColoredOutline = true;
-            rgb = matBlock.material.getMaterialRGB();
-        } else if (state.getBlock() instanceof MetaMachineBlock &&
-                level.getBlockEntity(pos) instanceof MetaMachineBlockEntity mmbe) {
-            if (rendererCfg.coloredTieredMachineOutline && mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
+            rgb = materialEntry.material().getMaterialRGB();
+        } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
+            if (rendererCfg.coloredTieredMachineOutline && mbe.getMetaMachine() instanceof ITieredMachine tiered) {
                 doRenderColoredOutline = true;
                 rgb = GTValues.VCM[tiered.getTier()];
             }
@@ -180,13 +189,14 @@ public abstract class LevelRendererMixin {
             rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
         }
 
-        var blockShape = state.getShape(level, pos, CollisionContext.of(entity));
+        VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));
         // spotless:on
         if (doRenderColoredOutline) {
-            var red = (float) FastColor.ARGB32.red(rgb) / 255f;
-            var green = (float) FastColor.ARGB32.green(rgb) / 255f;
-            var blue = (float) FastColor.ARGB32.blue(rgb) / 255f;
-            renderShape(poseStack, consumer, blockShape, pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
+            float red = FastColor.ARGB32.red(rgb) / 255f;
+            float green = FastColor.ARGB32.green(rgb) / 255f;
+            float blue = FastColor.ARGB32.blue(rgb) / 255f;
+            renderShape(poseStack, consumer, blockShape,
+                    pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
                     red, green, blue, 1f);
             return;
         }
@@ -203,5 +213,17 @@ public abstract class LevelRendererMixin {
             }
         }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);
+    }
+
+    @Unique
+    private @NotNull MaterialEntry gtceu$getTranslucentBlockMaterial(BlockState state, BlockPos pos) {
+        BakedModel blockModel = minecraft.getBlockRenderer().getBlockModel(state);
+        ModelData modelData = level.getModelDataManager().getAt(pos);
+        if (modelData == null) modelData = ModelData.EMPTY;
+        gtceu$modelRandom.setSeed(state.getSeed(pos));
+        if (blockModel.getRenderTypes(state, gtceu$modelRandom, modelData).contains(RenderType.translucent())) {
+            return ChemicalHelper.getMaterialEntry(state.getBlock());
+        }
+        return MaterialEntry.NULL_ENTRY;
     }
 }
