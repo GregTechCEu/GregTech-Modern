@@ -39,6 +39,7 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     }
 
     public GTBlockBuilder<T, P> exBlockstate(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cons) {
+        setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop());
         return setDataGeneric(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
     }
 
