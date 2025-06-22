@@ -13,5 +13,4 @@ public interface RegistrateDataProviderAccessor {
     static BiMap<String, ProviderType<?>> gtceu$getTypes() {
         throw new AssertionError();
     }
-
 }

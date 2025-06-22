@@ -53,7 +53,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 
-import com.google.gson.JsonElement;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -515,7 +514,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @FunctionalInterface
     public interface ModelInitializer {
 
-        void configureModel(@NotNull DataGenContext<Block, ? extends Block> context, @NotNull GTBlockstateProvider provider,
+        void configureModel(@NotNull DataGenContext<Block, ? extends Block> context,
+                            @NotNull GTBlockstateProvider provider,
                             @NotNull MachineModelBuilder<BlockModelBuilder> builder);
 
         default ModelInitializer andThen(ModelInitializer after) {

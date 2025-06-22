@@ -31,8 +31,7 @@ public final class DynamicRenderManager {
                 } else {
                     return DataResult.error(() -> "Dynamic render type " + type + " is not registered");
                 }
-            }
-    );
+            });
 
     private static final BiMap<ResourceLocation, DynamicRenderType<?, ?>> DYNAMIC_RENDERER_TYPES = HashBiMap.create(5);
 

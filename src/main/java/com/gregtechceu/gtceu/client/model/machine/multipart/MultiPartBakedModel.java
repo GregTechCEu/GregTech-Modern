@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.client.model.machine.multipart;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -24,8 +21,12 @@ import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.MultipartModelData;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -48,7 +49,8 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
     protected final ItemTransforms transforms;
     @Getter
     protected final ItemOverrides overrides;
-    private final Map<MachineRenderState, BitSet> selectorCache = new Object2ObjectOpenCustomHashMap<>(Util.identityStrategy());
+    private final Map<MachineRenderState, BitSet> selectorCache = new Object2ObjectOpenCustomHashMap<>(
+            Util.identityStrategy());
     private final BakedModel defaultModel;
 
     @SuppressWarnings("deprecation")
@@ -192,6 +194,5 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         public MultiPartBakedModel build() {
             return new MultiPartBakedModel(this.selectors);
         }
-
     }
 }

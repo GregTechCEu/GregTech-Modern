@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu;
 
-import com.google.common.base.Strings;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientProxy;

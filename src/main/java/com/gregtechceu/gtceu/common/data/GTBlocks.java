@@ -484,7 +484,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<GlassBlock> createGlassCasingBlock(String name, ResourceLocation texture,
-                                                            Supplier<Supplier<RenderType>> type) {
+                                                                 Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, GlassBlock::new)
                 .initialProperties(() -> Blocks.GLASS)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))

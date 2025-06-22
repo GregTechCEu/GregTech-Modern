@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.client.model.machine.multipart;
 
-import com.google.common.base.Splitter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import com.google.common.base.Splitter;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +27,8 @@ public class KeyValuePartCondition implements PartCondition {
     public Predicate<MachineRenderState> getPredicate(StateDefinition<MachineDefinition, MachineRenderState> def) {
         Property<?> property = def.getProperty(this.key);
         if (property == null) {
-            throw new RuntimeException(String.format(Locale.ROOT, "Unknown property '%s' on machine '%s'", this.key, def.getOwner()));
+            throw new RuntimeException(
+                    String.format(Locale.ROOT, "Unknown property '%s' on machine '%s'", this.key, def.getOwner()));
         } else {
             String value = this.value;
             boolean invert = !value.isEmpty() && value.charAt(0) == '!';
@@ -35,8 +38,9 @@ public class KeyValuePartCondition implements PartCondition {
 
             List<String> unparsedPredicates = PIPE_SPLITTER.splitToList(value);
             if (unparsedPredicates.isEmpty()) {
-                throw new RuntimeException(String.format(Locale.ROOT, "Empty value '%s' for property '%s' on machine '%s'",
-                        this.value, this.key, def.getOwner()));
+                throw new RuntimeException(
+                        String.format(Locale.ROOT, "Empty value '%s' for property '%s' on machine '%s'",
+                                this.value, this.key, def.getOwner()));
             } else {
                 Predicate<MachineRenderState> predicate;
                 if (unparsedPredicates.size() == 1) {
@@ -57,8 +61,9 @@ public class KeyValuePartCondition implements PartCondition {
                                                             Property<?> property, String value) {
         Optional<?> optional = property.getValue(value);
         if (optional.isEmpty()) {
-            throw new RuntimeException(String.format(Locale.ROOT, "Unknown value '%s' for property '%s' on '%s' in '%s'",
-                    value, this.key, def.getOwner(), this.value));
+            throw new RuntimeException(
+                    String.format(Locale.ROOT, "Unknown value '%s' for property '%s' on '%s' in '%s'",
+                            value, this.key, def.getOwner(), this.value));
         } else {
             return (state) -> state.getValue(property).equals(optional.get());
         }

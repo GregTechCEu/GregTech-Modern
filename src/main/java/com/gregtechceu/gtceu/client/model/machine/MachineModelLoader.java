@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartSelector;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedModel;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 
-import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.resources.model.BakedModel;
@@ -22,12 +19,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
-import net.minecraftforge.common.util.TransformationHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -84,7 +80,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                 variants.put(entry.getKey(), parseVariant(entry.getValue(), context));
             }
         }
-        @Nullable MultiPartUnbakedModel multiPart = null;
+        @Nullable
+        MultiPartUnbakedModel multiPart = null;
         if (json.has("multipart")) {
             JsonArray multipartJson = GsonHelper.getAsJsonArray(json, "multipart");
             multiPart = MultiPartUnbakedModel.deserialize(definition, multipartJson, context);

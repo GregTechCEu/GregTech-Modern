@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.model.builder;
 
-import com.google.common.collect.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -14,6 +13,7 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -359,7 +359,6 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 return 0;
             };
         }
-
     }
 
     public class PartBuilder {
@@ -440,6 +439,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 
         /**
          * Allows having nested groups of conditions if there are not any normal conditions.
+         * 
          * @throws IllegalStateException if {@code !conditions.isEmpty()}
          * @see PartBuilder#replaceWithNestedGroup()
          */
@@ -570,6 +570,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 
             /**
              * Allows having nested groups of conditions if there are not any normal conditions.
+             * 
              * @throws IllegalStateException if {@code !conditions.isEmpty()}
              * @see ConditionGroup#replaceWithNestedGroup()
              */
@@ -602,7 +603,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             }
 
             /**
-             * Makes this part get applied if any of the conditions/condition groups are true, instead of all of them needing to be true.
+             * Makes this part get applied if any of the conditions/condition groups are true, instead of all of them
+             * needing to be true.
              */
             public ConditionGroup useOr() {
                 this.useOr = true;

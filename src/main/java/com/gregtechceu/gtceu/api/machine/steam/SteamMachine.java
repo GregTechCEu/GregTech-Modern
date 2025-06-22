@@ -10,9 +10,9 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import lombok.Getter;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

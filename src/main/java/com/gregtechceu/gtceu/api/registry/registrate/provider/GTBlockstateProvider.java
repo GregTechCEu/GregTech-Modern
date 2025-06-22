@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
-
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateProvider;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
@@ -17,9 +14,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.tterrag.registrate.providers.RegistrateProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -35,7 +35,6 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     public static final ExistingFileHelper.ResourceType TEXTURE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
     // spotless:on
-
 
     private final AbstractRegistrate<?> parent;
 
