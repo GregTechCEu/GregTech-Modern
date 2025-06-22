@@ -6,7 +6,10 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+        }
       },
       "when": {
         "recipe_logic_status": "idle"
@@ -14,7 +17,10 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+        }
       },
       "when": {
         "recipe_logic_status": "working"
@@ -22,7 +28,10 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+        }
       },
       "when": {
         "recipe_logic_status": "waiting"
@@ -30,7 +39,10 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+        }
       },
       "when": {
         "recipe_logic_status": "suspend"

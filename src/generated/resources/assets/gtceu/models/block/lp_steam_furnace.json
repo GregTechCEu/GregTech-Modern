@@ -6,7 +6,11 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "idle"
@@ -14,7 +18,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "working"
@@ -22,7 +30,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "waiting"
@@ -30,7 +42,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_bronze"
+        "parent": "gtceu:block/casings/steam/bricked_bronze",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "suspend"

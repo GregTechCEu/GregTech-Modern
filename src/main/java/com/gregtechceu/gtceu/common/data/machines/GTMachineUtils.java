@@ -276,7 +276,7 @@ public class GTMachineUtils {
                 .recipeType(recipeType)
                 .recipeModifier(SimpleSteamMachine::recipeModifier)
                 .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, Direction.SOUTH)
-                .workableSteamHullModel(pressure, "block/machines/" + name)
+                .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                 .register());
     }
 

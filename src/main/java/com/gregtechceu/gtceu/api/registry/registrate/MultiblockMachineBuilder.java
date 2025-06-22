@@ -287,11 +287,6 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder workableSteamHullModel(boolean isHighPressure, String workableModel) {
-        return (MultiblockMachineBuilder) super.workableSteamHullModel(isHighPressure, workableModel);
-    }
-
-    @Override
     public MultiblockMachineBuilder workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         return (MultiblockMachineBuilder) super.workableSteamHullModel(isHighPressure, workableModel);
     }

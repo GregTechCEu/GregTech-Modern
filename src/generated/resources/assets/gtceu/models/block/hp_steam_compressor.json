@@ -6,7 +6,15 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel"
+        "parent": "gtceu:block/casings/steam/bricked_steel",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/compressor/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/compressor/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/compressor/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/compressor/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/compressor/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/compressor/overlay_top_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "idle"
@@ -14,7 +22,15 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel"
+        "parent": "gtceu:block/casings/steam/bricked_steel",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/compressor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/compressor/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/compressor/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/compressor/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/compressor/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/compressor/overlay_top_active_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "working"
@@ -22,7 +38,15 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel"
+        "parent": "gtceu:block/casings/steam/bricked_steel",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/compressor/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/compressor/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/compressor/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/compressor/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/compressor/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/compressor/overlay_top_active_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "waiting"
@@ -30,7 +54,15 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel"
+        "parent": "gtceu:block/casings/steam/bricked_steel",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/compressor/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/compressor/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/compressor/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/compressor/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/compressor/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/compressor/overlay_top_emissive"
+        }
       },
       "when": {
         "recipe_logic_status": "suspend"

@@ -274,11 +274,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return model(createSimpleGeneratorModel(workableModel));
     }
 
-    public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, String workableModel) {
-        return workableSteamHullModel(isHighPressure,
-                new ResourceLocation(registrate.getModid(), "block/machines/" + name));
-    }
-
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
