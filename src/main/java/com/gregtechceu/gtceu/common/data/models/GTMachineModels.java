@@ -466,8 +466,8 @@ public class GTMachineModels {
 
     // spotless:off
     public static final ResourceLocation HPCA_PART_MODEL = GTCEu.id("block/machine/template/hpca_part_machine");
-    public static final ResourceLocation COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/computer_casing");
-    public static final ResourceLocation ADVANCED_COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/advanced_computer_casing");
+    public static final ResourceLocation COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/computer_casing/");
+    public static final ResourceLocation ADVANCED_COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/advanced_computer_casing/");
 
     public static MachineBuilder.ModelInitializer createHPCAPartModel(boolean advanced,
                                                                       ResourceLocation normalTexture,
