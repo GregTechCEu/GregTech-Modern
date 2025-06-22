@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -116,7 +117,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void setOutputFacing(@NotNull Direction outputFacing) {
         super.setOutputFacing(outputFacing);
-        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, outputFacing));
+        Direction derotated = RelativeDirection.getActualDirection(Direction.NORTH, getFrontFacing(), outputFacing);
+        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, derotated));
     }
 
     @Override
