@@ -40,7 +40,7 @@
         {
             "from": [ -0.004, -0.004, -0.004 ],
             "to":   [ 16.004, 16.004, 16.004 ],
-            "faces": {w
+            "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_tinted",  "cullface": "north", "tintindex": 2 },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 3 },
                 "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "up",    "tintindex": 3 },

@@ -43,8 +43,8 @@
             }
         },
         {
-            "from": [  0, -16.004, 16 ],
-            "to":   [ 16,   0,     32 ],
+            "from": [  0,   0, 16 ],
+            "to":   [ 16, -16, 32 ],
             "faces": {
                 "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "down" }
             }
