@@ -45,16 +45,18 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
-                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState state,
+                           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
                            ItemOverrides overrides, ResourceLocation modelLocation) {
         Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
         resolvedModels.forEach((machineState, unbaked) -> {
-            baseModels.put(machineState, unbaked.bake(baker, spriteGetter, state, modelLocation));
+            baseModels.put(machineState, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
         });
         MultiPartBakedModel multiPart = this.multiPart == null ? null :
-                this.multiPart.bake(baker, spriteGetter, state, modelLocation);
+                this.multiPart.bake(baker, spriteGetter, modelState, modelLocation);
 
-        MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart, dynamicRenders);
+        MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart, dynamicRenders,
+                context.getTransforms(), context.getRootTransform(), modelState,
+                context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion());
         model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
         return model;
     }

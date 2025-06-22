@@ -69,8 +69,8 @@ public class ModelUtils {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
     }
 
-    public static BakedQuad offsetQuad(BakedQuad quad, float by) {
-        return OFFSET_BY.apply(by).process(quad);
+    public static void offsetQuad(BakedQuad quad, float by) {
+        OFFSET_BY.apply(by).processInPlace(quad);
     }
 
     public static ModelManager getModelManager() {

@@ -14,10 +14,13 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
+import com.mojang.math.Transformation;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -32,11 +35,13 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,6 +66,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     private final List<DynamicRender<?, ?>> dynamicRenders;
 
     @Getter
+    private final ItemTransforms transforms;
+    private final Transformation rootTransform;
+    private final ModelState modelState;
+    @Getter
+    private final boolean isGui3d;
+    @Accessors(fluent = true)
+    @Getter
+    private final boolean usesBlockLight, useAmbientOcclusion;
+
+    @Getter
     @Setter
     private TextureAtlasSprite particleIcon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
             .apply(MissingTextureAtlasSprite.getLocation());
@@ -68,11 +83,20 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public MachineModel(MachineDefinition definition,
                         Map<MachineRenderState, BakedModel> modelsByState,
                         @Nullable MultiPartBakedModel multiPart,
-                        List<DynamicRender<?, ?>> dynamicRenders) {
+                        List<DynamicRender<?, ?>> dynamicRenders,
+                        ItemTransforms transforms, Transformation rootTransform, ModelState modelState,
+                        boolean isGui3d, boolean usesBlockLight, boolean useAmbientOcclusion) {
         this.definition = definition;
         this.modelsByState = modelsByState;
         this.multiPart = multiPart;
         this.dynamicRenders = dynamicRenders;
+
+        this.transforms = transforms;
+        this.rootTransform = rootTransform;
+        this.modelState = modelState;
+        this.isGui3d = isGui3d;
+        this.usesBlockLight = usesBlockLight;
+        this.useAmbientOcclusion = useAmbientOcclusion;
 
         for (DynamicRender<?, ?> render : this.dynamicRenders) {
             render.setParent(this);
@@ -83,15 +107,24 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand,
                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        // If there is a root transform, undo the ModelState transform, apply it, then re-apply the ModelState transform.
+        // This is necessary because of things like UV locking, which should only respond to the ModelState, and as such
+        // that is the only transform that should be applied during face bake.
+        var postTransform = QuadTransformers.empty();
+        if (!rootTransform.isIdentity()) {
+            postTransform = UnbakedGeometryHelper.applyRootTransform(modelState, rootTransform);
+        }
+
+        List<BakedQuad> quads = new ArrayList<>();
         if (modelData.has(MODEL_DATA_LEVEL) && modelData.has(MODEL_DATA_POS)) {
-            return getMachineQuads(state, side, rand, modelData, renderType);
+            quads.addAll(getMachineQuads(state, side, rand, modelData, renderType));
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
-            List<BakedQuad> quads = new ArrayList<>();
             renderMachine(quads, definition, null, state, Direction.NORTH,
                     side, rand, side, modelData, renderType);
-            return quads;
         }
+        postTransform.processInPlace(quads);
+        return quads;
     }
 
     public List<BakedQuad> getMachineQuads(@Nullable BlockState blockState, @Nullable Direction side,
@@ -147,7 +180,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 pos, level, blockModelState, modelData, renderType);
         var iterator = quads.listIterator(start);
         while (iterator.hasNext()) {
-            iterator.set(ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET));
+            ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET);
         }
         return quads;
     }
