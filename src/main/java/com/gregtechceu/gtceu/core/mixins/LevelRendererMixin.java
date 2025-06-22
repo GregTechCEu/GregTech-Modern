@@ -200,16 +200,14 @@ public abstract class LevelRendererMixin {
                     red, green, blue, 1f);
             return;
         }
-        for (int dY = -1; dY <= 1; dY++) {
-            for (int dX = -1; dX <= 1; dX++) {
-                for (int dZ = -1; dZ <= 1; dZ++) {
-                    if (level.getBlockState(pos.offset(dX, dY, dZ)).getBlock() instanceof MaterialBlock) {
-                        renderShape(poseStack, consumer, blockShape,
-                                pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
-                                0, 0, 0, 1f);
-                        return;
-                    }
-                }
+        BlockPos.MutableBlockPos mutable = pos.mutable();
+        for (BlockPos o : GTUtil.NON_CORNER_NEIGHBOURS) {
+            BlockPos offset = mutable.setWithOffset(pos, o);
+            if (!gtceu$getTranslucentBlockMaterial(level.getBlockState(offset), offset).isEmpty()) {
+                renderShape(poseStack, consumer, blockShape,
+                        pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
+                        0, 0, 0, 1f);
+                return;
             }
         }
         original.call(instance, poseStack, consumer, entity, camX, camY, camZ, pos, state);

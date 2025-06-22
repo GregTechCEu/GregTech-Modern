@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,6 +59,16 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.properties.Proper
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
+        var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
+        BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
+                .filter((pos) -> (pos.getX() == 0 || pos.getY() == 0 || pos.getZ() == 0) && !pos.equals(BlockPos.ZERO))
+                .map(BlockPos::immutable)
+                .forEach(builder::add);
+        return builder.build();
+    });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
 
