@@ -42,7 +42,6 @@ import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
@@ -113,27 +112,6 @@ public class GTMachineModels {
 
                 BlockModelBuilder model = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
                 return addWorkableOverlays(overlays, status, model);
-            });
-        };
-    }
-
-    // spotless:off
-    public static MachineBuilder.ModelInitializer createOverlayWorkableTieredHullMachineModel(ResourceLocation idleOverlayModel,
-                                                                                              ResourceLocation workingModel,
-                                                                                              @Nullable ResourceLocation waitingModel,
-                                                                                              @Nullable ResourceLocation pausedModel) {
-        return (ctx, prov, builder) -> {
-            var baseModel = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
-
-            builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
-                ResourceLocation overlayModel = switch (status) {
-                    case IDLE -> idleOverlayModel;
-                    case WORKING -> workingModel;
-                    case WAITING -> waitingModel != null ? waitingModel : workingModel;
-                    case SUSPEND -> pausedModel != null ? pausedModel : workingModel;
-                };
-                return makeOverlayCompositeModel(prov.models(), baseModel, overlayModel);
             });
         };
     }
