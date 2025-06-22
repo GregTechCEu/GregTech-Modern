@@ -779,7 +779,6 @@ public class GTMultiMachines {
                             .build())
                     .allowExtendedFacing(true)
                     .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
-                    .modelProperty(LargeMinerMachine.IS_FORMED_PROPERTY, false)
                     .model(createWorkableCasingMachineModel(
                             MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
                             GTCEu.id("block/multiblock/large_miner"))

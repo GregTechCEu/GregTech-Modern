@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -246,7 +245,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(ResourceLocation overlayModel) {
-        modelProperty(SteamMachine.STEEL_STEAM_MULTIBLOCKS, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
+        modelProperty(SteamMachine.STEEL_PROPERTY, ConfigHolder.INSTANCE.machines.steelSteamMultiblocks);
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
@@ -268,10 +267,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
-    }
-
-    public MachineBuilder<DEFINITION> overlayCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
-        return model(createOverlayCasingMachineModel(baseCasing, workableModel));
     }
 
     public MachineBuilder<DEFINITION> workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
@@ -316,8 +311,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> abilities(PartAbility... abilities) {
         this.abilities = abilities;
-        // add the multi part-specific properties by default
-        modelProperty(IMultiController.IS_FORMED_PROPERTY, false);
         return this;
     }
 

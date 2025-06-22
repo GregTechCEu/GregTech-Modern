@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
@@ -1072,6 +1073,7 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
+                    .modelProperty(IMultiController.IS_FORMED_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
                     .modelProperty(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY, false)

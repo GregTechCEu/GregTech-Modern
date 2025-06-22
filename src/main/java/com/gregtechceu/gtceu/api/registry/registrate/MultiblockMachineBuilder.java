@@ -245,6 +245,12 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder sidedOverlayCasingModel(ResourceLocation baseCasing,
+                                                            ResourceLocation workableModel) {
+        return (MultiblockMachineBuilder) super.sidedOverlayCasingModel(baseCasing, workableModel);
+    }
+
+    @Override
     public MultiblockMachineBuilder sidedWorkableCasingModel(ResourceLocation baseCasing,
                                                              ResourceLocation workableModel) {
         return (MultiblockMachineBuilder) super.sidedWorkableCasingModel(baseCasing, workableModel);
