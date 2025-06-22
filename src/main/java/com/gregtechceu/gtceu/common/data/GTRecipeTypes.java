@@ -690,6 +690,6 @@ public class GTRecipeTypes {
     }
 
     public static GTRecipeType get(String name) {
-        return GTRegistries.RECIPE_TYPES.get(GTCEu.appendId(name));
+        return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
     }
 }

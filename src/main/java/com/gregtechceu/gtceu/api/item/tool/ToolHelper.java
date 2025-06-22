@@ -562,19 +562,18 @@ public class ToolHelper {
      * Damages the item, plays the tool sound (if available), and swings the player's arm.
      *
      * @param player the player clicking the item
-     * @param world  the world in which the click happened
-     * @param hand   the hand holding the item
+     * @param stack  the item that was used
+     * @param level  the level in which the click happened
+     * @param pos    the position that was clicked
      */
-    public static void onActionDone(@NotNull Player player, @NotNull Level world, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+    public static void onActionDone(@Nullable Player player, @NotNull ItemStack stack,
+                                    @NotNull Level level, @NotNull Vec3 pos) {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            world.playSound(null, player.getX(), player.getY(), player.getZ(), tool.getSound().getMainEvent(),
-                    SoundSource.PLAYERS, 1.0F,
-                    1.0F);
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+                    SoundSource.PLAYERS, 1.0F, 1.0F);
         }
-        player.swing(hand);
     }
 
     @NotNull

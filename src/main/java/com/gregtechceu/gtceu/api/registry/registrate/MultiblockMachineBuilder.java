@@ -48,6 +48,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +74,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     @Setter
-    private Comparator<IMultiPart> partSorter = (a, b) -> 0;
+    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
@@ -309,6 +310,12 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.conditionalTooltip(component, condition);
     }
 
+    @Tolerate
+    public MultiblockMachineBuilder partSorter(Comparator<IMultiPart> sorter) {
+        this.partSorter = $ -> sorter;
+        return this;
+    }
+
     @Override
     public MultiblockMachineBuilder abilities(PartAbility... abilities) {
         return (MultiblockMachineBuilder) super.abilities(abilities);
@@ -440,7 +447,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
             definition.setRecoveryItems(
                     () -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));
         }
-        definition.setPartSorter(partSorter);
+        definition.setPartSorter(GTMemoizer.memoizeFunctionWeakIdent(partSorter));
         if (partAppearance == null) {
             partAppearance = (controller, part, side) -> definition.getAppearance().get();
         }

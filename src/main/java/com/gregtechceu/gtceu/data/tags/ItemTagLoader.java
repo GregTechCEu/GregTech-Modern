@@ -181,5 +181,8 @@ public class ItemTagLoader {
                 .addOptional(GTItems.SENSOR_UIV.getId())
                 .addOptional(GTItems.SENSOR_UXV.getId())
                 .addOptional(GTItems.SENSOR_OpV.getId());
+
+        provider.addTag(CustomTags.TOOLS_IGNITER)
+                .addTag(ItemTags.CREEPER_IGNITERS);
     }
 }

@@ -478,7 +478,7 @@ public class GTUtil {
                 }
             }
 
-            if (stack.getItem().canBeDepleted()) {
+            if (stack.isDamageableItem()) {
                 stack.setDamageValue(stack.getDamageValue());
             }
             return stack;

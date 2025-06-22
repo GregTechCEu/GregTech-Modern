@@ -118,7 +118,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
         this.energyContainer.resetBasicInfo(tierVoltage * MAX_AMPS * 2, tierVoltage, amps, tierVoltage, amps);
         this.energyContainer.setSideInputCondition(s -> s != getFrontFacing());
-        this.energyContainer.setSideOutputCondition(s -> s == getFrontFacing());
+        this.energyContainer.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
     }
 
     @Override

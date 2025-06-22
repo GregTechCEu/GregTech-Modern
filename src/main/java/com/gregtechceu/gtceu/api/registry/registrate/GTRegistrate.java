@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
+import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -27,14 +29,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.util.OneTimeEventReceiver;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -84,7 +91,22 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     @Override
     public GTRegistrate registerEventListeners(IEventBus bus) {
         if (!registered.getAndSet(true)) {
-            return super.registerEventListeners(bus);
+            // recreate the super method so we can register the event listener with LOW priority.
+            Consumer<RegisterEvent> onRegister = this::onRegister;
+            Consumer<RegisterEvent> onRegisterLate = this::onRegisterLate;
+            bus.addListener(EventPriority.LOW, onRegister);
+            bus.addListener(EventPriority.LOWEST, onRegisterLate);
+
+            // Fired multiple times when ever tabs need contents rebuilt (changing op tab perms for example)
+            bus.addListener(this::onBuildCreativeModeTabContents);
+            // Register events fire multiple times, so clean them up on common setup
+            OneTimeEventReceiver.addModListener(this, FMLCommonSetupEvent.class, $ -> {
+                OneTimeEventReceiver.unregister(this, onRegister, RegisterEvent.class);
+                OneTimeEventReceiver.unregister(this, onRegisterLate, RegisterEvent.class);
+            });
+            if (((AbstractRegistrateAccessor) this).getDoDatagen().get()) {
+                OneTimeEventReceiver.addModListener(this, GatherDataEvent.class, this::onData);
+            }
         }
         return this;
     }

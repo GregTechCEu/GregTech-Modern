@@ -110,6 +110,11 @@ public class BlockPattern {
         return false;
     }
 
+    @Deprecated(forRemoval = true, since = "7.0")
+    public int[] getDimensions() {
+        return new int[] { fingerLength, thumbLength, palmLength };
+    }
+
     public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
         boolean findFirstAisle = false;
@@ -547,7 +552,7 @@ public class BlockPattern {
         if (facing == Direction.UP || facing == Direction.DOWN) {
             Direction of = facing == Direction.DOWN ? upwardsFacing : upwardsFacing.getOpposite();
             for (int i = 0; i < 3; i++) {
-                switch (structureDir[i].getActualFacing(of)) {
+                switch (structureDir[i].getActualDirection(of)) {
                     case UP -> c1[1] = c0[i];
                     case DOWN -> c1[1] = -c0[i];
                     case WEST -> c1[0] = -c0[i];
@@ -577,7 +582,7 @@ public class BlockPattern {
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                switch (structureDir[i].getActualFacing(facing)) {
+                switch (structureDir[i].getActualDirection(facing)) {
                     case UP -> c1[1] = c0[i];
                     case DOWN -> c1[1] = -c0[i];
                     case WEST -> c1[0] = -c0[i];

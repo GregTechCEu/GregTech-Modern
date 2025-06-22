@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu;
 
+import com.google.common.base.Strings;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.ClientProxy;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
+    private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -42,23 +44,32 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
+        if (Strings.isBlank(path)) {
+            return TEMPLATE_LOCATION;
+        }
+
+        int i = path.indexOf(':');
+        if (i > 0) {
+            return new ResourceLocation(path);
+        } else if (i == 0) {
+            path = path.substring(i + 1);
+        }
+        // only convert it to camel_case if it has any uppercase to begin with
+        if (FormattingUtil.hasUpperCase(path)) {
+            path = FormattingUtil.toLowerCaseUnderscore(path);
+        }
+        return TEMPLATE_LOCATION.withPath(path);
     }
 
     public static String appendIdString(String id) {
-        return id.indexOf(':') == -1 ? (MOD_ID + ":" + id) : id;
-    }
-
-    public static ResourceLocation appendId(String id) {
-        String[] strings = new String[] { "gtceu", id };
         int i = id.indexOf(':');
-        if (i >= 0) {
-            strings[1] = id.substring(i + 1);
-            if (i >= 1) {
-                strings[0] = id.substring(0, i);
-            }
+        if (i > 0) {
+            return id;
+        } else if (i == 0) {
+            return MOD_ID + id;
+        } else {
+            return MOD_ID + ":" + id;
         }
-        return new ResourceLocation(strings[0], strings[1]);
     }
 
     /**

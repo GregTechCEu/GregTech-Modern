@@ -80,5 +80,13 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         WrenchModeType(Component name) {
             this.name = name;
         }
+
+        public boolean isItem() {
+            return this == ITEM || this == BOTH;
+        }
+
+        public boolean isFluid() {
+            return this == FLUID || this == BOTH;
+        }
     }
 }

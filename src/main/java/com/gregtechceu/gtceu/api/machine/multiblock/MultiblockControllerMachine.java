@@ -185,7 +185,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
                 this.parts.add(part);
             }
         }
-        this.parts.sort(getDefinition().getPartSorter());
+        this.parts.sort(getPartSorter());
         for (var part : parts) {
             if (part instanceof IParallelHatch pHatch) {
                 parallelHatch = pHatch;
@@ -270,8 +270,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
                     getUpwardsFacing().getClockWise());
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
@@ -280,8 +279,7 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             if (!isRemote()) {
                 setFrontFacing(gridSide);
             }
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }

@@ -92,10 +92,9 @@ public class HoeGroundBehavior implements IToolBehavior {
         }
 
         if (tilled) {
-            world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.HOE_TILL,
+            world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.HOE_TILL,
                     SoundSource.PLAYERS, 1.0F, 1.0F);
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
 
         return InteractionResult.PASS;

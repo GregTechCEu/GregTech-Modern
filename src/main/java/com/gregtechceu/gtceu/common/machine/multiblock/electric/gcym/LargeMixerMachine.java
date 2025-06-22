@@ -56,7 +56,7 @@ public class LargeMixerMachine extends WorkableElectricMultiblockMachine impleme
 
     @Override
     public void saveOffsets() {
-        Direction up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
+        Direction up = RelativeDirection.UP.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
         Direction back = getFrontFacing().getOpposite();
         Direction clockWise;
         Direction counterClockWise;

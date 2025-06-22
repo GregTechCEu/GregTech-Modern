@@ -2303,8 +2303,6 @@
   "gtceu.universal.tooltip.base_production_fluid": "§eБазове виробництво:§f %d мВ/т",
   "gtceu.universal.tooltip.produces_fluid": "§eВиробляє:§f %d мВ/т",
   "gtceu.universal.tooltip.chunk_mode": "Режим чанків: ",
-  "gtceu.universal.disabled": "Спільний доступ конструкції§4 вимкнено",
-  "gtceu.universal.enabled": "Спільний доступ конструкції§a увімкнено",
   "gtceu.universal.tooltip.silk_touch": "Шовковий дотик: ",
   "gtceu.universal.tooltip.terrain_resist": "Ця машина не вибухне під час контакту з хім. елементами",
   "gtceu.universal.tooltip.uses_per_op": "Використовує§f %d EU на операцію",
@@ -2318,7 +2316,7 @@
   "command.gtceu.place_vein.failure": "Не вдалося розмістити жилу %s на позиції %s",
   "command.gtceu.place_vein.success": "Розміщено жилу %s на позиції %s",
 
-  "gtceu.gui.авто_output.name": "авто",
+  "gtceu.gui.auto_output.name": "авто",
   "gtceu.gui.charger_slot.tooltip.0": "§fГніздо для зарядного пристрою§r",
   "gtceu.gui.charger_slot.tooltip.1": "§7Живиться від %s акумуляторів§r",
   "gtceu.gui.charger_slot.tooltip.2": "§7Заряджає %s інструментів та акумуляторів",
@@ -2414,7 +2412,8 @@
   "gtceu.gui.toggle_view.disabled": "Перемкнути вид (Рідини)",
   "gtceu.gui.toggle_view.enabled": "Перемкнути вид (Предмети)",
   "gtceu.gui.waiting_list": "Черга на відправлення:",
-
+  "gtceu.part_sharing.disabled": "Спільний доступ конструкції§4 вимкнено",
+  "gtceu.part_sharing.enabled": "Спільний доступ конструкції§a увімкнено",
   "item.gtceu.ash_dust": "Попіл",
   "item.gtceu.basaltic_mineral_sand_dust": "Базальтовий мінеральний пісок",
   "item.gtceu.bone_dust": "Кісткове борошно",

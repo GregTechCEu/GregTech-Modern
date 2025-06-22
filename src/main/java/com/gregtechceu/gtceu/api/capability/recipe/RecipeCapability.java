@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
@@ -99,8 +100,12 @@ public abstract class RecipeCapability<T> {
         return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
-    public Component getName() {
+    public MutableComponent getName() {
         return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
+
+    public MutableComponent getColoredName() {
+        return getName().withStyle(style -> style.withColor(this.color));
     }
 
     public boolean isRecipeSearchFilter() {

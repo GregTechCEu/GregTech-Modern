@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -67,11 +65,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
-        if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
-            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability,
-                    LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
-        }
-        return LazyOptional.empty();
+        return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability,
+                LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
@@ -203,7 +198,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         Duration durationMax = Duration.between(start, max);
         long currentChargeTime;
         long maxChargeTime;
-        String unit;
+        Component unit;
 
         ChatFormatting color = ChatFormatting.RED;
         if (percentage > 0.5) {
@@ -216,15 +211,15 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (durationCurrent.getSeconds() <= 60) {
                 maxChargeTime = durationMax.getSeconds();
                 currentChargeTime = durationCurrent.toSeconds();
-                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.second");
+                unit = Component.translatable("item.gtceu.battery.charge_unit.second");
             } else if (durationCurrent.toMinutes() <= 60) {
                 maxChargeTime = durationMax.toMinutes();
                 currentChargeTime = durationCurrent.toMinutes();
-                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.minute");
+                unit = Component.translatable("item.gtceu.battery.charge_unit.minute");
             } else {
                 maxChargeTime = durationMax.toHours();
                 currentChargeTime = durationCurrent.toHours();
-                unit = LocalizationUtils.format("item.gtceu.battery.charge_unit.hour");
+                unit = Component.translatable("item.gtceu.battery.charge_unit.hour");
             }
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),

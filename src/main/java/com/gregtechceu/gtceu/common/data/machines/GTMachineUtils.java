@@ -370,7 +370,7 @@ public class GTMachineUtils {
                                         FormattingUtil
                                                 .formatNumbers(
                                                         EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
-                                Component.translatable("gtceu.universal.disabled"))
+                                Component.translatable("gtceu.part_sharing.disabled"))
                         .abilities(ability)
                         .overlayTieredHullModel("laser_" + name + "_hatch")
                         .register(),
@@ -455,7 +455,8 @@ public class GTMachineUtils {
         MachineBuilder<MachineDefinition> builder = REGISTRATE
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
-                .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"))
+                .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
+                        Component.translatable("gtceu.part_sharing.disabled"))
                 .rotationState(RotationState.ALL);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
         return builder.register();

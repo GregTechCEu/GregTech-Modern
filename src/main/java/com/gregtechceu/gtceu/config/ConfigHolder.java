@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.config;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 
+import net.minecraft.commands.Commands;
+
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -515,8 +517,8 @@ public class ConfigHolder {
         public boolean onlyOwnerBreak = false;
         @Configurable
         @Configurable.Comment({ "Minimum op level to bypass the ownership checks", "Default: 2" })
-        @Configurable.Range(min = 0, max = 4)
-        public int ownerOPBypass = 2;
+        @Configurable.Range(min = Commands.LEVEL_ALL, max = Commands.LEVEL_OWNERS)
+        public int ownerOPBypass = Commands.LEVEL_GAMEMASTERS;
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
