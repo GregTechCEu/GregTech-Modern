@@ -173,11 +173,9 @@ public class RenderUtil {
     }
 
     /**
-     * rotate the given {@link PoseStack pose stack} to face towards {@code face} rotated by {@code spin}
-     * 
-     * @param poseStack the {@link PoseStack pose stack} to modify
-     * @param face      the direction that {@code poseStack} will face (e.g. the front of a machine)
-     * @param spin      direction to "angle" the plane by (e.g. the upwards facing of a machine)
+     * Rotate the current coordinate system, so it is on the face of the given block side.
+     * This can be used to render on the given face as if it was a 2D canvas,
+     * where x+ is facing right and y+ is facing up.
      */
     public static void rotateToFace(PoseStack poseStack, Direction face, @Nullable Direction spin) {
         float rotationAngle = Mth.HALF_PI * switch (face) {
@@ -187,10 +185,10 @@ public class RenderUtil {
             case NORTH -> 0;
         };
         if (face.getAxis() == Direction.Axis.Y) {
-            poseStack.translate(1.0f, -1.0f, 1.0f);
+            poseStack.scale(1.0f, -1.0f, 1.0f);
             poseStack.mulPose(new Quaternionf().rotateAxis(rotationAngle, new Vector3f(1, 0, 0)));
         } else {
-            poseStack.translate(-1.0f, -1.0f, -1.0f);
+            poseStack.scale(-1.0f, -1.0f, -1.0f);
             poseStack.mulPose(new Quaternionf().rotateAxis(rotationAngle, new Vector3f(0, 1, 0)));
         }
 
@@ -208,7 +206,7 @@ public class RenderUtil {
         if (face == Direction.DOWN) behind = Direction.NORTH;
 
         if (spin == behind) {
-            return Mth.HALF_PI * 2;
+            return Mth.PI;
         }
         return 0;
     }
