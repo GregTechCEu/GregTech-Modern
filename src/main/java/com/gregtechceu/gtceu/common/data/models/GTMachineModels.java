@@ -135,30 +135,25 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createWorkableSteamHullMachineModel(boolean highPressure, ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
+            ModelFile parent = steamHullModel(prov.models(), highPressure);
 
-            builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.IDLE);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.WORKING);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.WAITING);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.SUSPEND);
 
-                BlockModelBuilder model = prov.models().nested().parent(steamHullModel(prov.models(), highPressure));
-                addWorkableOverlays(overlays, status, model);
-
-                if (!state.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-                    return model;
-                }
-                Direction steamVent = state.getValue(IExhaustVentMachine.VENT_DIRECTION_PROPERTY);
-                model = prov.models().nested()
-                        .customLoader(CompositeModelBuilder::begin)
-                        .child("base", model)
-                        .child("steam_vent", prov.models().nested()
-                                .texture("steam_vent", VENT_OVERLAY)
-                                .element()
-                                .from(0, 0, 0).to(16, 16, 16)
-                                .face(steamVent).texture("#steam_vent").cullface(steamVent).end()
-                                .end())
+            if (!builder.getOwner().defaultRenderState().hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+                return;
+            }
+            for (Direction face : GTUtil.DIRECTIONS) {
+                var rotatedModel = prov.models().nested()
+                        .texture("steam_vent", VENT_OVERLAY)
+                        .element()
+                        .from(0, 0, 0).to(16, 16, 16)
+                        .face(face).texture("#steam_vent").cullface(face).end()
                         .end();
-
-                return model;
-            });
+                builder.part(rotatedModel).condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, face);
+            }
         };
     }
     // spotless:on
