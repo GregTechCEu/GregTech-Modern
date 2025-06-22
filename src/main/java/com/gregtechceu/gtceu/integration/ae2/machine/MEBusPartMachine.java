@@ -86,4 +86,11 @@ public abstract class MEBusPartMachine extends ItemBusPartMachine implements IGr
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
+
+    // By returning false here, we don't allow shift-clicking
+    // with a screwdriver to swap the IO.
+    @Override
+    public boolean swapIO() {
+        return false;
+    }
 }

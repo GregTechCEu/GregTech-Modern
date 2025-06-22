@@ -110,6 +110,11 @@ public class BlockPattern {
         return false;
     }
 
+    @Deprecated(forRemoval = true, since = "7.0")
+    public int[] getDimensions() {
+        return new int[] { fingerLength, thumbLength, palmLength };
+    }
+
     public boolean checkPatternAt(MultiblockState worldState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing, boolean isFlipped, boolean savePredicate) {
         boolean findFirstAisle = false;

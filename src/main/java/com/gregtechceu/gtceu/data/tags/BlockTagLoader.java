@@ -1,18 +1,14 @@
 package com.gregtechceu.gtceu.data.tags;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
@@ -58,24 +54,12 @@ public class BlockTagLoader {
                 .addOptional(new ResourceLocation("rftoolsutility:matter_receiver"))
                 .addOptional(new ResourceLocation("rftoolsutility:dialing_device"))
                 .addOptional(new ResourceLocation("travelanchors:travel_anchor"));
-    }
 
-    private static void create(RegistrateTagsProvider<Block> provider, TagPrefix prefix, Material material,
-                               Block... rls) {
-        create(provider, ChemicalHelper.getBlockTag(prefix, material), rls);
-    }
-
-    public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
-        var builder = provider.addTag(tagKey);
-        for (Block block : rls) {
-            builder.add(BuiltInRegistries.BLOCK.getResourceKey(block).get());
-        }
-    }
-
-    public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, ResourceLocation... rls) {
-        var builder = provider.addTag(tagKey);
-        for (ResourceLocation rl : rls) {
-            builder.addOptional(rl);
-        }
+        provider.addTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
+                .addTag(BlockTags.DIRT) // any dirt blocks
+                .remove(Blocks.MOSS_BLOCK, Blocks.MUD, Blocks.MUDDY_MANGROVE_ROOTS) // except moss and mud
+                .add(Blocks.DIRT_PATH) // path blocks
+                .addTag(Tags.Blocks.SAND).addTag(BlockTags.SAND) // any sand blocks
+                .addTag(BlockTags.TERRACOTTA); // any terracotta
     }
 }

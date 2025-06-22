@@ -118,8 +118,7 @@ public class FluidVoidingCover extends PumpCover {
             playerIn.sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.voiding.message.enabled" : "cover.voiding.message.disabled"));
         }
-        playerIn.swing(hand);
-        return InteractionResult.CONSUME;
+        return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
     }
 
     // TODO: Decide grid behavior

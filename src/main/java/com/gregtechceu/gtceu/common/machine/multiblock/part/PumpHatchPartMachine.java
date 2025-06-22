@@ -50,4 +50,11 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                         .setTooltipText("gtceu.gui.fluid_auto_input.tooltip"))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 84, true));
     }
+
+    // By returning false here, we don't allow shift-clicking
+    // with a screwdriver to swap the IO.
+    @Override
+    public boolean swapIO() {
+        return false;
+    }
 }
