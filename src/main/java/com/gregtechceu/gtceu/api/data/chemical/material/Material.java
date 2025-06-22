@@ -476,6 +476,10 @@ public class Material implements Comparable<Material> {
         return prop == null ? 0 : prop.getBlastTemperature();
     }
 
+    public boolean hasHotIngot() {
+        return this.getBlastTemperature() > 1750 || this.hasFlag(MaterialFlags.FORCE_GENERATE_HOT_INGOT);
+    }
+
     public String toCamelCaseString() {
         return FormattingUtil.lowerUnderscoreToUpperCamel(getName());
     }
