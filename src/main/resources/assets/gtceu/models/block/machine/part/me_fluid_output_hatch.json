@@ -2,7 +2,6 @@
     "credit": "Made with Blockbench",
     "parent": "block/block",
     "textures": {
-        "particle": "#overlay_fluid_hatch",
         "overlay_fluid_hatch": "gtceu:block/overlay/appeng/me_output_hatch"
     },
     "elements": [
