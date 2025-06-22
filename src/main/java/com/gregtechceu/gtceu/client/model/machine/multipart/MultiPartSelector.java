@@ -41,12 +41,16 @@ public class MultiPartSelector {
 
       public MultiPartSelector deserialize(JsonElement json,
                                            Type type, JsonDeserializationContext context) throws JsonParseException {
-         JsonObject jsonobject = json.getAsJsonObject();
-         return new MultiPartSelector(this.getSelector(jsonobject),
-                 MachineModelLoader.parseVariant(jsonobject.get("apply")));
+          return fromJson(json, context);
       }
 
-      private PartCondition getSelector(JsonObject json) {
+      public static MultiPartSelector fromJson(JsonElement json, JsonDeserializationContext context) throws JsonParseException {
+         JsonObject jsonobject = json.getAsJsonObject();
+         return new MultiPartSelector(getSelector(jsonobject),
+                 MachineModelLoader.parseVariant(jsonobject.get("apply"), context));
+      }
+
+      private static PartCondition getSelector(JsonObject json) {
          return json.has("when") ?
                  getCondition(GsonHelper.getAsJsonObject(json, "when")) :
                  PartCondition.TRUE;

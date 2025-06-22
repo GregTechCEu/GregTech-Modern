@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.model.machine.multipart;
 
 import com.google.gson.*;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -57,14 +56,14 @@ public record MultiPartUnbakedModel(StateDefinition<MachineDefinition, MachineRe
 
     public static MultiPartUnbakedModel deserialize(MachineDefinition definition,
                                                     JsonArray elements, JsonDeserializationContext context) {
-        return new MultiPartUnbakedModel(definition.getStateDefinition(), getSelectors(context, elements));
+        return new MultiPartUnbakedModel(definition.getStateDefinition(), getSelectors(elements, context));
     }
 
-    private static List<MultiPartSelector> getSelectors(JsonDeserializationContext context, JsonArray elements) {
+    private static List<MultiPartSelector> getSelectors(JsonArray elements, JsonDeserializationContext context) {
         List<MultiPartSelector> list = new ArrayList<>();
 
         for(JsonElement e : elements) {
-            list.add(MachineModelLoader.GSON.fromJson(e, MultiPartSelector.class));
+            list.add(MultiPartSelector.Deserializer.fromJson(e, context));
         }
 
         return list;

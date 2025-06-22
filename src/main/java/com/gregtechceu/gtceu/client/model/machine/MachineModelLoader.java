@@ -46,22 +46,10 @@ import java.util.function.Predicate;
 public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> {
 
     public static final MachineModelLoader INSTANCE = new MachineModelLoader();
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BlockModel.class, new ExtendedBlockModelDeserializer())
-            .registerTypeAdapter(MultiPartSelector.class, new MultiPartSelector.Deserializer())
-            // need these here so the submodel parsing works
-            .registerTypeAdapter(BlockElement.class, new BlockElement.Deserializer())
-            .registerTypeAdapter(BlockElementFace.class, new BlockElementFace.Deserializer())
-            .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
-            .registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer())
-            .registerTypeAdapter(ItemTransforms.class, new ItemTransforms.Deserializer())
-            .registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
-            .registerTypeAdapter(Transformation.class, new TransformationHelper.Deserializer())
-            .create();
+    private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
+
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
-
-    private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
 
     private static final Map<ResourceLocation, List<DynamicRender<?, ?>>> DYNAMIC_RENDERERS = new HashMap<>();
 
@@ -93,7 +81,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         if (json.has("variants")) {
             JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "variants");
             for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
-                variants.put(entry.getKey(), parseVariant(entry.getValue()));
+                variants.put(entry.getKey(), parseVariant(entry.getValue(), context));
             }
         }
         @Nullable MultiPartUnbakedModel multiPart = null;
@@ -225,12 +213,13 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         return new ModelResourceLocation(location, BlockModelShaper.statePropertiesToString(state.getValues()));
     }
 
-    public static Either<ResourceLocation, UnbakedModel> parseVariant(JsonElement value) {
+    public static Either<ResourceLocation, UnbakedModel> parseVariant(JsonElement value,
+                                                                      JsonDeserializationContext context) throws JsonParseException {
         if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
             String modelName = value.getAsString();
             return Either.left(new ResourceLocation(modelName));
         } else {
-            return Either.right(GSON.fromJson(value, BlockModel.class));
+            return Either.right(context.deserialize(value, BlockModel.class));
         }
     }
 }
