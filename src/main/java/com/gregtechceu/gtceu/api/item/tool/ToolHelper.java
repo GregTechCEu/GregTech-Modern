@@ -267,15 +267,14 @@ public class ToolHelper {
     /**
      * AoE Block Breaking Routine.
      */
-    public static boolean areaOfEffectBlockBreakRoutine(ItemStack stack, ServerPlayer player) {
+    public static boolean areaOfEffectBlockBreakRoutine(ItemStack stack, ServerPlayer player, BlockPos targeted) {
         int currentDurability = stack.getDamageValue();
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
-            int blocksBroken = 0;
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos, blocksBroken++ == 0)) {
+                if (!breakBlockRoutine(player, stack, pos, pos == targeted)) {
                     return true;
                 }
 
@@ -503,8 +502,7 @@ public class ToolHelper {
 
         boolean successful = world.removeBlock(pos, false);
 
-        if (playSound)
-            world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+        if (playSound) world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 
         if (successful) {
             state.getBlock().destroy(world, pos, state);
