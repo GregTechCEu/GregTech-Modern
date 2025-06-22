@@ -32,6 +32,9 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -220,8 +223,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> simpleModel(ResourceLocation modelName) {
-        model(createBasicMachineModel(modelName));
-        return this;
+        return blockModel((ctx, prov) -> {
+            Block block = ctx.getEntry();
+            if (!(block instanceof IMachineBlock machineBlock)) {
+                throw new IllegalArgumentException(
+                        "passed block must be a machine block, is " + block.getClass().getName());
+            }
+
+            var generator = prov.multiVariantGenerator(block,
+                    Variant.variant().with(VariantProperties.MODEL, modelName));
+            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(machineBlock.getDefinition());
+            if (dispatch != null) {
+                generator.with(dispatch);
+            }
+        });
     }
 
     public MachineBuilder<DEFINITION> defaultModel() {
