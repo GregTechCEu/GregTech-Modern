@@ -171,11 +171,11 @@ public abstract class LevelRendererMixin {
             rgb = matBlock.material.getMaterialRGB();
         } else if (state.getBlock() instanceof MetaMachineBlock &&
                 level.getBlockEntity(pos) instanceof MetaMachineBlockEntity mmbe) {
-            if (rendererCfg.colouredTieredMachineOutline && mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
+            if (rendererCfg.coloredTieredMachineOutline && mmbe.getMetaMachine() instanceof ITieredMachine tiered) {
                 doRenderColoredOutline = true;
                 rgb = GTValues.VCM[tiered.getTier()];
             }
-        } else if (rendererCfg.colouredWireOutline && level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
+        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
             doRenderColoredOutline = true;
             rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
         }

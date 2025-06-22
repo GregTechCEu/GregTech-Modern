@@ -793,13 +793,13 @@ public class ConfigHolder {
         public boolean renderFluids = true;
 
         @Configurable
-        @Configurable.Comment({ "Whether or not to colour tiered machine highlights in the tier colour?",
+        @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
                 "Default: true" })
-        public boolean colouredTieredMachineOutline = true;
+        public boolean coloredTieredMachineOutline = true;
 
         @Configurable
-        @Configurable.Comment({ "Whether or not to colour wire/cable highlights based on voltage tier?",
+        @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier",
                 "Default: true" })
-        public boolean colouredWireOutline = true;
+        public boolean coloredWireOutline = true;
     }
 }
