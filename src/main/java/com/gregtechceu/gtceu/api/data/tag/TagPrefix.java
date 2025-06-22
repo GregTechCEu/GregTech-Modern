@@ -717,8 +717,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.PICKAXE)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.PICKAXE)));
 
     // made of 3 Ingots.
     public static final TagPrefix toolHeadAxe = new TagPrefix("axeHead")
@@ -730,8 +731,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.AXE)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.AXE)));
 
     // made of 1 Ingot.
     public static final TagPrefix toolHeadShovel = new TagPrefix("shovelHead")
@@ -743,8 +745,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SHOVEL)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.SHOVEL)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolHeadHoe = new TagPrefix("hoeHead")
@@ -756,8 +759,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.HOE)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.HOE)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolBladeSword = new TagPrefix("swordBlade")
@@ -769,8 +773,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SWORD)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.SWORD)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolHeadHammer = new TagPrefix("hammerHead")
@@ -782,8 +787,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.HARD_HAMMER)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.HARD_HAMMER)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolHeadFile = new TagPrefix("fileHead")
@@ -795,8 +801,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.FILE)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.FILE)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolBladeSaw = new TagPrefix("sawBlade")
@@ -808,8 +815,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SAW)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.SAW)));
 
     // made of 2 Ingots.
     public static final TagPrefix toolBladeScythe = new TagPrefix("scytheBlade")
@@ -821,8 +829,9 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCYTHE)));
+            .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE)
+                            || mat.hasProperty(PropertyKey.GEM)).and(mat -> mat.getProperty(PropertyKey.TOOL)
+                    .hasType(GTToolType.SCYTHE)));
 
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix("turbineBlade")
