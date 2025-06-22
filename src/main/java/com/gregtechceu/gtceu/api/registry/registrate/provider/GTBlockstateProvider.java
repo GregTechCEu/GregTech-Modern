@@ -32,8 +32,6 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
     private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>(Z_ROT_PROPERTY_NAME, r -> new JsonPrimitive(r.ordinal() * 90));
 
     public static final ExistingFileHelper.ResourceType TEXTURE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
-    public static final ExistingFileHelper.ResourceType MODEL = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
-    public static final ExistingFileHelper.ResourceType MODEL_WITH_EXTENSION = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, "", "models");
     // spotless:on
 
 

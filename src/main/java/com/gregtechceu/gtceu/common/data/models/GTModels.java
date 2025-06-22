@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
@@ -76,18 +77,6 @@ public class GTModels {
     public static void rubberTreeSaplingModel(DataGenContext<Item, BlockItem> context,
                                               RegistrateItemModelProvider provider) {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
-    }
-
-    public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx,
-                                                 RegistrateBlockstateProvider prov) {
-        prov.simpleBlock(ctx.getEntry(),
-                prov.models().cubeAll("long_distance_item_pipeline", prov.modLoc("block/pipe/ld_item_pipe/block")));
-    }
-
-    public static void longDistanceFluidPipeModel(DataGenContext<Block, ? extends Block> ctx,
-                                                  RegistrateBlockstateProvider prov) {
-        prov.simpleBlock(ctx.getEntry(),
-                prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
     }
 
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
@@ -168,7 +157,7 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> cubeAllModel(ResourceLocation texture) {
+    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cubeAllModel(ResourceLocation texture) {
         return (ctx, prov) -> {
             prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(ctx.getName(), texture));
         };

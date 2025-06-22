@@ -130,7 +130,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> blockModel) {
+    public MultiblockMachineBuilder blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         return (MultiblockMachineBuilder) super.blockModel(blockModel);
     }
 

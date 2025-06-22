@@ -99,7 +99,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private MachineBuilder.ModelInitializer model = null;
     @Nullable
     @Setter
-    private NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> blockModel = null;
+    private NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
     @Getter
     protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
     @Setter
@@ -499,7 +499,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @FunctionalInterface
     public interface ModelInitializer {
 
-        void configureModel(@NotNull DataGenContext<Block, Block> context, @NotNull GTBlockstateProvider provider,
+        void configureModel(@NotNull DataGenContext<Block, ? extends Block> context, @NotNull GTBlockstateProvider provider,
                             @NotNull MachineModelBuilder<BlockModelBuilder> builder);
 
         default ModelInitializer andThen(ModelInitializer after) {

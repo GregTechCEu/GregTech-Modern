@@ -16,9 +16,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
 
@@ -33,7 +31,6 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
         return new GTBlockBuilder<>(owner, parent, name, callback, factory, BlockBehaviour.Properties::of)
                 .defaultBlockstate().defaultLoot().defaultLang();
     }
-    // spotless:on
 
     protected GTBlockBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback,
                              NonNullFunction<BlockBehaviour.Properties, T> factory,
@@ -41,12 +38,12 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
         super(owner, parent, name, callback, factory, initialProperties);
     }
 
-    public GTBlockBuilder<T, P> exBlockstate(NonNullBiConsumer<DataGenContext<Block, T>, GTBlockstateProvider> cons) {
-        return (GTBlockBuilder<T, P>) setData(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
+    public GTBlockBuilder<T, P> exBlockstate(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cons) {
+        return setDataGeneric(GregTechDatagen.BLOCKSTATE_PROVIDER, cons);
     }
 
     // region default overrides
-    // spotless:off
+
     @Override
     public GTBlockBuilder<T, P> properties(NonNullUnaryOperator<BlockBehaviour.Properties> func) {
         return (GTBlockBuilder<T, P>) super.properties(func);
@@ -133,6 +130,11 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     // public final BlockBuilder<T, P> tag(TagKey<Block>... tags) {
     //     return tag(ProviderType.BLOCK_TAGS, tags);
     // }
+
+    public <D extends RegistrateProvider> GTBlockBuilder<T, P> setDataGeneric(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, ? extends Block>, D> cons) {
+        getOwner().setDataGenerator(this, type, prov -> cons.accept(DataGenContext.from(this), prov));
+        return this;
+    }
 
     // spotless:on
     // endregion

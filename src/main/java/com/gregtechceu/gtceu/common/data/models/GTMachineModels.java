@@ -496,7 +496,7 @@ public class GTMachineModels {
 
     // region helper functions
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelInitializer modelInitializer) {
+    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> createMachineModel(MachineBuilder.ModelInitializer modelInitializer) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
             if (!(block instanceof IMachineBlock machineBlock)) {
