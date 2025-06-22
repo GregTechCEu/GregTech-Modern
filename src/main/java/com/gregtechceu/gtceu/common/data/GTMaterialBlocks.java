@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
-import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import com.google.common.collect.ImmutableMap;
@@ -31,10 +31,11 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import java.util.Map;
 
+@SuppressWarnings("removal")
 public class GTMaterialBlocks {
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
             .builder();
     static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
             .builder();
@@ -46,7 +47,7 @@ public class GTMaterialBlocks {
             .builder();
 
     // Reference Tables
-    public static Table<TagPrefix, Material, BlockEntry<? extends MaterialBlock>> MATERIAL_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS;
     public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
@@ -74,7 +75,7 @@ public class GTMaterialBlocks {
     private static void registerMaterialBlock(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
         MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
                 .block(tagPrefix.idPattern().formatted(material.getName()),
-                        properties -> new MaterialBlock(properties, tagPrefix, material))
+                        properties -> tagPrefix.blockConstructor().create(properties, tagPrefix, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
                 .transform(GTBlocks.unificationBlock(tagPrefix, material))
@@ -83,10 +84,9 @@ public class GTMaterialBlocks {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .color(() -> MaterialBlock::tintedColor)
-                .item(MaterialBlockItem::create)
-                .onRegister(MaterialBlockItem::onRegister)
+                .item((b, p) -> tagPrefix.blockItemConstructor().create(b, p, tagPrefix, material))
                 .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialBlockItem::tintColor)
+                .color(() -> () -> MaterialBlockItem.tintColor(material))
                 .build()
                 .register());
     }
@@ -119,10 +119,10 @@ public class GTMaterialBlocks {
                 typePrefix = FormattingUtil.toLowerCaseUnderscore(oreTag.name) + "_";
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
-                    properties -> new OreBlock(properties, oreTag, material, true))
+                    properties -> oreTag.blockConstructor().create(properties, oreTag, material))
                     .initialProperties(() -> {
-                        if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to
-                                                                 // stone
+                        if (oreType.stoneType().get().isAir()) {
+                            // if the block is not registered (yet), fallback to stone
                             return Blocks.IRON_ORE;
                         }
                         return oreType.stoneType().get().getBlock();
@@ -133,10 +133,9 @@ public class GTMaterialBlocks {
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                     .color(() -> MaterialBlock::tintedColor)
-                    .item(MaterialBlockItem::create)
-                    .onRegister(MaterialBlockItem::onRegister)
+                    .item((b, p) -> oreTag.blockItemConstructor().create(b, p, oreTag, material))
                     .model(NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlockItem::tintColor)
+                    .color(() -> () -> MaterialBlockItem.tintColor(material))
                     .build()
                     .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);

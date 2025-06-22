@@ -4,12 +4,16 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -30,6 +34,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -998,8 +1003,17 @@ public class TagPrefix {
     private boolean generateRecycling = false;
     @Setter
     private boolean generateItem;
+    @Getter
+    @Setter
+    private ItemConstructor itemConstructor = TagPrefixItem::new;
     @Setter
     private boolean generateBlock;
+    @Getter
+    @Setter
+    private BlockConstructor blockConstructor = MaterialBlock::new;
+    @Getter
+    @Setter
+    private BlockItemConstructor blockItemConstructor = MaterialBlockItem::new;
     @Getter
     @Setter
     private BlockProperties blockProperties = new BlockProperties(() -> RenderType::translucent,
@@ -1055,6 +1069,7 @@ public class TagPrefix {
                 .materialIconType(MaterialIconType.ore)
                 .miningToolTag(miningToolTag)
                 .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
                 .generationCondition(hasOreProperty);
     }
 
@@ -1319,5 +1334,23 @@ public class TagPrefix {
     @Override
     public String toString() {
         return name;
+    }
+
+    @FunctionalInterface
+    public interface ItemConstructor {
+
+        Item create(Item.Properties properties, TagPrefix prefix, Material material);
+    }
+
+    @FunctionalInterface
+    public interface BlockConstructor {
+
+        Block create(Block.Properties properties, TagPrefix prefix, Material material);
+    }
+
+    @FunctionalInterface
+    public interface BlockItemConstructor {
+
+        BlockItem create(Block block, Item.Properties properties, TagPrefix prefix, Material material);
     }
 }
