@@ -40,11 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote FacadeRenderer
- *           It can only be used for item.
- *           call it in other renderer to render a facade cover.
+ * It can only be used for item.
+ * call it in other renderer to render a facade cover.
  */
 public class FacadeCoverRenderer implements ICoverRenderer {
 

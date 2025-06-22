@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
 
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -38,7 +39,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTMaterialItems {
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS_BUILDER = ImmutableTable
             .builder();
 
     // Reference Maps
@@ -52,7 +53,7 @@ public class GTMaterialItems {
     }
 
     // Reference Tables
-    public static Table<TagPrefix, Material, ItemEntry<TagPrefixItem>> MATERIAL_ITEMS;
+    public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
     public static final Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS = ArrayTable.create(
             GTCEuAPI.materialManager.getRegisteredMaterials().stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
@@ -85,13 +86,12 @@ public class GTMaterialItems {
     private static void generateMaterialItem(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
         MATERIAL_ITEMS_BUILDER.put(tagPrefix, material, registrate
                 .item(tagPrefix.idPattern().formatted(material.getName()),
-                        properties -> new TagPrefixItem(properties, tagPrefix, material))
-                .onRegister(TagPrefixItem::onRegister)
+                        properties -> tagPrefix.itemConstructor().create(properties, tagPrefix, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .transform(GTItems.unificationItem(tagPrefix, material))
                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                 .model(NonNullBiConsumer.noop())
-                .color(() -> TagPrefixItem::tintColor)
+                .color(() -> () -> TagPrefixItem.tintColor(material))
                 .onRegister(GTItems::cauldronInteraction)
                 .register());
     }
@@ -114,6 +114,7 @@ public class GTMaterialItems {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void generateTool(Material material, GTToolType toolType, GTRegistrate registrate) {
         var tier = material.getToolTier();
         TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate

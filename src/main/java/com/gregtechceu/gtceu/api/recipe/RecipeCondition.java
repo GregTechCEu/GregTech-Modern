@@ -20,11 +20,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2022/05/27
- * @implNote RecipeCondition, global conditions
- */
 @Accessors(chain = true)
 public abstract class RecipeCondition {
 

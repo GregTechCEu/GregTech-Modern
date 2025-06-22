@@ -31,12 +31,6 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote PipeCoverContainer
- */
-
 public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeCoverContainer.class);

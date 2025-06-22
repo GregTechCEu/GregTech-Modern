@@ -31,6 +31,7 @@ public class GTNetwork {
         NETWORK.registerS2C(SPacketProspectBedrockFluid.class);
         NETWORK.registerS2C(SPacketProspectBedrockOre.class);
         NETWORK.registerS2C(SPacketSendWorldID.class);
+        NETWORK.registerS2C(SPacketNotifyCapeChange.class);
 
         NETWORK.registerBoth(SCPacketShareProspection.class);
     }

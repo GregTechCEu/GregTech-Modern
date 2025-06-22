@@ -36,11 +36,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote WorkableOverlayModel
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WorkableOverlayModel {

@@ -13,11 +13,6 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ToggleButtonWidget
- */
 public class ToggleButtonWidget extends SwitchWidget {
 
     private final IGuiTexture texture;

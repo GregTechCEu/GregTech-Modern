@@ -21,15 +21,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote IControllerComponent
- */
 public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     @Override
@@ -180,6 +176,10 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
             return self().getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
+    }
+
+    default Comparator<IMultiPart> getPartSorter() {
+        return self().getDefinition().getPartSorter().apply(self());
     }
 
     /**

@@ -47,6 +47,6 @@ public class GTRecipeCategories {
     }
 
     public static GTRecipeCategory get(String name) {
-        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.appendId(name));
+        return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name));
     }
 }

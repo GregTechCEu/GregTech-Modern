@@ -494,7 +494,7 @@ public class GTMultiMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
@@ -551,6 +551,7 @@ public class GTMultiMachines {
                     .where('D', dataHatchPredicate(blocks(CASING_GRATE.get())))
                     .where('#', Predicates.any())
                     .build())
+            .partSorter(AssemblyLineMachine::partSorter)
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"))
             .register();

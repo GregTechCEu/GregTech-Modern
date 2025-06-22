@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -48,16 +48,16 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
         for (int x = 0; x <= inv.getWidth() - this.getWidth(); ++x) {
             for (int y = 0; y <= inv.getHeight() - this.getHeight(); ++y) {
                 var stack = this.findFluidReplacement(inv, x, y, false);
-                if (stack.getFirst() != -1) {
-                    items.set(stack.getFirst(), stack.getSecond());
-                    replacedSlot = stack.getFirst();
+                if (stack.firstInt() != -1) {
+                    items.set(stack.firstInt(), stack.second());
+                    replacedSlot = stack.firstInt();
                     break OUTER_LOOP;
                 }
 
                 stack = this.findFluidReplacement(inv, x, y, true);
-                if (stack.getFirst() != -1) {
-                    items.set(stack.getFirst(), stack.getSecond());
-                    replacedSlot = stack.getFirst();
+                if (stack.firstInt() != -1) {
+                    items.set(stack.firstInt(), stack.second());
+                    replacedSlot = stack.firstInt();
                     break OUTER_LOOP;
                 }
             }
@@ -79,7 +79,7 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
      */
-    private Pair<Integer, ItemStack> findFluidReplacement(CraftingContainer inv, int width, int height,
+    private IntObjectPair<ItemStack> findFluidReplacement(CraftingContainer inv, int width, int height,
                                                           boolean mirrored) {
         for (int x = 0; x < inv.getWidth(); ++x) {
             for (int y = 0; y < inv.getHeight(); ++y) {
@@ -99,13 +99,13 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
                     int slot = x + y * inv.getWidth();
                     ItemStack stack = inv.getItem(slot);
                     if (fluidContainerIngredient.test(stack)) {
-                        return Pair.of(slot, fluidContainerIngredient.getExtractedStack(stack));
+                        return IntObjectPair.of(slot, fluidContainerIngredient.getExtractedStack(stack));
                     }
                 }
             }
         }
 
-        return Pair.of(-1, ItemStack.EMPTY);
+        return IntObjectPair.of(-1, ItemStack.EMPTY);
     }
 
     public static class Serializer implements RecipeSerializer<ShapedFluidContainerRecipe> {

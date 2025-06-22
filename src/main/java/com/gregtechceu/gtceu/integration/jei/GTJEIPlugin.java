@@ -39,11 +39,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote JEIPlugin
- */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @JeiPlugin

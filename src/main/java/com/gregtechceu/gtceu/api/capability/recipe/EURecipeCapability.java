@@ -14,11 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class EURecipeCapability extends RecipeCapability<Long> {
 
     public final static EURecipeCapability CAP = new EURecipeCapability();

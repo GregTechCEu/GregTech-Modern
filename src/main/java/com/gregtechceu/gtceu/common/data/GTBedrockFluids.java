@@ -16,11 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/7/11
- * @implNote GTBedrockFluids
- */
 @SuppressWarnings("unused")
 public class GTBedrockFluids {
 

@@ -47,11 +47,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableBlockEntity
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties> implements IDataInfoProvider {

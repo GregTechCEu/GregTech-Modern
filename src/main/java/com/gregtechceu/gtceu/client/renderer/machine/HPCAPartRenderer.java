@@ -91,7 +91,7 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                 // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
                 // Check for HPCA specifically since these components could potentially be used in other multiblocks.
                 if (controller instanceof HPCAMachine hpca) {
-                    facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), hpca.getUpwardsFacing(),
+                    facing = RelativeDirection.RIGHT.getRelative(hpca.getFrontFacing(), hpca.getUpwardsFacing(),
                             hpca.isFlipped());
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);

@@ -43,11 +43,6 @@ import org.joml.Vector3f;
 import java.util.Set;
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/2/24
- * @implNote BlockHighlightRenderer
- */
 @OnlyIn(Dist.CLIENT)
 public class BlockHighlightRenderer {
 

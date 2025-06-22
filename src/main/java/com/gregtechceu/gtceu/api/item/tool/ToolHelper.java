@@ -68,6 +68,7 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,11 +77,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/2/23
- * @implNote ToolHelper
- */
 public class ToolHelper {
 
     public static final String TOOL_TAG_KEY = "GT.Tool";
@@ -257,9 +253,9 @@ public class ToolHelper {
     public static ItemStack getAndSetToolData(GTToolType toolType, Material material, int maxDurability,
                                               int harvestLevel,
                                               float toolSpeed, float attackDamage) {
-        var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
-        if (entry == null) return ItemStack.EMPTY;
-        ItemStack stack = entry.get().getRaw();
+        var tool = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
+        if (tool == null) return ItemStack.EMPTY;
+        ItemStack stack = tool.get().getRaw();
         stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
         CompoundTag toolTag = getToolTag(stack);
         toolTag.putInt(MAX_DURABILITY_KEY, maxDurability);
@@ -268,11 +264,12 @@ public class ToolHelper {
         toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
-            toolProperty.getEnchantments().forEach((enchantment, level) -> {
-                if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
-                    stack.enchant(enchantment, level);
+            for (var entry : Object2IntMaps.fastIterable(toolProperty.getEnchantments())) {
+                var enchantment = entry.getKey();
+                if (tool.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
+                    stack.enchant(enchantment, entry.getIntValue());
                 }
-            });
+            }
         }
         return stack;
     }
@@ -576,19 +573,18 @@ public class ToolHelper {
      * Damages the item, plays the tool sound (if available), and swings the player's arm.
      *
      * @param player the player clicking the item
-     * @param world  the world in which the click happened
-     * @param hand   the hand holding the item
+     * @param stack  the item that was used
+     * @param level  the level in which the click happened
+     * @param pos    the position that was clicked
      */
-    public static void onActionDone(@NotNull Player player, @NotNull Level world, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+    public static void onActionDone(@Nullable Player player, @NotNull ItemStack stack,
+                                    @NotNull Level level, @NotNull Vec3 pos) {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            world.playSound(null, player.getX(), player.getY(), player.getZ(), tool.getSound().getMainEvent(),
-                    SoundSource.PLAYERS, 1.0F,
-                    1.0F);
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+                    SoundSource.PLAYERS, 1.0F, 1.0F);
         }
-        player.swing(hand);
     }
 
     @NotNull

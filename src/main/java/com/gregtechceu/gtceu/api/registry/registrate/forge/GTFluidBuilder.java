@@ -56,11 +56,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/14
- * @implNote GTFluidBuilderImpl
- */
 @Accessors(chain = true, fluent = true)
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
