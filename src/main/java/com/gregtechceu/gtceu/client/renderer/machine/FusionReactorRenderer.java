@@ -69,8 +69,8 @@ public class FusionReactorRenderer extends WorkableCasingMachineRenderer {
         var front = machine.getFrontFacing();
         var upwards = machine.getUpwardsFacing();
         var flipped = machine.isFlipped();
-        var back = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
-        var axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
+        var back = RelativeDirection.BACK.getRelative(front, upwards, flipped);
+        var axis = RelativeDirection.UP.getRelative(front, upwards, flipped).getAxis();
         var r = Mth.lerp(lerpFactor, red(lastColor), 255) / 255f;
         var g = Mth.lerp(lerpFactor, green(lastColor), 255) / 255f;
         var b = Mth.lerp(lerpFactor, blue(lastColor), 255) / 255f;

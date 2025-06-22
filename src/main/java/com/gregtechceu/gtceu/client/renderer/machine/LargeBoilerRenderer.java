@@ -48,7 +48,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
         var multiState = GTMatrixUtils.createRotationState(multiFront, Direction.NORTH);
         var multiFacing = ModelFactory.modelFacing(side, multiFront);
         var flipped = machine.self().isFlipped();
-        var relativeDown = RelativeDirection.DOWN.getRelativeFacing(multiFront, multiUpward, flipped);
+        var relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
         // the rest of the owl
         if (machine.self().getPos().relative(relativeDown).get(relativeDown.getAxis()) !=
                 part.self().getPos().get(relativeDown.getAxis())) {
@@ -59,7 +59,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
         if (side == relativeDown) {
             quads.add(
                     StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.bottom()), multiState));
-        } else if (side == RelativeDirection.UP.getRelativeFacing(multiFacing, multiUpward, flipped)) {
+        } else if (side == RelativeDirection.UP.getRelative(multiFacing, multiUpward, flipped)) {
             quads.add(StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.top()), multiState));
         } else {
             quads.add(StaticFaceBakery.bakeFace(multiFacing, ModelFactory.getBlockSprite(firebox.side()), multiState));

@@ -65,11 +65,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
-        if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
-            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability,
-                    LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
-        }
-        return LazyOptional.empty();
+        return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability,
+                LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {

@@ -83,7 +83,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class,
             WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    public static final int CLEAN_AMOUNT_THRESHOLD = 90;
+    public static final int CLEAN_AMOUNT_THRESHOLD = 95;
     public static final int MIN_CLEAN_AMOUNT = 0;
 
     public static final int MIN_RADIUS = 2;
@@ -151,11 +151,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         this.cleanroomReceivers = ImmutableSet.copyOf(receivers);
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroom(this));
 
-        // max progress is based on the dimensions of the structure: (x^3)-(x^2)
+        // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
         // taller cleanrooms take longer than wider ones
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-        this.getRecipeLogic().setDuration((Math.max(100,
-                ((lDist + rDist + 1) * (bDist + fDist + 1) * hDist) - ((lDist + rDist + 1) * (bDist + fDist + 1)))));
+        // max sized CR is around 1142 ticks per progression
+
+        var area = (lDist + rDist + 1) * (bDist + fDist + 1);
+        var duration = Math.pow(area, 0.8) * (hDist + 1);
+        this.getRecipeLogic().setDuration(Math.max(100, (int) duration));
     }
 
     @Override
@@ -372,13 +375,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             c[i] = ceilingLayer[i].toString();
         }
 
+        var area = (lDist + rDist + 1) * (bDist + fDist + 1);
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
         TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                 .setMaxGlobalLimited(2)
                 .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
                         .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
                         .setMaxGlobalLimited(1))
-                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+                // limit pass through hatches to a quarter of the floor area
+                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(area / 4));
 
         return FactoryBlockPattern.start(LEFT, FRONT, UP)
                 .aisle(f)
@@ -508,6 +513,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (isClean()) textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_state"));
             else textList.add(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"));
             textList.add(Component.translatable("gtceu.multiblock.cleanroom.clean_amount", this.cleanAmount));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.0"));
+            textList.add(Component.translatable("gtceu.multiblock.dimensions.1", lDist + rDist + 1, hDist + 1,
+                    fDist + bDist + 1));
         } else {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                     .withStyle(ChatFormatting.GRAY);
@@ -553,4 +561,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (inputEnergyContainers == null) return GTValues.LV;
         return inputEnergyContainers.getInputVoltage();
     }
+
+    // Do not allow cleanroom to be paused due to custom recipe logic
+    @Override
+    public boolean isWorkingEnabled() {
+        return true;
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean ignored) {}
 }
