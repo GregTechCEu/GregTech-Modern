@@ -1,8 +1,6 @@
 {
-    "parent": "gtceu:block/overlay/front_emissive_2",
+    "parent": "gtceu:block/cover/robot_arm",
     "textures": {
-        "particle": "#overlay",
-        "overlay": "gtceu:block/cover/overlay_arm",
         "overlay_emissive": "block/cover/overlay_arm_inverted_emissive"
     }
 }

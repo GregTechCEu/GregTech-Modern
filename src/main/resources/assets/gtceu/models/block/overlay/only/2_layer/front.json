@@ -1,0 +1,19 @@
+{
+    "parent": "gtceu:block/overlay/only/front",
+    "elements": [
+        {
+            "from": [  0,  0, 0 ],
+            "to":   [ 16, 16, 0 ],
+            "faces": {
+                "north": { "texture": "#overlay", "cullface": "north" }
+            }
+        },
+        {
+            "from": [  0,  0, 0 ],
+            "to":   [ 16, 16, 0 ],
+            "faces": {
+                "north": { "texture": "#overlay_2", "cullface": "north" }
+            }
+        }
+    ]
+}
