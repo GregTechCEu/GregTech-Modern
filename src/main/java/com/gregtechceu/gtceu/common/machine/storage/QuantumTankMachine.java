@@ -277,8 +277,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             } else {
                 setOutputFacingFluids(null);
             }
-            playerIn.swing(hand);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
