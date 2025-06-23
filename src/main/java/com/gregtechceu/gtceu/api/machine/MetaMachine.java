@@ -372,12 +372,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
-            if (!isRemote()) {
-                setFrontFacing(gridSide);
-            }
+            setFrontFacing(gridSide);
         } else {
-            if (isRemote()) return InteractionResult.SUCCESS;
-
             var itemStack = playerIn.getItemInHand(hand);
             var tagCompound = getBehaviorsTag(itemStack);
             ToolModeSwitchBehavior.WrenchModeType type = ToolModeSwitchBehavior.WrenchModeType.values()[tagCompound

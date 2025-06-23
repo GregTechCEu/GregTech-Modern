@@ -62,7 +62,10 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super(holder, isHighPressure, args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
-        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, getVentingDirection()));
+
+        Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
+                .getActualDirection(getVentingDirection());
+        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, derotated));
     }
 
     //////////////////////////////////////
@@ -117,7 +120,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void setOutputFacing(@NotNull Direction outputFacing) {
         super.setOutputFacing(outputFacing);
-        Direction derotated = RelativeDirection.getActualDirection(Direction.NORTH, getFrontFacing(), outputFacing);
+        Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing()).getActualDirection(outputFacing);
         setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, derotated));
     }
 

@@ -143,10 +143,10 @@ public abstract class SteamWorkableMachine extends SteamMachine
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                               BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown() && !isRemote()) {
+        if (!playerIn.isShiftKeyDown()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
             setOutputFacing(gridSide);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
