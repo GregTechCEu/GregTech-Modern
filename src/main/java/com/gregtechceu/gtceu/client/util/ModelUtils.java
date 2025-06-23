@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,10 +26,14 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -64,13 +70,136 @@ public class ModelUtils {
         };
     });
 
+    private static final IQuadTransformer DEROTATE = quad -> {
+        var vertices = quad.getVertices();
+
+        int start = 0;
+        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
+        int[][] uvs = (int[][]) Array.newInstance(int.class, 4, 2);
+
+        for (int i = 0; i < 4; i++) {
+            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+            System.arraycopy(vertices, offset, uvs[i], 0, 2);
+
+            float u = Float.intBitsToFloat(uvs[i][0]);
+            float v = Float.intBitsToFloat(uvs[i][1]);
+            if (u <= minU && v <= minV) {
+                minU = Math.min(minU, u);
+                minV = Math.min(minV, v);
+                start = i;
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+            System.arraycopy(uvs[(i + start) % 4], 0, vertices, offset, 2);
+        }
+    };
+
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
     }
 
-    public static void offsetQuad(BakedQuad quad, float by) {
-        OFFSET_BY.apply(by).processInPlace(quad);
+    public static BakedQuad offsetQuad(BakedQuad quad, float by) {
+        return OFFSET_BY.apply(by).process(quad);
+    }
+
+    public static BakedQuad derotateQuad(BakedQuad quad) {
+        DEROTATE.processInPlace(quad);
+        return quad;
+    }
+
+    public static Vector2f[] getQuadUVs(int[] vertices) {
+        Vector2f[] uvs = new Vector2f[4];
+
+        for (int i = 0; i < 4; i++) {
+            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+            float u = Float.intBitsToFloat(vertices[offset]);
+            float v = Float.intBitsToFloat(vertices[offset + 1]);
+            uvs[i] = new Vector2f(u, v);
+        }
+        return uvs;
+    }
+
+    public static Vector3f[] getQuadVertices(int[] vertices) {
+        Vector3f[] vertPos = new Vector3f[4];
+
+        for (int i = 0; i < 4; i++) {
+            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
+            float x = Float.intBitsToFloat(vertices[offset]);
+            float y = Float.intBitsToFloat(vertices[offset + 1]);
+            float z = Float.intBitsToFloat(vertices[offset + 2]);
+            vertPos[i] = new Vector3f(x, y, z);
+        }
+        return vertPos;
+    }
+
+    public static QuadInfo[] subdivide(BakedQuad baked) {
+        Vector3f[] vertPos = getQuadVertices(baked.getVertices());
+        Vector2f[] uvs = getQuadUVs(baked.getVertices());
+        var maxUVs = findMinMaxUVs(uvs);
+        QuadInfo quad = new QuadInfo(baked.getSprite(), baked.getTintIndex(), baked.getDirection(),
+                baked.isShade(), baked.hasAmbientOcclusion(),
+                vertPos, uvs, maxUVs.first(), maxUVs.second());
+
+        return quad.subdivide();
+    }
+
+    private static void putVertexData(int[] vertices, int index, Vector3f pos, Vector2f uv) {
+        int posOffset = index * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
+        vertices[posOffset] = Float.floatToRawIntBits(pos.x());
+        vertices[posOffset + 1] = Float.floatToRawIntBits(pos.y());
+        vertices[posOffset + 2] = Float.floatToRawIntBits(pos.z());
+
+        int uvOffset = index * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
+        vertices[uvOffset] = Float.floatToRawIntBits(uv.x());
+        vertices[uvOffset + 1] = Float.floatToRawIntBits(uv.y());
+    }
+
+    public static Vector2f[] normalizeUVs(Vector2f min, Vector2f max, Vector2f... uvs) {
+        Vector2f[] ret = new Vector2f[uvs.length];
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = ModelUtils.normalizeUV(min, max, uvs[i]);
+        }
+        return ret;
+    }
+
+    public static Vector2f normalizeUV(TextureAtlasSprite sprite, Vector2f vec) {
+        return normalizeUV(
+                new Vector2f(sprite.getU0(), sprite.getU1()),
+                new Vector2f(sprite.getV0(), sprite.getV1()),
+                vec);
+    }
+
+    public static Vector2f normalizeUV(Vector2f min, Vector2f max, Vector2f vec) {
+        return new Vector2f(GTMath.normalize(min.x(), max.x(), vec.x()),
+                GTMath.normalize(min.y(), max.y(), vec.y()));
+    }
+
+    public static Vector2f[] relativizeUVs(TextureAtlasSprite sprite, Vector2f... uvs) {
+        for (int i = 0; i < uvs.length; i++) {
+            uvs[i] = relativizeUV(sprite, uvs[i]);
+        }
+        return uvs;
+    }
+
+    public static Vector2f relativizeUV(TextureAtlasSprite sprite, Vector2f vec) {
+        return new Vector2f(
+                Mth.lerp(vec.x(), sprite.getU0(), sprite.getU1()),
+                Mth.lerp(vec.y(), sprite.getV0(), sprite.getV1()));
+    }
+
+    public static Pair<Vector2f, Vector2f> findMinMaxUVs(Vector2f[] uvs) {
+        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE, maxU = Float.MIN_VALUE, maxV = Float.MIN_VALUE;
+
+        for (int i = 0; i < 4; i++) {
+            Vector2f uv = uvs[i];
+            minU = Math.min(minU, uv.x());
+            minV = Math.min(minV, uv.y());
+            maxU = Math.max(maxU, uv.x());
+            maxV = Math.max(maxV, uv.y());
+        }
+        return Pair.of(new Vector2f(minU, minV), new Vector2f(maxU, maxV));
     }
 
     public static ModelManager getModelManager() {
