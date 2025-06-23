@@ -10,12 +10,12 @@
       "y": 90
     },
     "facing=east,upwards_facing=south": {
-      "gtceu:z": 270,
+      "gtceu:z": 180,
       "model": "gtceu:block/data_bank",
       "y": 90
     },
     "facing=east,upwards_facing=west": {
-      "gtceu:z": 180,
+      "gtceu:z": 270,
       "model": "gtceu:block/data_bank",
       "y": 90
     },
@@ -27,15 +27,15 @@
       "model": "gtceu:block/data_bank"
     },
     "facing=north,upwards_facing=south": {
-      "gtceu:z": 270,
-      "model": "gtceu:block/data_bank"
-    },
-    "facing=north,upwards_facing=west": {
       "gtceu:z": 180,
       "model": "gtceu:block/data_bank"
     },
-    "facing=south,upwards_facing=east": {
+    "facing=north,upwards_facing=west": {
       "gtceu:z": 270,
+      "model": "gtceu:block/data_bank"
+    },
+    "facing=south,upwards_facing=east": {
+      "gtceu:z": 90,
       "model": "gtceu:block/data_bank",
       "y": 180
     },
@@ -44,12 +44,12 @@
       "y": 180
     },
     "facing=south,upwards_facing=south": {
-      "gtceu:z": 90,
+      "gtceu:z": 180,
       "model": "gtceu:block/data_bank",
       "y": 180
     },
     "facing=south,upwards_facing=west": {
-      "gtceu:z": 180,
+      "gtceu:z": 270,
       "model": "gtceu:block/data_bank",
       "y": 180
     },
@@ -63,12 +63,12 @@
       "y": 270
     },
     "facing=west,upwards_facing=south": {
-      "gtceu:z": 270,
+      "gtceu:z": 180,
       "model": "gtceu:block/data_bank",
       "y": 270
     },
     "facing=west,upwards_facing=west": {
-      "gtceu:z": 180,
+      "gtceu:z": 270,
       "model": "gtceu:block/data_bank",
       "y": 270
     }
