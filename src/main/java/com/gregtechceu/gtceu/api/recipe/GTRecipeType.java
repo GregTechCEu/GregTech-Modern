@@ -28,8 +28,6 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;

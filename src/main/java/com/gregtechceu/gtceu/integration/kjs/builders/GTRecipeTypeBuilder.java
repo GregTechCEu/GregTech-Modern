@@ -12,9 +12,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Rect;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
