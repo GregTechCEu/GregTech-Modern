@@ -73,40 +73,40 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     @SuppressWarnings("DataFlowIssue")
     @NotNull
     public List<BakedQuad> getCustomQuads(BlockAndTintGetter level, BlockPos pos, @NotNull BlockState state,
-                                          @Nullable Direction side, RandomSource rand,
+                                          @Nullable Direction elementSide, RandomSource rand,
                                           @NotNull ModelData data, @Nullable RenderType renderType) {
         final ModelData parentData = data.has(MODEL_DATA) ? data.get(MODEL_DATA) : ModelData.EMPTY;
 
-        var connections = Connections.checkConnections(level, pos, state, side);
-        if (side == null) {
+        var connections = Connections.checkConnections(level, pos, state, elementSide);
+        if (elementSide == null) {
             if (noSideCache.isEmpty()) {
                 noSideCache.addAll(buildCustomQuads(connections,
-                        super.getQuads(state, null, rand, parentData, renderType), 0.0f));
+                        super.getQuads(state, null, rand, parentData, renderType)));
             }
             return noSideCache;
         }
-        return sideCache.computeIfAbsent(side, this::makeMap)
+        return sideCache.computeIfAbsent(elementSide, this::makeMap)
                 .computeIfAbsent(connections, c -> buildCustomQuads(c,
-                        super.getQuads(state, side, rand, parentData, renderType), 0.0f));
+                        super.getQuads(state, elementSide, rand, parentData, renderType)));
     }
 
     public static List<BakedQuad> reBakeCustomQuads(List<BakedQuad> quads, BlockAndTintGetter level, BlockPos pos,
-                                                    @NotNull BlockState state, @Nullable Direction side, float offset) {
-        return buildCustomQuads(Connections.checkConnections(level, pos, state, side), quads, offset);
+                                                    @NotNull BlockState state, @Nullable Direction elementSide) {
+        return buildCustomQuads(Connections.checkConnections(level, pos, state, elementSide), quads);
     }
 
-    public static List<BakedQuad> buildCustomQuads(Connections connections, List<BakedQuad> base, float offset) {
+    public static List<BakedQuad> buildCustomQuads(Connections connections, List<BakedQuad> base) {
         List<BakedQuad> result = new ArrayList<>();
         for (BakedQuad bakedQuad : base) {
             var section = LDLMetadataSection.getMetadata(bakedQuad.getSprite());
             TextureAtlasSprite connection = section.connection == null ? null :
                     ModelUtils.getBlockSprite(section.connection);
             if (connection == null) {
-                result.add(makeQuad(bakedQuad, section, offset));
+                result.add(makeQuad(bakedQuad, section));
                 continue;
             }
 
-            BakedQuad baked = ModelUtils.derotateQuad(makeQuad(bakedQuad, section, offset));
+            BakedQuad baked = ModelUtils.derotateQuad(makeQuad(bakedQuad, section));
             QuadInfo[] subdivided = ModelUtils.subdivide(baked);
 
             int[] ctm = connections.getSubmapIndices();
@@ -124,9 +124,8 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
         return result;
     }
 
-    protected static BakedQuad makeQuad(BakedQuad quad, LDLMetadataSection section, float offset) {
+    protected static BakedQuad makeQuad(BakedQuad quad, LDLMetadataSection section) {
         int light = section.emissive ? 15 : 0;
-        quad = ModelUtils.offsetQuad(quad, offset);
         QuadTransformers.settingEmissivity(light).process(quad);
         return quad;
     }
