@@ -115,7 +115,9 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         var upwardFacing = machine.getUpwardsFacing();
 
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        rotateMatrix(poseStack.last().pose(), upwardFacingAngle(upwardFacing), getDirectionAxis(frontFacing));
+        rotateMatrix(poseStack.last().pose(),
+                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
+                getDirectionAxis(frontFacing));
         poseStack.translate(-0.5f, -0.5f, -0.5f);
     }
 
