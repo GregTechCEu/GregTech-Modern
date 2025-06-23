@@ -25,14 +25,14 @@ import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 public class OvergearedRecipes {
 
     public static void init(Consumer<FinishedRecipe> consumer) {
-        generateRecipes(consumer, GTToolType.PICKAXE, toolHeadPickaxe, "###", "   ", "   ");
-        generateRecipes(consumer, GTToolType.AXE, toolHeadAxe, "## ", "#  ", "   ");
-        generateRecipes(consumer, GTToolType.SHOVEL, toolHeadShovel, "#  ", "   ", "   ");
-        generateRecipes(consumer, GTToolType.HOE, toolHeadHoe, "## ", "   ", "   ");
-        generateRecipes(consumer, GTToolType.SWORD, toolBladeSword, "#  ", "#  ", "   ");
+        generateRecipes(consumer, GTToolType.PICKAXE, toolHeadPickaxe, 3, "###", "   ", "   ");
+        generateRecipes(consumer, GTToolType.AXE, toolHeadAxe, 3, "## ", "#  ", "   ");
+        generateRecipes(consumer, GTToolType.SHOVEL, toolHeadShovel, 3, "#  ", "   ", "   ");
+        generateRecipes(consumer, GTToolType.HOE, toolHeadHoe, 3, "## ", "   ", "   ");
+        generateRecipes(consumer, GTToolType.SWORD, toolBladeSword, 3, "#  ", "#  ", "   ");
     }
 
-    public static void generateRecipes(Consumer<FinishedRecipe> consumer, GTToolType tool, TagPrefix prefix,
+    public static void generateRecipes(Consumer<FinishedRecipe> consumer, GTToolType tool, TagPrefix prefix, int hits,
                                        String... patterns) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
@@ -40,7 +40,7 @@ public class OvergearedRecipes {
 
                 if (material.hasHotIngot()) {
                     ShapedForgingRecipeBuilder
-                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), 3)
+                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), hits)
                             .pattern(patterns[0])
                             .pattern(patterns[1])
                             .pattern(patterns[2])
@@ -52,7 +52,7 @@ public class OvergearedRecipes {
                             .save(consumer);
                 } else if (!material.hasProperty(PropertyKey.GEM)) {
                     ShapedForgingRecipeBuilder
-                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), 3)
+                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), hits)
                             .pattern(patterns[0])
                             .pattern(patterns[1])
                             .pattern(patterns[2])
@@ -64,7 +64,7 @@ public class OvergearedRecipes {
                             .save(consumer);
                 } else if (material.hasProperty(PropertyKey.GEM)) {
                     ShapedForgingRecipeBuilder
-                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), 3)
+                            .shaped(RecipeCategory.MISC, ChemicalHelper.get(prefix, material).getItem(), hits)
                             .pattern(patterns[0])
                             .pattern(patterns[1])
                             .pattern(patterns[2])
