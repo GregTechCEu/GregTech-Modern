@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
+import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
@@ -25,11 +26,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
+import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
+@ExtensionMethod(PoseStackExtensions.class)
 public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, QuantumChestItemRender> {
 
     // spotless:off
@@ -58,8 +61,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             float totalTick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
             // Don't need to handle locked items here since they don't get saved to the item
-            renderChestItem(poseStack, buffer, totalTick, Direction.NORTH, itemStack, storedAmount,
-                    ItemStack.EMPTY, stack.is(CREATIVE_CHEST_ITEM));
+            renderChestItem(poseStack, buffer, totalTick, Direction.NORTH, Direction.NORTH,
+                    itemStack, storedAmount, ItemStack.EMPTY, stack.is(CREATIVE_CHEST_ITEM));
 
             poseStack.popPose();
         }
@@ -73,14 +76,15 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         setupModelRotation(machine, poseStack);
 
         var totalTick = machine.getLevel().getGameTime() + partialTick;
-        renderChestItem(poseStack, buffer, totalTick, machine.getFrontFacing(),
+        renderChestItem(poseStack, buffer, totalTick, machine.getFrontFacing(), machine.getUpwardsFacing(),
                 machine.getStored(), machine.getStoredAmount(), machine.getLockedItem(),
                 machine instanceof CreativeChestMachine);
         poseStack.popPose();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderChestItem(PoseStack poseStack, MultiBufferSource buffer, float totalTick, Direction frontFacing,
+    public void renderChestItem(PoseStack poseStack, MultiBufferSource buffer, float totalTick,
+                                Direction frontFacing, Direction upwardsFacing,
                                 ItemStack stored, long storedAmount, ItemStack locked, boolean isCreative) {
         ItemStack itemStack = !stored.isEmpty() ? stored : locked;
         if (itemStack.isEmpty()) return;
@@ -103,7 +107,7 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
                 Item.getId(itemStack.getItem()) + itemStack.getDamageValue());
         poseStack.popPose();
 
-        drawAmountText(poseStack, buffer, frontFacing, storedAmount, isCreative);
+        drawAmountText(poseStack, buffer, frontFacing, upwardsFacing, storedAmount, isCreative);
     }
 
     public static void setupModelRotation(MetaMachine machine, PoseStack poseStack) {
@@ -111,25 +115,20 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         var upwardFacing = machine.getUpwardsFacing();
 
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        rotateMatrix(poseStack.last().pose(),
-                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
-                frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
+        rotateMatrix(poseStack.last().pose(), upwardFacingAngle(upwardFacing), getDirectionAxis(frontFacing));
         poseStack.translate(-0.5f, -0.5f, -0.5f);
     }
 
-    public static void drawAmountText(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing,
+    public static void drawAmountText(PoseStack poseStack, MultiBufferSource buffer,
+                                      Direction frontFacing, Direction upwardsFacing,
                                       long storedAmount, boolean isCreative) {
         poseStack.pushPose();
         RenderSystem.disableDepthTest();
         poseStack.translate(frontFacing.getStepX() * -1 / 16f, frontFacing.getStepY() * -1 / 16f,
                 frontFacing.getStepZ() * -1 / 16f);
+
         RenderUtil.moveToFace(poseStack, 0, 0, 0, frontFacing);
-        if (frontFacing.getAxis() == Direction.Axis.Y) {
-            RenderUtil.rotateToFace(poseStack, frontFacing,
-                    frontFacing == Direction.UP ? Direction.SOUTH : Direction.NORTH);
-        } else {
-            RenderUtil.rotateToFace(poseStack, frontFacing, null);
-        }
+        poseStack.mulPoseMatrix(createRotationState(frontFacing, upwardsFacing));
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
 
@@ -150,7 +149,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         }
 
         Font font = Minecraft.getInstance().font;
-        font.drawInBatch(text, textX - font.width(text) / 2.0f, textY - font.lineHeight / 2.0f, 0xffffffff, false,
+        font.drawInBatch(text, textX - font.getSplitter().stringWidth(text) / 2.0f, textY - font.lineHeight / 2.0f,
+                0xffffffff, false,
                 poseStack.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
         RenderSystem.enableDepthTest();

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
@@ -31,12 +32,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @OnlyIn(Dist.CLIENT)
 public class ProspectingTexture extends AbstractTexture {
 
     public static final String SELECTED_ALL = "[all]";
+    private static final ResourceTexture ARROW = GuiTextures.UP.copy().setColor(ColorPattern.RED.color);
+
     @Getter
     private String selected = SELECTED_ALL;
     private boolean darkMode;
@@ -146,8 +150,8 @@ public class ProspectingTexture extends AbstractTexture {
 
     public void draw(GuiGraphics graphics, int x, int y) {
         if (this.getId() == -1) return;
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.getId());
         var matrix4f = graphics.pose().last().pose();
@@ -156,7 +160,7 @@ public class ProspectingTexture extends AbstractTexture {
         bufferbuilder.vertex(matrix4f, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(-1).endVertex();
         bufferbuilder.vertex(matrix4f, x + imageWidth, y, 0).uv(1, 0).color(-1).endVertex();
         bufferbuilder.vertex(matrix4f, x, y, 0).uv(0, 0).color(-1).endVertex();
-        tessellator.end();
+        tesselator.end();
 
         // draw special grid (e.g. fluid)
         for (int cx = 0; cx < radius * 2 - 1; cx++) {
@@ -167,9 +171,8 @@ public class ProspectingTexture extends AbstractTexture {
                 }
             }
         }
-
-        GuiTextures.UP.copy().setColor(ColorPattern.RED.color).rotate(direction / 2).draw(graphics, 0, 0,
-                x + playerXGui - 20, y + playerYGui - 20, 40, 40);
+        var arrow = ARROW.rotate(this.direction / 2);
+        arrow.draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         // draw red vertical line
         if (playerXGui % 16 > 7 || playerXGui % 16 == 0) {

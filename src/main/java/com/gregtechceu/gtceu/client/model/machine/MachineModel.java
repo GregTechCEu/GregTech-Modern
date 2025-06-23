@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
-import com.mojang.math.Transformation;
-import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -37,11 +35,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,7 +107,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand,
                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
-        // If there is a root transform, undo the ModelState transform, apply it, then re-apply the ModelState transform.
+        // If there is a root transform, undo the ModelState transform, apply it, then
+        // re-apply the ModelState transform.
         // This is necessary because of things like UV locking, which should only respond to the ModelState, and as such
         // that is the only transform that should be applied during face bake.
         var postTransform = QuadTransformers.empty();
@@ -206,8 +207,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             }
         }
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            if (renderReplacedPartMachine(quads, part, frontFacing, elementSide, modelFront, rand,
-                    modelData, renderType)) {
+            if (renderReplacedPartMachine(quads, part, frontFacing, elementSide, modelFront,
+                    rand, modelData, renderType)) {
                 return;
             }
         }
