@@ -108,9 +108,9 @@ public class BlockHighlightRenderer {
                                 blockPos.getZ() - cameraPos.z(),
                                 facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
-                            poseStack.mulPoseMatrix(createRotationState(facing, Direction.SOUTH));
+                            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
                         } else {
-                            poseStack.mulPoseMatrix(createRotationState(facing, Direction.NORTH));
+                            RenderUtil.rotateToFace(poseStack, facing, Direction.NORTH);
                         }
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
@@ -239,9 +239,9 @@ public class BlockHighlightRenderer {
                 blockPos.getZ() - cameraPos.z(),
                 facing);
         if (facing.getAxis() == Direction.Axis.Y) {
-            poseStack.mulPoseMatrix(createRotationState(facing, Direction.SOUTH));
+            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
         } else {
-            poseStack.mulPoseMatrix(createRotationState(facing, Direction.NORTH));
+            RenderUtil.rotateToFace(poseStack, facing, Direction.NORTH);
         }
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);

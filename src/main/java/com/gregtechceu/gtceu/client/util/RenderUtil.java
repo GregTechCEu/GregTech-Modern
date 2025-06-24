@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 
+import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +26,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -168,5 +171,37 @@ public class RenderUtil {
         poseStack.translate(x + 0.5d + face.getStepX() * 0.5d,
                 y + 0.5d + face.getStepY() * 0.5d,
                 z + 0.5d + face.getStepZ() * 0.5d);
+    }
+
+    /**
+     * Rotate the current coordinate system, so it is on the face of the given block side.
+     * This can be used to render on the given face as if it was a 2D canvas,
+     * where x+ is facing right and y+ is facing up.
+     */
+    public static void rotateToFace(PoseStack poseStack, Direction face, Direction spin) {
+        float rotationAngle = Mth.HALF_PI * switch (face) {
+            case UP, WEST -> 1;
+            case DOWN, EAST -> -1;
+            case SOUTH -> 2;
+            case NORTH -> 0;
+        };
+        Quaternionf rotation = new Quaternionf();
+        if (face.getAxis() == Direction.Axis.Y) {
+            poseStack.scale(1.0f, -1.0f, 1.0f);
+            rotation.rotateAxis(rotationAngle, new Vector3f(1, 0, 0));
+        } else {
+            poseStack.scale(-1.0f, -1.0f, -1.0f);
+            rotation.rotateAxis(rotationAngle, new Vector3f(0, 1, 0));
+        }
+        rotation.rotateAxis(getSpinAngle(spin, face), new Vector3f(0, 0, 1));
+
+        poseStack.mulPose(rotation);
+    }
+
+    private static float getSpinAngle(Direction spin, Direction face) {
+        if (spin.getAxis() == Direction.Axis.Z && face == Direction.DOWN) {
+            spin = spin.getOpposite();
+        }
+        return GTMatrixUtils.upwardFacingAngle(spin);
     }
 }
