@@ -202,7 +202,7 @@ public class DecorationRecipes {
                     .recipeBuilder(
                             "%s_to_%s_%s_oxidation".formatted(OXIDATION_STAGES[i], OXIDATION_STAGES[i + 1], name))
                     .inputItems(items[i])
-                    .inputFluids(Oxygen,100)
+                    .inputFluids(Oxygen, 100)
                     .outputItems(items[i + 1])
                     .EUt(VA[ULV]).duration(10)
                     .save(provider);
