@@ -1,13 +1,14 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
-public class MapFluidTagIngredient extends AbstractMapIngredient {
+public class FluidTagMapIngredient extends AbstractMapIngredient {
 
     TagKey<Fluid> tag;
 
-    public MapFluidTagIngredient(TagKey<Fluid> tag) {
+    public FluidTagMapIngredient(TagKey<Fluid> tag) {
         this.tag = tag;
     }
 
@@ -20,7 +21,7 @@ public class MapFluidTagIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
-            return tag == ((MapFluidTagIngredient) obj).tag;
+            return tag == ((FluidTagMapIngredient) obj).tag;
         }
         return false;
     }

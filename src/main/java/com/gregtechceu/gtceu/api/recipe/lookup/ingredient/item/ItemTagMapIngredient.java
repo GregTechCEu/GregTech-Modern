@@ -1,13 +1,14 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-public class MapItemTagIngredient extends AbstractMapIngredient {
+public class ItemTagMapIngredient extends AbstractMapIngredient {
 
     TagKey<Item> tag;
 
-    public MapItemTagIngredient(TagKey<Item> tag) {
+    public ItemTagMapIngredient(TagKey<Item> tag) {
         this.tag = tag;
     }
 
@@ -19,7 +20,7 @@ public class MapItemTagIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
-            return tag == ((MapItemTagIngredient) obj).tag;
+            return tag == ((ItemTagMapIngredient) obj).tag;
         }
         return false;
     }

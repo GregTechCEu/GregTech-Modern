@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
@@ -9,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
+public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     PartialNBTIngredient nbtIngredient;
 
-    public MapItemStackPartialNBTIngredient(ItemStack stack, PartialNBTIngredient nbtIngredient) {
+    public PartialNBTItemStackMapIngredient(ItemStack stack, PartialNBTIngredient nbtIngredient) {
         super(stack, nbtIngredient);
         this.nbtIngredient = nbtIngredient;
     }
@@ -22,7 +23,7 @@ public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
     public static List<AbstractMapIngredient> from(@NotNull PartialNBTIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
-            list.add(new MapItemStackPartialNBTIngredient(s, r));
+            list.add(new PartialNBTItemStackMapIngredient(s, r));
         }
         return list;
     }
@@ -37,7 +38,7 @@ public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof MapItemStackPartialNBTIngredient other) {
+        if (obj instanceof PartialNBTItemStackMapIngredient other) {
             if (this.stack.getItem() != other.stack.getItem()) {
                 return false;
             }

@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,12 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class MapFluidIngredient extends AbstractMapIngredient {
+public class FluidMapIngredient extends AbstractMapIngredient {
 
     public final Fluid fluid;
     public final CompoundTag tag;
 
-    public MapFluidIngredient(FluidStack fluidStack) {
+    public FluidMapIngredient(FluidStack fluidStack) {
         this.fluid = fluidStack.getFluid();
         this.tag = fluidStack.getTag();
     }
@@ -27,7 +28,7 @@ public class MapFluidIngredient extends AbstractMapIngredient {
     public static List<AbstractMapIngredient> from(@NotNull FluidIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (FluidStack s : r.getStacks()) {
-            list.add(new MapFluidIngredient(s));
+            list.add(new FluidMapIngredient(s));
         }
         return list;
     }
@@ -46,7 +47,7 @@ public class MapFluidIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
-            MapFluidIngredient other = (MapFluidIngredient) o;
+            FluidMapIngredient other = (FluidMapIngredient) o;
             // the Fluid registered to the fluidName on game load might not be the same Fluid after loading the world,
             // but will still have the same fluidName.
             if (this.fluid.isSame(other.fluid)) {

@@ -1,21 +1,22 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public class MapItemStackIngredient extends AbstractMapIngredient {
+public class ItemStackMapIngredient extends AbstractMapIngredient {
 
     protected ItemStack stack;
     protected Ingredient ingredient = null;
 
-    public MapItemStackIngredient(ItemStack stack) {
+    public ItemStackMapIngredient(ItemStack stack) {
         this.stack = stack;
     }
 
-    public MapItemStackIngredient(ItemStack stack, Ingredient ingredient) {
+    public ItemStackMapIngredient(ItemStack stack, Ingredient ingredient) {
         this.stack = stack;
         this.ingredient = ingredient;
     }
@@ -23,8 +24,8 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
-            MapItemStackIngredient other = (MapItemStackIngredient) o;
-            if (this.stack.getItem() != other.stack.getItem()) {
+            ItemStackMapIngredient other = (ItemStackMapIngredient) o;
+            if (!ItemStack.isSameItem(this.stack, other.stack)) {
                 return false;
             }
             if (this.ingredient != null) {

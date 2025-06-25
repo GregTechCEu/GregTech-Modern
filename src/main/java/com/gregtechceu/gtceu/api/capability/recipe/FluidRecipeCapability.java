@@ -8,9 +8,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -72,20 +71,20 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         if (obj instanceof FluidIngredient ingredient) {
             for (FluidIngredient.Value value : ingredient.values) {
                 if (value instanceof FluidIngredient.TagValue tagValue) {
-                    ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
+                    ingredients.add(new FluidTagMapIngredient(tagValue.getTag()));
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(
+                        ingredients.add(new FluidMapIngredient(
                                 new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
                     }
                 }
             }
         } else if (obj instanceof FluidStack stack) {
-            ingredients.add(new MapFluidIngredient(stack));
+            ingredients.add(new FluidMapIngredient(stack));
             // noinspection deprecation
             stack.getFluid().builtInRegistryHolder().tags()
-                    .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
+                    .forEach(tag -> ingredients.add(new FluidTagMapIngredient(tag)));
         }
 
         return ingredients;

@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
@@ -12,12 +13,12 @@ import net.minecraftforge.common.crafting.IntersectionIngredient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapIntersectionIngredient extends AbstractMapIngredient {
+public class IntersectionMapIngredient extends AbstractMapIngredient {
 
     protected IntersectionIngredient intersectionIngredient;
     protected List<Ingredient> ingredients;
 
-    public MapIntersectionIngredient(IntersectionIngredient ingredient) {
+    public IntersectionMapIngredient(IntersectionIngredient ingredient) {
         this.intersectionIngredient = ingredient;
         this.ingredients = new ArrayList<>(((IntersectionIngredientAccessor) ingredient).getChildren());
         this.ingredients.sort(IngredientEquality.INGREDIENT_COMPARATOR);
@@ -41,7 +42,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
-            MapIntersectionIngredient other = (MapIntersectionIngredient) o;
+            IntersectionMapIngredient other = (IntersectionMapIngredient) o;
             if (this.ingredients != null) {
                 if (other.ingredients != null) {
                     if (this.ingredients.size() != other.ingredients.size()) return false;
@@ -55,7 +56,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
                     return true;
                 }
             }
-        } else if (o instanceof MapItemStackIngredient stackIngredient) {
+        } else if (o instanceof ItemStackMapIngredient stackIngredient) {
             return this.intersectionIngredient.test(stackIngredient.stack);
         }
         return false;
