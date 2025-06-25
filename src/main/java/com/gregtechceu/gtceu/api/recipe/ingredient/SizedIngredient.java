@@ -1,12 +1,17 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import com.gregtechceu.gtceu.utils.FastEmptyStream;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -18,9 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
+
+    private static final FastEmptyStream<Value> EMPTY_STREAM = new FastEmptyStream<>(new Value[0]);
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -30,11 +36,20 @@ public class SizedIngredient extends Ingredient {
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
     private boolean changed = true;
+    private final boolean isEmpty;
+    private final Value value;
 
     protected SizedIngredient(Ingredient inner, int amount) {
-        super(Stream.empty());
+        super(EMPTY_STREAM);
         this.amount = amount;
         this.inner = inner;
+        this.isEmpty = inner.isEmpty();
+        if (isEmpty || inner.getClass() != Ingredient.class) {
+            this.value = null;
+        } else {
+            var values = ((IngredientAccessor) inner).getValues();
+            this.value = values.length == 1 ? values[0] : null;
+        }
     }
 
     protected SizedIngredient(@NotNull TagKey<Item> tag, int amount) {
@@ -68,14 +83,9 @@ public class SizedIngredient extends Ingredient {
                 return copy(intProviderIngredient);
             }
 
-            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
-            if (sizedIngredient.itemStacks != null) {
-                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
-                        .toArray(ItemStack[]::new);
-            }
-            return copied;
+            return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
-            return circuit.copy();
+            return circuit;
         } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
             var copied = IntProviderIngredient.of(intProviderIngredient.inner, intProviderIngredient.countProvider);
             if (intProviderIngredient.itemStacks != null) {
@@ -111,6 +121,14 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public boolean test(@Nullable ItemStack stack) {
+        if (stack == null) return false;
+        var item = stack.getItem();
+        if (isEmpty) return item == Items.AIR;
+        if (value instanceof TagValue tagValue) {
+            return item.builtInRegistryHolder().is(((TagValueAccessor) tagValue).getTag());
+        } else if (value instanceof ItemValue itemValue) {
+            return item == ((ItemValueAccessor) itemValue).getItem().getItem();
+        }
         return inner.test(stack);
     }
 
@@ -142,7 +160,7 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public boolean isEmpty() {
-        return inner.isEmpty();
+        return isEmpty;
     }
 
     @Override
@@ -150,6 +168,13 @@ public class SizedIngredient extends Ingredient {
         int result = amount;
         result = 31 * result + Arrays.hashCode(itemStacks);
         return result;
+    }
+
+    public static Ingredient getInner(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            return sizedIngredient.inner;
+        }
+        return ingredient;
     }
 
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {

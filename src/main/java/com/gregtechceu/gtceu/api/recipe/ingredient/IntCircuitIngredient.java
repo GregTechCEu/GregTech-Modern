@@ -60,10 +60,6 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
         return stacks;
     }
 
-    public IntCircuitIngredient copy() {
-        return new IntCircuitIngredient(this.configuration);
-    }
-
     @Override
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
@@ -87,13 +83,13 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
         @Override
         public @NotNull IntCircuitIngredient parse(FriendlyByteBuf buffer) {
             int configuration = buffer.readVarInt();
-            return new IntCircuitIngredient(configuration);
+            return circuitInput(configuration);
         }
 
         @Override
         public @NotNull IntCircuitIngredient parse(JsonObject json) {
             int configuration = json.get("configuration").getAsInt();
-            return new IntCircuitIngredient(configuration);
+            return circuitInput(configuration);
         }
 
         @Override
