@@ -159,6 +159,9 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     public static IntProviderFluidIngredient of(FluidStack stack, IntProvider provider) {
         return IntProviderFluidIngredient.of(FluidIngredient.of(stack), provider);
     }
+    public static IntProviderFluidIngredient of(FluidStack stack, int min, int max) {
+        return IntProviderFluidIngredient.of(FluidIngredient.of(stack), UniformInt.of(min, max));
+    }
 
     public static IntProviderFluidIngredient of(IntProvider countProvider, Fluid... fluids) {
         return IntProviderFluidIngredient.of(Arrays.stream(fluids), countProvider, null);
@@ -195,6 +198,54 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     public static IntProviderFluidIngredient of(TagKey<Fluid> tag, int min, int max, CompoundTag nbt) {
         return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, nbt, UniformInt.of(min, max));
+    }
+
+    public CompoundTag writeToNBT(CompoundTag nbt) {
+        nbt.putString("FluidName", ForgeRegistries.FLUIDS.getKey(this.inner.getStacks()[0].getFluid()).toString());
+        nbt.putInt("Amount", this.amount);
+        if (this.nbt != null) {
+            nbt.put("Tag", this.nbt);
+        }
+        nbt.putInt("Minimum", this.getCountProvider().getMinValue());
+        nbt.putInt("Maximum", this.getCountProvider().getMaxValue());
+        return nbt;
+    }
+
+    public static FluidIngredient loadFluidIngredientFromNBT(CompoundTag nbt) {
+        if (nbt == null) {
+            return EMPTY;
+        } else if (!nbt.contains("FluidName", 8)) {
+            return EMPTY;
+        } else {
+            if (nbt.contains("Minimum")){
+                ResourceLocation fluidName = new ResourceLocation(nbt.getString("FluidName"));
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidName);
+                if (fluid == null) {
+                    return EMPTY;
+                } else {
+                    int max = nbt.getInt("Maximum");
+                    FluidStack stack = new FluidStack(fluid, max);
+                    if (nbt.contains("Tag", 10)) {
+                        stack.setTag(nbt.getCompound("Tag"));
+                    }
+                    int min = nbt.getInt("Minimum");
+                    return IntProviderFluidIngredient.of(stack, min, max);
+                }
+            }
+            else {
+                ResourceLocation fluidName = new ResourceLocation(nbt.getString("FluidName"));
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidName);
+                if (fluid == null) {
+                    return EMPTY;
+                } else {
+                    FluidStack stack = new FluidStack(fluid, nbt.getInt("Amount"));
+                    if (nbt.contains("Tag", 10)) {
+                        stack.setTag(nbt.getCompound("Tag"));
+                    }
+                    return FluidIngredient.of(stack);
+                }
+            }
+        }
     }
 
     @Override

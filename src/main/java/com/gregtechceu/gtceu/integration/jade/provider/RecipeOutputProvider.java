@@ -6,6 +6,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -19,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
@@ -65,7 +70,12 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     var stack = stacks[0];
 
                     var itemTag = new CompoundTag();
-                    GTUtil.saveItemStack(stack, itemTag);
+//                    if (item.content instanceof IntProviderIngredient){
+                        GTUtil.saveIngredient((Ingredient)item.content, itemTag);
+//                    }
+//                    else {
+//                        GTUtil.saveItemStack(stack, itemTag);
+//                    }
                     if (item.chance < item.maxChance) {
                         int count = stack.getCount();
                         double countD = (double) count * recipe.parallels *
@@ -88,7 +98,12 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     var stack = stacks[0];
 
                     var fluidTag = new CompoundTag();
-                    stack.writeToNBT(fluidTag);
+                    if (fluid.content instanceof IntProviderFluidIngredient provider){
+                        provider.writeToNBT(fluidTag);
+                    }
+                    else {
+                        stack.writeToNBT(fluidTag);
+                    }
                     if (fluid.chance < fluid.maxChance) {
                         int amount = stack.getAmount();
                         double amountD = (double) amount * recipe.parallels *
@@ -110,28 +125,41 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (capData.getBoolean("Working")) {
-            List<ItemStack> outputItems = new ArrayList<>();
+            List<Ingredient> outputItems = new ArrayList<>();
             if (capData.contains("OutputItems", Tag.TAG_LIST)) {
                 ListTag itemTags = capData.getList("OutputItems", Tag.TAG_COMPOUND);
                 if (!itemTags.isEmpty()) {
                     for (Tag tag : itemTags) {
                         if (tag instanceof CompoundTag tCompoundTag) {
-                            var stack = GTUtil.loadItemStack(tCompoundTag);
-                            if (!stack.isEmpty()) {
-                                outputItems.add(stack);
-                            }
+//                            if (tCompoundTag.contains("Minimum")){
+                                var ingredient = GTUtil.loadIngredient(tCompoundTag);
+//
+//                            }
+//                            else{
+//                                var stack = GTUtil.loadItemStack(tCompoundTag);
+                                if (!ingredient.isEmpty()) {
+                                    outputItems.add(ingredient);
+                                }
+//                            }
                         }
                     }
                 }
             }
-            List<FluidStack> outputFluids = new ArrayList<>();
+            List<FluidIngredient> outputFluids = new ArrayList<>();
             if (capData.contains("OutputFluids", Tag.TAG_LIST)) {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {
-                        var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
-                        if (!stack.isEmpty()) {
-                            outputFluids.add(stack);
+                        if (tCompoundTag.contains("Minimum")) {
+                            var ingredient = IntProviderFluidIngredient.loadFluidIngredientFromNBT(tCompoundTag);
+                            outputFluids.add(ingredient);
+                        }
+                        else
+                        {
+                            var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
+                            if (!stack.isEmpty()) {
+                                outputFluids.add(FluidIngredient.of(stack));
+                            }
                         }
                     }
                 }
@@ -144,32 +172,57 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         }
     }
 
-    private void addItemTooltips(ITooltip iTooltip, List<ItemStack> outputItems) {
+    private void addItemTooltips(ITooltip iTooltip, List<Ingredient> outputItems) {
         IElementHelper helper = iTooltip.getElementHelper();
-        for (ItemStack itemOutput : outputItems) {
+        for (Ingredient itemOutput : outputItems) {
             if (itemOutput != null && !itemOutput.isEmpty()) {
-                int count = itemOutput.getCount();
-                itemOutput.setCount(1);
-                iTooltip.add(helper.smallItem(itemOutput));
-                Component text = Component.literal(" ")
-                        .append(String.valueOf(count))
-                        .append("× ")
-                        .append(getItemName(itemOutput))
-                        .withStyle(ChatFormatting.WHITE);
+                ItemStack item = itemOutput.getItems()[0];
+                int count = item.getCount();
+                item.setCount(1);
+                iTooltip.add(helper.smallItem(item));
+                Component text;
+                if (itemOutput instanceof IntProviderIngredient){
+                    text = Component.literal(" ")
+                            .append(String.valueOf(((IntProviderIngredient) itemOutput).getCountProvider().getMinValue()))
+                            .append("-")
+                            .append(String.valueOf(((IntProviderIngredient) itemOutput).getCountProvider().getMaxValue()))
+                            .append("× ")
+                            .append(getItemName(item))
+                            .withStyle(ChatFormatting.WHITE);
+                }
+                else {
+                     text = Component.literal(" ")
+                            .append(String.valueOf(count))
+                            .append("× ")
+                            .append(getItemName(item))
+                            .withStyle(ChatFormatting.WHITE);
+                }
                 iTooltip.append(text);
             }
         }
     }
 
-    private void addFluidTooltips(ITooltip iTooltip, List<FluidStack> outputFluids) {
-        for (FluidStack fluidOutput : outputFluids) {
+    private void addFluidTooltips(ITooltip iTooltip, List<FluidIngredient> outputFluids) {
+        for (FluidIngredient fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
-                iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput)));
-                Component text = Component.literal(" ")
-                        .append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true))
-                        .append(" ")
-                        .append(getFluidName(fluidOutput))
-                        .withStyle(ChatFormatting.WHITE);
+                iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
+                Component text;
+                if (fluidOutput instanceof IntProviderFluidIngredient) {
+                    text =  Component.literal(" ")
+                            .append(FluidTextHelper.getUnicodeMillibuckets(((IntProviderFluidIngredient) fluidOutput).getCountProvider().getMinValue(), true))
+                            .append("-")
+                            .append(FluidTextHelper.getUnicodeMillibuckets(((IntProviderFluidIngredient) fluidOutput).getCountProvider().getMaxValue(), true))
+                            .append(" ")
+                            .append(getFluidName(fluidOutput.getStacks()[0]))
+                            .withStyle(ChatFormatting.WHITE);
+                }
+                else {
+                     text =  Component.literal(" ")
+                            .append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true))
+                            .append(" ")
+                            .append(getFluidName(fluidOutput.getStacks()[0]))
+                            .withStyle(ChatFormatting.WHITE);
+                }
                 iTooltip.append(text);
             }
         }

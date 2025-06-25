@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -138,10 +139,17 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             for (int tank = 0; tank < storages.length; ++tank) {
                 FluidStack stored = getFluidInTank(tank);
                 int amount = (visited[tank] == null ? stored.getAmount() : visited[tank].getAmount());
+                int drain;
+                if (simulate && ingredient instanceof IntProviderFluidIngredient provider) {
+                    drain = provider.getCountProvider().getMaxValue();
+                }
+                else{
+                    drain = ingredient.getAmount();
+                }
                 if (io == IO.IN) {
                     if (amount == 0) continue;
                     if ((visited[tank] == null && ingredient.test(stored)) || ingredient.test(visited[tank])) {
-                        var drained = storages[tank].drain(ingredient.getAmount(), action);
+                        var drained = storages[tank].drain(drain, action);
                         if (drained.getAmount() > 0) {
                             visited[tank] = drained.copy();
                             visited[tank].setAmount(amount - drained.getAmount());
@@ -150,7 +158,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     }
                 } else { // IO.OUT && No tank already has this output
                     FluidStack output = fluids[0].copy();
-                    output.setAmount(ingredient.getAmount());
+                    output.setAmount(drain);
                     if (visited[tank] == null || visited[tank].isFluidEqual(output)) {
                         int filled = storages[tank].fill(output, action);
                         if (filled > 0) {
