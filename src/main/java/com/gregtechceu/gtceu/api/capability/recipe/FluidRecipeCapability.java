@@ -9,10 +9,15 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+<<<<<<< RangedFluidOutputs
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
+=======
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
+>>>>>>> IngredientRewrite
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -89,6 +94,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
+<<<<<<< RangedFluidOutputs
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
         if (obj instanceof IntProviderFluidIngredient ingredient) {
@@ -116,6 +122,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
+=======
+>>>>>>> IngredientRewrite
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {

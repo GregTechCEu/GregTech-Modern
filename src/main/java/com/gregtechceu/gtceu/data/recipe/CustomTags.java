@@ -120,6 +120,8 @@ public class CustomTags {
     public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
 
+    public static final TagKey<Block> CLEANROOM_DOORS = TagUtil.createModBlockTag("cleanroom_doors");
+
     public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
 
     // Mineability tags

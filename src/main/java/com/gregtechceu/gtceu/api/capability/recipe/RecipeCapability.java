@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientFunction;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -24,6 +26,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,16 +115,6 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
-    /**
-     * Convert the passed object to a list of recipe lookup filters.
-     *
-     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
-     * @return a list of recipe lookup filters.
-     */
-    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
-        return List.of();
-    }
-
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
     }
@@ -129,7 +122,7 @@ public abstract class RecipeCapability<T> {
     public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
         List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
         for (var ingredient : ingredients) {
-            ret.add(convertToMapIngredient(ingredient));
+            ret.add(MapIngredientTypeManager.getFrom(ingredient));
         }
         return ret;
     }

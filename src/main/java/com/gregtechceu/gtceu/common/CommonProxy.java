@@ -19,10 +19,10 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.*;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -56,8 +56,13 @@ import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -237,6 +242,30 @@ public class CommonProxy {
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
+
+            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidMapIngredient::from);
+            // spotless:off
+            MapIngredientTypeManager.registerMapIngredient(SizedIngredient.class,
+                    (sized) -> MapIngredientTypeManager.getFrom(sized.getInner()));
+            MapIngredientTypeManager.registerMapIngredient(IntProviderIngredient.class,
+                    (intProvider) -> MapIngredientTypeManager.getFrom(intProvider.getInner()));
+
+            MapIngredientTypeManager.registerMapIngredient(StrictNBTIngredient.class,
+                    MapIngredientFunction.terminal(StrictNBTItemStackMapIngredient::from));
+            MapIngredientTypeManager.registerMapIngredient(PartialNBTIngredient.class,
+                    MapIngredientFunction.terminal(PartialNBTItemStackMapIngredient::from));
+            MapIngredientTypeManager.registerMapIngredient(IntersectionIngredient.class,
+                    MapIngredientFunction.terminal(IntersectionMapIngredient::from));
+            MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemTagMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemStackMapIngredient::from);
+
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, ItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, ItemTagMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, StrictNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, IntersectionMapIngredient::from);
+            // spotless:on
         });
     }
 
