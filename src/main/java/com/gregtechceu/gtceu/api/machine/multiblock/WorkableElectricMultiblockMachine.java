@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -21,6 +19,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -38,6 +38,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine,
                                                IDisplayUIMachine, ITieredMachine, IOverclockMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            WorkableElectricMultiblockMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+
+    @Getter
+    @Persisted
+    private boolean batchProcessing;
 
     // runtime
     protected EnergyContainerList energyContainer;
@@ -130,6 +137,21 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     public void attachTooltips(TooltipsPanel tooltipsPanel) {
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
+        }
+    }
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+        if (isGenerator()) {
+            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0, 1, 0.5),
+                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0.5, 1, 0.5), this::isBatchProcessing,
+                    (clickData, pressed) -> batchProcessing = pressed).setTooltipsSupplier(
+                            pressed -> List.of(Component.translatable("gtocore.machine.batch_processing").append("[")
+                                    .append(Component
+                                            .translatable(pressed ? "gtocore.machine.on" : "gtocore.machine.off")
+                                            .append("]")))));
         }
     }
 

@@ -596,4 +596,7 @@ public class GuiTextures {
             "gtceu:textures/gui/widget/hpca/damaged_advanced_computation_component.png");
     public static final ResourceTexture HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT = new ResourceTexture(
             "gtceu:textures/gui/widget/hpca/damaged_computation_component.png");
+
+    public static final ResourceTexture BATCH_MODE_ICON = new ResourceTexture(
+            "gtceu:textures/gui/widget/batch_mode.png");
 }
