@@ -2,17 +2,15 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
-
 public class ArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
-        generateArmorKeys(provider);
+        generateArmorMessageKeys(provider);
         generateTooltipKeys(provider);
         generateHudKeys(provider);
     }
 
-    private static void generateArmorKeys(RegistrateLangProvider provider) {
+    private static void generateArmorMessageKeys(RegistrateLangProvider provider) {
         // NanoMuscle Suit
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled", " NanoMuscle™ Suite: §cNightVision Disabled");
@@ -38,10 +36,10 @@ public class ArmorLang {
         provider.add("armor.gtceu.jetpack.hover.disabled", "Jetpack: Hover Mode Disabled");
         provider.add("armor.gtceu.jetpack.emergency_hover_mode", "§aEmergency Hover Mode Enabled!");
 
-        // Night Vision
-        provider.add("armor.gtceu.message.nightvision.enabled", "NightVision: §aOn");
-        provider.add("armor.gtceu.message.nightvision.disabled", "NightVision: §cOff");
-        provider.add("armor.gtceu.message.nightvision.error", "Not enough power!");
+        // Night Vision Goggles
+        provider.add("armor.gtceu.message.nightvision.enabled", "§7NightVision: §aOn");
+        provider.add("armor.gtceu.message.nightvision.disabled", "§7NightVision: §cOff");
+        provider.add("armor.gtceu.message.nightvision.error", "§cNot enough power!");
     }
 
     private static void generateTooltipKeys(RegistrateLangProvider provider) {
