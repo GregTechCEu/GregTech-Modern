@@ -35,6 +35,11 @@ public final class MapIngredientTypeManager {
             values.addAll(function.getIngredients(object));
             if (function.terminal()) break;
         }
+        if (values.isEmpty()) {
+            if (object instanceof Ingredient ingredient) {
+                values.addAll(CustomMapIngredient.from(ingredient));
+            }
+        }
         return values;
     }
 
