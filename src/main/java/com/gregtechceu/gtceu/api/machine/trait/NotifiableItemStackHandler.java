@@ -107,18 +107,22 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
             ItemStack[] items;
             int amount;
-            boolean isIntProvider = ingredient instanceof IntProviderIngredient;
-            if (io == IO.OUT && isIntProvider) {
-                IntProviderIngredient provider = (IntProviderIngredient) ingredient;
+            if (io == IO.OUT && ingredient instanceof IntProviderIngredient provider) {
                 provider.setItemStacks(null);
                 provider.setSampledCount(-1);
 
-                items = ingredient.getItems();
-                if (items.length == 0 || items[0].isEmpty()) {
-                    it.remove();
-                    continue;
+                ItemStack output;
+                if (simulate) {
+                    output = provider.getMaxSizeStack();
+                    items = new ItemStack[] { output };
+                } else {
+                    items = provider.getItems();
+                    if (items.length == 0 || items[0].isEmpty()) {
+                        it.remove();
+                        continue;
+                    }
+                    output = items[0];
                 }
-                ItemStack output = items[0];
 
                 int outputStorageLimit = 0;
                 for (int slot = 0; slot < storage.getSlots(); ++slot) {
@@ -133,7 +137,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 } else if (simulate) {
                     amount = provider.getCountProvider().getMaxValue();
                 } else {
-                    amount = Math.min(items[0].getCount(), outputStorageLimit);
+                    amount = Math.min(output.getCount(), outputStorageLimit);
                 }
             } else {
                 items = ingredient.getItems();

@@ -71,6 +71,11 @@ public class IntProviderIngredient extends Ingredient {
         return itemStacks;
     }
 
+    public @NotNull ItemStack getMaxSizeStack() {
+        if (inner.getItems().length == 0) return ItemStack.EMPTY;
+        else return inner.getItems()[0].copyWithCount(countProvider.getMaxValue());
+    }
+
     public int getSampledCount(@NotNull RandomSource random) {
         if (sampledCount == -1) {
             sampledCount = countProvider.sample(random);
