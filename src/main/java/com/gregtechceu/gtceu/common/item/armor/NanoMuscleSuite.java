@@ -61,10 +61,10 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("armor.gtceu.nanomusclesuite.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("armor.gtceu.nanomusclesuite.nightvision." + (nightVision ? "enabled" : "disabled")),
+                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." + (nightVision ? "enabled" : "disabled")),
                             true);
                 }
             }
@@ -96,7 +96,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("armor.gtceu.nanomusclesuite.nightvision.disabled"), true);
+                player.displayClientMessage(Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.disabled"), true);
         }
     }
 

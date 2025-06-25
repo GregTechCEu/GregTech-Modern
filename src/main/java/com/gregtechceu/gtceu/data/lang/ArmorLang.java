@@ -14,22 +14,22 @@ public class ArmorLang {
 
     private static void generateArmorKeys(RegistrateLangProvider provider) {
         // NanoMuscle Suit
-        provider.add("armor.gtceu.nanomusclesuite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
-        provider.add("armor.gtceu.nanomusclesuite.nightvision.disabled", " NanoMuscle™ Suite: §cNightVision Disabled");
-        provider.add("armor.gtceu.nanomusclesuite.boosted_jump.enabled", "NanoMuscle™ Suite: §aJump Boost Enabled");
-        provider.add("armor.gtceu.nanomusclesuite.boosted_jump.disabled", " NanoMuscle™ Suite: §cJump Boost Disabled");
-        provider.add("armor.gtceu.nanomusclesuite.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
-        provider.add("armor.gtceu.nanomusclesuite.charge.enabled", "NanoMuscle™ Suite: §aCharging Enabled");
-        provider.add("armor.gtceu.nanomusclesuite.charge.disable", " NanoMuscle™ Suite: §cCharging Disabled");
-        provider.add("armor.gtceu.nanomusclesuite.charge.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
+        provider.add("armor.gtceu.nano_muscle_suite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
+        provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled", " NanoMuscle™ Suite: §cNightVision Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.enabled", "NanoMuscle™ Suite: §aJump Boost Enabled");
+        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.disabled", " NanoMuscle™ Suite: §cJump Boost Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
+        provider.add("armor.gtceu.nano_muscle_suite.charge.enabled", "NanoMuscle™ Suite: §aCharging Enabled");
+        provider.add("armor.gtceu.nano_muscle_suite.charge.disable", " NanoMuscle™ Suite: §cCharging Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.charge.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
 
         // Quantum Suit
-        provider.add("armor.gtceu.quarktechsuite.nightvision.enabled", "QuarkTech™ Suite: §aNightVision Enabled");
-        provider.add("armor.gtceu.quarktechsuite.nightvision.disabled", "QuarkTech™ Suite: §cNightVision Disabled");
-        provider.add("armor.gtceu.quarktechsuite.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
-        provider.add("armor.gtceu.quarktechsuite.charge.enabled", "QuarkTech™ Suite: §aCharging Enabled");
-        provider.add("armor.gtceu.quarktechsuite.charge.disable", "QuarkTech™ Suite: §cCharging Disabled");
-        provider.add("armor.gtceu.quarktechsuite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
+        provider.add("armor.gtceu.quark_tech_suite.nightvision.enabled", "QuarkTech™ Suite: §aNightVision Enabled");
+        provider.add("armor.gtceu.quark_tech_suite.nightvision.disabled", "QuarkTech™ Suite: §cNightVision Disabled");
+        provider.add("armor.gtceu.quark_tech_suite.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
+        provider.add("armor.gtceu.quark_tech_suite.charge.enabled", "QuarkTech™ Suite: §aCharging Enabled");
+        provider.add("armor.gtceu.quark_tech_suite.charge.disable", "QuarkTech™ Suite: §cCharging Disabled");
+        provider.add("armor.gtceu.quark_tech_suite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
 
         // Jetpacks
         provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: Flight Enabled");
@@ -45,7 +45,7 @@ public class ArmorLang {
     }
 
     private static void generateTooltipKeys(RegistrateLangProvider provider) {
-        provider.add("item.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
+        provider.add("item.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust");
 
         // Armor Abilities
         provider.add("armor.gtceu.tooltip.stepassist", "Provides Step-Assist");
