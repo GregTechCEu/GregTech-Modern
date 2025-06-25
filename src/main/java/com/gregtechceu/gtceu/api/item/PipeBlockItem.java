@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -43,7 +44,8 @@ public class PipeBlockItem extends BlockItem {
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
         if (GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("gtceu.tool_action.wire_cutter.connect"));
+            var tool = getBlock().getPipeTuneTool();
+            tooltip.add(Component.translatable("gtceu.tool_action." + tool.name + ".connect"));
         } else {
             tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
         }
