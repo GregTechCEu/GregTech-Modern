@@ -688,8 +688,11 @@ public class GTRecipeTypes {
                 ToolHeadReplaceRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_fluid_container"),
                 ShapedFluidContainerRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shapeless_tool_forged"),
-                OvergearedGTToolBonusRecipeBuilder.SERIALIZER);
+
+        if (GTCEu.Mods.isOvergearedLoaded()) {GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER,
+                GTCEu.id("crafting_shapeless_tool_forged"), OvergearedGTToolBonusRecipeBuilder.SERIALIZER);
+        }
+
     }
 
     public static GTRecipeType get(String name) {
