@@ -62,13 +62,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         super("fluid", 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
     }
 
-    @Override
-    public FluidIngredient copyInner(FluidIngredient content) {
-        if (content instanceof IntProviderFluidIngredient) {
-            return ((IntProviderFluidIngredient) content).copy();
-        }
-        return content.copy();
-    }
+//    @Override
+//    public FluidIngredient copyInner(FluidIngredient content) {
+//        if (content instanceof IntProviderFluidIngredient) {
+//            return ((IntProviderFluidIngredient) content).copy();
+//        }
+//        return content.copy();
+//    }
 
     @Override
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
@@ -92,30 +92,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
         if (obj instanceof IntProviderFluidIngredient ingredient) {
-            for (FluidIngredient.Value value : ingredient.values) {
-                if (value instanceof FluidIngredient.TagValue tagValue) {
-                    ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
-                } else {
-                    Collection<Fluid> fluids = value.getFluids();
-                    for (Fluid fluid : fluids) {
-                        // ingredients.add(new MapFluidIngredient(
-                        // new FluidStack(fluid,
-                        // ingredient.getAmount(),
-                        // ingredient.getNbt())));
-                        if (ingredient.getCountProvider() == null) {
-                            ingredients.add(new MapFluidIngredient(
-                                    new FluidStack(fluid,
-                                            ingredient.getAmount(),
-                                            ingredient.getNbt())));
-                        } else {
-                            ingredients.add(new MapFluidIngredient(
-                                    new FluidStack(fluid,
-                                            ingredient.getCountProvider().sample(GTValues.RNG),
-                                            ingredient.getNbt())));
-                        }
-                    }
-                }
-            }
+            convertToMapIngredient(ingredient.getInner());
         } else if (obj instanceof FluidIngredient ingredient) {
             for (FluidIngredient.Value value : ingredient.values) {
                 if (value instanceof FluidIngredient.TagValue tagValue) {
@@ -419,7 +396,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
-        boolean prov = ingredient instanceof IntProviderFluidIngredient;
         FluidTagList tags = new FluidTagList();
         FluidStackList fluids = new FluidStackList();
         for (FluidIngredient.Value value : ingredient.values) {

@@ -315,8 +315,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public JsonObject serialize() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("fluid",
-                    Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(this.fluid)).toString());
+            jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
             return jsonObject;
         }
 
