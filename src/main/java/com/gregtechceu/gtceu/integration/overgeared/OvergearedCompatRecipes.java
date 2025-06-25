@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.overgeared;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraftforge.common.Tags;
-import net.stirdrem.overgeared.datagen.OvergearedShapelessRecipeBuilder;
 import net.stirdrem.overgeared.datagen.ShapedForgingRecipeBuilder;
 
 import java.util.function.Consumer;
@@ -22,7 +22,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasToolPro
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasName;
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 
-public class OvergearedRecipes {
+public class OvergearedCompatRecipes {
 
     public static void init(Consumer<FinishedRecipe> consumer) {
         generateRecipes(consumer, GTToolType.PICKAXE, toolHeadPickaxe, 3, "###", "   ", "   ");
@@ -76,13 +76,13 @@ public class OvergearedRecipes {
                             .save(consumer);
                 }
 
-                OvergearedShapelessRecipeBuilder
+                OvergearedGTToolShapelessRecipeBuilder
                         .shapeless(RecipeCategory.MISC, ToolHelper.get(tool, material).getItem())
                         .requires(ChemicalHelper.get(prefix, material).getItem())
                         .requires(Tags.Items.RODS_WOODEN)
                         .unlockedBy(getHasName(ChemicalHelper.get(prefix, material).getItem()),
                                 has(ChemicalHelper.get(prefix, material).getItem()))
-                        .save(consumer);
+                        .save(consumer, GTCEu.id(ToolHelper.get(tool, material).getDescriptionId() + "overgeared_bonus"));
             }
         }
     }
