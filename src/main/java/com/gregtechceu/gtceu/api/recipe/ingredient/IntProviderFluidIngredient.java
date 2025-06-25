@@ -35,10 +35,6 @@ public class IntProviderFluidIngredient extends FluidIngredient{
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
 
-//    public static final Codec<IntProviderFluidIngredient> CODEC = Codec.PASSTHROUGH.xmap(
-//            dynamic -> IntProviderFluidIngredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
-//            ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
-
     @Getter
     private final IntProvider countProvider;
     @Getter
@@ -48,11 +44,10 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     @Setter
     protected FluidStack[] fluidStacks = null;
 
-//    public static final IntProviderFluidIngredient EMPTY = new IntProviderFluidIngredient(Stream.empty(), null, UniformInt.of(0, 0));
-
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider){
         super(Stream.empty(),provider.getMaxValue(),null);
         this.inner = inner;
+        this.amount=inner.amount;
         this.values = inner.values;
         this.countProvider = provider;
     }
@@ -61,6 +56,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
                            IntProvider provider) {
         super(Stream.empty(), provider.getMaxValue(), nbt);
         this.inner = FluidIngredient.fromValues(ingredient, provider.getMaxValue(), nbt);
+        this.amount=inner.amount;
         this.values = inner.values;
         this.countProvider = provider;
     }
@@ -69,6 +65,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
                                          IntProvider provider) {
         super(Stream.empty(), amount, nbt);
         this.inner = FluidIngredient.fromValues(ingredient, provider.getMaxValue(), nbt);
+        this.amount=inner.amount;
         this.values = inner.values;
         this.countProvider = provider;
     }
@@ -76,6 +73,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     protected IntProviderFluidIngredient(IntProviderFluidIngredient original){
         super(Arrays.stream(original.inner.values).map(Value::copy), original.amount, original.nbt == null ? null : original.nbt.copy());
         this.inner=original.inner;
+        this.amount=inner.amount;
         this.values = inner.values;
         this.countProvider= original.countProvider;
         this.sampledCount=original.sampledCount;
@@ -85,6 +83,7 @@ public class IntProviderFluidIngredient extends FluidIngredient{
     protected IntProviderFluidIngredient(IntProviderFluidIngredient original, boolean roll){
         super(Arrays.stream(original.inner.values).map(Value::copy), original.amount, original.nbt == null ? null : original.nbt.copy());
         this.inner=original.inner;
+        this.amount=inner.amount;
         this.values = inner.values;
         this.countProvider= original.countProvider;
         if (roll){
@@ -104,36 +103,39 @@ public class IntProviderFluidIngredient extends FluidIngredient{
             Preconditions.checkArgument(countProvider.getMinValue() >= 0,
                     "IntProviderFluidIngredient must have a min value of at least 0.");
         }
-        IntProviderFluidIngredient ingredient = new IntProviderFluidIngredient(stream, amount, nbt, countProvider);
-//        return ingredient.getInner().isEmpty() ? FluidIngredient.EMPTY : ingredient;
-        return ingredient;
+
+        return          new IntProviderFluidIngredient(stream, amount, nbt, countProvider);
     }
 
     @Override
     public IntProviderFluidIngredient copy() {
+        return new IntProviderFluidIngredient(this);
+    }
+
+    public IntProviderFluidIngredient replicate (){
         return new IntProviderFluidIngredient(this, true);
     }
 
+    @Override
+    public int getAmount(){
+        if (amount == -1) {
+            return getSampledCount(GTValues.RNG);
+        }
+        return amount;
+    }
 
-//    @Override
-//    public FluidStack[] getStacks() {
-//        if (countProvider == null) {
-//            return super.getStacks();
-//        } else {
-//            inner.amount = countProvider.sample(GTValues.RNG);
-//            return inner.getStacks();
-//        }
-//    }
-
+    @Override
+    public void shrink (int amount){
+        setAmount(this.amount - amount);
+        inner.setAmount(inner.getAmount() - amount);
+        this.changed=true;
+    }
 
     @Override
     public FluidStack[] getStacks() {
         if (changed || fluidStacks == null) {
             inner.setAmount(getSampledCount(GTValues.RNG));
             this.fluidStacks = inner.getStacks();
-//            fluidStacks = Arrays.stream(inner.getStacks())
-//                    .map(stack -> new FluidStack(stack.getFluid(), getSampledCount(GTValues.RNG)))
-//                    .toArray(FluidStack[]::new);
             this.changed=false;
         }
         return fluidStacks;
@@ -148,37 +150,18 @@ public class IntProviderFluidIngredient extends FluidIngredient{
         return sampledCount;
     }
 
-//    public FluidIngredient resolve(){
-//        FluidIngredient clone = FluidIngredient.of(inner.getStacks());
-//        clone.setAmount(getSampledCount(GTValues.RNG));
-//        return clone;
-//    }
 
-    public IntProviderFluidIngredient replicate (){
-        IntProviderFluidIngredient replica = new IntProviderFluidIngredient(this.inner, this.countProvider);
-        replica.getSampledCount(GTValues.RNG);
-        return new IntProviderFluidIngredient(replica);
+    //TODO: rewrite the entire `of` stack
+    public static IntProviderFluidIngredient of(FluidIngredient inner, IntProvider provider) {
+        return new IntProviderFluidIngredient(inner.copy(), provider);
     }
 
-//    private FluidStack[] getRealStacks() {
-//        if (changed || this.fluidStacks == null) {
-//            List<FluidStack> fluidStacks = new ObjectArrayList<>(1);
-//            List<Fluid> found = new ObjectArrayList<>(1);
-//            for (Value value : this.values) {
-//                for (Fluid fluid : value.getFluids()) {
-//                    if (found.contains(fluid)) continue;
-//                    found.add(fluid);
-//                    fluidStacks.add(new FluidStack(fluid, this.amount, this.nbt));
-//                }
-//            }
-//            this.fluidStacks = fluidStacks.toArray(FluidStack[]::new);
-//            this.changed = false;
-//        }
-//        return this.stacks;
-//    }
+    public static IntProviderFluidIngredient of(FluidStack stack, IntProvider provider) {
+        return IntProviderFluidIngredient.of(FluidIngredient.of(stack), provider);
+    }
 
-    public static IntProviderFluidIngredient of(IntProvider countProvider, Fluid... items) {
-        return IntProviderFluidIngredient.of(Arrays.stream(items), countProvider, null);
+    public static IntProviderFluidIngredient of(IntProvider countProvider, Fluid... fluids) {
+        return IntProviderFluidIngredient.of(Arrays.stream(fluids), countProvider, null);
     }
 
     private static IntProviderFluidIngredient of(Stream<Fluid> stacks, IntProvider countProvider, CompoundTag nbt) {
@@ -186,22 +169,32 @@ public class IntProviderFluidIngredient extends FluidIngredient{
                 stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 1000, nbt,
                 countProvider);
     }
-    public static IntProviderFluidIngredient of(IntProvider countProvider, FluidStack... stacks) {
-        return IntProviderFluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid),
-                countProvider, stacks.length == 0 ? null : stacks[0].getTag());
+//
+//    public static IntProviderFluidIngredient of(IntProvider countProvider, FluidStack... stacks) {
+//        return IntProviderFluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid),
+//                countProvider, stacks.length == 0 ? null : stacks[0].getTag());
+//    }
+//
+//    public static IntProviderFluidIngredient of(Stream<Fluid> stacks,  CompoundTag nbt) {
+//        return IntProviderFluidIngredient.fromValues(
+//                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 1000, nbt,
+//                null);
+//    }
+
+    public static IntProviderFluidIngredient of(TagKey<Fluid> tag, IntProvider countProvider) {
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, null, countProvider);
     }
 
-    public static IntProviderFluidIngredient of(Stream<Fluid> stacks,  CompoundTag nbt) {
-        return IntProviderFluidIngredient.fromValues(
-                stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), 1000, nbt,
-                null);
-    }
-    public static IntProviderFluidIngredient of(TagKey<Fluid> tag) {
-        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, null, null);
+    public static IntProviderFluidIngredient of(TagKey<Fluid> tag, int min, int max) {
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, null, UniformInt.of(min, max));
     }
 
-    public static IntProviderFluidIngredient of(TagKey<Fluid> tag, CompoundTag nbt) {
-        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, nbt, null);
+    public static IntProviderFluidIngredient of(TagKey<Fluid> tag, IntProvider countProvider, CompoundTag nbt) {
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, nbt, countProvider);
+    }
+
+    public static IntProviderFluidIngredient of(TagKey<Fluid> tag, int min, int max, CompoundTag nbt) {
+        return IntProviderFluidIngredient.fromValues(Stream.of(new IntProviderFluidIngredient.TagValue(tag)), 1000, nbt, UniformInt.of(min, max));
     }
 
     @Override

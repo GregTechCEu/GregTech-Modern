@@ -18,6 +18,10 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
+import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
@@ -35,6 +39,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
@@ -68,7 +73,18 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
-        if (content.isEmpty()) return content.copy();
+        if (content.isEmpty()) {
+            return content.copy();
+        }
+        else if (content instanceof IntProviderFluidIngredient provider){
+            return IntProviderFluidIngredient.of(provider.getInner(),
+                    new FlooredInt(
+                            new AddedFloat(
+                                    new MultipliedFloat(
+                                            new CastedFloat(provider.getCountProvider()),
+                                            ConstantFloat.of((float) modifier.multiplier())),
+                                    ConstantFloat.of((float) modifier.addition()))));
+        }
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
         return copy;
@@ -84,6 +100,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
+//                        ingredients.add(new MapFluidIngredient(
+//                                new FluidStack(fluid,
+//                                        ingredient.getAmount(),
+//                                        ingredient.getNbt())));
                         if (ingredient.getCountProvider() == null) {
                             ingredients.add(new MapFluidIngredient(
                                     new FluidStack(fluid,
@@ -402,7 +422,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
-
+        boolean prov = ingredient instanceof IntProviderFluidIngredient;
         FluidTagList tags = new FluidTagList();
         FluidStackList fluids = new FluidStackList();
         for (FluidIngredient.Value value : ingredient.values) {

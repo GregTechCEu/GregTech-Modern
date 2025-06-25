@@ -359,8 +359,6 @@ public class GTRecipeComponents {
             GTRecipeCapabilities.FLUID, false);
     public static final ContentJS<FluidIngredientJS> FLUID_OUT = new ContentJS<>(FLUID_INGREDIENT_OUT,
             GTRecipeCapabilities.FLUID, true);
-//    public static final ContentJS<FluidIngredientJS> RANGED_FLUID_OUT = new ContentJS<>(RANGED_FLUID_INGREDIENT_OUT,
-//            GTRecipeCapabilities.FLUID, true);
     public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
             false);
     public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
@@ -428,7 +426,7 @@ public class GTRecipeComponents {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
             } else if (o instanceof IntProviderFluidIngredient ingredient) {
-                return new FluidIngredientJS(IntProviderFluidIngredient.of(ingredient.getStacks()));
+                return new FluidIngredientJS(ingredient.copy());
             }else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
