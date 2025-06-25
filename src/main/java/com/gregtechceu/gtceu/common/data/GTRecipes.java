@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
 import com.gregtechceu.gtceu.data.recipe.generated.*;
 import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
-import com.gregtechceu.gtceu.integration.overgeared.OvergearedRecipes;
+import com.gregtechceu.gtceu.integration.overgeared.OvergearedCompatRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -105,7 +105,7 @@ public class GTRecipes {
         }
 
         if (GTCEu.Mods.isOvergearedLoaded()) {
-            OvergearedRecipes.init(consumer);
+            OvergearedCompatRecipes.init(consumer);
         }
     }
 

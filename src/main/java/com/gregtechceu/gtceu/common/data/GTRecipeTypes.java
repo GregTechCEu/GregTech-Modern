@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.overgeared.OvergearedGTToolBonusRecipeBuilder;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -687,6 +688,8 @@ public class GTRecipeTypes {
                 ToolHeadReplaceRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shaped_fluid_container"),
                 ShapedFluidContainerRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("crafting_shapeless_tool_forged"),
+                OvergearedGTToolBonusRecipeBuilder.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {
