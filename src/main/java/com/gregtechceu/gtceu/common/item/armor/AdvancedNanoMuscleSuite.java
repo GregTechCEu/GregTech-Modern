@@ -155,7 +155,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         state = canShare ? Component.translatable("armor.gtceu.hud.status.enabled") :
                 Component.translatable("armor.gtceu.hud.status.disabled");
         lines.add(Component.translatable("armor.gtceu.energy_share.tooltip", state));
-        lines.add(Component.translatable("armor.gtceu.energy_share.tooltip.guide"));
+        lines.add(Component.translatable("armor.gtceu.energy_share.tooltip.info"));
 
         boolean hover = data.contains("hover") && data.getBoolean("hover");
         state = hover ? Component.translatable("armor.gtceu.hud.status.enabled") :
