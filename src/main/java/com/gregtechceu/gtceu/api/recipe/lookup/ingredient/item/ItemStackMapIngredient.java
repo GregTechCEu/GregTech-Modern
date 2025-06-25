@@ -1,11 +1,18 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ItemStackMapIngredient extends AbstractMapIngredient {
 
@@ -21,6 +28,20 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
         this.ingredient = ingredient;
     }
 
+    public static List<AbstractMapIngredient> from(Ingredient ingredient) {
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
+        for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
+            if (value instanceof ItemValueAccessor itemValue) {
+                ingredients.add(new ItemStackMapIngredient(itemValue.getItem(), ingredient));
+            }
+        }
+        return ingredients;
+    }
+
+    public static List<AbstractMapIngredient> from(ItemStack stack) {
+        return Collections.singletonList(new ItemStackMapIngredient(stack));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
@@ -31,6 +52,8 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
                     return IngredientEquality.ingredientEquals(this.ingredient, other.ingredient);
+                } else {
+                    return this.ingredient.test(other.stack);
                 }
             } else if (other.ingredient != null) {
                 return other.ingredient.test(this.stack);

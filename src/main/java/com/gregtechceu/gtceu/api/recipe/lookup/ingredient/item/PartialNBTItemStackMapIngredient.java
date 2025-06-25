@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
@@ -8,11 +9,12 @@ import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
-    PartialNBTIngredient nbtIngredient;
+    protected PartialNBTIngredient nbtIngredient;
 
     public PartialNBTItemStackMapIngredient(ItemStack stack, PartialNBTIngredient nbtIngredient) {
         super(stack, nbtIngredient);
@@ -20,17 +22,26 @@ public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull PartialNBTIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull PartialNBTIngredient ingredient) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (ItemStack s : r.getItems()) {
-            list.add(new PartialNBTItemStackMapIngredient(s, r));
+        for (ItemStack s : ingredient.getItems()) {
+            list.add(new PartialNBTItemStackMapIngredient(s, ingredient));
         }
         return list;
     }
 
+    @NotNull
+    public static List<AbstractMapIngredient> from(@NotNull ItemStack stack) {
+        if (stack.getShareTag() != null) {
+            return Collections.singletonList(new PartialNBTItemStackMapIngredient(stack,
+                    PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
+        }
+        return Collections.emptyList();
+    }
+
     @Override
     protected int hash() {
-        return stack.getItem().hashCode() * 31;
+        return ItemStackHashStrategy.comparingAllButCount().hashCode(stack) * 31;
     }
 
     @Override
@@ -52,6 +63,8 @@ public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
                         }
                     }
                     return true;
+                } else {
+                    this.nbtIngredient.test(other.stack);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);

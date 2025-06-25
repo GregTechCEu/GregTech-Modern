@@ -309,7 +309,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public static class FluidValue implements Value {
 
-        private final Fluid fluid;
+        public final Fluid fluid;
 
         public FluidValue(Fluid item) {
             this.fluid = item;

@@ -2,14 +2,17 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
+import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
@@ -22,17 +25,25 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull StrictNBTIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull StrictNBTIngredient ingredient) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (ItemStack s : r.getItems()) {
-            list.add(new StrictNBTItemStackMapIngredient(s, r));
+        for (ItemStack s : ingredient.getItems()) {
+            list.add(new StrictNBTItemStackMapIngredient(s, ingredient));
         }
         return list;
     }
 
+    @NotNull
+    public static List<AbstractMapIngredient> from(@NotNull ItemStack stack) {
+        if (stack.hasTag()) {
+            return Collections.singletonList(new StrictNBTItemStackMapIngredient(stack, StrictNBTIngredient.of(stack)));
+        }
+        return Collections.emptyList();
+    }
+
     @Override
     protected int hash() {
-        return stack.getItem().hashCode() * 31;
+        return ItemStackHashStrategy.comparingAllButCount().hashCode(stack) * 31;
     }
 
     @Override
@@ -48,6 +59,8 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
                 if (other.nbtIngredient != null) {
                     return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
                             ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
+                } else {
+                    this.nbtIngredient.test(other.stack);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);

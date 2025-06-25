@@ -1,40 +1,60 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-import com.gregtechceu.gtceu.utils.IngredientEquality;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class IntersectionMapIngredient extends AbstractMapIngredient {
 
-    protected IntersectionIngredient intersectionIngredient;
-    protected List<Ingredient> ingredients;
+    @Getter
+    protected List<AbstractMapIngredient> children;
 
-    public IntersectionMapIngredient(IntersectionIngredient ingredient) {
-        this.intersectionIngredient = ingredient;
-        this.ingredients = new ArrayList<>(((IntersectionIngredientAccessor) ingredient).getChildren());
-        this.ingredients.sort(IngredientEquality.INGREDIENT_COMPARATOR);
+    public IntersectionMapIngredient(List<AbstractMapIngredient> children) {
+        this.children = children;
+        this.children.sort(Comparator.comparingInt(AbstractMapIngredient::hashCode));
+    }
+
+    public static List<AbstractMapIngredient> from(IntersectionIngredient ingredient) {
+        List<Ingredient> originalChildren = ((IntersectionIngredientAccessor) ingredient).getChildren();
+        List<AbstractMapIngredient> mapChildren = new ObjectArrayList<>();
+        for (var ing : originalChildren) {
+            mapChildren.addAll(MapIngredientTypeManager.getFrom(ing));
+        }
+
+        return Collections.singletonList(new IntersectionMapIngredient(mapChildren));
+    }
+
+    public static List<AbstractMapIngredient> from(ItemStack stack) {
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
+
+        if (!entry.isEmpty() && TagPrefix.ORES.containsKey(entry.tagPrefix())) {
+            List<AbstractMapIngredient> children = List.of(
+                    new ItemTagMapIngredient(entry.tagPrefix().getItemTags(entry.material())[0]),
+                    new ItemTagMapIngredient(entry.tagPrefix().getItemParentTags()[0]));
+            return Collections.singletonList(new IntersectionMapIngredient(children));
+        }
+        return Collections.emptyList();
     }
 
     @Override
     protected int hash() {
         int hash = 31;
-        for (Ingredient ingredient : ingredients) {
-            for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
-                if (value instanceof Ingredient.TagValue tagValue) {
-                    hash *= 31 * ((TagValueAccessor) tagValue).getTag().location().hashCode();
-                } else {
-                    hash *= 31 * ((ItemValueAccessor) value).getItem().getItem().hashCode();
-                }
-            }
+        for (var child : children) {
+            hash *= 31 * child.hashCode();
         }
         return hash;
     }
@@ -43,13 +63,13 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
     public boolean equals(Object o) {
         if (super.equals(o)) {
             IntersectionMapIngredient other = (IntersectionMapIngredient) o;
-            if (this.ingredients != null) {
-                if (other.ingredients != null) {
-                    if (this.ingredients.size() != other.ingredients.size()) return false;
-                    for (int i = 0; i < this.ingredients.size(); ++i) {
-                        Ingredient ingredient1 = this.ingredients.get(i);
-                        Ingredient ingredient2 = other.ingredients.get(i);
-                        if (!IngredientEquality.ingredientEquals(ingredient1, ingredient2)) {
+            if (this.children != null) {
+                if (other.children != null) {
+                    if (this.children.size() != other.children.size()) return false;
+                    for (int i = 0; i < this.children.size(); ++i) {
+                        var ingredient1 = this.children.get(i);
+                        var ingredient2 = other.children.get(i);
+                        if (!ingredient1.equals(ingredient2)) {
                             return false;
                         }
                     }
@@ -57,13 +77,28 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
                 }
             }
         } else if (o instanceof ItemStackMapIngredient stackIngredient) {
-            return this.intersectionIngredient.test(stackIngredient.stack);
+            for (var child : this.children) {
+                if (!child.equals(stackIngredient)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isSpecialIngredient() {
+        for (var child : this.children) {
+            if (child.isSpecialIngredient()) {
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "MapIntersectionIngredient{" + "ingredient=" + intersectionIngredient + "}";
+        return "MapIntersectionIngredient{" + "children=" + children + "}";
     }
 }

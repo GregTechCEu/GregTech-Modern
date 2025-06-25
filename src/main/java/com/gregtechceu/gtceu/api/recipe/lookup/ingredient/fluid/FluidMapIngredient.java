@@ -11,13 +11,14 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 public class FluidMapIngredient extends AbstractMapIngredient {
 
-    public final Fluid fluid;
-    public final CompoundTag tag;
+    protected Fluid fluid;
+    protected CompoundTag tag;
 
     public FluidMapIngredient(FluidStack fluidStack) {
         this.fluid = fluidStack.getFluid();
@@ -25,12 +26,15 @@ public class FluidMapIngredient extends AbstractMapIngredient {
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient r) {
-        ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (FluidStack s : r.getStacks()) {
-            list.add(new FluidMapIngredient(s));
+    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient ingredient) {
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
+        for (FluidIngredient.Value value : ingredient.values) {
+            if (value instanceof FluidIngredient.FluidValue fluidValue) {
+                ingredients.add(new FluidMapIngredient(
+                        new FluidStack(fluidValue.fluid, ingredient.getAmount(), ingredient.getNbt())));
+            }
         }
-        return list;
+        return ingredients;
     }
 
     @Override
