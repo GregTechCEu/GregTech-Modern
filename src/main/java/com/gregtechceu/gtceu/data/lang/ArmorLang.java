@@ -18,7 +18,7 @@ public class ArmorLang {
         provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.disabled", " NanoMuscle™ Suite: §cJump Boost Disabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("armor.gtceu.nano_muscle_suite.charge.enabled", "NanoMuscle™ Suite: §aCharging Enabled");
-        provider.add("armor.gtceu.nano_muscle_suite.charge.disable", " NanoMuscle™ Suite: §cCharging Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.charge.disabled", " NanoMuscle™ Suite: §cCharging Disabled");
         provider.add("armor.gtceu.nano_muscle_suite.charge.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
 
         // Quantum Suit
@@ -26,7 +26,7 @@ public class ArmorLang {
         provider.add("armor.gtceu.quark_tech_suite.nightvision.disabled", "QuarkTech™ Suite: §cNightVision Disabled");
         provider.add("armor.gtceu.quark_tech_suite.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
         provider.add("armor.gtceu.quark_tech_suite.charge.enabled", "QuarkTech™ Suite: §aCharging Enabled");
-        provider.add("armor.gtceu.quark_tech_suite.charge.disable", "QuarkTech™ Suite: §cCharging Disabled");
+        provider.add("armor.gtceu.quark_tech_suite.charge.disabled", "QuarkTech™ Suite: §cCharging Disabled");
         provider.add("armor.gtceu.quark_tech_suite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
 
         // Jetpacks
@@ -58,8 +58,8 @@ public class ArmorLang {
 
         // Energy Tooltips (iaddinfo)
         provider.add("armor.gtceu.energy_share.error", "§cNot Enough Power for Charging Gadgets!");
-        provider.add("armor.gtceu.energy_share.enable", "§aGadget Charging Enabled");
-        provider.add("armor.gtceu.energy_share.disable", "§cGadget Charging Disabled");
+        provider.add("armor.gtceu.energy_share.enabled", "§aGadget Charging Enabled");
+        provider.add("armor.gtceu.energy_share.disabled", "§cGadget Charging Disabled");
         provider.add("armor.gtceu.energy_share.tooltip", "Supply Mode: %s");
         provider.add("armor.gtceu.energy_share.tooltip.info", "To change mode, SHIT + R-CLICK when holding item");
     }

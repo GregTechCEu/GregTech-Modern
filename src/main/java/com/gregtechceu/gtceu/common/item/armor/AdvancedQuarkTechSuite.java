@@ -185,9 +185,9 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
                 if (canShare && cont.getCharge() == 0) {
                     player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.error"));
                 } else if (canShare) {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enabled"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enabledd"));
                 } else {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disabled"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disabledd"));
                 }
             }
 
