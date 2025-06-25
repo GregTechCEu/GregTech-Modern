@@ -214,8 +214,8 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         if (this.nbt != null) {
             nbt.put("Tag", this.nbt);
         }
-        nbt.putInt("Minimum", this.getCountProvider().getMinValue());
-        nbt.putInt("Maximum", this.getCountProvider().getMaxValue());
+        nbt.put("count_provider", IntProvider.CODEC.encodeStart(NbtOps.INSTANCE, countProvider)
+                .getOrThrow(false, GTCEu.LOGGER::error));
         return nbt;
     }
 
@@ -240,17 +240,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
                     return IntProviderFluidIngredient.of(stack, min, max);
                 }
             } else {
-                ResourceLocation fluidName = new ResourceLocation(nbt.getString("FluidName"));
-                Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidName);
-                if (fluid == null) {
-                    return EMPTY;
-                } else {
-                    FluidStack stack = new FluidStack(fluid, nbt.getInt("Amount"));
-                    if (nbt.contains("Tag", 10)) {
-                        stack.setTag(nbt.getCompound("Tag"));
-                    }
-                    return FluidIngredient.of(stack);
-                }
+                return FluidIngredient.CODEC.parse(NbtOps.INSTANCE, nbt);
             }
         }
     }
