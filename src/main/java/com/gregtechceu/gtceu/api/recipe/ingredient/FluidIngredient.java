@@ -12,6 +12,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -38,10 +39,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Nullable
     public FluidStack[] stacks;
     @Getter
-    private int amount;
+    protected int amount;
     @Getter
-    private CompoundTag nbt;
-    private boolean changed = true;
+    protected CompoundTag nbt;
+    protected boolean changed = true;
 
     public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
         this.values = empty.toArray(Value[]::new);
@@ -53,29 +54,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
                                              @Nullable CompoundTag nbt) {
         FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
         return ingredient.isEmpty() ? EMPTY : ingredient;
-    }
-
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
-        buffer.writeVarInt(amount);
-        buffer.writeNbt(nbt);
-    }
-
-    public JsonElement toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.amount);
-        if (this.nbt != null) {
-            jsonObject.addProperty("nbt", this.nbt.getAsString());
-        }
-        if (this.values.length == 1) {
-            jsonObject.add("value", this.values[0].serialize());
-        }
-        JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
-            jsonArray.add(value.serialize());
-        }
-        jsonObject.add("value", jsonArray);
-        return jsonObject;
     }
 
     public FluidIngredient copy() {
@@ -213,6 +191,29 @@ public class FluidIngredient implements Predicate<FluidStack> {
                 buffer.readVarInt(), buffer.readNbt());
     }
 
+    public void toNetwork(FriendlyByteBuf buffer) {
+        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
+        buffer.writeVarInt(amount);
+        buffer.writeNbt(nbt);
+    }
+
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("amount", this.amount);
+        if (this.nbt != null) {
+            jsonObject.addProperty("nbt", this.nbt.getAsString());
+        }
+        if (this.values.length == 1) {
+            jsonObject.add("value", this.values[0].serialize());
+        }
+        JsonArray jsonArray = new JsonArray();
+        for (FluidIngredient.Value value : this.values) {
+            jsonArray.add(value.serialize());
+        }
+        jsonObject.add("value", jsonArray);
+        return jsonObject;
+    }
+
     public static FluidIngredient fromJson(@Nullable JsonElement json) {
         return FluidIngredient.fromJson(json, true);
     }
@@ -225,6 +226,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
+        if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
+            return IntProviderFluidIngredient.fromJson (json, true);
+        }
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
@@ -262,23 +266,16 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
     }
 
-    public static interface Value {
+    public interface Value {
 
-        public Collection<Fluid> getFluids();
+        Collection<Fluid> getFluids();
 
-        public JsonObject serialize();
+        JsonObject serialize();
 
-        public Value copy();
+        Value copy();
     }
 
-    public static class TagValue implements Value {
-
-        @Getter
-        private final TagKey<Fluid> tag;
-
-        public TagValue(TagKey<Fluid> tag) {
-            this.tag = tag;
-        }
+    public record TagValue(@Getter TagKey<Fluid> tag) implements Value {
 
         @Override
         public Collection<Fluid> getFluids() {
@@ -300,11 +297,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         public Value copy() {
             return new TagValue(this.tag);
         }
-
-        @Override
-        public int hashCode() {
-            return tag.hashCode();
-        }
     }
 
     public static class FluidValue implements Value {
@@ -323,7 +315,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public JsonObject serialize() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
+            jsonObject.addProperty("fluid",
+                    Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(this.fluid)).toString());
             return jsonObject;
         }
 

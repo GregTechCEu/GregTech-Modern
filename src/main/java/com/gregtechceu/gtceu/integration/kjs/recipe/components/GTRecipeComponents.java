@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
@@ -282,6 +283,9 @@ public class GTRecipeComponents {
 
         @Override
         public FluidIngredientJS read(RecipeJS recipe, Object from) {
+            if (from instanceof IntProviderFluidIngredient intProvider){
+                return new FluidIngredientJS(intProvider.replicate());
+            }
             return FluidIngredientJS.of(from);
         }
     };
@@ -421,7 +425,9 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
-            } else if (o instanceof FluidIngredient ingredient) {
+            } else if (o instanceof IntProviderFluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient.copy());
+            }else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));

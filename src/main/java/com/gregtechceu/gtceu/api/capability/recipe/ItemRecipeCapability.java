@@ -296,7 +296,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (recipeIngredient instanceof SizedIngredient sizedIngredient) {
                 ingredientCount = sizedIngredient.getAmount();
             } else if (recipeIngredient instanceof IntProviderIngredient intProviderIngredient) {
-                ingredientCount = intProviderIngredient.getSampledCount(GTValues.RNG);
+                ingredientCount = intProviderIngredient.getCountProvider().getMaxValue();
             } else {
                 ingredientCount = 1;
             }

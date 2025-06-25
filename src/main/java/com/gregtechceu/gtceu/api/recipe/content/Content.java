@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
@@ -130,15 +131,24 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            int amount = ingredient.getAmount();
             Font fontRenderer = Minecraft.getInstance().font;
+            int amount = ingredient.getAmount();
             String s = FormattingUtil.formatBuckets(amount);
+            int color = 0xFFFFFF;
+            if (content instanceof IntProviderFluidIngredient provider){
+                color = 0xEE0000;
+                amount = provider.getCountProvider().getMaxValue();
+                s = "[" + FormattingUtil.formatBuckets(amount) + "]";
+                if (s.length() > 5) {
+                    s = "X-Y";
+                }
+            }
             if (fontRenderer.width(s) > 32)
                 s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
             if (fontRenderer.width(s) > 32)
                 s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
-                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+                    (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
     }
