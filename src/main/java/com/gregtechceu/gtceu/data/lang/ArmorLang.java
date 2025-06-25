@@ -30,9 +30,9 @@ public class ArmorLang {
         provider.add("armor.gtceu.quark_tech_suite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
 
         // Jetpacks
-        provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: Flight Enabled");
+        provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: §aFlight Enabled");
         provider.add("armor.gtceu.jetpack.flight.disabled", "Jetpack: Flight Disabled");
-        provider.add("armor.gtceu.jetpack.hover.enabled", "Jetpack: Hover Mode Enabled");
+        provider.add("armor.gtceu.jetpack.hover.enabled", "Jetpack: §aHover Mode Enabled");
         provider.add("armor.gtceu.jetpack.hover.disabled", "Jetpack: Hover Mode Disabled");
         provider.add("armor.gtceu.jetpack.emergency_hover_mode", "§aEmergency Hover Mode Enabled!");
 
@@ -43,37 +43,37 @@ public class ArmorLang {
     }
 
     private static void generateTooltipKeys(RegistrateLangProvider provider) {
-        provider.add("item.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust");
+        provider.add("item.gtceu.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust"); //move this to item lang?
 
         // Armor Abilities
-        provider.add("armor.gtceu.tooltip.stepassist", "Provides Step-Assist");
-        provider.add("armor.gtceu.tooltip.speed", "Increases Running Speed");
-        provider.add("armor.gtceu.tooltip.jump", "Increases Jump Height and Distance");
-        provider.add("armor.gtceu.tooltip.falldamage", "Nullifies Fall Damage");
-        provider.add("armor.gtceu.tooltip.potions", "Nullifies Harmful Effects");
-        provider.add("armor.gtceu.tooltip.burning", "Nullifies Burning");
-        provider.add("armor.gtceu.tooltip.freezing", "Prevents Freezing");
-        provider.add("armor.gtceu.tooltip.breath", "Replenishes Underwater Breath Bar");
-        provider.add("armor.gtceu.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
+        provider.add("armor.gtceu.tooltip.stepassist", "§7Provides Step-Assist");
+        provider.add("armor.gtceu.tooltip.speed", "§7Increases Running Speed");
+        provider.add("armor.gtceu.tooltip.jump", "§7Increases Jump Height and Distance");
+        provider.add("armor.gtceu.tooltip.falldamage", "§7Nullifies Fall Damage");
+        provider.add("armor.gtceu.tooltip.potions", "§7Nullifies Harmful Effects");
+        provider.add("armor.gtceu.tooltip.burning", "§7Nullifies Burning");
+        provider.add("armor.gtceu.tooltip.freezing", "§7Prevents Freezing");
+        provider.add("armor.gtceu.tooltip.breath", "§7Replenishes Underwater Breath Bar");
+        provider.add("armor.gtceu.tooltip.autoeat", "§7Replenishes Food Bar by Using Food from Inventory");
 
         // Energy Tooltips (iaddinfo)
-        provider.add("armor.gtceu.energy_share.error", "Energy Supply: §cNot enough power for gadgets charging!");
-        provider.add("armor.gtceu.energy_share.enable", "§aEnergy Supply: Gadgets charging enabled");
-        provider.add("armor.gtceu.energy_share.disable", "Energy Supply: Gadgets charging disabled");
-        provider.add("armor.gtceu.energy_share.tooltip", "Supply mode: %s");
+        provider.add("armor.gtceu.energy_share.error", "§cNot Enough Power for Charging Gadgets!");
+        provider.add("armor.gtceu.energy_share.enable", "§aGadget Charging Enabled");
+        provider.add("armor.gtceu.energy_share.disable", "§cGadget Charging Disabled");
+        provider.add("armor.gtceu.energy_share.tooltip", "Supply Mode: %s");
         provider.add("armor.gtceu.energy_share.tooltip.guide",
-                "To change mode shift-right click when holding item");
+                "To change mode, SHIT + R-CLICK when holding item");
     }
 
     private static void generateHudKeys(RegistrateLangProvider provider) {
         // HUD Information
-        provider.add("armor.gtceu.hud.status.enabled", "§aON");
+        provider.add("armor.gtceu.hud.status.enabled", "§aON"); //change this to generic tooltip?
         provider.add("armor.gtceu.hud.status.disabled", "§cOFF");
-        provider.add("armor.gtceu.hud.energy_lvl", "Energy Level: %s");
-        provider.add("armor.gtceu.hud.engine_enabled", "§aEngine Enabled: %s");
-        provider.add("armor.gtceu.hud.fuel_lvl", "Fuel Level: %s");
+        provider.add("armor.gtceu.hud.energy_level", "Energy Level: %s");
+        provider.add("armor.gtceu.hud.engine_enabled", "Engine: %s");
+        provider.add("armor.gtceu.hud.fuel_level", "Fuel Level: %s");
         provider.add("armor.gtceu.hud.hover_mode", "Hover Mode: %s");
-        provider.add("mataarmor.hud.supply_mode", "Supply Mode: %s");
+        provider.add("armor.gtceu.hud.supply_mode", "Supply Mode: %s");
         provider.add("armor.gtceu.hud.gravi_engine", "GraviEngine: %s");
     }
 }

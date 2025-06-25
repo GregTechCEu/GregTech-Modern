@@ -131,7 +131,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             if (tank.getFluidInTank(0).getAmount() == 0) return;
             String formated = String.format("%.1f",
                     (tank.getFluidInTank(0).getAmount() * 100.0F / tank.getTankCapacity(0)));
-            this.HUD.newString(Component.translatable("armor.gtceu.hud.fuel_lvl", formated + "%"));
+            this.HUD.newString(Component.translatable("armor.gtceu.hud.fuel_level", formated + "%"));
             CompoundTag data = item.getTag();
 
             if (data != null) {
