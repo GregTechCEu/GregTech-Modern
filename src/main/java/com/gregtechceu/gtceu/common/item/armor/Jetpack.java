@@ -63,11 +63,11 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         if (toggleTimer == 0) {
             if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enabled" : "disabled");
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
-                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enabled" : "disabled");
                 data.putBoolean("hover", hoverMode);
             }
 

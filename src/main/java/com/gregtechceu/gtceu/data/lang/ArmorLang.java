@@ -32,10 +32,10 @@ public class ArmorLang {
         provider.add("armor.gtceu.quarktechsuite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
 
         // Jetpacks
-        provider.add("armor.gtceu.jetpack.flight.enable", "Jetpack: Flight Enabled");
-        provider.add("armor.gtceu.jetpack.flight.disable", "Jetpack: Flight Disabled");
-        provider.add("armor.gtceu.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
-        provider.add("armor.gtceu.jetpack.hover.disable", "Jetpack: Hover Mode Disabled");
+        provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: Flight Enabled");
+        provider.add("armor.gtceu.jetpack.flight.disabled", "Jetpack: Flight Disabled");
+        provider.add("armor.gtceu.jetpack.hover.enabled", "Jetpack: Hover Mode Enabled");
+        provider.add("armor.gtceu.jetpack.hover.disabled", "Jetpack: Hover Mode Disabled");
         provider.add("armor.gtceu.jetpack.emergency_hover_mode", "§aEmergency Hover Mode Enabled!");
 
         // Night Vision

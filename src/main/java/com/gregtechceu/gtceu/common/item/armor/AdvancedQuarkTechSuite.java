@@ -66,19 +66,19 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         if (toggleTimer == 0) {
             if (KeyBind.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enabled" : "disabled");
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (KeyBind.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
-                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enabled" : "disabled");
                 data.putBoolean("hover", hoverMode);
             } else if (KeyBind.ARMOR_CHARGING.isKeyDown(player)) {
                 canShare = !canShare;
                 if (canShare && cont.getCharge() == 0) { // Only allow for charging to be enabled if charge is nonzero
-                    messageKey = "armor.gtceu.qts.charge.error";
+                    messageKey = "armor.gtceu.quarktechsuite.charge.error";
                     canShare = false;
                 } else {
-                    messageKey = "armor.gtceu.qts.charge." + (canShare ? "enable" : "disable");
+                    messageKey = "armor.gtceu.quarktechsuite.charge." + (canShare ? "enabled" : "disabled");
                 }
                 data.putBoolean("canShare", canShare);
             }
@@ -185,9 +185,9 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
                 if (canShare && cont.getCharge() == 0) {
                     player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.error"));
                 } else if (canShare) {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enable"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enabled"));
                 } else {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disable"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disabled"));
                 }
             }
 
