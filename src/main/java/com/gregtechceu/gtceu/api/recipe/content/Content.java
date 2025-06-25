@@ -135,7 +135,7 @@ public class Content {
             int amount = ingredient.getAmount();
             String s = FormattingUtil.formatBuckets(amount);
             int color = 0xFFFFFF;
-            if (content instanceof IntProviderFluidIngredient provider){
+            if (content instanceof IntProviderFluidIngredient provider) {
                 color = 0xEE0000;
                 amount = provider.getCountProvider().getMaxValue();
                 s = "[" + FormattingUtil.formatBuckets(amount) + "]";

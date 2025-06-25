@@ -1041,7 +1041,6 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, IntProviderFluidIngredient.of(output, intProvider));
     }
 
-
     //////////////////////////////////////
     // ********** DATA ***********//
     //////////////////////////////////////

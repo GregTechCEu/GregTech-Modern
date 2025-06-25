@@ -227,7 +227,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
-            return IntProviderFluidIngredient.fromJson (json, true);
+            return IntProviderFluidIngredient.fromJson(json, true);
         }
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;

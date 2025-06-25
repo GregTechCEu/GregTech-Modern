@@ -498,8 +498,7 @@ public class GTUtil {
         if (ingredient instanceof IntProviderIngredient) {
             compoundTag.putInt("Minimum", ((IntProviderIngredient) ingredient).getCountProvider().getMinValue());
             compoundTag.putInt("Maximum", ((IntProviderIngredient) ingredient).getCountProvider().getMaxValue());
-        }
-        else{
+        } else {
             compoundTag.putInt("Count", itemStack.getCount());
             if (itemStack.getTag() != null) {
                 compoundTag.put("tag", itemStack.getTag().copy());
@@ -524,7 +523,7 @@ public class GTUtil {
                 stack.setDamageValue(stack.getDamageValue());
             }
             Ingredient output = Ingredient.of(item);
-            if (compoundTag.contains("Minimum")){
+            if (compoundTag.contains("Minimum")) {
                 int min = compoundTag.getInt("Minimum");
                 int max = compoundTag.getInt("Maximum");
                 return IntProviderIngredient.of(output, UniformInt.of(min, max));

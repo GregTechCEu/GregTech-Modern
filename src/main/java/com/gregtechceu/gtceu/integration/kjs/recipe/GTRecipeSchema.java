@@ -29,8 +29,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import dev.latvian.mods.kubejs.fluid.OutputFluid;
-import dev.latvian.mods.kubejs.util.ListJS;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -43,12 +41,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
+import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
@@ -57,11 +57,11 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
+import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -676,7 +676,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
-            return output(FluidRecipeCapability.CAP, IntProviderFluidIngredient.of(UniformInt.of(min, max), output.getFluid()));
+            return output(FluidRecipeCapability.CAP,
+                    IntProviderFluidIngredient.of(UniformInt.of(min, max), output.getFluid()));
         }
 
         //////////////////////////////////////
@@ -1076,12 +1077,12 @@ public interface GTRecipeSchema {
         }
 
         @Override
-        public OutputFluid readOutputFluid(Object from){
+        public OutputFluid readOutputFluid(Object from) {
             if (from instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
                 return ingredientJS;
             } else if (from instanceof IntProviderFluidIngredient ingredient) {
                 return new GTRecipeComponents.FluidIngredientJS(ingredient.replicate());
-            }else if (from instanceof FluidIngredient ingredient) {
+            } else if (from instanceof FluidIngredient ingredient) {
                 return new GTRecipeComponents.FluidIngredientJS(ingredient);
             } else if (from instanceof JsonElement json) {
                 return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.fromJson(json));
@@ -1104,18 +1105,16 @@ public interface GTRecipeSchema {
                 return new GTRecipeComponents.FluidIngredientJS(FluidIngredient
                         .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
             }
-
         }
 
         @Override
-        public JsonElement writeOutputFluid(OutputFluid value){
-            if (value instanceof IntProviderFluidIngredient){
-                return ((IntProviderFluidIngredient)value).toJson();
+        public JsonElement writeOutputFluid(OutputFluid value) {
+            if (value instanceof IntProviderFluidIngredient) {
+                return ((IntProviderFluidIngredient) value).toJson();
             }
             var fluid = ((FluidStackJS) value).getFluidStack();
             return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
-
     }
 
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");

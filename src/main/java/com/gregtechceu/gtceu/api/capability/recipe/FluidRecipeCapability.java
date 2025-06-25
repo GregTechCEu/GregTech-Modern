@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
@@ -65,8 +64,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public FluidIngredient copyInner(FluidIngredient content) {
-        if (content instanceof IntProviderFluidIngredient){
-            return ((IntProviderFluidIngredient)content).copy();
+        if (content instanceof IntProviderFluidIngredient) {
+            return ((IntProviderFluidIngredient) content).copy();
         }
         return content.copy();
     }
@@ -75,8 +74,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) {
             return content.copy();
-        }
-        else if (content instanceof IntProviderFluidIngredient provider){
+        } else if (content instanceof IntProviderFluidIngredient provider) {
             return IntProviderFluidIngredient.of(provider.getInner(),
                     new FlooredInt(
                             new AddedFloat(
@@ -100,10 +98,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-//                        ingredients.add(new MapFluidIngredient(
-//                                new FluidStack(fluid,
-//                                        ingredient.getAmount(),
-//                                        ingredient.getNbt())));
+                        // ingredients.add(new MapFluidIngredient(
+                        // new FluidStack(fluid,
+                        // ingredient.getAmount(),
+                        // ingredient.getNbt())));
                         if (ingredient.getCountProvider() == null) {
                             ingredients.add(new MapFluidIngredient(
                                     new FluidStack(fluid,
@@ -118,8 +116,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     }
                 }
             }
-        }
-        else if (obj instanceof FluidIngredient ingredient) {
+        } else if (obj instanceof FluidIngredient ingredient) {
             for (FluidIngredient.Value value : ingredient.values) {
                 if (value instanceof FluidIngredient.TagValue tagValue) {
                     ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
@@ -145,11 +142,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
-//            if (item instanceof IntProviderFluidIngredient fluid){
-//                list.add(fluid);
-//            }
-//            else
-                if (item instanceof FluidIngredient fluid) {
+            // if (item instanceof IntProviderFluidIngredient fluid){
+            // list.add(fluid);
+            // }
+            // else
+            if (item instanceof FluidIngredient fluid) {
                 boolean isEqual = false;
                 for (Object obj : list) {
                     if (obj instanceof FluidIngredient fluidIngredient) {
@@ -399,9 +396,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
                     if (isRanged) {
-                        IntProvider countProvider = ((IntProviderFluidIngredient)ingredient).getCountProvider();
+                        IntProvider countProvider = ((IntProviderFluidIngredient) ingredient).getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
-                                        countProvider.getMinValue(), countProvider.getMaxValue())
+                                countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
                     GTRecipeWidget.setConsumedChance(content,

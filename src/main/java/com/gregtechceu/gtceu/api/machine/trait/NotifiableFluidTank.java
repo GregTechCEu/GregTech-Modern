@@ -142,8 +142,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 int drain;
                 if (simulate && ingredient instanceof IntProviderFluidIngredient provider) {
                     drain = provider.getCountProvider().getMaxValue();
-                }
-                else{
+                } else {
                     drain = ingredient.getAmount();
                 }
                 if (io == IO.IN) {
