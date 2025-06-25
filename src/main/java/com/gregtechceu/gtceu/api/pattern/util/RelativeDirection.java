@@ -282,4 +282,12 @@ public enum RelativeDirection {
             }
         }
     }
+
+    /**
+     * @param other The other direction to check
+     * @return Whether both directions are on the same axis
+     */
+    public boolean isSameAxis(RelativeDirection other) {
+        return this.equivalentGlobal.getAxis() == other.equivalentGlobal.getAxis();
+    }
 }

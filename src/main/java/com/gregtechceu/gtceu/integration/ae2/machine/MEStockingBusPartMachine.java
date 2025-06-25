@@ -38,6 +38,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -179,7 +181,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     /**
      * Refresh the configuration list in auto-pull mode.
-     * Sets the config to the first 16 valid items found in the network.
+     * Sets the config to the CONFIG_SIZE items with the highest amount in the ME system.
      */
     private void refreshList() {
         IGrid grid = this.getMainNode().getGrid();
@@ -190,11 +192,16 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         MEStorage networkStorage = grid.getStorageService().getInventory();
         var counter = networkStorage.getAvailableStacks();
-        int index = 0;
+
+        // Use a PriorityQueue to sort the stacks on size, take the first CONFIG_SIZE
+        // biggest stacks.
+        PriorityQueue<Object2LongMap.Entry<AEKey>> topItems = new PriorityQueue<>(
+                Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
+
         for (Object2LongMap.Entry<AEKey> entry : counter) {
-            if (index >= CONFIG_SIZE) break;
-            AEKey what = entry.getKey();
             long amount = entry.getLongValue();
+            if (!topItems.isEmpty() && amount < topItems.peek().getLongValue()) continue;
+            AEKey what = entry.getKey();
 
             if (amount <= 0) continue;
             if (!(what instanceof AEItemKey itemKey)) continue;
@@ -205,10 +212,32 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
 
-            var slot = this.aeItemHandler.getInventory()[index];
+            if (topItems.size() < CONFIG_SIZE) {
+                topItems.offer(entry);
+            } else if (amount > topItems.peek().getLongValue()) {
+                topItems.poll();
+                topItems.offer(entry);
+            }
+        }
+
+        // Now, topItems is a PQ with CONFIG_SIZE highest amount items in the system.
+        int index;
+        int itemAmount = topItems.size();
+        for (index = 0; index < CONFIG_SIZE; index++) {
+            if (topItems.isEmpty()) break;
+            Object2LongMap.Entry<AEKey> entry = topItems.poll();
+
+            AEKey what = entry.getKey();
+            long amount = entry.getLongValue();
+
+            // If we get here, the item has already been checked by the PQ.
+            long request = networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource);
+
+            // Since we want our items to be displayed from highest to lowest, but poll() returns
+            // the lowest first, we fill in the slots starting at itemAmount-1
+            var slot = this.aeItemHandler.getInventory()[itemAmount - index - 1];
             slot.setConfig(new GenericStack(what, 1));
             slot.setStock(new GenericStack(what, request));
-            index++;
         }
 
         aeItemHandler.clearInventory(index);
