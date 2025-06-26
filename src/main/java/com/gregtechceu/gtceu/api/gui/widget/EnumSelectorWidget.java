@@ -47,8 +47,8 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
     private BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier = (value, texture) -> new GuiTextureGroup(
             GuiTextures.VANILLA_BUTTON, texture);
 
-    private BiFunction<T, String, List<Component>> tooltipSupplier = (value, key) -> List
-            .copyOf(LangUtil.getSingleOrMultiLang(key));
+    private BiFunction<T, String, List<Component>> tooltipSupplier = (value, key) -> Arrays
+            .asList(LangUtil.getSingleOrMultiLang(key));
 
     public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue,
                               Consumer<T> onChanged) {

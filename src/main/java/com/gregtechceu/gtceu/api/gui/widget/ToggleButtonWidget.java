@@ -67,8 +67,7 @@ public class ToggleButtonWidget extends SwitchWidget {
             if (!isMultiLang) {
                 setHoverTooltips(tooltipText + (isPressed ? ".enabled" : ".disabled"));
             } else {
-                setHoverTooltips(
-                        List.copyOf(LangUtil.getMultiLang(tooltipText + (isPressed ? ".enabled" : ".disabled"))));
+                setHoverTooltips(LangUtil.getMultiLang(tooltipText + (isPressed ? ".enabled" : ".disabled")));
             }
         }
     }

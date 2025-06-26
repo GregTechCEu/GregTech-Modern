@@ -373,7 +373,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
             slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
@@ -389,8 +389,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             slotWidget.setCircuitInventory(machine.circuitInventory);
             slotWidget.setCanPutItems(false);
             slotWidget.setCanTakeItems(false);
-            slotWidget.setHoverTooltips(
-                    LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
+            slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip"));
         });
     }
 

@@ -58,8 +58,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
     public WidgetGroup openConfigurator(int x, int y) {
         WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
         group.addWidget(new ImageWidget(0, 0, 20, 20, GuiTextures.INFO_ICON)
-                .setHoverTooltips(
-                        LangUtil.getMultiLang("cover.gtceu.tag_filter.info").toArray(new MutableComponent[0])));
+                .setHoverTooltips(LangUtil.getMultiLang("cover.gtceu.tag_filter.info")));
         group.addWidget(new TextFieldWidget(0, 29, 18 * 3 + 25, 12, () -> oreDictFilterExpression, this::setOreDict)
                 .setMaxStringLength(64)
                 .setValidator(input -> {

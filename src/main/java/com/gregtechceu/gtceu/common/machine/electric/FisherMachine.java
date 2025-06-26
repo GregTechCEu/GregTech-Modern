@@ -423,7 +423,7 @@ public class FisherMachine extends TieredEnergyMachine
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
             slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
@@ -437,7 +437,7 @@ public class FisherMachine extends TieredEnergyMachine
             toggleButtonWidget.setSupplier(machine::isJunkEnabled);
             toggleButtonWidget.setOnPressCallback((data, bool) -> machine.setJunkEnabled(bool));
             toggleButtonWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.fisher_mode.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 

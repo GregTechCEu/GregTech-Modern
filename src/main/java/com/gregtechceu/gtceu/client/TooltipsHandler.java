@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +64,7 @@ public class TooltipsHandler {
             if (Language.getInstance().has(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
-                List<MutableComponent> multiLang = LangUtil.getMultiLang(tooltipKey);
+                var multiLang = LangUtil.getListMultiLang(tooltipKey);
                 if (multiLang != null && !multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }

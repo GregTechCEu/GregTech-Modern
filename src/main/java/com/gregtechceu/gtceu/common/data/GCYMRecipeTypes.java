@@ -9,9 +9,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -38,17 +37,17 @@ public class GCYMRecipeTypes {
             .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
+                return Component.translatable("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                    return LocalizationUtils.format("gtceu.recipe.coil.tier",
-                            I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
+                    return Component.translatable("gtceu.recipe.coil.tier",
+                            requiredCoil.getMaterial().getLocalizedName());
                 }
-                return "";
+                return CommonComponents.EMPTY;
             })
             .setMaxTooltips(4)
             .setUiBuilder((recipe, widgetGroup) -> {

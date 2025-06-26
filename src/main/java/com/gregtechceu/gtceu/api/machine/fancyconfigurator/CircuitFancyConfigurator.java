@@ -165,9 +165,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
     @Override
     public List<Component> getTooltips() {
         var list = new ArrayList<>(IFancyConfigurator.super.getTooltips());
-        list.addAll(Arrays.stream(
-                LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]))
-                .toList());
+        list.addAll(Arrays.asList(LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
         return list;
     }
 

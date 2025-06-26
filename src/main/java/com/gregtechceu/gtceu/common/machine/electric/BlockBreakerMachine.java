@@ -395,7 +395,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
             slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
