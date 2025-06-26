@@ -137,8 +137,8 @@ public class GTRecipeWidget extends WidgetGroup {
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
-        for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
+        for (Function<CompoundTag, Component> dataInfo : recipe.recipeType.getDataInfos()) {
+            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data).getString()));
         }
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
     }

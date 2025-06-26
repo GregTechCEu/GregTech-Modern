@@ -21,6 +21,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -71,7 +72,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected SoundEntry sound;
     @Getter
-    protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
+    protected List<Function<CompoundTag, Component>> dataInfos = new ArrayList<>();
     @Getter
     @Setter
     protected boolean isScanner;
@@ -174,7 +175,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipeType addDataInfo(Function<CompoundTag, String> dataInfo) {
+    public GTRecipeType addDataInfo(Function<CompoundTag, Component> dataInfo) {
         this.dataInfos.add(dataInfo);
         return this;
     }
@@ -192,6 +193,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Override
     public String toString() {
         return registryName.toString();
+    }
+
+    public String getLanguageKey() {
+        return this.registryName.toLanguageKey("recipe_type");
+    }
+
+    public Component getTranslation() {
+        return Component.translatable(getLanguageKey());
     }
 
     @Nullable

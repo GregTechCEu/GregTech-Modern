@@ -17,8 +17,7 @@ public class RecipeLang {
     private static void generateRecipeTypes(GTLangProvider provider) {
         // RecipeTypes
         for (var recipeType : GTRegistries.RECIPE_TYPES) {
-            String key = "recipe_type." + recipeType.registryName.toLanguageKey();
-            provider.add(key, toEnglishName(recipeType.registryName.getPath()));
+            provider.add(recipeType.getLanguageKey(), toEnglishName(recipeType.registryName.getPath()));
         }
 
         // Recipe Categories
@@ -63,16 +62,18 @@ public class RecipeLang {
         provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
         provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
 
+        provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
+        provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
+        provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
+
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
         provider.add("gtceu.recipe.amperage", "Amperage: %s");
 
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
 
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
-        provider.add("gtceu.recipe.coil.tier", "Coil: %s");
-
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
+        // TODO make the ones below this comment recipe condition keys
         provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
 
@@ -84,10 +85,9 @@ public class RecipeLang {
         provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
 
         provider.add("gtceu.recipe.research", "Requires Research");
-        provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
 
-        provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
-        provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
+        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.coil.tier", "Coil: %s");
     }
 
     private static void generateMiscKeys(GTLangProvider provider) {

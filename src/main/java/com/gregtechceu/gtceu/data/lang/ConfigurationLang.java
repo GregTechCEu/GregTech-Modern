@@ -18,7 +18,7 @@ public class ConfigurationLang {
     private static void recurseGenerateConfigLang(GTLangProvider provider,
                                                   Collection<? extends IConfigValue<?>> values) {
         for (var entry : values) {
-            provider.add(entry.getPath(), entry.getId());
+            provider.add("config.gtceu.option." + entry.getPath(), entry.getId());
             if (entry instanceof IHierarchical hierarchical) {
                 var children = hierarchical.getChildrenKeys().stream()
                         .map(hierarchical::getChildById)
