@@ -20,88 +20,88 @@ public class MaterialLang {
         generateFluidKeys(provider);
     }
 
-        replace(provider, FullersEarth.getUnlocalizedName(), "Fuller's Earth");
     private static void generateCustomMaterialNames(GTLangProvider provider) {
+        provider.add(FullersEarth.getUnlocalizedName(), "Fuller's Earth");
         // greg's humor is now on 1.20.1...
-        replace(provider, Cooperite.getUnlocalizedName(), "Sheldonite");
+        provider.add(Cooperite.getUnlocalizedName(), "Sheldonite");
 
-        replace(provider, HSSG.getUnlocalizedName(), "HSS-G");
-        replace(provider, HSSE.getUnlocalizedName(), "HSS-E");
-        replace(provider, HSSS.getUnlocalizedName(), "HSS-S");
-        replace(provider, RTMAlloy.getUnlocalizedName(), "RTM Alloy");
-        replace(provider, HSLASteel.getUnlocalizedName(), "HSLA Steel");
+        provider.add(HSSG.getUnlocalizedName(), "HSS-G");
+        provider.add(HSSE.getUnlocalizedName(), "HSS-E");
+        provider.add(HSSS.getUnlocalizedName(), "HSS-S");
+        provider.add(RTMAlloy.getUnlocalizedName(), "RTM Alloy");
+        provider.add(HSLASteel.getUnlocalizedName(), "HSLA Steel");
 
-        replace(provider, UUMatter.getUnlocalizedName(), "UU-Matter");
-        replace(provider, PCBCoolant.getUnlocalizedName(), "PCB Coolant");
-        replace(provider, TungstenSteel.getUnlocalizedName(), "Tungstensteel");
+        provider.add(UUMatter.getUnlocalizedName(), "UU-Matter");
+        provider.add(PCBCoolant.getUnlocalizedName(), "PCB Coolant");
+        provider.add(TungstenSteel.getUnlocalizedName(), "Tungstensteel");
 
-        replace(provider, Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
-        replace(provider, Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
+        provider.add(Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
+        provider.add(Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
 
-        replace(provider, OilHeavy.getUnlocalizedName(), "Heavy Oil");
-        replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, OilLight.getUnlocalizedName(), "Light Oil");
-        replace(provider, "block.gtceu.oil_light", "Light Oil");
-        replace(provider, RawOil.getUnlocalizedName(), "Raw Oil");
-        replace(provider, "block.gtceu.oil_medium", "Raw Oil");
+        provider.add(OilHeavy.getUnlocalizedName(), "Heavy Oil");
+        provider.add("block.gtceu.oil_heavy", "Heavy Oil");
+        provider.add(OilLight.getUnlocalizedName(), "Light Oil");
+        provider.add("block.gtceu.oil_light", "Light Oil");
+        provider.add(RawOil.getUnlocalizedName(), "Raw Oil");
+        provider.add("block.gtceu.oil_medium", "Raw Oil");
 
-        replace(provider, HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
-        replace(provider, HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
-        replace(provider, HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
-        replace(provider, HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
-        replace(provider, HydroCrackedEthane.getUnlocalizedName(), "Hydro-Cracked Ethane");
-        replace(provider, HydroCrackedEthylene.getUnlocalizedName(), "Hydro-Cracked Ethylene");
-        replace(provider, HydroCrackedPropane.getUnlocalizedName(), "Hydro-Cracked Propane");
-        replace(provider, HydroCrackedPropene.getUnlocalizedName(), "Hydro-Cracked Propene");
+        provider.add(HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
+        provider.add(HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");
+        provider.add(HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
+        provider.add(HydroCrackedButene.getUnlocalizedName(), "Hydro-Cracked Butene");
+        provider.add(HydroCrackedEthane.getUnlocalizedName(), "Hydro-Cracked Ethane");
+        provider.add(HydroCrackedEthylene.getUnlocalizedName(), "Hydro-Cracked Ethylene");
+        provider.add(HydroCrackedPropane.getUnlocalizedName(), "Hydro-Cracked Propane");
+        provider.add(HydroCrackedPropene.getUnlocalizedName(), "Hydro-Cracked Propene");
 
-        replace(provider, SteamCrackedButadiene.getUnlocalizedName(), "Steam-Cracked Butadiene");
-        replace(provider, SteamCrackedButane.getUnlocalizedName(), "Steam-Cracked Butane");
-        replace(provider, SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
-        replace(provider, SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
-        replace(provider, SteamCrackedEthane.getUnlocalizedName(), "Steam-Cracked Ethane");
-        replace(provider, SteamCrackedEthylene.getUnlocalizedName(), "Steam-Cracked Ethylene");
-        replace(provider, SteamCrackedPropane.getUnlocalizedName(), "Steam-Cracked Propane");
-        replace(provider, SteamCrackedPropene.getUnlocalizedName(), "Steam-Cracked Propene");
+        provider.add(SteamCrackedButadiene.getUnlocalizedName(), "Steam-Cracked Butadiene");
+        provider.add(SteamCrackedButane.getUnlocalizedName(), "Steam-Cracked Butane");
+        provider.add(SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
+        provider.add(SteamCrackedButene.getUnlocalizedName(), "Steam-Cracked Butene");
+        provider.add(SteamCrackedEthane.getUnlocalizedName(), "Steam-Cracked Ethane");
+        provider.add(SteamCrackedEthylene.getUnlocalizedName(), "Steam-Cracked Ethylene");
+        provider.add(SteamCrackedPropane.getUnlocalizedName(), "Steam-Cracked Propane");
+        provider.add(SteamCrackedPropene.getUnlocalizedName(), "Steam-Cracked Propene");
 
-        replace(provider, LightlyHydroCrackedGas.getUnlocalizedName(), "Lightly Hydro-Cracked Gas");
-        replace(provider, LightlyHydroCrackedHeavyFuel.getUnlocalizedName(),
+        provider.add(LightlyHydroCrackedGas.getUnlocalizedName(), "Lightly Hydro-Cracked Gas");
+        provider.add(LightlyHydroCrackedHeavyFuel.getUnlocalizedName(),
                 "Lightly Hydro-Cracked Heavy Fuel");
-        replace(provider, LightlyHydroCrackedLightFuel.getUnlocalizedName(),
+        provider.add(LightlyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Hydro-Cracked Light Fuel");
-        replace(provider, LightlyHydroCrackedNaphtha.getUnlocalizedName(),
+        provider.add(LightlyHydroCrackedNaphtha.getUnlocalizedName(),
                 "Lightly Hydro-Cracked Naphtha");
-        replace(provider, LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
-        replace(provider, LightlySteamCrackedHeavyFuel.getUnlocalizedName(),
+        provider.add(LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
+        provider.add(LightlySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Heavy Fuel");
-        replace(provider, LightlySteamCrackedLightFuel.getUnlocalizedName(),
+        provider.add(LightlySteamCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Light Fuel");
-        replace(provider, LightlySteamCrackedNaphtha.getUnlocalizedName(),
+        provider.add(LightlySteamCrackedNaphtha.getUnlocalizedName(),
                 "Lightly Steam-Cracked Naphtha");
 
-        replace(provider, SeverelyHydroCrackedGas.getUnlocalizedName(),
+        provider.add(SeverelyHydroCrackedGas.getUnlocalizedName(),
                 "Severely Hydro-Cracked Gas");
-        replace(provider, SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(),
+        provider.add(SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Heavy Fuel");
-        replace(provider, SeverelyHydroCrackedLightFuel.getUnlocalizedName(),
+        provider.add(SeverelyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Light Fuel");
-        replace(provider, SeverelyHydroCrackedNaphtha.getUnlocalizedName(),
+        provider.add(SeverelyHydroCrackedNaphtha.getUnlocalizedName(),
                 "Severely Hydro-Cracked Naphtha");
-        replace(provider, SeverelySteamCrackedGas.getUnlocalizedName(),
+        provider.add(SeverelySteamCrackedGas.getUnlocalizedName(),
                 "Severely Steam-Cracked Gas");
-        replace(provider, SeverelySteamCrackedHeavyFuel.getUnlocalizedName(),
+        provider.add(SeverelySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Steam-Cracked Heavy Fuel");
-        replace(provider, SeverelySteamCrackedLightFuel.getUnlocalizedName(),
+        provider.add(SeverelySteamCrackedLightFuel.getUnlocalizedName(),
                 "Severely Steam-Cracked Light Fuel");
-        replace(provider, SeverelySteamCrackedNaphtha.getUnlocalizedName(),
+        provider.add(SeverelySteamCrackedNaphtha.getUnlocalizedName(),
                 "Severely Steam-Cracked Naphtha");
-        replace(provider, LPG.getUnlocalizedName(), "LPG");
+        provider.add(LPG.getUnlocalizedName(), "LPG");
 
-        replace(provider, Zeron100.getUnlocalizedName(), "Zeron-100");
-        replace(provider, IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
-        replace(provider, Stellite100.getUnlocalizedName(), "Stellite-100");
-        replace(provider, HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
+        provider.add(Zeron100.getUnlocalizedName(), "Zeron-100");
+        provider.add(IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
+        provider.add(Stellite100.getUnlocalizedName(), "Stellite-100");
+        provider.add(HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
 
-        replace(provider, "item.gtceu.nether_quartz_netherrack", "Nether Quartz Ore");
+        provider.add("item.gtceu.nether_quartz_netherrack", "Nether Quartz Ore");
     }
 
     private static void generateFluidKeys(GTLangProvider provider) {

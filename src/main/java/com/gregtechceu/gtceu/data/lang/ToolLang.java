@@ -115,58 +115,58 @@ public class ToolLang {
 
     public static void generateToolKeys(GTLangProvider provider) {
         // Tool Names
-        replace(provider, "item.gtceu.tool.sword", "%s Sword");
-        replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
-        replace(provider, "item.gtceu.tool.shovel", "%s Shovel");
-        replace(provider, "item.gtceu.tool.axe", "%s Axe");
-        replace(provider, "item.gtceu.tool.hoe", "%s Hoe");
-        replace(provider, "item.gtceu.tool.saw", "%s Saw");
-        replace(provider, "item.gtceu.bucket", "%s Bucket");
+        provider.add("item.gtceu.tool.sword", "%s Sword");
+        provider.add("item.gtceu.tool.pickaxe", "%s Pickaxe");
+        provider.add("item.gtceu.tool.shovel", "%s Shovel");
+        provider.add("item.gtceu.tool.axe", "%s Axe");
+        provider.add("item.gtceu.tool.hoe", "%s Hoe");
+        provider.add("item.gtceu.tool.saw", "%s Saw");
+        provider.add("item.gtceu.bucket", "%s Bucket");
 
-        replace(provider, "item.gtceu.tool.hammer", "%s Hammer");
-        replace(provider, "item.gtceu.tool.mallet", "%s Soft Mallet");
-        replace(provider, "item.gtceu.tool.wrench", "%s Wrench");
-        replace(provider, "item.gtceu.tool.file", "%s File");
-        replace(provider, "item.gtceu.tool.crowbar", "%s Crowbar");
-        replace(provider, "item.gtceu.tool.screwdriver", "%s Screwdriver");
-        replace(provider, "item.gtceu.tool.mortar", "%s Mortar");
-        replace(provider, "item.gtceu.tool.wire_cutter", "%s Wire Cutter");
-        replace(provider, "item.gtceu.tool.knife", "%s Knife");
-        replace(provider, "item.gtceu.tool.butchery_knife", "%s Butchery Knife");
-        replace(provider, "item.gtceu.tool.scythe", "%s Scythe");
-        replace(provider, "item.gtceu.tool.rolling_pin", "%s Rolling Pin");
+        provider.add("item.gtceu.tool.hammer", "%s Hammer");
+        provider.add("item.gtceu.tool.mallet", "%s Soft Mallet");
+        provider.add("item.gtceu.tool.wrench", "%s Wrench");
+        provider.add("item.gtceu.tool.file", "%s File");
+        provider.add("item.gtceu.tool.crowbar", "%s Crowbar");
+        provider.add("item.gtceu.tool.screwdriver", "%s Screwdriver");
+        provider.add("item.gtceu.tool.mortar", "%s Mortar");
+        provider.add("item.gtceu.tool.wire_cutter", "%s Wire Cutter");
+        provider.add("item.gtceu.tool.knife", "%s Knife");
+        provider.add("item.gtceu.tool.butchery_knife", "%s Butchery Knife");
+        provider.add("item.gtceu.tool.scythe", "%s Scythe");
+        provider.add("item.gtceu.tool.rolling_pin", "%s Rolling Pin");
 
-        replace(provider, "item.gtceu.tool.lv_drill", "%s Drill (LV)");
-        replace(provider, "item.gtceu.tool.mv_drill", "%s Drill (MV)");
-        replace(provider, "item.gtceu.tool.hv_drill", "%s Drill (HV)");
-        replace(provider, "item.gtceu.tool.ev_drill", "%s Drill (EV)");
-        replace(provider, "item.gtceu.tool.iv_drill", "%s Drill (IV)");
+        provider.add("item.gtceu.tool.lv_drill", "%s Drill (LV)");
+        provider.add("item.gtceu.tool.mv_drill", "%s Drill (MV)");
+        provider.add("item.gtceu.tool.hv_drill", "%s Drill (HV)");
+        provider.add("item.gtceu.tool.ev_drill", "%s Drill (EV)");
+        provider.add("item.gtceu.tool.iv_drill", "%s Drill (IV)");
 
-        replace(provider, "item.gtceu.tool.lv_wirecutter", "%s Wire Cutter (LV)");
-        replace(provider, "item.gtceu.tool.hv_wirecutter", "%s Wire Cutter (HV)");
-        replace(provider, "item.gtceu.tool.iv_wirecutter", "%s Wire Cutter (IV)");
+        provider.add("item.gtceu.tool.lv_wirecutter", "%s Wire Cutter (LV)");
+        provider.add("item.gtceu.tool.hv_wirecutter", "%s Wire Cutter (HV)");
+        provider.add("item.gtceu.tool.iv_wirecutter", "%s Wire Cutter (IV)");
 
-        replace(provider, "item.gtceu.tool.mining_hammer", "%s Mining Hammer");
-        replace(provider, "item.gtceu.tool.spade", "%s Spade");
+        provider.add("item.gtceu.tool.mining_hammer", "%s Mining Hammer");
+        provider.add("item.gtceu.tool.spade", "%s Spade");
 
-        replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
-        replace(provider, "item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
-        replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        provider.add("item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
+        provider.add("item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
+        provider.add("item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
 
-        replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
-        replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
-        replace(provider, "item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
+        provider.add("item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
+        provider.add("item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
+        provider.add("item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
 
-        replace(provider, "item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
-        replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
-        replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
-        replace(provider, "item.gtceu.tool.shears", "%s Shears");
+        provider.add("item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
+        provider.add("item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
+        provider.add("item.gtceu.tool.plunger", "%s Plunger");
+        provider.add("item.gtceu.tool.shears", "%s Shears");
     }
 
     public static void generateTooltips(GTLangProvider provider) {
         // Tool Tooltips
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
-        multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
+        provider.addMultiline("item.gtceu.tool.mallet.tooltip",
                 "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
         provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold left click to dismantle Machines");
         provider.add("item.gtceu.tool.crowbar.tooltip", "§8Dismounts Covers");
@@ -192,7 +192,7 @@ public class ToolLang {
         provider.add("tool.gtceu.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("tool.gtceu.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("tool.gtceu.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        multiLang(provider, "tool.gtceu.tooltip.harvest_level_name",
+        provider.addMultiLang("tool.gtceu.tooltip.harvest_level_name",
                 "§8Wood", "§7Stone", "§aIron", "§bDiamond",
                 "§dNetherite", "§9Duranium", "§cNeutronium");
 

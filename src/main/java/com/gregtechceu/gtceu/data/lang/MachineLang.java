@@ -53,8 +53,8 @@ public class MachineLang {
                 "Mines ores below the Miner!", "Mines ores below the Miner!");
 
         // unused
-        replace(provider, "block.gtceu.steam_solid_boiler.bronze", "Small Steam Solid Boiler");
-        replace(provider, "block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
+        provider.add("block.gtceu.steam_solid_boiler.bronze", "Small Steam Solid Boiler");
+        provider.add("block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
     }
 
     private static void generateGeneralMachineTooltips(GTLangProvider provider) {
@@ -191,16 +191,16 @@ public class MachineLang {
         provider.add("gtceu.creative.activity.off", "Not active");
 
         // Workbench
-        multilineLang(provider, "gtceu.machine.workbench.tooltip",
+        provider.addMultiline("gtceu.machine.workbench.tooltip",
                 "Better than Forestry\nHas Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
         provider.add("gtceu.machine.workbench.tab.workbench", "Crafting");
         provider.add("gtceu.machine.workbench.tab.item_list", "Storage");
-        multilineLang(provider, "gtceu.machine.workbench.storage_note",
+        provider.addMultiline("gtceu.machine.workbench.storage_note",
                 "(Available items from connected\ninventories usable for crafting)");
         provider.add("gtceu.item_list.item_stored", "§7Stored: %d");
         provider.add("gtceu.machine.workbench.tab.crafting", "Crafting");
         provider.add("gtceu.machine.workbench.tab.container", "Container");
-        multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
+        provider.addMultiline("gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
 
         // Safe
@@ -212,7 +212,7 @@ public class MachineLang {
         provider.add("gtceu.machine.drum.disable_output", "Will not drain Fluid");
 
         // Long Distance Pipeline
-        multiLang(provider, "gtceu.machine.endpoint.tooltip",
+        provider.addMultiLang("gtceu.machine.endpoint.tooltip",
                 "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
                 "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
                 "Only pipeline endpoints need to be §fchunk-loaded§7.");
@@ -561,9 +561,9 @@ public class MachineLang {
         // Primitive Water Pump
         provider.add("gtceu.multiblock.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
-        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra1",
+        provider.addMultiline("gtceu.multiblock.primitive_water_pump.extra1",
                 "Biome Coefficient:\n  Ocean, River: 1000 mB/s\n  Swamp: 800 mB/s\n  Jungle: 350 mB/s\n  Snowy: 300 mB/s\n  Plains, Forest: 250 mB/s\n  Taiga: 175 mB/s\n  Beach: 170 mB/s\n  Other: 100 mB/s");
-        multilineLang(provider, "gtceu.multiblock.primitive_water_pump.extra2",
+        provider.addMultiline("gtceu.multiblock.primitive_water_pump.extra2",
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
         provider.add("gtceu.machine.primitive_water_pump.tooltip", "Endervoir at Home");
 
@@ -575,7 +575,7 @@ public class MachineLang {
         // Electric Blast Furnace
         provider.add("gtceu.machine.electric_blast_furnace.tooltip", "Where's the electric smoker?");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
-        multiLang(provider, "gtceu.machine.electric_blast_furnace.tooltip",
+        provider.addMultiLang("gtceu.machine.electric_blast_furnace.tooltip",
                 "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
                 "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
                 "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
@@ -704,9 +704,9 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
 
         // Turbines
-        replace(provider, "block.gtceu.steam_large_turbine", "Large Steam Turbine");
-        replace(provider, "block.gtceu.gas_large_turbine", "Large Gas Turbine");
-        replace(provider, "block.gtceu.plasma_large_turbine", "Large Plasma Turbine");
+        provider.add("block.gtceu.steam_large_turbine", "Large Steam Turbine");
+        provider.add("block.gtceu.gas_large_turbine", "Large Gas Turbine");
+        provider.add("block.gtceu.plasma_large_turbine", "Large Plasma Turbine");
         provider.add("gtceu.machine.large_turbine.steam.tooltip", "Do not put your Head in it");
         provider.add("gtceu.machine.large_turbine.gas.tooltip", "Not a Jet Engine");
         provider.add("gtceu.machine.large_turbine.plasma.tooltip", "Plasma Energy Siphon");
@@ -793,7 +793,7 @@ public class MachineLang {
 
         // Cleanroom
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
-        multiLang(provider, "gtceu.machine.cleanroom.tooltip",
+        provider.addMultiLang("gtceu.machine.cleanroom.tooltip",
                 "Place machines inside to run cleanroom recipes.",
                 "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
                 "Overclocking increases cleaning per cycle.",
@@ -811,11 +811,11 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
-        multilineLang(provider, "gtceu.multiblock.dimensions", "Dimensions: \n" +
-                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
+        provider.addMultiline("gtceu.multiblock.dimensions", "Dimensions: \n" +
+                                                             "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
 
         // Power Substation
-        multiLang(provider, "gtceu.machine.power_substation.tooltip",
+        provider.addMultiLang("gtceu.machine.power_substation.tooltip",
                 "The heart of a centralized power grid",
                 "§fCapacitors§7 do not need to be all the same tier.",
                 "Allows up to §f%d Capacitor Layers§7.",
@@ -834,17 +834,12 @@ public class MachineLang {
                 "The average extracted EU out of the Power Substation's internal energy bank");
         provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");
         provider.add("gtceu.multiblock.power_substation.time_to_drain", "§7Time to drain: %s");
-        provider.add("gtceu.multiblock.power_substation.time_seconds", "%s Seconds");
-        provider.add("gtceu.multiblock.power_substation.time_minutes", "%s Minutes");
-        provider.add("gtceu.multiblock.power_substation.time_hours", "%s Hours");
-        provider.add("gtceu.multiblock.power_substation.time_days", "%s Days");
-        provider.add("gtceu.multiblock.power_substation.time_years", "%s Years");
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
         provider.add("gtceu.multiblock.power_substation.under_one_hour_left",
                 "Less than 1 hour until fully drained!");
 
         // Active Transformer
-        multiLang(provider, "gtceu.machine.active_transformer.tooltip",
+        provider.addMultiLang("gtceu.machine.active_transformer.tooltip",
                 "§7Transformers: Lasers in Disguise",
                 "§7Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
                 "§7Can transmit power at incredible distance with",
@@ -857,27 +852,31 @@ public class MachineLang {
 
         // Charcoal Pile Ignitor
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
-        multiLang(provider, "gtceu.machine.charcoal_pile.tooltip",
+        provider.addMultiLang("gtceu.machine.charcoal_pile.tooltip",
                 "Turns Logs into §aCharcoal§7 when §cignited§7.",
                 "Right Click with fire-starting items to start.",
                 "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
                 "Logs must be not be exposed to §eAir§7!");
-        multilineLang(provider, "gtceu.multiblock.charcoal_pile.description",
-                "Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.\n\n" +
-                        "The floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof.\n" +
-                        "No air can be inside the pit.\n\nLarger pits take more time to process logs, but are more efficient.");
+        provider.addMultiline("gtceu.multiblock.charcoal_pile.description",
+                """
+                        Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.
+                        
+                        The floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof.
+                        No air can be inside the pit.
+                        
+                        Larger pits take more time to process logs, but are more efficient.""");
 
         // Central Monitor
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
-        multiLang(provider, "gtceu.multiblock.central_monitor.tooltip",
+        provider.addMultiLang("gtceu.multiblock.central_monitor.tooltip",
                 "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
                 "You can build the central monitor screen from 3X2 to %dX%d (width X height).",
                 "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
                 "Energy consumption: %d EU/s for each screen.");
-        multiLang(provider, "gtceu.multiblock.monitor_screen.tooltip",
+        provider.addMultiLang("gtceu.multiblock.monitor_screen.tooltip",
                 "The GUI can be opened with a right-click of a screwdriver.",
                 "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
                 "The screen also supports plugins.");
@@ -888,7 +887,7 @@ public class MachineLang {
         provider.add("gtceu.machine.advanced_processing_array.tooltip", "Parallelize the World");
 
         // Research Station
-        multiLang(provider, "gtceu.machine.research_station.tooltip",
+        provider.addMultiLang("gtceu.machine.research_station.tooltip",
                 "More than just a Multiblock Scanner",
                 "Used to scan onto §fData Orbs§7 and §fData Modules§7.",
                 "Requires §fComputation§7 to work.",
@@ -898,7 +897,7 @@ public class MachineLang {
         provider.add("gtceu.machine.research_station.researching", "Researching.");
 
         // Network Switch
-        multiLang(provider, "gtceu.machine.network_switch.tooltip",
+        provider.addMultiLang("gtceu.machine.network_switch.tooltip",
                 "Ethernet Hub",
                 "Used to route and distribute §fComputation§7.",
                 "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
@@ -907,7 +906,7 @@ public class MachineLang {
                 "The Network Switch is a multiblock structure used for distributing Computation from many sources to many destinations. It can accept any number of Computation Data Reception or Transmission Hatches. It is necessary for Research Data which requires much higher Computation, as the Research Station can only accept one Computation Data Reception Hatch. HPCAs must have a Bridge Component for the Network Switch to be able to access their Computation.");
 
         // Data Bank
-        multiLang(provider, "gtceu.machine.data_bank.tooltip",
+        provider.addMultiLang("gtceu.machine.data_bank.tooltip",
                 "Your Personal NAS",
                 "Bulk Data Storage. Transfer with Optical Cables.",
                 "Data Banks can be chained together.",
@@ -919,7 +918,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
 
         // HPCA
-        multiLang(provider, "gtceu.machine.high_performance_computation_array.tooltip",
+        provider.addMultiLang("gtceu.machine.high_performance_computation_array.tooltip",
                 "Just your average Supercomputer",
                 "Used to generate §fComputation§7 (and heat).",
                 "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units).");
@@ -957,7 +956,7 @@ public class MachineLang {
         provider.add("gtceu.machine.fluid_tank.fluid", "Contains %s L of %s");
     }
 
-    private static void generateCustomMultiblockPartTooltips(RegistrateLangProvider provider) {
+    private static void generateCustomMultiblockPartTooltips(GTLangProvider provider) {
         // Primitive Pump Hatch
         provider.add("gtceu.machine.pump_hatch.tooltip", "Primitive Fluid Output for Water Pump");
 
@@ -966,11 +965,11 @@ public class MachineLang {
 
         // Maintenance Hatch
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
-        multilineLang(provider, "gtceu.machine.maintenance_hatch_configurable.tooltip",
+        provider.addMultiline("gtceu.machine.maintenance_hatch_configurable.tooltip",
                 "For finer control over Multiblocks\nStarts with no Maintenance problems!");
         provider.add("gtceu.machine.maintenance_hatch_full_auto.tooltip",
                 "For automatically maintaining Multiblocks");
-        multiLang(provider, "gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip",
+        provider.addMultiLang("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip",
                 "For automatically maintaining Multiblocks with Cleaning!", "Cleans as:");
         provider.add("gtceu.machine.maintenance_hatch_tool_slot.tooltip",
                 "Click slot with empty hand when required tools are in inventory to solve problems");
@@ -988,7 +987,7 @@ public class MachineLang {
                 "Maintenance problems will occur at %fx the normal rate.");
 
         // Muffler Hatch
-        multiLang(provider, "gtceu.machine.muffler_hatch.tooltip", "Recovers waste from machines",
+        provider.addMultiLang("gtceu.machine.muffler_hatch.tooltip", "Recovers waste from machines",
                 "DO NOT OBSTRUCT THE OUTPUT!");
         provider.add("gtceu.muffler.recovery_tooltip", "§bRecovery Chance: §f%d%%");
 
@@ -1042,9 +1041,9 @@ public class MachineLang {
                 "Has infinite capacity before connecting to ME network.");
 
         // ME Stocking
-        multiLang(provider, "gtceu.machine.me.stocking_item.tooltip", "Retrieves items directly from the ME network",
+        provider.addMultiLang("gtceu.machine.me.stocking_item.tooltip", "Retrieves items directly from the ME network",
                 "Auto-Pull from ME mode will automatically stock the first 16 items in the ME system, updated every 5 seconds.");
-        multiLang(provider, "gtceu.machine.me.stocking_fluid.tooltip", "Retrieves fluids directly from the ME network",
+        provider.addMultiLang("gtceu.machine.me.stocking_fluid.tooltip", "Retrieves fluids directly from the ME network",
                 "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
         provider.add("gtceu.machine.me_import_item_hatch.configs.tooltip",
                 "Keeps 16 item types in stock");
@@ -1082,11 +1081,11 @@ public class MachineLang {
         provider.add("gtceu.machine.substation_hatch.output.tooltip", "Energy Output for the Power Substation");
 
         // Rotor Holder
-        multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
+        provider.addMultiLang("gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");
 
         // Data Hatches
-        multiLang(provider, "gtceu.machine.data_access_hatch.tooltip", "Data Access for Multiblocks",
+        provider.addMultiLang("gtceu.machine.data_access_hatch.tooltip", "Data Access for Multiblocks",
                 "Adds §a%s§7 slots for Data Items");
         provider.add("gtceu.machine.data_receiver_hatch.tooltip", "Research Data Input for Multiblocks");
         provider.add("gtceu.machine.data_transmitter_hatch.tooltip", "Research Data Output for Multiblocks");
@@ -1139,11 +1138,11 @@ public class MachineLang {
         provider.add("gtceu.machine.laser_hatch.source.tooltip", "§7Transmitting power at distance");
         provider.add("gtceu.machine.laser_hatch.target.tooltip", "§7Receiving power from distance");
         provider.add("gtceu.machine.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§7");
-        multiLang(provider, "gtceu.machine.laser_source_hatch.tooltip",
+        provider.addMultiLang("gtceu.machine.laser_source_hatch.tooltip",
                 "Transmitting power at distance",
                 "§cLaser cables must be in a straight line!§7");
 
-        multiLang(provider, "gtceu.machine.laser_target_hatch.tooltip",
+        provider.addMultiLang("gtceu.machine.laser_target_hatch.tooltip",
                 "Receiving power from distance",
                 "§cLaser cables must be in a straight line!§7");
 
@@ -1160,8 +1159,8 @@ public class MachineLang {
      */
     private static void makeSteamMachineTooltip(GTLangProvider provider, String root, String machineName,
                                                 String lpTooltip, String hpTooltip) {
-        provider.add("%s.lp_%s.tooltip".formatted(root, machineName), "§7%s".formatted(lpTooltip));
-        provider.add("%s.hp_%s.tooltip".formatted(root, machineName), "§7%s".formatted(hpTooltip));
+        provider.add("%s.lp_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + lpTooltip);
+        provider.add("%s.hp_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + hpTooltip);
     }
 
     /**
@@ -1203,49 +1202,49 @@ public class MachineLang {
                                                            String uhvTooltip, String uevTooltip, String uivTooltip,
                                                            String uxvTooltip, String opvTooltip, String maxTooltip) {
         if (ulvTooltip != null) {
-            provider.add("%s.ulv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(ulvTooltip));
+            provider.add("%s.ulv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + ulvTooltip);
         }
         if (lvTooltip != null) {
-            provider.add("%s.lv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(lvTooltip));
+            provider.add("%s.lv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + lvTooltip);
         }
         if (mvTooltip != null) {
-            provider.add("%s.mv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(mvTooltip));
+            provider.add("%s.mv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + mvTooltip);
         }
         if (hvTooltip != null) {
-            provider.add("%s.hv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(hvTooltip));
+            provider.add("%s.hv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + hvTooltip);
         }
         if (evTooltip != null) {
-            provider.add("%s.ev_%s.tooltip".formatted(root, machineName), "§7%s".formatted(evTooltip));
+            provider.add("%s.ev_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + evTooltip);
         }
         if (ivTooltip != null) {
-            provider.add("%s.iv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(ivTooltip));
+            provider.add("%s.iv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + ivTooltip);
         }
         if (luvTooltip != null) {
-            provider.add("%s.luv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(luvTooltip));
+            provider.add("%s.luv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + luvTooltip);
         }
         if (zpmTooltip != null) {
-            provider.add("%s.zpm_%s.tooltip".formatted(root, machineName), "§7%s".formatted(zpmTooltip));
+            provider.add("%s.zpm_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + zpmTooltip);
         }
         if (uvTooltip != null) {
-            provider.add("%s.uv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(uvTooltip));
+            provider.add("%s.uv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + uvTooltip);
         }
         if (uhvTooltip != null) {
-            provider.add("%s.uhv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(uhvTooltip));
+            provider.add("%s.uhv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + uhvTooltip);
         }
         if (uevTooltip != null) {
-            provider.add("%s.uev_%s.tooltip".formatted(root, machineName), "§7%s".formatted(uevTooltip));
+            provider.add("%s.uev_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + uevTooltip);
         }
         if (uivTooltip != null) {
-            provider.add("%s.uiv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(uivTooltip));
+            provider.add("%s.uiv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + uivTooltip);
         }
         if (uxvTooltip != null) {
-            provider.add("%s.uxv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(uxvTooltip));
+            provider.add("%s.uxv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + uxvTooltip);
         }
         if (opvTooltip != null) {
-            provider.add("%s.opv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(opvTooltip));
+            provider.add("%s.opv_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + opvTooltip);
         }
         if (maxTooltip != null) {
-            provider.add("%s.max_%s.tooltip".formatted(root, machineName), "§7%s".formatted(maxTooltip));
+            provider.add("%s.max_%s.tooltip".formatted(root, machineName), ChatFormatting.GRAY + maxTooltip);
         }
     }
 
@@ -1354,7 +1353,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
         provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");
-        multiLang(provider, "gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r",
+        provider.addMultiLang("gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r",
                 "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");

@@ -40,13 +40,13 @@ public class IntegrationLang {
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
         provider.add("gtceu.jei.ore_vein_diagram.dimensions", "Dimensions:");
 
-        multiLang(provider, "gtceu.jei.ore.primary", "Top Ore",
+        provider.addMultiLang("gtceu.jei.ore.primary", "Top Ore",
                 "Spawns in the top %d layers of the vein");
-        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore",
+        provider.addMultiLang("gtceu.jei.ore.secondary", "Bottom Ore",
                 "Spawns in the bottom %d layers of the vein");
-        multiLang(provider, "gtceu.jei.ore.between", "Between Ore",
+        provider.addMultiLang("gtceu.jei.ore.between", "Between Ore",
                 "Spawns in the middle %d layers of the vein, with other ores");
-        multiLang(provider, "gtceu.jei.ore.sporadic", "Sporadic Ore",
+        provider.addMultiLang("gtceu.jei.ore.sporadic", "Sporadic Ore",
                 "Spawns anywhere in the vein");
 
         provider.add("gtceu.jei.ore.biome_weighting_title", "§dModified Biome Total Weights:");
@@ -55,7 +55,7 @@ public class IntegrationLang {
         provider.add("gtceu.jei.ore.ore_weight", "Weight in vein: %d%%");
 
         // Surface Rock
-        multiLang(provider, "gtceu.jei.ore.surface_rock",
+        provider.addMultiLang("gtceu.jei.ore.surface_rock",
                 "Surface Rocks with this material denote vein spawn locations.",
                 "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.");
 
