@@ -174,6 +174,26 @@ public class FormattingUtil {
         return result.toString();
     }
 
+    public static MutableComponent years(String years) {
+        return Component.translatable("gtceu.gui.years", years);
+    }
+
+    public static MutableComponent days(String days) {
+        return Component.translatable("gui.days", days);
+    }
+
+    public static MutableComponent hours(String hours) {
+        return Component.translatable("gui.hours", hours);
+    }
+
+    public static MutableComponent minutes(String minutes) {
+        return Component.translatable("gui.minutes", minutes);
+    }
+
+    public static MutableComponent seconds(String seconds) {
+        return Component.translatable("gtceu.gui.seconds", seconds);
+    }
+
     public static String formatPercent(double number) {
         return String.format("%,.2f", number);
     }

@@ -288,10 +288,7 @@ public class ItemLang {
 
         // Battery Behavior
         provider.add("item.gtceu.battery.charge_time", "§aHolds %s %s of Power (%s)");
-        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s %s remaining§7)");
-        provider.add("item.gtceu.battery.charge_unit.second", "seconds");
-        provider.add("item.gtceu.battery.charge_unit.minute", "minutes");
-        provider.add("item.gtceu.battery.charge_unit.hour", "hours");
+        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s remaining§7)");
 
         // Rechargeable Batteries
         provider.add("item.gtceu.ulv_tantalum_battery.tooltip", "§7Reusable Battery");

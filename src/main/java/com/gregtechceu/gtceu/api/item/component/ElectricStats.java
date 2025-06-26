@@ -198,7 +198,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         Duration durationMax = Duration.between(start, max);
         long currentChargeTime;
         long maxChargeTime;
-        Component unit;
+        String unitKey;
 
         ChatFormatting color = ChatFormatting.RED;
         if (percentage > 0.5) {
@@ -211,22 +211,22 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (durationCurrent.getSeconds() <= 60) {
                 maxChargeTime = durationMax.getSeconds();
                 currentChargeTime = durationCurrent.toSeconds();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.second");
+                unitKey = "gtceu.gui.seconds";
             } else if (durationCurrent.toMinutes() <= 60) {
                 maxChargeTime = durationMax.toMinutes();
                 currentChargeTime = durationCurrent.toMinutes();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.minute");
+                unitKey = "gui.minutes";
             } else {
                 maxChargeTime = durationMax.toHours();
                 currentChargeTime = durationCurrent.toHours();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.hour");
+                unitKey = "gui.hours";
             }
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
-                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                    GTValues.VNF[tier],
-                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
-                    unit)
-                    .withStyle(color));
+                            FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                            GTValues.VNF[tier],
+                            FormattingUtil.formatNumbers(currentChargeTime),
+                            Component.translatable(unitKey, FormattingUtil.formatNumbers(maxChargeTime))
+                    ).withStyle(color));
         } else {
             tooltip.add(Component.translatable("item.generic.electric_item.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),

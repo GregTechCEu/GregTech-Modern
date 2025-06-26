@@ -62,6 +62,9 @@ public class GUILang {
         provider.add("gtceu.universal.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");
         provider.add("gtceu.universal.tooltip.energy_tier_range", "§aAllowed Voltage Tiers: §f%s §f- %s");
 
+        provider.add("gtceu.gui.seconds", "%s second(s)");
+        provider.add("gtceu.gui.years", "%s year(s)");
+
         // Item Storage/Transfer
         provider.add("gtceu.universal.tooltip.item_storage_capacity", "§6Item Slots: §f%d");
         provider.add("gtceu.universal.tooltip.item_storage_total", "§6Item Capacity: §f%d items");
