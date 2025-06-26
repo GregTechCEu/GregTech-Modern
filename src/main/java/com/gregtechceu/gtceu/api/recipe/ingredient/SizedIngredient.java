@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-import com.gregtechceu.gtceu.utils.FastEmptyStream;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -23,10 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
 
-    private static final FastEmptyStream<Value> EMPTY_STREAM = new FastEmptyStream<>(new Value[0]);
+    private static final Stream<Value> EMPTY_STREAM = Stream.empty();
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -36,6 +36,7 @@ public class SizedIngredient extends Ingredient {
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
     private boolean changed = true;
+    @Getter
     private final boolean isEmpty;
     private final Value value;
 
@@ -124,10 +125,10 @@ public class SizedIngredient extends Ingredient {
         if (stack == null) return false;
         var item = stack.getItem();
         if (isEmpty) return item == Items.AIR;
-        if (value instanceof TagValue tagValue) {
-            return item.builtInRegistryHolder().is(((TagValueAccessor) tagValue).getTag());
-        } else if (value instanceof ItemValue itemValue) {
-            return item == ((ItemValueAccessor) itemValue).getItem().getItem();
+        if (value instanceof TagValueAccessor tagValue) {
+            return item.builtInRegistryHolder().is(tagValue.getTag());
+        } else if (value instanceof ItemValueAccessor itemValue) {
+            return itemValue.getItem().is(item);
         }
         return inner.test(stack);
     }
@@ -156,11 +157,6 @@ public class SizedIngredient extends Ingredient {
     @Override
     public @NotNull IntList getStackingIds() {
         return inner.getStackingIds();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return isEmpty;
     }
 
     @Override
