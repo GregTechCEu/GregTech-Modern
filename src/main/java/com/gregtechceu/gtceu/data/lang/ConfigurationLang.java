@@ -1,36 +1,30 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
-import dev.toma.configuration.config.value.ConfigValue;
-import dev.toma.configuration.config.value.ObjectValue;
+import dev.toma.configuration.config.value.IConfigValue;
+import dev.toma.configuration.config.value.IHierarchical;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import java.util.*;
 
 public class ConfigurationLang {
 
-    public static void init(RegistrateLangProvider provider) {
-        recurseGenerateConfigLang(provider, new HashSet<>(),
-                Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getValueMap(), "");
+    public static void init(GTLangProvider provider) {
+        recurseGenerateConfigLang(provider, Configuration.getConfig(GTCEu.MOD_ID).get().values());
     }
 
-
-    private static void recurseGenerateConfigLang(RegistrateLangProvider provider, Set<String> added, Map<String, ConfigValue<?>> map, String parentKey) {
-        for (var entry : map.entrySet()) {
-            var id = entry.getValue().getId();
-            if (added.add(id)) {
-                provider.add(String.format("config.%s.option%s.%s", GTCEu.MOD_ID, parentKey, id), id);
-            }
-            if (entry.getValue() instanceof ObjectValue objectValue) {
-                recurseGenerateConfigLang(provider, added, objectValue.get(), "." + id);
+    private static void recurseGenerateConfigLang(GTLangProvider provider,
+                                                  Collection<? extends IConfigValue<?>> values) {
+        for (var entry : values) {
+            provider.add(entry.getPath(), entry.getId());
+            if (entry instanceof IHierarchical hierarchical) {
+                var children = hierarchical.getChildrenKeys().stream()
+                        .map(hierarchical::getChildById)
+                        .filter(Objects::nonNull)
+                        .toList();
+                recurseGenerateConfigLang(provider, children);
             }
         }
     }
