@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class ToolLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         initDeathMessages(provider);
         generateToolClassKeys(provider);
         generateToolKeys(provider);
@@ -16,7 +14,7 @@ public class ToolLang {
         generateEnchantKeys(provider);
     }
 
-    private static void initDeathMessages(RegistrateLangProvider provider) {
+    private static void initDeathMessages(GTLangProvider provider) {
         // Death Messages
         provider.add("death.attack.gtceu.heat", "%s was boiled alive");
         provider.add("death.attack.gtceu.frost", "%s explored cryogenics");
@@ -58,7 +56,7 @@ public class ToolLang {
         provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
     }
 
-    public static void generateToolClassKeys(RegistrateLangProvider provider) {
+    public static void generateToolClassKeys(GTLangProvider provider) {
         // Tool Names
         provider.add("item.gtceu.tool.class.sword", "Sword");
         provider.add("item.gtceu.tool.class.pickaxe", "Pickaxe");
@@ -85,7 +83,7 @@ public class ToolLang {
         provider.add("item.gtceu.tool.class.drill", "Drill");
     }
 
-    public static void generateBehaviorKeys(RegistrateLangProvider provider) {
+    public static void generateBehaviorKeys(GTLangProvider provider) {
         // Generic Tool Behaviors
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
         provider.add("item.gtceu.tool.behavior.torch_place", "§eSpelunker: §fPlaces Torches on Right-Click");
@@ -115,7 +113,7 @@ public class ToolLang {
         provider.add("item.behavior.mode_switch.current_mode", "Mode: %s");
     }
 
-    public static void generateToolKeys(RegistrateLangProvider provider) {
+    public static void generateToolKeys(GTLangProvider provider) {
         // Tool Names
         replace(provider, "item.gtceu.tool.sword", "%s Sword");
         replace(provider, "item.gtceu.tool.pickaxe", "%s Pickaxe");
@@ -165,7 +163,7 @@ public class ToolLang {
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
     }
 
-    public static void generateTooltips(RegistrateLangProvider provider) {
+    public static void generateTooltips(GTLangProvider provider) {
         // Tool Tooltips
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
         multilineLang(provider, "item.gtceu.tool.mallet.tooltip",
@@ -211,7 +209,7 @@ public class ToolLang {
         provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%d%%");
     }
 
-    public static void generateActionKeys(RegistrateLangProvider provider) {
+    public static void generateActionKeys(GTLangProvider provider) {
         // Tool Actions?
         provider.add("tool_action.gtceu.show_tooltips", "Hold SHIFT to show Tool Info");
 
@@ -240,7 +238,7 @@ public class ToolLang {
         provider.add("tool_action.gtceu.tape", "§8Use Tape to fix Maintenance Problems");
     }
 
-    private static void generateEnchantKeys(RegistrateLangProvider provider) {
+    private static void generateEnchantKeys(GTLangProvider provider) {
         // Enchantments
         provider.add("enchantment.gtceu.disjunction", "Disjunction");
         provider.add("enchantment.gtceu.disjunction.description",

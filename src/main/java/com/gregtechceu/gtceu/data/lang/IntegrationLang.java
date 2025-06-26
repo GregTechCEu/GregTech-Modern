@@ -3,16 +3,14 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOres;
-
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 public class IntegrationLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         initRecipeViewerLang(provider);
         initWailaLikeLang(provider);
         initMinimapLang(provider);
@@ -23,7 +21,7 @@ public class IntegrationLang {
     }
 
     /** JEI, REI, EMI */
-    private static void initRecipeViewerLang(RegistrateLangProvider provider) {
+    private static void initRecipeViewerLang(GTLangProvider provider) {
         provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
 
         provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
@@ -90,13 +88,13 @@ public class IntegrationLang {
         GTOres.init();
         for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS) {
             String name = GTRegistries.ORE_VEINS.getKey(oreDefinition).getPath();
-            provider.add("gtceu.jei.ore_vein." + name, RegistrateLangProvider.toEnglishName(name));
+            provider.add("gtceu.jei.ore_vein." + name, FormattingUtil.toEnglishName(name));
         }
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
         GTBedrockFluids.init();
         for (BedrockFluidDefinition fluid : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
-            provider.add("gtceu.jei.bedrock_fluid." + name, RegistrateLangProvider.toEnglishName(name));
+            provider.add("gtceu.jei.bedrock_fluid." + name, FormattingUtil.toEnglishName(name));
         }
 
         // Potion
@@ -104,7 +102,7 @@ public class IntegrationLang {
     }
 
     /** Jade, TheOneProbe, WTHIT */
-    private static void initWailaLikeLang(RegistrateLangProvider provider) {
+    private static void initWailaLikeLang(GTLangProvider provider) {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
         provider.add("gtceu.top.energy_production", "Producing");
@@ -214,7 +212,7 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
     }
 
-    private static void initMinimapLang(RegistrateLangProvider provider) {
+    private static void initMinimapLang(GTLangProvider provider) {
         // Tooltip/Name
         provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
 
@@ -237,7 +235,7 @@ public class IntegrationLang {
         provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
     }
 
-    private static void initOwnershipLang(RegistrateLangProvider provider) {
+    private static void initOwnershipLang(GTLangProvider provider) {
         // Team Names
         provider.add("gtceu.ownership.name.player", "Player");
         provider.add("gtceu.ownership.name.ftb", "FTB Teams");

@@ -1,20 +1,17 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.multiLang;
-import static com.gregtechceu.gtceu.data.lang.LangUtil.multilineLang;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class GUILang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateKeybindKeys(provider);
         generateWidgetKeys(provider);
         generateTooltipKeys(provider);
         generateLDLibKeys(provider);
     }
 
-    private static void generateLDLibKeys(RegistrateLangProvider provider) {
+    private static void generateLDLibKeys(GTLangProvider provider) {
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
         provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
@@ -27,7 +24,7 @@ public class GUILang {
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
     }
 
-    private static void generateKeybindKeys(RegistrateLangProvider provider) {
+    private static void generateKeybindKeys(GTLangProvider provider) {
         provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
         provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
@@ -38,7 +35,7 @@ public class GUILang {
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
     }
 
-    private static void generateTooltipKeys(RegistrateLangProvider provider) {
+    private static void generateTooltipKeys(GTLangProvider provider) {
         // Part Sharing
         provider.add("gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
@@ -135,7 +132,7 @@ public class GUILang {
         provider.add("gtceu.direction.tooltip.front", "Front");
     }
 
-    private static void generateWidgetKeys(RegistrateLangProvider provider) {
+    private static void generateWidgetKeys(GTLangProvider provider) {
         // General UI Keys
         provider.add("gtceu.gui.title_bar.back", "Back");
         provider.add("gtceu.gui.title_bar.page_switcher", "Pages");

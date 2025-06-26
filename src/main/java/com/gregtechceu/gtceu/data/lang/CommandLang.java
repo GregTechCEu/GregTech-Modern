@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class CommandLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateCommandLang(provider);
     }
 
-    private static void generateCommandLang(RegistrateLangProvider provider) {
+    private static void generateCommandLang(GTLangProvider provider) {
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
 
         // Prospection Commands

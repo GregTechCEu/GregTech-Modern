@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -34,7 +35,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
+import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLang;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
@@ -70,13 +71,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
 
-import com.google.common.collect.Multimaps;
 import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.RegistrateProvider;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-
-import java.util.List;
 
 public class CommonProxy {
 
@@ -109,6 +104,10 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
+
+        // Initialize the provider replacements before any content is loaded so we can use them safely
+        GregTechDatagen.initPre();
+
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -141,22 +140,14 @@ public class CommonProxy {
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
 
-        GregTechDatagen.init();
+        GregTechDatagen.initPost();
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getRegistries().forEach(registry -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
             AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registry.getRegistrate();
             if (accessor.getDoDatagen().get()) {
-                // noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                if (providers.isEmpty()) {
-                    providers.add(
-                            (provider) -> MaterialLang.generate((RegistrateLangProvider) provider, registry));
-                } else {
-                    providers.add(0,
-                            (provider) -> MaterialLang.generate((RegistrateLangProvider) provider, registry));
-                }
+                var providers = accessor.getDatagens().get(ProviderType.LANG);
+                providers.add(0, (provider) -> MaterialLang.generate((GTLangProvider) provider, registry));
             }
 
             registry.getRegistrate()

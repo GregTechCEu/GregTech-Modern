@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class ArmorLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateArmorMessageKeys(provider);
         generateTooltipKeys(provider);
         generateHudKeys(provider);
     }
 
-    private static void generateArmorMessageKeys(RegistrateLangProvider provider) {
+    private static void generateArmorMessageKeys(GTLangProvider provider) {
         // NanoMuscle Suit
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled", " NanoMuscle™ Suite: §cNightVision Disabled");
@@ -42,8 +42,9 @@ public class ArmorLang {
         provider.add("armor.gtceu.message.nightvision.error", "§cNot enough power!");
     }
 
-    private static void generateTooltipKeys(RegistrateLangProvider provider) {
-        provider.add("item.gtceu.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust"); //move this to item lang?
+    private static void generateTooltipKeys(GTLangProvider provider) {
+        // move this to item lang?
+        provider.add("item.gtceu.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust");
 
         // Armor Abilities
         provider.add("armor.gtceu.tooltip.stepassist", "§7Provides Step-Assist");
@@ -64,9 +65,9 @@ public class ArmorLang {
         provider.add("armor.gtceu.energy_share.tooltip.info", "To change mode, SHIT + R-CLICK when holding item");
     }
 
-    private static void generateHudKeys(RegistrateLangProvider provider) {
+    private static void generateHudKeys(GTLangProvider provider) {
         // HUD Information
-        provider.add("armor.gtceu.hud.status.enabled", "§aON"); //change this to generic tooltip?
+        provider.add("armor.gtceu.hud.status.enabled", "§aON"); // change this to generic tooltip?
         provider.add("armor.gtceu.hud.status.disabled", "§cOFF");
         provider.add("armor.gtceu.hud.energy_level", "Energy Level: %s");
         provider.add("armor.gtceu.hud.engine_enabled", "Engine: %s");

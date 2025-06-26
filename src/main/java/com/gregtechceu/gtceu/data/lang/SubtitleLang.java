@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class SubtitleLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateSubtitleKeys(provider);
     }
 
-    private static void generateSubtitleKeys(RegistrateLangProvider provider) {
+    private static void generateSubtitleKeys(GTLangProvider provider) {
         // Subtitles
         // Machines
         provider.add("subtitles.gtceu.boiler", "Boiler heating");

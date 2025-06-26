@@ -1,20 +1,17 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
 
 public class BlockLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateBlockKeys(provider);
         generateBlockTooltips(provider);
         generatePipeKeys(provider);
     }
 
-    private static void generateBlockKeys(RegistrateLangProvider provider) {
+    private static void generateBlockKeys(GTLangProvider provider) {
         // Coils
         replace(provider, "block.gtceu.hssg_coil_block", "HSS-G Coil Block");
         replace(provider, "block.gtceu.rtm_alloy_coil_block", "RTM Alloy Coil Block");
@@ -106,7 +103,7 @@ public class BlockLang {
         provider.add("block.surface_rock", "%s Surface Rock");
     }
 
-    private static void generateBlockTooltips(RegistrateLangProvider provider) {
+    private static void generateBlockTooltips(GTLangProvider provider) {
         // Coil Tooltip
         replace(provider, "block.gtceu.wire_coil.tooltip_extended_info", "§7Hold SHIFT to show Coil Bonus Info");
         replace(provider, "block.gtceu.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");
@@ -142,7 +139,7 @@ public class BlockLang {
                 "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
     }
 
-    private static void generatePipeKeys(RegistrateLangProvider provider) {
+    private static void generatePipeKeys(GTLangProvider provider) {
         // Cables
         provider.add("gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
         provider.add("gtceu.cable.amperage", "§eMax Amperage:§r §e%d");

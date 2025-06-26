@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class HazardLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateHazardKeys(provider);
     }
 
-    private static void generateHazardKeys(RegistrateLangProvider provider) {
+    private static void generateHazardKeys(GTLangProvider provider) {
         // Medical Conditions
         provider.add("gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");

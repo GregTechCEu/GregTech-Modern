@@ -2,28 +2,26 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
-
-import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class MaterialLang {
 
-    public static void generate(RegistrateLangProvider provider, MaterialRegistry registry) {
+    public static void generate(GTLangProvider provider, MaterialRegistry registry) {
         for (Material material : registry.getAllMaterials())
             provider.add(material.getUnlocalizedName(), toEnglishName(material.getName()));
     }
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateMaterialKeys(provider);
         generateCustomMaterialNames(provider);
         generateFluidKeys(provider);
     }
 
-    private static void generateCustomMaterialNames(RegistrateLangProvider provider) {
         replace(provider, FullersEarth.getUnlocalizedName(), "Fuller's Earth");
+    private static void generateCustomMaterialNames(GTLangProvider provider) {
         // greg's humor is now on 1.20.1...
         replace(provider, Cooperite.getUnlocalizedName(), "Sheldonite");
 
@@ -106,7 +104,7 @@ public class MaterialLang {
         replace(provider, "item.gtceu.nether_quartz_netherrack", "Nether Quartz Ore");
     }
 
-    private static void generateFluidKeys(RegistrateLangProvider provider) {
+    private static void generateFluidKeys(GTLangProvider provider) {
         // Fluid Types
         provider.add("fluid.gtceu.liquid_generic", "Liquid %s");
         provider.add("fluid.gtceu.generic", "%s");
@@ -139,7 +137,7 @@ public class MaterialLang {
         provider.add("fluid.tile.water", "Water");
     }
 
-    private static void generateMaterialKeys(RegistrateLangProvider provider) {
+    private static void generateMaterialKeys(GTLangProvider provider) {
         // Material Page
         provider.add("gtceu.jei.materials.average_mass", "Average mass: %d");
         provider.add("gtceu.jei.materials.average_protons", "Average protons: %d");

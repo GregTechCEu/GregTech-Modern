@@ -28,7 +28,6 @@
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
-        "AbstractRegistrateAccessor",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
@@ -67,6 +66,9 @@
         "jei.FluidHelperMixin",
         "ldlib.ModularWrapperWidgetMixin",
         "ldlib.SyncUtilsMixin",
+        "registrate.AbstractRegistrateAccessor",
+        "registrate.RegistrateDataProviderAccessor",
+        "registrate.LanguageProviderAccessor",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"

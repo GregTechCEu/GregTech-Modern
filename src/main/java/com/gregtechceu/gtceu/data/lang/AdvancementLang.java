@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
 public class AdvancementLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         // todo advancements
         /*
          * provider.add("gtceu.advancement.root_steam.name", "Steam Age");

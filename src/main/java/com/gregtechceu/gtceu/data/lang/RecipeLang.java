@@ -1,21 +1,20 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class RecipeLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateRecipeTypes(provider);
         generateRecipeConditions(provider);
         generateRecipeDataKeys(provider);
         generateMiscKeys(provider);
     }
 
-    private static void generateRecipeTypes(RegistrateLangProvider provider) {
+    private static void generateRecipeTypes(GTLangProvider provider) {
         // RecipeTypes
         for (var recipeType : GTRegistries.RECIPE_TYPES) {
             String key = "recipe_type." + recipeType.registryName.toLanguageKey();
@@ -33,7 +32,7 @@ public class RecipeLang {
         provider.add("recipe_type.gtceu.category.ingot_molding", "Metal Molding");
     }
 
-    private static void generateRecipeConditions(RegistrateLangProvider provider) {
+    private static void generateRecipeConditions(GTLangProvider provider) {
         // Recipe Conditions
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
         provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
@@ -57,7 +56,7 @@ public class RecipeLang {
         provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
     }
 
-    private static void generateRecipeDataKeys(RegistrateLangProvider provider) {
+    private static void generateRecipeDataKeys(GTLangProvider provider) {
         // Recipe Data
         provider.add("gtceu.recipe.total", "Total: %s EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
@@ -91,7 +90,7 @@ public class RecipeLang {
         provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
     }
 
-    private static void generateMiscKeys(RegistrateLangProvider provider) {
+    private static void generateMiscKeys(GTLangProvider provider) {
         // IO
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");

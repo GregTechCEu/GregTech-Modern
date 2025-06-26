@@ -2,16 +2,13 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ItemLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         initGeneratedNames(provider);
         initItemNames(provider);
         initItemTooltips(provider);
@@ -20,9 +17,7 @@ public class ItemLang {
         provider.add("item.invalid.name", "Invalid item");
     }
 
-    private static void initGeneratedNames(RegistrateLangProvider provider) {
-
-
+    private static void initGeneratedNames(GTLangProvider provider) {
         // All TagPrefixes
         for (TagPrefix tagPrefix : TagPrefix.values()) {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
@@ -217,11 +212,11 @@ public class ItemLang {
         provider.add("item.gtceu.iridium_metal_residue_dust", "Iridium Metal Residue");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {
-        replace(provider, "item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
+    private static void initItemNames(GTLangProvider provider) {
+        provider.add("item.gtceu.tungsten_steel_fluid_cell", "%s Tungstensteel Cell");
     }
 
-    private static void initItemTooltips(RegistrateLangProvider provider) {
+    private static void initItemTooltips(GTLangProvider provider) {
         // Nano Saber
         provider.add("item.gtceu.nano_saber.tooltip", "§7Ryujin no ken wo kurae!");
 
@@ -607,7 +602,7 @@ public class ItemLang {
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
     }
 
-    public static void generateBehaviorKeys(RegistrateLangProvider provider) {
+    public static void generateBehaviorKeys(GTLangProvider provider) {
         // Item Behaviors
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");

@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.data.lang.LangUtil.*;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+import net.minecraft.ChatFormatting;
 
 public class MachineLang {
 
-    public static void init(RegistrateLangProvider provider) {
+    public static void init(GTLangProvider provider) {
         generateSteamMachines(provider);
 
         generateGeneralMachineTooltips(provider);
@@ -21,16 +20,15 @@ public class MachineLang {
         generateMultiblockKeys(provider);
     }
 
-    public static void standardTooltips(RegistrateLangProvider provider, String root, String machine,
-                                        String lowTier,
-                                        String midTier, String highTier) {
+    public static void standardTooltips(GTLangProvider provider, String root, String machine,
+                                        String lowTier, String midTier, String highTier) {
         makeElectricMachineTooltipLVtoUV(provider, root, machine,
                 lowTier, lowTier, lowTier,
                 lowTier, midTier, midTier, midTier,
                 highTier);
     }
 
-    private static void generateSteamMachines(RegistrateLangProvider provider) {
+    private static void generateSteamMachines(GTLangProvider provider) {
         makeSteamMachineTooltip(provider, "gtceu.machine", "steam_solid_boiler",
                 "An early way to get Steam Power", "Faster than the Small Steam Solid Fuel Boiler");
         makeSteamMachineTooltip(provider, "gtceu.machine", "steam_solar_boiler",
@@ -59,7 +57,7 @@ public class MachineLang {
         replace(provider, "block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
     }
 
-    private static void generateGeneralMachineTooltips(RegistrateLangProvider provider) {
+    private static void generateGeneralMachineTooltips(GTLangProvider provider) {
         // General Machine Behavior
         provider.add("gtceu.machine.basic.input_from_output_side.allow", "Allow Input from Output Side: ");
         provider.add("gtceu.machine.basic.input_from_output_side.disallow",
@@ -72,7 +70,7 @@ public class MachineLang {
     /**
      * For Tooltips that are NOT in the form {@code mod.machine.tier_name.tooltip}
      */
-    private static void generateCustomMachineTooltips(RegistrateLangProvider provider) {
+    private static void generateCustomMachineTooltips(GTLangProvider provider) {
         // Steam Boilers
         provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating up§r%s");
         provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling down§r%s");
@@ -228,7 +226,7 @@ public class MachineLang {
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
     }
 
-    private static void generateCustomPerTierMachineTooltips(RegistrateLangProvider provider) {
+    private static void generateCustomPerTierMachineTooltips(GTLangProvider provider) {
         // Macerator
         provider.add("gtceu.machine.lv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
         provider.add("gtceu.machine.mv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
@@ -553,13 +551,13 @@ public class MachineLang {
         provider.add("gtceu.machine.opv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
     }
 
-    private static void generateGeneralMultiblockTooltips(RegistrateLangProvider provider) {
+    private static void generateGeneralMultiblockTooltips(GTLangProvider provider) {
         provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
 
         provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
     }
 
-    private static void generateCustomMultiblockTooltips(RegistrateLangProvider provider) {
+    private static void generateCustomMultiblockTooltips(GTLangProvider provider) {
         // Primitive Water Pump
         provider.add("gtceu.multiblock.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
@@ -1160,7 +1158,7 @@ public class MachineLang {
     /**
      * Generates tooltips for both variants of steam machine
      */
-    private static void makeSteamMachineTooltip(RegistrateLangProvider provider, String root, String machineName,
+    private static void makeSteamMachineTooltip(GTLangProvider provider, String root, String machineName,
                                                 String lpTooltip, String hpTooltip) {
         provider.add("%s.lp_%s.tooltip".formatted(root, machineName), "§7%s".formatted(lpTooltip));
         provider.add("%s.hp_%s.tooltip".formatted(root, machineName), "§7%s".formatted(hpTooltip));
@@ -1169,44 +1167,40 @@ public class MachineLang {
     /**
      * Generates tooltips for LV-HV machines
      */
-    private static void makeElectricMachineTooltipLVtoHV(RegistrateLangProvider provider, String root,
-                                                         String machineName,
+    private static void makeElectricMachineTooltipLVtoHV(GTLangProvider provider, String root, String machineName,
                                                          String lvTooltip, String mvTooltip, String hvTooltip) {
         makeElectricMachineTooltipULVtoMAX(provider, root, machineName,
-                null, lvTooltip, mvTooltip, hvTooltip,
-                null, null, null, null,
-                null, null, null, null,
+                null, lvTooltip, mvTooltip,
+                hvTooltip, null, null,
+                null, null, null,
+                null, null, null,
                 null, null, null);
     }
 
     /**
      * Generates tooltips for LV-UV machines
      */
-    private static void makeElectricMachineTooltipLVtoUV(RegistrateLangProvider provider, String root,
-                                                         String machineName,
+    private static void makeElectricMachineTooltipLVtoUV(GTLangProvider provider, String root, String machineName,
                                                          String lvTooltip, String mvTooltip, String hvTooltip,
                                                          String evTooltip, String ivTooltip, String luvTooltip,
-                                                         String zpmTooltip,
-                                                         String uvTooltip) {
+                                                         String zpmTooltip, String uvTooltip) {
         makeElectricMachineTooltipULVtoMAX(provider, root, machineName,
-                null, lvTooltip, mvTooltip, hvTooltip,
-                evTooltip, ivTooltip, luvTooltip, zpmTooltip,
-                uvTooltip, null, null, null,
+                null, lvTooltip, mvTooltip,
+                hvTooltip, evTooltip, ivTooltip,
+                luvTooltip, zpmTooltip, uvTooltip,
+                null, null, null,
                 null, null, null);
     }
 
     /**
      * Generates tooltips for ULV-MAX Machines <br>
-     * If null it won't be added
+     * If a parameter is {@code null}, it won't be added.
      */
-    private static void makeElectricMachineTooltipULVtoMAX(RegistrateLangProvider provider, String root,
-                                                           String machineName,
+    private static void makeElectricMachineTooltipULVtoMAX(GTLangProvider provider, String root, String machineName,
                                                            String ulvTooltip, String lvTooltip, String mvTooltip,
-                                                           String hvTooltip,
-                                                           String evTooltip, String ivTooltip, String luvTooltip,
-                                                           String zpmTooltip,
-                                                           String uvTooltip, String uhvTooltip, String uevTooltip,
-                                                           String uivTooltip,
+                                                           String hvTooltip, String evTooltip, String ivTooltip,
+                                                           String luvTooltip, String zpmTooltip, String uvTooltip,
+                                                           String uhvTooltip, String uevTooltip, String uivTooltip,
                                                            String uxvTooltip, String opvTooltip, String maxTooltip) {
         if (ulvTooltip != null) {
             provider.add("%s.ulv_%s.tooltip".formatted(root, machineName), "§7%s".formatted(ulvTooltip));
@@ -1255,7 +1249,7 @@ public class MachineLang {
         }
     }
 
-    public static void generateMultiblockKeys(RegistrateLangProvider provider) {
+    public static void generateMultiblockKeys(GTLangProvider provider) {
         // Recipe Logic
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
