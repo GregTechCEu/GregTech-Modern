@@ -46,7 +46,6 @@
         "LevelMixin",
         "LootDataManagerMixin",
         "LootPoolAccessor",
-        "MultiVariantGeneratorAccessor",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PartialNBTIngredientAccessor",

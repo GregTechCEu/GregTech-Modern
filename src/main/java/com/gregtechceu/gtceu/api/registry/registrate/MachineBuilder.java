@@ -26,16 +26,11 @@ import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.MultiVariantGeneratorAccessor;
-import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -51,7 +46,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -223,24 +217,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> simpleModel(ResourceLocation modelName) {
-        return blockModel((ctx, prov) -> {
-            Block block = ctx.getEntry();
-            if (!(block instanceof IMachineBlock machineBlock)) {
-                throw new IllegalArgumentException(
-                        "passed block must be a machine block, is " + block.getClass().getName());
-            }
-
-            var generator = prov.multiVariantGenerator(block,
-                    Variant.variant().with(VariantProperties.MODEL, modelName));
-            PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(machineBlock.getDefinition());
-            if (dispatch != null) {
-                generator.with(dispatch);
-            }
-        });
+        return model(createBasicMachineModel(modelName));
     }
 
     public MachineBuilder<DEFINITION> defaultModel() {
-        return simpleModel(new ResourceLocation(registrate.getModid(), "block/" + name));
+        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
     }
 
     public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
@@ -578,26 +559,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
                     .model((ctx, prov) -> {
-                        var model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
-                                        .flatMap(p -> p.getExistingMultiVariantGenerator(block.get()))
-                                        .map(g -> ((MultiVariantGeneratorAccessor)g).gtceu$getBaseVariants())
-                                        .filter(l -> !l.isEmpty()).map(l -> l.get(0))
-                                        .map(Variant::get);
-                        if (model.isPresent()) {
-                            prov.withExistingParent(ctx.getName(),
-                                    model.get().getAsJsonObject().get("model").getAsString());
-                            return;
-                        }
-                        model = builder.registrate.getDataProvider(GregTechDatagen.BLOCKSTATE_PROVIDER)
-                                .flatMap(p -> p.getExistingVariantBuilder(block.get()))
-                                .map(b -> b.getModels().get(b.partialState()))
-                                .map(BlockStateProvider.ConfiguredModelList::toJSON);
-                        if (model.isPresent()) {
-                            prov.withExistingParent(ctx.getName(),
-                                    model.get().getAsJsonObject().get("model").getAsString());
-                        } else {
-                            prov.blockItem(block);
-                        }
+                        prov.withExistingParent(ctx.getName(), new ResourceLocation(builder.registrate.getModid(),
+                                "block/machine/" + ctx.getName()));
                     })
                     .color(() -> () -> builder.itemColor::apply)
                     .properties(builder.itemProp);

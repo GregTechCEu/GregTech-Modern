@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
@@ -305,6 +306,7 @@ public class GTMachines {
             .langValue("Long Distance Item Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
+            .blockModel(GTModels.createModelBlockState(GTCEu.id("block/machine/long_distance_item_pipeline_endpoint")))
             .tooltips(LangHandler.getMultiLang("gtceu.machine.endpoint.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
@@ -319,6 +321,7 @@ public class GTMachines {
             .langValue("Long Distance Fluid Pipeline Endpoint")
             .rotationState(RotationState.ALL)
             .tier(LV)
+            .blockModel(GTModels.createModelBlockState(GTCEu.id("block/machine/long_distance_fluid_pipeline_endpoint")))
             .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.1"),
                     Component.translatable("gtceu.machine.endpoint.tooltip.2"))
@@ -341,7 +344,7 @@ public class GTMachines {
     public static final MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
-                    .tieredHullModel(GTCEu.id("block/machine/pump"))
+                    .tieredHullModel(GTCEu.id("block/machine/template/pump_machine"))
                     .langValue("%s Pump %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.pump.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
@@ -361,7 +364,7 @@ public class GTMachines {
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
-                    .tieredHullModel(GTCEu.id("block/machine/fisher"))
+                    .model(createFisherModel())
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("gtceu.machine.fisher.tooltip"),
                             Component.translatable("gtceu.machine.fisher.speed", FisherMachine.calcMaxProgress(tier)),
@@ -482,7 +485,8 @@ public class GTMachines {
             (tier, builder) -> builder
                     .langValue("%s Buffer %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NONE)
-                    .tieredHullModel(GTCEu.id("block/machine/buffer"))
+                    .model(createSingleOverlayTieredHullMachineModel(GTCEu.id("block/overlay/machine/overlay_buffer"),
+                            GTCEu.id("block/overlay/machine/overlay_buffer_emissive")))
                     .tooltips(
                             Component.translatable("gtceu.machine.buffer.tooltip"),
                             Component.translatable(
@@ -503,13 +507,20 @@ public class GTMachines {
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
+            .model(createSingleOverlayTieredHullMachineModel(GTModels.BLANK_TEXTURE,
+                    GTCEu.id("block/overlay/machine/overlay_energy_emitter")))
             .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tier(MAX)
             .register();
 
     public static final MachineDefinition CREATIVE_COMPUTATION_PROVIDER = REGISTRATE
             .machine("creative_computation_provider", CreativeComputationProviderMachine::new)
             .rotationState(RotationState.NONE)
+            .model(createSingleOverlayTieredHullMachineModel(
+                    GTCEu.id("block/overlay/machine/overlay_data_hatch_optical"),
+                    GTCEu.id("block/overlay/machine/overlay_data_hatch_optical_emissive")))
             .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tier(MAX)
             .register();
 
     public static final MachineDefinition CREATIVE_FLUID = REGISTRATE

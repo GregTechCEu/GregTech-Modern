@@ -41,9 +41,10 @@ public class GTModels {
 
     // region BLOCK MODELS
 
-    public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,
-                                             RegistrateBlockstateProvider prov, ResourceLocation modelLocation) {
-        prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
+    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> createModelBlockState(ResourceLocation modelLocation) {
+        return (ctx, prov) -> {
+            prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
+        };
     }
 
     public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx,
