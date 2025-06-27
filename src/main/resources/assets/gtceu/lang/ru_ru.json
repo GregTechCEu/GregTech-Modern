@@ -5541,5 +5541,20 @@
     "ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot": "Слот фантомной жидкости GTM",
     "ldlib.gui.editor.register.widget.container.gtm_fluid_slot": "Жидкостный слот GTM",
     "ldlib.gui.editor.register.widget.container.gtm_item_slot": "Предметный слот GTM",
-    "ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot": "Слот фантомного предмета GTM"
+    "ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot": "Слот фантомного предмета GTM",
+    "command.gtceu.cape.give.success.single": "Разблокировано %s плащей для %s",
+    "command.gtceu.cape.take.failed": "Нет плащей для удаления",
+    "command.gtceu.cape.take.success.multiple": "Забрали %s плащей от %s игроков",
+    "command.gtceu.cape.take.success.single": "Забрали %ы плащей у %s",
+    "command.gtceu.cape.use.success": "%s теперь использует плащ %s",
+    "command.gtceu.cape.use.success.none": "%s больше не использует плащ",
+    "cover.ender_fluid_link.tooltip.channel_name": "Установить название канала введённым текстом",
+    "cover.ender_fluid_link.tooltip.clear_button": "Очистить описание канала",
+    "gtceu.multiblock.dimensions.0": "Размеры: ",
+    "command.gtceu.cape.give.failed": "Новые плащи не были открыты",
+    "command.gtceu.cape.give.success.multiple": "Разблокировано %s плащей для %s игроков",
+    "command.gtceu.cape.use.failed": "%s не может использовать плащ %s, так как у него его нет (или его не существует)!",
+    "gtceu.chance_logic.first": "ПЕРВЫЙ",
+    "cover.ender_fluid_link.tooltip.channel_description": "Установить описание канала введённым текстом",
+    "cover.ender_fluid_link.tooltip.list_button": "Показать список каналов"
 }
