@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.data.model.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -45,7 +45,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
-        super(GTMachineModels.MACHINE_MODEL_LOADER, parent, existingFileHelper);
+        super(MachineModelLoader.ID, parent, existingFileHelper);
         this.owner = owner;
     }
 

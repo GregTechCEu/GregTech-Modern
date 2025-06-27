@@ -42,6 +42,7 @@ import java.util.function.Predicate;
 public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> {
 
     public static final MachineModelLoader INSTANCE = new MachineModelLoader();
+    public static final ResourceLocation ID = GTCEu.id("machine");
     private static final Logger LOGGER = LogManager.getLogger("GT MACHINE MODEL LOADER");
 
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');

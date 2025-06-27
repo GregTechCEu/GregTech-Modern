@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -21,8 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.ModelEvent.*;
 import net.minecraftforge.client.model.IQuadTransformer;
-import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -33,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -47,66 +45,9 @@ public class ModelUtils {
     private static final Set<Consumer<ModifyBakingResult>> BAKE_EVENT_LISTENERS = new ReferenceOpenHashSet<>();
     private static final Set<Consumer<RegisterAdditional>> ADD_MODELS_EVENT_LISTENERS = new ReferenceOpenHashSet<>();
 
-    private static final Function<Float, IQuadTransformer> OFFSET_BY = Util.memoize(by -> {
-        if (by == 0.0f) return QuadTransformers.empty();
-
-        return quad -> {
-            var vertices = quad.getVertices();
-            Direction direction = quad.getDirection();
-
-            for (int i = 0; i < 4; i++) {
-                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
-                float x = Float.intBitsToFloat(vertices[offset]);
-                float y = Float.intBitsToFloat(vertices[offset + 1]);
-                float z = Float.intBitsToFloat(vertices[offset + 2]);
-                x += by * direction.getStepX();
-                y += by * direction.getStepY();
-                z += by * direction.getStepZ();
-
-                vertices[offset] = Float.floatToRawIntBits(x);
-                vertices[offset + 1] = Float.floatToRawIntBits(y);
-                vertices[offset + 2] = Float.floatToRawIntBits(z);
-            }
-        };
-    });
-
-    private static final IQuadTransformer DEROTATE = quad -> {
-        var vertices = quad.getVertices();
-
-        int start = 0;
-        float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
-        int[][] uvs = (int[][]) Array.newInstance(int.class, 4, 2);
-
-        for (int i = 0; i < 4; i++) {
-            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-            System.arraycopy(vertices, offset, uvs[i], 0, 2);
-
-            float u = Float.intBitsToFloat(uvs[i][0]);
-            float v = Float.intBitsToFloat(uvs[i][1]);
-            if (u <= minU && v <= minV) {
-                minU = Math.min(minU, u);
-                minV = Math.min(minV, v);
-                start = i;
-            }
-        }
-        for (int i = 0; i < 4; i++) {
-            int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-            System.arraycopy(uvs[(i + start) % 4], 0, vertices, offset, 2);
-        }
-    };
-
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
-    }
-
-    public static BakedQuad offsetQuad(BakedQuad quad, float by) {
-        return OFFSET_BY.apply(by).process(quad);
-    }
-
-    public static BakedQuad derotateQuad(BakedQuad quad) {
-        DEROTATE.processInPlace(quad);
-        return quad;
     }
 
     public static Vector2f[] getQuadUVs(int[] vertices) {
@@ -275,14 +216,14 @@ public class ModelUtils {
         ADD_MODELS_EVENT_LISTENERS.add(consumer);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         for (var consumer : BAKE_EVENT_LISTENERS) {
             consumer.accept(event);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onRegisterAdditional(ModelEvent.RegisterAdditional event) {
         for (var consumer : ADD_MODELS_EVENT_LISTENERS) {
             consumer.accept(event);

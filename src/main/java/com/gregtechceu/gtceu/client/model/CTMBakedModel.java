@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.model;
 
+import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.QuadInfo;
 
@@ -97,25 +98,26 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
     public static List<BakedQuad> buildCustomQuads(Connections connections, List<BakedQuad> base) {
         List<BakedQuad> result = new ArrayList<>();
-        for (BakedQuad bakedQuad : base) {
-            var section = LDLMetadataSection.getMetadata(bakedQuad.getSprite());
+        for (BakedQuad originalQuad : base) {
+            var section = LDLMetadataSection.getMetadata(originalQuad.getSprite());
             TextureAtlasSprite connection = section.connection == null ? null :
                     ModelUtils.getBlockSprite(section.connection);
             if (connection == null) {
-                result.add(makeQuad(bakedQuad, section));
+                result.add(makeQuad(originalQuad, section));
                 continue;
             }
 
-            BakedQuad baked = ModelUtils.derotateQuad(makeQuad(bakedQuad, section));
-            QuadInfo[] subdivided = ModelUtils.subdivide(baked);
+            BakedQuad newBaked = makeQuad(originalQuad, section);
+            GTQuadTransformers.derotate().processInPlace(newBaked);
 
+            QuadInfo[] subdivided = ModelUtils.subdivide(newBaked);
             int[] ctm = connections.getSubmapIndices();
 
             for (int j = 0; j < subdivided.length; j++) {
                 QuadInfo quad = subdivided[j];
                 if (quad != null) {
                     int quadrant = quad.getNormalizedUVQuadrant();
-                    TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? bakedQuad.getSprite() : connection;
+                    TextureAtlasSprite ctmSprite = ctm[quadrant] > 15 ? originalQuad.getSprite() : connection;
                     subdivided[j] = quad.grow().transformUVs(ctmSprite, Submap.uvs[ctm[quadrant]]);
                 }
             }
@@ -125,8 +127,13 @@ public class CTMBakedModel<T extends BakedModel> extends BakedModelWrapper<T> {
     }
 
     protected static BakedQuad makeQuad(BakedQuad quad, LDLMetadataSection section) {
-        int light = section.emissive ? 15 : 0;
-        QuadTransformers.settingEmissivity(light).process(quad);
+        if (section.emissive) {
+            quad = new BakedQuad(quad.getVertices().clone(), quad.getTintIndex(), quad.getDirection(),
+                    quad.getSprite(), false, false);
+            QuadTransformers.settingEmissivity(15).processInPlace(quad);
+        } else {
+            quad = GTQuadTransformers.copy(quad);
+        }
         return quad;
     }
 

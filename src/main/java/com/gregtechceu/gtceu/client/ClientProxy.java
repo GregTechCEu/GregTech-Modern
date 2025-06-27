@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
@@ -24,7 +25,6 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTParticleTypes;
-import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -143,7 +143,8 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(GTMachineModels.MACHINE_MODEL_LOADER.getPath(), MachineModelLoader.INSTANCE);
+        event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
+        event.register(TextureOverrideModel.Loader.ID.getPath(), TextureOverrideModel.Loader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
     }
 }

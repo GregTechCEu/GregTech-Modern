@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -47,14 +47,12 @@ public interface ICoverableRenderer {
                             normal.getY() >= 0 ? 0.999 : min,
                             normal.getZ() >= 0 ? 0.999 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad
-                                .builder(face.getOpposite(),
-                                        ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                        quads.add(FaceQuad.builder(face.getOpposite(),
+                                ModelUtils.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     } else if (side != face.getOpposite()) { // render sides
-                        quads.add(FaceQuad
-                                .builder(side,
-                                        ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                        quads.add(FaceQuad.builder(side,
+                                ModelUtils.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }

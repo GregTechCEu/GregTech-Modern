@@ -52,12 +52,10 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
 public class GTMachineModels {
 
-    // spotless:off
-    public static final ResourceLocation MACHINE_MODEL_LOADER = GTCEu.id("machine");
-
     public static final String OVERLAY_PREFIX = "overlay_";
     public static final String EMISSIVE_SUFFIX = "_emissive";
 
+    // spotless:off
     public static final ResourceLocation SIDED_SIDED_OVERLAY_MODEL = GTCEu.id("block/machine/template/sided/sided");
     public static final ResourceLocation SIDED_SINGLE_OVERLAY_MODEL = GTCEu.id("block/machine/template/sided/single");
     public static final ResourceLocation CUBE_ALL_SIDED_OVERLAY_MODEL = GTCEu.id("block/machine/template/cube_all/sided");

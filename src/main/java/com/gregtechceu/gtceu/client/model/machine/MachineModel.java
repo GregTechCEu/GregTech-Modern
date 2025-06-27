@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
@@ -181,7 +182,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 pos, level, blockModelState, modelData, renderType);
         var iterator = quads.listIterator(start);
         while (iterator.hasNext()) {
-            ModelUtils.offsetQuad(iterator.next(), COVER_OVERLAY_OFFSET);
+            GTQuadTransformers.offset(COVER_OVERLAY_OFFSET).processInPlace(iterator.next());
         }
         return quads;
     }

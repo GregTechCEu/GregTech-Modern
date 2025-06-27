@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.client.model.BakedTextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.CTMBakedModel;
 
 import net.minecraft.client.Minecraft;
@@ -34,26 +35,30 @@ public interface IPartModelRenderer {
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            List<BakedQuad> toConnect = new ArrayList<>();
 
             // spotless:off
             if (model instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, modelFront,
+                controllerRenderer.renderPartModel(toConnect, controller, part, frontFacing, modelFront,
                         rand, elementSide, modelData, renderType);
-                return true;
             } else if (model instanceof MachineModel machineModel) {
-                renderMachineModel(machineModel, controller, quads, part, frontFacing, modelFront,
-                        elementSide, rand, modelData, renderType);
-                return true;
-            } else if (model instanceof CTMBakedModel<?> ctmModel &&
-                    ctmModel.getParent() instanceof MachineModel machineModel) {
-                List<BakedQuad> toConnect = new ArrayList<>();
                 renderMachineModel(machineModel, controller, toConnect, part, frontFacing, modelFront,
                         elementSide, rand, modelData, renderType);
+            } else if (model instanceof CTMBakedModel<?> ctmModel &&
+                    ctmModel.getParent() instanceof MachineModel machineModel) {
+                renderMachineModel(machineModel, controller, toConnect, part, frontFacing, modelFront,
+                        elementSide, rand, modelData, renderType);
+            } else if (model instanceof BakedTextureOverrideModel<?> texOverrideModel &&
+                       texOverrideModel.getChild() instanceof MachineModel machineModel) {
+                renderMachineModel(machineModel, controller, toConnect, part, frontFacing, modelFront,
+                        elementSide, rand, modelData, renderType);
+            }
+            // spotless:on
+            if (!toConnect.isEmpty()) {
                 quads.addAll(CTMBakedModel.reBakeCustomQuads(toConnect,
                         controller.self().getLevel(), controller.self().getPos(), state, elementSide));
                 return true;
             }
-            // spotless:on
         }
         return false;
     }
