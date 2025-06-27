@@ -54,7 +54,7 @@ import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
@@ -330,8 +330,7 @@ public class GTMultiMachines {
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers::multiSmelterParallel)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
-                    Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
+            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(FURNACE_RECIPES, ALLOY_SMELTER_RECIPES))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "XXX")
                     .aisle("XXX", "C#C", "XMX")

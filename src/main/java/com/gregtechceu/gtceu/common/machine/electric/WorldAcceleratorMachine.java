@@ -242,7 +242,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
-                    "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
+                    "machine.gtceu.world_accelerator.mode_entity" : "machine.gtceu.world_accelerator.mode_tile"));
             scheduleRenderUpdate();
         }
         return InteractionResult.CONSUME;

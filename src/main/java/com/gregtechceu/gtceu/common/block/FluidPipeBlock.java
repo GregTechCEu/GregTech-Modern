@@ -92,10 +92,11 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         FluidPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", properties.getThroughput()));
-        tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", properties.getMaxFluidTemperature()));
+        tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
+                properties.getMaxFluidTemperature()));
 
         if (properties.getChannels() > 1) {
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.channels", properties.getChannels()));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.channels", properties.getChannels()));
         }
 
         if (!GTUtil.isShiftDown()) {
@@ -104,13 +105,13 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         }
 
         if (properties.isGasProof())
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof"));
         else
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof"));
 
-        if (properties.isAcidProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
-        if (properties.isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
-        if (properties.isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        if (properties.isAcidProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof"));
+        if (properties.isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
+        if (properties.isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof"));
     }
 
     @Override

@@ -366,7 +366,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         var group = new WidgetGroup(0, 0, 109, 63);
         var importItems = createImportItems();
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
-                .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
+                .addWidget(new LabelWidget(8, 8, "machine.gtceu.quantum_chest.items_stored"))
                 .addWidget(new LabelWidget(8, 18, () -> FormattingUtil.formatNumbers(storedAmount))
                         .setTextColor(-1)
                         .setDropShadow(true))

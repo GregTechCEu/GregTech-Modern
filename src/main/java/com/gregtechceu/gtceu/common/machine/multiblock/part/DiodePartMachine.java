@@ -102,7 +102,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
             scheduleRenderUpdate();
             return InteractionResult.CONSUME;
         }
-        playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
+        playerIn.sendSystemMessage(Component.translatable("machine.gtceu.diodemessage", amps));
         return InteractionResult.CONSUME;
     }
 

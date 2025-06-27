@@ -76,7 +76,7 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
                     (int) properties.getTransferRate()));
         }
 
-        tooltip.add(Component.translatable("gtceu.item_pipe.priority", properties.getPriority()));
+        tooltip.add(Component.translatable("tooltip.gtceu.item_pipe.priority", properties.getPriority()));
     }
 
     @Override

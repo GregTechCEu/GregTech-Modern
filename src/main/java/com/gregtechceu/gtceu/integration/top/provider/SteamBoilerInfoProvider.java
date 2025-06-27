@@ -35,11 +35,11 @@ public class SteamBoilerInfoProvider extends CapabilityInfoProvider<SteamBoilerM
 
         var producingSteam = !capability.isHasNoWater() && capability.getCurrentTemperature() >= 100;
         if (capability.getRecipeLogic().isWorking()) {
-            horizontalPane.text("gtceu.machine.boiler.info.heating.up",
-                    producingSteam ? Component.translatable("gtceu.machine.boiler.info.producing.steam") : "");
+            horizontalPane.text("machine.gtceu.boiler.info.heating.up",
+                    producingSteam ? Component.translatable("machine.gtceu.boiler.info.producing.steam") : "");
         } else if (capability.getCurrentTemperature() > 0) {
-            horizontalPane.text("gtceu.machine.boiler.info.cooling.down",
-                    producingSteam ? Component.translatable("gtceu.machine.boiler.info.producing.steam") : "");
+            horizontalPane.text("machine.gtceu.boiler.info.cooling.down",
+                    producingSteam ? Component.translatable("machine.gtceu.boiler.info.producing.steam") : "");
         }
     }
 

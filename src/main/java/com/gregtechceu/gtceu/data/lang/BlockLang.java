@@ -43,6 +43,7 @@ public class BlockLang {
         provider.add("block.gtceu.casing_grate", "Grate Machine Casing");
         provider.add("block.gtceu.assembly_line_unit", "Assembly Control Casing");
         provider.add("block.gtceu.ptfe_pipe_casing", "PTFE Pipe Casing");
+        provider.add("block.gtceu.palladium_substation", "Palladium Substation Casing");
 
         // Gearboxes
         provider.add("block.gtceu.bronze_gearbox", "Bronze Gearbox Casing");
@@ -62,7 +63,6 @@ public class BlockLang {
         provider.add("block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
         provider.add("block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
         provider.add("block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
-        provider.add("block.gtceu.palladium_substation", "Palladium Substation Casing");
 
         // Bricked Casings
         provider.add("block.gtceu.steam_casing_bronze", "Bronze Hull");
@@ -105,19 +105,19 @@ public class BlockLang {
 
     private static void generateBlockTooltips(GTLangProvider provider) {
         // Coil Tooltip
-        provider.add("block.gtceu.wire_coil.tooltip_extended_info", "§7Hold SHIFT to show Coil Bonus Info");
-        provider.add("block.gtceu.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");
-        provider.add("block.gtceu.wire_coil.tooltip_smelter", "§8Multi Smelter:");
-        provider.add("block.gtceu.wire_coil.tooltip_parallel_smelter", "  §5Max Parallel: §f%s");
-        provider.add("block.gtceu.wire_coil.tooltip_energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
-        provider.add("block.gtceu.wire_coil.tooltip_pyro", "§8Pyrolyse Oven:");
-        provider.add("block.gtceu.wire_coil.tooltip_speed_pyro", "  §bProcessing Speed: §f%s%%");
-        provider.add("block.gtceu.wire_coil.tooltip_cracking", "§8Cracking Unit:");
-        provider.add("block.gtceu.wire_coil.tooltip_energy_cracking", "  §aEnergy Usage: §f%s%%");
+        provider.add("block.gtceu.wire_coil.tooltip.extended_info", "§7Hold SHIFT to show Coil Bonus Info");
+        provider.add("block.gtceu.wire_coil.tooltip.heat", "§cBase Heat Capacity: §f%d K");
+        provider.add("block.gtceu.wire_coil.tooltip.smelter", "§8Multi Smelter:");
+        provider.add("block.gtceu.wire_coil.tooltip.parallel_smelter", "  §5Max Parallel: §f%s");
+        provider.add("block.gtceu.wire_coil.tooltip.energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
+        provider.add("block.gtceu.wire_coil.tooltip.pyro", "§8Pyrolyse Oven:");
+        provider.add("block.gtceu.wire_coil.tooltip.speed_pyro", "  §bProcessing Speed: §f%s%%");
+        provider.add("block.gtceu.wire_coil.tooltip.cracking", "§8Cracking Unit:");
+        provider.add("block.gtceu.wire_coil.tooltip.energy_cracking", "  §aEnergy Usage: §f%s%%");
 
         // Substation Capacitors
-        provider.add("block.gtceu.substation_capacitor.tooltip_empty", "§7For filling space in your Power Substation");
-        provider.add("block.gtceu.substation_capacitor.tooltip_filled", "§cEnergy Capacity: §f%d EU");
+        provider.add("block.gtceu.substation_capacitor.tooltip.empty", "§7For filling space in your Power Substation");
+        provider.add("block.gtceu.substation_capacitor.tooltip.filled", "§cEnergy Capacity: §f%d EU");
 
         // Bricked Casings
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");
@@ -141,26 +141,26 @@ public class BlockLang {
 
     private static void generatePipeKeys(GTLangProvider provider) {
         // Cables
-        provider.add("gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
-        provider.add("gtceu.cable.amperage", "§eMax Amperage:§r §e%d");
-        provider.add("gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
-        provider.add("gtceu.cable.superconductor", "%s §dSuperconductor");
+        provider.add("tooltip.gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
+        provider.add("tooltip.gtceu.cable.amperage", "§eMax Amperage:§r §e%d");
+        provider.add("tooltip.gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
+        provider.add("tooltip.gtceu.cable.superconductor", "%s §dSuperconductor");
 
         // Fluid Pipes
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
-        provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
-        provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
-        provider.add("gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
-        provider.add("gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
-        provider.add("gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
-        provider.add("gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
+        provider.add("tooltip.gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
+        provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%d");
+        provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
+        provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
+        provider.add("tooltip.gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
+        provider.add("tooltip.gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
+        provider.add("tooltip.gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
 
         // Item Pipes
-        provider.add("gtceu.item_pipe.priority", "§9Priority: §f%d");
+        provider.add("tooltip.gtceu.item_pipe.priority", "§9Priority: §f%d");
 
         // Duct Pipes
-        provider.add("gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
+        provider.add("tooltip.gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
 
         // Optical/Laser
         provider.add("block.gtceu.normal_laser_pipe.tooltip",

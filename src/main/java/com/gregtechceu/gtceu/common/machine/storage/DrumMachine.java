@@ -219,7 +219,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             if (!playerIn.isShiftKeyDown()) {
                 setAutoOutputFluids(!isAutoOutputFluids());
                 playerIn.sendSystemMessage(Component
-                        .translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
+                        .translatable("machine.gtceu.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
                 return InteractionResult.SUCCESS;
             }
         }

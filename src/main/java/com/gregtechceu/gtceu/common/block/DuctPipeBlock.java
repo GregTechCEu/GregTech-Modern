@@ -104,7 +104,7 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        tooltip.add(Component.translatable("gtceu.duct_pipe.transfer_rate",
+        tooltip.add(Component.translatable("tooltip.gtceu.duct_pipe.transfer_rate",
                 this.pipeType.modifyProperties(this.properties).getTransferRate()));
     }
 }

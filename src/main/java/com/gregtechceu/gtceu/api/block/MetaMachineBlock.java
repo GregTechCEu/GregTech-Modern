@@ -201,8 +201,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         definition.getTooltipBuilder().accept(stack, tooltip);
-        String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
-                definition.getId().getPath());
+        String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
+       /* String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
+                definition.getId().getPath());*/
         if (GTUtil.isShiftDown()) {
             if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
                 var pattern = multiblockDefinition.getPatternFactory().get();

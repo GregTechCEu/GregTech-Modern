@@ -13,13 +13,16 @@ public class ArmorLang {
     private static void generateArmorMessageKeys(GTLangProvider provider) {
         // NanoMuscle Suit
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
-        provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled", " NanoMuscle™ Suite: §cNightVision Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled",
+                " NanoMuscle™ Suite: §cNightVision Disabled");
         provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.enabled", "NanoMuscle™ Suite: §aJump Boost Enabled");
-        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.disabled", " NanoMuscle™ Suite: §cJump Boost Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.disabled",
+                " NanoMuscle™ Suite: §cJump Boost Disabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("armor.gtceu.nano_muscle_suite.charge.enabled", "NanoMuscle™ Suite: §aCharging Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.charge.disabled", " NanoMuscle™ Suite: §cCharging Disabled");
-        provider.add("armor.gtceu.nano_muscle_suite.charge.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
+        provider.add("armor.gtceu.nano_muscle_suite.charge.error",
+                "NanoMuscle™ Suite: §cNot enough power for charging!");
 
         // Quantum Suit
         provider.add("armor.gtceu.quark_tech_suite.nightvision.enabled", "QuarkTech™ Suite: §aNightVision Enabled");

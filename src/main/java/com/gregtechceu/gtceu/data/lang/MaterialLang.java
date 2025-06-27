@@ -124,12 +124,12 @@ public class MaterialLang {
                 "§7Click with a Fluid Container to §cempty §7the tank (Shift-click for a full stack).");
 
         // Fluid Tooltips
-        provider.add("fluid.gtceu.tooltip.temperature", "§cTemperature: %d K");
-        provider.add("fluid.gtceu.tooltip.cryogenic", "§bCryogenic! Handle with care!");
-        provider.add("fluid.gtceu.tooltip.gas", "§aState: Gaseous");
-        provider.add("fluid.gtceu.tooltip.liquid", "§aState: Liquid");
-        provider.add("fluid.gtceu.tooltip.plasma", "§aState: Plasma");
-        provider.add("fluid.gtceu.tooltip.acid", "§6Acidic! Handle with care!");
+        provider.add("tooltip.gtceu.fluid_state.gas", "§aState: Gaseous");
+        provider.add("tooltip.gtceu.fluid_state.liquid", "§aState: Liquid");
+        provider.add("tooltip.gtceu.fluid_state.plasma", "§aState: Plasma");
+        provider.add("tooltip.gtceu.fluid_property.temperature", "§cTemperature: %d K");
+        provider.add("tooltip.gtceu.fluid_property.cryogenic", "§bCryogenic! Handle with care!");
+        provider.add("tooltip.gtceu.fluid_property.acid", "§6Acidic! Handle with care!");
 
         // Fluid Tiles?
         provider.add("fluid.empty", "Empty");

@@ -41,7 +41,7 @@ public class GTRecipeCategory {
         this.recipeType = recipeType;
         this.name = recipeType.registryName.getPath();
         this.registryKey = recipeType.registryName;
-        this.languageKey = recipeType.registryName.toLanguageKey();
+        this.languageKey = "recipe_type.%s".formatted(recipeType.registryName.toLanguageKey());
     }
 
     public GTRecipeCategory(@NotNull String categoryName, @NotNull GTRecipeType recipeType) {

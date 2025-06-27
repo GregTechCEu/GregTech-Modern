@@ -43,11 +43,11 @@ public class SteamBoilerBlockProvider extends BlockInfoProvider<SteamBoilerMachi
                               BlockEntity blockEntity, IPluginConfig config) {
         var producing = capData.getBoolean("producingSteam");
         if (capData.getBoolean("heatingUp")) {
-            tooltip.add(Component.translatable("gtceu.machine.boiler.info.heating.up",
-                    producing ? Component.translatable("gtceu.machine.boiler.info.producing.steam") : ""));
+            tooltip.add(Component.translatable("machine.gtceu.boiler.info.heating.up",
+                    producing ? Component.translatable("machine.gtceu.boiler.info.producing.steam") : ""));
         } else if (capData.getBoolean("coolingDown")) {
-            tooltip.add(Component.translatable("gtceu.machine.boiler.info.cooling.down",
-                    producing ? Component.translatable("gtceu.machine.boiler.info.producing.steam") : ""));
+            tooltip.add(Component.translatable("machine.gtceu.boiler.info.cooling.down",
+                    producing ? Component.translatable("machine.gtceu.boiler.info.producing.steam") : ""));
         }
     }
 }

@@ -60,6 +60,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import com.google.common.collect.Streams;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -67,6 +68,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiConsumer;
@@ -227,14 +229,14 @@ public class GTMachineUtils {
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 langName))
-                        .tooltips(Component.translatable("gtceu.machine.transformer.description"),
-                                Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_down",
+                        .tooltips(Component.translatable("machine.gtceu.transformer.description"),
+                                Component.translatable("machine.gtceu.transformer.tooltip_tool_usage"),
+                                Component.translatable("machine.gtceu.transformer.tooltip_transform_down",
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
                                         GTValues.VNF[tier + 1],
                                         baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.transformer.tooltip_transform_up",
+                                Component.translatable("machine.gtceu.transformer.tooltip_transform_up",
                                         baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier],
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
                                         GTValues.VNF[tier + 1]))
@@ -244,10 +246,16 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition[] registerSimpleGenerator(String name,
-                                                              GTRecipeType recipeType,
+                                                              GTRecipeType recipeType, boolean addRecipeTooltip,
                                                               Int2IntFunction tankScalingFunction,
                                                               float hazardStrengthPerOperation,
                                                               int... tiers) {
+        List<Component> machineTooltips = new ArrayList<>();
+        if (addRecipeTooltip) {
+            var regName = recipeType.registryName;
+            machineTooltips.add(Component.translatable(regName.toLanguageKey("recipe_type", "tooltip")));
+        }
+
         return registerTieredMachines(name,
                 (holder, tier) -> new SimpleGeneratorMachine(holder, tier, hazardStrengthPerOperation * tier,
                         tankScalingFunction),
@@ -260,8 +268,11 @@ public class GTMachineUtils {
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
                         .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
-                        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                tankScalingFunction.applyAsInt(tier), false))
+                        .tooltips(Streams
+                                .concat(machineTooltips.stream(),
+                                        Arrays.stream(workableTiered(tier, V[tier], V[tier] * 64, recipeType,
+                                                tankScalingFunction.applyAsInt(tier), false)))
+                                .toArray(Component[]::new))
                         .register(),
                 tiers);
     }
@@ -327,13 +338,13 @@ public class GTMachineUtils {
                         .langValue("%s %s§eA§r Energy Converter".formatted(VCF[tier] + VN[tier] + ChatFormatting.RESET,
                                 amperage))
                         .renderer(() -> new ConverterRenderer(tier, amperage))
-                        .tooltips(Component.translatable("gtceu.machine.energy_converter.description"),
-                                Component.translatable("gtceu.machine.energy_converter.tooltip_tool_usage"),
-                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_native",
+                        .tooltips(Component.translatable("machine.gtceu.energy_converter.description"),
+                                Component.translatable("machine.gtceu.energy_converter.tooltip_tool_usage"),
+                                Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_native",
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(true)),
                                         amperage, V[tier], GTValues.VNF[tier]),
-                                Component.translatable("gtceu.machine.energy_converter.tooltip_conversion_eu", amperage,
+                                Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_eu", amperage,
                                         V[tier], GTValues.VNF[tier],
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(false))))
@@ -401,7 +412,7 @@ public class GTMachineUtils {
                         pipeprops.appendTooltips(list, false, true);
                     }
                 })
-                .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
+                .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -680,6 +691,16 @@ public class GTMachineUtils {
                     .add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                             FormattingUtil.formatNumbers(tankCapacity)));
         return tooltipComponents.toArray(Component[]::new);
+    }
+
+    public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
+        if(recipeTypes != null) {
+            String key = "machine.gtceu.available_recipe_map_" + recipeTypes.length + ".tooltip";
+            return Component.translatable(key, Arrays.stream(recipeTypes)
+                    .map(recipeType -> Component.translatable(recipeType.getCategory().getLanguageKey()))
+                    .toArray());
+        }
+        return Component.empty();
     }
 
     public static void init() {}

@@ -218,7 +218,8 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
             if (data.contains("canShare")) {
                 String status = data.getBoolean("canShare") ? "armor.gtceu.hud.status.enabled" :
                         "armor.gtceu.hud.status.disabled";
-                this.HUD.newString(Component.translatable("armor.gtceu.hud.supply_mode", Component.translatable(status)));
+                this.HUD.newString(
+                        Component.translatable("armor.gtceu.hud.supply_mode", Component.translatable(status)));
             }
 
             if (data.contains("hover")) {

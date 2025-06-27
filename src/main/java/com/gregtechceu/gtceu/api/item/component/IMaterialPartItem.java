@@ -81,9 +81,11 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         var maxDurability = getPartMaxDurability(stack);
         var damage = getPartDamage(stack);
         tooltipComponents
-                .add(Component.translatable("item.gtceu.turbine_rotor.tooltip.durability", maxDurability - damage, maxDurability));
+                .add(Component.translatable("item.gtceu.turbine_rotor.tooltip.durability", maxDurability - damage,
+                        maxDurability));
         tooltipComponents
-                .add(Component.translatable("item.gtceu.turbine_rotor.tooltip.primary_material", material.getLocalizedName()));
+                .add(Component.translatable("item.gtceu.turbine_rotor.tooltip.primary_material",
+                        material.getLocalizedName()));
     }
 
     @OnlyIn(Dist.CLIENT)
