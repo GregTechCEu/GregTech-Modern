@@ -17,16 +17,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BakedTextureOverrideModel<T extends BakedModel> extends BakedModelWrapper<T> {
+public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
     @NotNull
     @Getter
     protected final Map<TextureAtlasSprite, TextureAtlasSprite> textureOverrides;
 
-    public BakedTextureOverrideModel(T child, Map<TextureAtlasSprite, TextureAtlasSprite> textureOverrides) {
+    public TextureOverrideModel(T child, Map<TextureAtlasSprite, TextureAtlasSprite> textureOverrides) {
         super(child);
         this.textureOverrides = textureOverrides;
     }
@@ -40,6 +41,15 @@ public class BakedTextureOverrideModel<T extends BakedModel> extends BakedModelW
                                              @NotNull RandomSource rand, @NotNull ModelData extraData,
                                              @Nullable RenderType renderType) {
         return retextureQuads(super.getQuads(state, side, rand, extraData, renderType), textureOverrides);
+    }
+
+    public static Map<TextureAtlasSprite, TextureAtlasSprite> resolveOverrides(Map<String, TextureAtlasSprite> overrides,
+                                                                               Map<String, TextureAtlasSprite> toOverride) {
+        Map<TextureAtlasSprite, TextureAtlasSprite> textures = new HashMap<>();
+        for (var entry : overrides.entrySet()) {
+            textures.put(toOverride.get(entry.getKey()), entry.getValue());
+        }
+        return textures;
     }
 
     public static List<BakedQuad> retextureQuads(List<BakedQuad> quads,

@@ -160,10 +160,6 @@ public class ModelUtils {
         return getSprite(TextureAtlas.LOCATION_BLOCKS, texture);
     }
 
-    public static TextureAtlasSprite spriteGetter(Material material) {
-        return material.sprite();
-    }
-
     public static ModelBaker getModelBaker() {
         return new ModelBaker() {
 
@@ -182,7 +178,7 @@ public class ModelUtils {
 
             @Override
             public @NotNull Function<Material, TextureAtlasSprite> getModelTextureGetter() {
-                return ModelUtils::spriteGetter;
+                return Material::sprite;
             }
 
             @Override

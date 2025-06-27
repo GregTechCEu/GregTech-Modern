@@ -97,6 +97,8 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(overlayModel));
             tieredHullTextures(model, builder.getOwner().getTier());
             builder.forAllStates(state -> model);
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -109,6 +111,8 @@ public class GTMachineModels {
                     .texture("overlay_emissive", emissiveOverlayTexture);
             tieredHullTextures(model, builder.getOwner().getTier());
             builder.forAllStates(state -> model);
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -136,6 +140,8 @@ public class GTMachineModels {
                 steamCasingTextures(model, steel);
                 return model;
             });
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -189,6 +195,7 @@ public class GTMachineModels {
                         .texture("all", baseCasingTexture);
                 return addWorkableOverlays(overlays, status, model);
             });
+            builder.addTextureOverride("all", baseCasingTexture);
         };
     }
 
@@ -200,6 +207,8 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(overlayModel));
             casingTextures(model, baseCasingTexture);
             builder.forAllStates(state -> model);
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -216,6 +225,14 @@ public class GTMachineModels {
                 casingTextures(model, baseCasingTexture);
                 return addWorkableOverlays(overlays, status, model);
             });
+
+            var texturePath = baseCasingTexture;
+            if (!texturePath.getPath().endsWith("/")) {
+                texturePath = texturePath.withSuffix("/");
+            }
+            builder.addTextureOverride("bottom", texturePath.withSuffix("bottom"));
+            builder.addTextureOverride("top", texturePath.withSuffix("top"));
+            builder.addTextureOverride("side", texturePath.withSuffix("side"));
         };
     }
 
@@ -357,6 +374,8 @@ public class GTMachineModels {
                 tieredHullTextures(model, builder.getOwner().getTier());
                 return model;
             });
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -400,6 +419,8 @@ public class GTMachineModels {
             makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_IDLE.withSuffix(EMISSIVE_SUFFIX), false, true);
             makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING, true, false);
             makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING.withSuffix(EMISSIVE_SUFFIX), true, true);
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
@@ -471,6 +492,8 @@ public class GTMachineModels {
                 baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 return baseModel;
             });
+
+            builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 

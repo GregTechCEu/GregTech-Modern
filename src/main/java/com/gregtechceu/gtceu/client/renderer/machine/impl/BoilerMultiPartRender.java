@@ -113,7 +113,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
         Direction multiFront = controller.getFrontFacing();
         Direction multiUpward = controller.getUpwardsFacing();
         boolean flipped = controller.isFlipped();
-        Direction relativeDown = RelativeDirection.DOWN.getRelativeFacing(multiFront, multiUpward, flipped);
+        Direction relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
 
         int controllerYMinus1 = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());

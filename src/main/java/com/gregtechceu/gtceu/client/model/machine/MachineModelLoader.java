@@ -93,9 +93,9 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         }
 
         List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
-        JsonArray renderList = GsonHelper.getAsJsonArray(json, "dynamic_renders", null);
-        if (renderList != null) {
-            for (JsonElement entry : renderList) {
+        JsonArray array = GsonHelper.getAsJsonArray(json, "dynamic_renders", null);
+        if (array != null) {
+            for (JsonElement entry : array) {
                 var render = DynamicRender.CODEC.parse(JsonOps.INSTANCE, entry)
                         .getOrThrow(false, LOGGER::error);
                 dynamicRenders.add(render);
@@ -103,7 +103,25 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
             DYNAMIC_RENDERERS.put(machineId, dynamicRenders);
         }
 
-        return new UnbakedMachineModel(definition, variants, multiPart, dynamicRenders);
+        Set<String> replaceableTextures = new HashSet<>();
+        array = GsonHelper.getAsJsonArray(json, "replaceable_textures", null);
+        if (array != null) {
+            for (int i = 0; i < array.size(); i++) {
+                String entry = GsonHelper.convertToString(array.get(i), "replaceable_textures[%s]".formatted(i));
+                replaceableTextures.add(entry);
+            }
+        }
+        Map<String, ResourceLocation> textureOverrides = new HashMap<>();
+        JsonObject overrideJson = GsonHelper.getAsJsonObject(json, "texture_overrides", null);
+        if (overrideJson != null) {
+            for (var entry : overrideJson.asMap().entrySet()) {
+                String value = GsonHelper.convertToString(entry.getValue(), entry.getKey());
+                textureOverrides.put(entry.getKey(), new ResourceLocation(value));
+            }
+        }
+
+        return new UnbakedMachineModel(definition, variants, multiPart, dynamicRenders,
+                replaceableTextures, textureOverrides);
     }
 
     protected static Map<MachineRenderState, UnbakedModel> resolveStateModels(UnbakedMachineModel model,

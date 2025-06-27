@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -43,6 +44,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     @Getter
     private final List<PartBuilder> parts = new ArrayList<>();
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
+    private final List<String> replaceableTextures = new ArrayList<>();
+    private final SortedMap<String, ResourceLocation> textureOverrides = new TreeMap<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
         super(MachineModelLoader.ID, parent, existingFileHelper);
@@ -78,13 +81,31 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             json.add("multipart", parts);
         }
 
-        JsonArray dynamicRenders = new JsonArray();
-        for (DynamicRender<?, ?> render : this.dynamicRenders) {
-            JsonElement serialized = DynamicRender.CODEC.encodeStart(JsonOps.INSTANCE, render)
-                    .getOrThrow(false, GTCEu.LOGGER::error);
-            dynamicRenders.add(serialized);
+        if (!this.dynamicRenders.isEmpty()) {
+            JsonArray dynamicRenders = new JsonArray();
+            for (DynamicRender<?, ?> render : this.dynamicRenders) {
+                JsonElement serialized = DynamicRender.CODEC.encodeStart(JsonOps.INSTANCE, render)
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+                dynamicRenders.add(serialized);
+            }
+            json.add("dynamic_renders", dynamicRenders);
         }
-        json.add("dynamic_renders", dynamicRenders);
+
+        if (!this.replaceableTextures.isEmpty()) {
+            JsonArray replaceableTextures = new JsonArray();
+            for (String material : this.replaceableTextures) {
+                replaceableTextures.add(material);
+            }
+            json.add("replaceable_textures", replaceableTextures);
+        }
+
+        if (!this.textureOverrides.isEmpty()) {
+            JsonObject overrides = new JsonObject();
+            for (var entry : this.textureOverrides.entrySet()) {
+                overrides.addProperty(entry.getKey(), entry.getValue().toString());
+            }
+            json.add("texture_overrides", overrides);
+        }
 
         return json;
     }
@@ -104,6 +125,27 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      */
     public MachineModelBuilder<T> addDynamicRenderer(DynamicRender<?, ?> render) {
         this.dynamicRenders.add(render);
+        return this;
+    }
+
+    /**
+     * Marks the provided texture names as replaceable by multiblocks' casing textures.
+     *
+     * @param textureNames The texture names
+     */
+    public MachineModelBuilder<T> addReplaceableTextures(String... textureNames) {
+        this.replaceableTextures.addAll(Arrays.asList(textureNames));
+        return this;
+    }
+
+    /**
+     * Adds a texture of this model as one that will replace multiblock parts in formed multiblocks.
+     *
+     * @param texture  The name of the texture in this model
+     * @param material The texture to replace
+     */
+    public MachineModelBuilder<T> addTextureOverride(String material, ResourceLocation texture) {
+        this.textureOverrides.put(material, texture);
         return this;
     }
 
