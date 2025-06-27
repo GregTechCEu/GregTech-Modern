@@ -53,12 +53,7 @@ public class OvergearedGTToolBonusRecipeBuilder extends ForgingQualityShapelessR
             }
 
             // Remove any ForgingQuality tag from result if present
-            if (result.hasTag() && result.getTag().contains("ForgingQuality")) {
-                result.getTag().remove("ForgingQuality");
-                if (result.getTag().isEmpty()) {
-                    result.setTag(null); // Remove empty tag
-                }
-            }
+            result.removeTagKey("ForgingQuality");
 
             return result;
         }
