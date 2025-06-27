@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.core.mixins.forge.ModelBuilderAccessor;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -32,17 +33,22 @@ import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockModelProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonObject;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController.IS_FORMED_PROPERTY;
@@ -561,6 +567,16 @@ public class GTMachineModels {
             final BlockModelBuilder model = builder.end();
             model.parent(prov.models().getExistingFile(prov.mcLoc("block/block")));
 
+            ModelFile parentModelFile = null;
+            if (!builder.getModels().isEmpty()) {
+                parentModelFile = builder.getModels().get(builder.partialState());
+            } else if (!builder.getParts().isEmpty()) {
+                parentModelFile = builder.getParts().get(0).model;
+            }
+            if (parentModelFile != null) {
+                model.texture("particle", findParticleTexture(parentModelFile, prov.getExistingFileHelper()));
+            }
+
             var generator = prov.multiVariantGenerator(block,
                     Variant.variant().with(VariantProperties.MODEL, model.getLocation()));
             PropertyDispatch dispatch = GTBlockstateProvider.createFacingDispatch(definition);
@@ -570,6 +586,29 @@ public class GTMachineModels {
         };
     }
     // spotless:on
+
+    private static @Nullable String findParticleTexture(ModelFile modelFile, ExistingFileHelper existingFileHelper) {
+        if (modelFile instanceof ModelBuilderAccessor b) {
+            return b.gtceu$getTextures().getOrDefault("particle", "missingno");
+        } else {
+            try {
+                Resource res = existingFileHelper.getResource(modelFile.getLocation(),
+                        GTBlockstateProvider.MODEL.getPackType(),
+                        GTBlockstateProvider.MODEL.getSuffix(), GTBlockstateProvider.MODEL.getPrefix());
+
+                try (BufferedReader reader = res.openAsReader()) {
+                    JsonObject json = GsonHelper.parse(reader, true);
+                    if (json.has("textures")) {
+                        return GsonHelper.getAsString(json.getAsJsonObject("textures"), "particle", "missingno");
+                    }
+                }
+            } catch (IOException e) {
+                GTCEu.LOGGER.error("guh? couldn't find model at {} for particle textures",
+                        modelFile.getUncheckedLocation(), e);
+            }
+        }
+        return "missingno";
+    }
 
     public static BlockModelBuilder addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
                                                         BlockModelBuilder model) {

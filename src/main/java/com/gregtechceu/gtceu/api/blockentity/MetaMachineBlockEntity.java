@@ -40,7 +40,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +51,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Getter
     public final MetaMachine metaMachine;
     @Getter
-    @Setter
     private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
 
@@ -78,6 +76,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void setRenderState(MachineRenderState state) {
+        this.renderState = state;
+        scheduleRenderUpdate();
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SpriteCapturer implements Function<Material, TextureAtlasSprite>, AutoCloseable {
+public class SpriteCapturer implements Function<Material, TextureAtlasSprite> {
 
     private final Function<Material, TextureAtlasSprite> original;
     @Getter
@@ -21,7 +21,7 @@ public class SpriteCapturer implements Function<Material, TextureAtlasSprite>, A
     }
 
     public void captureMaterialName(Material material, String name) {
-        this.capturedNames.put(material, name);
+        this.capturedNames.putIfAbsent(material, name);
     }
 
     @Override
@@ -31,12 +31,8 @@ public class SpriteCapturer implements Function<Material, TextureAtlasSprite>, A
         String materialName = capturedNames.get(material);
         if (materialName != null) {
             capturedMaterials.put(materialName, sprite);
+            capturedNames.remove(material);
         }
         return sprite;
-    }
-
-    @Override
-    public void close() {
-        capturedNames.clear();
     }
 }

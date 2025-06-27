@@ -68,6 +68,7 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
         }
+        initializeDynamicRenders();
     }
 
     @SubscribeEvent
@@ -127,7 +128,6 @@ public class ClientProxy extends CommonProxy {
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
             FTBChunksPlugin.addEventListeners();
         }
-        event.enqueueWork(ClientProxy::initializeDynamicRenders);
     }
 
     public static void initializeDynamicRenders() {

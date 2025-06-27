@@ -66,4 +66,8 @@ public class GTMath {
     public static float normalize(float min, float max, float x) {
         return (x - min) / (max - min);
     }
+
+    public static float mapRange(float inStart, float inEnd, float outStart, float outEnd, float x) {
+        return (x - inStart) / (inEnd - inStart) * (outEnd - outStart) + outStart;
+    }
 }

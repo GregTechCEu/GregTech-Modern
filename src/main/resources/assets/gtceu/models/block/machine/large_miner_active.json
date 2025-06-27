@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/machine/template/sided_overlay_machine",
+    "parent": "gtceu:block/machine/template/sided/sided",
     "textures": {
         "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in"
     },

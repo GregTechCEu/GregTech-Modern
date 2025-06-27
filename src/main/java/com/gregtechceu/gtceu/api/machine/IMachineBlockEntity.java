@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -55,7 +56,7 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
         if (level() != null) {
             var state = level().getBlockState(pos);
             if (level().isClientSide) {
-                level().sendBlockUpdated(pos, state, state, 1 << 3);
+                level().sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 self().requestModelDataUpdate();
             } else {
                 level().blockEvent(pos, state.getBlock(), 1, 0);

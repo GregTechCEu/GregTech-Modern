@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.core.mixins.ldlib.CustomBakedModelAccessor;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -67,9 +68,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
 
-    public static final Map<String, String> TEXTURE_REMAPS = Util.make(new HashMap<>(), map -> {
-        map.put("side", "all");
-        map.put("all", "side");
+    public static final Map<String, List<String>> TEXTURE_REMAPS = Util.make(new HashMap<>(), map -> {
+        var all = List.of("all");
+
+        map.put("side", all);
+        map.put("top", all);
+        map.put("bottom", all);
+        map.put("all", List.of("side", "top", "bottom"));
     });
 
     @Getter
@@ -227,12 +232,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 quads.addAll(render.getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
             }
         }
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            if (replacePartModel(quads, part, frontFacing, elementSide, modelFront, rand, modelData, renderType)) {
-                return;
-            }
-        }
         renderBaseModel(quads, machine, elementSide, rand, modelData, renderType);
+        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+            replacePartBaseModel(quads, part, frontFacing, elementSide, modelFront, rand, modelData, renderType);
+        }
     }
 
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MetaMachine machine,
@@ -245,85 +248,93 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads.addAll(modelsByState.get(machine.getRenderState())
                     .getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
         }
-        quads.addAll(modelsByState.get(machine.getRenderState())
-                .getQuads(machine.getBlockState(), elementSide, rand, modelData, renderType));
     }
 
-    public boolean replacePartModel(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
-                                    @Nullable Direction elementSide, @Nullable Direction modelFront,
-                                    RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+    public void replacePartBaseModel(List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
+                                     @Nullable Direction elementSide, @Nullable Direction modelFront,
+                                     RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            List<BakedQuad> toConnect = new ArrayList<>();
+            List<BakedQuad> toConnect = null;
 
             // spotless:off
             if (model instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(toConnect, controller, part, frontFacing, modelFront,
+                controllerRenderer.renderPartModel(quads, controller, part, frontFacing, modelFront,
                         rand, elementSide, modelData, renderType);
+                toConnect = new ArrayList<>(quads);
             } else if (model instanceof MachineModel machineModel) {
-                renderMachineModel(machineModel, controller, toConnect, part, frontFacing, modelFront,
+                toConnect = renderPartOverrides(machineModel, controller, quads, part, frontFacing, modelFront,
                         elementSide, rand, modelData, renderType);
-            } else if (model instanceof CTMBakedModel<?> ctmModel &&
-                       ctmModel.getParent() instanceof MachineModel machineModel) {
-                renderMachineModel(machineModel, controller, toConnect, part, frontFacing, modelFront,
+            } else if (model instanceof CustomBakedModelAccessor ctmModel &&
+                       ctmModel.gtceu$getParent() instanceof MachineModel machineModel) {
+                toConnect = renderPartOverrides(machineModel, controller, quads, part, frontFacing, modelFront,
                         elementSide, rand, modelData, renderType);
             }
             // spotless:on
-            if (!toConnect.isEmpty()) {
+            if (toConnect != null) {
+                quads.clear();
                 quads.addAll(CTMBakedModel.reBakeCustomQuads(toConnect,
                         controller.self().getLevel(), controller.self().getPos(), state, elementSide));
-                return true;
+                return;
             }
         }
-        return false;
     }
 
-    public boolean isReplaceableTexture(String key) {
+    public List<String> remapReplaceableTextures(String key) {
         if (this.replaceableTextures.contains(key)) {
-            return true;
+            return Collections.singletonList(key);
         } else {
-            String remap = TEXTURE_REMAPS.get(key);
-            return remap != null && this.replaceableTextures.contains(remap);
+            List<String> remapped = TEXTURE_REMAPS.get(key);
+            if (remapped != null) return remapped;
+            else return Collections.emptyList();
         }
     }
 
-    private void renderMachineModel(MachineModel controllerModel, IMultiController controller,
-                                    List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
-                                    @Nullable Direction modelFront, @Nullable Direction elementSide,
-                                    RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
-        boolean rendered = false;
+    private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, IMultiController controller,
+                                                List<BakedQuad> quads, IMultiPart part,
+                                                Direction frontFacing, @Nullable Direction modelFront,
+                                                @Nullable Direction elementSide, RandomSource rand,
+                                                ModelData modelData, @Nullable RenderType renderType) {
         var overrides = controllerModel.textureOverrides;
 
         for (var render : controllerModel.getDynamicRenders()) {
             if (render instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(quads, controller, part, frontFacing, modelFront,
                         rand, elementSide, modelData, renderType);
-
                 // assume the renderer drew the base model, and replace the override textures with empty ones
                 overrides = new HashMap<>();
                 for (String key : this.replaceableTextures) {
                     overrides.put(key, ModelUtils.getBlockSprite(GTModels.BLANK_TEXTURE));
                 }
-                rendered = true;
                 break;
             }
         }
-        if (rendered || overrides.isEmpty()) {
-            return;
+        if (overrides.isEmpty()) {
+            return new ArrayList<>(quads);
         }
+
         // parse out valid overrides
-        overrides = overrides.keySet().stream()
-                .filter(this::isReplaceableTexture)
-                .collect(Collectors.toMap(Function.identity(), overrides::get));
+        Map<String, String> remaps = new IdentityHashMap<>();
+        final TextureAtlasSprite missingno = ModelUtils.getBlockSprite(MissingTextureAtlasSprite.getLocation());
+        final Map<String, TextureAtlasSprite> finalOverrides = overrides;
+        overrides = finalOverrides.keySet().stream()
+                .flatMap(key -> {
+                    var remapped = remapReplaceableTextures(key);
+                    for (String r : remapped) {
+                        remaps.put(r, key);
+                    }
+                    return remapped.stream();
+                })
+                .collect(Collectors.toMap(Function.identity(),
+                        key -> finalOverrides.getOrDefault(remaps.get(key), missingno),
+                        (o1, o2) -> o1));
 
         // actually process the sprite replacement
         var replacementSprites = TextureOverrideModel.resolveOverrides(overrides,
                 this.spriteCapturer.getCapturedMaterials());
-        List<BakedQuad> newQuads = TextureOverrideModel.retextureQuads(quads, replacementSprites);
-        quads.clear();
-        quads.addAll(newQuads);
+        return TextureOverrideModel.retextureQuads(quads, replacementSprites);
     }
 
     @Override

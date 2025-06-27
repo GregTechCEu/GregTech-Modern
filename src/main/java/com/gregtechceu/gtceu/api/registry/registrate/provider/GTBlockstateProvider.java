@@ -13,6 +13,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper.ResourceType;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -27,14 +28,14 @@ import java.util.Optional;
 
 public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
-    // spotless:off
     public static final String Z_ROT_PROPERTY_NAME = "gtceu:z";
     private static final VariantProperty<VariantProperties.Rotation> X_ROT = VariantProperties.X_ROT;
     private static final VariantProperty<VariantProperties.Rotation> Y_ROT = VariantProperties.Y_ROT;
-    private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>(Z_ROT_PROPERTY_NAME, r -> new JsonPrimitive(r.ordinal() * 90));
+    private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>(Z_ROT_PROPERTY_NAME,
+            r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public static final ExistingFileHelper.ResourceType TEXTURE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
-    // spotless:on
+    public static final ResourceType TEXTURE = new ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
+    public static final ResourceType MODEL = new ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
 
     private final AbstractRegistrate<?> parent;
 

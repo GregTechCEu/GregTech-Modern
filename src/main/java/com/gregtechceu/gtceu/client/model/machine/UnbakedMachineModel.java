@@ -61,25 +61,23 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
             Material material = new Material(TextureAtlas.LOCATION_BLOCKS, entry.getValue());
             textureOverrides.put(entry.getKey(), spriteGetter.apply(material));
         }
+        final var spriteCapturer = new SpriteCapturer(spriteGetter);
 
-        try (final var spriteCapturer = new SpriteCapturer(spriteGetter)) {
+        Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
+        resolvedModels.forEach((machineState, unbaked) -> {
+            baseModels.put(machineState, unbaked.bake(baker, spriteCapturer, modelState, modelLocation));
+        });
+        MultiPartBakedModel multiPart = this.multiPart == null ? null :
+                this.multiPart.bake(baker, spriteCapturer, modelState, modelLocation);
 
-            Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
-            resolvedModels.forEach((machineState, unbaked) -> {
-                baseModels.put(machineState, unbaked.bake(baker, spriteCapturer, modelState, modelLocation));
-            });
-            MultiPartBakedModel multiPart = this.multiPart == null ? null :
-                                            this.multiPart.bake(baker, spriteCapturer, modelState, modelLocation);
-
-            MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart,
-                    this.dynamicRenders, spriteCapturer,
-                    context.getTransforms(), context.getRootTransform(), modelState,
-                    context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion());
-            model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
-            model.setReplaceableTextures(this.replaceableTextures);
-            model.setTextureOverrides(textureOverrides);
-            return model;
-        }
+        MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart,
+                this.dynamicRenders, spriteCapturer,
+                context.getTransforms(), context.getRootTransform(), modelState,
+                context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion());
+        model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
+        model.setReplaceableTextures(this.replaceableTextures);
+        model.setTextureOverrides(textureOverrides);
+        return model;
     }
 
     @Override
