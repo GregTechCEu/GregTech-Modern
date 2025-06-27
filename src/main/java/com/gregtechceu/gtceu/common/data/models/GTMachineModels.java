@@ -574,7 +574,10 @@ public class GTMachineModels {
                 parentModelFile = builder.getParts().get(0).model;
             }
             if (parentModelFile != null) {
-                model.texture("particle", findParticleTexture(parentModelFile, prov.getExistingFileHelper()));
+                String texture = findParticleTexture(parentModelFile, prov.getExistingFileHelper());
+                if (texture != null) {
+                    model.texture("particle", texture);
+                }
             }
 
             var generator = prov.multiVariantGenerator(block,
@@ -589,7 +592,7 @@ public class GTMachineModels {
 
     private static @Nullable String findParticleTexture(ModelFile modelFile, ExistingFileHelper existingFileHelper) {
         if (modelFile instanceof ModelBuilderAccessor b) {
-            return b.gtceu$getTextures().getOrDefault("particle", "missingno");
+            return b.gtceu$getTextures().get("particle");
         } else {
             try {
                 Resource res = existingFileHelper.getResource(modelFile.getLocation(),
@@ -599,7 +602,7 @@ public class GTMachineModels {
                 try (BufferedReader reader = res.openAsReader()) {
                     JsonObject json = GsonHelper.parse(reader, true);
                     if (json.has("textures")) {
-                        return GsonHelper.getAsString(json.getAsJsonObject("textures"), "particle", "missingno");
+                        return GsonHelper.getAsString(json.getAsJsonObject("textures"), "particle", null);
                     }
                 }
             } catch (IOException e) {
@@ -607,7 +610,7 @@ public class GTMachineModels {
                         modelFile.getUncheckedLocation(), e);
             }
         }
-        return "missingno";
+        return null;
     }
 
     public static BlockModelBuilder addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,

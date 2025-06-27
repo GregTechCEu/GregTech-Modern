@@ -2,6 +2,9 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:coke_oven_hatch",
+  "textures": {
+    "particle": "#all"
+  },
   "variants": {
     "": "gtceu:block/machine/part/coke_oven_hatch"
   }
