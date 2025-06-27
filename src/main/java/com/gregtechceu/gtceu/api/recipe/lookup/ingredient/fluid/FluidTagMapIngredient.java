@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 
 public class FluidTagMapIngredient extends AbstractMapIngredient {
@@ -30,9 +31,18 @@ public class FluidTagMapIngredient extends AbstractMapIngredient {
         return ingredients;
     }
 
+    @SuppressWarnings("deprecation")
+    @NotNull
+    public static List<AbstractMapIngredient> from(@NotNull FluidStack stack) {
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
+        stack.getFluid().builtInRegistryHolder().tags()
+                .forEach(tag -> ingredients.add(new FluidTagMapIngredient(tag)));
+        return ingredients;
+    }
+
     @Override
     protected int hash() {
-        return tag.location().hashCode();
+        return tag.hashCode();
     }
 
     @Override

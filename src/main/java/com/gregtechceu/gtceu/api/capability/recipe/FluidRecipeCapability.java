@@ -31,7 +31,6 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -106,6 +105,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             }
         }
         return list;
+    }
+
+    @Override
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        if (object instanceof FluidIngredient ingredient) {
+            return FluidStackMapIngredient.from(ingredient);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

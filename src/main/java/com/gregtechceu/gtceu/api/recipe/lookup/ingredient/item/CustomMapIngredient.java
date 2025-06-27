@@ -5,7 +5,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CustomMapIngredient extends AbstractMapIngredient {
@@ -31,6 +34,11 @@ public class CustomMapIngredient extends AbstractMapIngredient {
         return ingredients;
     }
 
+    @NotNull
+    public static List<AbstractMapIngredient> from(ItemStack stack) {
+        return Collections.singletonList(new CustomMapIngredient(stack));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
@@ -40,8 +48,11 @@ public class CustomMapIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    for (ItemStack ingStack : other.ingredient.getItems()) {
-                        if (!this.ingredient.test(ingStack)) return false;
+                    for (ItemStack stack : other.ingredient.getItems()) {
+                        if (!this.ingredient.test(stack)) return false;
+                    }
+                    for (ItemStack stack : this.ingredient.getItems()) {
+                        if (!other.ingredient.test(stack)) return false;
                     }
                     return true;
                 } else {

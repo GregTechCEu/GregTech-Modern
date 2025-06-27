@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientFunction;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -24,9 +22,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,12 +115,8 @@ public abstract class RecipeCapability<T> {
         return new ArrayList<>(ingredients);
     }
 
-    public List<List<AbstractMapIngredient>> convertCompressedIngredients(List<Object> ingredients) {
-        List<List<AbstractMapIngredient>> ret = new ObjectArrayList<>(ingredients.size());
-        for (var ingredient : ingredients) {
-            ret.add(MapIngredientTypeManager.getFrom(ingredient));
-        }
-        return ret;
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        return null;
     }
 
     /**

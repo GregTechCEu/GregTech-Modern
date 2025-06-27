@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -45,8 +42,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
@@ -142,6 +137,15 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             }
         }
         return list;
+    }
+
+    @Override
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        if (object instanceof Ingredient ingredient) {
+            return CustomMapIngredient.from(ingredient);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

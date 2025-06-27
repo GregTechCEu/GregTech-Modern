@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
         this.ingredient = ingredient;
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(Ingredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
@@ -38,6 +40,7 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
         return ingredients;
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {
         return Collections.singletonList(new ItemStackMapIngredient(stack));
     }

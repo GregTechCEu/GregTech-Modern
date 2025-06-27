@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,16 +30,18 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
         this.children.sort(Comparator.comparingInt(AbstractMapIngredient::hashCode));
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(IntersectionIngredient ingredient) {
         List<Ingredient> originalChildren = ((IntersectionIngredientAccessor) ingredient).getChildren();
         List<AbstractMapIngredient> mapChildren = new ObjectArrayList<>();
         for (var ing : originalChildren) {
-            mapChildren.addAll(MapIngredientTypeManager.getFrom(ing));
+            mapChildren.addAll(MapIngredientTypeManager.getFrom(ing, ItemRecipeCapability.CAP));
         }
 
         return Collections.singletonList(new IntersectionMapIngredient(mapChildren));
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
 
