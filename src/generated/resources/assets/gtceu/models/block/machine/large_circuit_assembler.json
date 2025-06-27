@@ -1,8 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:large_circuit_assembler",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/gcym/large_scale_assembling_casing"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

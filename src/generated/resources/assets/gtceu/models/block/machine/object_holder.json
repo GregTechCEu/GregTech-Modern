@@ -1,8 +1,12 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:object_holder",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "recipe_logic_status=idle": {
       "parent": "gtceu:block/casings/voltage/zpm",

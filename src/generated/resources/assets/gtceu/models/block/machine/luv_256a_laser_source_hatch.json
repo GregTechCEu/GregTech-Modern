@@ -1,8 +1,12 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:luv_256a_laser_source_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
       "parent": "gtceu:block/machine/part/laser_source_hatch",

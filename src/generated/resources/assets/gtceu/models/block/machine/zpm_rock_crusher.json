@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:zpm_rock_crusher",
   "variants": {

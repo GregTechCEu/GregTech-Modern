@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:ulv_battery_buffer_4x",
   "variants": {

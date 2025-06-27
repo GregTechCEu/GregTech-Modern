@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:lv_centrifuge",
   "variants": {

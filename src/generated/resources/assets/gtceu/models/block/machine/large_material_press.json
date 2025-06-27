@@ -1,8 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:large_material_press",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/gcym/stress_proof_casing"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

@@ -1,8 +1,12 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:me_pattern_buffer_proxy",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
       "parent": "gtceu:block/machine/part/me_pattern_buffer_proxy",

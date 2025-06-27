@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:iv_ore_washer",
   "variants": {

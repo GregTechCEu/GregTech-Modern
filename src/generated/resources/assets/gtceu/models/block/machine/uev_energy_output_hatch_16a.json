@@ -1,8 +1,12 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:uev_energy_output_hatch_16a",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
       "parent": "gtceu:block/machine/part/energy_output_hatch_16a",

@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:uev_chemical_bath",
   "variants": {

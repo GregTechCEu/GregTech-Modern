@@ -7,6 +7,9 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:zpm_fusion_reactor",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/fusion/fusion_casing_mk2"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:iv_rotor_holder",
   "multipart": [
@@ -56,5 +55,10 @@
         "rotor_spinning": "true"
       }
     }
+  ],
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
   ]
 }

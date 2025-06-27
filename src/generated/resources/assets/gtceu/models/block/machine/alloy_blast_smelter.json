@@ -1,8 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:alloy_blast_smelter",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

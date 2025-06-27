@@ -11,6 +11,9 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:large_mixer",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/gcym/reaction_safe_mixing_casing"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

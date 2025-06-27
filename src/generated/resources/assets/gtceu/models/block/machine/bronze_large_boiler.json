@@ -22,6 +22,9 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:bronze_large_boiler",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",

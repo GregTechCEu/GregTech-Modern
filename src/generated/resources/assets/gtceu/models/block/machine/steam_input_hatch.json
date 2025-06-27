@@ -1,8 +1,12 @@
 {
   "parent": "minecraft:block/block",
-  "dynamic_renders": [],
   "loader": "gtceu:machine",
   "machine": "gtceu:steam_input_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "steel=false": {
       "parent": "gtceu:block/machine/part/steam_hatch",

@@ -12,6 +12,9 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:primitive_blast_furnace",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/solid/machine_primitive_bricks"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
       "parent": "gtceu:block/machine/template/cube_all/sided",
