@@ -44,7 +44,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Getter
     @Persisted
-    private boolean batchProcessing;
+    private boolean batch;
 
     // runtime
     protected EnergyContainerList energyContainer;
@@ -53,6 +53,11 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -143,15 +148,14 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IFancyUIMachine.super.attachConfigurators(configuratorPanel);
-        if (isGenerator()) {
+        if (!isGenerator()) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0, 1, 0.5),
-                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0.5, 1, 0.5), this::isBatchProcessing,
-                    (clickData, pressed) -> batchProcessing = pressed).setTooltipsSupplier(
-                            pressed -> List.of(Component.translatable("gtocore.machine.batch_processing").append("[")
-                                    .append(Component
-                                            .translatable(pressed ? "gtocore.machine.on" : "gtocore.machine.off")
-                                            .append("]")))));
+                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0.5, 1, 0.5), this::isBatch,
+                    (clickData, pressed) -> batch = pressed)
+                    .setTooltipsSupplier(pressed -> List
+                            .of(Component
+                                    .translatable("gtceu.machine.batch_mode_" + (pressed ? "enabled" : "disabled")))));
         }
     }
 

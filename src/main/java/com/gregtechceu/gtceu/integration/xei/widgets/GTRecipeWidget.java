@@ -259,7 +259,7 @@ public class GTRecipeWidget extends WidgetGroup {
         if (tier > minTier && inputEUt != 0) {
             int ocs = tier - minTier;
             if (minTier == ULV) ocs--;
-            var params = new OverclockingLogic.OCParams(inputEUt, recipe.duration, ocs, 1);
+            var params = new OverclockingLogic.OCParams(false, inputEUt, recipe.duration, ocs, () -> 1);
             var result = logic.runOverclockingLogic(params, V[tier]);
             duration = (int) (duration * result.durationMultiplier());
             inputEUt = (long) (inputEUt * result.eutMultiplier());

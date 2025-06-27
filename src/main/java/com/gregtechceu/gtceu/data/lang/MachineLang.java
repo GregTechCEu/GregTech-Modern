@@ -962,6 +962,9 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
 
+        provider.add("gtceu.machine.batch_mode_enabled", "Batch Mode Enabled");
+        provider.add("gtceu.machine.batch_mode_disabled", "Batch Mode Disabled");
+
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");
         provider.add("gtceu.creative.chest.tpc", "Ticks per Cycle");
