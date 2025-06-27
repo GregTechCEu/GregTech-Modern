@@ -63,7 +63,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
             // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, Direction.NORTH,
+            renderTank(poseStack, buffer, Direction.NORTH,
                     stored, storedAmount, maxAmount, FluidStack.EMPTY,
                     stack.is(CREATIVE_FLUID_ITEM));
 
@@ -78,7 +78,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         poseStack.pushPose();
         setupModelRotation(machine, poseStack);
 
-        renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getUpwardsFacing(),
+        renderTank(poseStack, buffer, machine.getFrontFacing(),
                 machine.getStored(), machine.getStoredAmount(), machine.getMaxAmount(), machine.getLockedFluid(),
                 machine instanceof CreativeTankMachine);
 
@@ -86,8 +86,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderTank(PoseStack poseStack, MultiBufferSource buffer,
-                           Direction frontFacing, Direction upwardsFacing,
+    public void renderTank(PoseStack poseStack, MultiBufferSource buffer, Direction frontFacing,
                            FluidStack stored, long storedAmount, long maxAmount, FluidStack locked,
                            boolean isCreative) {
         FluidStack fluid = !stored.isEmpty() ? stored : locked;
@@ -134,6 +133,6 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
                 ext.getTintColor(fluid) | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
                 MIN, minY, minZ, MAX, maxY, maxZ);
 
-        drawAmountText(poseStack, buffer, frontFacing, upwardsFacing, storedAmount, isCreative);
+        drawAmountText(poseStack, buffer, frontFacing, storedAmount, isCreative);
     }
 }
