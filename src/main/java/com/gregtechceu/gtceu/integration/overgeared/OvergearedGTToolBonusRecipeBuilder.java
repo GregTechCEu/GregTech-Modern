@@ -90,7 +90,8 @@ public class OvergearedGTToolBonusRecipeBuilder extends ForgingQualityShapelessR
             result.setTag(resultTag);
 
             var durability = result.getMaxDamage();
-            var rand = new Random();
+            Player player = ForgeHooks.getCraftingPlayer();
+            var rand = player != null ? player.getRandom() : GTValues.RNG;
             // apply bonus durability of 1-10% of max durability
             ToolHelper.getToolTag(result).putInt(ToolHelper.MAX_DURABILITY_KEY, durability * (1 + rand.nextInt(1, 11)));
         }
