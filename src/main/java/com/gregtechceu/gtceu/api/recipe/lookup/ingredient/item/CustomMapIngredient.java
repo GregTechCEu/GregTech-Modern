@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -72,10 +72,10 @@ public class CustomMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapCustomIngredient{" +
-               "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) +
-               "ingredient=" + ingredient +
-               "}";
+        return "CustomMapIngredient{" +
+                "item=" + stack +
+                "ingredient=" + ingredient +
+                "}";
     }
 
     @Override

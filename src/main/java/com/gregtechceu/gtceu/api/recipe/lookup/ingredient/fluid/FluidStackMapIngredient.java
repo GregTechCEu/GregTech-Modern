@@ -69,7 +69,6 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapFluidIngredient{" +
-                "{fluid=" + BuiltInRegistries.FLUID.getKey(fluid) + "} {tag=" + tag + "}";
+        return "FluidStackMapIngredient{fluid=" + stack + "}";
     }
 }

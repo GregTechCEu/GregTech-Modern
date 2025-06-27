@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -72,6 +71,6 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapItemStackIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "ItemStackMapIngredient{" + "item=" + stack + "}";
     }
 }

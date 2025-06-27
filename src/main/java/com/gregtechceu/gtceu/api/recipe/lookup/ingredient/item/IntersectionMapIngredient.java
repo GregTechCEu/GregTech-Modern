@@ -103,6 +103,6 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapIntersectionIngredient{" + "children=" + children + "}";
+        return "IntersectionMapIngredient{" + "children=" + children + "}";
     }
 }

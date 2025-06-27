@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemTagMapIngredient extends AbstractMapIngredient {
@@ -36,7 +35,7 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
 
     @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {
-        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         stack.getTags().forEach(tag -> ingredients.add(new ItemTagMapIngredient(tag)));
         return ingredients;
     }
@@ -56,6 +55,6 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapItemTagIngredient{" + "tag=" + tag.location() + "}";
+        return "ItemTagMapIngredient{" + "tag=" + tag.location() + "}";
     }
 }

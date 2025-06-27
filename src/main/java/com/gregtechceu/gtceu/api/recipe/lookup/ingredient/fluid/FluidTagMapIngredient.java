@@ -55,6 +55,6 @@ public class FluidTagMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapFluidTagIngredient{" + "tag=" + tag.location() + "}";
+        return "FluidTagMapIngredient{" + "tag=" + tag.location() + "}";
     }
 }
