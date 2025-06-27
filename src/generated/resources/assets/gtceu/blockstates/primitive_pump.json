@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/primitive_pump",
+      "model": "gtceu:block/machine/primitive_pump",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/primitive_pump"
+      "model": "gtceu:block/machine/primitive_pump"
     },
     "facing=south": {
-      "model": "gtceu:block/primitive_pump",
+      "model": "gtceu:block/machine/primitive_pump",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/primitive_pump",
+      "model": "gtceu:block/machine/primitive_pump",
       "y": 270
     }
   }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/wood_crate"
+      "model": "gtceu:block/machine/wood_crate"
     }
   }
 }

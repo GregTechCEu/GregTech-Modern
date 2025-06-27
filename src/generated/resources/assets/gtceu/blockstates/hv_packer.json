@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/hv_packer",
+      "model": "gtceu:block/machine/hv_packer",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/hv_packer"
+      "model": "gtceu:block/machine/hv_packer"
     },
     "facing=south": {
-      "model": "gtceu:block/hv_packer",
+      "model": "gtceu:block/machine/hv_packer",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/hv_packer",
+      "model": "gtceu:block/machine/hv_packer",
       "y": 270
     }
   }

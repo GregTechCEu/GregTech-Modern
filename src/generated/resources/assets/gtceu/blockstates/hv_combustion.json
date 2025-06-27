@@ -1,27 +1,27 @@
 {
   "variants": {
     "facing=down": {
-      "model": "gtceu:block/hv_combustion",
+      "model": "gtceu:block/machine/hv_combustion",
       "x": 90
     },
     "facing=east": {
-      "model": "gtceu:block/hv_combustion",
+      "model": "gtceu:block/machine/hv_combustion",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/hv_combustion"
+      "model": "gtceu:block/machine/hv_combustion"
     },
     "facing=south": {
-      "model": "gtceu:block/hv_combustion",
+      "model": "gtceu:block/machine/hv_combustion",
       "y": 180
     },
     "facing=up": {
       "gtceu:z": 180,
-      "model": "gtceu:block/hv_combustion",
+      "model": "gtceu:block/machine/hv_combustion",
       "x": 270
     },
     "facing=west": {
-      "model": "gtceu:block/hv_combustion",
+      "model": "gtceu:block/machine/hv_combustion",
       "y": 270
     }
   }

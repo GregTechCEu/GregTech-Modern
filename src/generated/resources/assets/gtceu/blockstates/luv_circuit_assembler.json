@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/luv_circuit_assembler",
+      "model": "gtceu:block/machine/luv_circuit_assembler",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/luv_circuit_assembler"
+      "model": "gtceu:block/machine/luv_circuit_assembler"
     },
     "facing=south": {
-      "model": "gtceu:block/luv_circuit_assembler",
+      "model": "gtceu:block/machine/luv_circuit_assembler",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/luv_circuit_assembler",
+      "model": "gtceu:block/machine/luv_circuit_assembler",
       "y": 270
     }
   }

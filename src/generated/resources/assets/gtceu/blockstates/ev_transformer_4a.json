@@ -1,27 +1,27 @@
 {
   "variants": {
     "facing=down": {
-      "model": "gtceu:block/ev_transformer_4a",
+      "model": "gtceu:block/machine/ev_transformer_4a",
       "x": 90
     },
     "facing=east": {
-      "model": "gtceu:block/ev_transformer_4a",
+      "model": "gtceu:block/machine/ev_transformer_4a",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/ev_transformer_4a"
+      "model": "gtceu:block/machine/ev_transformer_4a"
     },
     "facing=south": {
-      "model": "gtceu:block/ev_transformer_4a",
+      "model": "gtceu:block/machine/ev_transformer_4a",
       "y": 180
     },
     "facing=up": {
       "gtceu:z": 180,
-      "model": "gtceu:block/ev_transformer_4a",
+      "model": "gtceu:block/machine/ev_transformer_4a",
       "x": 270
     },
     "facing=west": {
-      "model": "gtceu:block/ev_transformer_4a",
+      "model": "gtceu:block/machine/ev_transformer_4a",
       "y": 270
     }
   }

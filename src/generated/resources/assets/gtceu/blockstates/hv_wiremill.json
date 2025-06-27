@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/hv_wiremill",
+      "model": "gtceu:block/machine/hv_wiremill",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/hv_wiremill"
+      "model": "gtceu:block/machine/hv_wiremill"
     },
     "facing=south": {
-      "model": "gtceu:block/hv_wiremill",
+      "model": "gtceu:block/machine/hv_wiremill",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/hv_wiremill",
+      "model": "gtceu:block/machine/hv_wiremill",
       "y": 270
     }
   }

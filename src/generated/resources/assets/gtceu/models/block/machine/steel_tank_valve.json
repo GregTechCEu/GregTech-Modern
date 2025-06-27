@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:steel_tank_valve",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "parent": "gtceu:block/machine/template/cube_all/sided",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front"
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "parent": "gtceu:block/machine/template/cube_all/sided",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front"
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "parent": "gtceu:block/machine/template/cube_all/sided",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active"
+      }
+    },
+    "recipe_logic_status=working": {
+      "parent": "gtceu:block/machine/template/cube_all/sided",
+      "textures": {
+        "all": "gtceu:block/casings/solid/machine_casing_solid_steel",
+        "overlay_front": "gtceu:block/multiblock/tank_valve/overlay_front_active"
+      }
+    }
+  }
+}

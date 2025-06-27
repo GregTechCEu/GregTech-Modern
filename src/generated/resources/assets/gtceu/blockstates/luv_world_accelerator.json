@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/luv_world_accelerator"
+      "model": "gtceu:block/machine/luv_world_accelerator"
     }
   }
 }

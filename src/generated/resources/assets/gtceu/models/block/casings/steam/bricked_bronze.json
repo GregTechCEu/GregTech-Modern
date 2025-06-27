@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/machine/template/sided_overlay_machine",
+  "parent": "gtceu:block/machine/template/sided/sided",
   "textures": {
     "bottom": "gtceu:block/casings/steam/bricked_bronze/bottom",
     "side": "gtceu:block/casings/steam/bricked_bronze/side",

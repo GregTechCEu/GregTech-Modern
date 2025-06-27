@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/hv_world_accelerator"
+      "model": "gtceu:block/machine/hv_world_accelerator"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/stainless_steel_crate"
+      "model": "gtceu:block/machine/stainless_steel_crate"
     }
   }
 }

@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/mv_bender",
+      "model": "gtceu:block/machine/mv_bender",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/mv_bender"
+      "model": "gtceu:block/machine/mv_bender"
     },
     "facing=south": {
-      "model": "gtceu:block/mv_bender",
+      "model": "gtceu:block/machine/mv_bender",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/mv_bender",
+      "model": "gtceu:block/machine/mv_bender",
       "y": 270
     }
   }

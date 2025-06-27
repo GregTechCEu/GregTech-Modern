@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/hv_buffer"
+      "model": "gtceu:block/machine/hv_buffer"
     }
   }
 }

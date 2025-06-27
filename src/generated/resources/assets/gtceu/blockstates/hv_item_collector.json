@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/hv_item_collector"
+      "model": "gtceu:block/machine/hv_item_collector"
     }
   }
 }

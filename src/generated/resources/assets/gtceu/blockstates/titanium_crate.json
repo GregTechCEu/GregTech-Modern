@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/titanium_crate"
+      "model": "gtceu:block/machine/titanium_crate"
     }
   }
 }

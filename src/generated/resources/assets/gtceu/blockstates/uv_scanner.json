@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/uv_scanner",
+      "model": "gtceu:block/machine/uv_scanner",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/uv_scanner"
+      "model": "gtceu:block/machine/uv_scanner"
     },
     "facing=south": {
-      "model": "gtceu:block/uv_scanner",
+      "model": "gtceu:block/machine/uv_scanner",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/uv_scanner",
+      "model": "gtceu:block/machine/uv_scanner",
       "y": 270
     }
   }

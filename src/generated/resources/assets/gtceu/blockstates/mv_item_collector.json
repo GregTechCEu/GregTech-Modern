@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/mv_item_collector"
+      "model": "gtceu:block/machine/mv_item_collector"
     }
   }
 }

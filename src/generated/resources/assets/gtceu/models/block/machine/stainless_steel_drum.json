@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:stainless_steel_drum",
+  "variants": {
+    "": "gtceu:block/machine/template/drum/metal_drum"
+  }
+}

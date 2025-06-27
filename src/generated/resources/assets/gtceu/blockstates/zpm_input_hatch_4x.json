@@ -1,27 +1,27 @@
 {
   "variants": {
     "facing=down": {
-      "model": "gtceu:block/zpm_input_hatch_4x",
+      "model": "gtceu:block/machine/zpm_input_hatch_4x",
       "x": 90
     },
     "facing=east": {
-      "model": "gtceu:block/zpm_input_hatch_4x",
+      "model": "gtceu:block/machine/zpm_input_hatch_4x",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/zpm_input_hatch_4x"
+      "model": "gtceu:block/machine/zpm_input_hatch_4x"
     },
     "facing=south": {
-      "model": "gtceu:block/zpm_input_hatch_4x",
+      "model": "gtceu:block/machine/zpm_input_hatch_4x",
       "y": 180
     },
     "facing=up": {
       "gtceu:z": 180,
-      "model": "gtceu:block/zpm_input_hatch_4x",
+      "model": "gtceu:block/machine/zpm_input_hatch_4x",
       "x": 270
     },
     "facing=west": {
-      "model": "gtceu:block/zpm_input_hatch_4x",
+      "model": "gtceu:block/machine/zpm_input_hatch_4x",
       "y": 270
     }
   }

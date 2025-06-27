@@ -1,27 +1,27 @@
 {
   "variants": {
     "facing=down": {
-      "model": "gtceu:block/lp_steam_liquid_boiler",
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
       "x": 90
     },
     "facing=east": {
-      "model": "gtceu:block/lp_steam_liquid_boiler",
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/lp_steam_liquid_boiler"
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler"
     },
     "facing=south": {
-      "model": "gtceu:block/lp_steam_liquid_boiler",
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
       "y": 180
     },
     "facing=up": {
       "gtceu:z": 180,
-      "model": "gtceu:block/lp_steam_liquid_boiler",
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
       "x": 270
     },
     "facing=west": {
-      "model": "gtceu:block/lp_steam_liquid_boiler",
+      "model": "gtceu:block/machine/lp_steam_liquid_boiler",
       "y": 270
     }
   }

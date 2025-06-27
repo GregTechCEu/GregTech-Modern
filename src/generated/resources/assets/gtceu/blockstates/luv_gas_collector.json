@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/luv_gas_collector",
+      "model": "gtceu:block/machine/luv_gas_collector",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/luv_gas_collector"
+      "model": "gtceu:block/machine/luv_gas_collector"
     },
     "facing=south": {
-      "model": "gtceu:block/luv_gas_collector",
+      "model": "gtceu:block/machine/luv_gas_collector",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/luv_gas_collector",
+      "model": "gtceu:block/machine/luv_gas_collector",
       "y": 270
     }
   }

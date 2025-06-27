@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/machine/template/drum/metal_drum"
+      "model": "gtceu:block/machine/gold_drum"
     }
   }
 }

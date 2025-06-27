@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "gtceu:block/uiv_fermenter",
+      "model": "gtceu:block/machine/uiv_fermenter",
       "y": 90
     },
     "facing=north": {
-      "model": "gtceu:block/uiv_fermenter"
+      "model": "gtceu:block/machine/uiv_fermenter"
     },
     "facing=south": {
-      "model": "gtceu:block/uiv_fermenter",
+      "model": "gtceu:block/machine/uiv_fermenter",
       "y": 180
     },
     "facing=west": {
-      "model": "gtceu:block/uiv_fermenter",
+      "model": "gtceu:block/machine/uiv_fermenter",
       "y": 270
     }
   }
