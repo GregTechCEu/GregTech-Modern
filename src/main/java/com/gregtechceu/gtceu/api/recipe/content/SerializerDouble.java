@@ -52,7 +52,7 @@ public class SerializerDouble implements IContentSerializer<Double> {
 
     @Override
     public Class<Double> contentClass() {
-        return Double.TYPE;
+        return Double.class;
     }
 
     @Override
