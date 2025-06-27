@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-import com.gregtechceu.gtceu.utils.FastEmptyStream;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -22,10 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
-
-    private static final FastEmptyStream<Value> EMPTY_STREAM = new FastEmptyStream<>(new Value[0]);
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -40,7 +38,7 @@ public class SizedIngredient extends Ingredient {
     private final Value value;
 
     protected SizedIngredient(Ingredient inner, int amount) {
-        super(EMPTY_STREAM);
+        super(Stream.empty());
         this.amount = amount;
         this.inner = inner;
         this.isEmpty = inner.isEmpty();
