@@ -4,13 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import com.gregtechceu.gtceu.utils.FastEmptyStream;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -22,11 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
 
-    private static final Stream<Value> EMPTY_STREAM = Stream.empty();
+    private static final FastEmptyStream<Value> EMPTY_STREAM = new FastEmptyStream<>(new Value[0]);
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -128,7 +127,7 @@ public class SizedIngredient extends Ingredient {
         if (this.value instanceof TagValueAccessor tagValue) {
             return stack.is(tagValue.getTag());
         } else if (this.value instanceof ItemValueAccessor itemValue) {
-            return ItemStack.isSameItem(item, itemValue.getItem());
+            return ItemStack.isSameItem(stack, itemValue.getItem());
         }
         return inner.test(stack);
     }
