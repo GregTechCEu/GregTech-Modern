@@ -123,12 +123,12 @@ public class SizedIngredient extends Ingredient {
     @Override
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null) return false;
-        var item = stack.getItem();
-        if (isEmpty) return item == Items.AIR;
-        if (value instanceof TagValueAccessor tagValue) {
-            return item.builtInRegistryHolder().is(tagValue.getTag());
-        } else if (value instanceof ItemValueAccessor itemValue) {
-            return itemValue.getItem().is(item);
+        if (this.isEmpty) return stack.isEmpty();
+
+        if (this.value instanceof TagValueAccessor tagValue) {
+            return stack.is(tagValue.getTag());
+        } else if (this.value instanceof ItemValueAccessor itemValue) {
+            return ItemStack.isSameItem(item, itemValue.getItem());
         }
         return inner.test(stack);
     }
