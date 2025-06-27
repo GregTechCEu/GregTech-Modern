@@ -6,7 +6,6 @@ import net.minecraft.Util;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import com.google.common.base.Preconditions;
-import kroppeb.stareval.function.Type.Boolean;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
