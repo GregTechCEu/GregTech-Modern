@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -55,6 +56,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     @Getter
     private final int inventorySize;
     @Getter
+    @RequireRerender
     @Persisted
     @DescSynced
     private boolean isTaped;
@@ -104,10 +106,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                     stack.shrink(1);
                 }
                 isTaped = true;
-
-                if (world.isClientSide) {
-                    setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
-                }
+                setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }

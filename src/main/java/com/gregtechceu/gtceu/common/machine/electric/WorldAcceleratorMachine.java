@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.BlockPos;
@@ -73,17 +73,15 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @Getter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onWorkingEnabledSynced")
     private boolean isWorkingEnabled = true;
     @Getter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onRandomTickModeSynced")
     private boolean isRandomTickMode = true;
     @Getter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onActiveSynced")
+    @RequireRerender
     private boolean active = false;
     private TickableSubscription tickSubs;
 
@@ -105,29 +103,16 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         return MANAGED_FIELD_HOLDER;
     }
 
-    @SuppressWarnings("unused")
-    protected void onWorkingEnabledSynced(boolean newValue, boolean oldValue) {
-        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, newValue));
-    }
-
-    @SuppressWarnings("unused")
-    protected void onRandomTickModeSynced(boolean newValue, boolean oldValue) {
-        setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, newValue));
-    }
-
-    @SuppressWarnings("unused")
-    protected void onActiveSynced(boolean newValue, boolean oldValue) {
-        setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, newValue));
-    }
-
     public void updateSubscription() {
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, false));
         }
     }
 
@@ -232,6 +217,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
+        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, isWorkingEnabled));
         updateSubscription();
     }
 
@@ -263,8 +249,10 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
+            setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, isRandomTickMode));
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
+            scheduleRenderUpdate();
         }
         return InteractionResult.CONSUME;
     }

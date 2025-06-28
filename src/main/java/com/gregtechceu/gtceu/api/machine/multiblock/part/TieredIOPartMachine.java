@@ -33,6 +33,7 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
     @Setter
     @Persisted
     @DescSynced
+    @RequireRerender
     protected boolean workingEnabled;
 
     public TieredIOPartMachine(IMachineBlockEntity holder, int tier, IO io) {

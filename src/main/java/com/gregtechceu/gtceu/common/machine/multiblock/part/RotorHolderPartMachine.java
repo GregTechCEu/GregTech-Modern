@@ -22,7 +22,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -55,15 +55,12 @@ public class RotorHolderPartMachine extends TieredPartMachine
     @Getter
     public final int maxRotorHolderSpeed;
     @Getter
-    @Setter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onRotorSpeedSynced")
     public int rotorSpeed;
     @Setter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onRotorMaterialSynced")
     @NotNull
     public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
     @Nullable
@@ -141,20 +138,14 @@ public class RotorHolderPartMachine extends TieredPartMachine
         var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         if (rotorBehaviour != null) {
             this.rotorMaterial = rotorBehaviour.getPartMaterial(stack);
-        } else {
-            this.rotorMaterial = GTMaterials.NULL;
-        }
-    }
 
-    @SuppressWarnings("unused")
-    protected void onRotorMaterialSynced(Material newValue, Material oldValue) {
-        if (!newValue.isNull()) {
             boolean emissive = this.rotorMaterial.hasProperty(PropertyKey.ORE) &&
-                               this.rotorMaterial.getProperty(PropertyKey.ORE).isEmissive();
+                    this.rotorMaterial.getProperty(PropertyKey.ORE).isEmissive();
             setRenderState(getRenderState()
                     .setValue(HAS_ROTOR_PROPERTY, true)
                     .setValue(EMISSIVE_ROTOR_PROPERTY, emissive));
         } else {
+            this.rotorMaterial = GTMaterials.NULL;
             setRenderState(getRenderState()
                     .setValue(HAS_ROTOR_PROPERTY, false)
                     .setValue(EMISSIVE_ROTOR_PROPERTY, false));
@@ -187,9 +178,12 @@ public class RotorHolderPartMachine extends TieredPartMachine
         updateRotorSubscription();
     }
 
-    @SuppressWarnings("unused")
-    protected void onRotorSpeedSynced(int newValue, int oldValue) {
-        setRenderState(getRenderState().setValue(ROTOR_SPINNING_PROPERTY, newValue > 0));
+    public void setRotorSpeed(int rotorSpeed) {
+        if ((this.rotorSpeed > 0 && rotorSpeed <= 0) || (this.rotorSpeed <= 0 && rotorSpeed > 0)) {
+            scheduleRenderUpdate();
+            setRenderState(getRenderState().setValue(ROTOR_SPINNING_PROPERTY, rotorSpeed > 0));
+        }
+        this.rotorSpeed = rotorSpeed;
     }
 
     @Override

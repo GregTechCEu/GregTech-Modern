@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
@@ -461,6 +462,7 @@ public class GTMachines {
                     .rotationState(RotationState.NONE)
                     .langValue("%s Item Collector %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
+                    .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
                     .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"),
                             ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
                     .workableTieredHullModel(GTCEu.id("block/machines/item_collector"))
@@ -1120,7 +1122,14 @@ public class GTMachines {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
+
         GTRegistries.MACHINES.freeze();
+
+        for (MachineDefinition machine : GTRegistries.MACHINES) {
+            for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+            }
+        }
     }
 
     public static MachineDefinition get(String name) {

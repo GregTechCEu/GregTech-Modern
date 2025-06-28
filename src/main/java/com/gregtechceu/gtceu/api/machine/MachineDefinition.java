@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,8 @@ import java.util.function.*;
  * Representing basic information of a machine.
  */
 public class MachineDefinition implements Supplier<IMachineBlock> {
+
+    public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
     @Getter
     private final ResourceLocation id;

@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -54,12 +55,12 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     private @Nullable IParallelHatch parallelHatch = null;
     @Getter
     @DescSynced
-    @UpdateListener(methodName = "onPartsSynced")
+    @UpdateListener(methodName = "onPartsUpdated")
     private BlockPos[] partPositions = new BlockPos[0];
     @Getter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onFormedSynced")
+    @RequireRerender
     protected boolean isFormed;
     @Getter
     @Setter
@@ -110,22 +111,12 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     }
 
     @SuppressWarnings("unused")
-    protected void onPartsSynced(BlockPos[] newValue, BlockPos[] oldValue) {
+    protected void onPartsUpdated(BlockPos[] newValue, BlockPos[] oldValue) {
         parts.clear();
         for (var pos : newValue) {
             if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
                 parts.add(part);
             }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    protected void onFormedSynced(boolean newValue, boolean oldValue) {
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
-            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, newValue));
-        } else {
-            scheduleRenderUpdate();
         }
     }
 
@@ -182,6 +173,10 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureFormed() {
         isFormed = true;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, true));
+        }
 
         this.parts.clear();
         Set<IMultiPart> set = getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet);
@@ -203,6 +198,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureInvalid() {
         isFormed = false;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, false));
+        }
+
         for (IMultiPart part : parts) {
             part.removedFromController(this);
         }

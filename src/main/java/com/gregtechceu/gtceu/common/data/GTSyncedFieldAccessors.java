@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.syncdata.*;
 
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
@@ -20,6 +21,7 @@ public class GTSyncedFieldAccessors {
         register(FriendlyBufPayload.class, FriendlyBufPayload::new, GT_RECIPE_TYPE_ACCESSOR, 1000);
         register(NbtTagPayload.class, NbtTagPayload::new, VirtualTankAccessor.INSTANCE, 2);
 
+        registerSimple(MachineRenderStatePayload.class, MachineRenderStatePayload::new, MachineRenderState.class, 1);
         registerSimple(MaterialPayload.class, MaterialPayload::new, Material.class, 1);
         registerSimple(GTRecipePayload.class, GTRecipePayload::new, GTRecipe.class, 100);
         registerSimple(FluidStackPayload.class, FluidStackPayload::new, FluidStack.class, -1);

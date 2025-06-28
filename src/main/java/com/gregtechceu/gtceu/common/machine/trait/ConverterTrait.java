@@ -6,12 +6,11 @@ import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraftforge.energy.IEnergyStorage;
@@ -30,7 +29,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onFeToEuSynced")
+    @RequireRerender
     private boolean feToEu;
     @Getter
     private final int amps;
@@ -57,18 +56,9 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         return MANAGED_FIELD_HOLDER;
     }
 
-    @SuppressWarnings("unused")
-    protected void onFeToEuSynced(boolean newValue, boolean oldValue) {
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(ConverterMachine.FE_TO_EU_PROPERTY)) {
-            setRenderState(renderState.setValue(ConverterMachine.FE_TO_EU_PROPERTY, newValue));
-        } else {
-            scheduleRenderUpdate();
-        }
-    }
-
     public void setFeToEu(boolean feToEu) {
         this.feToEu = feToEu;
+        setRenderState(getRenderState().setValue(ConverterMachine.FE_TO_EU_PROPERTY, feToEu));
         machine.notifyBlockUpdate();
     }
 

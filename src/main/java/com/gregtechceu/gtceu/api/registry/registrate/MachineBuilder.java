@@ -125,7 +125,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
-    private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
+    private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private @Nullable GTRecipeType @Nullable [] recipeTypes = null;
     @Getter

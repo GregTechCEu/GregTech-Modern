@@ -143,9 +143,9 @@ public class DiodePartMachine extends TieredIOPartMachine {
                     .setValue(AMP_MODE_PROPERTY, AmpMode.getByValue(this.amps)));
 
             scheduleRenderUpdate();
+            playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
             return InteractionResult.SUCCESS;
         }
-        playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
         return InteractionResult.CONSUME;
     }
 

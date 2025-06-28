@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -22,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -72,10 +70,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Persisted
     private final NotifiableItemStackHandler itemStackHandler;
     @Getter
-    @Setter
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onTapedUpdated")
     private boolean isTaped;
     @Getter
     @Setter
@@ -134,14 +130,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         super.onLoad();
         if (!isRemote()) {
             updateMaintenanceSubscription();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void onTapedUpdated(boolean newTaped, boolean oldTaped) {
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(MAINTENANCE_TAPED_PROPERTY)) {
-            setRenderState(renderState.setValue(MAINTENANCE_TAPED_PROPERTY, newTaped));
         }
     }
 
@@ -307,6 +295,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public boolean isFullAuto() {
         return false;
+    }
+
+    @Override
+    public void setTaped(boolean isTaped) {
+        if (this.isTaped != isTaped) {
+            this.isTaped = isTaped;
+            setRenderState(getRenderState().setValue(MAINTENANCE_TAPED_PROPERTY, isTaped));
+        }
     }
 
     @Override

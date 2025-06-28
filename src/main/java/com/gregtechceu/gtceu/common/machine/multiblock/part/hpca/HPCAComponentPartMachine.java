@@ -35,7 +35,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
 
     @Persisted
     @DescSynced
-    @UpdateListener(methodName = "onDamagedSynced")
+    @RequireRerender
     private boolean damaged;
 
     public HPCAComponentPartMachine(IMachineBlockEntity holder) {
@@ -86,6 +86,11 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         if (this.damaged != damaged) {
             this.damaged = damaged;
             markDirty();
+
+            MachineRenderState state = getRenderState();
+            if (state.hasProperty(HPCA_PART_DAMAGED_PROPERTY)) {
+                setRenderState(state.setValue(HPCA_PART_DAMAGED_PROPERTY, damaged));
+            }
         }
     }
 
@@ -105,16 +110,6 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
             setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, false));
         }
         return super.afterWorking(controller);
-    }
-
-    @SuppressWarnings("unused")
-    protected void onDamagedSynced(boolean newDamaged, boolean oldDamaged) {
-        if (!canBeDamaged() || newDamaged == oldDamaged) return;
-
-        MachineRenderState state = getRenderState();
-        if (state.hasProperty(HPCA_PART_DAMAGED_PROPERTY)) {
-            setRenderState(state.setValue(HPCA_PART_DAMAGED_PROPERTY, newDamaged));
-        }
     }
 
     @Override

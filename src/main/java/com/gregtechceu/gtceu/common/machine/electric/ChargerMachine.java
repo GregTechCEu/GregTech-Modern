@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -20,7 +19,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -30,7 +29,6 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -76,9 +74,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected final CustomItemStackHandler chargerInventory;
 
     @Getter
-    @Setter(AccessLevel.PRIVATE)
     @DescSynced
-    @UpdateListener(methodName = "onStateSynced")
+    @RequireRerender
     private State state;
 
     public ChargerMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
@@ -121,16 +118,6 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Override
     public void onMachineRemoved() {
         clearInventory(chargerInventory);
-    }
-
-    @SuppressWarnings("unused")
-    protected void onStateSynced(State newValue, State oldValue) {
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(STATE_PROPERTY)) {
-            setRenderState(renderState.setValue(STATE_PROPERTY, newValue));
-        } else {
-            scheduleRenderUpdate();
-        }
     }
 
     //////////////////////////////////////
@@ -198,6 +185,13 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         return electricItems;
     }
 
+    private void changeState(State newState) {
+        if (state != newState) {
+            state = newState;
+            setRenderState(getRenderState().setValue(STATE_PROPERTY, newState));
+        }
+    }
+
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
         protected EnergyBatteryTrait(int inventorySize) {
@@ -215,7 +209,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 lastTimeStamp = latestTimeStamp;
             }
             if (amperage <= 0 || voltage <= 0) {
-                setState(State.IDLE);
+                changeState(State.IDLE);
                 return 0;
             }
 
@@ -259,7 +253,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
                 if (changed) {
                     ChargerMachine.this.markDirty();
-                    setState(State.RUNNING);
+                    changeState(State.RUNNING);
                 }
 
                 // Remove energy used and then transfer overflow energy into the internal buffer
@@ -287,7 +281,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             }
 
             if (energyCapacity == 0) {
-                setState(State.IDLE);
+                changeState(State.IDLE);
             }
 
             return energyCapacity;
@@ -313,7 +307,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             var capacity = getEnergyCapacity();
 
             if (capacity != 0 && capacity == energyStored) {
-                setState(State.FINISHED);
+                changeState(State.FINISHED);
             }
 
             return energyStored;

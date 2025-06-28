@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -32,7 +31,6 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -127,7 +125,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @DescSynced
     @Persisted
     @Getter
-    @UpdateListener(methodName = "onActiveSynced")
+    @RequireRerender
     private boolean active = false;
 
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -165,16 +163,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
-    }
-
-    @SuppressWarnings("unused")
-    protected void onActiveSynced(boolean newValue, boolean oldValue) {
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
-            setRenderState(renderState.setValue(IWorkable.ACTIVE_PROPERTY, newValue));
-        } else {
-            scheduleRenderUpdate();
-        }
     }
 
     protected NotifiableItemStackHandler createOutputItemHandler() {
@@ -233,12 +221,18 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public void updateCollectionSubscription() {
         if (drainEnergy(true) && isWorkingEnabled) {
             collectionSubs = subscribeServerTick(collectionSubs, this::update);
+            setActive(true);
             active = true;
         } else if (collectionSubs != null) {
             collectionSubs.unsubscribe();
             collectionSubs = null;
             active = false;
         }
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+        setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, active));
     }
 
     public void update() {

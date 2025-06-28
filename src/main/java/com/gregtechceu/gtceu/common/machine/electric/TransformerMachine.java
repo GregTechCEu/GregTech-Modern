@@ -62,8 +62,6 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
 
     @SuppressWarnings("unused")
     private void onTransformUpdated(boolean newValue, boolean oldValue) {
-        setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, newValue));
-        scheduleRenderUpdate();
         updateEnergyContainer(newValue);
     }
 
@@ -122,6 +120,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         if (this.isTransformUp != isTransformUp && !isRemote()) {
             this.isTransformUp = isTransformUp;
             updateEnergyContainer(isTransformUp);
+            setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, isTransformUp));
         }
     }
 

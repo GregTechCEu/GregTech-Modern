@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,25 +34,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called when recipe logic status changed
      */
-    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        if (!self().isRemote()) return;
-
-        MachineRenderState renderState = self().getRenderState();
-        if (renderState.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
-            self().setRenderState(renderState.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
-        } else {
-            self().scheduleRenderUpdate();
-        }
-    }
-
-    default void notifyActiveChanged(boolean oldActive, boolean newActive) {
-        MachineRenderState renderState = self().getRenderState();
-        if (renderState.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
-            self().setRenderState(renderState.setValue(IWorkable.ACTIVE_PROPERTY, newActive));
-        } else {
-            self().scheduleRenderUpdate();
-        }
-    }
+    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
 
     /**
      * Recipe logic
