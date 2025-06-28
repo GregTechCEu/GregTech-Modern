@@ -125,21 +125,15 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         this.machine = machine;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unused")
-    protected void onStatusSynced(Status newValue, Status oldValue) {
-        getMachine().scheduleRenderUpdate();
+    protected void onStatusSynced(Status newStatus, Status oldStatus) {
+        machine.notifyStatusChanged(oldStatus, newStatus);
         updateSound();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings("unused")
     protected void onActiveSynced(boolean newActive, boolean oldActive) {
-        getMachine().scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        getMachine().scheduleRenderUpdate();
+        machine.notifyActiveChanged(oldActive, newActive);
     }
 
     /**
@@ -156,7 +150,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         lastFailedMatches = null;
         if (status != Status.SUSPEND) {
             status = Status.IDLE;
-            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
         }
         updateTickSubscription();
     }
@@ -373,7 +366,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
-            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;

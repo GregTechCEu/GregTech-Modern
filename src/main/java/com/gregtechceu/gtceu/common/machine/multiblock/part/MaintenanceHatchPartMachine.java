@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -21,7 +22,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -76,7 +76,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Persisted
     @DescSynced
     @UpdateListener(methodName = "onTapedUpdated")
-    @RequireRerender
     private boolean isTaped;
     @Getter
     @Setter
@@ -140,7 +139,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     @SuppressWarnings("unused")
     public void onTapedUpdated(boolean newTaped, boolean oldTaped) {
-        setRenderState(getRenderState().setValue(MAINTENANCE_TAPED_PROPERTY, newTaped));
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(MAINTENANCE_TAPED_PROPERTY)) {
+            setRenderState(renderState.setValue(MAINTENANCE_TAPED_PROPERTY, newTaped));
+        }
     }
 
     protected void updateMaintenanceSubscription() {

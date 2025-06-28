@@ -35,7 +35,6 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
 
     @Persisted
     @DescSynced
-    @RequireRerender
     @UpdateListener(methodName = "onDamagedSynced")
     private boolean damaged;
 

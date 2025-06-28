@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -229,13 +230,26 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
         IWorkableMultiController.super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
+        if (!self().isRemote() && newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
             updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
+        } else if (self().isRemote()) {
+            for (IMultiPart part : getParts()) {
+                MachineRenderState state = part.self().getRenderState();
+                if (state.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
+                    part.self().setRenderState(state.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
+                }
+            }
         }
+    }
+
+    @Override
+    public void notifyActiveChanged(boolean oldActive, boolean newActive) {
+        IWorkableMultiController.super.notifyActiveChanged(oldActive, newActive);
+
         for (IMultiPart part : getParts()) {
             MachineRenderState state = part.self().getRenderState();
-            if (state.hasProperty(RecipeLogic.STATUS_PROPERTY)) {
-                part.self().setRenderState(state.setValue(RecipeLogic.STATUS_PROPERTY, newStatus));
+            if (state.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+                part.self().setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, newActive));
             }
         }
     }

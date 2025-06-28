@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -31,6 +32,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -78,6 +80,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     private static final double MOTION_MULTIPLIER = 0.04;
     private static final int BASE_EU_CONSUMPTION = 6;
 
+    @Nullable
     @Getter
     @Persisted
     @DescSynced
@@ -124,7 +127,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @DescSynced
     @Persisted
     @Getter
-    @RequireRerender
+    @UpdateListener(methodName = "onActiveSynced")
     private boolean active = false;
 
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -162,6 +165,16 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @SuppressWarnings("unused")
+    protected void onActiveSynced(boolean newValue, boolean oldValue) {
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+            setRenderState(renderState.setValue(IWorkable.ACTIVE_PROPERTY, newValue));
+        } else {
+            scheduleRenderUpdate();
+        }
     }
 
     protected NotifiableItemStackHandler createOutputItemHandler() {
@@ -232,9 +245,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         if (drainEnergy(false)) {
             if (aabb == null || rangeDirty) {
                 rangeDirty = false;
-                BlockPos pos1, pos2;
-                pos1 = getPos().offset(-range, 0, -range);
-                pos2 = getPos().offset(range, 2, range);
+                BlockPos pos1 = getPos().offset(-range, 0, -range);
+                BlockPos pos2 = getPos().offset(range, 2, range);
                 this.aabb = AABB.of(BoundingBox.fromCorners(pos1, pos2));
             }
             moveItemsInRange();
@@ -355,8 +367,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
+        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
             updateBatterySubscription();
+        }
     }
 
     @Override

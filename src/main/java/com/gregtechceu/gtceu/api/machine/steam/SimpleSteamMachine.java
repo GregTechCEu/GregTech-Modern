@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -63,9 +64,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
 
-        Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
-                .getActualDirection(getVentingDirection());
-        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, derotated));
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
+                    .getActualDirection(getVentingDirection());
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
+        }
     }
 
     //////////////////////////////////////
@@ -118,19 +122,24 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public void setOutputFacing(@NotNull Direction outputFacing) {
-        super.setOutputFacing(outputFacing);
-        Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing()).getActualDirection(outputFacing);
-        setRenderState(getRenderState().setValue(VENT_DIRECTION_PROPERTY, derotated));
-    }
-
-    @Override
     public void markVentingComplete() {
         this.needsVenting = false;
     }
 
     public double getConversionRate() {
         return isHighPressure() ? 2.0 : 1.0;
+    }
+
+    @Override
+    protected void onOutputFacingSynced(Direction newValue, Direction oldValue) {
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
+                    .getActualDirection(newValue);
+            setRenderState(renderState.setValue(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, derotated));
+        } else {
+            super.onOutputFacingSynced(newValue, oldValue);
+        }
     }
 
     //////////////////////////////////////

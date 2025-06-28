@@ -40,7 +40,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
-    @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
@@ -82,6 +81,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
             setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, !controllers.isEmpty()));
+        } else {
+            scheduleRenderUpdate();
         }
     }
 
