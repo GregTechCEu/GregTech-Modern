@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -68,14 +68,14 @@ public class ArmorProperty implements IMaterialProperty {
                 map.put(ArmorItem.Type.values()[i], protectionValues[i]);
             }
         });
-        this.sound = SupplierMemoizer.memoize(() -> SoundEvents.ARMOR_EQUIP_IRON);
+        this.sound = GTMemoizer.memoize(() -> SoundEvents.ARMOR_EQUIP_IRON);
         this.toughness = 0;
         this.knockbackResistance = 0;
         this.armorMaterial = new ArmorMaterial();
     }
 
     public void setSound(Supplier<SoundEvent> sound) {
-        this.sound = SupplierMemoizer.memoize(sound);
+        this.sound = GTMemoizer.memoize(sound);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ArmorProperty implements IMaterialProperty {
             this.material = properties.getMaterial();
         }
         if (this.repairIngredient == null && !noRepair) {
-            this.repairIngredient = SupplierMemoizer
+            this.repairIngredient = GTMemoizer
                     .memoize(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, material)));
         }
     }
@@ -128,7 +128,7 @@ public class ArmorProperty implements IMaterialProperty {
                 armorProperty.repairIngredient = null;
                 armorProperty.noRepair = true;
             } else {
-                armorProperty.repairIngredient = SupplierMemoizer.memoize(repairIngredient);
+                armorProperty.repairIngredient = GTMemoizer.memoize(repairIngredient);
             }
             return this;
         }
