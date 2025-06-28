@@ -5556,5 +5556,12 @@
     "command.gtceu.cape.use.failed": "%s не может использовать плащ %s, так как у него его нет (или его не существует)!",
     "gtceu.chance_logic.first": "ПЕРВЫЙ",
     "cover.ender_fluid_link.tooltip.channel_description": "Установить описание канала введённым текстом",
-    "cover.ender_fluid_link.tooltip.list_button": "Показать список каналов"
+    "cover.ender_fluid_link.tooltip.list_button": "Показать список каналов",
+    "gtceu.multiblock.dimensions.1": "  §c§lШирина§r: %s, §a§lВысота§r: %s, §9§lГлубина§r: %s ",
+    "material.gtceu.bauxite_slurry": "Бокситовая суспензия",
+    "tagprefix.surface_rock": "Поверхностная порода (%s)",
+    "material.gtceu.bauxite_sludge": "Шлам боксита",
+    "material.gtceu.cracked_bauxite_slurry": "Бокситовая суспензия прошедшая крекинг",
+    "material.gtceu.decalcified_bauxite_sludge": "Декальцинированный шлам боксита",
+    "material.gtceu.ilmenite_slag": "Ильменитовый шлак"
 }
