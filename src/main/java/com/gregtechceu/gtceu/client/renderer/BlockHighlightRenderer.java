@@ -238,11 +238,7 @@ public class BlockHighlightRenderer {
                 blockPos.getY() - cameraPos.y(),
                 blockPos.getZ() - cameraPos.z(),
                 facing);
-        if (facing.getAxis() == Direction.Axis.Y) {
-            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
-        } else {
-            RenderUtil.rotateToFace(poseStack, facing, Direction.NORTH);
-        }
+        RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
         poseStack.scale(0.9f, 0.9f, 1);
@@ -253,7 +249,7 @@ public class BlockHighlightRenderer {
         }
         if (topBlocked != null) {
             int color = attachSide == top ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, topBlocked, color, 6, 0, 4, 4);
+            drawResourceTexture(poseStack, bufferSource, topBlocked, color, 6, 12, 4, 4);
         }
         if (rightBlocked != null) {
             int color = attachSide == right ? 0xffffffff : 0x44ffffff;
@@ -261,7 +257,7 @@ public class BlockHighlightRenderer {
         }
         if (bottomBlocked != null) {
             int color = attachSide == bottom ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, bottomBlocked, color, 6, 12, 4, 4);
+            drawResourceTexture(poseStack, bufferSource, bottomBlocked, color, 6, 0, 4, 4);
         }
         if (frontBlocked != null) {
             int color = attachSide == front ? 0xffffffff : 0x44ffffff;
