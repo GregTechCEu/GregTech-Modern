@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.core.mixins.ldlib.CustomBakedModelAccessor;
 
+import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -135,6 +136,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         if (!overlaysInitialized) {
             ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+                spriteCapturer.getCapturedMaterials().clear();
+
                 TextureAtlas atlas = event.getAtlas();
 
                 pipeOverlaySprite = atlas.getSprite(PIPE_OVERLAY);
@@ -161,12 +164,12 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             postTransform = UnbakedGeometryHelper.applyRootTransform(modelState, rootTransform);
         }
 
-        List<BakedQuad> quads = new ArrayList<>();
+        List<BakedQuad> quads;
         if (modelData.has(MODEL_DATA_LEVEL) && modelData.has(MODEL_DATA_POS)) {
-            quads.addAll(getMachineQuads(state, side, rand, modelData, renderType));
+            quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
-            renderMachine(null, state, Direction.NORTH, side, rand, modelData, renderType);
+            quads = renderMachine(null, state, Direction.NORTH, side, rand, modelData, renderType);
         }
         postTransform.processInPlace(quads);
         return quads;
@@ -272,8 +275,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                         side, rand, modelData, renderType);
             } else if (model instanceof CustomBakedModelAccessor ctmModel &&
                        ctmModel.gtceu$getParent() instanceof MachineModel controllerModel) {
-                return renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
-                        side, rand, modelData, renderType);
+                List<BakedQuad> newQuads = renderPartOverrides(controllerModel, controller, originalQuads,
+                        part, frontFacing, side, rand, modelData, renderType);
+                // we have to do this ourselves here for some reason?
+                return CustomBakedModel.reBakeCustomQuads(newQuads,
+                        part.self().getLevel(), part.self().getPos(), part.self().getBlockState(), side, 0.0f);
             }
             // spotless:on
         }

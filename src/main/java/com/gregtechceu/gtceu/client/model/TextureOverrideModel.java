@@ -57,6 +57,8 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
             TextureAtlasSprite replacement = overrides.get(original);
             if (replacement != null) {
                 newQuads.add(GTQuadTransformers.setSprite(quad, replacement));
+            } else {
+                newQuads.add(quad);
             }
         }
         return newQuads;

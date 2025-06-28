@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.client.util;
 
-import com.gregtechceu.gtceu.utils.GTMath;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.QuadTransformers;
-
-import java.lang.reflect.Array;
 
 public final class GTQuadTransformers {
 
@@ -35,7 +32,7 @@ public final class GTQuadTransformers {
         };
     }
 
-    public static BakedQuad setSprite(BakedQuad quad, TextureAtlasSprite newSprite) {
+    public static BakedQuad setSprite(BakedQuad quad, TextureAtlasSprite sprite) {
         TextureAtlasSprite oldSprite = quad.getSprite();
         int[] vertices = quad.getVertices().clone();
 
@@ -43,14 +40,16 @@ public final class GTQuadTransformers {
             int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
             float u = Float.intBitsToFloat(vertices[offset]);
             float v = Float.intBitsToFloat(vertices[offset + 1]);
-            float newU = GTMath.mapRange(oldSprite.getU0(), oldSprite.getU1(), newSprite.getU0(), newSprite.getU1(), u);
-            float newV = GTMath.mapRange(oldSprite.getV0(), oldSprite.getV1(), newSprite.getV0(), newSprite.getV1(), v);
 
-            vertices[offset] = Float.floatToRawIntBits(newU);
-            vertices[offset + 1] = Float.floatToRawIntBits(newV);
+            // same as sprite.getX(oldSprite.getXOffset(x)), but we don't multiply and divide in between
+            u = Mth.map(u, oldSprite.getU0(), oldSprite.getU1(), sprite.getU0(), sprite.getU1());
+            v = Mth.map(v, oldSprite.getV0(), oldSprite.getV1(), sprite.getV0(), sprite.getV1());
+
+            vertices[offset] = Float.floatToRawIntBits(u);
+            vertices[offset + 1] = Float.floatToRawIntBits(v);
         }
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
-                newSprite, quad.isShade(), quad.hasAmbientOcclusion());
+                sprite, quad.isShade(), quad.hasAmbientOcclusion());
     }
 
     public static BakedQuad copy(BakedQuad quad) {

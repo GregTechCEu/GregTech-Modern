@@ -62,12 +62,4 @@ public class GTMath {
     public static float ratio(BigInteger a, BigInteger b) {
         return new BigDecimal(a).divide(new BigDecimal(b), MathContext.DECIMAL32).floatValue();
     }
-
-    public static float normalize(float min, float max, float x) {
-        return (x - min) / (max - min);
-    }
-
-    public static float mapRange(float inStart, float inEnd, float outStart, float outEnd, float x) {
-        return (x - inStart) / (inEnd - inStart) * (outEnd - outStart) + outStart;
-    }
 }
