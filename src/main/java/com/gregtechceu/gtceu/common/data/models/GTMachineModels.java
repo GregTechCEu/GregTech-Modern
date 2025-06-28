@@ -548,6 +548,28 @@ public class GTMachineModels {
         };
     }
 
+    public static MachineBuilder.ModelInitializer createItemCollectorModel(ResourceLocation overlayDir) {
+        return (ctx, prov, builder) -> {
+            WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
+
+            builder.forAllStates(state -> {
+                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
+                boolean workingEnabled = state.getValue(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY);
+                RecipeLogic.Status status = active ?
+                                            workingEnabled ?
+                                            RecipeLogic.Status.WORKING :
+                                            RecipeLogic.Status.SUSPEND :
+                                            RecipeLogic.Status.IDLE;
+
+                BlockModelBuilder model = prov.models().nested()
+                        .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
+                tieredHullTextures(model, builder.getOwner().getTier());
+
+                return addWorkableOverlays(overlays, status, model);
+            });
+        };
+    }
+
     // endregion
 
     // region helper functions

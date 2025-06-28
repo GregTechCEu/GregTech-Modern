@@ -3,32 +3,44 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:mv_item_collector",
   "variants": {
-    "recipe_logic_status=idle": {
-      "parent": "gtceu:block/casings/voltage/mv",
+    "active=false,working_enabled=false": {
+      "parent": "gtceu:block/machine/template/sided/sided",
       "textures": {
+        "bottom": "gtceu:block/casings/voltage/mv/bottom",
         "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
-        "overlay_top": "gtceu:block/machines/item_collector/overlay_top"
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+        "side": "gtceu:block/casings/voltage/mv/side",
+        "top": "gtceu:block/casings/voltage/mv/top"
       }
     },
-    "recipe_logic_status=suspend": {
-      "parent": "gtceu:block/casings/voltage/mv",
+    "active=false,working_enabled=true": {
+      "parent": "gtceu:block/machine/template/sided/sided",
       "textures": {
+        "bottom": "gtceu:block/casings/voltage/mv/bottom",
         "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
-        "overlay_top": "gtceu:block/machines/item_collector/overlay_top"
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+        "side": "gtceu:block/casings/voltage/mv/side",
+        "top": "gtceu:block/casings/voltage/mv/top"
       }
     },
-    "recipe_logic_status=waiting": {
-      "parent": "gtceu:block/casings/voltage/mv",
+    "active=true,working_enabled=false": {
+      "parent": "gtceu:block/machine/template/sided/sided",
       "textures": {
+        "bottom": "gtceu:block/casings/voltage/mv/bottom",
         "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
-        "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active"
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top",
+        "side": "gtceu:block/casings/voltage/mv/side",
+        "top": "gtceu:block/casings/voltage/mv/top"
       }
     },
-    "recipe_logic_status=working": {
-      "parent": "gtceu:block/casings/voltage/mv",
+    "active=true,working_enabled=true": {
+      "parent": "gtceu:block/machine/template/sided/sided",
       "textures": {
+        "bottom": "gtceu:block/casings/voltage/mv/bottom",
         "overlay_bottom": "gtceu:block/machines/item_collector/overlay_bottom",
-        "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active"
+        "overlay_top": "gtceu:block/machines/item_collector/overlay_top_active",
+        "side": "gtceu:block/casings/voltage/mv/side",
+        "top": "gtceu:block/casings/voltage/mv/top"
       }
     }
   }
