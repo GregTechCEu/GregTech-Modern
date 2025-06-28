@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -30,11 +33,21 @@ public class SizedIngredient extends Ingredient {
     protected final Ingredient inner;
     protected ItemStack[] itemStacks = null;
     private boolean changed = true;
+    @Getter
+    private final boolean isEmpty;
+    private final Value value;
 
     protected SizedIngredient(Ingredient inner, int amount) {
         super(Stream.empty());
         this.amount = amount;
         this.inner = inner;
+        this.isEmpty = inner.isEmpty();
+        if (isEmpty || inner.getClass() != Ingredient.class) {
+            this.value = null;
+        } else {
+            var values = ((IngredientAccessor) inner).getValues();
+            this.value = values.length == 1 ? values[0] : null;
+        }
     }
 
     protected SizedIngredient(@NotNull TagKey<Item> tag, int amount) {
@@ -68,14 +81,9 @@ public class SizedIngredient extends Ingredient {
                 return copy(intProviderIngredient);
             }
 
-            var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
-            if (sizedIngredient.itemStacks != null) {
-                copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy)
-                        .toArray(ItemStack[]::new);
-            }
-            return copied;
+            return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
-            return circuit.copy();
+            return circuit;
         } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
             var copied = IntProviderIngredient.of(intProviderIngredient.inner, intProviderIngredient.countProvider);
             if (intProviderIngredient.itemStacks != null) {
@@ -111,6 +119,14 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public boolean test(@Nullable ItemStack stack) {
+        if (stack == null) return false;
+        if (this.isEmpty) return stack.isEmpty();
+
+        if (this.value instanceof TagValueAccessor tagValue) {
+            return stack.is(tagValue.getTag());
+        } else if (this.value instanceof ItemValueAccessor itemValue) {
+            return ItemStack.isSameItem(stack, itemValue.getItem());
+        }
         return inner.test(stack);
     }
 
@@ -141,15 +157,17 @@ public class SizedIngredient extends Ingredient {
     }
 
     @Override
-    public boolean isEmpty() {
-        return inner.isEmpty();
-    }
-
-    @Override
     public int hashCode() {
         int result = amount;
         result = 31 * result + Arrays.hashCode(itemStacks);
         return result;
+    }
+
+    public static Ingredient getInner(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            return sizedIngredient.inner;
+        }
+        return ingredient;
     }
 
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {

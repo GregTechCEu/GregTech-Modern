@@ -112,6 +112,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private Supplier<BlockState> appearance;
+    @Getter
+    @Setter
+    private boolean allowCoverOnFront;
     @Nullable
     @Getter
     @Setter

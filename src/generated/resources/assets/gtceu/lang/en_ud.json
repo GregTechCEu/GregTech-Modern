@@ -1734,6 +1734,8 @@
   "config.gtceu.option.casingsPerCraft": "ʇɟɐɹƆɹǝԀsbuısɐɔ",
   "config.gtceu.option.cleanMultiblocks": "sʞɔoןqıʇןnWuɐǝןɔ",
   "config.gtceu.option.client": "ʇuǝıןɔ",
+  "config.gtceu.option.coloredTieredMachineOutline": "ǝuıןʇnOǝuıɥɔɐWpǝɹǝı⟘pǝɹoןoɔ",
+  "config.gtceu.option.coloredWireOutline": "ǝuıןʇnOǝɹıMpǝɹoןoɔ",
   "config.gtceu.option.compat": "ʇɐdɯoɔ",
   "config.gtceu.option.debug": "bnqǝp",
   "config.gtceu.option.debugWorldgen": "uǝbpןɹoMbnqǝp",
@@ -3194,7 +3196,8 @@
   "gtceu.multiblock.cracker.description": "˙sʇuɐıɹɐʌ pǝʞɔɐɹƆ ɹıǝɥʇ oʇuı ןǝnℲ ʎʌɐǝH puɐ ʇɥbıꞀ buıuɹnʇ ɹoɟ pǝsn ǝɹnʇɔnɹʇs ʞɔoןqıʇןnɯ ɐ sı ʇıu∩ buıʞɔɐɹƆ ןıO ǝɥ⟘",
   "gtceu.multiblock.cracking_unit.energy": "%s%% :ǝbɐs∩ ʎbɹǝuƎ",
   "gtceu.multiblock.data_bank.description": "˙sǝןnpoW ɐʇɐᗡ uo ɐʇɐp ɥɔɹɐǝsǝɹ xǝןdɯoɔ ǝɹoɯ pɐǝɹ oʇ sǝuıꞀ ʎןqɯǝssⱯ sǝןqɐuǝ ʇı 'ʎןןɐuoıʇıppⱯ ˙sǝuıꞀ ʎןqɯǝssⱯ ǝןdıʇןnɯ uǝǝʍʇǝq ɐʇɐᗡ ɥɔɹɐǝsǝᴚ ǝuıꞀ ʎןqɯǝssⱯ buıɹɐɥs ɹoɟ pǝsn ǝɹnʇɔnɹʇs ʞɔoןqıʇןnɯ ɐ sı ʞuɐᗺ ɐʇɐᗡ ǝɥ⟘",
-  "gtceu.multiblock.data_bank.providing": "˙ɐʇɐp buıpıʌoɹԀ
+  "gtceu.multiblock.data_bank.providing": "˙ɐʇɐp buıpıʌoɹԀ",
+  "gtceu.multiblock.dimension": "%sx%sx%sɹ§ :suoısuǝɯıᗡǝ§",
   "gtceu.multiblock.dimensions.0": " :suoısuǝɯıᗡ",
   "gtceu.multiblock.dimensions.1": " %s :ɹ§ɥʇdǝᗡן§6§ '%s :ɹ§ʇɥbıǝHן§ɐ§ '%s :ɹ§ɥʇpıMן§ɔ§  ",
   "gtceu.multiblock.distillation_tower.description": "˙uoıʇısod ʎuɐ uı spınןɟ ʇɹǝsuı puɐ sɯǝʇı ʇndʇno uɐɔ ɹǝʎɐן ɯoʇʇoq ǝɥ⟘ ˙ǝuo puoɔǝs ǝɥʇ ɯoɹɟ buıʇɹɐʇs 'ɥɔʇɐɥ ʇndʇno ǝuo ʎןʇɔɐxǝ ǝʌɐɥ ʇsnɯ ɹǝʎɐן ɥɔɐƎ ˙sʇɔnpoɹdʎq ɹıǝɥʇ ɟo ǝɯos puɐ ןıO ɟo sǝdʎʇ snoıɹɐʌ ǝɥʇ buıןןıʇsıp ɹoɟ pǝsn ǝɹnʇɔnɹʇs ʞɔoןqıʇןnɯ ɐ sı ɹǝʍo⟘ uoıʇɐןןıʇsıᗡ ǝɥ⟘",
