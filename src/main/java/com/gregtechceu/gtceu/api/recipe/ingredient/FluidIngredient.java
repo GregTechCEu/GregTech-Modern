@@ -33,7 +33,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             dynamic -> FluidIngredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
             ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
 
-    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, null);
+    public static final FluidIngredient EMPTY = new FluidIngredient(new Value[0], 0, null);
     public FluidIngredient.Value[] values;
     @Nullable
     public FluidStack[] stacks;
@@ -43,15 +43,15 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private CompoundTag nbt;
     private boolean changed = true;
 
-    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
-        this.values = empty.toArray(Value[]::new);
+    protected FluidIngredient(Value[] values, int amount, @Nullable CompoundTag nbt) {
+        this.values = values;
         this.amount = amount;
         this.nbt = nbt;
     }
 
     public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount,
                                              @Nullable CompoundTag nbt) {
-        FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
+        FluidIngredient ingredient = new FluidIngredient(stream.toArray(Value[]::new), amount, nbt);
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
 
@@ -79,7 +79,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public FluidIngredient copy() {
-        return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
+        return new FluidIngredient(values, this.amount,
                 this.nbt == null ? null : this.nbt.copy());
     }
 
@@ -262,13 +262,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
     }
 
-    public static interface Value {
+    public interface Value {
 
-        public Collection<Fluid> getFluids();
+        Collection<Fluid> getFluids();
 
-        public JsonObject serialize();
-
-        public Value copy();
+        JsonObject serialize();
     }
 
     public static class TagValue implements Value {
@@ -297,11 +295,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Value copy() {
-            return new TagValue(this.tag);
-        }
-
-        @Override
         public int hashCode() {
             return tag.hashCode();
         }
@@ -325,11 +318,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
             return jsonObject;
-        }
-
-        @Override
-        public Value copy() {
-            return new FluidValue(this.fluid);
         }
 
         @Override
