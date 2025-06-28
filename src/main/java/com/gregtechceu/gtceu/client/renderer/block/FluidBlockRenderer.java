@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.*;
 
@@ -35,8 +36,7 @@ public class FluidBlockRenderer {
         this.properties = properties;
     }
 
-    public Vector3f[] transformVertices(Vector3f[] vertices, Direction face) {
-        var newVertices = new Vector3f[4];
+    public Vector3f[] transformVertices(Vector3fc[] vertices, Direction face) {
         float offsetX = properties.offsetX, offsetY = properties.offsetY, offsetZ = properties.offsetZ;
 
         switch (face.getAxis()) {
@@ -45,9 +45,10 @@ public class FluidBlockRenderer {
             case Z -> offsetZ += properties.offsetFace;
         }
 
-        for (int i = 0; i < 4; i++)
+        var newVertices = new Vector3f[4];
+        for (int i = 0; i < 4; i++) {
             newVertices[i] = RenderUtil.transformVertex(vertices[i], face, offsetX, offsetY, offsetZ);
-
+        }
         return newVertices;
     }
 
@@ -137,7 +138,7 @@ public class FluidBlockRenderer {
         drawFace(pose, consumer, vertices, normal, u0, u1, v0, v1, r, g, b, a, combinedOverlay, combinedLight);
     }
 
-    public void drawFace(Matrix4f pose, VertexConsumer consumer, Vector3f[] vertices, Vector3f normal,
+    public void drawFace(Matrix4f pose, VertexConsumer consumer, Vector3f[] vertices, Vector3fc normal,
                          float u0, float u1, float v0, float v1,
                          int r, int g, int b, int a,
                          int combinedOverlay, int combinedLight) {
@@ -147,25 +148,25 @@ public class FluidBlockRenderer {
         RenderUtil.vertex(pose, consumer, vert.x, vert.y, vert.z,
                 r, g, b, a,
                 u0, v1,
-                combinedOverlay, combinedLight, normal.x, normal.y, normal.z);
+                combinedOverlay, combinedLight, normal.x(), normal.y(), normal.z());
 
         vert = vertices[1];
         RenderUtil.vertex(pose, consumer, vert.x, vert.y, vert.z,
                 r, g, b, a,
                 u0, v0,
-                combinedOverlay, combinedLight, normal.x, normal.y, normal.z);
+                combinedOverlay, combinedLight, normal.x(), normal.y(), normal.z());
 
         vert = vertices[2];
         RenderUtil.vertex(pose, consumer, vert.x, vert.y, vert.z,
                 r, g, b, a,
                 u1, v0,
-                combinedOverlay, combinedLight, normal.x, normal.y, normal.z);
+                combinedOverlay, combinedLight, normal.x(), normal.y(), normal.z());
 
         vert = vertices[3];
         RenderUtil.vertex(pose, consumer, vert.x, vert.y, vert.z,
                 r, g, b, a,
                 u1, v1,
-                combinedOverlay, combinedLight, normal.x, normal.y, normal.z);
+                combinedOverlay, combinedLight, normal.x(), normal.y(), normal.z());
     }
 
     @Data

@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,33 +29,47 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
 
     public enum FluidTextureType {
 
-        STILL(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getStillTexture())),
-        FLOWING(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getFlowingTexture())),
-        OVERLAY(fluidTypeExtensions -> {
-            ResourceLocation overlayTexture = fluidTypeExtensions.getOverlayTexture();
-            if (overlayTexture == null) overlayTexture = fluidTypeExtensions.getStillTexture();
-            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(overlayTexture);
+        STILL((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getStillTexture(fluidStack);
+            else return fluidTypeExtensions.getStillTexture();
+        }),
+        FLOWING((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(fluidStack);
+            else return fluidTypeExtensions.getFlowingTexture();
+        }),
+        OVERLAY((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getOverlayTexture(fluidStack);
+            else return fluidTypeExtensions.getOverlayTexture();
         });
 
-        private final Function<IClientFluidTypeExtensions, TextureAtlasSprite> mapper;
+        private static final ResourceLocation WATER_STILL = new ResourceLocation("minecraft", "block/water_still");
 
-        FluidTextureType(Function<IClientFluidTypeExtensions, TextureAtlasSprite> mapper) {
+        private final BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper;
+
+        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper) {
             this.mapper = mapper;
         }
 
         public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions) {
-            return mapper.apply(fluidTypeExtensions);
+            return map(fluidTypeExtensions, FluidStack.EMPTY);
+        }
+
+        public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack fluidStack) {
+            ResourceLocation texture = mapper.apply(fluidTypeExtensions, fluidStack);
+            if (texture == null) texture = STILL.mapper.apply(fluidTypeExtensions, fluidStack);
+            if (texture == null) texture = WATER_STILL;
+
+            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
         }
     }
 
@@ -67,22 +82,22 @@ public class RenderUtil {
     }
 
     // spotless:off
-    private static final Map<Direction, Vector3f[]> DIRECTION_POSITION_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
-        map.put(Direction.UP, new Vector3f[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
-        map.put(Direction.DOWN, new Vector3f[] { vec3f(1, 0, 1), vec3f(0, 0, 1), vec3f(0, 0, 0), vec3f(1, 0, 0) });
-        map.put(Direction.SOUTH, new Vector3f[] { vec3f(1, 1, 0), vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 1, 0) });
-        map.put(Direction.NORTH, new Vector3f[] { vec3f(0, 1, 1), vec3f(0, 0, 1), vec3f(1, 0, 1), vec3f(1, 1, 1) });
-        map.put(Direction.EAST, new Vector3f[] { vec3f(0, 1, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(0, 1, 1) });
-        map.put(Direction.WEST, new Vector3f[] { vec3f(1, 1, 1), vec3f(1, 0, 1), vec3f(1, 0, 0), vec3f(1, 1, 0) });
+    private static final Map<Direction, Vector3fc[]> DIRECTION_POSITION_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
+        map.put(Direction.UP, new Vector3fc[] { vec3f(0, 1, 1), vec3f(1, 1, 1), vec3f(1, 1, 0), vec3f(0, 1, 0) });
+        map.put(Direction.DOWN, new Vector3fc[] { vec3f(1, 0, 1), vec3f(0, 0, 1), vec3f(0, 0, 0), vec3f(1, 0, 0) });
+        map.put(Direction.SOUTH, new Vector3fc[] { vec3f(1, 1, 0), vec3f(1, 0, 0), vec3f(0, 0, 0), vec3f(0, 1, 0) });
+        map.put(Direction.NORTH, new Vector3fc[] { vec3f(0, 1, 1), vec3f(0, 0, 1), vec3f(1, 0, 1), vec3f(1, 1, 1) });
+        map.put(Direction.EAST, new Vector3fc[] { vec3f(0, 1, 0), vec3f(0, 0, 0), vec3f(0, 0, 1), vec3f(0, 1, 1) });
+        map.put(Direction.WEST, new Vector3fc[] { vec3f(1, 1, 1), vec3f(1, 0, 1), vec3f(1, 0, 0), vec3f(1, 1, 0) });
     });
     // spotless:on
 
-    public static Vector3f[] getVertices(Direction direction) {
+    public static Vector3fc[] getVertices(Direction direction) {
         return DIRECTION_POSITION_MAP.get(direction);
     }
 
     // spotless:off
-    private static final Map<Direction, Vector3f> DIRECTION_NORMAL_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
+    private static final Map<Direction, Vector3fc> DIRECTION_NORMAL_MAP = Util.make(new EnumMap<>(Direction.class), map -> {
         map.put(Direction.UP, vec3f(0, 1, 0));
         map.put(Direction.DOWN, vec3f(0, 1, 0));
         map.put(Direction.SOUTH, vec3f(0, 0, 1));
@@ -92,7 +107,7 @@ public class RenderUtil {
     });
     // spotless:on
 
-    public static Vector3f getNormal(Direction direction) {
+    public static Vector3fc getNormal(Direction direction) {
         return DIRECTION_NORMAL_MAP.get(direction);
     }
 
@@ -120,7 +135,7 @@ public class RenderUtil {
                 .endVertex();
     }
 
-    public static Vector3f transformVertex(Vector3f vertex, Direction direction,
+    public static Vector3f transformVertex(Vector3fc vertex, Direction direction,
                                            float offsetX, float offsetY, float offsetZ) {
         float addX = offsetX, addY = offsetY, addZ = offsetZ;
         switch (direction) {

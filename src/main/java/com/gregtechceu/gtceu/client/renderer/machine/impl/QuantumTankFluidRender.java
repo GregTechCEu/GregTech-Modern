@@ -3,16 +3,15 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -93,9 +92,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         if (fluid.isEmpty()) return;
 
         var ext = IClientFluidTypeExtensions.of(fluid.getFluid());
-        var fluidSprite = Minecraft.getInstance()
-                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(ext.getStillTexture(fluid));
+        var fluidSprite = RenderUtil.FluidTextureType.STILL.map(ext, fluid);
 
         EnumSet<Direction> sidesToRender = EnumSet.of(frontFacing);
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
