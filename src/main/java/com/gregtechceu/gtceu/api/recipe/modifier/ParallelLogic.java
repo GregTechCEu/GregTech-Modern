@@ -32,8 +32,15 @@ public class ParallelLogic {
      */
     public static int getParallelAmount(MetaMachine machine, GTRecipe recipe, int parallelLimit) {
         int amount = getParallelAmountNonTick(machine, recipe, parallelLimit);
-        if (amount < 1) return amount;
-        return getParallelAmountTick(machine, recipe, amount);
+        if (amount <= 1) return amount;
+        if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
+        // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
+        int maxInputMultiplier = limitByInput(rlm, recipe, recipe.tickInputs, amount);
+        if (maxInputMultiplier == 0) return 0;
+
+        // Simulate the merging of the maximum amount of recipes that can be run with these items
+        // and limit by the amount we can successfully merge
+        return limitByOutputMerging(rlm, recipe, recipe.tickOutputs, maxInputMultiplier, rlm::canVoidRecipeOutputs);
     }
 
     /**
@@ -48,62 +55,29 @@ public class ParallelLogic {
         if (parallelLimit <= 1) return parallelLimit;
         if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = limitByInput(rlm, recipe, parallelLimit);
+        int maxInputMultiplier = limitByInput(rlm, recipe, recipe.inputs, parallelLimit);
         if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        maxInputMultiplier = limitByOutputMerging(rlm, recipe, maxInputMultiplier,
+        maxInputMultiplier = limitByOutputMerging(rlm, recipe, recipe.outputs, maxInputMultiplier,
                 rlm::canVoidRecipeOutputs);
         return maxInputMultiplier;
     }
 
     /**
-     * Calculates the maximum parallel amount that can be done for the given machine and recipe, up to the passed limit
-     *
-     * @param machine       machine to test against
-     * @param recipe        recipe to test with
-     * @param parallelLimit hard upper limit of parallels that can be done
-     * @return The number of possible parallels, 0 if the recipe cannot be done
-     */
-    public static int getParallelAmountTick(MetaMachine machine, GTRecipe recipe, int parallelLimit) {
-        if (parallelLimit <= 1) return parallelLimit;
-        if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
-        // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = limitByInputTick(rlm, recipe, parallelLimit);
-        if (maxInputMultiplier == 0) return 0;
-
-        // Simulate the merging of the maximum amount of recipes that can be run with these items
-        // and limit by the amount we can successfully merge
-        return limitByOutputMergingTick(rlm, recipe, maxInputMultiplier, rlm::canVoidRecipeOutputs);
-    }
-
-    /**
      * @param holder        The inventories
      * @param recipe        The recipe
+     * @param contents      the contents to check
      * @param parallelLimit hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int limitByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit) {
-        return limitByInput(holder, recipe, recipe.inputs, parallelLimit);
-    }
-
-    /**
-     * @param holder        The inventories
-     * @param recipe        The recipe
-     * @param parallelLimit hard cap on the amount returned
-     * @return returns the amount of possible time a recipe can be made from a given input inventory
-     */
-    public static int limitByInputTick(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit) {
-        return limitByInput(holder, recipe, recipe.tickInputs, parallelLimit);
-    }
-
     public static int limitByInput(IRecipeCapabilityHolder holder, GTRecipe recipe,
-                                   Map<RecipeCapability<?>, List<Content>> map, int parallelLimit) {
+                                   Map<RecipeCapability<?>, List<Content>> contents, int parallelLimit) {
         int minimum = Integer.MAX_VALUE;
 
         // non-tick inputs.
-        for (RecipeCapability<?> cap : map.keySet()) {
+        for (RecipeCapability<?> cap : contents.keySet()) {
             if (cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
                 minimum = Math.min(minimum, cap.getMaxParallelRatio(holder, recipe, parallelLimit));
@@ -116,32 +90,16 @@ public class ParallelLogic {
     /**
      * @param holder        the inventories
      * @param recipe        The recipe
+     * @param contents      the contents to check
      * @param parallelLimit the maximum expected amount
      * @param canVoid       predicate for what parallel limits should be ignored
      * @return returns the amount of recipes that can be merged successfully into a given output inventory
      */
-    public static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
-                                           Predicate<RecipeCapability<?>> canVoid) {
-        return limitByOutputMerging(holder, recipe, recipe.outputs, parallelLimit, canVoid);
-    }
-
-    /**
-     * @param holder        the inventories
-     * @param recipe        The recipe
-     * @param parallelLimit the maximum expected amount
-     * @param canVoid       predicate for what parallel limits should be ignored
-     * @return returns the amount of recipes that can be merged successfully into a given output inventory
-     */
-    public static int limitByOutputMergingTick(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
-                                               Predicate<RecipeCapability<?>> canVoid) {
-        return limitByOutputMerging(holder, recipe, recipe.tickOutputs, parallelLimit, canVoid);
-    }
-
     private static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe,
-                                            Map<RecipeCapability<?>, List<Content>> map, int parallelLimit,
+                                            Map<RecipeCapability<?>, List<Content>> contents, int parallelLimit,
                                             Predicate<RecipeCapability<?>> canVoid) {
         int minimum = parallelLimit;
-        for (RecipeCapability<?> cap : map.keySet()) {
+        for (RecipeCapability<?> cap : contents.keySet()) {
             if (canVoid.test(cap) || !cap.doMatchInRecipe()) {
                 continue;
             }

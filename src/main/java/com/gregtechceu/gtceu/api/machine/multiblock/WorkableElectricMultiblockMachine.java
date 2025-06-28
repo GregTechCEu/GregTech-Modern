@@ -44,7 +44,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Getter
     @Persisted
-    private boolean batch;
+    private boolean batchMode;
 
     // runtime
     protected EnergyContainerList energyContainer;
@@ -151,8 +151,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         if (!isGenerator()) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0, 1, 0.5),
-                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0.5, 1, 0.5), this::isBatch,
-                    (clickData, pressed) -> batch = pressed)
+                    GuiTextures.BATCH_MODE_ICON.getSubTexture(0, 0.5, 1, 0.5), this::isBatchMode,
+                    (clickData, pressed) -> batchMode = pressed)
                     .setTooltipsSupplier(pressed -> List
                             .of(Component
                                     .translatable("gtceu.machine.batch_mode_" + (pressed ? "enabled" : "disabled")))));

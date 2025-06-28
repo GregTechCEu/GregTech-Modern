@@ -15,8 +15,4 @@ public interface IOverclockMachine extends IMachineFeature {
     default long getOverclockVoltage() {
         return GTValues.V[getOverclockTier()];
     }
-
-    default boolean isBatch() {
-        return false;
-    }
 }

@@ -158,4 +158,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default boolean isActive() {
         return getRecipeLogic().isActive();
     }
+
+    default boolean isBatchMode() {
+        return false;
+    }
 }

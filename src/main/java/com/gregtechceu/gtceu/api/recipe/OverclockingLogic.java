@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -68,7 +68,6 @@ public interface OverclockingLogic {
      */
     default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe,
                                                   long maxVoltage, boolean shouldParallel) {
-        if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt == 0) return ModifierFunction.IDENTITY;
 
@@ -78,15 +77,18 @@ public interface OverclockingLogic {
         if (recipeTier == GTValues.ULV) OCs--;
         if (OCs == 0) return ModifierFunction.IDENTITY;
 
-        OCParams params = new OCParams(overclockMachine.isBatch(), EUt, recipe.duration, OCs, () -> {
-            int maxParallels;
-            if (!shouldParallel || this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // don't parallel
-                maxParallels = 1;
-            } else {
-                maxParallels = ParallelLogic.getParallelAmountNonTick(machine, recipe, Integer.MAX_VALUE);
-            }
-            return maxParallels;
-        });
+        OCParams params = new OCParams(
+                machine instanceof IRecipeLogicMachine recipeLogicMachine && recipeLogicMachine.isBatchMode(), EUt,
+                recipe.duration, OCs, () -> {
+                    int maxParallels;
+                    if (!shouldParallel || this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // don't
+                                                                                                         // parallel
+                        maxParallels = 1;
+                    } else {
+                        maxParallels = ParallelLogic.getParallelAmountNonTick(machine, recipe, Integer.MAX_VALUE);
+                    }
+                    return maxParallels;
+                });
         OCResult result = runOverclockingLogic(params, maxVoltage);
         return result.toModifier();
     }
