@@ -22,7 +22,7 @@ public interface IControllerModelRenderer {
      * Render a specific model for given part.
      */
     @OnlyIn(Dist.CLIENT)
-    void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                         @Nullable Direction elementSide, RandomSource rand, @Nullable Direction modelFront,
+    void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part,
+                         Direction frontFacing, @Nullable Direction side, RandomSource rand,
                          @NotNull ModelData modelData, @Nullable RenderType renderType);
 }

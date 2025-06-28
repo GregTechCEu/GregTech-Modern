@@ -100,49 +100,42 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part, Direction frontFacing,
-                                @Nullable Direction elementSide, RandomSource rand, @Nullable Direction modelFront,
+    public void renderPartModel(List<BakedQuad> quads, IMultiController controller, IMultiPart part,
+                                Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
-        if (modelFront == null) {
-            return;
-        }
         BlockPos partPos = part.self().getPos();
 
-        MultiblockControllerMachine controller = machine.self();
-        BlockPos controllerPos = controller.getPos();
-        Direction multiFront = controller.getFrontFacing();
-        Direction multiUpward = controller.getUpwardsFacing();
-        boolean flipped = controller.isFlipped();
+        MultiblockControllerMachine machine = controller.self();
+        BlockPos controllerPos = machine.getPos();
+        Direction multiFront = machine.getFrontFacing();
+        Direction multiUpward = machine.getUpwardsFacing();
+        boolean flipped = machine.isFlipped();
         Direction relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
 
-        int controllerYMinus1 = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
+        int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());
-        if (controllerYMinus1 == partY) {
+        if (belowControllerY == partY) {
             // firebox
-            if (machine instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
-                emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
-                        elementSide, rand, modelData, renderType);
+            if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
+                emitQuads(quads, fireboxActiveModel, machine.getLevel(), partPos, fireboxActive,
+                        side, rand, modelData, renderType);
             } else {
-                emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
-                        elementSide, rand, modelData, renderType);
+                emitQuads(quads, fireboxIdleModel, machine.getLevel(), partPos, fireboxIdle,
+                        side, rand, modelData, renderType);
             }
         } else {
             // Not exactly one below the controller, so not a firebox
-            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
-                    elementSide, rand, modelData, renderType);
+            emitQuads(quads, casingModel, machine.getLevel(), partPos, casing,
+                    side, rand, modelData, renderType);
         }
     }
 
     private static void emitQuads(List<BakedQuad> quads, @Nullable BakedModel model,
                                   BlockAndTintGetter level, BlockPos pos, BlockState state,
-                                  @Nullable Direction elementSide, RandomSource rand,
+                                  @Nullable Direction side, RandomSource rand,
                                   ModelData modelData, @Nullable RenderType renderType) {
         if (model == null) return;
         modelData = model.getModelData(level, pos, state, modelData);
-        // render both the culled & unculled quads
-        quads.addAll(model.getQuads(state, null, rand, modelData, renderType));
-        if (elementSide != null) {
-            quads.addAll(model.getQuads(state, elementSide, rand, modelData, renderType));
-        }
+        quads.addAll(model.getQuads(state, side, rand, modelData, renderType));
     }
 }

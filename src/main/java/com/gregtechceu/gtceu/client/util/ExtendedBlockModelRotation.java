@@ -28,7 +28,7 @@ public enum ExtendedBlockModelRotation {
 
     NORTH_SOUTH(0, 0, 180),
     NORTH_WEST(0, 0, 270),
-    NORTH_NORTH(0, 0, 0), // Default,
+    NORTH_NORTH(0, 0, 0), // Default
     NORTH_EAST(0, 0, 90),
 
     SOUTH_SOUTH(0, 180, 180),
@@ -64,7 +64,7 @@ public enum ExtendedBlockModelRotation {
     /**
      * Gets the block orientation in which the block's front and top are facing the specified directions.
      */
-    public static ExtendedBlockModelRotation get(Direction facing, Direction up) {
-        return VALUES[facing.get3DDataValue() * 4 + up.get2DDataValue()];
+    public static ExtendedBlockModelRotation get(Direction frontFacing, Direction upwardsFacing) {
+        return VALUES[frontFacing.get3DDataValue() * 4 + upwardsFacing.get2DDataValue()];
     }
 }

@@ -57,7 +57,7 @@ public class ModelUtils {
     }
 
     @SuppressWarnings("unchecked")
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onAtlasStitched(TextureStitchEvent.Post event) {
         for (var listener : EVENT_LISTENERS) {
             Class<?> eventClass = listener.eventClass();
@@ -68,7 +68,7 @@ public class ModelUtils {
     }
 
     @SuppressWarnings("unchecked")
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         for (var listener : EVENT_LISTENERS) {
             Class<?> eventClass = listener.eventClass();
@@ -79,7 +79,7 @@ public class ModelUtils {
     }
 
     @SuppressWarnings("unchecked")
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterAdditional(ModelEvent.RegisterAdditional event) {
         for (var listener : EVENT_LISTENERS) {
             Class<?> eventClass = listener.eventClass();
