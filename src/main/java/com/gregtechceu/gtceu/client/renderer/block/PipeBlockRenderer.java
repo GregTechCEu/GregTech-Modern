@@ -80,11 +80,9 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
         } else if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
             var quads = new LinkedList<>(
                     pipeModel.bakeQuads(side, pipeNode.getVisualConnections(), pipeNode.getBlockedConnections()));
-            var modelState = ModelFactory.getRotation(pipeNode.getCoverContainer().getFrontFacing());
-            var elementSide = side == null ? null :
-                    ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
-            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), elementSide, pos,
-                    level, modelState, ModelData.EMPTY, null);
+
+            ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
+                    ModelData.EMPTY, null);
             if (!pipeNode.getFrameMaterial().isNull()) {
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
                         .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())

@@ -67,6 +67,12 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
 
+    private static @Nullable TextureAtlasSprite pipeOverlaySprite;
+    private static @Nullable TextureAtlasSprite fluidOutputOverlaySprite;
+    private static @Nullable TextureAtlasSprite itemOutputOverlaySprite;
+    private static @Nullable TextureAtlasSprite blankSprite;
+    private static boolean overlaysInitialized = false;
+
     public static final Map<String, List<String>> TEXTURE_REMAPS = Util.make(new HashMap<>(), map -> {
         var all = List.of("all");
 
@@ -126,6 +132,20 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         for (DynamicRender<?, ?> render : this.dynamicRenders) {
             render.setParent(this);
         }
+
+        if (!overlaysInitialized) {
+            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+                TextureAtlas atlas = event.getAtlas();
+
+                pipeOverlaySprite = atlas.getSprite(PIPE_OVERLAY);
+                fluidOutputOverlaySprite = atlas.getSprite(FLUID_OUTPUT_OVERLAY);
+                itemOutputOverlaySprite = atlas.getSprite(ITEM_OUTPUT_OVERLAY);
+                blankSprite = atlas.getSprite(GTModels.BLANK_TEXTURE);
+
+                ICoverableRenderer.initSprites(atlas::getSprite);
+            });
+            overlaysInitialized = true;
+        }
     }
 
     @Override
@@ -178,11 +198,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             var itemFace = autoOutputItem.getOutputFacingItems();
             if (itemFace != null && side == itemFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                        elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                        side, pipeOverlaySprite, BlockModelRotation.X0_Y0,
                         -1, 0, true, true));
                 if (autoOutputItem.isAutoOutputItems()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                            elementSide, ModelUtils.getBlockSprite(ITEM_OUTPUT_OVERLAY), blockModelState,
+                            side, itemOutputOverlaySprite, BlockModelRotation.X0_Y0,
                             -101, 15, true, true));
                 }
             }
@@ -191,11 +211,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             var fluidFace = autoOutputFluid.getOutputFacingFluids();
             if (fluidFace != null && side == fluidFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY,
-                        elementSide, ModelUtils.getBlockSprite(PIPE_OVERLAY), blockModelState,
+                        side, pipeOverlaySprite, BlockModelRotation.X0_Y0,
                         -1, 0, true, true));
                 if (autoOutputFluid.isAutoOutputFluids()) {
                     quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                            elementSide, ModelUtils.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
+                            side, fluidOutputOverlaySprite, BlockModelRotation.X0_Y0,
                             -101, 15, true, true));
                 }
             }
@@ -301,7 +321,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 // assume the renderer drew the base model, and replace the override textures with empty ones
                 overrides = new HashMap<>();
                 for (String key : this.replaceableTextures) {
-                    overrides.put(key, ModelUtils.getBlockSprite(GTModels.BLANK_TEXTURE));
+                    overrides.put(key, blankSprite);
                 }
                 break;
             }
@@ -312,7 +332,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         // parse out valid overrides
         Map<String, String> remaps = new IdentityHashMap<>();
-        final TextureAtlasSprite missingno = ModelUtils.getBlockSprite(MissingTextureAtlasSprite.getLocation());
+        final TextureAtlasSprite missingno = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(MissingTextureAtlasSprite.getLocation());
         final Map<String, TextureAtlasSprite> finalOverrides = overrides;
         overrides = finalOverrides.keySet().stream()
                 .flatMap(key -> {

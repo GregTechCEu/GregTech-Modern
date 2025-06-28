@@ -113,9 +113,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 quads.addAll(model.getQuads(state, null, rand, extraData, renderType));
                 quads.addAll(model.getQuads(state, Direction.NORTH, rand, extraData, renderType));
 
-                TextureAtlasSprite cableSprite = ModelUtils.getBlockSprite(CABLE_TEXTURE);
                 for (Direction modelSide : FACADE_EDGE_FACES) {
-                    quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, cableSprite,
+                    quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, ICoverableRenderer.COVER_BACK_PLATE[0],
                             BlockModelRotation.X0_Y0, -1, 0, false, true));
                 }
             }

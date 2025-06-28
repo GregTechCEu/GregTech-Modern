@@ -107,8 +107,9 @@ public class StaticFaceBakery {
             uvs = recomputeUVs(face.uv, facing, transform.getRotation());
         }
 
-        float[] uvsCopy = new float[uvs.uvs.length];
-        System.arraycopy(uvs.uvs, 0, uvsCopy, 0, uvsCopy.length);
+        float[] originalUVs = new float[uvs.uvs.length];
+        System.arraycopy(uvs.uvs, 0, originalUVs, 0, originalUVs.length);
+
         float shrinkRatio = sprite.uvShrinkRatio();
         float uMiddle = (uvs.uvs[0] * 2 + uvs.uvs[2] * 2) / VERTEX_COUNT;
         float vMiddle = (uvs.uvs[1] * 2 + uvs.uvs[3] * 2) / VERTEX_COUNT;
@@ -120,7 +121,7 @@ public class StaticFaceBakery {
         int[] vertices = makeVertices(uvs, sprite, facing,
                 setupShape(posFrom, posTo), transform.getRotation(), partRotation, shade);
         Direction direction = calculateFacing(vertices);
-        System.arraycopy(uvsCopy, 0, uvs.uvs, 0, uvsCopy.length);
+        System.arraycopy(originalUVs, 0, uvs.uvs, 0, originalUVs.length);
         if (partRotation == null) {
             recalculateWinding(vertices, direction);
         }
@@ -207,10 +208,10 @@ public class StaticFaceBakery {
         vertexData[i] = Float.floatToRawIntBits(face.x());
         vertexData[i + 1] = Float.floatToRawIntBits(face.y());
         vertexData[i + 2] = Float.floatToRawIntBits(face.z());
-        vertexData[i + COLOR_INDEX] = -1;
+        vertexData[i + COLOR_INDEX] = 0xffffffff;
         vertexData[i + UV_INDEX] = Float.floatToRawIntBits(
                 sprite.getU(blockFaceUV.getU(vertexIndex) * 0.999 + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001));
-        vertexData[i + 4 + 1] = Float.floatToRawIntBits(
+        vertexData[i + UV_INDEX + 1] = Float.floatToRawIntBits(
                 sprite.getV(blockFaceUV.getV(vertexIndex) * 0.999 + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001));
     }
 

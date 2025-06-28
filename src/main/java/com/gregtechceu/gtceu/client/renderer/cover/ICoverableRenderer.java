@@ -2,16 +2,16 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
@@ -23,8 +23,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface ICoverableRenderer {
+
+    @OnlyIn(Dist.CLIENT)
+    TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
+
+    @OnlyIn(Dist.CLIENT)
+    static void initSprites(Function<ResourceLocation, TextureAtlasSprite> atlas) {
+        COVER_BACK_PLATE[0] = atlas.apply(GTCEu.id("block/material_sets/dull/wire_side"));
+    }
 
     @OnlyIn(Dist.CLIENT)
     default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
@@ -47,12 +56,10 @@ public interface ICoverableRenderer {
                             normal.getY() >= 0 ? 0.999 : min,
                             normal.getZ() >= 0 ? 0.999 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(),
-                                ModelUtils.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                        quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     } else if (side != face.getOpposite()) { // render sides
-                        quads.add(FaceQuad.builder(side,
-                                ModelUtils.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                        quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }

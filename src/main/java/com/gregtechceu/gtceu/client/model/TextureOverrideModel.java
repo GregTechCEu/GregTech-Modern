@@ -16,10 +16,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
@@ -54,15 +51,14 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
 
     public static List<BakedQuad> retextureQuads(List<BakedQuad> quads,
                                                  Map<TextureAtlasSprite, TextureAtlasSprite> overrides) {
-        quads = new ArrayList<>(quads);
-        for (var it = quads.listIterator(); it.hasNext();) {
-            BakedQuad quad = it.next();
+        List<BakedQuad> newQuads = new LinkedList<>();
+        for (BakedQuad quad : quads) {
             TextureAtlasSprite original = quad.getSprite();
             TextureAtlasSprite replacement = overrides.get(original);
             if (replacement != null) {
-                it.set(GTQuadTransformers.setSprite(quad, replacement));
+                newQuads.add(GTQuadTransformers.setSprite(quad, replacement));
             }
         }
-        return quads;
+        return newQuads;
     }
 }

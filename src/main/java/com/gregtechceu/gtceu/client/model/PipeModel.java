@@ -15,10 +15,12 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -60,7 +62,7 @@ public class PipeModel {
     private static final Int2ObjectMap<TextureAtlasSprite> RESTRICTOR_MAP = new Int2ObjectOpenHashMap<>();
     private static boolean isRestrictorInitialized;
 
-    public static void initializeRestrictor(Function<ResourceLocation, TextureAtlasSprite> atlas) {
+    protected static void initializeRestrictor(Function<ResourceLocation, TextureAtlasSprite> atlas) {
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_UP), Border.TOP);
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_DOWN), Border.BOTTOM);
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_UD), Border.TOP, Border.BOTTOM);
@@ -132,6 +134,32 @@ public class PipeModel {
                     normal.getY() == 0 ? max : normal.getY() > 0 ? 1 : min,
                     normal.getZ() == 0 ? max : normal.getZ() > 0 ? 1 : min));
         }
+
+        if (!isRestrictorInitialized) {
+            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+                initializeRestrictor(event.getAtlas()::getSprite);
+            });
+
+            isRestrictorInitialized = true;
+        }
+        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+            TextureAtlas atlas = event.getAtlas();
+
+            sideSprite = atlas.getSprite(sideTexture.get());
+            endSprite = atlas.getSprite(endTexture.get());
+            if (secondarySideTexture != null) {
+                secondarySideSprite = atlas.getSprite(secondarySideTexture.get());
+            }
+            if (secondaryEndTexture != null) {
+                secondaryEndSprite = atlas.getSprite(secondaryEndTexture.get());
+            }
+            if (sideOverlayTexture != null) {
+                sideOverlaySprite = atlas.getSprite(sideOverlayTexture);
+            }
+            if (endOverlayTexture != null) {
+                endOverlaySprite = atlas.getSprite(endOverlayTexture);
+            }
+        });
     }
 
     public VoxelShape getShapes(int connections) {
@@ -147,29 +175,6 @@ public class PipeModel {
 
     @OnlyIn(Dist.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, int connections, int blockedConnections) {
-        if (!isRestrictorInitialized) {
-            initializeRestrictor(ModelUtils::getBlockSprite);
-            isRestrictorInitialized = true;
-        }
-        if (sideSprite == null) {
-            sideSprite = ModelUtils.getBlockSprite(sideTexture.get());
-        }
-        if (endSprite == null) {
-            endSprite = ModelUtils.getBlockSprite(endTexture.get());
-        }
-        if (secondarySideTexture != null && secondarySideSprite == null) {
-            secondarySideSprite = ModelUtils.getBlockSprite(secondarySideTexture.get());
-        }
-        if (secondaryEndTexture != null && secondaryEndSprite == null) {
-            secondaryEndSprite = ModelUtils.getBlockSprite(secondaryEndTexture.get());
-        }
-        if (sideOverlayTexture != null && sideOverlaySprite == null) {
-            sideOverlaySprite = ModelUtils.getBlockSprite(sideOverlayTexture);
-        }
-        if (endOverlayTexture != null && endOverlaySprite == null) {
-            endOverlaySprite = ModelUtils.getBlockSprite(endOverlayTexture);
-        }
-
         if (side != null) {
             if (thickness == 1) { // full block
                 List<BakedQuad> quads = new ArrayList<>();
@@ -251,12 +256,9 @@ public class PipeModel {
         return quads;
     }
 
-    @NotNull
+    @SuppressWarnings("DataFlowIssue")
     @OnlyIn(Dist.CLIENT)
-    public TextureAtlasSprite getParticleTexture() {
-        if (sideSprite == null) {
-            sideSprite = ModelUtils.getBlockSprite(sideTexture.get());
-        }
+    public @NotNull TextureAtlasSprite getParticleTexture() {
         return sideSprite;
     }
 
