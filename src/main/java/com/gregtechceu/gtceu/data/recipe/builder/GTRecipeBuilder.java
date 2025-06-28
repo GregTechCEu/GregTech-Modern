@@ -264,6 +264,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder addCondition(RecipeCondition condition) {
         conditions.add(condition);
+        recipeType.setMinRecipeConditions(conditions.size());
         return this;
     }
 

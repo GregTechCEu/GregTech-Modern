@@ -108,6 +108,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
     @Getter
     private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
+    @Getter
+    private int minRecipeConditions = 0;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -188,6 +190,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType addDataInfo(Function<CompoundTag, String> dataInfo) {
         this.dataInfos.add(dataInfo);
         return this;
+    }
+
+    public void setMinRecipeConditions(int n) {
+        minRecipeConditions = Math.max(minRecipeConditions, n);
     }
 
     /**

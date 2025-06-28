@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.resources.language.I18n;
@@ -148,7 +149,15 @@ public class GTRecipeTypes {
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .addCustomRecipeLogic(new MaceratorLogic())
-            .setSound(GTSoundEntries.MACERATOR);
+            .setSound(GTSoundEntries.MACERATOR)
+            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]));
+//            .setMaxTooltips(4)
+//            .setUiBuilder(((recipe, group) -> {
+//                if (recipe.recipeCategory == GTRecipeCategories.ORE_CRUSHING) {
+//                    group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
+//                            LocalizationUtils.format("gtceu.recipe.minimum_tier", GTValues.VNF[GTValues.HV])));
+//                }
+//            }));
 
     public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
@@ -190,7 +199,6 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
-            .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
                     .save(provider));
 

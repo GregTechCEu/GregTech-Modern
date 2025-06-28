@@ -457,6 +457,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.CONDITIONS) != null) {
                     builder.conditions.addAll(Arrays.stream(gtRecipe.getValue(GTRecipeSchema.CONDITIONS)).toList());
+                    builder.recipeType.setMinRecipeConditions(builder.conditions.size());
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
                     builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
