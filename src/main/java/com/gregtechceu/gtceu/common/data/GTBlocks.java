@@ -691,7 +691,8 @@ public class GTBlocks {
     public static final BlockEntry<IndustrialTNTBlock> INDUSTRIAL_TNT = REGISTRATE
             .block("industrial_tnt", IndustrialTNTBlock::new)
             .lang("Industrial TNT")
-            .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
+            .properties(
+                    p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava().noLootTable())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
                     GTCEu.id("block/misc/industrial_tnt_side"),
