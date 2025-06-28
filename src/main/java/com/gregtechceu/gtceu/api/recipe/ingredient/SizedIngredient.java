@@ -98,17 +98,6 @@ public class SizedIngredient extends Ingredient {
         return SizedIngredient.create(ingredient);
     }
 
-    public static Ingredient getInner(Ingredient ingredient) {
-        if (ingredient instanceof SizedIngredient si) return getInner(si);
-        return ingredient;
-    }
-
-    public static Ingredient getInner(SizedIngredient sized) {
-        Ingredient inner = sized.inner;
-        if (inner instanceof SizedIngredient si) return getInner(si);
-        return inner;
-    }
-
     @Override
     @NotNull
     public IIngredientSerializer<? extends Ingredient> getSerializer() {
