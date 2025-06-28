@@ -7,7 +7,7 @@
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
-                "north": { "uv": [ 0, 0, 48, 48 ], "texture": "#rotor", "cullface": "north", "tintindex": -103 }
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#rotor", "cullface": "north", "tintindex": -103 }
             }
         }
     ]
