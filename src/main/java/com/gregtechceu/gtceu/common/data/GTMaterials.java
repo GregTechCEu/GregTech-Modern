@@ -273,7 +273,7 @@ public class GTMaterials {
     @NotNull
     public static Material get(String name) {
         var mat = GTCEuAPI.materialManager.getMaterial(name);
-        // mat could be null here due to the registry grabbing a material that isn't in the map
+        // material could be null here due to the registry grabbing a material that isn't in the map
         if (mat == null) {
             GTCEu.LOGGER.warn("{} is not a known Material", name);
             return GTMaterials.NULL;

@@ -83,7 +83,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
-            var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
+            var up = RelativeDirection.UP.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
             var sign = up.getAxisDirection().getStep();
             var shouldX = up.getAxis() == Direction.Axis.X;
             var shouldY = up.getAxis() == Direction.Axis.Y;

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -18,13 +18,12 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -37,7 +36,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public final HashMap<ChunkPos, OreVeinWorldEntry> veinOres = new HashMap<>();
 
     // runtime
-    private final HashMap<Holder<Biome>, Integer> biomeWeights = new HashMap<>();
+    private final Object2IntMap<Holder<Biome>> biomeWeights = new Object2IntOpenHashMap<>();
 
     private final ServerLevel serverLevel;
 
@@ -97,7 +96,7 @@ public class BedrockOreVeinSavedData extends SavedData {
 
             BedrockOreDefinition definition = null;
             int query = RandomSource
-                    .create(Objects.hash(serverLevel.getSeed(), getVeinCoord(chunkX), getVeinCoord(chunkZ)))
+                    .create(GTMath.hashLongs(serverLevel.getSeed(), getVeinCoord(chunkX), getVeinCoord(chunkZ)))
                     .nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
             int totalWeight = getTotalWeight(biome);
@@ -105,7 +104,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                 int weight = Math.abs(query % totalWeight);
                 for (var oreDefinition : GTRegistries.BEDROCK_ORE_DEFINITIONS) {
                     int veinWeight = oreDefinition.weight() + (oreDefinition.biomeWeightModifier() != null ?
-                            oreDefinition.biomeWeightModifier().apply(biome) : 0);
+                            oreDefinition.biomeWeightModifier().applyAsInt(biome) : 0);
                     if (veinWeight > 0 &&
                             (oreDefinition.dimensionFilter == null || oreDefinition.dimensionFilter().stream().anyMatch(
                                     dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension())))) {
@@ -172,7 +171,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                 if (definition.dimensionFilter == null || definition.dimensionFilter().stream()
                         .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.biomeWeightModifier() != null ?
-                            definition.biomeWeightModifier().apply(biome) : 0;
+                            definition.biomeWeightModifier().applyAsInt(biome) : 0;
                     totalWeight += definition.weight();
                 }
             }
@@ -223,11 +222,10 @@ public class BedrockOreVeinSavedData extends SavedData {
      * @return Fluid in given chunk
      */
     @Nullable
-    public List<Map.Entry<Integer, Material>> getOreInChunk(int chunkX, int chunkZ) {
+    public List<WeightedMaterial> getOreInChunk(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().materials().stream().map(pair -> Map.entry(pair.getSecond(), pair.getFirst()))
-                .collect(Collectors.toList());
+        return info.getDefinition().materials();
     }
 
     /**

@@ -48,7 +48,6 @@ import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +76,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return SizedIngredient.create(sizedIngredient.getInner(),
                     modifier.apply(sizedIngredient.getAmount()));
         } else if (content instanceof IntProviderIngredient intProviderIngredient) {
-            return new IntProviderIngredient(intProviderIngredient.getInner(),
+            return IntProviderIngredient.of(intProviderIngredient.getInner(),
                     new FlooredInt(
                             new AddedFloat(
                                     new MultipliedFloat(
@@ -191,7 +190,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     }
                 }
                 if (isEqual) continue;
-                //@formatter:off
+                // spotless:off
                 if (ingredient instanceof IntCircuitIngredient) {
                     list.add(0, ingredient);
                 } else if (ingredient instanceof SizedIngredient sized &&
@@ -203,7 +202,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else {
                     list.add(ingredient);
                 }
-                //@formatter:on
+                // spotless:on
             } else if (item instanceof ItemStack stack) {
                 boolean isEqual = false;
                 for (Object obj : list) {
@@ -429,14 +428,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
-            Pair<GTRecipeType, String> researchData = null;
+            ResearchManager.ResearchItem researchData = null;
             for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
                 researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
                 if (researchData != null) break;
             }
             if (researchData != null) {
-                Collection<GTRecipe> possibleRecipes = researchData.getFirst()
-                        .getDataStickEntry(researchData.getSecond());
+                Collection<GTRecipe> possibleRecipes = researchData.recipeType()
+                        .getDataStickEntry(researchData.researchId());
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
@@ -530,7 +529,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
-                    //@formatter:off
+                    // spotless:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",
@@ -543,7 +542,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
-                    //@formatter:on
+                    // spotless:on
                     if (isTickSlot(index, io, recipe)) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }

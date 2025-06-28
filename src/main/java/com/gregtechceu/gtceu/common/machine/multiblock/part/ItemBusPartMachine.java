@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -31,8 +33,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -222,6 +229,47 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public void setWorkingEnabled(boolean workingEnabled) {
         super.setWorkingEnabled(workingEnabled);
         updateInventorySubscription();
+    }
+
+    @Override
+    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                   BlockHitResult hitResult) {
+        InteractionResult superResult = super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
+        if (superResult != InteractionResult.PASS) return superResult;
+        if (io == IO.BOTH) return InteractionResult.PASS;
+        if (playerIn.isShiftKeyDown()) {
+            if (swapIO()) {
+                return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    public boolean swapIO() {
+        BlockPos blockPos = getHolder().pos();
+        MachineDefinition newDefinition = null;
+        if (io == IO.IN) {
+            newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
+        } else if (io == IO.OUT) {
+            newDefinition = GTMachines.ITEM_IMPORT_BUS[this.getTier()];
+        }
+
+        if (newDefinition == null) return false;
+        BlockState newBlockState = newDefinition.getBlock().defaultBlockState();
+
+        getLevel().setBlockAndUpdate(blockPos, newBlockState);
+
+        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
+            if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
+                // We don't set the circuit or distinct busses, since
+                // that doesn't make sense on an output bus.
+                // Furthermore, existing inventory items
+                // and conveyors will drop to the floor on block override.
+                newMachine.setFrontFacing(this.getFrontFacing());
+                newMachine.setUpwardsFacing(this.getUpwardsFacing());
+            }
+        }
+        return true;
     }
 
     //////////////////////////////////////

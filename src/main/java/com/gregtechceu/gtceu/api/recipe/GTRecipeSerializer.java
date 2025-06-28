@@ -188,7 +188,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     private static Codec<GTRecipe> makeCodec(boolean isKubeLoaded) {
-        // @formatter:off
+        // spotless:off
         if (!isKubeLoaded) {
             return RecordCodecBuilder.create(instance -> instance.group(
                             GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
@@ -237,7 +237,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory))
                     .apply(instance, GTRecipe::new));
         }
-        // @formatter:on
+        // spotless:on
     }
 
     public static class KJSCallWrapper {

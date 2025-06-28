@@ -18,9 +18,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class OreBlock extends MaterialBlock {
 
-    public OreBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
+    public OreBlock(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties, tagPrefix, material, false);
-        if (registerModel && GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide()) {
             OreBlockRenderer.create(this);
         }
     }

@@ -46,7 +46,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.tuple.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -130,7 +130,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private final Supplier<ItemStack> empty;
     private final DyeColor color;
     public final int totalUses;
-    private final Pair<Integer, Integer> durabilityBarColors;
+    private final IntIntPair durabilityBarColors;
 
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
         this.empty = empty;
@@ -155,12 +155,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     @Override
     public int getBarColor(ItemStack stack) {
         float f = Math.max(0.0F, getDurabilityForDisplay(stack));
-        return mixColors(f, durabilityBarColors.getLeft(), durabilityBarColors.getRight());
+        return mixColors(f, durabilityBarColors.leftInt(), durabilityBarColors.rightInt());
     }
 
     @Nullable
     @Override
-    public Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+    public IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
         return durabilityBarColors;
     }
 

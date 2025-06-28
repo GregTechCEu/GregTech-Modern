@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -43,12 +42,12 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,7 +73,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     @Setter
-    private Comparator<IMultiPart> partSorter = (a, b) -> 0;
+    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
     @Setter
     private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
@@ -269,7 +268,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder langValue(String langValue) {
+    public MultiblockMachineBuilder langValue(@Nullable String langValue) {
         return (MultiblockMachineBuilder) super.langValue(langValue);
     }
 
@@ -289,14 +288,18 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder conditionalTooltip(Component component, Supplier<Boolean> condition) {
-        return conditionalTooltip(component, condition.get());
+    public MultiblockMachineBuilder conditionalTooltip(Component component, BooleanSupplier condition) {
+        return (MultiblockMachineBuilder) super.conditionalTooltip(component, condition);
     }
 
     @Override
     public MultiblockMachineBuilder conditionalTooltip(Component component, boolean condition) {
-        if (condition)
-            tooltips(component);
+        return (MultiblockMachineBuilder) super.conditionalTooltip(component, condition);
+    }
+
+    @Tolerate
+    public MultiblockMachineBuilder partSorter(Comparator<IMultiPart> sorter) {
+        this.partSorter = $ -> sorter;
         return this;
     }
 
@@ -380,17 +383,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
-        if (langValue() != null) {
-            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        }
-    }
-
-    @Override
     @HideFromJS
     public MultiblockMachineDefinition register() {
-        var definition = (MultiblockMachineDefinition) super.register();
+        var definition = super.register();
         definition.setGenerator(generator);
         if (pattern == null) {
             throw new IllegalStateException("missing pattern while creating multiblock " + name);
@@ -403,7 +398,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
             definition.setRecoveryItems(
                     () -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));
         }
-        definition.setPartSorter(partSorter);
+        definition.setPartSorter(GTMemoizer.memoizeFunctionWeakIdent(partSorter));
         if (partAppearance == null) {
             partAppearance = (controller, part, side) -> definition.getAppearance().get();
         }

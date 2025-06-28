@@ -80,7 +80,7 @@ public class LargeChemicalBathRenderer extends WorkableCasingMachineRenderer {
                 var fluidRenderType = ItemBlockRenderTypes.getRenderLayer(cachedFluid.defaultFluidState());
                 var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
-                var up = RelativeDirection.UP.getRelativeFacing(lcb.getFrontFacing(), lcb.getUpwardsFacing(),
+                var up = RelativeDirection.UP.getRelative(lcb.getFrontFacing(), lcb.getUpwardsFacing(),
                         lcb.isFlipped());
                 if (up.getAxis() != Direction.Axis.Y) up = up.getOpposite();
                 fluidBlockRenderer.drawPlane(up, lcb.getFluidBlockOffsets(), pose, consumer, cachedFluid,

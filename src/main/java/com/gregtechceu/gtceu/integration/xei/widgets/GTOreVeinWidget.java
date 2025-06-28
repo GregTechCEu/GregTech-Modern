@@ -34,6 +34,7 @@ import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 
 import java.util.Comparator;
@@ -124,7 +125,7 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private void setupBaseGui(BedrockOreDefinition bedrockOreDefinition) {
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
-        List<Integer> chances = bedrockOreDefinition.getAllChances();
+        IntList chances = bedrockOreDefinition.getAllChances();
         containedOresAsItemStacks.addAll(getRawMaterialList(bedrockOreDefinition));
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
@@ -134,7 +135,8 @@ public class GTOreVeinWidget extends WidgetGroup {
             int finalIndex = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
                     .nullToEmpty(
-                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex)))));
+                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance",
+                                    chances.getInt(finalIndex)))));
             oreSlot.setIngredientIO(IngredientIO.OUTPUT);
             addWidget(oreSlot);
             x += 18;
@@ -214,7 +216,7 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     public static List<ItemStack> getContainedOresAndBlocks(GTOreDefinition oreDefinition) {
         return oreDefinition.veinGenerator().getAllEntries().stream()
-                .flatMap(entry -> entry.getKey().map(state -> Stream.of(state.getBlock().asItem().getDefaultInstance()),
+                .flatMap(entry -> entry.map(state -> Stream.of(state.getBlock().asItem().getDefaultInstance()),
                         material -> {
                             Set<ItemStack> ores = new HashSet<>();
                             ores.add(ChemicalHelper.get(TagPrefix.rawOre, material));
@@ -228,14 +230,14 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     public static List<ItemStack> getRawMaterialList(GTOreDefinition oreDefinition) {
         return oreDefinition.veinGenerator().getAllEntries().stream()
-                .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(),
+                .map(entry -> entry.map(state -> state.getBlock().asItem().getDefaultInstance(),
                         material -> ChemicalHelper.get(TagPrefix.rawOre, material)))
                 .toList();
     }
 
     public static List<ItemStack> getRawMaterialList(BedrockOreDefinition bedrockOreDefinition) {
         return bedrockOreDefinition.materials().stream()
-                .map(entry -> ChemicalHelper.get(TagPrefix.rawOre, entry.getFirst()))
+                .map(entry -> ChemicalHelper.get(TagPrefix.rawOre, entry.material()))
                 .toList();
     }
 

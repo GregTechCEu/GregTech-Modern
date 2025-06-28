@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class,
             RecipeLogic.MANAGED_FIELD_HOLDER);
-    public static final int BASE_CLEAN_AMOUNT = 5;
+    public static final int BASE_CLEAN_AMOUNT = 2;
     @Setter
     @Nullable
     private IMaintenanceMachine maintenanceMachine;
@@ -58,7 +59,8 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
      * Call this method every tick in update
      */
     public void serverTick() {
-        if (!isSuspend() && duration > 0) {
+        // always run this logic
+        if (duration > 0) {
             EnvironmentalHazardSavedData environmentalHazards = EnvironmentalHazardSavedData
                     .getOrCreate((ServerLevel) this.getMachine().getLevel());
             var zone = environmentalHazards.getZoneByContainedPos(getMachine().getPos());
@@ -109,18 +111,11 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                 machine.afterWorking();
             }
         }
-
-        if (isSuspend()) {
-            // machine isn't working enabled
-            if (subscription != null) {
-                subscription.unsubscribe();
-                subscription = null;
-            }
-        }
     }
 
     protected void adjustCleanAmount(boolean declined) {
-        int amountToClean = BASE_CLEAN_AMOUNT * (getTierDifference() + 1);
+        // range from 5 - ~44 % per cycle instead of the 5 - 70% it was previously
+        int amountToClean = BASE_CLEAN_AMOUNT + (3 * (getTierDifference() + 1));
         if (declined) amountToClean *= -1;
 
         // each maintenance problem lowers gain by 1
@@ -132,8 +127,11 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
     protected boolean consumeEnergy() {
         var cleanroom = getMachine();
-        long energyToDrain = cleanroom.isClean() ? (long) Math.min(4, Math.pow(4, cleanroom.getTier())) :
-                GTValues.VA[cleanroom.getTier()];
+        // clamp to max for VA indexing
+        var tier = Mth.clamp(cleanroom.getTier(), GTValues.ULV, GTValues.MAX);
+        // use 3/16th an amp when fully clean otherwise 15/16th an amp during cleaning
+        long energyToDrain = cleanroom.isClean() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
+                GTValues.VA[tier];
         if (energyContainer != null) {
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;
             if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
@@ -146,14 +144,10 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
     protected int getTierDifference() {
         int minEnergyTier = GTValues.LV;
-        return getMachine().getTier() - minEnergyTier;
+        // clamp for ULV
+        return Math.max(0, getMachine().getTier() - minEnergyTier);
     }
 
-    /**
-     * max progress is based on the dimensions of the structure: (x^3)-(x^2)
-     * /* taller cleanrooms take longer than wider ones
-     * /* minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
-     **/
     public void setDuration(int max) {
         this.duration = max;
     }

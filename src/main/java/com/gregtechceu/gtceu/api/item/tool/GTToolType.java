@@ -471,13 +471,13 @@ public class GTToolType {
     @Nullable
     public final SoundEntry soundEntry;
     public final boolean playSoundOnBlockDestroy;
-    public final Character symbol;
+    public final char symbol;
     public final long materialAmount;
     public final IGTToolDefinition toolDefinition;
     public final ToolConstructor constructor;
     public final int electricTier;
 
-    public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses,
+    public GTToolType(String name, String idFormat, char symbol, Set<GTToolType> toolClasses,
                       IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags,
                       List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames,
                       @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier,
@@ -540,7 +540,7 @@ public class GTToolType {
         @Setter
         private int tier = -1;
         @Setter
-        private Character symbol = null;
+        private char symbol = ' ';
         @Setter
         private ToolConstructor constructor = GTToolItem::create;
         @Setter
@@ -620,7 +620,7 @@ public class GTToolType {
             if (toolClassNames.isEmpty()) {
                 toolClassNames.add(name);
             }
-            if (this.symbol == null) {
+            if (this.symbol == ' ') {
                 return get();
             }
             GTToolType existing = ToolHelper.getToolFromSymbol(this.symbol);

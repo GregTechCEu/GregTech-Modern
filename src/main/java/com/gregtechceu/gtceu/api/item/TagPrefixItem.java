@@ -51,16 +51,9 @@ public class TagPrefixItem extends Item {
         return getItemBurnTime();
     }
 
-    public void onRegister() {}
-
     @OnlyIn(Dist.CLIENT)
-    public static ItemColor tintColor() {
-        return (itemStack, index) -> {
-            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                return tagPrefixItem.material.getLayerARGB(index);
-            }
-            return -1;
-        };
+    public static ItemColor tintColor(Material material) {
+        return (itemStack, index) -> material.getLayerARGB(index);
     }
 
     @Override

@@ -131,12 +131,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                this.tankScalingFunction.apply(this.getTier()), IO.IN);
+                this.tankScalingFunction.applyAsInt(this.getTier()), IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                this.tankScalingFunction.apply(this.getTier()), IO.OUT);
+                this.tankScalingFunction.applyAsInt(this.getTier()), IO.OUT);
     }
 
     protected NotifiableComputationContainer createImportComputationContainer(Object... args) {

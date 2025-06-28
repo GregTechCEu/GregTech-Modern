@@ -68,7 +68,8 @@ public class GCYMMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
-                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"))
+                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"),
+                            Component.translatable("gtceu.part_sharing.disabled"))
                     .register(),
             IV, LuV, ZPM, UV);
 
@@ -571,7 +572,7 @@ public class GCYMMachines {
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
                     .aisle("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
-                    .aisle("XXXXX", "XCPCX", "XAPAX", "XAPAX", "#XMX#")
+                    .aisle("XXXXX", "XCPCX", "XAPAX", "XAPAX", "#XXX#")
                     .aisle("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
                     .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#####")
                     .where('S', controller(blocks(definition.get())))
@@ -580,7 +581,6 @@ public class GCYMMachines {
                             .or(autoAbilities(true, false, true)))
                     .where('P', blocks(CASING_STEEL_PIPE.get()))
                     .where('C', blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
-                    .where('M', abilities(MUFFLER))
                     .where('A', air())
                     .where('#', any())
                     .build())
@@ -703,7 +703,8 @@ public class GCYMMachines {
                 }
                 return shapeInfos;
             })
-            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
+            .allowExtendedFacing(false)
+            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();

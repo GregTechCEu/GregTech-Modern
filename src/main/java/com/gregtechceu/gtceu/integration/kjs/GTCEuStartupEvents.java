@@ -18,7 +18,7 @@ public interface GTCEuStartupEvents {
 
     private static boolean validateRegistry(Object o) {
         try {
-            var id = GTCEu.appendId(o.toString());
+            var id = GTCEu.id(o.toString());
             return GTRegistry.REGISTERED.containsKey(id) || GTRegistryInfo.EXTRA_IDS.contains(id);
         } catch (Exception ex) {
             return false;

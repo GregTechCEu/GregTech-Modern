@@ -108,7 +108,7 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
             }
         }
 
-        return placedAmount.getValue() > 0;
+        return placedAmount.intValue() > 0;
     }
 
     public void setBlock(BlockPos.MutableBlockPos mutablePos, int currentX, int currentY, int currentZ,

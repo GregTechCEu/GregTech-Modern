@@ -121,4 +121,13 @@ public class TagUtil {
     public static TagKey<Fluid> createFluidTag(String path) {
         return createTag(BuiltInRegistries.FLUID, path, false);
     }
+
+    /**
+     * Generates fluid tag under GTM namespace
+     *
+     * @return Fluid tag #gtceu:path
+     */
+    public static TagKey<Fluid> createModFluidTag(String path) {
+        return createModTag(BuiltInRegistries.FLUID, path);
+    }
 }

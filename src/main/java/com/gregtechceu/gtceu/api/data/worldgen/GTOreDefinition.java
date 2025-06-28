@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
@@ -21,11 +22,11 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -99,7 +100,7 @@ public class GTOreDefinition {
     @Setter
     private float discardChanceOnAirExposure;
     @Getter
-    private Supplier<HolderSet<Biome>> biomes;
+    private @Nullable Supplier<HolderSet<Biome>> biomes;
     @Getter
     @Setter
     private BiomeWeightModifier biomeWeightModifier = BiomeWeightModifier.EMPTY;
@@ -135,6 +136,18 @@ public class GTOreDefinition {
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
         this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
+    }
+
+    public boolean isForBiome(Holder<Biome> biome) {
+        if (biomes == null) return true;
+        var set = biomes.get();
+        return set.size() == 0 || set.contains(biome);
+    }
+
+    public int weightForBiome(Holder<Biome> biome) {
+        int w = weight;
+        if (biomeWeightModifier != null) w += biomeWeightModifier.applyAsInt(biome);
+        return w;
     }
 
     @HideFromJS
@@ -199,13 +212,13 @@ public class GTOreDefinition {
 
     public GTOreDefinition heightRangeUniform(int min, int max) {
         heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
-        inferredProperties.heightRange = Pair.of(min, max);
+        inferredProperties.heightRange = IntIntPair.of(min, max);
         return this;
     }
 
     public GTOreDefinition heightRangeTriangle(int min, int max) {
         heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
-        inferredProperties.heightRange = Pair.of(min, max);
+        inferredProperties.heightRange = IntIntPair.of(min, max);
         return this;
     }
 
@@ -244,8 +257,8 @@ public class GTOreDefinition {
     public GTOreDefinition dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
         var veinGenerator = new DikeVeinGenerator(this);
         if (inferredProperties.heightRange != null) {
-            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
-            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+            veinGenerator.minYLevel(inferredProperties.heightRange.firstInt());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.secondInt());
         }
 
         config.accept(veinGenerator);
@@ -257,8 +270,8 @@ public class GTOreDefinition {
     public GTOreDefinition veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
         var veinGenerator = new VeinedVeinGenerator(this);
         if (inferredProperties.heightRange != null) {
-            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
-            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+            veinGenerator.minYLevel(inferredProperties.heightRange.firstInt());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.secondInt());
         }
 
         config.accept(veinGenerator);
@@ -279,8 +292,8 @@ public class GTOreDefinition {
     public GTOreDefinition cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
         var veinGenerator = new CuboidVeinGenerator(this);
         if (inferredProperties.heightRange != null) {
-            veinGenerator.minY(inferredProperties.heightRange.getFirst());
-            veinGenerator.maxY(inferredProperties.heightRange.getSecond());
+            veinGenerator.minY(inferredProperties.heightRange.firstInt());
+            veinGenerator.maxY(inferredProperties.heightRange.secondInt());
         }
 
         config.accept(veinGenerator);
@@ -321,6 +334,6 @@ public class GTOreDefinition {
 
     private static class InferredProperties {
 
-        public Pair<Integer, Integer> heightRange = null;
+        public IntIntPair heightRange = null;
     }
 }
