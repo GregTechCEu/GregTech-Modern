@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
@@ -100,8 +99,9 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     @MustBeInvokedByOverriders
     public boolean canAttach() {
         var machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
-        return machine == null || !machine.hasFrontFacing() || coverHolder.getFrontFacing() != attachedSide ||
-                machine instanceof IMultiController;
+        return machine == null ||
+                (machine.getDefinition().isAllowCoverOnFront() || !machine.hasFrontFacing() ||
+                        coverHolder.getFrontFacing() != attachedSide);
     }
 
     /**

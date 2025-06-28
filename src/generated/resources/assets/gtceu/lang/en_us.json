@@ -1734,6 +1734,8 @@
   "config.gtceu.option.casingsPerCraft": "casingsPerCraft",
   "config.gtceu.option.cleanMultiblocks": "cleanMultiblocks",
   "config.gtceu.option.client": "client",
+  "config.gtceu.option.coloredTieredMachineOutline": "coloredTieredMachineOutline",
+  "config.gtceu.option.coloredWireOutline": "coloredWireOutline",
   "config.gtceu.option.compat": "compat",
   "config.gtceu.option.debug": "debug",
   "config.gtceu.option.debugWorldgen": "debugWorldgen",

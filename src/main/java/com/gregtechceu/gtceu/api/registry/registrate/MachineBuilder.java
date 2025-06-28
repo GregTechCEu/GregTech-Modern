@@ -168,6 +168,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @Nullable
     @Setter
+    private boolean allowCoverOnFront = false;
+    @Setter
     private Supplier<BlockState> appearance;
     @Getter // getter for KJS
     @Setter
@@ -463,6 +465,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setOnWaiting(this.onWaiting);
         definition.setAfterWorking(this.afterWorking);
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
+        definition.setAllowCoverOnFront(this.allowCoverOnFront);
 
         if (recipeTypes != null) {
             for (GTRecipeType type : recipeTypes) {
