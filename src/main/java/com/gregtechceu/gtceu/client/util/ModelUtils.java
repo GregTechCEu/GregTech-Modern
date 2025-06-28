@@ -1,41 +1,27 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.ModelEvent.*;
-import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModelUtils {
@@ -180,17 +166,7 @@ public class ModelUtils {
             public @NotNull Function<Material, TextureAtlasSprite> getModelTextureGetter() {
                 return Material::sprite;
             }
-
-            @Override
-            public @NotNull UnbakedModel getModel(@NotNull ResourceLocation location) {
-                return getModelBakery().getModel(location);
-            }
-
-            @Override
-            public BakedModel bake(@NotNull ResourceLocation location, @NotNull ModelState transform) {
-                return this.bake(location, transform, getModelTextureGetter());
-            }
-        };
+        }
     }
 
     public static ModelState getModelStateFromDirection(Direction facing) {

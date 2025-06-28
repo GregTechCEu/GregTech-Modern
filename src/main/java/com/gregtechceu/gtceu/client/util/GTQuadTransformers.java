@@ -12,33 +12,6 @@ import java.lang.reflect.Array;
 
 public final class GTQuadTransformers {
 
-    public static IQuadTransformer derotate() {
-        return quad -> {
-            int[] vertices = quad.getVertices();
-
-            int start = 0;
-            float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
-            int[][] uvs = (int[][]) Array.newInstance(int.class, 4, 2);
-
-            for (int i = 0; i < 4; i++) {
-                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-                System.arraycopy(vertices, offset, uvs[i], 0, 2);
-
-                float u = Float.intBitsToFloat(uvs[i][0]);
-                float v = Float.intBitsToFloat(uvs[i][1]);
-                if (u <= minU && v <= minV) {
-                    minU = Math.min(minU, u);
-                    minV = Math.min(minV, v);
-                    start = i;
-                }
-            }
-            for (int i = 0; i < 4; i++) {
-                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.UV0;
-                System.arraycopy(uvs[(i + start) % 4], 0, vertices, offset, 2);
-            }
-        };
-    }
-
     public static IQuadTransformer offset(float by) {
         if (by == 0.0f) return QuadTransformers.empty();
 
