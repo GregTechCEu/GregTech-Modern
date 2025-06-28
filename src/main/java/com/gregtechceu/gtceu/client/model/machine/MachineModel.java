@@ -264,20 +264,23 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         for (IMultiController controller : controllers) {
             var state = controller.self().getBlockState();
             BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            List<BakedQuad> newQuads = null;
 
             // spotless:off
             if (model instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(originalQuads, controller, part, frontFacing, side,
                         rand,  modelData, renderType);
-                return originalQuads;
             } else if (model instanceof MachineModel controllerModel) {
-                return renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
+                newQuads = renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
                         side, rand, modelData, renderType);
             } else if (model instanceof CustomBakedModelAccessor ctmModel &&
                        ctmModel.gtceu$getParent() instanceof MachineModel controllerModel) {
-                List<BakedQuad> newQuads = renderPartOverrides(controllerModel, controller, originalQuads,
+                newQuads = renderPartOverrides(controllerModel, controller, originalQuads,
                         part, frontFacing, side, rand, modelData, renderType);
-                // we have to do this ourselves here for some reason?
+            }
+            // if overriding the existing textures, we have to recalculate CTM ourselves.
+            // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
+            if (newQuads != null) {
                 return CustomBakedModel.reBakeCustomQuads(newQuads,
                         part.self().getLevel(), part.self().getPos(), part.self().getBlockState(), side, 0.0f);
             }

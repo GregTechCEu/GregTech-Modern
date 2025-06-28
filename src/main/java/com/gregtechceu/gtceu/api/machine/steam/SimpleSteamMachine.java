@@ -134,6 +134,18 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
+    public void setFrontFacing(Direction facing) {
+        super.setFrontFacing(facing);
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
+                    .getActualDirection(getVentingDirection());
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
+        }
+    }
+
+    @Override
     public void markVentingComplete() {
         this.needsVenting = false;
     }
