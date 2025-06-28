@@ -5563,5 +5563,6 @@
     "material.gtceu.bauxite_sludge": "Шлам боксита",
     "material.gtceu.cracked_bauxite_slurry": "Бокситовая суспензия прошедшая крекинг",
     "material.gtceu.decalcified_bauxite_sludge": "Декальцинированный шлам боксита",
-    "material.gtceu.ilmenite_slag": "Ильменитовый шлак"
+    "material.gtceu.ilmenite_slag": "Ильменитовый шлак",
+    "material.gtceu.bauxite_slag": "Бокситовый шлак"
 }
