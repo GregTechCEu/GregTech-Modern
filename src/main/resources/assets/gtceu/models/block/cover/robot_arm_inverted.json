@@ -1,6 +1,0 @@
-{
-    "parent": "gtceu:block/cover/robot_arm",
-    "textures": {
-        "overlay_emissive": "block/cover/overlay_arm_inverted_emissive"
-    }
-}

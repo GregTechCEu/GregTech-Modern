@@ -1,26 +1,23 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -47,19 +44,35 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private static final AABB FACADE_PLANE = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
     private static final EnumSet<Direction> FACADE_EDGE_FACES = EnumSet.of(Direction.DOWN, Direction.UP,
             Direction.SOUTH, Direction.WEST, Direction.EAST);
+    private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            var normal = dir.getNormal();
+            var cube = new AABB(
+                    normal.getX() > 0 ? 1 : 0,
+                    normal.getY() > 0 ? 1 : 0,
+                    normal.getZ() > 0 ? 1 : 0,
+                    normal.getX() >= 0 ? 1 : 0,
+                    normal.getY() >= 0 ? 1 : 0,
+                    normal.getZ() >= 0 ? 1 : 0);
+            map.put(dir, cube);
+        }
+    });
 
-    private static final ResourceLocation CABLE_TEXTURE = GTCEu.id("block/material_sets/dull/wire_side");
-
-    public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer(null);
+    public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
     private static final Int2ObjectMap<ItemBakedModel> CACHE = new Int2ObjectArrayMap<>();
 
-    private final @Nullable BakedModel defaultItemModel;
+    @OnlyIn(Dist.CLIENT)
+    private @Nullable BakedModel defaultItemModel;
 
+    private FacadeCoverRenderer() {}
+
+    @OnlyIn(Dist.CLIENT)
     public FacadeCoverRenderer(@Nullable BakedModel defaultItemModel) {
         this.defaultItemModel = defaultItemModel;
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand, @NotNull ModelData extraData,
                                              @Nullable RenderType renderType) {
@@ -70,6 +83,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public @NotNull List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
         if (!(stack.getItem() instanceof ComponentItem)) {
             return Collections.singletonList(this);
@@ -125,8 +139,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
-                            BlockAndTintGetter level, ModelState modelState,
+                            @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
                             @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (coverBehavior instanceof FacadeCover facadeCover) {
             var state = facadeCover.getFacadeState();
@@ -134,19 +147,13 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
                 ModelData extraData = model.getModelData(level, BlockPos.ZERO, state, modelData);
 
+                var facadeQuads = model.getQuads(state, coverBehavior.attachedSide, rand, extraData, renderType);
                 if (side == coverBehavior.attachedSide) {
-                    quads.addAll(model.getQuads(state, side, rand, extraData, renderType));
+                    quads.addAll(facadeQuads);
                 } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
-                    var normal = coverBehavior.attachedSide.getNormal();
-                    var cube = new AABB(
-                            normal.getX() > 0 ? 1 : 0,
-                            normal.getY() > 0 ? 1 : 0,
-                            normal.getZ() > 0 ? 1 : 0,
-                            normal.getX() >= 0 ? 1 : 0,
-                            normal.getY() >= 0 ? 1 : 0,
-                            normal.getZ() >= 0 ? 1 : 0);
-                    for (BakedQuad quad : model.getQuads(state, coverBehavior.attachedSide,
-                            rand, extraData, renderType)) {
+                    AABB cube = COVER_BACK_CUBES.get(coverBehavior.attachedSide);
+
+                    for (BakedQuad quad : facadeQuads) {
                         quads.add(StaticFaceBakery.bakeFace(cube, coverBehavior.attachedSide.getOpposite(),
                                 quad.getSprite(), BlockModelRotation.X0_Y0,
                                 quad.getTintIndex(), 0, false, quad.isShade()));

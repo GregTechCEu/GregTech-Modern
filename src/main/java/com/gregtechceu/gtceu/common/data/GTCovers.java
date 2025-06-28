@@ -63,19 +63,29 @@ public class GTCovers {
 
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
-            tier -> ConveyorCoverRenderer.INSTANCE, ALL_TIERS);
+            tier -> new IOCoverRenderer(
+                    GTCEu.id("block/cover/overlay_conveyor"),
+                    null,
+                    GTCEu.id("block/cover/overlay_conveyor_emissive"),
+                    GTCEu.id("block/cover/overlay_conveyor_inverted_emissive")),
+            ALL_TIERS);
 
     public final static CoverDefinition[] ROBOT_ARMS = registerTiered(
             "robot_arm", RobotArmCover::new,
-            tier -> RobotArmCoverRenderer.INSTANCE, ALL_TIERS);
+            tier -> new IOCoverRenderer(
+                    GTCEu.id("block/cover/overlay_arm"),
+                    null,
+                    GTCEu.id("block/cover/overlay_arm_emissive"),
+                    GTCEu.id("block/cover/overlay_arm_inverted_emissive")),
+            ALL_TIERS);
 
     public final static CoverDefinition[] PUMPS = registerTiered(
             "pump", PumpCover::new,
-            tier -> PumpCoverRenderer.INSTANCE, ALL_TIERS);
+            tier -> IOCoverRenderer.createPumpRenderer(), ALL_TIERS);
 
     public final static CoverDefinition[] FLUID_REGULATORS = registerTiered(
             "fluid_regulator", FluidRegulatorCover::new,
-            tier -> FluidRegulatorCoverRenderer.INSTANCE, ALL_TIERS);
+            tier -> IOCoverRenderer.createPumpRenderer(), ALL_TIERS);
 
     public final static CoverDefinition COMPUTER_MONITOR = register(
             "computer_monitor", ComputerMonitorCover::new,

@@ -36,10 +36,9 @@ public interface ICoverableRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                              @NotNull ICoverable coverable, @Nullable Direction modelFacing, BlockPos pos,
-                              BlockAndTintGetter level, ModelState modelState,
-                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    default void renderCovers(List<BakedQuad> quads, @NotNull ICoverable coverable,
+                              BlockPos pos, BlockAndTintGetter level, @Nullable Direction side,
+                              RandomSource rand, @NotNull ModelData modelData, @Nullable RenderType renderType) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
@@ -63,8 +62,7 @@ public interface ICoverableRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().renderCover(quads, side, rand, cover,
-                        modelFacing, pos, level, modelState, modelData, renderType);
+                cover.getCoverRenderer().renderCover(quads, side, rand, cover, pos, level, modelData, renderType);
             }
         }
     }

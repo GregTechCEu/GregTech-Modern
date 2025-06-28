@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -22,7 +21,6 @@ public interface ICoverRenderer {
 
     @OnlyIn(Dist.CLIENT)
     void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                     @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos,
-                     BlockAndTintGetter level, ModelState modelState,
+                     @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
                      @NotNull ModelData modelData, @Nullable RenderType renderType);
 }
