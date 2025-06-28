@@ -66,8 +66,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
-                    .getActualDirection(getVentingDirection());
+            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
             setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
         }
     }
@@ -127,8 +126,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
-                    .getActualDirection(getVentingDirection());
+            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
             setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
         }
     }
@@ -139,8 +137,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.fromGlobalDirection(getFrontFacing())
-                    .getActualDirection(getVentingDirection());
+            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
             setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
         }
     }
