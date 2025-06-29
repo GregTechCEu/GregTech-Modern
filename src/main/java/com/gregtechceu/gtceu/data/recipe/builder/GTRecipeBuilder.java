@@ -357,10 +357,12 @@ public class GTRecipeBuilder {
         if (missingIngredientError(0, true, ItemRecipeCapability.CAP, input::isEmpty)) {
             return this;
         } else {
-            var matStack = ItemMaterialData.getMaterialInfo(input.getItem());
+            var matInfo = ItemMaterialData.getMaterialInfo(input.getItem());
             if (chance == maxChance && chance != 0) {
-                if (matStack != null) {
-                    tempItemMaterialStacks.addAll(matStack.getMaterials());
+                if (matInfo != null) {
+                    for (var matStack : matInfo.getMaterials()) {
+                        tempItemMaterialStacks.add(matStack.multiply(input.getCount()));
+                    }
                 } else {
                     tempItemStacks.add(input);
                 }
@@ -376,10 +378,12 @@ public class GTRecipeBuilder {
             if (missingIngredientError(i, true, ItemRecipeCapability.CAP, itemStack::isEmpty)) {
                 return this;
             } else {
-                var matStack = ItemMaterialData.getMaterialInfo(itemStack.getItem());
+                var matInfo = ItemMaterialData.getMaterialInfo(itemStack.getItem());
                 if (chance == maxChance && chance != 0) {
-                    if (matStack != null) {
-                        tempItemMaterialStacks.addAll(matStack.getMaterials());
+                    if (matInfo != null) {
+                        for (var matStack : matInfo.getMaterials()) {
+                            tempItemMaterialStacks.add(matStack.multiply(itemStack.getCount()));
+                        }
                     } else {
                         tempItemStacks.add(itemStack);
                     }
@@ -434,8 +438,7 @@ public class GTRecipeBuilder {
             return this;
         } else {
             tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
-            tagPrefix.secondaryMaterials().forEach(
-                    mat -> tempItemMaterialStacks.add(new MaterialStack(mat.material(), mat.amount() * count)));
+            tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(mat.multiply(count)));
         }
         TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
         if (tag != null) {
@@ -1373,14 +1376,22 @@ public class GTRecipeBuilder {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
-            var currOutput = itemOutputs.get(0).content;
-            ItemLike out = null;
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            Item out = null;
             int outputCount = 0;
 
-            if (currOutput instanceof Ingredient ingredient) {
-                if (ingredient.getItems().length > 0) {
-                    out = ingredient.getItems()[0].getItem();
-                    outputCount = ingredient.getItems()[0].getCount();
+            if (currOutput instanceof IntProviderIngredient intProvider) {
+                ItemStack[] items = intProvider.getInner().getItems();
+                if (items.length > 0) {
+                    out = items[0].getItem();
+                    // use the max amount of items for decomp info so dupes can't happen
+                    outputCount = intProvider.getCountProvider().getMaxValue();
+                }
+            } else if (!currOutput.isEmpty()) {
+                ItemStack[] items = currOutput.getItems();
+                if (items.length > 0) {
+                    out = items[0].getItem();
+                    outputCount = items[0].getCount();
                 }
             }
 
@@ -1389,14 +1400,18 @@ public class GTRecipeBuilder {
             }
 
             Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
-            for (var input : tempItemMaterialStacks) {
-                long am = input.amount() / outputCount;
-                matStacks.addTo(input.material(), am);
+            if (itemMaterialInfo) {
+                for (var input : tempItemMaterialStacks) {
+                    long am = input.amount() / outputCount;
+                    matStacks.addTo(input.material(), am);
+                }
             }
 
-            for (var input : tempFluidStacks) {
-                long am = input.amount() / outputCount;
-                matStacks.addTo(input.material(), am);
+            if (fluidMaterialInfo) {
+                for (var input : tempFluidStacks) {
+                    long am = input.amount() / outputCount;
+                    matStacks.addTo(input.material(), am);
+                }
             }
 
             if (outputCount != 0 && !tempItemStacks.isEmpty()) {
@@ -1412,15 +1427,23 @@ public class GTRecipeBuilder {
     private void removeExistingMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         if (itemOutputs.size() == 1) {
-            var currOutput = itemOutputs.get(0).content;
-            ItemLike out = null;
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            Item out = null;
             int outputCount = 0;
 
-            if (currOutput instanceof Ingredient ingredient) {
-                if (ingredient.getItems().length > 0) {
-                    out = ingredient.getItems()[0].getItem();
+            if (currOutput instanceof IntProviderIngredient intProvider) {
+                ItemStack[] items = intProvider.getInner().getItems();
+                if (items.length > 0) {
+                    out = items[0].getItem();
+                    // use the max amount of items for decomp info so dupes can't happen
+                    outputCount = intProvider.getCountProvider().getMaxValue();
                 }
-                outputCount = ingredient.getItems()[0].getCount();
+            } else if (!currOutput.isEmpty()) {
+                ItemStack[] items = currOutput.getItems();
+                if (items.length > 0) {
+                    out = items[0].getItem();
+                    outputCount = items[0].getCount();
+                }
             }
 
             if (out == null || out == Items.AIR) {
