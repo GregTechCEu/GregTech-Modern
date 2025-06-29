@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -55,8 +56,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     protected SizedIngredient(ItemStack itemStack) {
-        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) :
-                Ingredient.of(itemStack), itemStack.getCount());
+        this(itemStack.hasTag() ? StrictNBTIngredient.of(itemStack) : Ingredient.of(itemStack), itemStack.getCount());
     }
 
     public static SizedIngredient create(ItemStack inner) {
