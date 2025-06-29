@@ -136,11 +136,10 @@ public class SizedIngredient extends Ingredient {
             return intProviderIngredient.getItems();
         }
         if (changed || itemStacks == null) {
-            itemStacks = Arrays.stream(inner.getItems()).map(i -> {
-                ItemStack ic = i.copy();
-                ic.setCount(amount);
-                return ic;
-            }).toArray(ItemStack[]::new);
+            itemStacks = inner.getItems();
+            for (int i = 0; i < itemStacks.length; i++) {
+                itemStacks[i] = itemStacks[i].copyWithCount(amount);
+            }
             changed = false;
         }
         return itemStacks;
@@ -165,7 +164,9 @@ public class SizedIngredient extends Ingredient {
 
     public static Ingredient getInner(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
-            return sizedIngredient.inner;
+            return getInner(sizedIngredient.getInner());
+        } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
+            return getInner(intProviderIngredient.getInner());
         }
         return ingredient;
     }

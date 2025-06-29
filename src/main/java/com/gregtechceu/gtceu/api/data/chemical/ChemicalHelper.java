@@ -72,14 +72,49 @@ public class ChemicalHelper {
         ingredient = SizedIngredient.getInner(ingredient);
         if (ingredient.isVanilla()) {
             // parse the vanilla ingredients as safely as we can
-            for (var value : ((IngredientAccessor) ingredient).getValues()) {
-                if (value instanceof TagValueAccessor tag) {
-                    Collection<Holder<Item>> items = GTRegistries.tagContext().getTag(tag.getTag());
+            Ingredient.Value[] values = ((IngredientAccessor) ingredient).getValues();
+            for (var value : values) {
+                if (value instanceof TagValueAccessor tagValue) {
+                    TagKey<Item> tag = tagValue.getTag();
+                    var items = GTRegistries.tagContext().getTag(tag);
+                    for (var otherValue : values) {
+                        if (value == otherValue) continue;
+                        if (otherValue instanceof TagValueAccessor otherTag) {
+                            var otherItems = GTRegistries.tagContext().getTag(otherTag.getTag());
+                            if (!items.containsAll(otherItems)) {
+                                // the tags' contents aren't equal and otherTag isn't a subtag of tag
+                                // so this ingredient has no valid material info
+                                return null;
+                            }
+                        } else if (otherValue instanceof ItemValueAccessor item) {
+                            if (!items.contains(item.getItem().getItemHolder())) {
+                                // The item isn't included in the tag, so no valid material info
+                                return null;
+                            }
+                        }
+                    }
                     if (!items.isEmpty()) {
                         return ItemMaterialData.getMaterialInfo(items.iterator().next().get());
                     }
-                } else if (value instanceof ItemValueAccessor item) {
-                    return ItemMaterialData.getMaterialInfo(item.getItem().getItem());
+                } else if (value instanceof ItemValueAccessor itemValue) {
+                    Holder<Item> item = itemValue.getItem().getItemHolder();
+                    for (var otherValue : values) {
+                        if (value == otherValue) continue;
+                        if (otherValue instanceof TagValueAccessor tagValue) {
+                            var tagItems = GTRegistries.tagContext().getTag(tagValue.getTag());
+                            if (!tagItems.contains(item)) {
+                                // The item isn't included in the tag, so no valid material info
+                                return null;
+                            }
+                        } else if (otherValue instanceof ItemValueAccessor otherItem) {
+                            if (!otherItem.getItem().is(item.value())) {
+                                // The items are different, so no valid material info
+                                return null;
+                            }
+                        }
+                    }
+
+                    return ItemMaterialData.getMaterialInfo(item.get());
                 }
             }
         } else {
