@@ -241,7 +241,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public void handleRecipeWorking() {
-        Status last = this.status;
         assert lastRecipe != null;
         var conditionResult = RecipeHelper.checkConditions(lastRecipe, this);
         if (conditionResult.isSuccess()) {
@@ -262,11 +261,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
         if (isWaiting()) {
             regressRecipe();
-        }
-        if (last == Status.WORKING && getStatus() != Status.WORKING) {
-            RecipeHelper.postWorking(machine, lastRecipe);
-        } else if (last != Status.WORKING && getStatus() == Status.WORKING) {
-            RecipeHelper.preWorking(machine, lastRecipe);
         }
     }
 
@@ -339,7 +333,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             isActive = false;
             return;
         }
-        RecipeHelper.preWorking(machine, recipe);
         var handledIO = handleRecipeIO(recipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
@@ -428,7 +421,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         machine.afterWorking();
         if (lastRecipe != null) {
             consecutiveRecipes++;
-            RecipeHelper.postWorking(machine, lastRecipe);
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
@@ -474,18 +466,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void interruptRecipe() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.postWorking(machine, lastRecipe);
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
         }
     }
 
-    public void inValid() {
-        if (lastRecipe != null && isWorking()) {
-            RecipeHelper.postWorking(machine, lastRecipe);
-        }
-    }
+    // Remains for legacy + for subclasses
+    public void inValid() {}
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

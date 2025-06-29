@@ -33,7 +33,7 @@ public class ParallelLogic {
         if (parallelLimit <= 1) return parallelLimit;
         if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = limitByInput(rlm, recipe, parallelLimit, Collections.emptyList());
+        int maxInputMultiplier = getMaxByInput(rlm, recipe, parallelLimit, Collections.emptyList());
         if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
@@ -49,15 +49,15 @@ public class ParallelLogic {
      * @param capsToSkip    the capabilities to skip parallel testing
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int limitByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
-                                   List<RecipeCapability<?>> capsToSkip) {
+    public static int getMaxByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
+                                    List<RecipeCapability<?>> capsToSkip) {
         int minimum = Integer.MAX_VALUE;
 
         // non-tick inputs.
         for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                minimum = Math.min(minimum, cap.getMaxParallelRatio(holder, recipe, parallelLimit));
+                minimum = Math.min(minimum, cap.getMaxParallelByInput(holder, recipe, parallelLimit, false));
             }
         }
 
@@ -65,7 +65,7 @@ public class ParallelLogic {
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                minimum = Math.min(minimum, cap.getMaxParallelRatio(holder, recipe, parallelLimit));
+                minimum = Math.min(minimum, cap.getMaxParallelByInput(holder, recipe, parallelLimit, true));
             }
         }
         if (minimum == Integer.MAX_VALUE) return 0;
@@ -75,7 +75,7 @@ public class ParallelLogic {
     /**
      * @param holder        the inventories
      * @param recipe        The recipe
-     * @param parallelLimit the maximum expected amount
+     * @param parallelLimit the maximum allowed amount
      * @param canVoid       predicate for what parallel limits should be ignored
      * @param capsToSkip    the capabilities to skip parallel testing
      * @return returns the amount of recipes that can be merged successfully into a given output inventory
@@ -83,19 +83,19 @@ public class ParallelLogic {
     public static int limitByOutputMerging(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelLimit,
                                            Predicate<RecipeCapability<?>> canVoid,
                                            List<RecipeCapability<?>> capsToSkip) {
-        int minimum = parallelLimit;
+        int max = parallelLimit;
         for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
             if (canVoid.test(cap) || !cap.doMatchInRecipe() || capsToSkip.contains(cap)) {
                 continue;
             }
             // Check both normal item outputs and chanced item outputs
             if (!recipe.getOutputContents(cap).isEmpty()) {
-                int limit = cap.limitParallel(recipe, holder, parallelLimit);
+                int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, false);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
                     return 0;
                 }
-                minimum = Math.min(minimum, limit);
+                max = Math.min(max, limit);
             }
         }
         for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
@@ -104,15 +104,15 @@ public class ParallelLogic {
             }
             // Check both normal item outputs and chanced item outputs
             if (!recipe.getTickOutputContents(cap).isEmpty()) {
-                int limit = cap.limitParallel(recipe, holder, parallelLimit);
+                int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, true);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
                     return 0;
                 }
-                minimum = Math.min(minimum, limit);
+                max = Math.min(max, limit);
             }
         }
-        return minimum;
+        return max;
     }
 
     /**
@@ -127,7 +127,7 @@ public class ParallelLogic {
         if (parallelLimit <= 1) return parallelLimit;
         if (!(machine instanceof IRecipeLogicMachine rlm)) return 1;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = limitByInput(rlm, recipe, parallelLimit, List.of(EURecipeCapability.CAP));
+        int maxInputMultiplier = getMaxByInput(rlm, recipe, parallelLimit, List.of(EURecipeCapability.CAP));
         if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
