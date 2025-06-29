@@ -62,64 +62,8 @@ public class ChemicalHelper {
             if (!items.isEmpty()) {
                 return ItemMaterialData.getMaterialInfo(items.get(0));
             }
-        } else if (object instanceof Ingredient ingredient) {
-            return getIngredientMaterialInfo(ingredient);
-        }
-        return null;
-    }
-
-    public static @Nullable ItemMaterialInfo getIngredientMaterialInfo(Ingredient ingredient) {
-        ingredient = SizedIngredient.getInner(ingredient);
-        if (ingredient.isVanilla()) {
-            // parse the vanilla ingredients as safely as we can
-            Ingredient.Value[] values = ((IngredientAccessor) ingredient).getValues();
-            for (var value : values) {
-                if (value instanceof TagValueAccessor tagValue) {
-                    TagKey<Item> tag = tagValue.getTag();
-                    var items = GTRegistries.tagContext().getTag(tag);
-                    for (var otherValue : values) {
-                        if (value == otherValue) continue;
-                        if (otherValue instanceof TagValueAccessor otherTag) {
-                            var otherItems = GTRegistries.tagContext().getTag(otherTag.getTag());
-                            if (!items.containsAll(otherItems)) {
-                                // the tags' contents aren't equal and otherTag isn't a subtag of tag
-                                // so this ingredient has no valid material info
-                                return null;
-                            }
-                        } else if (otherValue instanceof ItemValueAccessor item) {
-                            if (!items.contains(item.getItem().getItemHolder())) {
-                                // The item isn't included in the tag, so no valid material info
-                                return null;
-                            }
-                        }
-                    }
-                    if (!items.isEmpty()) {
-                        return ItemMaterialData.getMaterialInfo(items.iterator().next().get());
-                    }
-                } else if (value instanceof ItemValueAccessor itemValue) {
-                    Holder<Item> item = itemValue.getItem().getItemHolder();
-                    for (var otherValue : values) {
-                        if (value == otherValue) continue;
-                        if (otherValue instanceof TagValueAccessor tagValue) {
-                            var tagItems = GTRegistries.tagContext().getTag(tagValue.getTag());
-                            if (!tagItems.contains(item)) {
-                                // The item isn't included in the tag, so no valid material info
-                                return null;
-                            }
-                        } else if (otherValue instanceof ItemValueAccessor otherItem) {
-                            if (!otherItem.getItem().is(item.value())) {
-                                // The items are different, so no valid material info
-                                return null;
-                            }
-                        }
-                    }
-
-                    return ItemMaterialData.getMaterialInfo(item.get());
-                }
-            }
-        } else {
-            // we can't do much for modded ingredients. Just loop through the values and hope.
-            for (var stack : ingredient.getItems()) {
+        } else if (object instanceof Ingredient ing) {
+            for (var stack : ing.getItems()) {
                 var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
                 if (ms != null) return ms;
             }

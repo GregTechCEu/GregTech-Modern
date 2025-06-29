@@ -106,27 +106,15 @@ public final class GTRegistries {
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     private static RegistryAccess FROZEN = BLANK;
-    private static ICondition.IContext TAG_CONTEXT = ICondition.IContext.EMPTY;
 
     /**
      * You shouldn't call it, you should probably not even look at it just to be extra safe
      *
-     * @param registryAccess The new frozen registry access
-     * @param tagContext     The new tag reload context
+     * @param registryAccess the new value to set to the frozen registry access
      */
     @ApiStatus.Internal
-    public static void updateReloadableData(RegistryAccess registryAccess, ICondition.IContext tagContext) {
+    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
         FROZEN = registryAccess;
-        TAG_CONTEXT = tagContext;
-    }
-
-    @ApiStatus.Internal
-    public static void tagLoadingFinished(boolean isServer) {
-        if (isServer) {
-            TAG_CONTEXT = FrozenTagContext.SERVER_INSTANCE;
-        } else if (GTCEu.isClientThread()) {
-            ClientHelpers.updateClientTagContext();
-        }
     }
 
     public static RegistryAccess builtinRegistry() {
@@ -134,13 +122,6 @@ public final class GTRegistries {
             return ClientHelpers.getClientRegistries();
         }
         return FROZEN;
-    }
-
-    public static ICondition.IContext tagContext() {
-        if (GTCEu.isClientThread()) {
-            return ClientHelpers.getClientTagContext();
-        }
-        return TAG_CONTEXT;
     }
 
     private static class ClientHelpers {
@@ -151,39 +132,6 @@ public final class GTRegistries {
             } else {
                 return FROZEN;
             }
-        }
-
-        private static final FrozenTagContext CLIENT_TAGS = new FrozenTagContext(null);
-
-        private static void updateClientTagContext() {
-            if (Minecraft.getInstance().getConnection() != null) {
-                CLIENT_TAGS.registries = Minecraft.getInstance().getConnection().registryAccess();
-            }
-        }
-
-        private static ICondition.IContext getClientTagContext() {
-            return CLIENT_TAGS;
-        }
-    }
-
-    private static class FrozenTagContext implements ICondition.IContext {
-
-        private static final ICondition.IContext SERVER_INSTANCE = new FrozenTagContext(null);
-
-        private @Nullable RegistryAccess registries;
-
-        private FrozenTagContext(@Nullable RegistryAccess registries) {
-            this.registries = registries;
-        }
-
-        @Override
-        public <T> Map<ResourceLocation, Collection<Holder<T>>> getAllTags(
-                                                                           ResourceKey<? extends Registry<T>> registry) {
-            RegistryAccess access = registries != null ? registries : GTRegistries.builtinRegistry();
-            return access.registryOrThrow(registry).getTags()
-                    .map(pair -> pair.mapFirst(TagKey::location))
-                    .map(pair -> pair.mapSecond(holders -> (Collection<Holder<T>>) holders.stream().toList()))
-                    .collect(Pair.<ResourceLocation, Collection<Holder<T>>>toMap());
         }
     }
 }

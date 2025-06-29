@@ -253,12 +253,7 @@ public class ForgeCommonEventListener {
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
-        GTRegistries.updateReloadableData(event.getRegistryAccess(), event.getConditionContext());
-    }
-
-    @SubscribeEvent
-    public static void tagsUpdated(TagsUpdatedEvent event) {
-        GTRegistries.tagLoadingFinished(event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD);
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent

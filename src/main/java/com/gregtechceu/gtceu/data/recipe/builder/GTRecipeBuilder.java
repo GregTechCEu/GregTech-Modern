@@ -325,13 +325,6 @@ public class GTRecipeBuilder {
             return this;
         } else if (missingIngredientError(0, true, ItemRecipeCapability.CAP, inputs::isEmpty)) {
             return this;
-        } else {
-            var matStack = ChemicalHelper.getIngredientMaterialInfo(inputs);
-            if (chance == maxChance && chance != 0) {
-                if (matStack != null) {
-                    tempItemMaterialStacks.addAll(matStack.getMaterials());
-                }
-            }
         }
         return input(ItemRecipeCapability.CAP, inputs);
     }
