@@ -46,7 +46,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Getter
     protected int tier;
     @Persisted
-    protected boolean batch;
+    @Getter
+    protected boolean batchEnabled;
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -79,11 +80,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         super.onPartUnload();
         this.energyContainer = null;
         this.tier = 0;
-    }
-
-    @Override
-    public boolean isBatchEnabled() {
-        return batch;
     }
 
     //////////////////////////////////////
@@ -150,7 +146,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                 GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                 this::isBatchEnabled,
-                (cd, p) -> batch = p)
+                (cd, p) -> batchEnabled = p)
                 .setTooltipsSupplier(
                         p -> List.of(Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
         IFancyUIMachine.super.attachConfigurators(configuratorPanel);
