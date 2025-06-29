@@ -54,6 +54,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -104,8 +105,8 @@ public interface GTRecipeSchema {
             this.idWithoutType = new ResourceLocation(
                     _id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(),
                     _id.getPath());
-            this.id = new ResourceLocation(idWithoutType.getNamespace(),
-                    "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
+            this.id = idWithoutType.withPrefix(this.type.id.getPath() + "/");
+            save();
             return this;
         }
 
@@ -238,9 +239,11 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(InputItem... inputs) {
             for (var stack : inputs) {
-                var matStack = ChemicalHelper.getMaterialStack(stack.ingredient);
-                if (!matStack.isEmpty()) {
-                    itemMaterialStacks.add(new MaterialStack(matStack.material(), matStack.amount() * stack.count));
+                var matInfo = ChemicalHelper.getMaterialInfo(stack.ingredient);
+                if (matInfo != null && chance == maxChance && chance != 0) {
+                    for (var matStack : matInfo.getMaterials()) {
+                        itemMaterialStacks.add(matStack.multiply(stack.count));
+                    }
                 }
             }
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
@@ -397,7 +400,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS circuit(int configuration) {
             if (configuration < 0 || configuration > IntCircuitBehaviour.CIRCUIT_MAX) {
-                throw new RecipeExceptionJS(String.format("Circuit configuration must be in the bounds 0 - 32"));
+                throw new RecipeExceptionJS("Circuit configuration must be in the bounds 0 - 32");
             }
             return notConsumable(InputItem.of(IntCircuitIngredient.of(configuration), 1));
         }
@@ -406,7 +409,7 @@ public interface GTRecipeSchema {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
-                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
+                                ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -423,7 +426,7 @@ public interface GTRecipeSchema {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
-                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
+                                ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -439,7 +442,7 @@ public interface GTRecipeSchema {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new RecipeExceptionJS(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
-                                ChanceLogic.getMaxChancedValue(), chance, id, new Throwable()));
+                                ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
             int lastTierChanceBoost = this.tierChanceBoost;
@@ -452,7 +455,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(ExtendedOutputItem.of(ChemicalHelper.get(tag, mat)), chance, tierChanceBoost);
+            return chancedOutput(new ExtendedOutputItem(ChemicalHelper.get(tag, mat), null), chance, tierChanceBoost);
         }
 
         public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
@@ -889,7 +892,7 @@ public interface GTRecipeSchema {
 
             if (!generatingRecipes) {
                 throw new RecipeExceptionJS("Cannot generate recipes when using researchWithoutRecipe()",
-                        new IllegalArgumentException());
+                        new IllegalStateException());
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
