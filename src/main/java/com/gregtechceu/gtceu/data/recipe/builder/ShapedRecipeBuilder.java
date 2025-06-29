@@ -48,7 +48,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
     }
 
     public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
-       return where(cha, itemStack.hasTag() ? StrictNBTIngredient.of(itemStack) : Ingredient.of(itemStack));
+        return where(cha, itemStack.hasTag() ? StrictNBTIngredient.of(itemStack) : Ingredient.of(itemStack));
     }
 
     public ShapedRecipeBuilder define(char cha, ItemLike itemLike) {
