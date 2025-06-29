@@ -530,12 +530,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     // spotless:off
-                    if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
+                    var ing = this.of(content.content);
+                    if (ing instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
-                    } else if (this.of(content.content) instanceof SizedIngredient sizedIngredient &&
+                    } else if (ing instanceof SizedIngredient sizedIngredient &&
                             sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
                         IntProvider countProvider = ingredient.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.count_range",

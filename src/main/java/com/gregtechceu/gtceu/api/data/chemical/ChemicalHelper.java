@@ -12,7 +12,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -43,22 +48,48 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {
 
-    public static MaterialStack getMaterialStack(@Nullable Object object) {
-        if (object instanceof MaterialStack materialStack) {
-            return materialStack;
-        } else if (object instanceof MaterialEntry entry) {
-            return getMaterialStack(entry);
+    public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
+        if (object instanceof ItemMaterialInfo materialInfo) {
+            return materialInfo;
+        } else if (object instanceof MaterialStack materialStack) {
+            return new ItemMaterialInfo(materialStack);
         } else if (object instanceof ItemStack itemStack) {
-            return getMaterialStack(itemStack);
+            return ItemMaterialData.getMaterialInfo(itemStack.getItem());
         } else if (object instanceof ItemLike item) {
-            return getMaterialStack(item);
-        } else if (object instanceof Ingredient ing) {
-            for (var stack : ing.getItems()) {
-                var ms = getMaterialStack(stack);
-                if (!ms.isEmpty()) return ms;
+            return ItemMaterialData.getMaterialInfo(item);
+        } else if (object instanceof MaterialEntry entry) {
+            var items = getItems(entry);
+            if (!items.isEmpty()) {
+                return ItemMaterialData.getMaterialInfo(items.get(0));
+            }
+        } else if (object instanceof Ingredient ingredient) {
+            return getIngredientMaterialInfo(ingredient);
+        }
+        return null;
+    }
+
+    public static @Nullable ItemMaterialInfo getIngredientMaterialInfo(Ingredient ingredient) {
+        ingredient = SizedIngredient.getInner(ingredient);
+        if (ingredient.isVanilla()) {
+            // parse the vanilla ingredients as safely as we can
+            for (var value : ((IngredientAccessor) ingredient).getValues()) {
+                if (value instanceof TagValueAccessor tag) {
+                    Collection<Holder<Item>> items = GTRegistries.tagContext().getTag(tag.getTag());
+                    if (!items.isEmpty()) {
+                        return ItemMaterialData.getMaterialInfo(items.iterator().next().get());
+                    }
+                } else if (value instanceof ItemValueAccessor item) {
+                    return ItemMaterialData.getMaterialInfo(item.getItem().getItem());
+                }
+            }
+        } else {
+            // we can't do much for modded ingredients. Just loop through the values and hope.
+            for (var stack : ingredient.getItems()) {
+                var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
+                if (ms != null) return ms;
             }
         }
-        return MaterialStack.EMPTY;
+        return null;
     }
 
     public static MaterialStack getMaterialStack(ItemStack itemStack) {
