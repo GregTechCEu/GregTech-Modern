@@ -11,15 +11,14 @@ import com.tterrag.registrate.providers.ProviderType;
 
 public class GregTechDatagen {
 
-    public static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.register("ex_blockstate",
+    // we only register this so the class gets loaded. the key gets overwritten in #initPre.
+    private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.register("ex_blockstate",
             (registrate, event, existing) -> new GTBlockstateProvider(registrate,
                     event.getGenerator().getPackOutput(), event.getExistingFileHelper(), existing));
 
     public static void initPre() {
-        // replace the default blockstate provider with ours
+        // replace some default providers with ours
         RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
-
-        GTRegistration.REGISTRATE.addDataGenerator(BLOCKSTATE_PROVIDER, BlockstateModelLoader::init);
     }
 
     public static void initPost() {
@@ -28,5 +27,8 @@ public class GregTechDatagen {
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.FLUID_TAGS, FluidTagLoader::init);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.ENTITY_TAGS, EntityTypeTagLoader::init);
         GTRegistration.REGISTRATE.addDataGenerator(ProviderType.LANG, LangHandler::init);
+
+        GTRegistration.REGISTRATE.addDataGenerator(ProviderType.BLOCKSTATE,
+                p -> BlockstateModelLoader.init((GTBlockstateProvider) p));
     }
 }

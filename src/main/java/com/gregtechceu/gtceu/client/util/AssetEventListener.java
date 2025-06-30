@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.util;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.Event;
+
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface

@@ -3,10 +3,13 @@ package com.gregtechceu.gtceu.syncdata;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+
 import com.lowdragmc.lowdraglib.syncdata.payload.ObjectTypedPayload;
+
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
