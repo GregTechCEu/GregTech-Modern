@@ -9,11 +9,13 @@
   ],
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/part/fluid_input_hatch_9x",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/uxv/bottom",
-        "side": "gtceu:block/casings/voltage/uxv/side",
-        "top": "gtceu:block/casings/voltage/uxv/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/fluid_input_hatch_9x",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+          "side": "gtceu:block/casings/voltage/uxv/side",
+          "top": "gtceu:block/casings/voltage/uxv/top"
+        }
       }
     }
   }

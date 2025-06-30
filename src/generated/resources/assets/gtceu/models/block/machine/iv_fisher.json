@@ -4,13 +4,15 @@
   "machine": "gtceu:iv_fisher",
   "variants": {
     "": {
-      "parent": "gtceu:block/overlay/2_layer/top_emissive",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/iv/bottom",
-        "overlay": "gtceu:block/overlay/machine/overlay_screen",
-        "overlay_emissive": "gtceu:block/overlay/machine/overlay_qtank_emissive",
-        "side": "gtceu:block/casings/voltage/iv/side",
-        "top": "gtceu:block/casings/voltage/iv/top"
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/top_emissive",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_screen",
+          "overlay_emissive": "gtceu:block/overlay/machine/overlay_qtank_emissive",
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
+        }
       }
     }
   }

@@ -9,19 +9,23 @@
   ],
   "variants": {
     "steel=false": {
-      "parent": "gtceu:block/machine/part/steam_hatch",
-      "textures": {
-        "bottom": "gtceu:block/casings/steam/bronze/bottom",
-        "side": "gtceu:block/casings/steam/bronze/side",
-        "top": "gtceu:block/casings/steam/bronze/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/bronze/bottom",
+          "side": "gtceu:block/casings/steam/bronze/side",
+          "top": "gtceu:block/casings/steam/bronze/top"
+        }
       }
     },
     "steel=true": {
-      "parent": "gtceu:block/machine/part/steam_hatch",
-      "textures": {
-        "bottom": "gtceu:block/casings/steam/steel/bottom",
-        "side": "gtceu:block/casings/steam/steel/side",
-        "top": "gtceu:block/casings/steam/steel/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/steam_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/steam/steel/bottom",
+          "side": "gtceu:block/casings/steam/steel/side",
+          "top": "gtceu:block/casings/steam/steel/top"
+        }
       }
     }
   }

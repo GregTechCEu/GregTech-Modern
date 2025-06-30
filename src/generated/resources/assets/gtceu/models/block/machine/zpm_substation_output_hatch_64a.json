@@ -9,11 +9,13 @@
   ],
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/part/energy_output_hatch_64a",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/zpm/bottom",
-        "side": "gtceu:block/casings/voltage/zpm/side",
-        "top": "gtceu:block/casings/voltage/zpm/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/energy_output_hatch_64a",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/zpm/bottom",
+          "side": "gtceu:block/casings/voltage/zpm/side",
+          "top": "gtceu:block/casings/voltage/zpm/top"
+        }
       }
     }
   }

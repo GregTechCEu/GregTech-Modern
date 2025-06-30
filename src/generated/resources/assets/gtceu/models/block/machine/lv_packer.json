@@ -4,27 +4,35 @@
   "machine": "gtceu:lv_packer",
   "variants": {
     "recipe_logic_status=idle": {
-      "parent": "gtceu:block/casings/voltage/lv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/packer/overlay_front"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/lv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/packer/overlay_front"
+        }
       }
     },
     "recipe_logic_status=suspend": {
-      "parent": "gtceu:block/casings/voltage/lv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/packer/overlay_front"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/lv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/packer/overlay_front"
+        }
       }
     },
     "recipe_logic_status=waiting": {
-      "parent": "gtceu:block/casings/voltage/lv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/packer/overlay_front_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/lv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/packer/overlay_front_active"
+        }
       }
     },
     "recipe_logic_status=working": {
-      "parent": "gtceu:block/casings/voltage/lv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/packer/overlay_front_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/lv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/packer/overlay_front_active"
+        }
       }
     }
   }

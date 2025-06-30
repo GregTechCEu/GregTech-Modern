@@ -3,7 +3,11 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:tungsten_steel_crate",
   "variants": {
-    "taped=false": "gtceu:block/machine/template/crate/metal_crate",
-    "taped=true": "gtceu:block/machine/template/crate/metal_crate_taped"
+    "taped=false": {
+      "model": "gtceu:block/machine/template/crate/metal_crate"
+    },
+    "taped=true": {
+      "model": "gtceu:block/machine/template/crate/metal_crate_taped"
+    }
   }
 }

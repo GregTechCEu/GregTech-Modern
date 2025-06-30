@@ -9,11 +9,13 @@
   "machine": "gtceu:opv_quantum_tank",
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/template/quantum/quantum_tank",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/opv/bottom",
-        "side": "gtceu:block/casings/voltage/opv/side",
-        "top": "gtceu:block/casings/voltage/opv/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/quantum/quantum_tank",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/opv/bottom",
+          "side": "gtceu:block/casings/voltage/opv/side",
+          "top": "gtceu:block/casings/voltage/opv/top"
+        }
       }
     }
   }

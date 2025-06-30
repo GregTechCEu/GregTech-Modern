@@ -3,6 +3,8 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:wood_drum",
   "variants": {
-    "": "gtceu:block/machine/template/drum/wooden_drum"
+    "": {
+      "model": "gtceu:block/machine/template/drum/wooden_drum"
+    }
   }
 }

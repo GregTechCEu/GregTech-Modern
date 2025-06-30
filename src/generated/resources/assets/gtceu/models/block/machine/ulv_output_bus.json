@@ -9,11 +9,13 @@
   ],
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/part/item_output_bus",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/ulv/bottom",
-        "side": "gtceu:block/casings/voltage/ulv/side",
-        "top": "gtceu:block/casings/voltage/ulv/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/item_output_bus",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
+          "side": "gtceu:block/casings/voltage/ulv/side",
+          "top": "gtceu:block/casings/voltage/ulv/top"
+        }
       }
     }
   }

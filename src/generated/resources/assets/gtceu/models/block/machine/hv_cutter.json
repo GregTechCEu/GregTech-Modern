@@ -4,31 +4,39 @@
   "machine": "gtceu:hv_cutter",
   "variants": {
     "recipe_logic_status=idle": {
-      "parent": "gtceu:block/casings/voltage/hv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/cutter/overlay_front",
-        "overlay_side": "gtceu:block/machines/cutter/overlay_side"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/cutter/overlay_front",
+          "overlay_side": "gtceu:block/machines/cutter/overlay_side"
+        }
       }
     },
     "recipe_logic_status=suspend": {
-      "parent": "gtceu:block/casings/voltage/hv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/cutter/overlay_front",
-        "overlay_side": "gtceu:block/machines/cutter/overlay_side"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/cutter/overlay_front",
+          "overlay_side": "gtceu:block/machines/cutter/overlay_side"
+        }
       }
     },
     "recipe_logic_status=waiting": {
-      "parent": "gtceu:block/casings/voltage/hv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/cutter/overlay_front_active",
-        "overlay_side": "gtceu:block/machines/cutter/overlay_side_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/cutter/overlay_front_active",
+          "overlay_side": "gtceu:block/machines/cutter/overlay_side_active"
+        }
       }
     },
     "recipe_logic_status=working": {
-      "parent": "gtceu:block/casings/voltage/hv",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/cutter/overlay_front_active",
-        "overlay_side": "gtceu:block/machines/cutter/overlay_side_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/cutter/overlay_front_active",
+          "overlay_side": "gtceu:block/machines/cutter/overlay_side_active"
+        }
       }
     }
   }

@@ -3,6 +3,8 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:tungsten_steel_drum",
   "variants": {
-    "": "gtceu:block/machine/template/drum/metal_drum"
+    "": {
+      "model": "gtceu:block/machine/template/drum/metal_drum"
+    }
   }
 }

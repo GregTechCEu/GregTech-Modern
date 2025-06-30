@@ -5,10 +5,12 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front",
-          "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_emissive"
+          }
         }
       },
       "when": {
@@ -17,10 +19,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_active_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_active_emissive"
+          }
         }
       },
       "when": {
@@ -29,10 +33,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_active_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_active_emissive"
+          }
         }
       },
       "when": {
@@ -41,10 +47,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front",
-          "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/generators/boiler/coal/overlay_front",
+            "overlay_front_emissive": "gtceu:block/generators/boiler/coal/overlay_front_emissive"
+          }
         }
       },
       "when": {

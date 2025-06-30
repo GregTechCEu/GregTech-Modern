@@ -9,11 +9,13 @@
   ],
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/part/dual_input_hatch",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/luv/bottom",
-        "side": "gtceu:block/casings/voltage/luv/side",
-        "top": "gtceu:block/casings/voltage/luv/top"
+      "model": {
+        "parent": "gtceu:block/machine/part/dual_input_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/luv/bottom",
+          "side": "gtceu:block/casings/voltage/luv/side",
+          "top": "gtceu:block/casings/voltage/luv/top"
+        }
       }
     }
   }

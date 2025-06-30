@@ -9,11 +9,13 @@
   "machine": "gtceu:zpm_quantum_tank",
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/template/quantum/quantum_tank",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/zpm/bottom",
-        "side": "gtceu:block/casings/voltage/zpm/side",
-        "top": "gtceu:block/casings/voltage/zpm/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/quantum/quantum_tank",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/zpm/bottom",
+          "side": "gtceu:block/casings/voltage/zpm/side",
+          "top": "gtceu:block/casings/voltage/zpm/top"
+        }
       }
     }
   }

@@ -4,32 +4,38 @@
   "machine": "gtceu:uxv_charger_4x",
   "variants": {
     "charger_state=finished": {
-      "parent": "gtceu:block/machine/template/sided/sided",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/uxv/bottom",
-        "overlay_front": "gtceu:block/machines/charger/overlay_charger_finished",
-        "overlay_front_emissive": "gtceu:block/machines/charger/overlay_charger_finished_emissive",
-        "side": "gtceu:block/casings/voltage/uxv/side",
-        "top": "gtceu:block/casings/voltage/uxv/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+          "overlay_front": "gtceu:block/machines/charger/overlay_charger_finished",
+          "overlay_front_emissive": "gtceu:block/machines/charger/overlay_charger_finished_emissive",
+          "side": "gtceu:block/casings/voltage/uxv/side",
+          "top": "gtceu:block/casings/voltage/uxv/top"
+        }
       }
     },
     "charger_state=idle": {
-      "parent": "gtceu:block/machine/template/sided/sided",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/uxv/bottom",
-        "overlay_front": "gtceu:block/machines/charger/overlay_charger_idle",
-        "side": "gtceu:block/casings/voltage/uxv/side",
-        "top": "gtceu:block/casings/voltage/uxv/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+          "overlay_front": "gtceu:block/machines/charger/overlay_charger_idle",
+          "side": "gtceu:block/casings/voltage/uxv/side",
+          "top": "gtceu:block/casings/voltage/uxv/top"
+        }
       }
     },
     "charger_state=running": {
-      "parent": "gtceu:block/machine/template/sided/sided",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/uxv/bottom",
-        "overlay_front": "gtceu:block/machines/charger/overlay_charger_running",
-        "overlay_front_emissive": "gtceu:block/machines/charger/overlay_charger_running_emissive",
-        "side": "gtceu:block/casings/voltage/uxv/side",
-        "top": "gtceu:block/casings/voltage/uxv/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/sided/sided",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+          "overlay_front": "gtceu:block/machines/charger/overlay_charger_running",
+          "overlay_front_emissive": "gtceu:block/machines/charger/overlay_charger_running_emissive",
+          "side": "gtceu:block/casings/voltage/uxv/side",
+          "top": "gtceu:block/casings/voltage/uxv/top"
+        }
       }
     }
   }

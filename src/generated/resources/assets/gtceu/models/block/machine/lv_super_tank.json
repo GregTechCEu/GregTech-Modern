@@ -9,11 +9,13 @@
   "machine": "gtceu:lv_super_tank",
   "variants": {
     "": {
-      "parent": "gtceu:block/machine/template/quantum/quantum_tank",
-      "textures": {
-        "bottom": "gtceu:block/casings/voltage/lv/bottom",
-        "side": "gtceu:block/casings/voltage/lv/side",
-        "top": "gtceu:block/casings/voltage/lv/top"
+      "model": {
+        "parent": "gtceu:block/machine/template/quantum/quantum_tank",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "side": "gtceu:block/casings/voltage/lv/side",
+          "top": "gtceu:block/casings/voltage/lv/top"
+        }
       }
     }
   }

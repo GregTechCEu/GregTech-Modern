@@ -5,10 +5,12 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/machines/furnace/overlay_front",
-          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/furnace/overlay_front",
+            "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+          }
         }
       },
       "when": {
@@ -17,10 +19,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+          }
         }
       },
       "when": {
@@ -29,10 +33,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/furnace/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_active_emissive"
+          }
         }
       },
       "when": {
@@ -41,10 +47,12 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_front": "gtceu:block/machines/furnace/overlay_front",
-          "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/furnace/overlay_front",
+            "overlay_front_emissive": "gtceu:block/machines/furnace/overlay_front_emissive"
+          }
         }
       },
       "when": {
@@ -53,71 +61,8 @@
     },
     {
       "apply": {
-        "elements": [
-          {
-            "faces": {
-              "down": {
-                "cullface": "down",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
-      },
-      "when": {
-        "steam_vent": "down"
-      }
-    },
-    {
-      "apply": {
-        "elements": [
-          {
-            "faces": {
-              "up": {
-                "cullface": "up",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 270
       },
       "when": {
         "steam_vent": "up"
@@ -125,146 +70,46 @@
     },
     {
       "apply": {
-        "elements": [
-          {
-            "faces": {
-              "north": {
-                "cullface": "north",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 90
       },
       "when": {
-        "steam_vent": "north"
+        "steam_vent": "down"
       }
     },
     {
       "apply": {
-        "elements": [
-          {
-            "faces": {
-              "south": {
-                "cullface": "south",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 270
       },
       "when": {
-        "steam_vent": "south"
+        "steam_vent": "left"
       }
     },
     {
       "apply": {
-        "elements": [
-          {
-            "faces": {
-              "west": {
-                "cullface": "west",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 90
       },
       "when": {
-        "steam_vent": "west"
+        "steam_vent": "right"
       }
     },
     {
       "apply": {
-        "elements": [
-          {
-            "faces": {
-              "east": {
-                "cullface": "east",
-                "texture": "#steam_vent",
-                "uv": [
-                  0.0,
-                  0.0,
-                  16.0,
-                  16.0
-                ]
-              }
-            },
-            "from": [
-              -0.002,
-              -0.002,
-              -0.002
-            ],
-            "to": [
-              16.002,
-              16.002,
-              16.002
-            ]
-          }
-        ],
-        "textures": {
-          "steam_vent": "gtceu:block/overlay/machine/overlay_steam_vent"
-        }
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent"
       },
       "when": {
-        "steam_vent": "east"
+        "steam_vent": "front"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 180
+      },
+      "when": {
+        "steam_vent": "back"
       }
     }
   ]

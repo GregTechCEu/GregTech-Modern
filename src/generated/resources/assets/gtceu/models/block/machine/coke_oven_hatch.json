@@ -6,6 +6,8 @@
     "particle": "#all"
   },
   "variants": {
-    "": "gtceu:block/machine/part/coke_oven_hatch"
+    "": {
+      "model": "gtceu:block/machine/part/coke_oven_hatch"
+    }
   }
 }

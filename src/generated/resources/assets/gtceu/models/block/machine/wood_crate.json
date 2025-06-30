@@ -3,7 +3,11 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:wood_crate",
   "variants": {
-    "taped=false": "gtceu:block/machine/template/crate/wooden_crate",
-    "taped=true": "gtceu:block/machine/template/crate/wooden_crate_taped"
+    "taped=false": {
+      "model": "gtceu:block/machine/template/crate/wooden_crate"
+    },
+    "taped=true": {
+      "model": "gtceu:block/machine/template/crate/wooden_crate_taped"
+    }
   }
 }

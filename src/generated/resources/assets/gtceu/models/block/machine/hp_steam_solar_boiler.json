@@ -5,9 +5,11 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+          }
         }
       },
       "when": {
@@ -16,9 +18,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+          }
         }
       },
       "when": {
@@ -27,9 +31,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+          }
         }
       },
       "when": {
@@ -38,9 +44,11 @@
     },
     {
       "apply": {
-        "parent": "gtceu:block/casings/steam/bricked_steel",
-        "textures": {
-          "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+          }
         }
       },
       "when": {

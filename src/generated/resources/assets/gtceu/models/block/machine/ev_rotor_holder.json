@@ -5,22 +5,28 @@
   "multipart": [
     {
       "apply": {
-        "parent": "gtceu:block/machine/template/rotor_holder/block",
-        "textures": {
-          "bottom": "gtceu:block/casings/voltage/ev/bottom",
-          "side": "gtceu:block/casings/voltage/ev/side",
-          "top": "gtceu:block/casings/voltage/ev/top"
+        "model": {
+          "parent": "gtceu:block/machine/template/rotor_holder/block",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/ev/bottom",
+            "side": "gtceu:block/casings/voltage/ev/side",
+            "top": "gtceu:block/casings/voltage/ev/top"
+          }
         }
       }
     },
     {
-      "apply": "gtceu:block/machine/template/rotor_holder/overlay",
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/overlay"
+      },
       "when": {
         "is_formed": "true"
       }
     },
     {
-      "apply": "gtceu:block/machine/template/rotor_holder/rotor_idle",
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/rotor_idle"
+      },
       "when": {
         "emissive_rotor": "false",
         "has_rotor": "true",
@@ -29,7 +35,9 @@
       }
     },
     {
-      "apply": "gtceu:block/machine/template/rotor_holder/rotor_idle_emissive",
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/rotor_idle_emissive"
+      },
       "when": {
         "emissive_rotor": "true",
         "has_rotor": "true",
@@ -38,7 +46,9 @@
       }
     },
     {
-      "apply": "gtceu:block/machine/template/rotor_holder/rotor_spinning",
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/rotor_spinning"
+      },
       "when": {
         "emissive_rotor": "false",
         "has_rotor": "true",
@@ -47,7 +57,9 @@
       }
     },
     {
-      "apply": "gtceu:block/machine/template/rotor_holder/rotor_spinning_emissive",
+      "apply": {
+        "model": "gtceu:block/machine/template/rotor_holder/rotor_spinning_emissive"
+      },
       "when": {
         "emissive_rotor": "true",
         "has_rotor": "true",

@@ -4,27 +4,35 @@
   "machine": "gtceu:ev_rock_crusher",
   "variants": {
     "recipe_logic_status=idle": {
-      "parent": "gtceu:block/casings/voltage/ev",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/ev",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+        }
       }
     },
     "recipe_logic_status=suspend": {
-      "parent": "gtceu:block/casings/voltage/ev",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/ev",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front"
+        }
       }
     },
     "recipe_logic_status=waiting": {
-      "parent": "gtceu:block/casings/voltage/ev",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/ev",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+        }
       }
     },
     "recipe_logic_status=working": {
-      "parent": "gtceu:block/casings/voltage/ev",
-      "textures": {
-        "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+      "model": {
+        "parent": "gtceu:block/casings/voltage/ev",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/rock_crusher/overlay_front_active"
+        }
       }
     }
   }

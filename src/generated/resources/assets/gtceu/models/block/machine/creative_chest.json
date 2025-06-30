@@ -8,6 +8,8 @@
   "loader": "gtceu:machine",
   "machine": "gtceu:creative_chest",
   "variants": {
-    "": "gtceu:block/machine/template/quantum/creative_container"
+    "": {
+      "model": "gtceu:block/machine/template/quantum/creative_container"
+    }
   }
 }
