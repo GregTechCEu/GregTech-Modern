@@ -176,8 +176,8 @@ public class GTMachineModels {
             for (RelativeDirection relative : RelativeDirection.VALUES) {
                 Direction dir = relative.global;
                 builder.part().modelFile(ventModel)
-                        .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 90 : 0)
-                        .rotationY(dir.getAxis().isVertical() ? 0 : (int) dir.toYRot() % 360)
+                        .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
+                        .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
                         .addModel()
                         .condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, relative);
             }

@@ -195,7 +195,6 @@ public class GTDynamicResourcePack implements PackResources {
         return null;
     }
 
-    @Nullable
     @Override
     public @Nullable IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {
