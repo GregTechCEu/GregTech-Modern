@@ -115,20 +115,31 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         return isHighPressure() ? 12F : 6F;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public @NotNull Direction getVentingDirection() {
         return getOutputFacing();
     }
 
-    @Override
-    public void setOutputFacing(@NotNull Direction outputFacing) {
-        super.setOutputFacing(outputFacing);
-
+    public void updateModelVentDirection() {
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
-                    getUpwardsFacing());
+            Direction upwardsDir = getUpwardsFacing();
+            // the up facing is already rotated if extended facing is enabled for the machine
+            if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
+                upwardsDir = upwardsDir.getOpposite();
+            }
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(), upwardsDir);
             setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+        }
+    }
+
+    @Override
+    public void setOutputFacing(@NotNull Direction outputFacing) {
+        var oldFacing = getOutputFacing();
+        super.setOutputFacing(outputFacing);
+        if (getOutputFacing() != oldFacing) {
+            updateModelVentDirection();
         }
     }
 
@@ -136,13 +147,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public void setFrontFacing(Direction facing) {
         var oldFacing = getFrontFacing();
         super.setFrontFacing(facing);
-        if (getFrontFacing() == oldFacing) return;
-
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
-                    getUpwardsFacing());
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+        if (getFrontFacing() != oldFacing) {
+            updateModelVentDirection();
         }
     }
 
@@ -150,13 +156,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
         var oldFacing = getUpwardsFacing();
         super.setUpwardsFacing(upwardsFacing);
-        if (getUpwardsFacing() == oldFacing) return;
-
-        MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
-                    getUpwardsFacing());
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+        if (getUpwardsFacing() != oldFacing) {
+            updateModelVentDirection();
         }
     }
 
