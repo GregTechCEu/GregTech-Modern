@@ -2,14 +2,19 @@ package com.gregtechceu.gtceu.data.model.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
+import com.gregtechceu.gtceu.core.mixins.forge.ConfiguredModelBuilderAccessor;
+import com.gregtechceu.gtceu.core.mixins.forge.ConfiguredModelListAccessor;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.BlockStateProvider.ConfiguredModelList;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import com.google.common.base.Preconditions;
@@ -39,7 +44,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     private final MachineDefinition owner;
     private final List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
     @Getter
-    private final Map<PartialState<T>, ModelFile> models = new LinkedHashMap<>();
+    private final Map<PartialState<T>, ConfiguredModelList> models = new LinkedHashMap<>();
     @Getter
     private final List<PartBuilder> parts = new ArrayList<>();
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
@@ -66,10 +71,13 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             missingStates.removeAll(coveredStates);
             Preconditions.checkState(missingStates.isEmpty(),
                     "Render state for machine %s does not cover all states. Missing: %s", owner, missingStates);
-            JsonObject variants = new JsonObject();
+            final JsonObject variants = new JsonObject();
             getModels().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(PartialState.comparingByProperties()))
-                    .forEach(entry -> variants.add(entry.getKey().toString(), modelToJson(entry.getValue())));
+                    .forEach(entry -> {
+                        variants.add(entry.getKey().toString(), configuredModelListToJSON(entry.getValue()));
+                    });
+
             json.add("variants", variants);
         }
         if (!getParts().isEmpty()) {
@@ -110,11 +118,46 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     public static JsonElement modelToJson(ModelFile model) {
+        // serialize nested models as objects instead of `"model": "dummy:dummy"`
         if (model instanceof ModelBuilder<?> builder) {
-            return builder.toJson();
+            var currentProvider = GTBlockstateProvider.getCurrentProvider();
+            // check if it's a nested model, and if not, only save the model name
+            if (currentProvider != null &&
+                    currentProvider.models().generatedModels.containsKey(builder.getLocation())) {
+                return new JsonPrimitive(builder.getLocation().toString());
+            } else {
+                return builder.toJson();
+            }
         } else {
             return new JsonPrimitive(model.getLocation().toString());
         }
+    }
+
+    public static JsonElement configuredModelListToJSON(ConfiguredModelList list) {
+        List<ConfiguredModel> models = ((ConfiguredModelListAccessor) list).gtceu$getModels();
+
+        if (models.size() == 1) {
+            return configuredModelToJSON(models.get(0), false);
+        } else {
+            JsonArray ret = new JsonArray();
+            for (ConfiguredModel m : models) {
+                ret.add(configuredModelToJSON(m, true));
+            }
+            return ret;
+        }
+    }
+
+    public static JsonObject configuredModelToJSON(ConfiguredModel model, boolean includeWeight) {
+        JsonObject modelJson = new JsonObject();
+        modelJson.add("model", modelToJson(model.model));
+
+        if (model.rotationX != 0) modelJson.addProperty("x", model.rotationX);
+        if (model.rotationY != 0) modelJson.addProperty("y", model.rotationY);
+        if (model.uvLock) modelJson.addProperty("uvlock", true);
+        if (includeWeight && model.weight != ConfiguredModel.DEFAULT_WEIGHT) {
+            modelJson.addProperty("weight", model.weight);
+        }
+        return modelJson;
     }
 
     /**
@@ -149,21 +192,21 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
-     * Assign a model to a given {@link PartialState partial state}.
+     * Assign some models to a given {@link PartialState partial state}.
      *
-     * @param state The {@link PartialState partial state} for which to add the models
-     * @param model A model to add to this state
+     * @param state  The {@link PartialState partial state} for which to set the models
+     * @param models A set of models to assign to this state
      * @return this builder
      * @throws NullPointerException     if {@code state} is {@code null}
-     * @throws NullPointerException     if {@code model} is {@code null}
+     * @throws IllegalArgumentException if {@code models} is empty
      * @throws IllegalArgumentException if {@code state}'s owning block differs from the builder's
      */
-    public MachineModelBuilder<T> replaceModel(PartialState<T> state, ModelFile model) {
+    public MachineModelBuilder<T> replaceModels(PartialState<T> state, ConfiguredModel... models) {
         Preconditions.checkNotNull(state, "state must not be null");
-        Preconditions.checkNotNull(model, "model must not be null");
+        Preconditions.checkArgument(models.length > 0, "Cannot set models to empty array");
         Preconditions.checkArgument(state.getOwner() == owner,
-                "Cannot set model for a different block. Found: %s, Current: %s", state.getOwner(), owner);
-        this.models.put(state, model);
+                "Cannot set models for a different block. Found: %s, Current: %s", state.getOwner(), owner);
+        this.models.put(state, new ConfiguredModelList(models));
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
             if (state.test(fullState)) {
                 coveredStates.add(fullState);
@@ -173,37 +216,37 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
-     * Assign a model to a given {@link PartialState partial state}.
+     * Assign a models to a given {@link PartialState partial state}.
      *
-     * @param state The {@link PartialState partial state} for which to add the model
-     * @param model A model to add to this state
+     * @param state  The {@link PartialState partial state} for which to add the models
+     * @param models A set of models to add to this state
      * @return this builder
      * @throws IllegalArgumentException if {@code state} partially matches another
      *                                  state which has already been configured
-     * @see #replaceModel(PartialState, ModelFile)
+     * @see #replaceModels(PartialState, ConfiguredModel...)
      */
-    public MachineModelBuilder<T> addModel(PartialState<T> state, ModelFile model) {
+    public MachineModelBuilder<T> addModels(PartialState<T> state, ConfiguredModel... models) {
         Preconditions.checkArgument(disjointToAll(state),
-                "Cannot set model for a state for which a partial match has already been configured");
-        replaceModel(state, model);
+                "Cannot set models for a state for which a partial match has already been configured");
+        replaceModels(state, models);
         return this;
     }
 
     /**
-     * Assign a model to a given {@link PartialState partial state},
+     * Assign a models to a given {@link PartialState partial state},
      * throwing an exception if the state has already been configured. Otherwise,
-     * simply calls {@link #addModel(PartialState, ModelFile)}.
+     * simply calls {@link #addModels(PartialState, ConfiguredModel...)}.
      *
-     * @param state The {@link PartialState partial state} for which to set the model
-     * @param model A model to assign to this state
+     * @param state  The {@link PartialState partial state} for which to set the models
+     * @param models A set of models to assign to this state
      * @return this builder
      * @throws IllegalArgumentException if {@code state} has already been configured
-     * @see #addModel(PartialState, ModelFile)
+     * @see #addModels(PartialState, ConfiguredModel...)
      */
-    public MachineModelBuilder<T> setModel(PartialState<T> state, ModelFile model) {
-        Preconditions.checkArgument(!models.containsKey(state),
-                "Cannot set model for a state that has already been configured: %s", state);
-        addModel(state, model);
+    public MachineModelBuilder<T> setModels(PartialState<T> state, ConfiguredModel... models) {
+        Preconditions.checkArgument(!this.models.containsKey(state),
+                "Cannot set models for a state that has already been configured: %s", state);
+        addModels(state, models);
         return this;
     }
 
@@ -216,6 +259,22 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     /**
+     * Creates a builder for models to assign to a {@link PartBuilder}, which when
+     * completed via {@link ConfiguredModel.Builder#addModel()} will assign the
+     * resultant set of models to the part and return it for further processing.
+     *
+     * @return the model builder
+     * @see ConfiguredModel.Builder
+     */
+    public ConfiguredModel.Builder<PartBuilder> part() {
+        return ConfiguredModelBuilderAccessor.builder(models -> {
+            PartBuilder part = new PartBuilder(new ConfiguredModelList(models));
+            this.parts.add(part);
+            return part;
+        }, ImmutableList.of());
+    }
+
+    /**
      * Creates a {@link PartBuilder} with the passed model and returns it for further processing.
      *
      * @param model the model to use
@@ -223,7 +282,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      * @see MachineModelBuilder#part(ResourceLocation)
      */
     public PartBuilder part(ModelFile model) {
-        PartBuilder part = new PartBuilder(model);
+        PartBuilder part = new PartBuilder(new ConfiguredModelList(new ConfiguredModel(model)));
         this.parts.add(part);
         return part;
     }
@@ -239,11 +298,15 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         return part(new ModelFile.ExistingModelFile(model, existingFileHelper));
     }
 
-    public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ModelFile> mapper) {
+    public MachineModelBuilder<T> forAllStatesModels(Function<MachineRenderState, ModelFile> mapper) {
+        return forAllStatesExcept(mapper.andThen(m -> ConfiguredModel.builder().modelFile(m).build()));
+    }
+
+    public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ConfiguredModel[]> mapper) {
         return forAllStatesExcept(mapper);
     }
 
-    public MachineModelBuilder<T> forAllStatesExcept(Function<MachineRenderState, ModelFile> mapper,
+    public MachineModelBuilder<T> forAllStatesExcept(Function<MachineRenderState, ConfiguredModel[]> mapper,
                                                      Property<?>... ignored) {
         Set<PartialState<T>> seen = new HashSet<>();
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
@@ -253,18 +316,18 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             }
             PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
             if (seen.add(partialState)) {
-                setModel(partialState, mapper.apply(fullState));
+                setModels(partialState, mapper.apply(fullState));
             }
         }
         return this;
     }
 
     // spotless:off
-    public MachineModelBuilder<T> replaceForAllStates(BiFunction<MachineRenderState, @Nullable ModelFile, ModelFile> mapper) {
+    public MachineModelBuilder<T> replaceForAllStates(BiFunction<MachineRenderState, @Nullable List<ConfiguredModel>, ConfiguredModel[]> mapper) {
         return replaceForAllStatesExcept(mapper);
     }
 
-    public MachineModelBuilder<T> replaceForAllStatesExcept(BiFunction<MachineRenderState, @Nullable ModelFile, ModelFile> mapper,
+    public MachineModelBuilder<T> replaceForAllStatesExcept(BiFunction<MachineRenderState, @Nullable List<ConfiguredModel>, ConfiguredModel[]> mapper,
                                                             Property<?>... ignored) {
         Set<PartialState<T>> seen = new HashSet<>();
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
@@ -274,7 +337,10 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             }
             PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
             if (seen.add(partialState)) {
-                replaceModel(partialState, mapper.apply(fullState, getModels().get(partialState)));
+                ConfiguredModelListAccessor old = (ConfiguredModelListAccessor) getModels().get(partialState);
+                List<ConfiguredModel> oldModels = old != null ? old.gtceu$getModels() : null;
+
+                replaceModels(partialState, mapper.apply(fullState, oldModels));
             }
         }
         return this;
@@ -323,15 +389,43 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         }
 
         /**
-         * Set this variant's model, and return the parent builder.
+         * Add models to the current state's variant. For use when it's more convenient
+         * to add multiple sets of models, as a replacement for
+         * {@link #setModels(ConfiguredModel...)}.
+         *
+         * @param models The models to add.
+         * @return {@code this}
+         * @throws NullPointerException If the parent builder is {@code null}
+         * @see #setModels(ConfiguredModel...)
+         */
+        public PartialState<B> addModels(ConfiguredModel... models) {
+            checkValidOwner();
+            outerBuilder.addModels(this, models);
+            return this;
+        }
+
+        /**
+         * Set this variant's models and returns the parent builder.
+         *
+         * @param models The models to set
+         * @return The parent builder instance
+         * @throws NullPointerException If the parent builder is {@code null}
+         */
+        public MachineModelBuilder<B> setModels(ConfiguredModel... models) {
+            checkValidOwner();
+            return outerBuilder.setModels(this, models);
+        }
+
+        /**
+         * Set this variant's model and return the parent builder.
          *
          * @param model The model to set
          * @return The parent builder instance
          * @throws NullPointerException If the parent builder is {@code null}
+         * @see #setModels(ConfiguredModel...)
          */
         public MachineModelBuilder<B> setModel(ModelFile model) {
-            checkValidOwner();
-            return outerBuilder.setModel(this, model);
+            return setModels(ConfiguredModel.builder().modelFile(model).build());
         }
 
         @Override
@@ -383,35 +477,37 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 SortedSet<Property<?>> propUniverse = new TreeSet<>(s1.getSetStates().comparator().reversed());
                 propUniverse.addAll(s1.getSetStates().keySet());
                 propUniverse.addAll(s2.getSetStates().keySet());
+
+                int total = 0;
                 for (Property<?> prop : propUniverse) {
                     Comparable val1 = s1.getSetStates().get(prop);
                     Comparable val2 = s2.getSetStates().get(prop);
-                    if (val1 == null && val2 != null) {
-                        return -1;
-                    } else if (val2 == null && val1 != null) {
-                        return 1;
-                    } else if (val1 != null && val2 != null) {
-                        int cmp = val1.compareTo(val2);
-                        if (cmp != 0) {
-                            return cmp;
-                        }
+                    if (val1 == val2) {
+                        continue;
+                    }
+                    if (val1 == null) {
+                        total -= 1;
+                    } else if (val2 == null) {
+                        total += 1;
+                    } else {
+                        total += val1.compareTo(val2);
                     }
                 }
-                return 0;
+                return total;
             };
         }
     }
 
     public class PartBuilder {
 
-        public ModelFile model;
+        public ConfiguredModelList models;
         public boolean useOr;
         public final Multimap<Property<?>, Comparable<?>> conditions = MultimapBuilder.linkedHashKeys()
                 .arrayListValues().build();
         public final List<ConditionGroup> nestedConditionGroups = new ArrayList<>();
 
-        private PartBuilder(ModelFile model) {
-            this.model = model;
+        private PartBuilder(ConfiguredModelList models) {
+            this.models = models;
         }
 
         /**
@@ -480,7 +576,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 
         /**
          * Allows having nested groups of conditions if there are not any normal conditions.
-         * 
+         *
          * @throws IllegalStateException if {@code !conditions.isEmpty()}
          * @see PartBuilder#replaceWithNestedGroup()
          */
@@ -501,7 +597,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             } else if (!nestedConditionGroups.isEmpty()) {
                 out.add("when", groupsToJson(this.nestedConditionGroups, this.useOr));
             }
-            out.add("apply", modelToJson(this.model));
+            out.add("apply", configuredModelListToJSON(this.models));
             return out;
         }
 
@@ -601,7 +697,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             /**
              * Allows having nested groups of conditions.
              */
-            private final ConditionGroup replaceWithNestedGroup() {
+            private ConditionGroup replaceWithNestedGroup() {
                 this.conditions.clear();
                 ConditionGroup group = new ConditionGroup();
                 group.parent = this;
@@ -611,7 +707,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 
             /**
              * Allows having nested groups of conditions if there are not any normal conditions.
-             * 
+             *
              * @throws IllegalStateException if {@code !conditions.isEmpty()}
              * @see ConditionGroup#replaceWithNestedGroup()
              */

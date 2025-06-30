@@ -68,6 +68,8 @@
         "ae2.GenericStackInvAccessor",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
+        "forge.ConfiguredModelBuilderAccessor",
+        "forge.ConfiguredModelListAccessor",
         "forge.ModelBuilderAccessor",
         "jei.FluidHelperMixin",
         "ldlib.ModularWrapperWidgetMixin",

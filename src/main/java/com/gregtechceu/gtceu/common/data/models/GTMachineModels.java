@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
@@ -23,15 +24,13 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
+import com.gregtechceu.gtceu.core.mixins.forge.ConfiguredModelListAccessor;
 import com.gregtechceu.gtceu.core.mixins.forge.ModelBuilderAccessor;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
-import net.minecraft.data.models.blockstates.Variant;
-import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
@@ -83,7 +82,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
             var model = prov.models().getExistingFile(baseModel);
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
         };
     }
 
@@ -93,7 +92,7 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(parentModel));
             tieredHullTextures(model, builder.getOwner().getTier());
 
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
         };
     }
 
@@ -102,7 +101,7 @@ public class GTMachineModels {
             BlockModelBuilder model = prov.models().nested()
                     .parent(prov.models().getExistingFile(overlayModel));
             tieredHullTextures(model, builder.getOwner().getTier());
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
 
             builder.addReplaceableTextures("bottom", "top", "side");
         };
@@ -116,7 +115,7 @@ public class GTMachineModels {
                     .texture("overlay", overlayTexture)
                     .texture("overlay_emissive", emissiveOverlayTexture);
             tieredHullTextures(model, builder.getOwner().getTier());
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
 
             builder.addReplaceableTextures("bottom", "top", "side");
         };
@@ -137,7 +136,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelInitializer createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(state -> {
+            builder.forAllStatesModels(state -> {
                 boolean steel = state.hasProperty(SteamMachine.STEEL_PROPERTY) &&
                         state.getValue(SteamMachine.STEEL_PROPERTY);
 
@@ -212,7 +211,7 @@ public class GTMachineModels {
             BlockModelBuilder model = prov.models().nested()
                     .parent(prov.models().getExistingFile(overlayModel));
             casingTextures(model, baseCasingTexture);
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
 
             builder.addReplaceableTextures("bottom", "top", "side");
         };
@@ -250,7 +249,7 @@ public class GTMachineModels {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
-            builder.forAllStates(state -> {
+            builder.forAllStatesModels(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
@@ -276,7 +275,7 @@ public class GTMachineModels {
                     .texture("overlay_out_io", BLANK_TEXTURE);
             tieredHullTextures(model, builder.getOwner().getTier());
 
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
         };
     }
 
@@ -289,7 +288,7 @@ public class GTMachineModels {
     
     public static MachineBuilder.ModelInitializer createChargerModel() {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(renderState -> {
+            builder.forAllStatesModels(renderState -> {
                 ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
 
                 BlockModelBuilder model = prov.models().nested()
@@ -354,7 +353,7 @@ public class GTMachineModels {
             ModelFile baseModel = prov.models().getExistingFile(GTCEu.id(modelPath));
             ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
-            builder.forAllStates(state -> {
+            builder.forAllStatesModels(state -> {
                 if (state.hasProperty(CrateMachine.TAPED_PROPERTY) && state.getValue(CrateMachine.TAPED_PROPERTY)) {
                     return tapedModel;
                 } else {
@@ -366,7 +365,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelInitializer createDiodeModel() {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(renderState -> {
+            builder.forAllStatesModels(renderState -> {
                 DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
                 final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
                 final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
@@ -387,7 +386,7 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelInitializer createTransformerModel(int baseAmp) {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(renderState -> {
+            builder.forAllStatesModels(renderState -> {
                 boolean transformUp = renderState.getValue(TransformerMachine.TRANSFORM_UP_PROPERTY);
                 EnergyIOOverlay frontFace = (transformUp ? OUT_OVERLAYS_FOR_AMP : IN_OVERLAYS_FOR_AMP)
                         .get(baseAmp);
@@ -487,15 +486,14 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelInitializer createMaintenanceModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
-            builder.forAllStates(state -> {
+            builder.forAllStatesModels(state -> {
                 var baseModel = prov.models().nested()
                         .parent(prov.models().getExistingFile(overlayModel));
                 tieredHullTextures(baseModel, builder.getOwner().getTier());
 
                 if (!state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
-                    return baseModel;
+                    baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 }
-                baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 return baseModel;
             });
 
@@ -522,7 +520,7 @@ public class GTMachineModels {
             casingTexture(baseModel, "back", textures);
             casingTexture(baseModel, "side", textures);
 
-            builder.forAllStates(state -> {
+            builder.forAllStatesModels(state -> {
                 boolean damaged = state.getValue(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY);
                 boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
 
@@ -544,7 +542,7 @@ public class GTMachineModels {
                     .texture("overlay_emissive", OVERLAY_QTANK_EMISSIVE_TEXTURE);
             tieredHullTextures(model, builder.getOwner().getTier());
 
-            builder.forAllStates(state -> model);
+            builder.forAllStatesModels(state -> model);
         };
     }
 
@@ -589,16 +587,19 @@ public class GTMachineModels {
             final BlockModelBuilder model = builder.end();
             model.parent(prov.models().getExistingFile(prov.mcLoc("block/block")));
 
-            ModelFile parentModelFile = null;
+            BlockStateProvider.ConfiguredModelList modelList = null;
             if (!builder.getModels().isEmpty()) {
-                parentModelFile = builder.getModels().get(builder.partialState());
+                modelList = builder.getModels().get(builder.partialState());
             } else if (!builder.getParts().isEmpty()) {
-                parentModelFile = builder.getParts().get(0).model;
+                modelList = builder.getParts().get(0).models;
             }
-            if (parentModelFile != null) {
-                String texture = findParticleTexture(parentModelFile, prov.getExistingFileHelper());
-                if (texture != null) {
-                    model.texture("particle", texture);
+            if (modelList != null) {
+                var models = ((ConfiguredModelListAccessor) modelList).gtceu$getModels();
+                if (!models.isEmpty()) {
+                    String texture = findParticleTexture(models.get(0).model, prov.getExistingFileHelper());
+                    if (texture != null) {
+                        model.texture("particle", texture);
+                    }
                 }
             }
 
@@ -635,7 +636,7 @@ public class GTMachineModels {
         return null;
     }
 
-    public static BlockModelBuilder addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
+    public static ConfiguredModel[] addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
                                                         BlockModelBuilder model) {
         for (var entry : overlays.getTextures().entrySet()) {
             var face = entry.getKey();
@@ -651,7 +652,7 @@ public class GTMachineModels {
                 model.texture(OVERLAY_PREFIX + face.getName() + EMISSIVE_SUFFIX, overlayEmissive);
             }
         }
-        return model;
+        return ConfiguredModel.builder().modelFile(model).build();
     }
 
     public static ModelFile tieredHullModel(BlockModelProvider provider,

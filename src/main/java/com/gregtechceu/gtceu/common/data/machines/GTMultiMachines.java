@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
@@ -784,15 +785,20 @@ public class GTMultiMachines {
                             GTCEu.id("block/multiblock/large_miner"))
                             .andThen((ctx, prov, modelBuilder) -> {
                                 // replace the parent model for the formed large miner
-                                modelBuilder.replaceForAllStates((state, model) -> {
-                                    if (!state.getValue(LargeMinerMachine.IS_FORMED_PROPERTY)) return model;
+                                modelBuilder.replaceForAllStates((state, models) -> {
+                                    if (!state.getValue(LargeMinerMachine.IS_FORMED_PROPERTY)) {
+                                        if (models == null) return null;
+                                        else return models.toArray(ConfiguredModel[]::new);
+                                    }
 
                                     var parentModel = prov.models()
                                             .getExistingFile(GTCEu.id("block/machine/large_miner_active"));
 
-                                    assert model != null;
-                                    ((BlockModelBuilder) model).parent(parentModel);
-                                    return model;
+                                    assert models != null;
+                                    for (ConfiguredModel model : models) {
+                                        ((BlockModelBuilder) model.model).parent(parentModel);
+                                    }
+                                    return models.toArray(ConfiguredModel[]::new);
                                 });
                             }))
                     .tooltips(

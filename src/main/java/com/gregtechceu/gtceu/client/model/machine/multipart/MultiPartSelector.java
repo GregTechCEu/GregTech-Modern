@@ -1,19 +1,16 @@
 package com.gregtechceu.gtceu.client.model.machine.multipart;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.StateDefinition;
 
 import com.google.common.collect.Streams;
 import com.google.gson.*;
-import com.mojang.datafixers.util.Either;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -22,18 +19,15 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class MultiPartSelector {
+public class MultiPartSelector implements ModelState {
 
     private final PartCondition condition;
     @Getter
-    private final Either<ResourceLocation, UnbakedModel> model;
-    @Getter
-    @Setter
-    private UnbakedModel resolvedModel;
+    private final MultiVariantModel variant;
 
-    public MultiPartSelector(PartCondition condition, Either<ResourceLocation, UnbakedModel> model) {
+    public MultiPartSelector(PartCondition condition, MultiVariantModel variant) {
         this.condition = condition;
-        this.model = model;
+        this.variant = variant;
     }
 
     public Predicate<MachineRenderState> getPredicate(StateDefinition<MachineDefinition, MachineRenderState> definition) {
@@ -51,7 +45,7 @@ public class MultiPartSelector {
                                                  JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonobject = json.getAsJsonObject();
             return new MultiPartSelector(getSelector(jsonobject),
-                    MachineModelLoader.parseVariant(jsonobject.get("apply"), context));
+                    context.deserialize(jsonobject.get("apply"), MultiVariantModel.class));
         }
 
         private static PartCondition getSelector(JsonObject json) {

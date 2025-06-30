@@ -101,9 +101,10 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         for (int j = 0; j < bitset.length(); ++j) {
             if (bitset.get(j)) {
                 var model = this.selectors.get(j).getRight();
-                if (renderType == null || model.getRenderTypes(blockState, random, modelData).contains(renderType)) {
-                    quads.addAll(model.getQuads(blockState, direction, RandomSource.create(k),
-                            MultipartModelData.resolve(modelData, model), renderType));
+
+                ModelData partData = MultipartModelData.resolve(modelData, model);
+                if (renderType == null || model.getRenderTypes(blockState, random, partData).contains(renderType)) {
+                    quads.addAll(model.getQuads(blockState, direction, RandomSource.create(k), partData, renderType));
                 }
             }
         }
@@ -112,8 +113,7 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ChunkRenderTypeSet getRenderTypes(BlockState state,
-                                             RandomSource rand, ModelData modelData) {
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData modelData) {
         BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
         BlockPos pos = modelData.get(MODEL_DATA_POS);
 
@@ -124,7 +124,10 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         var selectors = getSelectors(machine.getRenderState());
         for (int i = 0; i < selectors.length(); i++) {
             if (selectors.get(i)) {
-                renderTypeSets.add(this.selectors.get(i).getRight().getRenderTypes(state, rand, modelData));
+                BakedModel model = this.selectors.get(i).getRight();
+
+                ModelData partData = MultipartModelData.resolve(modelData, model);
+                renderTypeSets.add(model.getRenderTypes(state, rand, partData));
             }
         }
         return ChunkRenderTypeSet.union(renderTypeSets);

@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
-import com.mojang.datafixers.util.Either;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,26 +25,24 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final MachineDefinition definition;
     @Getter
-    private final Map<String, Either<ResourceLocation, UnbakedModel>> unresolvedModels;
+    private final Map<MachineRenderState, UnbakedModel> models;
     @Nullable
     @Getter
     private final MultiPartUnbakedModel multiPart;
     @Getter
     private final List<DynamicRender<?, ?>> dynamicRenders;
-    @Getter
-    private final Map<MachineRenderState, UnbakedModel> resolvedModels = new HashMap<>();
     private final Set<String> replaceableTextures;
     private final Map<String, ResourceLocation> textureOverrides;
 
     public UnbakedMachineModel(MachineDefinition definition,
-                               Map<String, Either<ResourceLocation, UnbakedModel>> unresolvedModels,
+                               Map<MachineRenderState, UnbakedModel> models,
                                @Nullable MultiPartUnbakedModel multiPart,
                                List<DynamicRender<?, ?>> dynamicRenders,
 
                                Set<String> replaceableTextures,
                                Map<String, ResourceLocation> textureOverrides) {
         this.definition = definition;
-        this.unresolvedModels = unresolvedModels;
+        this.models = models;
         this.multiPart = multiPart;
         this.dynamicRenders = dynamicRenders;
         this.replaceableTextures = replaceableTextures;
@@ -64,7 +61,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
         final var spriteCapturer = new SpriteCapturer(spriteGetter);
 
         Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
-        resolvedModels.forEach((machineState, unbaked) -> {
+        models.forEach((machineState, unbaked) -> {
             baseModels.put(machineState, unbaked.bake(baker, spriteCapturer, modelState, modelLocation));
         });
         MultiPartBakedModel multiPart = this.multiPart == null ? null :
@@ -82,11 +79,6 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
 
     @Override
     public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver, IGeometryBakingContext context) {
-        this.resolvedModels.clear();
-        this.resolvedModels.putAll(MachineModelLoader.resolveStateModels(this, resolver));
-
-        for (UnbakedModel resolved : this.resolvedModels.values()) {
-            resolved.resolveParents(resolver);
-        }
+        MachineModelLoader.resolveStateModels(this, resolver);
     }
 }

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
-import com.gregtechceu.gtceu.data.GregTechDatagen;
 
 import net.minecraft.core.Direction;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
 import net.minecraft.server.packs.PackType;
@@ -21,10 +21,12 @@ import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
@@ -47,9 +49,19 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
         existing.put(ProviderType.BLOCKSTATE, this);
     }
 
+    private static GTBlockstateProvider CURRENT_PROVIDER = null;
+
+    public static GTBlockstateProvider getCurrentProvider() {
+        return CURRENT_PROVIDER;
+    }
+
     @Override
-    protected void registerStatesAndModels() {
-        parent.genData(GregTechDatagen.BLOCKSTATE_PROVIDER, this);
+    public @NotNull CompletableFuture<?> run(CachedOutput cache) {
+        CURRENT_PROVIDER = this;
+        var value = super.run(cache);
+
+        CURRENT_PROVIDER = null;
+        return value;
     }
 
     public ExistingFileHelper getExistingFileHelper() {
