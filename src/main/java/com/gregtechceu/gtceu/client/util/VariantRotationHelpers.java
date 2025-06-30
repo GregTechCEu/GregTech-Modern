@@ -47,13 +47,15 @@ public class VariantRotationHelpers {
     private VariantRotationHelpers() {}
 
     public static Variant rotateVariant(Variant variant, int xRot, int yRot, int zRot) {
-        var idx = indexFromAngles(xRot, yRot, zRot);
-
         return new Variant(
                 variant.getModelLocation(),
-                TRANSFORMS[idx],
+                getRotationTransform(xRot, yRot, zRot),
                 variant.isUvLocked(),
                 variant.getWeight());
+    }
+
+    public static Transformation getRotationTransform(int xRot, int yRot, int zRot) {
+        return TRANSFORMS[indexFromAngles(xRot, yRot, zRot)];
     }
 
     private static int indexFromAngles(int xRot, int yRot, int zRot) {

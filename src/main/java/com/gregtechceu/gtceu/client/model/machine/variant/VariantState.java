@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine.variant;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
-import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
+import com.gregtechceu.gtceu.client.util.VariantRotationHelpers;
 
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -69,16 +69,16 @@ public class VariantState implements ModelState {
             var rot = this.getBlockRotation(obj);
             boolean isUvLock = GsonHelper.getAsBoolean(obj, "uvlock", false);
             int weight = this.getWeight(obj);
-            return new VariantState(model, rot.getRotation(), isUvLock, weight);
+            return new VariantState(model, rot, isUvLock, weight);
         }
 
-        protected ExtendedBlockModelRotation getBlockRotation(JsonObject json) {
+        protected Transformation getBlockRotation(JsonObject json) {
             int x = GsonHelper.getAsInt(json, "x", 0);
             int y = GsonHelper.getAsInt(json, "y", 0);
             int z = GsonHelper.getAsInt(json, GTBlockstateProvider.Z_ROT_PROPERTY_NAME, 0);
-            ExtendedBlockModelRotation rotation = ExtendedBlockModelRotation.by(x, y, z);
+            Transformation rotation = VariantRotationHelpers.getRotationTransform(x, y, z);
             if (rotation != null) return rotation;
-            else throw new JsonParseException("Invalid ExtendedBlockModelRotation x: " + x + ", y: " + y);
+            else throw new JsonParseException("Invalid ExtendedBlockModelRotation x: " + x + ", y: " + y + ", z: " + z);
         }
 
         protected int getWeight(JsonObject json) {

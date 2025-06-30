@@ -5,6 +5,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.SimpleModelState;
 
 import com.google.gson.*;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,11 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
             WeightedBakedModel.Builder weightedBuilder = new WeightedBakedModel.Builder();
 
             for (VariantState variant : this.variants) {
-                BakedModel baked = variant.getResolvedModel().bake(baker, spriteGetter, variant, location);
+                // rotate the transform by both the variant and the original blockstate rotation
+                var actualRotation = state.getRotation().compose(variant.getRotation());
+                var actualState = new SimpleModelState(actualRotation, variant.isUvLocked());
+
+                BakedModel baked = variant.getResolvedModel().bake(baker, spriteGetter, actualState, location);
                 weightedBuilder.add(baked, variant.getWeight());
             }
             return weightedBuilder.build();
