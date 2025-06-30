@@ -166,14 +166,20 @@ public class GTMachineModels {
             if (!builder.getOwner().defaultRenderState().hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
                 return;
             }
-            for (Direction face : GTUtil.DIRECTIONS) {
-                var rotatedModel = prov.models().nested()
-                        .texture("steam_vent", VENT_OVERLAY)
-                        .element()
-                        .from(-0.002f, -0.002f, -0.002f).to(16.002f, 16.002f, 16.002f)
-                        .face(face).uvs(0, 0, 16, 16).texture("#steam_vent").cullface(face).end()
-                        .end();
-                builder.part(rotatedModel).condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, face);
+
+            ModelFile ventModel = prov.models().getBuilder(VENT_OVERLAY.toString())
+                    .texture("steam_vent", VENT_OVERLAY)
+                    .element()
+                    .from(-0.002f, -0.002f, -0.002f).to(16.002f, 16.002f, 16.002f)
+                    .face(Direction.NORTH).uvs(0, 0, 16, 16).texture("#steam_vent").cullface(Direction.NORTH).end()
+                    .end();
+            for (RelativeDirection relative : RelativeDirection.VALUES) {
+                Direction dir = relative.global;
+                builder.part().modelFile(ventModel)
+                        .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 90 : 0)
+                        .rotationY(dir.getAxis().isVertical() ? 0 : (int) dir.toYRot() % 360)
+                        .addModel()
+                        .condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, relative);
             }
         };
     }

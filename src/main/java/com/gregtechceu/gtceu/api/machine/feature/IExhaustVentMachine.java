@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 
@@ -27,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IExhaustVentMachine extends IMachineFeature {
 
-    DirectionProperty VENT_DIRECTION_PROPERTY = DirectionProperty.create("steam_vent");
+    EnumProperty<RelativeDirection> VENT_DIRECTION_PROPERTY = EnumProperty.create("steam_vent",
+            RelativeDirection.class);
 
     /**
      * @return the direction the vent faces

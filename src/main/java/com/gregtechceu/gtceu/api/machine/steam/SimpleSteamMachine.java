@@ -66,8 +66,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
+            // outputFacing will always be opposite the front facing on init
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, RelativeDirection.BACK));
         }
     }
 
@@ -126,19 +126,37 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
+                    getUpwardsFacing());
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
         }
     }
 
     @Override
     public void setFrontFacing(Direction facing) {
+        var oldFacing = getFrontFacing();
         super.setFrontFacing(facing);
+        if (getFrontFacing() == oldFacing) return;
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
-            Direction derotated = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection()).global;
-            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, derotated));
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
+                    getUpwardsFacing());
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+        }
+    }
+
+    @Override
+    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+        var oldFacing = getUpwardsFacing();
+        super.setUpwardsFacing(upwardsFacing);
+        if (getUpwardsFacing() == oldFacing) return;
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(),
+                    getUpwardsFacing());
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
         }
     }
 
