@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
@@ -52,6 +53,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public int parallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
+    // Lazy fields, since we need the recipe EUt very often
+    private long inputEUt = -1;
+    private long outputEUt = -1;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -203,6 +207,33 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
         }
         return ChanceLogic.OR;
+    }
+
+    // Technically should account for overflow but realistically not an issue.
+    public @Range(from = 0, to = Long.MAX_VALUE) long getInputEUt() {
+        if (inputEUt == -1) {
+            var inputs = tickInputs.get(EURecipeCapability.CAP);
+            if (inputs == null) return inputEUt = 0;
+            long eut = 0;
+            for (var content : inputs) {
+                eut += EURecipeCapability.CAP.of(content.content);
+            }
+            inputEUt = eut;
+        }
+        return inputEUt;
+    }
+
+    public @Range(from = 0, to = Long.MAX_VALUE) long getOutputEUt() {
+        if (outputEUt == -1) {
+            var outputs = tickOutputs.get(EURecipeCapability.CAP);
+            if (outputs == null) return outputEUt = 0;
+            long eut = 0;
+            for (var content : outputs) {
+                eut += EURecipeCapability.CAP.of(content.content);
+            }
+            outputEUt = eut;
+        }
+        return outputEUt;
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.

@@ -79,8 +79,4 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         }
         return handleRecipeInner(io, recipe, contents, simulate);
     }
-
-    default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
-
-    default void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 }

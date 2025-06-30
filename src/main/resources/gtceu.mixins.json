@@ -13,6 +13,7 @@
         "GuiGraphicsAccessor",
         "GuiGraphicsMixin",
         "GuiHeartTypeMixin",
+        "HumanoidArmorLayerMixin",
         "LevelRendererMixin",
         "ModelManagerMixin",
         "MultiPlayerGameModeMixin",

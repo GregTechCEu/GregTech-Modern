@@ -1061,6 +1061,14 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+        /**
+         * Use {@link ArmorProperty.Builder} to create an Armor Property.
+         */
+        public Builder armorStats(ArmorProperty armorProperty) {
+            properties.setProperty(PropertyKey.ARMOR, armorProperty);
+            return this;
+        }
+
         public Builder rotorStats(int power, int efficiency, float damage, int durability) {
             properties.setProperty(PropertyKey.ROTOR, new RotorProperty(power, efficiency, damage, durability));
             return this;

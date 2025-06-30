@@ -398,7 +398,7 @@ public interface GTRecipeSchema {
             if (configuration < 0 || configuration > IntCircuitBehaviour.CIRCUIT_MAX) {
                 throw new RecipeExceptionJS(String.format("Circuit configuration must be in the bounds 0 - 32"));
             }
-            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
+            return notConsumable(InputItem.of(IntCircuitIngredient.of(configuration), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {

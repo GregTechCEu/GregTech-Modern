@@ -24,38 +24,22 @@ import java.util.stream.Collectors;
 
 public class RecipeHelper {
 
-    public static long getInputEUt(GTRecipe recipe) {
-        return recipe.getTickInputContents(EURecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToLong(EURecipeCapability.CAP::of)
-                .sum();
-    }
-
-    public static long getOutputEUt(GTRecipe recipe) {
-        return recipe.getTickOutputContents(EURecipeCapability.CAP).stream()
-                .map(Content::getContent)
-                .mapToLong(EURecipeCapability.CAP::of)
-                .sum();
-    }
-
     public static long getRealEUt(@NotNull GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
+        long EUt = recipe.getInputEUt();
         if (EUt > 0) return EUt;
-        return -getOutputEUt(recipe);
+        return -recipe.getOutputEUt();
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt == 0) {
-            EUt = getOutputEUt(recipe);
-        }
+        long EUt = recipe.getInputEUt();
+        if (EUt == 0) EUt = recipe.getOutputEUt();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt == 0) EUt = getOutputEUt(recipe);
+        long EUt = recipe.getInputEUt();
+        if (EUt == 0) EUt = recipe.getOutputEUt();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
@@ -233,38 +217,6 @@ public class RecipeHelper {
         if (!match.isSuccess()) return match;
 
         return matchTickRecipe(holder, recipe);
-    }
-
-    public static void preWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        handlePre(holder, recipe, IO.IN);
-        handlePre(holder, recipe, IO.OUT);
-    }
-
-    public static void postWorking(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        handlePost(holder, recipe, IO.IN);
-        handlePost(holder, recipe, IO.OUT);
-    }
-
-    public static void handlePre(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
-        for (var cap : map.keySet()) {
-            var handlers = holder.getCapabilitiesFlat(io, cap);
-            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
-            for (var handler : handlers) {
-                handler.preWorking(holder, io, recipe);
-            }
-        }
-    }
-
-    public static void handlePost(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        var map = io == IO.IN ? recipe.inputs : recipe.outputs;
-        for (var cap : map.keySet()) {
-            var handlers = holder.getCapabilitiesFlat(io, cap);
-            if (handlers.isEmpty()) handlers = holder.getCapabilitiesFlat(IO.BOTH, cap);
-            for (var handler : handlers) {
-                handler.postWorking(holder, io, recipe);
-            }
-        }
     }
 
     /**

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -50,11 +49,11 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
             // }
             var recipe = capability.getLastRecipe();
             if (recipe != null) {
-                var EUt = RecipeHelper.getInputEUt(recipe);
-                var isInput = true;
+                long EUt = recipe.getInputEUt();
+                boolean isInput = true;
                 if (EUt == 0) {
                     isInput = false;
-                    EUt = RecipeHelper.getOutputEUt(recipe);
+                    EUt = recipe.getOutputEUt();
                 }
                 long absEUt = Math.abs(EUt);
                 String text = null;
