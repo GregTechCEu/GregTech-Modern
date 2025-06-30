@@ -59,10 +59,6 @@ public enum RelativeDirection implements StringRepresentable {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public Direction getActualDirection(Direction direction) {
-        return actualDirection.apply(direction);
-    }
-
     public RelativeDirection getOpposite() {
         return switch (this) {
             case UP -> DOWN;
@@ -72,6 +68,18 @@ public enum RelativeDirection implements StringRepresentable {
             case FRONT -> BACK;
             case BACK -> FRONT;
         };
+    }
+
+    public Direction getActualDirection(Direction direction) {
+        return actualDirection.apply(direction);
+    }
+
+    /**
+     * @param other The other direction to check
+     * @return Whether both directions are on the same axis
+     */
+    public boolean isSameAxis(RelativeDirection other) {
+        return this.global.getAxis() == other.global.getAxis();
     }
 
     public Vec3i applyVec3i(Direction facing) {
@@ -306,13 +314,5 @@ public enum RelativeDirection implements StringRepresentable {
                 return dir;
             }
         }
-    }
-
-    /**
-     * @param other The other direction to check
-     * @return Whether both directions are on the same axis
-     */
-    public boolean isSameAxis(RelativeDirection other) {
-        return this.equivalentGlobal.getAxis() == other.equivalentGlobal.getAxis();
     }
 }
