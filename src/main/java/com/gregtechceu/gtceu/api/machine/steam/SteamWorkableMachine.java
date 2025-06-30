@@ -64,7 +64,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public int activeRecipeType;
     @Persisted
     @DescSynced
-    @Getter
     @RequireRerender
     protected Direction outputFacing;
     @Persisted
@@ -131,13 +130,32 @@ public abstract class SteamWorkableMachine extends SteamMachine
         recipeLogic.inValid();
     }
 
+    public boolean hasOutputFacing() {
+        return true;
+    }
+
     /**
      * @param outputFacing the facing to set
      */
     public void setOutputFacing(@NotNull Direction outputFacing) {
-        if (!hasFrontFacing() || this.outputFacing != getFrontFacing()) {
+        if (hasOutputFacing() && (!hasFrontFacing() || this.outputFacing != getFrontFacing())) {
             this.outputFacing = outputFacing;
         }
+    }
+
+    public @Nullable Direction getOutputFacing() {
+        if (hasOutputFacing()) {
+            return outputFacing;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isFacingValid(Direction facing) {
+        if (facing == getOutputFacing()) {
+            return false;
+        }
+        return super.isFacingValid(facing);
     }
 
     @Override
