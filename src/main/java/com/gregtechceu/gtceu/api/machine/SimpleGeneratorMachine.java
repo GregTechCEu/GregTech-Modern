@@ -101,7 +101,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
-        long EUt = recipe.getOutputEUt();
+        long EUt = recipe.getOutputEUt().voltage();
         if (EUt <= 0) return ModifierFunction.NULL;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);

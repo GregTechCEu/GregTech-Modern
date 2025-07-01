@@ -19,10 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -96,7 +93,6 @@ public class GTRecipeBuilder {
     public GTRecipeType recipeType;
     @Setter
     public int duration = 100;
-    public int amperage = 1;
     @Setter
     public boolean perTick;
     @Setter
@@ -280,17 +276,16 @@ public class GTRecipeBuilder {
         return inputEU(eu, 1);
     }
 
-    public GTRecipeBuilder inputEU(long eu, int amperage) {
-        this.amperage = amperage;
-        return input(EURecipeCapability.CAP, eu);
+    public GTRecipeBuilder inputEU(long voltage, int amperage) {
+        return input(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 
     public GTRecipeBuilder EUt(long eu) {
         return EUt(eu, 1);
     }
 
-    public GTRecipeBuilder EUt(long eu, int amperage) {
-        if (eu == 0) {
+    public GTRecipeBuilder EUt(long voltage, int amperage) {
+        if (voltage == 0) {
             GTCEu.LOGGER.error("EUt can't be explicitly set to 0, id: {}", id);
         }
         if (amperage < 1) {
@@ -298,15 +293,14 @@ public class GTRecipeBuilder {
         }
         var lastPerTick = perTick;
         perTick = true;
-        if (eu > 0) {
+        if (voltage > 0) {
             tickInput.remove(EURecipeCapability.CAP);
-            inputEU(eu * amperage);
-        } else if (eu < 0) {
+            inputEU(voltage, amperage);
+        } else if (voltage < 0) {
             tickOutput.remove(EURecipeCapability.CAP);
-            outputEU(-eu * amperage);
+            outputEU(-voltage, amperage);
         }
         perTick = lastPerTick;
-        this.amperage = amperage;
         return this;
     }
 
@@ -314,9 +308,8 @@ public class GTRecipeBuilder {
         return outputEU(eu, 1);
     }
 
-    public GTRecipeBuilder outputEU(long eu, int amperage) {
-        this.amperage = amperage;
-        return output(EURecipeCapability.CAP, eu);
+    public GTRecipeBuilder outputEU(long voltage, int amperage) {
+        return output(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 
     public GTRecipeBuilder inputCWU(int cwu) {
@@ -1359,7 +1352,6 @@ public class GTRecipeBuilder {
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
-        json.addProperty("amperage", Math.abs(amperage));
         if (data != null && !data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(data));
         }
@@ -1549,15 +1541,15 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, amperage, recipeCategory);
+                conditions, List.of(), data, duration, recipeCategory);
     }
 
     //////////////////////////////////////
     // ******* Quick Query *******//
     //////////////////////////////////////
-    public long EUt() {
-        if (!tickInput.containsKey(EURecipeCapability.CAP)) return 0;
-        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return 0;
+    public EnergyStack EUt() {
+        if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
+        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
         return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content);
     }
 

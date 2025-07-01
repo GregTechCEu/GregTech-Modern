@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -24,23 +25,24 @@ import java.util.stream.Collectors;
 
 public class RecipeHelper {
 
-    public static long getRealEUt(@NotNull GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt > 0) return EUt;
-        return -recipe.getOutputEUt();
+    public static EnergyStack getRealEUt(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return stack;
+        return recipe.getOutputEUt().inverse();
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt == 0) EUt = recipe.getOutputEUt();
+        EnergyStack stack = recipe.getInputEUt();
+        if (stack.isEmpty()) stack = recipe.getOutputEUt();
+        long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
-        if (recipe.amperage > 1) EUt /= recipe.amperage;
         return GTUtil.getTierByVoltage(EUt);
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt == 0) EUt = recipe.getOutputEUt();
+        EnergyStack stack = recipe.getInputEUt();
+        if (stack.isEmpty()) stack = recipe.getOutputEUt();
+        long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);

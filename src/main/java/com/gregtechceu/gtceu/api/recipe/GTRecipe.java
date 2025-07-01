@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -19,7 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
@@ -51,12 +52,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public CompoundTag data;
     public int duration;
     public int parallels = 1;
-    public int amperage = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
     // Lazy fields, since we need the recipe EUt very often
-    private long inputEUt = -1;
-    private long outputEUt = -1;
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -71,11 +73,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    int amperage,
                     @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, amperage, recipeCategory);
+                conditions, ingredientActions, data, duration, recipeCategory);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -92,7 +93,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    int amperage,
                     @NotNull GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
@@ -111,7 +111,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
-        this.amperage = amperage;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
     }
 
@@ -130,7 +129,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, amperage, recipeCategory);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
@@ -214,30 +213,16 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     // Technically should account for overflow but realistically not an issue.
-    public @Range(from = 0, to = Long.MAX_VALUE) long getInputEUt() {
-        if (inputEUt == -1) {
-            var inputs = tickInputs.get(EURecipeCapability.CAP);
-            if (inputs == null) return inputEUt = 0;
-            long eut = 0;
-            for (var content : inputs) {
-                eut += EURecipeCapability.CAP.of(content.content);
-            }
-            inputEUt = eut;
+    protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
+        var outputs = contents.get(EURecipeCapability.CAP);
+        if (outputs == null) return EnergyStack.EMPTY;
+        long eu = 0, a = 0;
+        for (var content : outputs) {
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content);
+            eu += stack.getTotalEU();
+            a += stack.amperage();
         }
-        return inputEUt;
-    }
-
-    public @Range(from = 0, to = Long.MAX_VALUE) long getOutputEUt() {
-        if (outputEUt == -1) {
-            var outputs = tickOutputs.get(EURecipeCapability.CAP);
-            if (outputs == null) return outputEUt = 0;
-            long eut = 0;
-            for (var content : outputs) {
-                eut += EURecipeCapability.CAP.of(content.content);
-            }
-            outputEUt = eut;
-        }
-        return outputEUt;
+        return EnergyContainerList.calculateVoltageAmperage(eu, a);
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.

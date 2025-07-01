@@ -210,27 +210,23 @@ public class GTRecipeTypes {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() &&
                         recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList())
                                 .isEmpty()) {
-                    recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
-                            .inputFluids(GTMaterials.Water.getFluid((int) Math.max(4,
-                                    Math.min(1000, recipeBuilder.duration * recipeBuilder.EUt() / 320))))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
+                            .inputFluids(GTMaterials.Water.getFluid((int) Math.min(1000,
+                                    recipeBuilder.duration * recipeBuilder.EUt().voltage() / 320)))
                             .duration(recipeBuilder.duration * 2)
                             .save(provider);
 
-                    recipeBuilder
-                            .copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
-                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.max(3,
-                                    Math.min(750, recipeBuilder.duration * recipeBuilder.EUt() / 426))))
+                    recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
+                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.min(750,
+                                    recipeBuilder.duration * recipeBuilder.EUt().voltage() / 426)))
                             .duration((int) (recipeBuilder.duration * 1.5))
                             .save(provider);
 
                     // Don't call buildAndRegister as we are mutating the original recipe and already in the middle of a
                     // buildAndRegister call.
                     // Adding a second call will result in duplicate recipe generation attempts
-                    recipeBuilder
-                            .inputFluids(GTMaterials.Lubricant.getFluid((int) Math.max(1,
-                                    Math.min(250, recipeBuilder.duration * recipeBuilder.EUt() / 1280))))
-                            .duration(Math.max(1, recipeBuilder.duration));
+                    recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) Math.min(250,
+                            recipeBuilder.duration * recipeBuilder.EUt().voltage() / 1280)));
                 }
             });
 
@@ -530,8 +526,6 @@ public class GTRecipeTypes {
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
-                    long EUt = EURecipeCapability.CAP
-                            .of(recipeBuilder.tickInput.get(EURecipeCapability.CAP).get(0).getContent());
                     Content inputContent = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
                     FluidIngredient input = FluidRecipeCapability.CAP.of(inputContent.getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ?
@@ -549,7 +543,8 @@ public class GTRecipeTypes {
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
                                         BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath())
-                                .EUt(Math.max(1, EUt / 4)).circuitMeta(i + 1);
+                                .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4))
+                                .circuitMeta(i + 1);
 
                         int ratio = RecipeUtil.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR_INV);

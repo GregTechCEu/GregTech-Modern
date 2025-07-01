@@ -114,15 +114,15 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                 public long getInputAmperage() {
                     var lastRecipe = recipeLogic.getLastRecipe();
                     if (getEnergyCapacity() / 2 > getEnergyStored() && recipeLogic.isActive()) {
-                        if (lastRecipe != null && lastRecipe.amperage > 1) {
-                            return (long) (lastRecipe.amperage * 2L);
+                        if (lastRecipe != null) {
+                            return lastRecipe.getInputEUt().amperage() * 2L;
                         }
-                        return 2;
+                        return 2L;
                     } else {
-                        if (lastRecipe != null && lastRecipe.amperage > 1) {
-                            return (long) (lastRecipe.amperage);
+                        if (lastRecipe != null) {
+                            return lastRecipe.getInputEUt().amperage();
                         }
-                        return 1;
+                        return 1L;
                     }
                 }
             };

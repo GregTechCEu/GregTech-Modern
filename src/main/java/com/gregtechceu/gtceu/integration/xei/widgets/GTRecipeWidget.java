@@ -15,9 +15,11 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -102,13 +104,13 @@ public class GTRecipeWidget extends WidgetGroup {
 
         addWidget(group);
 
-        long EUt = recipe.getInputEUt();
-        if (EUt == 0) {
+        EnergyStack EUt = recipe.getInputEUt();
+        if (EUt.isEmpty()) {
             EUt = recipe.getOutputEUt();
         }
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
-        yOffset += EUt > 0 ? 20 : 0;
+        yOffset += EUt.voltage() > 0 ? 20 : 0;
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
             yOffset -= 10;
         }
@@ -147,8 +149,8 @@ public class GTRecipeWidget extends WidgetGroup {
         String tierText = GTValues.VNF[tier];
         int textsY = yOffset - 10;
         int duration = recipe.duration;
-        long inputEUt = recipe.getInputEUt();
-        long outputEUt = recipe.getOutputEUt();
+        EnergyStack inputEUt = recipe.getInputEUt();
+        EnergyStack outputEUt = recipe.getOutputEUt();
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
         for (Component text : texts) {
             textsY += 10;
@@ -156,7 +158,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (inputEUt > 0) {
+        if (!inputEUt.isEmpty()) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
                     tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {
@@ -167,33 +169,27 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
                     voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
                     cd -> setRecipeOC(cd.button, cd.isShiftClick))
-                    .setHoverTooltips(
-                            Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[minTier]),
-                            Component.translatable("gtceu.oc.tooltip.1"),
-                            Component.translatable("gtceu.oc.tooltip.2"),
-                            Component.translatable("gtceu.oc.tooltip.3"),
-                            Component.translatable("gtceu.oc.tooltip.4")));
+                    .setHoverTooltips(LangHandler.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])
+                            .toArray(Component[]::new)));
             addWidget(this.voltageTextWidget = voltageTextWidget);
         }
     }
 
     @NotNull
-    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration, long inputEUt, long outputEUt) {
+    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration,
+                                                     EnergyStack inputEUt, EnergyStack outputEUt) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
             texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
         }
-        var EUt = inputEUt;
+        EnergyStack eu = inputEUt;
         boolean isOutput = false;
-        if (EUt == 0) {
-            EUt = outputEUt;
+        if (eu.isEmpty()) {
+            eu = outputEUt;
             isOutput = true;
         }
-
-        EUt /= recipe.amperage;
-
-        if (EUt > 0) {
-            long euTotal = EUt * recipe.amperage * duration;
+        if (eu.voltage() > 0) {
+            long euTotal = eu.getTotalEU() * duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
@@ -205,13 +201,12 @@ public class GTRecipeWidget extends WidgetGroup {
                 texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
             texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
-                    FormattingUtil.formatNumbers(EUt)));
+                    FormattingUtil.formatNumbers(eu.voltage())));
         }
 
-        if (recipe.amperage > 1) {
-            texts.add(Component.translatable("gtceu.recipe.amperage", FormattingUtil.formatNumbers(recipe.amperage)));
-            texts.add(Component.translatable("gtceu.recipe.total_eu",
-                    FormattingUtil.formatNumbers(EUt * recipe.amperage)));
+        if (eu.amperage() > 1) {
+            texts.add(Component.translatable("gtceu.recipe.amperage", FormattingUtil.formatNumbers(eu.amperage())));
+            texts.add(Component.translatable("gtceu.recipe.total_eu", FormattingUtil.formatNumbers(eu.getTotalEU())));
         }
 
         return texts;
@@ -262,19 +257,19 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     private void setRecipeTextWidget(OverclockingLogic logic) {
-        long inputEUt = recipe.getInputEUt();
+        EnergyStack inputEUt = recipe.getInputEUt();
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
-        if (tier > minTier && inputEUt != 0) {
+        if (tier > minTier && !inputEUt.isEmpty()) {
             int ocs = tier - minTier;
             if (minTier == ULV) ocs--;
-            var params = new OverclockingLogic.OCParams(inputEUt, recipe.duration, ocs, 1);
+            var params = new OverclockingLogic.OCParams(inputEUt.voltage(), recipe.duration, ocs, 1);
             var result = logic.runOverclockingLogic(params, V[tier]);
             duration = (int) (duration * result.durationMultiplier());
-            inputEUt = (long) (inputEUt * result.eutMultiplier());
+            inputEUt = inputEUt.multiplyVoltage(result.eutMultiplier());
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
+        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, EnergyStack.EMPTY);
         for (int i = 0; i < texts.size(); i++) {
             recipeParaTexts.get(i).setComponent(texts.get(i));
         }
