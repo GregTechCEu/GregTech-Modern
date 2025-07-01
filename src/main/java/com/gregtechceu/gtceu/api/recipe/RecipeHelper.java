@@ -34,6 +34,7 @@ public class RecipeHelper {
         long EUt = recipe.getInputEUt();
         if (EUt == 0) EUt = recipe.getOutputEUt();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
+        if (recipe.amperage > 1) EUt /= recipe.amperage;
         return GTUtil.getTierByVoltage(EUt);
     }
 

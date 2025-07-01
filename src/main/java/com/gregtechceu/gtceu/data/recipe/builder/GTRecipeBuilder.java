@@ -96,6 +96,7 @@ public class GTRecipeBuilder {
     public GTRecipeType recipeType;
     @Setter
     public int duration = 100;
+    public int amperage = 1;
     @Setter
     public boolean perTick;
     @Setter
@@ -276,27 +277,45 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputEU(long eu) {
+        return inputEU(eu, 1);
+    }
+
+    public GTRecipeBuilder inputEU(long eu, int amperage) {
+        this.amperage = amperage;
         return input(EURecipeCapability.CAP, eu);
     }
 
     public GTRecipeBuilder EUt(long eu) {
+        return EUt(eu, 1);
+    }
+
+    public GTRecipeBuilder EUt(long eu, int amperage) {
         if (eu == 0) {
             GTCEu.LOGGER.error("EUt can't be explicitly set to 0, id: {}", id);
+        }
+        if (amperage < 1) {
+            GTCEu.LOGGER.error("Amperage must be a positive integer, id: {}", id);
         }
         var lastPerTick = perTick;
         perTick = true;
         if (eu > 0) {
             tickInput.remove(EURecipeCapability.CAP);
-            inputEU(eu);
+            inputEU(eu * amperage);
         } else if (eu < 0) {
             tickOutput.remove(EURecipeCapability.CAP);
-            outputEU(-eu);
+            outputEU(-eu * amperage);
         }
         perTick = lastPerTick;
+        this.amperage = amperage;
         return this;
     }
 
     public GTRecipeBuilder outputEU(long eu) {
+        return outputEU(eu, 1);
+    }
+
+    public GTRecipeBuilder outputEU(long eu, int amperage) {
+        this.amperage = amperage;
         return output(EURecipeCapability.CAP, eu);
     }
 
@@ -1340,6 +1359,7 @@ public class GTRecipeBuilder {
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
+        json.addProperty("amperage", Math.abs(amperage));
         if (data != null && !data.isEmpty()) {
             json.add("data", NBTToJsonConverter.getObject(data));
         }
@@ -1529,7 +1549,7 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory);
+                conditions, List.of(), data, duration, amperage, recipeCategory);
     }
 
     //////////////////////////////////////

@@ -54,6 +54,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             }
 
             recipeInfo.putLong("EUt", EUt);
+            recipeInfo.putInt("amperage", recipe.amperage);
             recipeInfo.putBoolean("isInput", isInput);
         }
 
@@ -69,6 +70,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             var recipeInfo = capData.getCompound("Recipe");
             if (!recipeInfo.isEmpty()) {
                 var EUt = recipeInfo.getLong("EUt");
+                var amperage = recipeInfo.getInt("amperage");
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
 

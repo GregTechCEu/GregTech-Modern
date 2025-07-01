@@ -51,6 +51,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public CompoundTag data;
     public int duration;
     public int parallels = 1;
+    public int amperage = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
     // Lazy fields, since we need the recipe EUt very often
@@ -70,10 +71,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
+                    int amperage,
                     @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, recipeCategory);
+                conditions, ingredientActions, data, duration, amperage, recipeCategory);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -90,6 +92,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
+                    int amperage,
                     @NotNull GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
@@ -108,6 +111,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
+        this.amperage = amperage;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
     }
 
@@ -126,7 +130,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
+                new ArrayList<>(ingredientActions), data, duration, amperage, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
