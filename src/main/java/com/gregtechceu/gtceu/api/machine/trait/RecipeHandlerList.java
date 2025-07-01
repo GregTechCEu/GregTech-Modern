@@ -66,7 +66,7 @@ public class RecipeHandlerList {
             allHandlers.add(handler);
             if (handler instanceof NotifiableRecipeHandlerTrait<?> rht) allHandlerTraits.add(rht);
         }
-        if (handlerIO == IO.OUT) sort();
+        if (handlerIO.support(IO.OUT)) sort();
     }
 
     private void sort() {
@@ -102,8 +102,8 @@ public class RecipeHandlerList {
     }
 
     public boolean isValid(IO extIO) {
-        if (this == NO_DATA || handlerIO == IO.NONE) return false;
-        return (extIO == IO.BOTH || handlerIO == IO.BOTH || extIO == handlerIO);
+        if (this == NO_DATA) return false;
+        return (handlerIO.support(extIO));
     }
 
     public long getPriority() {
