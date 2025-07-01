@@ -13,14 +13,12 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
-import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -31,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
@@ -302,10 +301,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        return contents.stream().map(content -> content.content)
+        List<Object> entryLists = contents.stream()
+                .map(Content::getContent)
                 .map(this::of)
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
+
+        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
+        return entryLists;
     }
 
     public Object createXEIContainer(List<?> contents) {

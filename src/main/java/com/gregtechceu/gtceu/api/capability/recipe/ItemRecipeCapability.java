@@ -418,19 +418,21 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        var entryLists = contents.stream()
+        List<Object> entryLists = contents.stream()
                 .map(Content::getContent)
                 .map(this::of)
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
 
-        List<ItemEntryList> scannerPossibilities = null;
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
-            scannerPossibilities = new ArrayList<>();
+            List<Object> scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
             ResearchManager.ResearchItem researchData = null;
-            for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+            for (Content stack : recipe.getOutputContents(this)) {
+                ItemStack[] stacks = this.of(stack.content).getItems();
+                if (stacks.length == 0 || stacks[0].isEmpty()) continue;
+
+                researchData = ResearchManager.readResearchId(stacks[0]);
                 if (researchData != null) break;
             }
             if (researchData != null) {
@@ -439,24 +441,27 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
-                        Content outputContent = r.getOutputContents(ItemRecipeCapability.CAP).get(0);
-                        ItemStack researchStack = ItemRecipeCapability.CAP.of(outputContent.content).getItems()[0];
-                        if (!cache.contains(researchStack)) {
+                        var outputs = r.getOutputContents(this);
+                        if (outputs.isEmpty()) continue;
+
+                        Content outputContent = outputs.get(0);
+                        ItemStack[] stacks = this.of(outputContent.content).getItems();
+                        if (stacks.length == 0) continue;
+
+                        ItemStack researchStack = stacks[0];
+                        if (!researchStack.isEmpty() && !cache.contains(researchStack)) {
                             cache.add(researchStack);
                             scannerPossibilities.add(ItemStackList.of(researchStack.copyWithCount(1)));
                         }
                     }
                 }
                 scannerPossibilities.add(entryLists.get(0));
+                entryLists = scannerPossibilities;
             }
         }
 
-        if (scannerPossibilities != null && !scannerPossibilities.isEmpty()) {
-            entryLists = scannerPossibilities;
-        }
-        while (entryLists.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) entryLists.add(null);
-
-        return new ArrayList<>(entryLists);
+        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
+        return entryLists;
     }
 
     public Object createXEIContainer(List<?> contents) {
