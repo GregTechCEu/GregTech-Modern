@@ -751,7 +751,7 @@ public class GTRecipeBuilder {
         if (configuration < 0 || configuration > IntCircuitBehaviour.CIRCUIT_MAX) {
             GTCEu.LOGGER.error("Circuit configuration must be in the bounds 0 - 32");
         }
-        return notConsumable(IntCircuitIngredient.circuitInput(configuration));
+        return notConsumable(IntCircuitIngredient.of(configuration));
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {

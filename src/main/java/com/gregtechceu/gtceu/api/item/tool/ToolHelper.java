@@ -42,6 +42,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
@@ -168,6 +169,16 @@ public class ToolHelper {
             var entry = GTMaterialItems.TOOL_ITEMS.get(material, toolType);
             if (entry != null) {
                 return entry.get().get();
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
+        if (material.hasProperty(PropertyKey.ARMOR)) {
+            var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
+            if (entry != null) {
+                return entry.get().getDefaultInstance();
             }
         }
         return ItemStack.EMPTY;

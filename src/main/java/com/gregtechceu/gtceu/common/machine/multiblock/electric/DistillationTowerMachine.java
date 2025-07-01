@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
@@ -22,7 +23,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
@@ -128,24 +128,29 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         super.onStructureInvalid();
     }
 
-    public int limitParallel(GTRecipe recipe, int multiplier) {
+    @Override
+    public int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick) {
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        var maxAmount = recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
+        var contents = (tick ? recipe.tickInputs : recipe.inputs).get(FluidRecipeCapability.CAP);
+        if (contents == null || contents.isEmpty()) return multiplier;
+
+        int maxAmount = contents.stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .map(i -> i.getStacks()[0])
-                .mapToInt(FluidStack::getAmount)
+                .mapToInt(FluidIngredient::getAmount)
                 .max()
                 .orElse(0);
 
         if (maxAmount == 0) return multiplier;
+        if (multiplier > Integer.MAX_VALUE / maxAmount) {
+            maxMultiplier = multiplier = Integer.MAX_VALUE / maxAmount;
+        }
 
         while (minMultiplier != maxMultiplier) {
-            if (multiplier > Integer.MAX_VALUE / maxAmount) multiplier = Integer.MAX_VALUE / maxAmount;
-            GTRecipe copy = recipe.copy(ContentModifier.multiplier(multiplier), false);
+            GTRecipe copy = modifyOutputs(recipe, ContentModifier.multiplier(multiplier));
             boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE);
             int[] bin = ParallelLogic.adjustMultiplier(filled, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
@@ -153,6 +158,15 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             maxMultiplier = bin[2];
         }
         return multiplier;
+    }
+
+    private static GTRecipe modifyOutputs(GTRecipe recipe, ContentModifier cm) {
+        return new GTRecipe(recipe.recipeType, recipe.id, recipe.inputs, cm.applyContents(recipe.outputs),
+                recipe.tickInputs, cm.applyContents(recipe.tickOutputs), recipe.inputChanceLogics,
+                recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.recipeCategory);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {

@@ -125,10 +125,11 @@ public class GTDynamicResourcePack implements PackResources {
         try {
             Path file;
             if (subdir != null) {
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png"); // assume PNG
+                // assume PNG
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png");
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
-                                                                                // if a full path is given.
+                // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
             }
             Files.createDirectories(file.getParent());
             try (OutputStream output = Files.newOutputStream(file)) {
@@ -142,9 +143,13 @@ public class GTDynamicResourcePack implements PackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
+        if (elements.length > 0 && elements[0].equals("pack.png")) {
+            return () -> GTCEu.class.getResourceAsStream("/icon.png");
+        }
         return null;
     }
 
+    @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.CLIENT_RESOURCES) {

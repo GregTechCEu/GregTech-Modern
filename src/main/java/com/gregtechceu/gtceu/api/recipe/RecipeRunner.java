@@ -109,9 +109,7 @@ class RecipeRunner {
     }
 
     private RecipeHandlingResult handleContents() {
-        var result = handleContentsInternal(io);
-        if (result.isSuccess()) return result;
-        return handleContentsInternal(IO.BOTH);
+        return handleContentsInternal(io);
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {

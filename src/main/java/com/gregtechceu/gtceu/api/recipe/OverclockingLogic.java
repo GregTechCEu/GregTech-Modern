@@ -5,9 +5,13 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.google.common.math.IntMath;
 import org.jetbrains.annotations.NotNull;
+
+import java.math.RoundingMode;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -63,8 +67,8 @@ public interface OverclockingLogic {
      * @param shouldParallel whether the OC Logic should parallel or not
      * @return A {@link ModifierFunction} describing how the OC application should modify the recipe
      */
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe,
-                                                  long maxVoltage, boolean shouldParallel) {
+    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage,
+                                                  boolean shouldParallel) {
         long EUt = Math.abs(RecipeHelper.getRealEUt(recipe));
         if (EUt == 0) return ModifierFunction.IDENTITY;
 
@@ -77,10 +81,19 @@ public interface OverclockingLogic {
         int maxParallels;
         if (!shouldParallel || this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // don't parallel
             maxParallels = 1;
-        } else if ((Math.pow(PERFECT_DURATION_FACTOR, OCs) * recipe.duration) > 1) {
-            maxParallels = 512; // if duration probably won't go below 1, give default overhead to save time
         } else {
-            maxParallels = ParallelLogic.getParallelAmount(machine, recipe, Integer.MAX_VALUE);
+            // lg = floor(log_4(duration)), which is how many OCs it takes to get duration < 4 with perfect duration
+            // factor
+            // If OCs <= lg, duration probably won't go below 4
+            // If OCs > lg, then we could have 4^(OCs - lg) parallels
+            // Note that 4^x = (2^2)^x = 2^(2x) = 1 << 2x
+            int lg = IntMath.log2(recipe.duration, RoundingMode.FLOOR) / 2;
+            if (lg > OCs) {
+                maxParallels = 16;
+            } else {
+                int p = GTMath.saturatedCast((1L << (2 * (OCs - lg))) + 1);
+                maxParallels = ParallelLogic.getParallelAmount(machine, recipe, p);
+            }
         }
 
         OCParams params = new OCParams(EUt, recipe.duration, OCs, maxParallels);
@@ -88,8 +101,7 @@ public interface OverclockingLogic {
         return result.toModifier();
     }
 
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe,
-                                                  long maxVoltage) {
+    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage) {
         return getModifier(machine, recipe, maxVoltage, true);
     }
 
@@ -109,8 +121,7 @@ public interface OverclockingLogic {
      * @param voltageFactor  the factor to multiply voltage by
      * @return the result of the overclock
      */
-    static OCResult standardOC(OCParams params, long maxVoltage, double durationFactor,
-                               double voltageFactor) {
+    static OCResult standardOC(OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
@@ -202,8 +213,7 @@ public interface OverclockingLogic {
      * @param voltageFactor  the factor to multiply voltage by
      * @return the result of the overclock
      */
-    static OCResult subTickParallelOC(OCParams params, long maxVoltage, double durationFactor,
-                                      double voltageFactor) {
+    static OCResult subTickParallelOC(OCParams params, long maxVoltage, double durationFactor, double voltageFactor) {
         double duration = params.duration;
         double eut = params.eut;
         int ocAmount = params.ocAmount;
