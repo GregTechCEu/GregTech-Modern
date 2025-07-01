@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
-import com.google.gson.JsonElement;
 import dev.latvian.mods.kubejs.core.IngredientKJS;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
@@ -17,89 +15,87 @@ import dev.latvian.mods.kubejs.recipe.OutputReplacement;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import dev.latvian.mods.rhino.NativeObject;
-
-import java.util.Map;
+import dev.latvian.mods.kubejs.util.MapJS;
+import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.Wrapper;
+import org.jetbrains.annotations.Nullable;
 
 public class ExtendedOutputItem extends OutputItem implements OutputReplacement {
 
     public SizedIngredient ingredient;
 
-    public ExtendedOutputItem(Ingredient ingredient, int count) {
-        super(((IngredientKJS) ingredient).kjs$getFirst().copyWithCount(count), Double.NaN, null);
-        // reset the ingredient if it's an int provider.
-        if (ingredient instanceof IntProviderIngredient intProvider) {
-            intProvider.setItemStacks(null);
-            intProvider.setSampledCount(-1);
-        }
+    public ExtendedOutputItem(Ingredient ingredient, int count, IntProvider rolls) {
+        super(((IngredientKJS) ingredient).kjs$getFirst().copyWithCount(count), Double.NaN, rolls);
         this.ingredient = SizedIngredient.create(ingredient, count);
     }
 
-    public ExtendedOutputItem(ItemStack stack) {
-        super(stack, Double.NaN, null);
-        this.ingredient = SizedIngredient.create(StrictNBTIngredient.of(stack));
+    public ExtendedOutputItem(ItemStack stack, IntProvider rolls) {
+        super(stack, Double.NaN, rolls);
+        this.ingredient = SizedIngredient.create(stack);
     }
 
-    private ExtendedOutputItem(OutputItem item) {
-        this(Ingredient.of(item.item), item.getCount());
+    public static ExtendedOutputItem of(Ingredient ingredient, int count) {
+        if (ingredient instanceof SizedIngredient sized) {
+            ingredient = sized.getInner();
+            if (count == 1) return of(ingredient, sized.getAmount());
+        }
+        IntProvider rolls = null;
+        if (ingredient instanceof IntProviderIngredient intProvider) {
+            rolls = intProvider.getCountProvider();
+            ingredient = intProvider.getInner();
+        }
+        return new ExtendedOutputItem(ingredient, count, rolls);
     }
 
     public static ExtendedOutputItem of(Object o) {
-        if (o instanceof ExtendedOutputItem extendedOutput) {
-            return extendedOutput;
-        } else if (o instanceof ItemStack stack) {
-            if (stack.hasTag()) {
-                return new ExtendedOutputItem(StrictNBTIngredient.of(stack), stack.getCount());
-            } else {
-                return new ExtendedOutputItem(Ingredient.of(stack), stack.getCount());
-            }
-        } else if (o instanceof InputItem input) {
-            return new ExtendedOutputItem(input.ingredient, input.count);
-        } else if (o instanceof OutputItem output) {
-            return ExtendedOutputItem.fromOutputItem(output);
-        } else if (o instanceof NativeObject nativeObject) {
-            InputItem input = InputItem.of(nativeObject);
-            return new ExtendedOutputItem(input.ingredient, input.count);
-        } else if (o instanceof JsonElement json) {
-            InputItem input = InputItem.of(json);
-            return new ExtendedOutputItem(input.ingredient, input.count);
-        } else if (o instanceof CompoundTag tag) {
-            InputItem input = InputItem.of(tag);
-            return new ExtendedOutputItem(input.ingredient, input.count);
-        } else if (o instanceof Map<?, ?> map) {
-            InputItem input = InputItem.of(map);
-            return new ExtendedOutputItem(input.ingredient, input.count);
+        return of(o, null);
+    }
+
+    public static ExtendedOutputItem of(Object o, @Nullable RecipeJS recipe) {
+        if (o instanceof Wrapper w) {
+            o = w.unwrap();
         }
 
-        OutputItem output = OutputItem.of(o);
-        if (output.item.hasTag()) {
-            return new ExtendedOutputItem(StrictNBTIngredient.of(output.item), output.getCount());
+        if (o instanceof ExtendedOutputItem extendedOutput) {
+            return extendedOutput;
+        } else if (o instanceof InputItem input) {
+            return ExtendedOutputItem.of(input.ingredient, input.count);
+        } else if (o instanceof IntProviderIngredient intProvider) {
+            return new ExtendedOutputItem(intProvider.getInner(), 1, intProvider.getCountProvider());
         }
-        return new ExtendedOutputItem(output);
+
+        OutputItem item = recipe != null ? recipe.readOutputItem(o) : OutputItem.of(o);;
+        IntProvider rolls = item.rolls;
+
+        var map = MapJS.of(o);
+        if (map != null && map.containsKey("count_provider")) {
+            IntProvider intProvider = UtilsJS.intProviderOf(map.get("count_provider"));
+            if (!(intProvider instanceof ConstantInt c && c.getValue() == 0)) {
+                rolls = intProvider;
+            }
+        }
+        return new ExtendedOutputItem(item.item, rolls);
     }
 
     public static ExtendedOutputItem fromOutputItem(OutputItem item) {
         if (item instanceof ExtendedOutputItem extended) {
             return extended;
         }
-        return new ExtendedOutputItem(item);
+        return new ExtendedOutputItem(item.item, item.rolls);
     }
 
     @Override
     public OutputItem withCount(int count) {
-        ingredient = SizedIngredient.create(ingredient.getInner(), count);
-        return super.withCount(count);
+        return new ExtendedOutputItem(ingredient.getInner(), count, rolls);
     }
 
     @Override
     public OutputItem withRolls(IntProvider rolls) {
-        IntProviderIngredient ingredient;
-        if (this.ingredient.getInner() instanceof IntProviderIngredient intProvider) {
-            ingredient = IntProviderIngredient.of(intProvider.getInner(), rolls);
-        } else {
-            ingredient = IntProviderIngredient.of(this.ingredient.getInner(), rolls);
+        Ingredient ingredient = this.ingredient.getInner();
+        if (ingredient instanceof IntProviderIngredient intProvider) {
+            ingredient = intProvider.getInner();
         }
-        return new ExtendedOutputItem(ingredient, this.ingredient.getAmount());
+        return new ExtendedOutputItem(ingredient, 1, rolls);
     }
 
     @Override
@@ -109,10 +105,10 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
 
     @Override
     public Object replaceOutput(RecipeJS recipe, ReplacementMatch match, OutputReplacement original) {
-        if (original instanceof ExtendedOutputItem o) {
-            return new ExtendedOutputItem(this.ingredient, o.getCount());
+        if (original instanceof OutputItem o) {
+            return new ExtendedOutputItem(this.ingredient.getInner(), o.getCount(), o.rolls);
         }
-        return super.replaceOutput(recipe, match, original);
+        return new ExtendedOutputItem(this.ingredient.getInner(), this.getCount(), rolls);
     }
 
     @SuppressWarnings("deprecation")

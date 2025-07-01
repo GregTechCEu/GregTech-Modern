@@ -36,6 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -135,6 +136,7 @@ public class ToolEventHandlers {
             }
         }
         if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
+            drops = new ArrayList<>(drops);
             Iterator<ItemStack> dropItr = drops.iterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();

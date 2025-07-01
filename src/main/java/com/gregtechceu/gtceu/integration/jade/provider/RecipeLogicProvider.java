@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -47,11 +46,11 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
-            var EUt = RecipeHelper.getInputEUt(recipe);
-            var isInput = true;
+            long EUt = recipe.getInputEUt();
+            boolean isInput = true;
             if (EUt == 0) {
                 isInput = false;
-                EUt = RecipeHelper.getOutputEUt(recipe);
+                EUt = recipe.getOutputEUt();
             }
 
             recipeInfo.putLong("EUt", EUt);

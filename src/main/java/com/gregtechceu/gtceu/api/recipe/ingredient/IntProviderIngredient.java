@@ -7,13 +7,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -25,7 +24,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class IntProviderIngredient extends Ingredient {
@@ -53,8 +51,9 @@ public class IntProviderIngredient extends Ingredient {
         return new IntProviderIngredient(inner, countProvider);
     }
 
-    public static IntProviderIngredient ofTag(@NotNull TagKey<Item> tag, IntProvider countProvider) {
-        return of(Ingredient.of(tag), countProvider);
+    public static IntProviderIngredient of(ItemStack stack, IntProvider countProvider) {
+        Ingredient inner = stack.hasTag() ? StrictNBTIngredient.of(stack) : Ingredient.of(stack);
+        return of(inner, countProvider);
     }
 
     @Override
@@ -64,10 +63,12 @@ public class IntProviderIngredient extends Ingredient {
 
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (itemStacks == null)
-            itemStacks = Arrays.stream(inner.getItems())
-                    .map(i -> i.copyWithCount(getSampledCount(GTValues.RNG)))
-                    .toArray(ItemStack[]::new);
+        if (itemStacks == null) {
+            itemStacks = inner.getItems();
+            for (int i = 0; i < itemStacks.length; i++) {
+                itemStacks[i] = itemStacks[i].copyWithCount(getSampledCount(GTValues.RNG));
+            }
+        }
         return itemStacks;
     }
 

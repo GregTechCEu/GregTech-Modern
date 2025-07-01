@@ -129,7 +129,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
-        long EUt = RecipeHelper.getOutputEUt(recipe);
+        long EUt = recipe.getOutputEUt();
         // has lubricant
         if (EUt > 0 && !engineMachine.isIntakesObstructed() &&
                 RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
@@ -190,14 +190,14 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         if (isExtreme()) {
             builder.addEnergyProductionLine(GTValues.V[tier + 1],
-                    recipeLogic.getLastRecipe() != null ? RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0);
+                    recipeLogic.getLastRecipe() != null ? recipeLogic.getLastRecipe().getOutputEUt() : 0);
         } else {
             builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
         }
 
         if (isActive() && isWorkingEnabled()) {
             builder.addCurrentEnergyProductionLine(
-                    recipeLogic.getLastRecipe() != null ? RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0);
+                    recipeLogic.getLastRecipe() != null ? recipeLogic.getLastRecipe().getOutputEUt() : 0);
         }
 
         builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
@@ -217,12 +217,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         GTRecipe recipe = recipeLogic.getLastRecipe();
         if (recipe == null) {
             Iterator<GTRecipe> iterator = recipeLogic.searchRecipe();
-            recipe = iterator != null && iterator.hasNext() ? iterator.next() : null;
+            recipe = iterator.hasNext() ? iterator.next() : null;
             if (recipe == null) return null;
         }
         FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe).get(0);
 
-        long ocAmount = getMaxVoltage() / RecipeHelper.getOutputEUt(recipe);
+        long ocAmount = getMaxVoltage() / recipe.getOutputEUt();
         int neededAmount = GTMath.saturatedCast(ocAmount * requiredFluidInput.getAmount());
         return ChatFormatting.RED + FormattingUtil.formatNumbers(neededAmount) + "mB";
     }

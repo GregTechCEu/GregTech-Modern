@@ -22,12 +22,19 @@ public class GTPackSource implements RepositorySource {
 
     @Override
     public void loadPacks(Consumer<Pack> onLoad) {
-        onLoad.accept(Pack.readMetaAndCreate(name,
+        onLoad.accept(readMetaAndCreate(name,
                 Component.literal(name),
                 true,
                 resources::apply,
                 type,
                 position,
                 PackSource.BUILT_IN));
+    }
+
+    public static Pack readMetaAndCreate(String id, Component title, boolean required, Pack.ResourcesSupplier resources,
+                                         PackType packType, Pack.Position defaultPosition, PackSource packSource) {
+        Pack.Info info = Pack.readPackInfo(id, resources);
+        return info != null ? Pack.create(id, title, required, resources,
+                info, packType, defaultPosition, true, packSource) : null;
     }
 }
