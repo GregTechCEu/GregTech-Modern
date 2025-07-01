@@ -5564,5 +5564,12 @@
     "material.gtceu.cracked_bauxite_slurry": "Бокситовая суспензия прошедшая крекинг",
     "material.gtceu.decalcified_bauxite_sludge": "Декальцинированный шлам боксита",
     "material.gtceu.ilmenite_slag": "Ильменитовый шлак",
-    "material.gtceu.bauxite_slag": "Бокситовый шлак"
+    "material.gtceu.bauxite_slag": "Бокситовый шлак",
+    "config.gtceu.option.coloredTieredMachineOutline": "coloredTieredMachineOutline",
+    "item.gtceu.armor.boots": "Ботинки (%s)",
+    "gtceu.multiblock.dimension": "§eРазмер: §r%sx%sx%s",
+    "config.gtceu.option.coloredWireOutline": "coloredWireOutline",
+    "item.gtceu.armor.chestplate": "Нагрудник (%s)",
+    "item.gtceu.armor.helmet": "Шлем (%s)",
+    "item.gtceu.armor.leggings": "Поножи (%s)"
 }
