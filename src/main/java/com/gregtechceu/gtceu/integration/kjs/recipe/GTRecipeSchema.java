@@ -159,7 +159,9 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS addCondition(RecipeCondition condition) {
-            setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
+            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[] { condition });
+            else setValue(CONDITIONS, ArrayUtils.add(getValue(CONDITIONS), condition));
+
             save();
             return this;
         }
