@@ -51,6 +51,11 @@ public class SerializerDouble implements IContentSerializer<Double> {
     }
 
     @Override
+    public Class<Double> contentClass() {
+        return Double.class;
+    }
+
+    @Override
     public Codec<Double> codec() {
         return Codec.DOUBLE;
     }
