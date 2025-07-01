@@ -64,7 +64,7 @@ public class ExtendedOutputItem extends OutputItem implements OutputReplacement 
             return new ExtendedOutputItem(intProvider.getInner(), 1, intProvider.getCountProvider());
         }
 
-        OutputItem item = recipe != null ? recipe.readOutputItem(o) : OutputItem.of(o);;
+        OutputItem item = recipe != null ? recipe.readOutputItem(o) : OutputItem.of(o);
         IntProvider rolls = item.rolls;
 
         var map = MapJS.of(o);

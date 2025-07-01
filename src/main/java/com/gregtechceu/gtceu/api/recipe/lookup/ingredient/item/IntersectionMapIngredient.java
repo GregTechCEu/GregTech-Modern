@@ -16,6 +16,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,9 +47,10 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
 
         if (!entry.isEmpty() && TagPrefix.ORES.containsKey(entry.tagPrefix())) {
-            List<AbstractMapIngredient> children = List.of(
-                    new ItemTagMapIngredient(entry.tagPrefix().getItemTags(entry.material())[0]),
-                    new ItemTagMapIngredient(entry.tagPrefix().getItemParentTags()[0]));
+            List<AbstractMapIngredient> children = new ArrayList<>();
+            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemTags(entry.material())[0]));
+            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemParentTags()[0]));
+
             return Collections.singletonList(new IntersectionMapIngredient(children));
         }
         return Collections.emptyList();
