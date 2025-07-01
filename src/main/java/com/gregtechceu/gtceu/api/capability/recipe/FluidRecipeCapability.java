@@ -343,10 +343,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof CycleFluidEntryHandler cycleHandler) {
-                tank.setFluidTank(cycleHandler, index);
-            } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
-                tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
+            if (storage instanceof IFluidHandler fluidHandler) {
+                tank.setFluidTank(fluidHandler, index);
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
             tank.setAllowClickFilled(!isXEI);
