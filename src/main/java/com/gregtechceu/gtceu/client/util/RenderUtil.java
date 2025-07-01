@@ -10,12 +10,14 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -23,28 +25,44 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
 
     public enum FluidTextureType {
 
-        STILL(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getStillTexture())),
-        FLOWING(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getFlowingTexture())),
-        OVERLAY(fluidTypeExtensions -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidTypeExtensions.getOverlayTexture()));
+        STILL((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getStillTexture(fluidStack);
+            else return fluidTypeExtensions.getStillTexture();
+        }),
+        FLOWING((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(fluidStack);
+            else return fluidTypeExtensions.getFlowingTexture();
+        }),
+        OVERLAY((fluidTypeExtensions, fluidStack) -> {
+            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getOverlayTexture(fluidStack);
+            else return fluidTypeExtensions.getOverlayTexture();
+        });
 
-        private final Function<IClientFluidTypeExtensions, TextureAtlasSprite> mapper;
+        private static final ResourceLocation WATER_STILL = new ResourceLocation("minecraft", "block/water_still");
 
-        FluidTextureType(Function<IClientFluidTypeExtensions, TextureAtlasSprite> mapper) {
+        private final BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper;
+
+        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper) {
             this.mapper = mapper;
         }
 
         public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions) {
-            return mapper.apply(fluidTypeExtensions);
+            return map(fluidTypeExtensions, FluidStack.EMPTY);
+        }
+
+        public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack fluidStack) {
+            ResourceLocation texture = mapper.apply(fluidTypeExtensions, fluidStack);
+            if (texture == null) texture = STILL.mapper.apply(fluidTypeExtensions, fluidStack);
+            if (texture == null) texture = WATER_STILL;
+
+            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
         }
     }
 
