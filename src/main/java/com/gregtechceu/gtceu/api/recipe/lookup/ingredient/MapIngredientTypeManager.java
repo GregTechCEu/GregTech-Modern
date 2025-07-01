@@ -24,14 +24,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MapIngredientTypeManager {
 
     // spotless:off
-    private static final Map<Class<?>, List<MapIngredientFunction<?>>> ingredientFunctions = new ConcurrentHashMap<>(7);
+    private static final Map<Class<?>, List<? extends MapIngredientFunction<?>>> ingredientFunctions = new ConcurrentHashMap<>(7);
     private static final Map<MapIngredientFunction<?>, Class<?>> ingredientTypes = new ConcurrentHashMap<>(7);
     // spotless:on
 
     public static <T> void registerMapIngredient(Class<T> ingredientClass,
                                                  MapIngredientFunction<T> function) {
         ingredientClass = boxClass(ingredientClass);
-        ingredientFunctions.computeIfAbsent(ingredientClass, $ -> new ArrayList<>()).add(function);
+        var list = (List<MapIngredientFunction<T>>) ingredientFunctions.computeIfAbsent(
+                ingredientClass, $ -> new ArrayList<>());
+        list.add(function);
         ingredientTypes.put(function, ingredientClass);
     }
 
@@ -62,12 +64,12 @@ public final class MapIngredientTypeManager {
                 "stopAt must be a superclass of %s", objClass);
 
         var types = ingredientFunctions.get(objClass);
-        if (types == null) {
+        if (types == null && objClass != stopAt) {
             Class<? super T> superclass = objClass.getSuperclass();
             if (superclass == null || superclass == stopAt) return Collections.emptyList();
             return getTypesForClass(superclass, stopAt);
         }
-        return (List<? extends MapIngredientFunction<T>>) types;
+        return (List<MapIngredientFunction<T>>) types;
     }
 
     private static <T> @Nullable List<AbstractMapIngredient> getDefaultIngredients(T object, RecipeCapability<?> cap,
