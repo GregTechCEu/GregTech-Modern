@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class IgnoreEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     @Override
     public @NotNull List<Object> getContents() {
-        return List.of(Long.MAX_VALUE);
+        return List.of(EnergyStack.MAX);
     }
 
     @Override
