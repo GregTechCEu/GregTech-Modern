@@ -33,7 +33,7 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
             amperage = super.getInputAmperage();
         }
         if (getEnergyCapacity() / 2 > getEnergyStored() && machine.getRecipeLogic().isActive()) {
-            return amperage * 2;
+            return amperage + 1;
         } else {
             return amperage;
         }
