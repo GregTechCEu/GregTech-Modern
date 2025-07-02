@@ -591,8 +591,8 @@ public class Material implements Comparable<Material> {
             flags = new MaterialFlags();
         }
 
-        public Builder customTags(String path, Boolean isVanilla) {
-            this.itemTags.add(TagUtil.createItemTag(path, isVanilla));
+        public Builder customTags(TagKey<Item> key) {
+            this.itemTags.add(TagUtil.createItemTag( key.location().getPath()));
             return this;
         }
 
