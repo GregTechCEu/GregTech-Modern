@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -20,10 +19,10 @@ import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.recipe.condition.RockBreakerCondition;
-import com.gregtechceu.gtceu.data.recipe.RecipeUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -211,22 +210,22 @@ public class GTRecipeTypes {
                         recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList())
                                 .isEmpty()) {
                     recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
-                            .inputFluids(GTMaterials.Water.getFluid((int) Math.min(1000,
-                                    recipeBuilder.duration * recipeBuilder.EUt().voltage() / 320)))
+                            .inputFluids(GTMaterials.Water.getFluid((int) GTMath.clamp(
+                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 320, 4, 1000)))
                             .duration(recipeBuilder.duration * 2)
                             .save(provider);
 
                     recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
-                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) Math.min(750,
-                                    recipeBuilder.duration * recipeBuilder.EUt().voltage() / 426)))
+                            .inputFluids(GTMaterials.DistilledWater.getFluid((int) GTMath.clamp(
+                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 426, 3, 750)))
                             .duration((int) (recipeBuilder.duration * 1.5))
                             .save(provider);
 
                     // Don't call buildAndRegister as we are mutating the original recipe and already in the middle of a
                     // buildAndRegister call.
                     // Adding a second call will result in duplicate recipe generation attempts
-                    recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) Math.min(250,
-                            recipeBuilder.duration * recipeBuilder.EUt().voltage() / 1280)));
+                    recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) GTMath.clamp(
+                            recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 1280, 1, 250)));
                 }
             });
 
@@ -546,12 +545,12 @@ public class GTRecipeTypes {
                                 .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4), recipeBuilder.EUt().amperage())
                                 .circuitMeta(i + 1);
 
-                        int ratio = RecipeUtil.getRatioForDistillery(input, output, outputItem);
+                        int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
                         int recipeDuration = (int) (recipeBuilder.duration * OverclockingLogic.STD_DURATION_FACTOR_INV);
                         boolean shouldDivide = ratio != 1;
 
-                        boolean fluidsDivisible = RecipeUtil.isFluidStackDivisibleForDistillery(input, ratio) &&
-                                RecipeUtil.isFluidStackDivisibleForDistillery(output, ratio);
+                        boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
+                                RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
                         FluidIngredient dividedInputFluid = input.copy();
                         dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
