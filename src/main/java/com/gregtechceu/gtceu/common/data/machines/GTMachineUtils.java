@@ -418,18 +418,18 @@ public class GTMachineUtils {
         return definition;
     }
 
-    public static MachineDefinition[] registerSuperTanks(boolean quantum, int... tiers) {
+    public static MachineDefinition[] registerSuperTanks(String tank_type, int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + (quantum ? "_quantum" : "_super") + "_tank",
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type + "_tank",
                     MachineDefinition::createDefinition,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
                     MetaMachineBlock::new,
                     QuantumTankMachineItem::create,
                     MetaMachineBlockEntity::createBlockEntity)
-                    .langValue((quantum ? "Quantum" : "Super") + " Tank " + LVT[tier])
+                    .langValue(toEnglishName(tank_type) + " Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
@@ -446,18 +446,18 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static MachineDefinition[] registerSuperChests(boolean quantum, int... tiers) {
+    public static MachineDefinition[] registerSuperChests(String chest_type, int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             long maxAmount = tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + (quantum ? "_quantum" : "_super") + "_chest",
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + chest_type + "_chest",
                     MachineDefinition::createDefinition,
                     (holder) -> new QuantumChestMachine(holder, tier, maxAmount),
                     MetaMachineBlock::new,
                     MetaMachineItem::new,
                     MetaMachineBlockEntity::createBlockEntity)
-                    .langValue((quantum ? "Quantum" : "Super") + " Chest " + LVT[tier])
+                    .langValue(toEnglishName(chest_type) + " Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)

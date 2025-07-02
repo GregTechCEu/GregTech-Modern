@@ -539,11 +539,11 @@ public class GTMachines {
             .hasTESR(true)
             .register();
 
-    public static final MachineDefinition[] SUPER_CHEST = registerSuperChests(false, LOW_TIERS);
-    public static final MachineDefinition[] QUANTUM_CHEST = registerSuperChests(true, HIGH_TIERS);
+    public static final MachineDefinition[] SUPER_CHEST = registerSuperChests("super", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_CHEST = registerSuperChests("quantum", HIGH_TIERS);
 
-    public static final MachineDefinition[] SUPER_TANK = registerSuperTanks(false, LOW_TIERS);
-    public static final MachineDefinition[] QUANTUM_TANK = registerSuperTanks(true, HIGH_TIERS);
+    public static final MachineDefinition[] SUPER_TANK = registerSuperTanks("super", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_TANK = registerSuperTanks("quantum", HIGH_TIERS);
 
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
     public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
