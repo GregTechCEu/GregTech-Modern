@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
+import com.gregtechceu.gtceu.api.gui.widget.ButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -104,10 +105,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
         addWidget(group);
 
-        EnergyStack EUt = recipe.getInputEUt();
-        if (EUt.isEmpty()) {
-            EUt = recipe.getOutputEUt();
-        }
+        EnergyStack EUt = RecipeHelper.getRealEUt(recipe);
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
         yOffset += EUt.voltage() > 0 ? 20 : 0;
@@ -149,16 +147,15 @@ public class GTRecipeWidget extends WidgetGroup {
         String tierText = GTValues.VNF[tier];
         int textsY = yOffset - 10;
         int duration = recipe.duration;
-        EnergyStack inputEUt = recipe.getInputEUt();
-        EnergyStack outputEUt = recipe.getOutputEUt();
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
+        var EUt = RecipeHelper.getRealEUtWithIO(recipe);
+        List<Component> texts = getRecipeParaText(recipe, duration, EUt);
         for (Component text : texts) {
             textsY += 10;
             LabelWidget labelWidget = new LabelWidget(3 - xOffset, textsY, text).setTextColor(-1).setDropShadow(true);
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (!inputEUt.isEmpty()) {
+        if (EUt.isInput() && !EUt.isEmpty()) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
                     tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {
@@ -177,16 +174,10 @@ public class GTRecipeWidget extends WidgetGroup {
 
     @NotNull
     private static List<Component> getRecipeParaText(GTRecipe recipe, int duration,
-                                                     EnergyStack inputEUt, EnergyStack outputEUt) {
+                                                     EnergyStack.WithIO eu) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
             texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
-        }
-        EnergyStack eu = inputEUt;
-        boolean isOutput = false;
-        if (eu.isEmpty()) {
-            eu = outputEUt;
-            isOutput = true;
         }
         if (eu.voltage() > 0) {
             long euTotal = eu.getTotalEU() * duration;
@@ -200,7 +191,7 @@ public class GTRecipeWidget extends WidgetGroup {
             } else {
                 texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
-            texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
+            texts.add(Component.translatable(eu.isInput() ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
                     FormattingUtil.formatNumbers(eu.getTotalEU())));
             texts.add(Component.translatable("gtceu.recipe.voltage",
                     FormattingUtil.formatNumbers(eu.voltage()), FormattingUtil.formatNumbers(eu.amperage())));
@@ -249,11 +240,11 @@ public class GTRecipeWidget extends WidgetGroup {
         if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
             oc = FusionReactorMachine.FUSION_OC;
         }
-        setRecipeTextWidget(oc);
+        setRecipeOverclockWidget(oc);
         setRecipeWidget();
     }
 
-    private void setRecipeTextWidget(OverclockingLogic logic) {
+    private void setRecipeOverclockWidget(OverclockingLogic logic) {
         EnergyStack inputEUt = recipe.getInputEUt();
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
@@ -266,7 +257,7 @@ public class GTRecipeWidget extends WidgetGroup {
             inputEUt = inputEUt.multiplyVoltage(result.eutMultiplier());
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, EnergyStack.EMPTY);
+        List<Component> texts = getRecipeParaText(recipe, duration, new EnergyStack.WithIO(inputEUt, IO.IN));
         for (int i = 0; i < texts.size(); i++) {
             recipeParaTexts.get(i).setComponent(texts.get(i));
         }

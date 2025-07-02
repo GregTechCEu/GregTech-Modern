@@ -190,7 +190,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
 
         long lastEUt = recipeLogic.getLastRecipe() != null ?
-                       recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
+                recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
         if (isExtreme()) {
             builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
         } else {

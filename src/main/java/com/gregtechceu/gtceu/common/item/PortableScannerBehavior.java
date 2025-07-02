@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
@@ -330,15 +330,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                         list.addAll(recipeLogic.getFancyTooltip());
                     } else if (recipe != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
-                        EnergyStack EUt = recipe.getInputEUt();
-                        boolean isInput = true;
-                        if (EUt.isEmpty()) {
-                            isInput = false;
-                            EUt = recipe.getOutputEUt();
-                        }
+                        var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
                         list.add(Component.translatable(
-                                isInput ? "behavior.portable_scanner.workable_consumption" :
+                                EUt.isInput() ? "behavior.portable_scanner.workable_consumption" :
                                         "behavior.portable_scanner.workable_production",
                                 // TODO is this supposed to show voltage or total EU/t?
                                 Component.translatable(FormattingUtil.formatNumbers(EUt.getTotalEU()))

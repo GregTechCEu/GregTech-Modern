@@ -38,7 +38,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
         if (holder instanceof ICustomParallel p) return p.limitEUParallel(recipe, multiplier, tick);
         if (tick) {
-            long recipeEUt = recipe.getOutputEUt().voltage();
+            long recipeEUt = recipe.getOutputEUt().getTotalEU();
             if (recipeEUt == 0) return multiplier;
 
             long maxVoltage = Long.MAX_VALUE;
@@ -61,7 +61,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             int maxMultiplier = multiplier;
 
             long totalEU = 0L;
-            for (var content : outputs) totalEU += of(content.content).voltage();
+            for (var content : outputs) totalEU += of(content.content).getTotalEU();
             if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
                 maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
             }
@@ -93,7 +93,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
                 maxVoltage = tieredMachine.getMaxVoltage();
             }
 
-            long recipeEUt = recipe.getInputEUt().voltage();
+            long recipeEUt = recipe.getInputEUt().getTotalEU();
             if (recipeEUt == 0) return limit;
             return Math.min(limit, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
         } else {
@@ -105,8 +105,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             long consumable = 0;
             for (Content content : inputs) {
                 EnergyStack s = of(content.content);
-                if (content.chance == 0) nonConsumable += s.voltage();
-                else consumable += s.voltage();
+                if (content.chance == 0) nonConsumable += s.getTotalEU();
+                else consumable += s.getTotalEU();
             }
 
             if (nonConsumable == 0 && consumable == 0) return limit;
@@ -114,8 +114,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             long sum = 0;
             for (var handler : holder.getCapabilitiesFlat(IO.IN, this)) {
                 for (var content : handler.getContents()) {
-                    if (content instanceof Long l) sum += l;
-                    else if (content instanceof EnergyStack es) sum += es.voltage();
+                    if (content instanceof EnergyStack es) sum += es.getTotalEU();
+                    else if (content instanceof Long l) sum += l;
                 }
             }
 

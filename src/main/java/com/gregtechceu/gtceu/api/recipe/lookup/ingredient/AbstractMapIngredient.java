@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.recipe.lookup;
+package com.gregtechceu.gtceu.api.recipe.lookup.ingredient;
 
 public abstract class AbstractMapIngredient {
 

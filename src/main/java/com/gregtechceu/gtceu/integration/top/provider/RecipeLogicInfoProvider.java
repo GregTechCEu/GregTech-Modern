@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -45,14 +44,12 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
         if (capability.isWorking()) {
             var recipe = capability.getLastRecipe();
             if (recipe != null) {
-                EnergyStack EUt = RecipeHelper.getRealEUt(recipe);
-                // do not show energy usage on machines that do not use energy
+                var EUt = RecipeHelper.getRealEUtWithIO(recipe);
                 if (EUt.isEmpty()) {
+                    // do not show energy usage on machines that do not use energy
                     return;
                 }
-                boolean isInput = EUt.voltage() > 0;
-                long voltage = Math.abs(EUt.voltage());
-                String formatted = FormattingUtil.formatNumbers(voltage * EUt.amperage()) + TextStyleClass.INFO;
+                String formatted = FormattingUtil.formatNumbers(EUt.getTotalEU()) + TextStyleClass.INFO;
                 Component text = null;
 
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
@@ -65,11 +62,11 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 if (text == null) {
                     text = Component.literal(formatted + " EU/t ").withStyle(ChatFormatting.RED)
                             .append(Component.literal("(").withStyle(ChatFormatting.GREEN))
-                            .append(GTValues.VNF[GTUtil.getTierByVoltage(voltage)])
+                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.getTotalEU())])
                             .append(Component.literal(")").withStyle(ChatFormatting.GREEN));
                 }
 
-                if (isInput) {
+                if (EUt.isInput()) {
                     probeInfo.text(CompoundText.create()
                             .text(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text))
                             .style(TextStyleClass.INFO));

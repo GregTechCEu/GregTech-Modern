@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -19,6 +20,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,21 +30,31 @@ public class RecipeHelper {
     public static EnergyStack getRealEUt(@NotNull GTRecipe recipe) {
         EnergyStack stack = recipe.getInputEUt();
         if (!stack.isEmpty()) return stack;
-        return recipe.getOutputEUt().inverse();
+        return recipe.getOutputEUt();
+    }
+
+    /**
+     * Get a pair of the absolute EU/t value this recipe inputs or outputs and if it's input or output
+     * 
+     * @param recipe
+     * @return A pair of {@code (EnergyStack, isInput)}
+     */
+    public static EnergyStack.WithIO getRealEUtWithIO(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return new EnergyStack.WithIO(stack, IO.IN);
+        return new EnergyStack.WithIO(recipe.getOutputEUt(), IO.OUT);
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        EnergyStack stack = recipe.getInputEUt();
-        if (stack.isEmpty()) stack = recipe.getOutputEUt();
-        long EUt = stack.voltage();
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.getTotalEU();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        EnergyStack stack = recipe.getInputEUt();
-        if (stack.isEmpty()) stack = recipe.getOutputEUt();
-        long EUt = stack.voltage();
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.getTotalEU();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
@@ -327,5 +339,31 @@ public class RecipeHelper {
         }
 
         return outputs;
+    }
+
+    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
+                                            @Nullable ItemStack output) {
+        int[] divisors = new int[] { 2, 5, 10, 25, 50 };
+        int ratio = -1;
+
+        for (int divisor : divisors) {
+
+            if (!isFluidStackDivisibleForDistillery(fluidInput, divisor))
+                continue;
+
+            if (!isFluidStackDivisibleForDistillery(fluidOutput, divisor))
+                continue;
+
+            if (output != null && output.getCount() % divisor != 0)
+                continue;
+
+            ratio = divisor;
+        }
+
+        return Math.max(1, ratio);
+    }
+
+    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
+        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

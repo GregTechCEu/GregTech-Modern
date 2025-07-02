@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+
 import net.minecraft.network.FriendlyByteBuf;
 
+import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -12,9 +16,8 @@ import org.jetbrains.annotations.Range;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-// TODO rename to whatever that saner name was? I forgor
 @With
-public record EnergyStack(long voltage,
+public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
                           @Range(from = 1, to = Long.MAX_VALUE) long amperage) {
 
     // spotless:off
@@ -29,12 +32,8 @@ public record EnergyStack(long voltage,
                 if (s.amperage() == 1) {
                     return DataResult.success(s.voltage());
                 } else {
-                    Supplier<String> error = () -> "primitive EnergyStacks must have 1A, is " + s.amperage();
-                    if (s.amperage() > 1) {
-                        return DataResult.error(error, s.voltage());
-                    } else {
-                        return DataResult.error(error);
-                    }
+                    Supplier<String> error = () -> "primitive EnergyStacks must have 1A, got " + s.amperage();
+                    return DataResult.error(error, s.voltage());
                 }
             });
 
@@ -46,6 +45,7 @@ public record EnergyStack(long voltage,
     // spotless:on
 
     public static final EnergyStack EMPTY = new EnergyStack(0, 1);
+    public static final EnergyStack MAX = new EnergyStack(Long.MAX_VALUE, 1);
 
     /**
      * Voltage-only constructor for 1A uses, e.g. most of them
@@ -61,11 +61,7 @@ public record EnergyStack(long voltage,
     }
 
     public boolean isEmpty() {
-        return this == EMPTY || this.voltage == 0;
-    }
-
-    public EnergyStack inverse() {
-        return withVoltage(-voltage);
+        return this == EMPTY || this.voltage <= 0;
     }
 
     public EnergyStack absolute() {
@@ -96,6 +92,12 @@ public record EnergyStack(long voltage,
         return withAmperage(this.amperage * amperage);
     }
 
+    public static EnergyStack sum(EnergyStack a, EnergyStack b) {
+        long totalEU = a.getTotalEU() + b.getTotalEU();
+        long amperage = a.amperage() + b.amperage();
+        return EnergyContainerList.calculateVoltageAmperage(totalEU, amperage);
+    }
+
     public void toNetwork(FriendlyByteBuf buf) {
         buf.writeVarLong(this.voltage);
         buf.writeVarLong(this.amperage);
@@ -103,5 +105,36 @@ public record EnergyStack(long voltage,
 
     public static EnergyStack fromNetwork(FriendlyByteBuf buf) {
         return new EnergyStack(buf.readVarLong(), buf.readVarLong());
+    }
+
+    public record WithIO(EnergyStack stack, IO io) {
+
+        public WithIO {
+            Preconditions.checkArgument(io != IO.BOTH, "The I/O direction cannot be IO.BOTH!");
+        }
+
+        public boolean isEmpty() {
+            return io == IO.NONE || stack.isEmpty();
+        }
+
+        public boolean isInput() {
+            return io == IO.IN;
+        }
+
+        public boolean isOutput() {
+            return io == IO.OUT;
+        }
+
+        public long voltage() {
+            return stack.voltage();
+        }
+
+        public long amperage() {
+            return stack.amperage();
+        }
+
+        public long getTotalEU() {
+            return stack.getTotalEU();
+        }
     }
 }

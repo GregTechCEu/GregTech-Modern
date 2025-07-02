@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
+public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     private final NotifiableFluidTank steamTank;
     private final double conversionRate; // mB steam per EU
@@ -29,8 +30,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, boolean simulate) {
-        long eut = left.stream().reduce(0L, Long::sum);
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        long eut = left.stream().reduce(EnergyStack.EMPTY, EnergyStack::sum).getTotalEU();
         int totalSteam = GTMath.saturatedCast((long) Math.ceil(eut * conversionRate));
         if (totalSteam > 0) {
             var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
@@ -41,7 +42,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
             if (leftSteam == null || leftSteam.isEmpty()) return null;
             eut = (long) (leftSteam.get(0).getAmount() / conversionRate);
         }
-        return eut <= 0 ? null : Collections.singletonList(eut);
+        return eut <= 0 ? null : Collections.singletonList(new EnergyStack(eut));
     }
 
     @Override
@@ -72,7 +73,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public RecipeCapability<Long> getCapability() {
+    public RecipeCapability<EnergyStack> getCapability() {
         return EURecipeCapability.CAP;
     }
 

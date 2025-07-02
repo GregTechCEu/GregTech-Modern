@@ -51,6 +51,11 @@ public class SerializerInteger implements IContentSerializer<Integer> {
     }
 
     @Override
+    public Class<Integer> contentClass() {
+        return Integer.class;
+    }
+
+    @Override
     public Codec<Integer> codec() {
         return Codec.INT;
     }

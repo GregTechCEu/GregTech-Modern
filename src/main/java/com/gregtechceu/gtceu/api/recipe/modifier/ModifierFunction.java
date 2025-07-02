@@ -166,9 +166,9 @@ public interface ModifierFunction {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));
                 }
                 if (eutModifier != ContentModifier.IDENTITY) {
-                    EnergyStack preEUt = RecipeHelper.getRealEUt(recipe);
-                    EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt, eutModifier);
-                    EURecipeCapability.putEUContent(preEUt.voltage() > 0 ? copied.tickInputs : copied.tickOutputs, eut);
+                    var preEUt = RecipeHelper.getRealEUtWithIO(recipe);
+                    EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt.stack(), eutModifier);
+                    EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
                 }
                 return copied;
             };
