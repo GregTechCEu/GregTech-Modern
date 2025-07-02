@@ -78,8 +78,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     // Stats tracked for UI display
     private long netInLastSec;
+    @Getter
     private long averageInLastSec;
     private long netOutLastSec;
+    @Getter
     private long averageOutLastSec;
 
     protected ConditionalSubscriptionHandler tickSubscription;
