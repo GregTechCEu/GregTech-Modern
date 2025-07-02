@@ -26,16 +26,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
     // A replacement for checking the current world time, to get around the gamerule that stops it
     private long timer = 0L;
-    private List<Pair<NonNullList<ItemStack>, List<Integer>>> inventoryIndexMap;
+    private List<Pair<NonNullList<ItemStack>, IntList>> inventoryIndexMap;
 
     public AdvancedQuarkTechSuite(int energyPerUse, long capacity, int tier) {
         super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
@@ -108,10 +108,10 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
             if (inventoryIndexMap != null && !inventoryIndexMap.isEmpty()) {
                 // Charge all inventory slots
                 for (int i = 0; i < inventoryIndexMap.size(); i++) {
-                    Pair<NonNullList<ItemStack>, List<Integer>> inventoryMap = inventoryIndexMap.get(i);
-                    Iterator<Integer> inventoryIterator = inventoryMap.getSecond().iterator();
+                    Pair<NonNullList<ItemStack>, IntList> inventoryMap = inventoryIndexMap.get(i);
+                    var inventoryIterator = inventoryMap.getSecond().iterator();
                     while (inventoryIterator.hasNext()) {
-                        int slot = inventoryIterator.next();
+                        int slot = inventoryIterator.nextInt();
                         IElectricItem chargable = GTCapabilityHelper.getElectricItem(inventoryMap.getFirst().get(slot));
 
                         // Safety check the null, it should not actually happen. Also don't try and charge itself

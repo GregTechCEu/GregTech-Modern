@@ -15,10 +15,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
 import me.shedaniel.rei.api.client.REIRuntime;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
+    private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
@@ -42,23 +45,32 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, FormattingUtil.toLowerCaseUnder(path));
+        if (Strings.isBlank(path)) {
+            return TEMPLATE_LOCATION;
+        }
+
+        int i = path.indexOf(':');
+        if (i > 0) {
+            return new ResourceLocation(path);
+        } else if (i == 0) {
+            path = path.substring(i + 1);
+        }
+        // only convert it to camel_case if it has any uppercase to begin with
+        if (FormattingUtil.hasUpperCase(path)) {
+            path = FormattingUtil.toLowerCaseUnderscore(path);
+        }
+        return TEMPLATE_LOCATION.withPath(path);
     }
 
     public static String appendIdString(String id) {
-        return id.indexOf(':') == -1 ? (MOD_ID + ":" + id) : id;
-    }
-
-    public static ResourceLocation appendId(String id) {
-        String[] strings = new String[] { "gtceu", id };
         int i = id.indexOf(':');
-        if (i >= 0) {
-            strings[1] = id.substring(i + 1);
-            if (i >= 1) {
-                strings[0] = id.substring(0, i);
-            }
+        if (i > 0) {
+            return id;
+        } else if (i == 0) {
+            return MOD_ID + id;
+        } else {
+            return MOD_ID + ":" + id;
         }
-        return new ResourceLocation(strings[0], strings[1]);
     }
 
     /**
@@ -105,7 +117,7 @@ public class GTCEu {
      * @return if the current thread is the client thread
      */
     public static boolean isClientThread() {
-        return isClientSide() && Minecraft.getInstance().isSameThread();
+        return isClientSide() && EffectiveSide.get().isClient();
     }
 
     /**

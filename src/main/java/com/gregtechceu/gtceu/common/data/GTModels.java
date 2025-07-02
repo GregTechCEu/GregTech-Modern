@@ -40,11 +40,6 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-/**
- * @author KilaBash
- * @date 2023/7/20
- * @implNote GTModels
- */
 public class GTModels {
 
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx,

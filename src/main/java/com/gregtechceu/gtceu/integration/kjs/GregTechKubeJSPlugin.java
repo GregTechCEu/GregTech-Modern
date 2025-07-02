@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
@@ -125,11 +126,6 @@ import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
-/**
- * @author KilaBash
- * @date 2023/3/26
- * @implNote GregTechKubeJSPlugin
- */
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
@@ -280,6 +276,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("ChemicalHelper", ChemicalHelper.class);
         event.add("PropertyKey", PropertyKey.class);
         event.add("ToolProperty", ToolProperty.class);
+        event.add("ArmorProperty", ArmorProperty.class);
         event.add("GTToolType", GTToolType.class);
         // Block/Item related
         event.add("GTBlocks", GTBlocks.class);

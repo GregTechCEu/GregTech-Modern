@@ -12,9 +12,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Rect;
-import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     public transient String name, category;
@@ -36,8 +34,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     private ProgressTexture progressBarTexture;
     private SteamTexture steamProgressBarTexture;
     private ProgressTexture.FillDirection steamMoveType;
-    private transient IGuiTexture specialTexture;
-    private transient Rect specialTexturePosition;
     private transient final Byte2ObjectMap<IGuiTexture> slotOverlays;
     @Nullable
     protected SoundEntry sound;
@@ -95,13 +91,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         if (io == IO.OUT || io == IO.BOTH) {
             maxOutputs.put(cap, max);
         }
-        return this;
-    }
-
-    @Deprecated
-    public GTRecipeTypeBuilder setSpecialTexture(int x, int y, int width, int height, IGuiTexture area) {
-        this.specialTexturePosition = Rect.of(new Position(x, y), new Size(width, height));
-        this.specialTexture = area;
         return this;
     }
 
@@ -163,7 +152,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
-        type.getSlotOverlays().putAll(slotOverlays);
+        type.getRecipeUI().getSlotOverlays().putAll(slotOverlays);
         type.getRecipeUI().setProgressBarTexture(progressBarTexture);
         type.getRecipeUI().setSteamProgressBarTexture(steamProgressBarTexture);
         type.getRecipeUI().setSteamMoveType(steamMoveType);

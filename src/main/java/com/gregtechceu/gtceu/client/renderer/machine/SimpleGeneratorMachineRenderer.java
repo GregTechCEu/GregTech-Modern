@@ -15,11 +15,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.client.renderer.machine.OverlayEnergyIORenderer.ENERGY_OUT_1A;
 
-/**
- * @author KilaBash
- * @date 2023/3/17
- * @implNote SimpleGeneratorMachineRenderer
- */
 public class SimpleGeneratorMachineRenderer extends WorkableTieredHullMachineRenderer {
 
     public SimpleGeneratorMachineRenderer(int tier, ResourceLocation workableModel) {

@@ -4,11 +4,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2022/9/23
- * @implNote IBlockEntityModifyDrops
- */
 public interface IMachineModifyDrops extends IMachineFeature {
 
     /**

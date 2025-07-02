@@ -23,6 +23,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # do a full checkout instead of a shallow clone of HEAD so spotless's ratchetFrom works
       - name: Setup Build
         uses: ./.github/actions/build_setup
       - name: Get Mod Version
@@ -31,15 +33,14 @@ jobs:
       - name: Version Suffix
         id: suffix
         run: echo "VERSION_SUFFIX=$(echo "${{ github.sha }}" | cut -c 1-7)" >> $GITHUB_ENV
-      - run: git fetch origin 1.20.1
       - name: Build
-        run: ./gradlew build --build-cache
+        run: ./gradlew build
       - name: Publish to Maven
         if: ${{ github.repository_owner == 'GregTechCEu' && env.PUBLISH == 'true' }}
-        run: ./gradlew publish --build-cache
+        run: ./gradlew publish
       - name: Rename Jars
         if: ${{ env.PUBLISH == 'true' }}
-        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT-$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
+        run: for file in build/libs/*; do mv "$file" "${file/SHOT/SHOT+$(date --utc '+%Y%m%d-%H%M%S')-${{ env.VERSION_SUFFIX }}}"; done;
       - name: Upload Artifacts
         if: ${{ env.PUBLISH == 'true' }}
         uses: actions/upload-artifact@v4

@@ -10,11 +10,6 @@ import com.mojang.serialization.Lifecycle;
 
 import java.math.BigInteger;
 
-/**
- * @author KilaBash
- * @date 2022/06/22
- * @implNote SerializerBigInteger
- */
 public class SerializerBigInteger implements IContentSerializer<BigInteger> {
 
     public static final Codec<BigInteger> CODEC = Codec.STRING.comapFlatMap(str -> {
@@ -64,6 +59,11 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
     @Override
     public BigInteger defaultValue() {
         return BigInteger.ZERO;
+    }
+
+    @Override
+    public Class<BigInteger> contentClass() {
+        return BigInteger.class;
     }
 
     @Override

@@ -18,11 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SteamEnergyRecipeHandler
- */
 public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
 
     private final NotifiableFluidTank steamTank;

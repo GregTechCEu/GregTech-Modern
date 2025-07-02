@@ -200,8 +200,6 @@ public class CraftingRecipeLoader {
                 " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod", SHAPE_EXTRUDER_ROD.asStack(), "   ",
                 " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod_long",
-                SHAPE_EXTRUDER_ROD_LONG.asStack(), "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_plate", SHAPE_EXTRUDER_PLATE.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_FOIL.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear_small",

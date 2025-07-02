@@ -8,11 +8,6 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox;
 
 import static com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox.Default.registerTab;
 
-/**
- * @author KilaBash
- * @date 2023/7/5
- * @implNote GTUIEditor
- */
 @LDLRegister(name = "editor.gtceu", group = "editor")
 public class GTUIEditor extends UIEditor {
 

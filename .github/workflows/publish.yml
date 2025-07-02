@@ -45,7 +45,7 @@ jobs:
         id: ver
         run: echo "version=$(./gradlew -q printVersion)" >> $GITHUB_OUTPUT
       - name: Build
-        run: ./gradlew assemble --build-cache
+        run: ./gradlew assemble
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -58,7 +58,7 @@ jobs:
         env:
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        run: ./gradlew publish --build-cache
+        run: ./gradlew publish
 
   upload-release-artifacts:
     name: Upload Artifacts

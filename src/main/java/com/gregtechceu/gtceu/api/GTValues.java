@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.api;
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 import static net.minecraft.ChatFormatting.*;
 
@@ -266,6 +267,25 @@ public class GTValues {
     public static final int[] VC = new int[] { 0xC80000, 0xDCDCDC, 0xFF6400, 0xFFFF1E, 0x808080, 0xF0F0F5, 0xE99797,
             0x7EC3C4, 0x7EB07E, 0xBF74C0, 0x0B5CFE, 0x914E91, 0x488748, 0x8C0000, 0x2828F5 };
 
+    // Main colour for each tier
+    public static final int[] VCM = new int[] {
+            DARK_GRAY.getColor(),
+            GRAY.getColor(),
+            AQUA.getColor(),
+            GOLD.getColor(),
+            DARK_PURPLE.getColor(),
+            BLUE.getColor(),
+            LIGHT_PURPLE.getColor(),
+            RED.getColor(),
+            DARK_AQUA.getColor(),
+            DARK_RED.getColor(),
+            GREEN.getColor(),
+            DARK_GREEN.getColor(),
+            YELLOW.getColor(),
+            BLUE.getColor(),
+            RED.getColor()
+    };
+
     /**
      * The long names for the voltages
      */
@@ -279,14 +299,14 @@ public class GTValues {
      */
     public static boolean HT = false;
 
-    public static Supplier<Boolean> FOOLS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("04") && yearMonthDay[2].equals("01");
+    public static BooleanSupplier FOOLS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };
 
-    public static Supplier<Boolean> XMAS = () -> {
-        String[] yearMonthDay = LocalDate.now().toString().split("-");
-        return yearMonthDay[1].equals("12") && (yearMonthDay[2].equals("24") || yearMonthDay[2].equals("25"));
+    public static BooleanSupplier XMAS = () -> {
+        var now = LocalDate.now();
+        return now.getMonth() == Month.DECEMBER && (now.getDayOfMonth() == 24 || now.getDayOfMonth() == 25);
     };
 
     public static final String CUSTOM_TAG_SOURCE = "GTCEu Custom Tags";

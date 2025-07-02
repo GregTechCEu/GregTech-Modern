@@ -19,7 +19,7 @@ public class CustomItemStackHandler extends ItemStackHandler
 
     @Getter
     @Setter
-    protected Runnable onContentsChanged = () -> {};
+    protected @NotNull Runnable onContentsChanged = () -> {};
     @Getter
     @Setter
     protected Predicate<ItemStack> filter = stack -> true;

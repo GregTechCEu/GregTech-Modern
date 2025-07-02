@@ -58,5 +58,6 @@ public class TheOneProbePlugin {
         oneProbe.registerProvider(new CoverProvider());
         oneProbe.registerProvider(new HazardCleanerInfoProvider());
         oneProbe.registerProvider(new TransformerInfoProvider());
+        oneProbe.registerProvider(new EnergyConverterModeProvider());
     }
 }

@@ -36,10 +36,7 @@ import java.util.Map;
 import java.util.function.*;
 
 /**
- * @author KilaBash
- * @date 2023/2/18
- * @implNote MachineDefinition
- *           Representing basic information of a machine.
+ * Representing basic information of a machine.
  */
 public class MachineDefinition implements Supplier<IMachineBlock> {
 
@@ -115,6 +112,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private Supplier<BlockState> appearance;
+    @Getter
+    @Setter
+    private boolean allowCoverOnFront;
     @Nullable
     @Getter
     @Setter

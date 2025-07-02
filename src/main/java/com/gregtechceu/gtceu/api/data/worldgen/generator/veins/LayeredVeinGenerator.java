@@ -24,6 +24,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.ArrayList;
@@ -32,7 +34,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LayeredVeinGenerator extends VeinGenerator {
 
@@ -57,24 +58,12 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
+    public List<VeinEntry> getAllEntries() {
         return getLayerPatterns().stream()
                 .flatMap(pattern -> pattern.layers.stream())
-                .map(layer -> Map.entry(
-                        layer.targets.stream()
-                                .flatMap(entry -> entry.map(
-                                        blockStates -> blockStates.stream()
-                                                .map(state -> Either.<BlockState, Material>left(state.state)),
-                                        material -> Stream.of(Either.<BlockState, Material>right(material))))
-                                .toList(),
-                        layer.weight))
-                .flatMap(entry -> {
-                    var iterator = entry.getKey().iterator();
-                    return Stream.generate(() -> Map.entry(iterator.next(), entry.getValue()))
-                            .limit(entry.getKey().size());
-                })
+                .flatMap(GTLayerPattern.Layer::asVeinEntries)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -104,7 +93,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
             return Map.of();
 
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
-        List<Float> layerDiameterOffsets = new ArrayList<>();
+        FloatList layerDiameterOffsets = new FloatArrayList();
 
         int layerCoordinate = random.nextInt(4);
         int slantyCoordinate = random.nextInt(3);
@@ -142,7 +131,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     }
 
                     if ((sizeFractionX * sizeFractionX) + (sizeFractionY * sizeFractionY) +
-                            (sizeFractionZ * sizeFractionZ) > 1 * layerDiameterOffsets.get(layerIndex))
+                            (sizeFractionZ * sizeFractionZ) > 1 * layerDiameterOffsets.getFloat(layerIndex))
                         continue;
 
                     GTLayerPattern.Layer layer = resolvedLayers.get(layerIndex);

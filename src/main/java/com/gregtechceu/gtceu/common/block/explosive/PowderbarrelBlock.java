@@ -24,7 +24,7 @@ public class PowderbarrelBlock extends GTExplosiveBlock {
 
     @Override
     protected GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
-                                             @NotNull LivingEntity exploder) {
+                                             @Nullable LivingEntity exploder) {
         float x = pos.getX() + 0.5F, y = pos.getY(), z = pos.getZ() + 0.5F;
         return new PowderbarrelEntity(world, x, y, z, exploder);
     }

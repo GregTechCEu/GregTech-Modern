@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
-import java.util.Objects;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FOIL;
 
@@ -159,6 +158,6 @@ public class WireProperties implements IMaterialProperty {
 
     @Override
     public int hashCode() {
-        return Objects.hash(voltage, amperage, lossPerBlock);
+        return GTMath.hashLongs(voltage, amperage, lossPerBlock);
     }
 }

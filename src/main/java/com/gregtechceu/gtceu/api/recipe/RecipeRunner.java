@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Used to handle recipes, only valid for a single RecipeCapability's entries
- */
 class RecipeRunner {
 
     record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
@@ -112,9 +109,7 @@ class RecipeRunner {
     }
 
     private RecipeHandlingResult handleContents() {
-        var result = handleContentsInternal(io);
-        if (result.isSuccess()) return result;
-        return handleContentsInternal(IO.BOTH);
+        return handleContentsInternal(io);
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
