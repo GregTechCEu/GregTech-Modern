@@ -582,39 +582,41 @@ public class GTMachines {
                     .register(),
             HIGH_TIERS);
 
-    /*public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Super Tank " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            LOW_TIERS);
-
-    public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Quantum Tank " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            HIGH_TIERS);*/
+    /*
+     * public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
+     * (holder, tier) -> new QuantumTankMachine(holder, tier,
+     * 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
+     * (tier, builder) -> builder
+     * .langValue("Super Tank " + LVT[tier])
+     * .blockProp(BlockBehaviour.Properties::dynamicShape)
+     * .rotationState(RotationState.ALL)
+     * .allowExtendedFacing(true)
+     * .renderer(() -> new QuantumTankRenderer(tier))
+     * .hasTESR(true)
+     * .tooltipBuilder(TANK_TOOLTIPS)
+     * .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
+     * Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+     * FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+     * .register(),
+     * LOW_TIERS);
+     * 
+     * public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
+     * (holder, tier) -> new QuantumTankMachine(holder, tier,
+     * 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
+     * (tier, builder) -> builder
+     * .langValue("Quantum Tank " + LVT[tier])
+     * .blockProp(BlockBehaviour.Properties::dynamicShape)
+     * .rotationState(RotationState.ALL)
+     * .allowExtendedFacing(true)
+     * .renderer(() -> new QuantumTankRenderer(tier))
+     * .hasTESR(true)
+     * .tooltipBuilder(TANK_TOOLTIPS)
+     * .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
+     * Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+     * FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
+     * .register(),
+     * HIGH_TIERS);
+     */
 
     public static final MachineDefinition[] SUPER_TANK = registerSuperTanks(false, LOW_TIERS);
     public static final MachineDefinition[] QUANTUM_TANK = registerSuperTanks(true, HIGH_TIERS);

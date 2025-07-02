@@ -418,7 +418,7 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerSuperTanks(boolean quantum, int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
-        for(int tier : tiers) {
+        for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + (quantum ? "_quantum" : "_super") + "_tank",
