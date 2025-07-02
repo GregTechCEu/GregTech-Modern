@@ -111,22 +111,16 @@ class RecipeRunner {
 
     private RecipeHandlingResult handleContents() {
         var result = handleContentsInternal(io);
-        if (result.isSuccess()) return result;
-        return handleContentsInternal(IO.BOTH);
+        return result;
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
         if (recipeContents.isEmpty()) return RecipeHandlingResult.SUCCESS;
-        if ((capIO == IO.BOTH && capabilityProxies.isEmpty()) || !capabilityProxies.containsKey(capIO)) {
+        if (!capabilityProxies.containsKey(capIO)) {
             return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
         }
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
-        if (capIO == IO.BOTH) {
-            handlers = new ArrayList<>(handlers);
-            handlers.addAll(capabilityProxies.getOrDefault(IO.IN, Collections.emptyList()));
-            handlers.addAll(capabilityProxies.getOrDefault(IO.OUT, Collections.emptyList()));
-        }
         // Only sort for non-tick outputs
         if (!isTick && capIO.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());

@@ -30,7 +30,7 @@ public record EnergyStack(long voltage,
                     return DataResult.success(s.voltage());
                 } else {
                     Supplier<String> error = () -> "primitive EnergyStacks must have 1A, is " + s.amperage();
-                    if (s.amperage() < 1) {
+                    if (s.amperage() > 1) {
                         return DataResult.error(error, s.voltage());
                     } else {
                         return DataResult.error(error);
