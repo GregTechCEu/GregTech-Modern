@@ -557,8 +557,8 @@ public class Material implements Comparable<Material> {
         private final MaterialProperties properties;
         private final MaterialFlags flags;
         private Set<TagPrefix> ignoredTagPrefixes = null;
-        @Getter
-        private List<TagKey<Item>> itemTags = new ArrayList<>();
+
+        private final List<TagKey<Item>> itemTags = new ArrayList<>();
 
         private String formula = null;
 
