@@ -429,7 +429,7 @@ public class GTMachineUtils {
                     MetaMachineBlock::new,
                     QuantumTankMachineItem::create,
                     MetaMachineBlockEntity::createBlockEntity)
-                    .langValue((quantum ? "Quantum" : "Super") + " Tank" + LVT[tier])
+                    .langValue((quantum ? "Quantum" : "Super") + " Tank " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
@@ -457,7 +457,7 @@ public class GTMachineUtils {
                     MetaMachineBlock::new,
                     MetaMachineItem::new,
                     MetaMachineBlockEntity::createBlockEntity)
-                    .langValue((quantum ? "Quantum" : "Super") + " Chest" + LVT[tier])
+                    .langValue((quantum ? "Quantum" : "Super") + " Chest " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
