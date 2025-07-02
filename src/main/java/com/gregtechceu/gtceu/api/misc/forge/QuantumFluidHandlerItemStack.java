@@ -24,10 +24,9 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
     protected @NotNull ItemStack container;
     protected long capacity;
 
-    public QuantumFluidHandlerItemStack(@NotNull ItemStack container) {
+    public QuantumFluidHandlerItemStack(@NotNull ItemStack container, long capacity) {
         this.container = container;
-
-        this.capacity = container.getTag().getLong("maxAmount");
+        this.capacity = capacity;
     }
 
     // Retrieve the capacity clamped to an int.

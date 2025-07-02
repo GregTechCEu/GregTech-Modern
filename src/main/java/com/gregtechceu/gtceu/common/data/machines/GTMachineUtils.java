@@ -86,6 +86,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.autoAbilities;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.ALL_FIREBOXES;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -438,6 +439,7 @@ public class GTMachineUtils {
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(maxAmount)))
                     .register();
+            TANK_CAPACITY.put(register, maxAmount);
             definitions[tier] = register;
         }
         return definitions;

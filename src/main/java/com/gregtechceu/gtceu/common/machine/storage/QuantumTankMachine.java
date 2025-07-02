@@ -49,6 +49,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +68,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
+
+    public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
     @Getter
     @Persisted
