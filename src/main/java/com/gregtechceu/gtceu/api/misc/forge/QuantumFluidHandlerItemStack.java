@@ -57,6 +57,7 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
         if (!this.container.hasTag()) {
             this.container.setTag(new CompoundTag());
         }
+        fluid.setAmount(GTMath.saturatedCast(amount));
 
         CompoundTag fluidTag = new CompoundTag();
         fluid.writeToNBT(fluidTag);
