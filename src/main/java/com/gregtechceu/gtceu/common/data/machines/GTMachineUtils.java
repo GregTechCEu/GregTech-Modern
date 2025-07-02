@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
@@ -422,13 +421,13 @@ public class GTMachineUtils {
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type + "_tank",
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type,
                     MachineDefinition::createDefinition,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
                     MetaMachineBlock::new,
                     QuantumTankMachineItem::create,
                     MetaMachineBlockEntity::createBlockEntity)
-                    .langValue(toEnglishName(tank_type) + " Tank " + LVT[tier])
+                    .langValue(toEnglishName(tank_type) + " " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
@@ -445,30 +444,22 @@ public class GTMachineUtils {
     }
 
     public static MachineDefinition[] registerSuperChests(String chest_type, int... tiers) {
-        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
-        for (int tier : tiers) {
-            long maxAmount = tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1);
-            var register = REGISTRATE.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + chest_type + "_chest",
-                    MachineDefinition::createDefinition,
-                    (holder) -> new QuantumChestMachine(holder, tier, maxAmount),
-                    MetaMachineBlock::new,
-                    MetaMachineItem::new,
-                    MetaMachineBlockEntity::createBlockEntity)
-                    .langValue(toEnglishName(chest_type) + " Chest " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(CHEST_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(maxAmount)))
-                    .register();
-            definitions[tier] = register;
-        }
-        return definitions;
+        return registerTieredMachines(chest_type,
+                (holder, tier) -> new QuantumChestMachine(holder, tier,
+                        tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
+                (tier, builder) -> builder.langValue(toEnglishName(chest_type) + " " + LVT[tier])
+                        .blockProp(BlockBehaviour.Properties::dynamicShape)
+                        .rotationState(RotationState.ALL)
+                        .allowExtendedFacing(true)
+                        .renderer(() -> new QuantumTankRenderer(tier))
+                        .hasTESR(true)
+                        .tooltipBuilder(CHEST_TOOLTIPS)
+                        .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
+                                Component.translatable("gtceu.universal.tooltip.item_storage_total",
+                                        FormattingUtil.formatNumbers(tier == MAX ? Long.MAX_VALUE :
+                                                4_000_000 * (long) Math.pow(2, tier - 1))))
+                        .register(),
+                tiers);
     }
 
     //////////////////////////////////////
