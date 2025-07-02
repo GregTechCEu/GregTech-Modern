@@ -30,7 +30,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -307,8 +306,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
     @Override
     public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        List<EnergyStack> remainingStacks = new ArrayList<>();
-        for (var it = left.iterator(); it.hasNext();) {
+        for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {
                 it.remove();
@@ -327,12 +325,12 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             if (totalEU <= 0) {
                 it.remove();
             } else {
-                remainingStacks.add(new EnergyStack(totalEU));
+                it.set(new EnergyStack(totalEU));
             }
 
         }
 
-        return left.isEmpty() ? null : remainingStacks;
+        return left.isEmpty() ? null : left;
     }
 
     @Override

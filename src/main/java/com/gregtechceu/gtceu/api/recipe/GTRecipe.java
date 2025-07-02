@@ -216,13 +216,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
         var outputs = contents.get(EURecipeCapability.CAP);
         if (outputs == null) return EnergyStack.EMPTY;
-        long eu = 0, a = 0;
+        long v = 0, a = 0;
         for (var content : outputs) {
             EnergyStack stack = EURecipeCapability.CAP.of(content.content);
-            eu += stack.voltage();
+            v += stack.voltage();
             a += stack.amperage();
         }
-        return new EnergyStack(eu, a);
+        return new EnergyStack(v, a);
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.
