@@ -83,6 +83,13 @@ public class Material implements Comparable<Material> {
      */
     private String chemicalFormula;
 
+    /**
+     * Material specific tags
+     */
+    @Setter
+    @Getter
+    private List<TagKey<Item>> itemTags = new ArrayList<>();
+
     private String calculateChemicalFormula() {
         if (chemicalFormula != null) return this.chemicalFormula;
         if (materialInfo.element != null) {
@@ -550,6 +557,8 @@ public class Material implements Comparable<Material> {
         private final MaterialProperties properties;
         private final MaterialFlags flags;
         private Set<TagPrefix> ignoredTagPrefixes = null;
+        @Getter
+        private List<TagKey<Item>> itemTags = new ArrayList<>();
 
         private String formula = null;
 
@@ -580,6 +589,11 @@ public class Material implements Comparable<Material> {
             materialInfo = new MaterialInfo(resourceLocation);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        public Builder customTags(String path, Boolean isVanilla) {
+            this.itemTags.add(TagUtil.createItemTag(path, isVanilla));
+            return this;
         }
 
         /*
@@ -1282,6 +1296,10 @@ public class Material implements Comparable<Material> {
             }
 
             var mat = new Material(materialInfo, properties, flags);
+            if (!itemTags.isEmpty()) {
+
+                mat.setItemTags(itemTags);
+            }
             if (formula != null) {
                 mat.setFormula(formula);
             }
