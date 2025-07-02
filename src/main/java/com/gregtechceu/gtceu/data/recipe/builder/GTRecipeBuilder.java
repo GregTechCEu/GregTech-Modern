@@ -216,7 +216,7 @@ public class GTRecipeBuilder {
         return inputEU(eu, 1);
     }
 
-    public GTRecipeBuilder inputEU(long voltage, int amperage) {
+    public GTRecipeBuilder inputEU(long voltage, long amperage) {
         return input(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 
@@ -224,7 +224,7 @@ public class GTRecipeBuilder {
         return EUt(eu, 1);
     }
 
-    public GTRecipeBuilder EUt(long voltage, int amperage) {
+    public GTRecipeBuilder EUt(long voltage, long amperage) {
         if (voltage == 0) {
             GTCEu.LOGGER.error("EUt can't be explicitly set to 0, id: {}", id);
         }
@@ -248,7 +248,7 @@ public class GTRecipeBuilder {
         return outputEU(eu, 1);
     }
 
-    public GTRecipeBuilder outputEU(long voltage, int amperage) {
+    public GTRecipeBuilder outputEU(long voltage, long amperage) {
         return output(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 

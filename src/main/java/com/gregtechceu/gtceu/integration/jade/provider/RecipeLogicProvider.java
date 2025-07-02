@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -46,16 +46,11 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
-            EnergyStack EUt = recipe.getInputEUt();
-            boolean isInput = true;
-            if (EUt.isEmpty()) {
-                isInput = false;
-                EUt = recipe.getOutputEUt();
-            }
+            var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
             recipeInfo.putLong("EUt", EUt.voltage());
             recipeInfo.putLong("amperage", EUt.amperage());
-            recipeInfo.putBoolean("isInput", isInput);
+            recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
         if (!recipeInfo.isEmpty()) {

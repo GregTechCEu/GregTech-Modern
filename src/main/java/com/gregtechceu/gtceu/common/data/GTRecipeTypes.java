@@ -543,7 +543,7 @@ public class GTRecipeTypes {
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
                                         BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath())
-                                .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4))
+                                .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4), recipeBuilder.EUt().amperage())
                                 .circuitMeta(i + 1);
 
                         int ratio = RecipeUtil.getRatioForDistillery(input, output, outputItem);
