@@ -102,8 +102,8 @@ public class RecipeHandlerList {
     }
 
     public boolean isValid(IO extIO) {
-        if (this == NO_DATA) return false;
-        return (handlerIO.support(extIO));
+        if (this == NO_DATA || handlerIO == IO.NONE) return false;
+        return (extIO == IO.BOTH || handlerIO == IO.BOTH || extIO == handlerIO);
     }
 
     public long getPriority() {

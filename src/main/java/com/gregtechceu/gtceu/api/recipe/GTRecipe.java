@@ -219,10 +219,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         long eu = 0, a = 0;
         for (var content : outputs) {
             EnergyStack stack = EURecipeCapability.CAP.of(content.content);
-            eu += stack.getTotalEU();
+            eu += stack.voltage();
             a += stack.amperage();
         }
-        return EnergyContainerList.calculateVoltageAmperage(eu, a);
+        return new EnergyStack(eu, a);
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.

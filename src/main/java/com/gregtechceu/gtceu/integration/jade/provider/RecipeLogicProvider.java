@@ -48,7 +48,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         if (recipe != null) {
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
-            recipeInfo.putLong("EUt", EUt.voltage());
+            recipeInfo.putLong("EUt", EUt.getTotalEU());
             recipeInfo.putLong("amperage", EUt.amperage());
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
@@ -87,7 +87,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         text = text.withStyle(ChatFormatting.GREEN)
                                 .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
                     } else {
-                        var tier = GTUtil.getOCTierByVoltage(EUt);
+                        var tier = GTUtil.getOCTierByVoltage(EUt / amperage);
 
                         text = text.withStyle(ChatFormatting.RED)
                                 .append(Component.literal(" EU/t ").withStyle(ChatFormatting.RESET)

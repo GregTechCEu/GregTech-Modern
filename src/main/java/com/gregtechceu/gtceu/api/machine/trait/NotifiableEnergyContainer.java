@@ -30,6 +30,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -306,30 +307,33 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
     @Override
     public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        long totalEU = 0;
-        long amperage = 0;
-        for (EnergyStack stack : left) {
-            if (stack.isEmpty()) continue;
-            totalEU += stack.getTotalEU();
-            amperage += stack.amperage();
-        }
-        if (totalEU <= 0) {
-            // if totalEU <= 0, amperage must also be <= 0
-            return null;
+        //long totalEU = 0;
+        List<EnergyStack> remainingStacks = new ArrayList<>();
+        for (var it = left.iterator(); it.hasNext(); ) {
+            EnergyStack stack = it.next();
+            if (stack.isEmpty()) {
+                it.remove();
+                continue;
+            }
+
+            long totalEU = stack.getTotalEU();
+            long canTransfer = Math.min(totalEU, (io == IO.IN ? this.getEnergyStored() :
+                            this.getEnergyCapacity() - this.getEnergyStored()));
+            if (!simulate) {
+                // invert the EU value if we're doing inputs (inputting *to the recipe* -> removing from handlers)
+                this.changeEnergy(io == IO.IN ? -canTransfer : canTransfer);
+            }
+
+            totalEU -= canTransfer;
+            if (totalEU <= 0) {
+                it.remove();
+            } else {
+                remainingStacks.add(new EnergyStack(totalEU));
+            }
+
         }
 
-        long canTransfer = Math.min(totalEU, this.getEnergyCapacity() - this.getEnergyStored());
-        if (!simulate) {
-            // invert the EU value if we're doing inputs (inputting *to the recipe* -> removing from handlers)
-            this.changeEnergy(io == IO.IN ? -canTransfer : canTransfer);
-        }
-        totalEU -= canTransfer;
-
-        if (totalEU <= 0) {
-            return null;
-        } else {
-            return Collections.singletonList(EnergyContainerList.calculateVoltageAmperage(totalEU, amperage));
-        }
+        return left.isEmpty() ? null : remainingStacks;
     }
 
     @Override

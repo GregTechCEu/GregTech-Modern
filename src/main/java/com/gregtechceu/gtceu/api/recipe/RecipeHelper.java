@@ -47,7 +47,7 @@ public class RecipeHelper {
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
         EnergyStack stack = getRealEUt(recipe);
-        long EUt = stack.getTotalEU();
+        long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
     }

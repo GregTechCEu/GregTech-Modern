@@ -410,8 +410,8 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether insufficient energy supply should reset Machine recipe progress to zero.",
                 "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed",
-                "Default: false" })
-        public boolean recipeProgressLowEnergy = false;
+                "Default: true" })
+        public boolean recipeProgressLowEnergy = true;
         @Configurable
         @Configurable.Comment({
                 "Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.",

@@ -62,7 +62,7 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 if (text == null) {
                     text = Component.literal(formatted + " EU/t ").withStyle(ChatFormatting.RED)
                             .append(Component.literal("(").withStyle(ChatFormatting.GREEN))
-                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.getTotalEU())])
+                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
                             .append(Component.literal(")").withStyle(ChatFormatting.GREEN));
                 }
 

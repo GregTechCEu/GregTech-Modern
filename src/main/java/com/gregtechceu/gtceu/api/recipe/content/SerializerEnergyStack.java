@@ -25,7 +25,9 @@ public class SerializerEnergyStack implements IContentSerializer<EnergyStack> {
 
     @Override
     public EnergyStack of(Object o) {
-        if (o instanceof Number n) {
+        if (o instanceof EnergyStack stack) {
+            return stack;
+        } else if (o instanceof Number n) {
             return new EnergyStack(n.longValue());
         } else if (o instanceof CharSequence) {
             return new EnergyStack(NumberUtils.toLong(o.toString()));
