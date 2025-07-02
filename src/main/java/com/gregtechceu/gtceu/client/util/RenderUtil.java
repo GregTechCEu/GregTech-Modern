@@ -1,20 +1,29 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
+import com.gregtechceu.gtceu.utils.ResearchManager;
+
+import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,6 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -218,5 +228,49 @@ public class RenderUtil {
             spin = spin.getOpposite();
         }
         return GTMatrixUtils.upwardFacingAngle(spin);
+    }
+
+    public static boolean renderResearchItemContent(GuiGraphics graphics, Operation<Void> originalMethod,
+                                                    @Nullable LivingEntity entity, @Nullable Level level,
+                                                    ItemStack stack, int x, int y, int z, int seed) {
+        if (!Screen.hasShiftDown()) return false;
+
+        ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
+        if (researchData == null) return false;
+
+        Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
+        if (recipes == null || recipes.isEmpty()) return false;
+
+        for (var recipe : recipes) {
+            // check item outputs first
+            List<Content> outputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
+            if (!outputs.isEmpty()) {
+                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content).getItems();
+                if (items.length > 0) {
+                    ItemStack output = items[0];
+                    if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, stack)) {
+                        originalMethod.call(entity, level, stack, x, y, seed, z);
+                        return true;
+                    }
+                }
+            }
+            // if there are no item outputs, try to find a fluid output
+            outputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
+            if (!outputs.isEmpty()) {
+                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content).getStacks();
+                if (fluids.length != 0) {
+                    FluidStack output = fluids[0];
+                    if (!output.isEmpty()) {
+                        var clientExt = IClientFluidTypeExtensions.of(output.getFluid());
+                        var texture = RenderUtil.FluidTextureType.STILL.map(clientExt, output);
+                        int color = clientExt.getTintColor(output);
+
+                        DrawerHelper.drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

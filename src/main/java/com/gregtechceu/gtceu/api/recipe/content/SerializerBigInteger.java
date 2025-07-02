@@ -62,6 +62,11 @@ public class SerializerBigInteger implements IContentSerializer<BigInteger> {
     }
 
     @Override
+    public Class<BigInteger> contentClass() {
+        return BigInteger.class;
+    }
+
+    @Override
     public Codec<BigInteger> codec() {
         return CODEC;
     }

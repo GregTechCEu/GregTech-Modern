@@ -26,10 +26,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * @return the ItemStackHashStrategy as described above.
      */
     static ItemStackHashStrategy comparingAll() {
-        return builder().compareItem(true)
-                .compareCount(true)
-                .compareTag(true)
-                .build();
+        return ItemStackHashStrategyBuilder.ALL;
     }
 
     /**
@@ -39,20 +36,26 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * @return the ItemStackHashStrategy as described above.
      */
     static ItemStackHashStrategy comparingAllButCount() {
-        return builder().compareItem(true)
-                .compareTag(true)
-                .build();
+        return ItemStackHashStrategyBuilder.ITEM_AND_TAG;
     }
 
     static ItemStackHashStrategy comparingItem() {
-        return builder().compareItem(true)
-                .build();
+        return ItemStackHashStrategyBuilder.ITEM;
     }
 
     /**
      * Builder pattern class for generating customized ItemStackHashStrategy
      */
     class ItemStackHashStrategyBuilder {
+
+        private static final ItemStackHashStrategy ALL = builder().compareItem(true)
+                .compareCount(true)
+                .compareTag(true)
+                .build();
+        private static final ItemStackHashStrategy ITEM_AND_TAG = builder().compareItem(true)
+                .compareTag(true)
+                .build();
+        private static final ItemStackHashStrategy ITEM = builder().compareItem(true).build();
 
         private boolean item, count, tag;
 

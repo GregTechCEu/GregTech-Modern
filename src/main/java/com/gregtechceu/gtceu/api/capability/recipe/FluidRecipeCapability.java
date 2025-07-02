@@ -8,19 +8,16 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
-import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -29,8 +26,8 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
@@ -59,31 +56,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
         return copy;
-    }
-
-    @Override
-    public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
-        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
-        if (obj instanceof FluidIngredient ingredient) {
-            for (FluidIngredient.Value value : ingredient.values) {
-                if (value instanceof FluidIngredient.TagValue tagValue) {
-                    ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
-                } else {
-                    Collection<Fluid> fluids = value.getFluids();
-                    for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(
-                                new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
-                    }
-                }
-            }
-        } else if (obj instanceof FluidStack stack) {
-            ingredients.add(new MapFluidIngredient(stack));
-            // noinspection deprecation
-            stack.getFluid().builtInRegistryHolder().tags()
-                    .forEach(tag -> ingredients.add(new MapFluidTagIngredient(tag)));
-        }
-
-        return ingredients;
     }
 
     @Override
@@ -127,6 +99,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             }
         }
         return list;
+    }
+
+    @Override
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        if (object instanceof FluidIngredient ingredient) {
+            return FluidStackMapIngredient.from(ingredient);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -302,10 +283,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        return contents.stream().map(content -> content.content)
+        List<Object> entryLists = contents.stream()
+                .map(Content::getContent)
                 .map(this::of)
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
+
+        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
+        return entryLists;
     }
 
     public Object createXEIContainer(List<?> contents) {
@@ -340,10 +325,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof CycleFluidEntryHandler cycleHandler) {
-                tank.setFluidTank(cycleHandler, index);
-            } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
-                tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
+            if (storage instanceof IFluidHandler fluidHandler) {
+                tank.setFluidTank(fluidHandler, index);
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
             tank.setAllowClickFilled(!isXEI);

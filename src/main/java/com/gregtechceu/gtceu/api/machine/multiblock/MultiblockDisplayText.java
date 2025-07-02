@@ -332,6 +332,13 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        public Builder addBatchModeLine(boolean batchEnabled, int batchAmount) {
+            if (batchEnabled && batchAmount > 0) {
+                textList.add(Component.translatable("gtceu.multiblock.batch_enabled", batchAmount));
+            }
+            return this;
+        }
+
         public Builder addOutputLines(GTRecipe recipe) {
             if (!isStructureFormed || !isActive)
                 return this;
