@@ -201,12 +201,9 @@ public class GTRecipeWidget extends WidgetGroup {
                 texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
             texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
-                    FormattingUtil.formatNumbers(eu.voltage())));
-        }
-
-        if (eu.amperage() > 1) {
-            texts.add(Component.translatable("gtceu.recipe.amperage", FormattingUtil.formatNumbers(eu.amperage())));
-            texts.add(Component.translatable("gtceu.recipe.total_eu", FormattingUtil.formatNumbers(eu.getTotalEU())));
+                    FormattingUtil.formatNumbers(eu.getTotalEU())));
+            texts.add(Component.translatable("gtceu.recipe.voltage",
+                    FormattingUtil.formatNumbers(eu.voltage()), FormattingUtil.formatNumbers(eu.amperage())));
         }
 
         return texts;
