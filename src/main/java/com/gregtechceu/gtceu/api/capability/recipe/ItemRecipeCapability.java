@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -14,7 +11,8 @@ import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.*;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -44,8 +42,6 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import it.unimi.dsi.fastutil.objects.*;
@@ -85,89 +81,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                                     ConstantFloat.of((float) modifier.addition()))));
         }
         return SizedIngredient.create(content, modifier.apply(1));
-    }
-
-    @Override
-    public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
-        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
-        if (obj instanceof Ingredient ingredient) {
-
-            // all kinds of special cases
-            if (ingredient instanceof StrictNBTIngredient nbt) {
-                ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
-            } else if (ingredient instanceof PartialNBTIngredient nbt) {
-                ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
-            } else if (ingredient instanceof SizedIngredient sized) {
-                if (sized.getInner() instanceof StrictNBTIngredient nbt) {
-                    ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
-                } else if (sized.getInner() instanceof PartialNBTIngredient nbt) {
-                    ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
-                } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
-                    ingredients.add(new MapIntersectionIngredient(intersection));
-                } else {
-                    for (Ingredient.Value value : ((IngredientAccessor) sized.getInner()).getValues()) {
-                        if (value instanceof Ingredient.TagValue tagValue) {
-                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
-                        } else {
-                            Collection<ItemStack> stacks = value.getItems();
-                            for (ItemStack stack : stacks) {
-                                ingredients.add(new MapItemStackIngredient(stack, sized.getInner()));
-                            }
-                        }
-                    }
-                }
-            } else if (ingredient instanceof IntProviderIngredient intProvider) {
-                if (intProvider.getInner() instanceof StrictNBTIngredient nbt) {
-                    ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
-                } else if (intProvider.getInner() instanceof PartialNBTIngredient nbt) {
-                    ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
-                } else if (intProvider.getInner() instanceof IntersectionIngredient intersection) {
-                    ingredients.add(new MapIntersectionIngredient(intersection));
-                } else {
-                    for (Ingredient.Value value : ((IngredientAccessor) intProvider.getInner()).getValues()) {
-                        if (value instanceof Ingredient.TagValue tagValue) {
-                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
-                        } else {
-                            Collection<ItemStack> stacks = value.getItems();
-                            for (ItemStack stack : stacks) {
-                                ingredients.add(new MapItemStackIngredient(stack, intProvider.getInner()));
-                            }
-                        }
-                    }
-                }
-            } else if (ingredient instanceof IntersectionIngredient intersection) {
-                ingredients.add(new MapIntersectionIngredient(intersection));
-            } else {
-                for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
-                    if (value instanceof Ingredient.TagValue tagValue) {
-                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
-                    } else {
-                        Collection<ItemStack> stacks = value.getItems();
-                        for (ItemStack stack : stacks) {
-                            ingredients.add(new MapItemStackIngredient(stack, ingredient));
-                        }
-                    }
-                }
-            }
-        } else if (obj instanceof ItemStack stack) {
-            ingredients.add(new MapItemStackIngredient(stack));
-
-            stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
-            if (stack.hasTag()) {
-                ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
-            }
-            if (stack.getShareTag() != null) {
-                ingredients.add(new MapItemStackPartialNBTIngredient(stack,
-                        PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
-            }
-            TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
-            if (!prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix)) {
-                Material material = ChemicalHelper.getMaterialStack(stack.getItem()).material();
-                ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(
-                        Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
-            }
-        }
-        return ingredients;
     }
 
     @Override
@@ -223,6 +136,15 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             }
         }
         return list;
+    }
+
+    @Override
+    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
+        if (object instanceof Ingredient ingredient) {
+            return CustomMapIngredient.from(ingredient);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

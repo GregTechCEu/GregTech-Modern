@@ -51,6 +51,8 @@ public interface IContentSerializer<T> {
         return new Content(inner, chance, maxChance, tierChanceBoost);
     }
 
+    Class<T> contentClass();
+
     Codec<T> codec();
 
     @SuppressWarnings("unchecked")

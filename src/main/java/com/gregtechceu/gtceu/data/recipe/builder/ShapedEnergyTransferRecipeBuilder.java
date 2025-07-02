@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -50,11 +50,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
-            return where(cha, NBTIngredient.createNBTIngredient(itemStack));
-        } else {
-            return where(cha, Ingredient.of(itemStack));
-        }
+        return where(cha, itemStack.hasTag() ? StrictNBTIngredient.of(itemStack) : Ingredient.of(itemStack));
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemLike itemLike) {
