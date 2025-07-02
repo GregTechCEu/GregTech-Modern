@@ -105,27 +105,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         long tierVoltage = GTValues.V[getTier()];
         if (isEnergyEmitter()) {
-            return NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
+            return RecipeAmperageEnergyContainer.makeEmitterContainer(this, tierVoltage * 64L,
+                    tierVoltage, getMaxInputOutputAmperage());
         } else {
-            return new NotifiableEnergyContainer(this, tierVoltage * 64L, tierVoltage, 2, 0L, 0L) {
-
-                @Override
-                public long getInputAmperage() {
-                    var lastRecipe = recipeLogic.getLastRecipe();
-                    if (getEnergyCapacity() / 2 > getEnergyStored() && recipeLogic.isActive()) {
-                        if (lastRecipe != null) {
-                            return lastRecipe.getInputEUt().amperage() * 2L;
-                        }
-                        return 2L;
-                    } else {
-                        if (lastRecipe != null) {
-                            return lastRecipe.getInputEUt().amperage();
-                        }
-                        return 1L;
-                    }
-                }
-            };
+            return RecipeAmperageEnergyContainer.makeReceiverContainer(this, tierVoltage * 64L,
+                    tierVoltage, getMaxInputOutputAmperage());
         }
     }
 
@@ -195,11 +179,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     //////////////////////////////////////
     // ********** MISC ***********//
     //////////////////////////////////////
-
-    @Override
-    protected long getMaxInputOutputAmperage() {
-        return 2L;
-    }
 
     @Override
     public void onMachineRemoved() {
