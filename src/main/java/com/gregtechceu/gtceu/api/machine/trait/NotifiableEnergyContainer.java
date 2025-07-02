@@ -213,17 +213,17 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     private boolean handleElectricItem(IElectricItem electricItem, boolean simulate) {
-        var machineTier = GTUtil.getTierByVoltage(Math.max(getInputVoltage(), getOutputVoltage()));
-        var chargeTier = Math.min(machineTier, electricItem.getTier());
-        var chargePercent = getEnergyStored() / (getEnergyCapacity() * 1.0);
+        int machineTier = GTUtil.getTierByVoltage(Math.max(getInputVoltage(), getOutputVoltage()));
+        int chargeTier = Math.min(machineTier, electricItem.getTier());
+        double chargePercent = (double) getEnergyStored() / (getEnergyCapacity() * 1.0);
 
         // Check if the item is a battery (or similar), and if we can receive some amount of energy
         if (electricItem.canProvideChargeExternally() && getEnergyCanBeInserted() > 0) {
 
-            // Drain from the battery if we are below half energy capacity, and if the tier matches
-            if (chargePercent <= 0.5 && chargeTier == machineTier) {
-                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier, false, true,
-                        simulate);
+            // Drain from the battery if we are below 1/3rd energy capacity, and if the tier matches
+            if (chargePercent <= 0.33 && chargeTier == machineTier) {
+                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier,
+                        false, true, simulate);
                 if (!simulate) {
                     addEnergy(dischargedBy);
                 }
@@ -231,9 +231,9 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             }
         }
 
-        // Else, check if we have above 65% power
-        if (chargePercent > 0.65) {
-            long chargedBy = electricItem.charge(getEnergyStored(), chargeTier, false, simulate);
+        // Else, check if we have above 2/3rds charge
+        if (chargePercent > 0.66) {
+            long chargedBy = electricItem.charge(getEnergyStored(), chargeTier, false, false);
             if (!simulate) {
                 removeEnergy(chargedBy);
             }
@@ -246,7 +246,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         int machineTier = GTUtil.getTierByVoltage(Math.max(getInputVoltage(), getOutputVoltage()));
         double chargePercent = getEnergyStored() / (getEnergyCapacity() * 1.0);
 
-        if (chargePercent > 0.65) { // 2/3rds full
+        if (chargePercent > 0.66) { // 2/3rds full
             long chargedBy = FeCompat.insertEu(energyStorage, GTValues.V[machineTier], simulate);
             if (!simulate) {
                 removeEnergy(chargedBy);
@@ -334,7 +334,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
     @Override
     public @NotNull List<Object> getContents() {
-        return List.of(energyStored);
+        long amperage = Math.max(getInputAmperage(), getOutputAmperage());
+        return Collections.singletonList(EnergyContainerList.calculateVoltageAmperage(getEnergyStored(), amperage));
     }
 
     @Override
