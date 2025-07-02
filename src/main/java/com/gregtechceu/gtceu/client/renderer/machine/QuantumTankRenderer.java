@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 public class QuantumTankRenderer extends TieredHullMachineRenderer {
@@ -86,7 +88,10 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
+            long maxAmount = 0;
+            if (stack.getItem() instanceof QuantumTankMachineItem tankItem) {
+                maxAmount = TANK_CAPACITY.getLong(tankItem.getDefinition());
+            }
             // Don't need to handle locked fluids here since they don't get saved to the item
             renderTank(poseStack, buffer, Direction.NORTH, stored, storedAmount, maxAmount, FluidStack.EMPTY,
                     stack.is(CREATIVE_FLUID_ITEM));
