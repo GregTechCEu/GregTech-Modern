@@ -307,9 +307,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
     @Override
     public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        //long totalEU = 0;
         List<EnergyStack> remainingStacks = new ArrayList<>();
-        for (var it = left.iterator(); it.hasNext(); ) {
+        for (var it = left.iterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {
                 it.remove();
@@ -318,7 +317,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
             long totalEU = stack.getTotalEU();
             long canTransfer = Math.min(totalEU, (io == IO.IN ? this.getEnergyStored() :
-                            this.getEnergyCapacity() - this.getEnergyStored()));
+                    this.getEnergyCapacity() - this.getEnergyStored()));
             if (!simulate) {
                 // invert the EU value if we're doing inputs (inputting *to the recipe* -> removing from handlers)
                 this.changeEnergy(io == IO.IN ? -canTransfer : canTransfer);
