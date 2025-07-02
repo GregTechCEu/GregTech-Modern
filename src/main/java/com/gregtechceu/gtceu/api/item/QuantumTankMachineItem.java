@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
-import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +21,6 @@ public class QuantumTankMachineItem extends MetaMachineItem {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new QuantumFluidHandlerItemStack(stack, QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition()));
+        return new QuantumFluidHandlerItemStack(stack);
     }
 }

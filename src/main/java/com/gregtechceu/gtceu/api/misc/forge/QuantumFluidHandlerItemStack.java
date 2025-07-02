@@ -13,35 +13,35 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabilityProvider {
 
     private final LazyOptional<IFluidHandlerItem> holder = LazyOptional.of(() -> this);
+    @Getter
     protected @NotNull ItemStack container;
     protected long capacity;
 
-    public QuantumFluidHandlerItemStack(@NotNull ItemStack container, long capacity) {
+    public QuantumFluidHandlerItemStack(@NotNull ItemStack container) {
         this.container = container;
-        this.capacity = capacity;
+
+        this.capacity = container.getTag().getLong("maxAmount");
     }
 
     // Retrieve the capacity clamped to an int.
-    private int getClampedCapacity() {
+    protected int getClampedCapacity() {
         return GTMath.saturatedCast(this.capacity);
-    }
-
-    public @NotNull ItemStack getContainer() {
-        return this.container;
     }
 
     // For Fluid IO, clamping to int is fine.
     // For internal structures, make sure to use getFluidAmount() alongside this.
     public @NotNull FluidStack getFluid() {
         CompoundTag tagCompound = this.container.getTag();
-        if (tagCompound == null || !tagCompound.contains("stored") || !tagCompound.contains("storedAmount"))
+        if (tagCompound == null || !tagCompound.contains("stored") || !tagCompound.contains("storedAmount")) {
             return FluidStack.EMPTY;
+        }
         FluidStack stack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("stored"));
         stack.setAmount(GTMath.saturatedCast(tagCompound.getLong("storedAmount")));
         return stack;
@@ -65,82 +65,87 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
         this.container.getTag().putLong("storedAmount", amount);
     }
 
+    @Override
     public int getTanks() {
         return 1;
     }
 
+    @Override
     public @NotNull FluidStack getFluidInTank(int tank) {
         return this.getFluid();
     }
 
+    @Override
     public int getTankCapacity(int tank) {
         return getClampedCapacity();
     }
 
+    @Override
     public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
         return true;
     }
 
+    @Override
     public int fill(FluidStack resource, IFluidHandler.FluidAction doFill) {
-        if (this.container.getCount() == 1 && !resource.isEmpty() && this.canFillFluidType(resource)) {
-            FluidStack contained = this.getFluid();
-            long amount = this.getFluidAmount();
-            if (contained.isEmpty()) {
-                int fillAmount = Math.min(getClampedCapacity(), resource.getAmount());
-                if (doFill.execute()) {
-                    FluidStack filled = resource.copy();
-                    this.setFluid(filled, fillAmount);
-                }
-
-                return fillAmount;
-            } else if (contained.isFluidEqual(resource)) {
-
-                int fillAmount = Math.min(GTMath.saturatedCast(this.capacity - amount), resource.getAmount());
-                if (doFill.execute() && fillAmount > 0) {
-                    long fluidAmountAfterFill = amount + (long) fillAmount;
-                    this.setFluid(contained, fluidAmountAfterFill);
-                }
-
-                return fillAmount;
-            } else {
-                return 0;
+        if (this.container.getCount() != 1 || resource.isEmpty() || !this.canFillFluidType(resource)) {
+            return 0;
+        }
+        FluidStack contained = this.getFluid();
+        long amount = this.getFluidAmount();
+        if (contained.isEmpty()) {
+            int fillAmount = Math.min(getClampedCapacity(), resource.getAmount());
+            if (doFill.execute()) {
+                FluidStack filled = resource.copy();
+                this.setFluid(filled, fillAmount);
             }
+
+            return fillAmount;
+        } else if (contained.isFluidEqual(resource)) {
+
+            int fillAmount = Math.min(GTMath.saturatedCast(this.capacity - amount), resource.getAmount());
+            if (doFill.execute() && fillAmount > 0) {
+                long fluidAmountAfterFill = amount + (long) fillAmount;
+                this.setFluid(contained, fluidAmountAfterFill);
+            }
+
+            return fillAmount;
         } else {
             return 0;
         }
     }
 
+    @Override
     public @NotNull FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
         return this.container.getCount() == 1 && !resource.isEmpty() && resource.isFluidEqual(this.getFluid()) ?
                 this.drain(resource.getAmount(), action) : FluidStack.EMPTY;
     }
 
+    @Override
     public @NotNull FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-        if (this.container.getCount() == 1 && maxDrain > 0) {
-            FluidStack contained = this.getFluid();
-            long fluidAmount = this.getFluidAmount();
-            if (fluidAmount > 0 && this.canDrainFluidType(contained)) {
-                // Can drain at most Integer.MAX_VALUE
-                int drainAmount = GTMath.saturatedCast(Math.min(fluidAmount, maxDrain));
-                FluidStack drained = contained.copy();
-                drained.setAmount(drainAmount);
-                if (action.execute()) {
-                    long fluidAfterDrain = fluidAmount - (long) drainAmount;
-                    contained.setAmount(GTMath.saturatedCast(fluidAfterDrain));
-                    if (contained.isEmpty()) {
-                        this.setContainerToEmpty();
-                    } else {
-                        this.setFluid(contained, fluidAfterDrain);
-                    }
-                }
-
-                return drained;
-            } else {
-                return FluidStack.EMPTY;
-            }
-        } else {
+        if (this.container.getCount() != 1 || maxDrain <= 0) {
             return FluidStack.EMPTY;
         }
+        FluidStack contained = this.getFluid();
+        long fluidAmount = this.getFluidAmount();
+        if (fluidAmount <= 0 || !this.canDrainFluidType(contained)) {
+            return FluidStack.EMPTY;
+        }
+
+        // Can drain at most Integer.MAX_VALUE
+        int drainAmount = GTMath.saturatedCast(Math.min(fluidAmount, maxDrain));
+        FluidStack drained = contained.copy();
+        drained.setAmount(drainAmount);
+        if (action.execute()) {
+            long fluidAfterDrain = fluidAmount - (long) drainAmount;
+            contained.setAmount(GTMath.saturatedCast(fluidAfterDrain));
+            if (contained.isEmpty()) {
+                this.setContainerToEmpty();
+            } else {
+                this.setFluid(contained, fluidAfterDrain);
+            }
+        }
+
+        return drained;
     }
 
     public boolean canFillFluidType(FluidStack fluid) {
@@ -156,34 +161,8 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
         this.container.removeTagKey("storedAmount");
     }
 
+    @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(capability, this.holder);
-    }
-
-    public static class Consumable extends QuantumFluidHandlerItemStack {
-
-        public Consumable(ItemStack container, int capacity) {
-            super(container, capacity);
-        }
-
-        protected void setContainerToEmpty() {
-            super.setContainerToEmpty();
-            this.container.shrink(1);
-        }
-    }
-
-    public static class SwapEmpty extends QuantumFluidHandlerItemStack {
-
-        protected final ItemStack emptyContainer;
-
-        public SwapEmpty(ItemStack container, ItemStack emptyContainer, int capacity) {
-            super(container, capacity);
-            this.emptyContainer = emptyContainer;
-        }
-
-        protected void setContainerToEmpty() {
-            super.setContainerToEmpty();
-            this.container = this.emptyContainer;
-        }
     }
 }
