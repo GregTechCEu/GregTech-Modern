@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
@@ -116,7 +117,7 @@ public class GTCEu {
      * @return if the current thread is the client thread
      */
     public static boolean isClientThread() {
-        return isClientSide() && Minecraft.getInstance().isSameThread();
+        return isClientSide() && EffectiveSide.get().isClient();
     }
 
     /**

@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor
@@ -383,63 +386,61 @@ public class GTRecipeLookup {
     }
 
     /**
-     * Converts a GTRecipe's {@link com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability}s into a List of
-     * {@link AbstractMapIngredient}s
+     * Converts a GTRecipe's {@link RecipeCapability RecipeCapabilities} into
+     * a list of {@link AbstractMapIngredient AbstractMapIngredients}
      *
-     * @param r the recipe to use
+     * @param recipe the recipe to use
      * @return a list of all the AbstractMapIngredients comprising the recipe
      */
     @NotNull
-    protected List<List<AbstractMapIngredient>> fromRecipe(@NotNull GTRecipe r) {
-        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(r.inputs.values().size());
-        r.inputs.forEach((cap, contents) -> {
-            if (cap.isRecipeSearchFilter() && !contents.isEmpty()) {
-                List<Object> ingredients = new ArrayList<>();
-                for (Content content : contents) {
-                    ingredients.add(content.getContent());
-                }
-                ingredients = cap.compressIngredients(ingredients);
-                for (Object ingredient : ingredients) {
-                    // use the cached ingredient, if possible
-                    retrieveCachedIngredient(list, cap.convertToMapIngredient(ingredient), ingredientRoot);
-                }
-            }
-        });
-        r.tickInputs.forEach((cap, contents) -> {
-            if (cap.isRecipeSearchFilter() && !contents.isEmpty()) {
-                List<Object> ingredients = new ArrayList<>();
-                for (Content content : contents) {
-                    ingredients.add(content.getContent());
-                }
-                ingredients = cap.compressIngredients(ingredients);
-                for (Object ingredient : ingredients) {
-                    // use the cached ingredient, if possible
-                    retrieveCachedIngredient(list, cap.convertToMapIngredient(ingredient), ingredientRoot);
-                }
-            }
-        });
+    protected List<List<AbstractMapIngredient>> fromRecipe(@NotNull GTRecipe recipe) {
+        int initialCapacity = (recipe.inputs.size() + recipe.tickInputs.size()) * 2;
+        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(initialCapacity);
+        recipe.inputs.forEach(processCapabilityIngredients(list));
+        recipe.tickInputs.forEach(processCapabilityIngredients(list));
         return list;
     }
 
+    // spotless:off
+    protected BiConsumer<RecipeCapability<?>, List<Content>> processCapabilityIngredients(List<List<AbstractMapIngredient>> list) {
+        return (cap, contents) -> {
+            if (cap.isRecipeSearchFilter() && !contents.isEmpty()) {
+                List<Object> ingredients = new ArrayList<>();
+                for (Content content : contents) {
+                    ingredients.add(content.getContent());
+                }
+                ingredients = cap.compressIngredients(ingredients);
+                for (Object ingredient : ingredients) {
+                    // use the cached ingredient, if possible
+                    retrieveCachedIngredient(list, MapIngredientTypeManager.getFrom(ingredient, cap), ingredientRoot);
+                }
+            }
+        };
+    }
+    // spotless:on
+
     /**
-     * Converts a GTRecipe's {@link com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability}s into a List of
-     * {@link AbstractMapIngredient}s
+     * Converts a Recipe Capability holder's handlers into
+     * a list of {@link AbstractMapIngredient AbstractMapIngredients}
      *
-     * @param r the recipe to use
-     * @return a list of all the AbstractMapIngredients comprising the recipe
+     * @param holder the capability holder to query handlers from
+     * @return a list of all the AbstractMapIngredients in the handlers
      */
     @NotNull
-    protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
-        var handlerMap = r.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
-        int size = handlerMap.values().size();
-        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(size);
+    protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder holder) {
+        var handlerMap = holder.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
+        // the initial capacity is a "feel-good" value because it's faster to just grow the list
+        // than to calculate an accurate value.
+        List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(handlerMap.size() * 8);
         for (var entry : handlerMap.entrySet()) {
             var cap = entry.getKey();
             var handlers = entry.getValue();
             if (!cap.isRecipeSearchFilter()) continue;
             for (var handler : handlers) {
                 var compressed = cap.compressIngredients(handler.getContents());
-                list.addAll(cap.convertCompressedIngredients(compressed));
+                for (var ingredient : compressed) {
+                    list.add(MapIngredientTypeManager.getFrom(ingredient, cap));
+                }
             }
         }
         return list;

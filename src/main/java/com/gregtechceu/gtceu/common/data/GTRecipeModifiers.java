@@ -73,6 +73,7 @@ public class GTRecipeModifiers {
             .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
     public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
+    public static final RecipeModifier BATCH_MODE = GTRecipeModifiers::batchMode;
 
     /**
      * Recipe Modifier for <b>Parallel Multiblock Machines</b> - can be used as a valid {@link RecipeModifier}
@@ -96,6 +97,26 @@ public class GTRecipeModifiers {
                     .eutMultiplier(parallels)
                     .parallels(parallels)
                     .build();
+        }
+        return ModifierFunction.IDENTITY;
+    }
+
+    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+        if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
+            if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
+                int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
+                parallel = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallel);
+
+                if (parallel == 0) return ModifierFunction.NULL;
+                if (parallel == 1) return ModifierFunction.IDENTITY;
+
+                return ModifierFunction.builder()
+                        .inputModifier(ContentModifier.multiplier(parallel))
+                        .outputModifier(ContentModifier.multiplier(parallel))
+                        .durationMultiplier(parallel)
+                        .batchParallels(parallel)
+                        .build();
+            }
         }
         return ModifierFunction.IDENTITY;
     }

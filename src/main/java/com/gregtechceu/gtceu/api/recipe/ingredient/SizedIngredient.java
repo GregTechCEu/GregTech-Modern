@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -55,8 +56,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     protected SizedIngredient(ItemStack itemStack) {
-        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) :
-                Ingredient.of(itemStack), itemStack.getCount());
+        this(itemStack.hasTag() ? StrictNBTIngredient.of(itemStack) : Ingredient.of(itemStack), itemStack.getCount());
     }
 
     public static SizedIngredient create(ItemStack inner) {
@@ -136,11 +136,10 @@ public class SizedIngredient extends Ingredient {
             return intProviderIngredient.getItems();
         }
         if (changed || itemStacks == null) {
-            itemStacks = Arrays.stream(inner.getItems()).map(i -> {
-                ItemStack ic = i.copy();
-                ic.setCount(amount);
-                return ic;
-            }).toArray(ItemStack[]::new);
+            itemStacks = inner.getItems();
+            for (int i = 0; i < itemStacks.length; i++) {
+                itemStacks[i] = itemStacks[i].copyWithCount(amount);
+            }
             changed = false;
         }
         return itemStacks;
@@ -165,7 +164,9 @@ public class SizedIngredient extends Ingredient {
 
     public static Ingredient getInner(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
-            return sizedIngredient.inner;
+            return getInner(sizedIngredient.getInner());
+        } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
+            return getInner(intProviderIngredient.getInner());
         }
         return ingredient;
     }
