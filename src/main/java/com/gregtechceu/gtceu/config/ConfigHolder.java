@@ -443,6 +443,9 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether to play machine sounds while machines are active.", "Default: true" })
         public boolean machineSounds = true;
         @Configurable
+        @Configurable.Comment({ "Duration in ticks that batching will try to reach.", "Default: 100" })
+        public int batchDuration = 100;
+        @Configurable
         @Configurable.Comment({ "Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false" })
         public boolean steelSteamMultiblocks = false;
         @Configurable

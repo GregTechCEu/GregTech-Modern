@@ -151,6 +151,14 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     Optional<IParallelHatch> getParallelHatch();
 
     /**
+     *
+     * @return Whether batching is enabled on this multiblock
+     */
+    default boolean isBatchEnabled() {
+        return false;
+    }
+
+    /**
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
