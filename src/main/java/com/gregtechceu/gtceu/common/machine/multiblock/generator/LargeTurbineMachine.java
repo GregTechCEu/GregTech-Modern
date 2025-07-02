@@ -149,7 +149,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
                 long maxProduction = getOverclockVoltage();
                 long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
-                                         recipeLogic.getLastRecipe().getOutputEUt().voltage() : 0;
+                        recipeLogic.getLastRecipe().getOutputEUt().voltage() : 0;
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",

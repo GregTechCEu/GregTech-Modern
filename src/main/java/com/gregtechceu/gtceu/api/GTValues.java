@@ -141,10 +141,10 @@ public class GTValues {
             "UEV", "UIV", "UXV", "OpV", "MAX" };
 
     public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
-                                                                         GREEN + BOLD + "A" +
-                                                                         BLUE + BOLD + "X" +
-                                                                         YELLOW + BOLD + "+" +
-                                                                         RED + BOLD + value;
+            GREEN + BOLD + "A" +
+            BLUE + BOLD + "X" +
+            YELLOW + BOLD + "+" +
+            RED + BOLD + value;
 
     /**
      * The short names for the voltages, formatted for text
