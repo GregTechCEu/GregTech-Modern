@@ -21,4 +21,14 @@ public class EnergyInfoPeripheral implements GenericPeripheral {
     public static MethodResult getEnergyCapacity(IEnergyInfoProvider infoProvider) {
         return MethodResult.of(infoProvider.getEnergyInfo().capacity());
     }
+
+    @LuaFunction
+    public static MethodResult getInputPerSec(IEnergyInfoProvider changeProvider) {
+        return MethodResult.of(changeProvider.getInputPerSec());
+    }
+
+    @LuaFunction
+    public static MethodResult getOutputPerSec(IEnergyInfoProvider changeProvider) {
+        return MethodResult.of(changeProvider.getOutputPerSec());
+    }
 }
