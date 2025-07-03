@@ -13,12 +13,12 @@ public class EnergyChangePeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult getAverageInLastSec(IEnergyChangeProvider changeProvider) {
-        return MethodResult.of(changeProvider.getEnergyChange().averageInLastSec());
+    public static MethodResult getAverageInputLastSec(IEnergyChangeProvider changeProvider) {
+        return MethodResult.of(changeProvider.getAverageInputLastSec());
     }
 
     @LuaFunction
-    public static MethodResult getAverageOutLastSec(IEnergyChangeProvider changeProvider) {
-        return MethodResult.of(changeProvider.getEnergyChange().averageOutLastSec());
+    public static MethodResult getAverageOutputLastSec(IEnergyChangeProvider changeProvider) {
+        return MethodResult.of(changeProvider.getAverageOutputLastSec());
     }
 }

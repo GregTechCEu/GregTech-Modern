@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.IEnergyChangeProvider;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -32,7 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long> implements IEnergyContainer {
+public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long>
+                                       implements IEnergyContainer, IEnergyChangeProvider {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -135,6 +137,16 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Override
     public long getOutputPerSec() {
         return lastEnergyOutputPerSec;
+    }
+
+    @Override
+    public long getAverageInputLastSec() {
+        return lastEnergyInputPerSec / 20;
+    }
+
+    @Override
+    public long getAverageOutputLastSec() {
+        return lastEnergyOutputPerSec / 20;
     }
 
     public void setEnergyStored(long energyStored) {

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyChangeProviderList;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
@@ -175,6 +176,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IEnergyChangeProvider energyChangeProvider) {
                 return GTCapability.CAPABILITY_ENERGY_CHANGE_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> energyChangeProvider));
+            }
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyChangeProvider.class);
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_ENERGY_CHANGE_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyChangeProviderList(list)));
             }
         } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {

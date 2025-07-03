@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 public interface IEnergyChangeProvider {
 
-    record EnergyChange(long averageInLastSec, long averageOutLastSec) {}
+    long getAverageInputLastSec();
 
-    EnergyChange getEnergyChange();
+    long getAverageOutputLastSec();
 }
