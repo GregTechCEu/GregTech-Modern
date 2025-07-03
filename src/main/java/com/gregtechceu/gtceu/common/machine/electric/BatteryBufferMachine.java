@@ -256,6 +256,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyOutputPerSec += charged;
                 }
 
                 if (changed) {
@@ -314,6 +315,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyInputPerSec += charged;
                 }
 
                 if (changed) {
