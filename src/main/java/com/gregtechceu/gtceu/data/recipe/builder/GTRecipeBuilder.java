@@ -1475,7 +1475,7 @@ public class GTRecipeBuilder {
         var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;
         if (!recipeCapabilityMax.containsKey(capability)) return;
 
-        int max = isInput ? recipeType.getMaxInputs(capability) : recipeType.getMaxOutputs(capability);
+        int max = recipeCapabilityMax.getInt(capability);
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
