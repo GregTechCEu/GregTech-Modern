@@ -665,7 +665,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
             for (var fluidIng : inputs) {
-                for (var stack : fluidIng.getIngredient().getStacks()) {
+                for (var stack : fluidIng.ingredient().getStacks()) {
                     var mat = ChemicalHelper.getMaterial(stack.getFluid());
                     if (!mat.isNull()) {
                         fluidMaterialStacks.add(new MaterialStack(mat,
@@ -1159,7 +1159,7 @@ public interface GTRecipeSchema {
         var outputs = map.get(FluidRecipeCapability.CAP);
         if (outputs != null && outputs.length > 0) {
             var output = GTRecipeComponents.FLUID_OUT.baseComponent().read(recipe, outputs[0].content);
-            var fluids = output.getIngredient().getStacks();
+            var fluids = output.ingredient().getStacks();
             if (fluids.length == 0) return null;
 
             var id = fluids[0].getFluid().builtInRegistryHolder().unwrapKey();

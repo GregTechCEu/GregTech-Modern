@@ -129,7 +129,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 steamGenerated = 0;
             } else if (maxDrain > 0) { // if maxDrain is 0 because throttle is too low, skip trying to make steam
                 // drain water
-                var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
+                var drainWater = List.of(FluidIngredient.of(Fluids.WATER, maxDrain));
                 List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
                 inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
