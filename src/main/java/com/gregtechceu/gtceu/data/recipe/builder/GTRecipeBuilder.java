@@ -255,7 +255,7 @@ public class GTRecipeBuilder {
             inputCWU(cwu);
         } else if (cwu < 0) {
             tickOutput.remove(CWURecipeCapability.CAP);
-            outputCWU(cwu);
+            outputCWU(-cwu);
         }
         perTick = lastPerTick;
         return this;
