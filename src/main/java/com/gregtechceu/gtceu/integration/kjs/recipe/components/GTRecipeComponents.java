@@ -9,10 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.fluid.*;
-import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -24,11 +20,15 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.fluid.*;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.*;
@@ -36,8 +36,8 @@ import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
-import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -374,83 +374,83 @@ public class GTRecipeComponents {
         }
 
         @Override
-            public long kjs$getAmount() {
-                return ingredient.getAmount();
+        public long kjs$getAmount() {
+            return ingredient.getAmount();
+        }
+
+        @Override
+        public FluidIngredientJS kjs$copy(long amount) {
+            FluidIngredient ingredient1 = ingredient.copy();
+            ingredient1.setAmount((int) amount);
+            return new FluidIngredientJS(ingredient1);
+        }
+
+        @Override
+        public boolean matches(FluidLike other) {
+            if (other instanceof FluidStackJS stackJS) {
+                FluidStack stack = new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
+                return ingredient.test(stack);
+            } else if (other instanceof FluidStack stack) {
+                return ingredient.test(stack);
             }
+            return other.matches(this);
+        }
 
-            @Override
-            public FluidIngredientJS kjs$copy(long amount) {
-                FluidIngredient ingredient1 = ingredient.copy();
-                ingredient1.setAmount((int) amount);
-                return new FluidIngredientJS(ingredient1);
-            }
+        public static FluidIngredientJS of(Object o) {
+            if (o instanceof FluidIngredientJS ingredientJS) {
+                return ingredientJS;
+            } else if (o instanceof FluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient);
+            } else if (o instanceof JsonElement json) {
+                return new FluidIngredientJS(FluidIngredient.fromJson(json));
+            } else if (o instanceof Tag nbt) {
+                JsonElement json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt);
+                return new FluidIngredientJS(FluidIngredient.fromJson(json));
+            } else if (o instanceof FluidStack stack) {
+                return new FluidIngredientJS(stack);
+            } else if (o instanceof FluidStackJS stackJS) {
+                return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
+            } else if (o instanceof CharSequence || o instanceof ResourceLocation) {
+                var s = o.toString();
 
-            @Override
-            public boolean matches(FluidLike other) {
-                if (other instanceof FluidStackJS stackJS) {
-                    FluidStack stack = new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
-                    return ingredient.test(stack);
-                } else if (other instanceof FluidStack stack) {
-                    return ingredient.test(stack);
-                }
-                return other.matches(this);
-            }
-
-            public static FluidIngredientJS of(Object o) {
-                if (o instanceof FluidIngredientJS ingredientJS) {
-                    return ingredientJS;
-                } else if (o instanceof FluidIngredient ingredient) {
-                    return new FluidIngredientJS(ingredient);
-                } else if (o instanceof JsonElement json) {
-                    return new FluidIngredientJS(FluidIngredient.fromJson(json));
-                } else if (o instanceof Tag nbt) {
-                    JsonElement json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt);
-                    return new FluidIngredientJS(FluidIngredient.fromJson(json));
-                } else if (o instanceof FluidStack stack) {
-                    return new FluidIngredientJS(stack);
-                } else if (o instanceof FluidStackJS stackJS) {
-                    return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
-                } else if (o instanceof CharSequence || o instanceof ResourceLocation) {
-                    var s = o.toString();
-
-                    if (s.isEmpty() || s.equals("-") || s.equals("empty") || s.equals("minecraft:empty")) {
-                        return new FluidIngredientJS(FluidIngredient.EMPTY);
-                    }
-
-                    boolean isTag = false;
-                    if (s.startsWith("#")) {
-                        s = s.substring(1);
-                        isTag = true;
-                    }
-                    var split = s.split(" ", 3);
-                    ResourceLocation id = new ResourceLocation(split[0]);
-                    int amount = UtilsJS.parseInt(split.length >= 2 ? split[1] : "", FluidType.BUCKET_VOLUME);
-                    CompoundTag nbt = null;
-                    if (split.length == 3) {
-                        try {
-                            nbt = TagParser.parseTag(split[2]);
-                        } catch (CommandSyntaxException ignored) {}
-                    }
-
-                    if (isTag) {
-                        return new FluidIngredientJS(TagKey.create(Registries.FLUID, id), amount, nbt);
-                    } else {
-                        return new FluidIngredientJS(BuiltInRegistries.FLUID.get(id), amount, nbt);
-                    }
+                if (s.isEmpty() || s.equals("-") || s.equals("empty") || s.equals("minecraft:empty")) {
+                    return new FluidIngredientJS(FluidIngredient.EMPTY);
                 }
 
-                var list = ListJS.of(o);
-                if (list != null && !list.isEmpty()) {
-                    List<FluidStack> stacks = new ArrayList<>();
-                    for (var object : list) {
-                        FluidStackJS stackJS = FluidStackJS.of(object);
-                        stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
-                    }
-                    return new FluidIngredientJS(FluidIngredient.of(stacks));
+                boolean isTag = false;
+                if (s.startsWith("#")) {
+                    s = s.substring(1);
+                    isTag = true;
+                }
+                var split = s.split(" ", 3);
+                ResourceLocation id = new ResourceLocation(split[0]);
+                int amount = UtilsJS.parseInt(split.length >= 2 ? split[1] : "", FluidType.BUCKET_VOLUME);
+                CompoundTag nbt = null;
+                if (split.length == 3) {
+                    try {
+                        nbt = TagParser.parseTag(split[2]);
+                    } catch (CommandSyntaxException ignored) {}
+                }
+
+                if (isTag) {
+                    return new FluidIngredientJS(TagKey.create(Registries.FLUID, id), amount, nbt);
                 } else {
-                    FluidStackJS stackJS = FluidStackJS.of(o);
-                    return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
+                    return new FluidIngredientJS(BuiltInRegistries.FLUID.get(id), amount, nbt);
                 }
+            }
+
+            var list = ListJS.of(o);
+            if (list != null && !list.isEmpty()) {
+                List<FluidStack> stacks = new ArrayList<>();
+                for (var object : list) {
+                    FluidStackJS stackJS = FluidStackJS.of(object);
+                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
+                }
+                return new FluidIngredientJS(FluidIngredient.of(stacks));
+            } else {
+                FluidStackJS stackJS = FluidStackJS.of(o);
+                return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
             }
         }
+    }
 }
