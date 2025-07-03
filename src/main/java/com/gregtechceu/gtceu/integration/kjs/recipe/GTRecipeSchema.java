@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -1062,14 +1063,33 @@ public interface GTRecipeSchema {
         }
 
         @Override
-        public JsonElement writeInputFluid(InputFluid value) {
-            var fluid = ((FluidStackJS) value).getFluidStack();
-            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
+        public InputFluid readInputFluid(Object from) {
+            return GTRecipeComponents.FluidIngredientJS.of(from);
         }
 
         @Override
-        public InputFluid readInputFluid(Object from) {
-            return super.readInputFluid(from);
+        public JsonElement writeInputFluid(InputFluid value) {
+            if (value instanceof GTRecipeComponents.FluidIngredientJS ing) {
+                return ing.ingredient().toJson();
+            }
+
+            var fluid = ((FluidStackJS) value).getFluidStack();
+            return FluidIngredient.of(fluid.getFluid(), (int) fluid.getAmount(), fluid.getTag()).toJson();
+        }
+
+        @Override
+        public OutputFluid readOutputFluid(Object from) {
+            return GTRecipeComponents.FluidIngredientJS.of(from);
+        }
+
+        @Override
+        public JsonElement writeOutputFluid(OutputFluid value) {
+            if (value instanceof GTRecipeComponents.FluidIngredientJS ing) {
+                return ing.ingredient().toJson();
+            }
+
+            var fluid = ((FluidStackJS) value).getFluidStack();
+            return FluidIngredient.of(fluid.getFluid(), (int) fluid.getAmount(), fluid.getTag()).toJson();
         }
     }
 
