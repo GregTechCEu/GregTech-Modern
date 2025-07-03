@@ -89,6 +89,11 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
     }
 
     @Override
+    public Class<BlockState> contentClass() {
+        return BlockState.class;
+    }
+
+    @Override
     public Codec<BlockState> codec() {
         return BlockState.CODEC;
     }

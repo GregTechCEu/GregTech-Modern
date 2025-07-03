@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -66,6 +67,7 @@ import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -243,20 +245,22 @@ public class CommonProxy {
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
 
+
+            // register the map ingredient converters for all of our ingredients
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
-            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidTagMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidStackMapIngredient::from);
+
             // spotless:off
             MapIngredientTypeManager.registerMapIngredient(SizedIngredient.class,
-                    (sized) -> MapIngredientTypeManager.getFrom(sized.getInner()));
+                    (ingredient) -> MapIngredientTypeManager.getFrom(ingredient.getInner(), ItemRecipeCapability.CAP));
             MapIngredientTypeManager.registerMapIngredient(IntProviderIngredient.class,
-                    (intProvider) -> MapIngredientTypeManager.getFrom(intProvider.getInner()));
+                    (ingredient) -> MapIngredientTypeManager.getFrom(ingredient.getInner(), ItemRecipeCapability.CAP));
 
-            MapIngredientTypeManager.registerMapIngredient(StrictNBTIngredient.class,
-                    MapIngredientFunction.terminal(StrictNBTItemStackMapIngredient::from));
-            MapIngredientTypeManager.registerMapIngredient(PartialNBTIngredient.class,
-                    MapIngredientFunction.terminal(PartialNBTItemStackMapIngredient::from));
-            MapIngredientTypeManager.registerMapIngredient(IntersectionIngredient.class,
-                    MapIngredientFunction.terminal(IntersectionMapIngredient::from));
+            MapIngredientTypeManager.registerMapIngredient(StrictNBTIngredient.class, StrictNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(PartialNBTIngredient.class, PartialNBTItemStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(IntersectionIngredient.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(Ingredient.class, ItemStackMapIngredient::from);
 
@@ -265,6 +269,8 @@ public class CommonProxy {
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, StrictNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, PartialNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, IntersectionMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(ItemStack.class, CustomMapIngredient::from);
+
             // spotless:on
         });
     }

@@ -9,7 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,16 +18,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolActions;
 
-import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Used to allow a tool to hoe the ground, only if it cannot extend the
@@ -37,90 +32,70 @@ import java.util.Set;
  */
 public class HoeGroundBehavior implements IToolBehavior {
 
-    public static final HoeGroundBehavior INSTANCE = create();
+    public static final HoeGroundBehavior INSTANCE = new HoeGroundBehavior();
 
     protected HoeGroundBehavior() {/**/}
-
-    protected static HoeGroundBehavior create() {
-        return new HoeGroundBehavior();
-    }
 
     @NotNull
     @Override
     public InteractionResult onItemUse(UseOnContext context) {
         if (context.getClickedFace() == Direction.DOWN) return InteractionResult.PASS;
 
-        Level world = context.getLevel();
+        Level level = context.getLevel();
         Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
-        InteractionHand hand = context.getHand();
-
-        ItemStack stack = player.getItemInHand(hand);
+        ItemStack stack = context.getItemInHand();
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
 
-        Set<BlockPos> blocks;
+        List<BlockPos> blocks;
         // only attempt to till if the center block is tillable
-        if (isBlockTillable(stack, world, player, pos, context)) {
-            if (aoeDefinition == AoESymmetrical.none()) {
-                blocks = ImmutableSet.of(pos);
+        if (isBlockTillable(context)) {
+            if (aoeDefinition.isZero()) {
+                blocks = List.of(pos);
             } else {
-                HitResult rayTraceResult = ToolHelper.getPlayerDefaultRaytrace(player);
-
-                if (rayTraceResult == null) return InteractionResult.PASS;
-                if (rayTraceResult.getType() != HitResult.Type.BLOCK) return InteractionResult.PASS;
-                if (!(rayTraceResult instanceof BlockHitResult blockHitResult))
-                    return InteractionResult.PASS;
-                if (blockHitResult.getDirection() == null)
-                    return InteractionResult.PASS;
-
-                blocks = getTillableBlocks(stack, aoeDefinition, world, player, blockHitResult);
-                if (isBlockTillable(stack, world, player, blockHitResult.getBlockPos(), context)) {
-                    blocks.add(blockHitResult.getBlockPos());
-                }
+                blocks = getTillableBlocks(aoeDefinition, context);
+                blocks.add(0, context.getClickedPos());
             }
-        } else return InteractionResult.PASS;
+        } else {
+            return InteractionResult.PASS;
+        }
 
         boolean tilled = false;
         for (BlockPos blockPos : blocks) {
-            BlockState state = world.getBlockState(blockPos);
-            tilled |= tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), state);
-            if (!player.isCreative()) {
-                ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
-            }
-            if (stack.isEmpty())
-                break;
+            UseOnContext posContext = new UseOnContext(level, player, context.getHand(), stack,
+                    context.getHitResult().withPosition(blockPos));
+            tilled |= tillGround(posContext);
+
+            ToolHelper.damageItem(stack, player);
+            if (stack.isEmpty()) break;
         }
 
         if (tilled) {
-            world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.HOE_TILL,
-                    SoundSource.PLAYERS, 1.0F, 1.0F);
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            level.playSound(player, blocks.get(0), SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                  Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult,
-                HoeGroundBehavior.INSTANCE::isBlockTillable);
+    public static List<BlockPos> getTillableBlocks(AoESymmetrical aoeDefinition, UseOnContext context) {
+        return ToolHelper.iterateAoE(aoeDefinition, HoeGroundBehavior::isBlockTillable, context);
     }
 
-    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
-        if (world.getBlockState(pos.above()).isAir()) {
-            BlockState state = world.getBlockState(pos);
-            BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
-            return newState != null && newState != state;
-        }
-        return false;
+    protected static boolean isBlockTillable(UseOnContext context) {
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, true);
+        return newState != null && newState != state;
     }
 
-    protected boolean tillGround(UseOnContext context, BlockState state) {
+    protected boolean tillGround(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState state = level.getBlockState(pos);
+
         BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
         if (newState != null && newState != state) {
-            context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(),
-                    GameEvent.Context.of(context.getPlayer(), state));
-            return context.getLevel().setBlock(context.getClickedPos(), newState, Block.UPDATE_ALL_IMMEDIATE);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(context.getPlayer(), newState));
+            return level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE);
         }
         return false;
     }

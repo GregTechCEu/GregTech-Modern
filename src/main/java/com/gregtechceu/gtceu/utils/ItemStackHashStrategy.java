@@ -49,12 +49,12 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
     class ItemStackHashStrategyBuilder {
 
         private static final ItemStackHashStrategy ALL = builder().compareItem(true)
-                                                                  .compareCount(true)
-                                                                  .compareTag(true)
-                                                                  .build();
+                .compareCount(true)
+                .compareTag(true)
+                .build();
         private static final ItemStackHashStrategy ITEM_AND_TAG = builder().compareItem(true)
-                                                                           .compareTag(true)
-                                                                           .build();
+                .compareTag(true)
+                .build();
         private static final ItemStackHashStrategy ITEM = builder().compareItem(true).build();
 
         private boolean item, count, tag;

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 
@@ -75,7 +74,7 @@ public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     @Override
     public String toString() {
-        return "MapItemStackPartialNBTIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "PartialNBTItemStackMapIngredient{" + "item=" + stack + "}";
     }
 
     @Override

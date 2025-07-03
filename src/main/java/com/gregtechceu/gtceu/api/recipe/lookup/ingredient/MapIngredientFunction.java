@@ -18,23 +18,4 @@ public interface MapIngredientFunction<T> {
      * @return a list of recipe lookup filters.
      */
     List<AbstractMapIngredient> getIngredients(T ingredient);
-
-    default boolean terminal() {
-        return false;
-    }
-
-    static <T> MapIngredientFunction<T> terminal(MapIngredientFunction<T> original) {
-        return new MapIngredientFunction<>() {
-
-            @Override
-            public List<AbstractMapIngredient> getIngredients(T ingredient) {
-                return original.getIngredients(ingredient);
-            }
-
-            @Override
-            public boolean terminal() {
-                return true;
-            }
-        };
-    }
 }

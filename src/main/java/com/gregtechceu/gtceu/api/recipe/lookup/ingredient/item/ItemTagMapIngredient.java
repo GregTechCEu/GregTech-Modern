@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class ItemTagMapIngredient extends AbstractMapIngredient {
@@ -21,6 +23,7 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
         this.tag = tag;
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(Ingredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
@@ -31,15 +34,16 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
         return ingredients;
     }
 
+    @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {
-        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         stack.getTags().forEach(tag -> ingredients.add(new ItemTagMapIngredient(tag)));
         return ingredients;
     }
 
     @Override
     protected int hash() {
-        return tag.location().hashCode();
+        return tag.hashCode();
     }
 
     @Override
@@ -52,6 +56,6 @@ public class ItemTagMapIngredient extends AbstractMapIngredient {
 
     @Override
     public String toString() {
-        return "MapItemTagIngredient{" + "tag=" + tag.location() + "}";
+        return "ItemTagMapIngredient{" + "tag=" + tag.location() + "}";
     }
 }

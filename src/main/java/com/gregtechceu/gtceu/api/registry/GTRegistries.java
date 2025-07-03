@@ -110,11 +110,20 @@ public final class GTRegistries {
     }
 
     public static RegistryAccess builtinRegistry() {
-        if (FROZEN == BLANK && GTCEu.isClientThread()) {
-            if (Minecraft.getInstance().getConnection() != null) {
-                return Minecraft.getInstance().getConnection().registryAccess();
-            }
+        if (GTCEu.isClientThread()) {
+            return ClientHelpers.getClientRegistries();
         }
         return FROZEN;
+    }
+
+    private static class ClientHelpers {
+
+        private static RegistryAccess getClientRegistries() {
+            if (Minecraft.getInstance().getConnection() != null) {
+                return Minecraft.getInstance().getConnection().registryAccess();
+            } else {
+                return FROZEN;
+            }
+        }
     }
 }

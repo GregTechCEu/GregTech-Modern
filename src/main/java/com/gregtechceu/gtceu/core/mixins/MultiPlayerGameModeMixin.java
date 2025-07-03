@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -31,7 +30,7 @@ public class MultiPlayerGameModeMixin {
         if (minecraft.player == null ||
                 minecraft.level == null ||
                 !ToolHelper.hasBehaviorsTag(mainHandItem) ||
-                ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() ||
+                ToolHelper.getAoEDefinition(mainHandItem).isZero() ||
                 minecraft.player.isShiftKeyDown() ||
                 !mainHandItem.isCorrectToolForDrops(minecraft.level.getBlockState(pos)))
             return;

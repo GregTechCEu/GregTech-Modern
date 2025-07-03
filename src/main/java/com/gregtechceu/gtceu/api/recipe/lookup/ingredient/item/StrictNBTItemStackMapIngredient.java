@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -71,7 +69,7 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
 
     @Override
     public String toString() {
-        return "MapItemStackNBTIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "StrictNBTItemStackMapIngredient{" + "item=" + stack + "}";
     }
 
     @Override
