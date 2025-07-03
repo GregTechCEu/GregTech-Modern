@@ -74,9 +74,6 @@ dependencies {
 //    modRuntimeOnly(forge.jei.forge.impl)
 //    modRuntimeOnly(forge.bundles.rei.runtime)
 
-    // CTM
-    // jarJar(modApi(forge.ctm.get()))
-
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
     //////////////////////////////////////////////////////

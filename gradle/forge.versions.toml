@@ -42,7 +42,6 @@ spark = "4738952"
 observable = "5643037"
 gamestages = "15.0.2"
 bookshelf = "20.2.13"
-ctm = "5983309" # the version on modmaven.dev is out of date, no clue why.
 ftblibrary-cm = "5567591"
 ftbteams-cm = "5267190"
 ftbquests-cm = "6167056"
@@ -81,7 +80,6 @@ ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
-ctm                 = { module = "curse.maven:ctm-267602", version.ref = "ctm" }
 
 worldstripper       = { module = "curse.maven:worldStripper-250603", version.ref = "worldStripper" }
 javd                = { module = "curse.maven:javd-370890", version.ref = "javd" }
