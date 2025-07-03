@@ -18,10 +18,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
@@ -242,12 +240,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     public static class KJSCallWrapper {
 
-        public static final Codec<List<IngredientAction>> INGREDIENT_ACTION_CODEC = Codec.PASSTHROUGH.xmap(
-                dynamic -> {
-                    JsonElement json = dynamic.convert(JsonOps.INSTANCE).getValue();
-                    return IngredientAction.parseList(json);
-                },
-                list -> new Dynamic<>(JsonOps.INSTANCE, JsonNull.INSTANCE));
+        public static final Codec<List<IngredientAction>> INGREDIENT_ACTION_CODEC = ExtraCodecs.JSON.xmap(
+                IngredientAction::parseList,
+                list -> {
+                    JsonArray value = new JsonArray();
+                    for (IngredientAction action : list) {
+                        value.add(action.toJson());
+                    }
+                    return value;
+                });
 
         public static List<?> getIngredientActions(JsonObject json) {
             return IngredientAction.parseList(json.get("kubejs:actions"));

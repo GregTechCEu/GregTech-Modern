@@ -26,9 +26,8 @@ import java.util.function.Predicate;
 @SuppressWarnings("deprecation")
 public class FluidIngredient implements Predicate<FluidStack> {
 
-    public static final Codec<FluidIngredient> CODEC = Codec.PASSTHROUGH.xmap(
-            dynamic -> FluidIngredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
-            ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
+    public static final Codec<FluidIngredient> CODEC = ExtraCodecs.JSON
+            .xmap(FluidIngredient::fromJson, FluidIngredient::toJson);
 
     public static final FluidIngredient EMPTY = new FluidIngredient(new Value[0], 0, null);
     public FluidIngredient.Value[] values;
