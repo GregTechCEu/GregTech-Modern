@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -116,42 +117,71 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 continue;
             }
 
-            var fluids = ingredient.getStacks();
-            if (fluids.length == 0 || fluids[0].isEmpty()) {
-                it.remove();
-                continue;
-            }
+            FluidStack[] fluids;
+            int amount;
 
-            int amount = ingredient.getAmount();
+            if (io == IO.OUT){
 
-            if (io == IO.OUT && !allowSameFluids) {
-                CustomFluidTank existing = null;
-                int tank = 0;
-                for (int i = 0; i < storages.length; ++i) {
-                    var storage = storages[i];
-                    if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(fluids[0])) {
-                        existing = storage;
-                        tank = i;
-                        break;
+                if (ingredient instanceof IntProviderFluidIngredient provider) {
+                    provider.setFluidStacks(null);
+                    provider.setSampledCount(-1);
+
+                    if (simulate) {
+                        fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                        amount = provider.getCountProvider().getMaxValue();
+                    } else {
+                        fluids = provider.getStacks();
+                        if (fluids.length == 0 || fluids[0].isEmpty()) {
+                            it.remove();
+                            continue;
+                        }
+                        amount = fluids[0].getAmount();
+                    }
+                } else {
+                    fluids = ingredient.getStacks();
+                    if (fluids.length == 0 || fluids[0].isEmpty()) {
+                        it.remove();
+                        continue;
+                    }
+                    amount = ingredient.getAmount();
+                }
+
+                if (!allowSameFluids) {
+                    CustomFluidTank existing = null;
+                    int tank = 0;
+                    for (int i = 0; i < storages.length; ++i) {
+                        var storage = storages[i];
+                        if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(fluids[0])) {
+                            existing = storage;
+                            tank = i;
+                            break;
+                        }
+                    }
+                    if (existing != null) {
+                        FluidStack output = fluids[0].copy();
+                        output.setAmount(amount);
+                        int filled = existing.fill(output, action);
+                        if (filled > 0) {
+                            visited[tank] = output.copy();
+                            // shortcut for oldAmount + filled (wow what an idea)
+                            visited[tank].setAmount(existing.getFluidAmount());
+                            changed = true;
+                        }
+                        amount -= filled;
+
+                        if (amount > 0) ingredient.setAmount(amount);
+                        else it.remove();
+                        // Continue to next ingredient regardless of if we filled this ingredient completely
+                        continue;
                     }
                 }
-                if (existing != null) {
-                    FluidStack output = fluids[0].copy();
-                    output.setAmount(amount);
-                    int filled = existing.fill(output, action);
-                    if (filled > 0) {
-                        visited[tank] = output.copy();
-                        // shortcut for oldAmount + filled (wow what an idea)
-                        visited[tank].setAmount(existing.getFluidAmount());
-                        changed = true;
-                    }
-                    amount -= filled;
-
-                    if (amount > 0) ingredient.setAmount(amount);
-                    else it.remove();
-                    // Continue to next ingredient regardless of if we filled this ingredient completely
+            } else {
+                fluids = ingredient.getStacks();
+                if (fluids.length == 0 || fluids[0].isEmpty()) {
+                    it.remove();
                     continue;
                 }
+                amount = ingredient.getAmount();
             }
 
             for (int tank = 0; tank < storages.length; ++tank) {

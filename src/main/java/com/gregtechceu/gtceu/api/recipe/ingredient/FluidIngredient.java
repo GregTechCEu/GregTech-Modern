@@ -12,7 +12,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -256,6 +255,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonSyntaxException("expected value to be either object or array.");
     }
 
+
     private static FluidIngredient.Value valueFromJson(JsonObject json) {
         if (json.has("fluid") && json.has("tag")) {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
@@ -273,12 +273,20 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public interface Value {
+
         Collection<Fluid> getFluids();
 
         JsonObject serialize();
     }
 
-    public record TagValue(@Getter TagKey<Fluid> tag) implements Value {
+    public static class TagValue implements Value {
+
+        @Getter
+        private final TagKey<Fluid> tag;
+
+        public TagValue(TagKey<Fluid> tag) {
+            this.tag = tag;
+        }
 
         @Override
         public Collection<Fluid> getFluids() {

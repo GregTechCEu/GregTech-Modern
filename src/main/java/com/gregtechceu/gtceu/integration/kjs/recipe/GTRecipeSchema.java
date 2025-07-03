@@ -64,6 +64,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -684,7 +685,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
             return output(FluidRecipeCapability.CAP,
-                    IntProviderFluidIngredient.of(UniformInt.of(min, max), output.getFluid()));
+                    IntProviderFluidIngredient.of(FluidIngredient.of(max, output.getFluid()), UniformInt.of(min, max)));
         }
 
         //////////////////////////////////////
@@ -1088,7 +1089,7 @@ public interface GTRecipeSchema {
                 return new GTRecipeComponents.FluidIngredientJS(ingredient.replicate());
             } else if (from instanceof FluidIngredient ingredient) {
                 return new GTRecipeComponents.FluidIngredientJS(ingredient);
-            } else if (from instanceof JsonElement json) {
+            } else if (from instanceof JsonObject json) {
                 return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.fromJson(json));
             } else if (from instanceof FluidStackJS fluidStackJS) {
                 return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.of(
