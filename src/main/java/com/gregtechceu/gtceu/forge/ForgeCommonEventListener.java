@@ -250,10 +250,11 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
+        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
+
         event.addListener(new GTOreLoader());
         event.addListener(new BedrockFluidLoader());
         event.addListener(new BedrockOreLoader());
-        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
     }
 
     @SubscribeEvent
