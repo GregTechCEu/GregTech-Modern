@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyChangeProvider;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -49,7 +50,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
-                                    implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
+                                    implements IEnergyInfoProvider, IEnergyChangeProvider, IFancyUIMachine,
+                                    IDisplayUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -333,6 +335,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Override
     public EnergyInfo getEnergyInfo() {
         return new EnergyInfo(energyBank.getCapacity(), energyBank.getStored());
+    }
+
+    @Override
+    public EnergyChange getEnergyChange() {
+        return new EnergyChange(averageInLastSec, averageOutLastSec);
     }
 
     @Override

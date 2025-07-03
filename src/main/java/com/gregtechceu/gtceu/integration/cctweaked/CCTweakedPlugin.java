@@ -10,6 +10,8 @@ public class CCTweakedPlugin {
 
     public static void init() {
         ComputerCraftAPI.registerGenericSource(new EnergyInfoPeripheral());
+        ComputerCraftAPI.registerGenericSource(new EnergyChangePeripheral());
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER);
+        ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_ENERGY_CHANGE_PROVIDER);
     }
 }

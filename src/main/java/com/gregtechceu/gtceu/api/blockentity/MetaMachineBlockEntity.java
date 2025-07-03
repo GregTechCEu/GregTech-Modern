@@ -171,6 +171,11 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
             }
+        } else if (cap == GTCapability.CAPABILITY_ENERGY_CHANGE_PROVIDER) {
+            if (machine instanceof IEnergyChangeProvider energyChangeProvider) {
+                return GTCapability.CAPABILITY_ENERGY_CHANGE_PROVIDER.orEmpty(cap,
+                        LazyOptional.of(() -> energyChangeProvider));
+            }
         } else if (cap == GTCapability.CAPABILITY_CLEANROOM_RECEIVER) {
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
                 return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap,
