@@ -53,15 +53,14 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
     }
 
     private void setFluid(FluidStack fluid, long amount) {
-        if (!this.container.hasTag()) {
-            this.container.setTag(new CompoundTag());
-        }
         fluid.setAmount(GTMath.saturatedCast(amount));
 
         CompoundTag fluidTag = new CompoundTag();
         fluid.writeToNBT(fluidTag);
-        this.container.getTag().put("stored", fluidTag);
-        this.container.getTag().putLong("storedAmount", amount);
+
+        CompoundTag containerTag = this.container.getOrCreateTag();
+        containerTag.put("stored", fluidTag);
+        containerTag.putLong("storedAmount", amount);
     }
 
     @Override
