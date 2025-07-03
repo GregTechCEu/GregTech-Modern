@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
-        implements ICapabilityTrait, IFluidHandlerModifiable {
+                                 implements ICapabilityTrait, IFluidHandlerModifiable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class,
             NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -39,7 +39,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     protected final CustomFluidTank[] storages;
     @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
-    // while creating tanks.
+                                       // while creating tanks.
     private Boolean isEmpty;
 
     @Persisted
@@ -120,7 +120,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             FluidStack[] fluids;
             int amount;
 
-            if (io == IO.OUT){
+            if (io == IO.OUT) {
 
                 if (ingredient instanceof IntProviderFluidIngredient provider) {
                     provider.setFluidStacks(null);

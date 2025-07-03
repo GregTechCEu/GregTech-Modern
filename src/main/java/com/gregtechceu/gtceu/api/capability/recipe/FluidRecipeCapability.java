@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -385,6 +384,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
+
         FluidTagList tags = new FluidTagList();
         FluidStackList fluids = new FluidStackList();
         for (FluidIngredient.Value value : ingredient.values) {

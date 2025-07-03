@@ -245,10 +245,10 @@ public class CommonProxy {
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
 
-
             // register the map ingredient converters for all of our ingredients
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidStackMapIngredient::from);
+
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidStackMapIngredient::from);
 
@@ -270,7 +270,6 @@ public class CommonProxy {
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, PartialNBTItemStackMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, IntersectionMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(ItemStack.class, CustomMapIngredient::from);
-
             // spotless:on
         });
     }

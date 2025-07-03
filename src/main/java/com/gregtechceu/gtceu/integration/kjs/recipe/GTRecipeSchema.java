@@ -41,8 +41,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
-
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -64,7 +64,6 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;

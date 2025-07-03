@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 

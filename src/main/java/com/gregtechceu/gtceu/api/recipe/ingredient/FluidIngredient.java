@@ -255,7 +255,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonSyntaxException("expected value to be either object or array.");
     }
 
-
     private static FluidIngredient.Value valueFromJson(JsonObject json) {
         if (json.has("fluid") && json.has("tag")) {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");

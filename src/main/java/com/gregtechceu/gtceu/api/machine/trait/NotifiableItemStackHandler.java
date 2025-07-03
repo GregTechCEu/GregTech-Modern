@@ -113,7 +113,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
             ItemStack[] items;
             int amount;
-
             if (io == IO.OUT && ingredient instanceof IntProviderIngredient provider) {
                 provider.setItemStacks(null);
                 provider.setSampledCount(-1);
@@ -130,7 +129,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     }
                     output = items[0];
                 }
-                
+
                 int outputStorageLimit = 0;
                 for (int slot = 0; slot < storage.getSlots(); ++slot) {
                     ItemStack stack = storage.getStackInSlot(slot);

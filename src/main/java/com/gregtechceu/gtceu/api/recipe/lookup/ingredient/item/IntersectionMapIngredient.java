@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
-
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -31,7 +30,6 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
         this.children = children;
         this.children.sort(Comparator.comparingInt(AbstractMapIngredient::hashCode));
     }
-
 
     @NotNull
     public static List<AbstractMapIngredient> from(IntersectionIngredient ingredient) {

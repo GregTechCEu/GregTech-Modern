@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient;
 
-
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
 import net.minecraft.Util;

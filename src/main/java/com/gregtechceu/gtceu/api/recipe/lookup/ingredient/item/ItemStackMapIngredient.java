@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -39,7 +38,6 @@ public class ItemStackMapIngredient extends AbstractMapIngredient {
         }
         return ingredients;
     }
-
 
     @NotNull
     public static List<AbstractMapIngredient> from(ItemStack stack) {

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 
