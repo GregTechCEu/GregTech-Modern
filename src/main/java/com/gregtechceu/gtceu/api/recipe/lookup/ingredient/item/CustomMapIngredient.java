@@ -48,7 +48,6 @@ public class CustomMapIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-
                     for (ItemStack stack : other.ingredient.getItems()) {
                         if (!this.ingredient.test(stack)) return false;
                     }
