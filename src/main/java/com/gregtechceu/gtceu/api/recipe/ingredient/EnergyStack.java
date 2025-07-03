@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -64,38 +63,39 @@ public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
         return this == EMPTY || this.voltage <= 0;
     }
 
-    public EnergyStack absolute() {
-        return withVoltage(Math.abs(voltage));
+    public EnergyStack add(long voltage, long amperage) {
+        Preconditions.checkArgument(this.voltage + voltage >= 0, "Resulting voltage must be >= 0");
+        Preconditions.checkArgument(this.amperage + amperage >= 1, "Resulting amperage must be >= 1");
+        return new EnergyStack(this.voltage + voltage, this.amperage + amperage);
     }
 
     public EnergyStack addVoltage(long voltage) {
+        Preconditions.checkArgument(this.voltage + voltage >= 0, "Resulting voltage must be >= 0");
         return withVoltage(this.voltage + voltage);
     }
 
-    public EnergyStack subsVoltage(long voltage) {
-        return withVoltage(this.voltage - voltage);
+    public EnergyStack multiplyVoltage(long multiplier) {
+        Preconditions.checkArgument(multiplier >= 0, "Multiplier must be >= 0");
+        return withVoltage(this.voltage * multiplier);
     }
 
-    public EnergyStack multiplyVoltage(long voltage) {
-        return withVoltage(this.voltage * voltage);
-    }
-
-    public EnergyStack multiplyVoltage(double voltage) {
-        return withVoltage((long) (this.voltage * voltage));
+    public EnergyStack multiplyVoltage(double multiplier) {
+        Preconditions.checkArgument(multiplier >= 0, "Multiplier must be >= 0");
+        return withVoltage((long) (this.voltage * multiplier));
     }
 
     public EnergyStack addAmperage(long amperage) {
+        Preconditions.checkArgument(this.amperage + amperage >= 1, "Resulting amperage must be >= 1");
         return withAmperage(this.amperage + amperage);
     }
 
-    public EnergyStack multiplyAmperage(long amperage) {
-        return withAmperage(this.amperage * amperage);
+    public EnergyStack multiplyAmperage(long multiplier) {
+        Preconditions.checkArgument(multiplier > 0, "Multiplier must be > 0");
+        return withAmperage(this.amperage * multiplier);
     }
 
     public static EnergyStack sum(EnergyStack a, EnergyStack b) {
-        long totalEU = a.getTotalEU() + b.getTotalEU();
-        long amperage = a.amperage() + b.amperage();
-        return EnergyContainerList.calculateVoltageAmperage(totalEU, amperage);
+        return a.add(b.voltage, b.amperage);
     }
 
     public void toNetwork(FriendlyByteBuf buf) {
