@@ -49,8 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PowerSubstationMachine extends WorkableMultiblockMachine
-                                    implements IEnergyInfoProvider, IFancyUIMachine,
-                                    IDisplayUIMachine {
+                                    implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);

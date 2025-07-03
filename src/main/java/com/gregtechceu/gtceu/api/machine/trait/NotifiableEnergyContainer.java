@@ -32,8 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long>
-                                       implements IEnergyContainer {
+public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long> implements IEnergyContainer {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -54,12 +53,10 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Nullable
     protected TickableSubscription updateSubs;
 
-    @Getter
-    protected long inputPerSec;
-    @Getter
-    protected long outputPerSec;
-    protected long energyInputPerSec;
-    protected long energyOutputPerSec;
+    protected long lastEnergyInputPerSec = 0;
+    protected long lastEnergyOutputPerSec = 0;
+    protected long energyInputPerSec = 0;
+    protected long energyOutputPerSec = 0;
 
     public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                      long maxOutputVoltage, long maxOutputAmperage) {
@@ -130,6 +127,16 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         }
     }
 
+    @Override
+    public long getInputPerSec() {
+        return lastEnergyInputPerSec;
+    }
+
+    @Override
+    public long getOutputPerSec() {
+        return lastEnergyOutputPerSec;
+    }
+
     public void setEnergyStored(long energyStored) {
         if (this.energyStored == energyStored) return;
         if (energyStored > this.energyStored) {
@@ -144,8 +151,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     public void updateTick() {
         if (getMachine().getOffsetTimer() % 20 == 0) {
-            outputPerSec = energyOutputPerSec;
-            inputPerSec = energyInputPerSec;
+            lastEnergyOutputPerSec = energyOutputPerSec;
+            lastEnergyInputPerSec = energyInputPerSec;
             energyOutputPerSec = 0;
             energyInputPerSec = 0;
         }
