@@ -1472,6 +1472,9 @@ public class GTRecipeBuilder {
                                           boolean isInput,
                                           Map<RecipeCapability<?>, List<Content>> table,
                                           int addedEntries) {
+        var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;
+        if (!recipeCapabilityMax.containsKey(capability)) return;
+
         int max = isInput ? recipeType.getMaxInputs(capability) : recipeType.getMaxOutputs(capability);
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
