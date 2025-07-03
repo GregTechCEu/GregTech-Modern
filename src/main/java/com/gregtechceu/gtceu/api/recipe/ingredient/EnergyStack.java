@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.codec.GTCodecUtils;
 
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.With;
 import org.jetbrains.annotations.Range;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @With
@@ -20,14 +20,12 @@ public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
                           @Range(from = 1, to = Long.MAX_VALUE) long amperage) {
 
     // spotless:off
-    public static final Codec<EnergyStack> FULL_CODEC = Codec.mapPair(
-            Codec.LONG.fieldOf("voltage"),
-            Codec.LONG.fieldOf("amperage")
-    ).xmap(pair -> new EnergyStack(pair.getFirst(), pair.getSecond()),
-            stack -> new Pair<>(stack.voltage(), stack.amperage())
-    ).codec();
-    public static final Codec<EnergyStack> VOLTAGE_ONLY_CODEC = Codec.LONG.flatComapMap(
-            v -> new EnergyStack(v, 1), s -> {
+    private static final Codec<EnergyStack> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            GTCodecUtils.NON_NEGATIVE_LONG.optionalFieldOf("voltage", 0L).forGetter(EnergyStack::voltage),
+            GTCodecUtils.POSITIVE_LONG.optionalFieldOf("amperage", 1L).forGetter(EnergyStack::amperage)
+    ).apply(instance, EnergyStack::new));
+    private static final Codec<EnergyStack> VOLTAGE_ONLY_CODEC = GTCodecUtils.NON_NEGATIVE_LONG.flatComapMap(
+            EnergyStack::new, s -> {
                 if (s.amperage() == 1) {
                     return DataResult.success(s.voltage());
                 } else {
@@ -37,7 +35,7 @@ public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
             });
 
     public static final Codec<EnergyStack> CODEC = Codec.either(VOLTAGE_ONLY_CODEC, FULL_CODEC)
-            .xmap(e -> e.map(Function.identity(), Function.identity()), stack -> {
+            .xmap(GTCodecUtils::unboxEither, stack -> {
                 if (stack.amperage() == 1) return Either.left(stack);
                 else return Either.right(stack);
             });
@@ -107,10 +105,54 @@ public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
         return new EnergyStack(buf.readVarLong(), buf.readVarLong());
     }
 
+    @With
     public record WithIO(EnergyStack stack, IO io) {
+
+        // spotless:off
+        private static final Codec<WithIO> FLAT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.LONG.optionalFieldOf("voltage", 0L).forGetter(WithIO::signedVoltage),
+                GTCodecUtils.POSITIVE_LONG.optionalFieldOf("amperage", 1L).forGetter(WithIO::amperage)
+        ).apply(instance, WithIO::fromVA));
+        private static final Codec<WithIO> VOLTAGE_ONLY_CODEC = Codec.LONG.flatComapMap(
+                WithIO::fromVoltage, s -> {
+                    if (s.amperage() == 1) {
+                        return DataResult.success(s.signedVoltage());
+                    } else {
+                        Supplier<String> error = () -> "primitive EnergyStacks must have 1A, got " + s.amperage();
+                        return DataResult.error(error, s.signedVoltage());
+                    }
+                });
+
+        public static final Codec<WithIO> CODEC = Codec.either(VOLTAGE_ONLY_CODEC, FLAT_CODEC)
+                .xmap(GTCodecUtils::unboxEither, s -> {
+                    if (s.amperage() == 1) {
+                        return Either.left(s);
+                    } else {
+                        return Either.right(s);
+                    }
+                });
+        // spotless:on
+
+        public static final WithIO EMPTY = new WithIO(EnergyStack.EMPTY, IO.NONE);
 
         public WithIO {
             Preconditions.checkArgument(io != IO.BOTH, "The I/O direction cannot be IO.BOTH!");
+            if (stack.isEmpty()) {
+                io = IO.NONE;
+            }
+        }
+
+        public WithIO(long voltage, long amperage, IO io) {
+            this(new EnergyStack(voltage, amperage), io);
+        }
+
+        public static WithIO fromVA(long voltage, long amperage) {
+            if (voltage == 0) return WithIO.EMPTY;
+            return new WithIO(Math.abs(voltage), amperage, voltage > 0 ? IO.IN : IO.OUT);
+        }
+
+        public static WithIO fromVoltage(long voltage) {
+            return fromVA(voltage, 1);
         }
 
         public boolean isEmpty() {
@@ -125,16 +167,21 @@ public record EnergyStack(@Range(from = 0, to = Long.MAX_VALUE) long voltage,
             return io == IO.OUT;
         }
 
-        public long voltage() {
+        public @Range(from = 0, to = Long.MAX_VALUE) long voltage() {
             return stack.voltage();
         }
 
-        public long amperage() {
+        public @Range(from = 1, to = Long.MAX_VALUE) long amperage() {
             return stack.amperage();
         }
 
         public long getTotalEU() {
             return stack.getTotalEU();
+        }
+
+        public long signedVoltage() {
+            long multiplier = isInput() ? 1 : -1;
+            return this.voltage() * multiplier;
         }
     }
 }

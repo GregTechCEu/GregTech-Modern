@@ -155,7 +155,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (EUt.isInput() && !EUt.isEmpty()) {
+        if (EUt.isInput()) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
                     tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {

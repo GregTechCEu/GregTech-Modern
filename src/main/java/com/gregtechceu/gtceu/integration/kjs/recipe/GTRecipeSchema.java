@@ -174,27 +174,43 @@ public interface GTRecipeSchema {
             return this;
         }
 
-        public GTRecipeJS inputEU(long eu) {
+        public GTRecipeJS inputEU(EnergyStack eu) {
             return input(EURecipeCapability.CAP, eu);
         }
 
-        public GTRecipeJS EUt(long eu) {
-            if (eu == 0) {
+        public GTRecipeJS inputEU(long voltage, long amperage) {
+            return inputEU(new EnergyStack(voltage, amperage));
+        }
+
+        @SuppressWarnings("ConstantValue")
+        public GTRecipeJS EUt(EnergyStack.WithIO eu) {
+            if (eu.isEmpty()) {
                 throw new RecipeExceptionJS(String.format("EUt can't be explicitly set to 0, id: %s", id));
+            }
+            if (eu.amperage() < 1) {
+                throw new RecipeExceptionJS(String.format("Amperage must be a positive integer, id: %s", id));
             }
             var lastPerTick = perTick;
             perTick = true;
-            if (eu > 0) {
-                inputEU(eu);
-            } else if (eu < 0) {
-                outputEU(-eu);
+            if (eu.isInput()) {
+                inputEU(eu.stack());
+            } else if (eu.isOutput()) {
+                outputEU(eu.stack());
             }
             perTick = lastPerTick;
             return this;
         }
 
-        public GTRecipeJS outputEU(long eu) {
+        public GTRecipeJS EUt(long voltage, long amperage) {
+            return EUt(EnergyStack.WithIO.fromVA(voltage, amperage));
+        }
+
+        public GTRecipeJS outputEU(EnergyStack eu) {
             return output(EURecipeCapability.CAP, eu);
+        }
+
+        public GTRecipeJS outputEU(long voltage, long amperage) {
+            return outputEU(new EnergyStack(voltage, amperage));
         }
 
         public GTRecipeJS inputCWU(int cwu) {
