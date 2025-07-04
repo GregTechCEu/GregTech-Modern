@@ -71,8 +71,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (item.content instanceof IntProviderIngredient provider) {
                         // don't bother rolling output
                         itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
-                    }
-                    else {
+                    } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
                         if (stacks.length == 0) continue;
                         if (stacks[0].isEmpty()) continue;
@@ -99,8 +98,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
                         // don't bother rolling output for nothing
                         fluidTag = provider.toNBT();
-                    }
-                    else {
+                    } else {
                         FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
                         if (stacks.length == 0) continue;
                         if (stacks[0].isEmpty()) continue;

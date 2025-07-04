@@ -118,7 +118,7 @@ public class Content {
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
                 s = "X-Y";
-                color = ChatFormatting.GOLD.getColor(); //Orange?
+                color = ChatFormatting.GOLD.getColor(); // Orange?
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
@@ -139,8 +139,7 @@ public class Content {
                 // with only 5 characters worth of space, that's not enough for a fluid range
                 color = ChatFormatting.GOLD.getColor();
                 s = "X-Y";
-            }
-            else {
+            } else {
                 int amount = ingredient.getAmount();
                 color = 0xFFFFFF;
                 s = FormattingUtil.formatBuckets(amount);
