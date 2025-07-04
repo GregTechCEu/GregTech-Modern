@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IColoredHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -54,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot, IColoredHatch {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -164,6 +165,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         setCircuitSlotEnabled(true);
     }
 
+    @Override
+    public int tintColor(int index) {
+        if (index == 9) return getRealColor();
+        return -1;
+    }
+
     //////////////////////////////////////
     // ******** Auto IO *********//
     //////////////////////////////////////
@@ -250,6 +257,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             if (newHolder.getMetaMachine() instanceof FluidHatchPartMachine newMachine) {
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
+                newMachine.setPaintingColor(this.getPaintingColor());
                 for (int i = 0; i < this.tank.getTanks(); i++) {
                     newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
                 }

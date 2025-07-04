@@ -52,7 +52,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot, IColoredHatch {
+public class ItemBusPartMachine extends TieredIOPartMachine
+                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IColoredHatch {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -174,18 +175,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public int tintColor(int index) {
-        if(index == 9) return getRealColor();
+        if (index == 9) return getRealColor();
         return -1;
-    }
-
-    @Override
-    public boolean isColored() {
-        return isPainted();
-    }
-
-    @Override
-    public int getColor() {
-        return getPaintingColor();
     }
 
     @Override
@@ -286,6 +277,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
                 // and conveyors will drop to the floor on block override.
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
+                newMachine.setPaintingColor(this.getPaintingColor());
             }
         }
         return true;

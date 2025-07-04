@@ -17,8 +17,6 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import java.util.Locale;
-
 public class StainedColorProvider implements IProbeInfoProvider {
 
     @Override
@@ -40,7 +38,7 @@ public class StainedColorProvider implements IProbeInfoProvider {
             IProbeInfo horizontal = iProbeInfo
                     .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
             horizontal.mcText(Component.translatable("gtceu.top.stained",
-                    "#" + Integer.toHexString(paintingColor).toUpperCase(Locale.ROOT)));
+                    String.format("#%06X", paintingColor)));
         }
     }
 }
