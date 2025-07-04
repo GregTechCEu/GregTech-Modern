@@ -266,8 +266,10 @@ public class GTModels {
                     .texture("bottom", type.bottom())
                     .texture("top", type.top());
             prov.getVariantBuilder(block)
-                    .partialState().with(ActiveBlock.ACTIVE, false).modelForState().modelFile(inactive).addModel()
-                    .partialState().with(ActiveBlock.ACTIVE, true).modelForState().modelFile(active).addModel();
+                    .partialState().with(GTBlockStateProperties.ACTIVE, false)
+                    .modelForState().modelFile(inactive).addModel()
+                    .partialState().with(GTBlockStateProperties.ACTIVE, true)
+                    .modelForState().modelFile(active).addModel();
         };
     }
 

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -62,7 +62,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
 
     public BoilerMultiPartRender(BoilerFireboxType fireboxType, Supplier<? extends Block> casingBlock) {
         this(GTBlocks.ALL_FIREBOXES.get(fireboxType).getDefaultState(),
-                GTBlocks.ALL_FIREBOXES.get(fireboxType).getDefaultState().setValue(ActiveBlock.ACTIVE, true),
+                GTBlocks.ALL_FIREBOXES.get(fireboxType).getDefaultState().setValue(GTBlockStateProperties.ACTIVE, true),
                 casingBlock.get().defaultBlockState());
     }
 
