@@ -28,6 +28,11 @@ import java.util.List;
 
 public class IOCoverRenderer implements ICoverRenderer {
 
+    public static final IOCoverRenderer PUMP_LIKE_COVER_RENDERER = new IOCoverRenderer(
+            GTCEu.id("block/cover/pump"),
+            GTCEu.id("block/cover/pump_inverted"),
+            null, null);
+
     @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite overlaySprite = null;
     @OnlyIn(Dist.CLIENT)
@@ -82,10 +87,5 @@ public class IOCoverRenderer implements ICoverRenderer {
                         BlockModelRotation.X0_Y0, -101, 15));
             }
         }
-    }
-
-    public static IOCoverRenderer createPumpRenderer() {
-        return new IOCoverRenderer(GTCEu.id("block/cover/overlay_pump"), GTCEu.id("block/cover/overlay_pump_inverted"),
-                null, null);
     }
 }
