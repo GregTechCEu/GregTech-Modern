@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -117,7 +118,7 @@ public class Content {
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
                 s = "X-Y";
-                color = 0xEE0000;
+                color = ChatFormatting.GOLD.getColor(); //Orange?
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
@@ -132,21 +133,22 @@ public class Content {
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
             Font fontRenderer = Minecraft.getInstance().font;
-            int amount = ingredient.getAmount();
-            String s = FormattingUtil.formatBuckets(amount);
-            int color = 0xFFFFFF;
-            if (content instanceof IntProviderFluidIngredient provider) {
-                color = 0xEE0000;
-                amount = provider.getCountProvider().getMaxValue();
-                s = "[" + FormattingUtil.formatBuckets(amount) + "]";
-                if (s.length() > 5) {
-                    s = "X-Y";
-                }
+            int color;
+            String s;
+            if (content instanceof IntProviderFluidIngredient) {
+                // with only 5 characters worth of space, that's not enough for a fluid range
+                color = ChatFormatting.GOLD.getColor();
+                s = "X-Y";
             }
-            if (fontRenderer.width(s) > 32)
-                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
-            if (fontRenderer.width(s) > 32)
-                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
+            else {
+                int amount = ingredient.getAmount();
+                color = 0xFFFFFF;
+                s = FormattingUtil.formatBuckets(amount);
+                if (fontRenderer.width(s) > 32)
+                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
+                if (fontRenderer.width(s) > 32)
+                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
+            }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();

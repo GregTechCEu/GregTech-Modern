@@ -67,23 +67,24 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                 ListTag itemTags = new ListTag();
                 for (var item : itemContents) {
-                    var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
-                    if (stacks.length == 0) continue;
-                    if (stacks[0].isEmpty()) continue;
-                    var stack = stacks[0];
-
                     var itemTag = new CompoundTag();
                     if (item.content instanceof IntProviderIngredient provider) {
+                        // don't bother rolling output
                         itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
-                    } else {
-                        GTUtil.saveItemStack(stack, itemTag);
                     }
-                    if (item.chance < item.maxChance) {
-                        int count = stack.getCount();
-                        double countD = (double) count * recipe.parallels *
-                                function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                        count = countD < 1 ? 1 : (int) Math.round(countD);
-                        itemTag.putInt("Count", count);
+                    else {
+                        var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        if (stacks.length == 0) continue;
+                        if (stacks[0].isEmpty()) continue;
+                        var stack = stacks[0];
+                        GTUtil.saveItemStack(stack, itemTag);
+                        if (item.chance < item.maxChance) {
+                            int count = stack.getCount();
+                            double countD = (double) count * recipe.parallels *
+                                    function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                            count = countD < 1 ? 1 : (int) Math.round(countD);
+                            itemTag.putInt("Count", count);
+                        }
                     }
                     itemTags.add(itemTag);
                 }
@@ -94,23 +95,25 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                 ListTag fluidTags = new ListTag();
                 for (var fluid : fluidContents) {
-                    var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
-                    if (stacks.length == 0) continue;
-                    if (stacks[0].isEmpty()) continue;
-                    var stack = stacks[0];
-
                     var fluidTag = new CompoundTag();
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
+                        // don't bother rolling output for nothing
                         fluidTag = provider.toNBT();
-                    } else {
-                        stack.writeToNBT(fluidTag);
                     }
-                    if (fluid.chance < fluid.maxChance) {
-                        int amount = stack.getAmount();
-                        double amountD = (double) amount * recipe.parallels *
-                                function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                        amount = amountD < 1 ? 1 : (int) Math.round(amountD);
-                        fluidTag.putInt("Amount", amount);
+                    else {
+                        FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                        if (stacks.length == 0) continue;
+                        if (stacks[0].isEmpty()) continue;
+                        var stack = stacks[0];
+                        stack.writeToNBT(fluidTag);
+
+                        if (fluid.chance < fluid.maxChance) {
+                            int amount = stacks[0].getAmount();
+                            double amountD = (double) amount * recipe.parallels *
+                                    function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                            amount = amountD < 1 ? 1 : (int) Math.round(amountD);
+                            fluidTag.putInt("Amount", amount);
+                        }
                     }
                     fluidTags.add(fluidTag);
                 }

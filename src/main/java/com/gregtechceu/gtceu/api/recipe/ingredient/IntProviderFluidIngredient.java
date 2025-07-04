@@ -41,7 +41,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
 
     @Override
     public IntProviderFluidIngredient copy() {
-        IntProviderFluidIngredient ipfi = new IntProviderFluidIngredient(this, this.countProvider);
+        IntProviderFluidIngredient ipfi = new IntProviderFluidIngredient(this.inner, this.countProvider);
         ipfi.setSampledCount(this.sampledCount);
         return ipfi;
     }

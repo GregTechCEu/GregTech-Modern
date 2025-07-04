@@ -111,6 +111,8 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 if (itemOutput instanceof IntProviderIngredient provider) {
                     spacer += provider.getCountProvider().getMinValue() + "-" +
                             provider.getCountProvider().getMaxValue() + " ";
+                    provider.setItemStacks(null); //no roll
+                    provider.setSampledCount(1);
                 }
                 horizontalPane.item(itemOutput.getItems()[0],
                         new ItemStyle().width(16).height(16))
@@ -130,6 +132,7 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
                     spacer += provider.getCountProvider().getMinValue() + "-" +
                             provider.getCountProvider().getMaxValue() + " ";
+                    fluidOutput.setAmount(provider.getCountProvider().getMaxValue()); //no roll
                 }
                 horizontalPane.element(new FluidStackElement(fluidOutput.getStacks()[0],
                         new FluidStyle()))
