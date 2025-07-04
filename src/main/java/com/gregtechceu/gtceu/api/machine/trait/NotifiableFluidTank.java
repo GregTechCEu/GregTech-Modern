@@ -175,7 +175,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                         continue;
                     }
                 }
-            } else {
+            }
+            if (fluids == null) {
                 fluids = ingredient.getStacks();
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();

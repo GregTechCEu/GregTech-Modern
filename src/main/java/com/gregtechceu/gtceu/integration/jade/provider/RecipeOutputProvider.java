@@ -69,7 +69,11 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     var stack = stacks[0];
 
                     var itemTag = new CompoundTag();
-                    GTUtil.saveIngredient((Ingredient) item.content, itemTag);
+                    if (item.content instanceof IntProviderIngredient provider) {
+                        itemTag = JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
+                    } else {
+                        GTUtil.saveItemStack(stack, itemTag);
+                    }
                     if (item.chance < item.maxChance) {
                         int count = stack.getCount();
                         double countD = (double) count * recipe.parallels *
@@ -124,9 +128,15 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 if (!itemTags.isEmpty()) {
                     for (Tag tag : itemTags) {
                         if (tag instanceof CompoundTag tCompoundTag) {
-                            var ingredient = GTUtil.loadIngredient(tCompoundTag);
-                            if (!ingredient.isEmpty()) {
-                                outputItems.add(ingredient);
+                            if (tCompoundTag.contains("count_provider")) {
+                                var ingredient = IntProviderIngredient.SERIALIZER.parse(NbtOps.INSTANCE.converTo(JsonOps.INSTANCE, tCompoundTag);
+                                outputFluids.add(ingredient);
+                            } else {
+                                var stack = GTUtil.loadItemStack(tCompoundTag);
+                                if (!stack.isEmpty()) {
+                                    outputItems.add(SizedIngredient.create(stack));
+                                }
+                            }
                             }
                         }
                     }

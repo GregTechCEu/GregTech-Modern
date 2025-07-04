@@ -683,8 +683,13 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
+            return outputFluidsRanged(output, UniformInt.of(min, max)));
+        }
+
+        public GTRecipeJS outputFluidsRanged(FluidStackJS output, IntProvider range) {
+            FluidStack stack = new FluidStack(output.getFluid(), (int) output.getAmount(), output.getNbt());
             return output(FluidRecipeCapability.CAP,
-                    IntProviderFluidIngredient.of(FluidIngredient.of(max, output.getFluid()), UniformInt.of(min, max)));
+                IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
         }
 
         //////////////////////////////////////
@@ -1113,8 +1118,10 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputFluid(OutputFluid value) {
-            if (value instanceof IntProviderFluidIngredient provider) {
-                return provider.toJson();
+            if (value instanceof FluidIngredient ingredient) {
+                return ingredient.toJson();
+            } else if (value instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
+                return ingredient.getIngredient().toJson();
             }
             var fluid = ((FluidStackJS) value).getFluidStack();
             return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();

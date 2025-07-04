@@ -47,7 +47,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     public IntProviderFluidIngredient replicate() {
-        return new IntProviderFluidIngredient(this, this.countProvider);
+        return new IntProviderFluidIngredient(this.inner, this.countProvider);
     }
 
     @Override

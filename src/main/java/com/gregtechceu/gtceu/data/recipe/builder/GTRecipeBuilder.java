@@ -953,8 +953,8 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, outputs);
     }
 
-    public GTRecipeBuilder outputFluidsRanged(Fluid output, IntProvider intProvider) {
-        return outputFluidsRanged(FluidIngredient.of(intProvider.getMaxValue(), output), intProvider);
+    public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
+        return outputFluidsRanged(FluidIngredient.of(output), intProvider);
     }
 
     public GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {

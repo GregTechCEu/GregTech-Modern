@@ -360,8 +360,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
-                    if (isRanged) {
-                        IntProvider countProvider = ((IntProviderFluidIngredient) ingredient).getCountProvider();
+                    if (ingredient instanceof IntProviderFluidIngredient provider) {
+                        IntProvider countProvider = provider.getCountProvider();
                         tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
