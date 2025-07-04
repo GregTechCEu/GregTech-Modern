@@ -101,10 +101,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @Getter
     private final boolean usesBlockLight, useAmbientOcclusion;
 
-    @Getter
     @Setter
-    private TextureAtlasSprite particleIcon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-            .apply(MissingTextureAtlasSprite.getLocation());
+    private TextureAtlasSprite particleIcon = null;
     private final SpriteCapturer spriteCapturer;
     @Setter
     private Set<String> replaceableTextures;
@@ -149,6 +147,39 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 ICoverableRenderer.initSprites(atlas::getSprite);
             });
             overlaysInitialized = true;
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull TextureAtlasSprite getParticleIcon() {
+        if (particleIcon != null) {
+            return particleIcon;
+        } else if (!modelsByState.isEmpty()) {
+            return modelsByState.get(getDefinition().defaultRenderState()).getParticleIcon();
+        } else if (multiPart != null) {
+            return multiPart.getParticleIcon();
+        } else {
+            return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    .apply(MissingTextureAtlasSprite.getLocation());
+        }
+    }
+
+    @Override
+    public TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
+        BlockPos pos = modelData.get(MODEL_DATA_POS);
+
+        MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        MachineRenderState renderState = machine != null ? machine.getRenderState() :
+                getDefinition().defaultRenderState();
+
+        if (modelsByState.containsKey(renderState)) {
+            return modelsByState.get(renderState).getParticleIcon(modelData);
+        } else if (multiPart != null) {
+            return multiPart.getParticleIcon(renderState, modelData);
+        } else {
+            return super.getParticleIcon(modelData);
         }
     }
 

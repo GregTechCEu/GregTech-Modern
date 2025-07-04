@@ -71,7 +71,10 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
                 this.dynamicRenders, spriteCapturer,
                 context.getTransforms(), context.getRootTransform(), modelState,
                 context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion());
-        model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
+
+        if (context.hasMaterial("particle")) {
+            model.setParticleIcon(spriteGetter.apply(context.getMaterial("particle")));
+        }
         model.setReplaceableTextures(this.replaceableTextures);
         model.setTextureOverrides(textureOverrides);
         return model;

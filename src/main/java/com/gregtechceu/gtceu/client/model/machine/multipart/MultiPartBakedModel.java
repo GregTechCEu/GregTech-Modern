@@ -27,6 +27,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -177,6 +178,24 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon(ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
+        BlockPos pos = modelData.get(MODEL_DATA_POS);
+
+        var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        if (machine != null) return getParticleIcon(machine.getRenderState(), modelData);
+        else return this.defaultModel.getParticleIcon(modelData);
+    }
+
+    public TextureAtlasSprite getParticleIcon(@NotNull MachineRenderState renderState, ModelData modelData) {
+        var selectors = getSelectors(renderState);
+        for (int i = 0; i < selectors.length(); i++) {
+            if (selectors.get(i)) {
+                BakedModel model = this.selectors.get(i).getRight();
+                ModelData partData = MultipartModelData.resolve(modelData, model);
+
+                return model.getParticleIcon(partData);
+            }
+        }
         return this.defaultModel.getParticleIcon(modelData);
     }
 
