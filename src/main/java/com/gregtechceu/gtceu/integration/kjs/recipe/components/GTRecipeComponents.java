@@ -380,9 +380,9 @@ public class GTRecipeComponents {
             false);
     public static final ContentJS<EnergyStack.WithIO> EU_OUT = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             true);
-    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             false);
-    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             true);
 
     public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);

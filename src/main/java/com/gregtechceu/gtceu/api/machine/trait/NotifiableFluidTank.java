@@ -179,12 +179,13 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                                 visited[tank] = output.copy();
                                 visited[tank].setAmount(count + filled);
                                 changed = true;
+                                amount -= filled;
+
                                 if (!allowSameFluids) {
                                     if (amount <= 0) it.remove();
                                     break;
                                 }
                             }
-                            amount -= filled;
                         }
                     }
                 }

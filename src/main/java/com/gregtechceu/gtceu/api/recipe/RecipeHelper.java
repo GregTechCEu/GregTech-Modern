@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -35,7 +39,7 @@ public class RecipeHelper {
 
     /**
      * Get a pair of the absolute EU/t value this recipe inputs or outputs and if it's input or output
-     * 
+     *
      * @param recipe
      * @return A pair of {@code (EnergyStack, isInput)}
      */
@@ -339,6 +343,24 @@ public class RecipeHelper {
         }
 
         return outputs;
+    }
+
+    public static void addToRecipeHandlerMap(RecipeHandlerGroup key, RecipeHandlerList handler,
+                                             Map<RecipeHandlerGroup, List<RecipeHandlerList>> map) {
+        // Add undyed RHL's to every group that's not distinct, and also the undyed group itself.
+        if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
+            for (var entry : map.entrySet()) {
+                if (entry.getKey().equals(RecipeHandlerGroupDistinctness.BUS_DISTINCT) ||
+                        entry.getKey().equals(RecipeHandlerGroupColor.UNDYED)) {
+                    continue;
+                }
+                entry.getValue().add(handler);
+            }
+        }
+        // Add other RHL's to their own group, or create it (using the undyed group as base) if it does not exist.
+        List<RecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
+
+        map.computeIfAbsent(key, $ -> new ArrayList<>(undyed)).add(handler);
     }
 
     public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,

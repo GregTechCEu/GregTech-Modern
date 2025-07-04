@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -46,6 +47,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.TankValvePartMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.LargeBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -57,6 +60,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -82,6 +86,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.autoAbilities;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.ALL_FIREBOXES;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -412,6 +417,53 @@ public class GTMachineUtils {
         return definition;
     }
 
+    public static MachineDefinition[] registerSuperTanks(String tank_type, int... tiers) {
+        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
+            var register = REGISTRATE.machine(
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type,
+                    MachineDefinition::createDefinition,
+                    (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
+                    MetaMachineBlock::new,
+                    QuantumTankMachineItem::create,
+                    MetaMachineBlockEntity::createBlockEntity)
+                    .langValue(toEnglishName(tank_type) + " " + LVT[tier])
+                    .blockProp(BlockBehaviour.Properties::dynamicShape)
+                    .rotationState(RotationState.ALL)
+                    .allowExtendedFacing(true)
+                    .renderer(() -> new QuantumTankRenderer(tier))
+                    .hasTESR(true)
+                    .tooltipBuilder(TANK_TOOLTIPS)
+                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                    FormattingUtil.formatNumbers(maxAmount)))
+                    .register();
+            TANK_CAPACITY.put(register, maxAmount);
+            definitions[tier] = register;
+        }
+        return definitions;
+    }
+
+    public static MachineDefinition[] registerSuperChests(String chest_type, int... tiers) {
+        return registerTieredMachines(chest_type,
+                (holder, tier) -> new QuantumChestMachine(holder, tier,
+                        tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
+                (tier, builder) -> builder.langValue(toEnglishName(chest_type) + " " + LVT[tier])
+                        .blockProp(BlockBehaviour.Properties::dynamicShape)
+                        .rotationState(RotationState.ALL)
+                        .allowExtendedFacing(true)
+                        .renderer(() -> new QuantumTankRenderer(tier))
+                        .hasTESR(true)
+                        .tooltipBuilder(CHEST_TOOLTIPS)
+                        .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
+                                Component.translatable("gtceu.universal.tooltip.item_storage_total",
+                                        FormattingUtil.formatNumbers(tier == MAX ? Long.MAX_VALUE :
+                                                4_000_000 * (long) Math.pow(2, tier - 1))))
+                        .register(),
+                tiers);
+    }
+
     //////////////////////////////////////
     // ********** Misc **********//
     //////////////////////////////////////
@@ -659,6 +711,15 @@ public class GTMachineUtils {
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getDisplayName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
+        }
+    };
+
+    public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
+        if (stack.hasTag()) {
+            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
                     FormattingUtil.formatNumbers(storedAmount)));
         }
     };

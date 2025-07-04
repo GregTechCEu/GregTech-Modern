@@ -108,7 +108,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
             } else {
-                handlerList = RecipeHandlerList.of(handlerIO, handlers);
+                handlerList = RecipeHandlerList.of(handlerIO, getPaintingColor(), handlers);
             }
         }
         return handlerList;
