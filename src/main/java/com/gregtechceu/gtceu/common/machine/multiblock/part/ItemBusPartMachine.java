@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IColoredHatch;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -51,7 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot, IColoredHatch {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -169,6 +170,22 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             }
         }
         setCircuitSlotEnabled(true);
+    }
+
+    @Override
+    public int tintColor(int index) {
+        if(index == 9) return getRealColor();
+        return -1;
+    }
+
+    @Override
+    public boolean isColored() {
+        return isPainted();
+    }
+
+    @Override
+    public int getColor() {
+        return getPaintingColor();
     }
 
     @Override

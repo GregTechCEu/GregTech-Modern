@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.api.machine.feature.IColoredHatch;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
@@ -52,6 +53,7 @@ public class MachineRenderer extends TextureOverrideRenderer
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
+    public static final ResourceLocation COLOR_OVERLAY = GTCEu.id("block/overlay/machine/overlay_color");
 
     public MachineRenderer(ResourceLocation modelLocation) {
         super(modelLocation);
@@ -135,6 +137,14 @@ public class MachineRenderer extends TextureOverrideRenderer
                                     modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), blockModelState,
                                     -101, 15, true, true));
                         }
+                    }
+                }
+
+                if(machine instanceof IColoredHatch coloredHatch) {
+                    if(coloredHatch.isColored() && side == frontFacing) {
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
+                                modelFacing, ModelFactory.getBlockSprite(COLOR_OVERLAY), blockModelState,
+                                9, 15, true, true));
                     }
                 }
 
