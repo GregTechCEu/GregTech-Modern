@@ -37,8 +37,7 @@ public class StainedColorProvider implements IProbeInfoProvider {
         if (paintingColor != -1) {
             IProbeInfo horizontal = iProbeInfo
                     .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-            horizontal.mcText(Component.translatable("gtceu.top.stained",
-                    String.format("#%06X", paintingColor)));
+            horizontal.mcText(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor)));
         }
     }
 }

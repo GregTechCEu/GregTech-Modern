@@ -179,8 +179,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                boolean steel = state.hasProperty(SteamMachine.STEEL_PROPERTY) &&
-                        state.getValue(SteamMachine.STEEL_PROPERTY);
+                boolean steel = state.getOptionalValue(SteamMachine.STEEL_PROPERTY).orElse(false);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(overlayModel));
@@ -321,7 +320,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createBatteryBufferModel(int inventorySize) {
         return (ctx, prov, builder) -> {
             var overlay = OUT_OVERLAYS_FOR_AMP.get(inventorySize);
-            
+
             BlockModelBuilder model = prov.models().nested()
                     .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", overlay.getIoPart())
@@ -408,7 +407,7 @@ public class GTMachineModels {
             ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
             builder.forAllStatesModels(state -> {
-                if (state.hasProperty(CrateMachine.TAPED_PROPERTY) && state.getValue(CrateMachine.TAPED_PROPERTY)) {
+                if (state.getOptionalValue(CrateMachine.TAPED_PROPERTY).orElse(false)) {
                     return tapedModel;
                 } else {
                     return baseModel;
