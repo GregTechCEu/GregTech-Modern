@@ -27,6 +27,8 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -298,8 +300,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-        var model = blockRenderDispatcher.getBlockModel(this.getBlockState());
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
         if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
             if (modelWithBER.getBlockEntityType() == this.getType()) {

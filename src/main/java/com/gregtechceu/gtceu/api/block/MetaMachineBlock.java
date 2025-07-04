@@ -68,7 +68,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public MetaMachineBlock(Properties properties, MachineDefinition definition) {
         super(properties);
         this.definition = definition;
-        var rotationState = definition.getRotationState();
+        RotationState rotationState = definition.getRotationState();
         if (rotationState != RotationState.NONE) {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);

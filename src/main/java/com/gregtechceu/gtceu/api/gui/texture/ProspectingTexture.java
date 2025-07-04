@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.texture.TransformTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
@@ -24,6 +25,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
+import org.joml.Matrix4f;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -112,13 +114,13 @@ public class ProspectingTexture extends AbstractTexture {
         NativeImage image = new NativeImage(wh, wh, false);
         for (int i = 0; i < wh; i++) {
             for (int j = 0; j < wh; j++) {
-                var items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
+                Object[] items = this.data[i * mode.cellSize / 16][j * mode.cellSize / 16];
                 // draw bg
                 image.setPixelRGBA(i, j, (darkMode ? ColorPattern.GRAY.color : ColorPattern.WHITE.color));
                 // draw items
-                for (var item : items) {
+                for (Object item : items) {
                     if (!selected.equals(SELECTED_ALL) && !selected.equals(mode.getUniqueID(item))) continue;
-                    var color = mode.getItemColor(item);
+                    int color = mode.getItemColor(item);
                     image.setPixelRGBA(i, j,
                             combine(255, ColorUtils.blueI(color), ColorUtils.greenI(color), ColorUtils.redI(color)));
                     break;
@@ -154,7 +156,7 @@ public class ProspectingTexture extends AbstractTexture {
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.getId());
-        var matrix4f = graphics.pose().last().pose();
+        Matrix4f matrix4f = graphics.pose().last().pose();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, POSITION_TEX_COLOR);
         bufferbuilder.vertex(matrix4f, x, y + imageHeight, 0).uv(0, 1).color(-1).endVertex();
         bufferbuilder.vertex(matrix4f, x + imageWidth, y + imageHeight, 0).uv(1, 1).color(-1).endVertex();
@@ -171,7 +173,7 @@ public class ProspectingTexture extends AbstractTexture {
                 }
             }
         }
-        var arrow = ARROW.rotate(this.direction / 2);
+        TransformTexture arrow = ARROW.rotate(this.direction / 2);
         arrow.draw(graphics, 0, 0, x + playerXGui - 20, y + playerYGui - 20, 40, 40);
 
         // draw red vertical line
