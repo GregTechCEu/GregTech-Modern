@@ -561,11 +561,11 @@ public class GTMachines {
             .hasBER(true)
             .register();
 
-    public static final MachineDefinition[] SUPER_CHEST = registerSuperChests("super_chest", LOW_TIERS);
-    public static final MachineDefinition[] QUANTUM_CHEST = registerSuperChests("quantum_chest", HIGH_TIERS);
+    public static final MachineDefinition[] SUPER_CHEST = registerQuantumChests("super_chest", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_CHEST = registerQuantumChests("quantum_chest", HIGH_TIERS);
 
-    public static final MachineDefinition[] SUPER_TANK = registerSuperTanks("super_tank", LOW_TIERS);
-    public static final MachineDefinition[] QUANTUM_TANK = registerSuperTanks("quantum_tank", HIGH_TIERS);
+    public static final MachineDefinition[] SUPER_TANK = registerQuantumTanks("super_tank", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_TANK = registerQuantumTanks("quantum_tank", HIGH_TIERS);
 
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
     public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
@@ -603,7 +603,7 @@ public class GTMachines {
                     .langValue(VNF[tier] + " Input Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_ITEMS)
-                    .overlayTieredHullModel("item_input_bus")
+                    .colorOverlayTieredHullModel("overlay_pipe_in", OVERLAY_ITEM_HATCH)
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -617,7 +617,7 @@ public class GTMachines {
                     .langValue(VNF[tier] + " Output Bus")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.EXPORT_ITEMS)
-                    .overlayTieredHullModel("item_output_bus")
+                    .colorOverlayTieredHullModel("overlay_pipe_out", OVERLAY_ITEM_HATCH)
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
@@ -626,37 +626,37 @@ public class GTMachines {
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
-            "input_hatch", "Input Hatch", "fluid_input_hatch", "fluid_hatch.import",
+            "input_hatch", "Input Hatch", "overlay_pipe_in", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
-            "input_hatch_4x", "Quadruple Input Hatch", "fluid_input_hatch_4x", "fluid_hatch.import",
+            "input_hatch_4x", "Quadruple Input Hatch", "overlay_pipe_in_4x", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
-            "input_hatch_9x", "Nonuple Input Hatch", "fluid_input_hatch_9x", "fluid_hatch.import",
+            "input_hatch_9x", "Nonuple Input Hatch", "overlay_pipe_in_9x", "fluid_hatch.import",
             IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
             PartAbility.IMPORT_FLUIDS_9X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
-            "output_hatch", "Output Hatch", "fluid_output_hatch", "fluid_hatch.export",
+            "output_hatch", "Output Hatch", "overlay_pipe_out", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
             ALL_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
-            "output_hatch_4x", "Quadruple Output Hatch", "fluid_output_hatch_4x", "fluid_hatch.export",
+            "output_hatch_4x", "Quadruple Output Hatch", "overlay_pipe_out_4x", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
-            "output_hatch_9x", "Nonuple Output Hatch", "fluid_output_hatch_9x", "fluid_hatch.export",
+            "output_hatch_9x", "Nonuple Output Hatch", "overlay_pipe_out_9x", "fluid_hatch.export",
             OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
             MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
             PartAbility.EXPORT_FLUIDS_9X);

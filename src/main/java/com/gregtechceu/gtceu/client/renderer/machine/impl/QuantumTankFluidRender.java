@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
@@ -29,6 +30,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import static com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumChestItemRender.*;
+import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 
 public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, QuantumTankFluidRender> {
 
@@ -60,7 +62,10 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            long maxAmount = stack.getOrCreateTag().getLong("maxAmount");
+            long maxAmount = 0;
+            if (stack.getItem() instanceof MetaMachineItem machineItem) {
+                maxAmount = TANK_CAPACITY.getLong(machineItem.getDefinition());
+            }
             // Don't need to handle locked fluids here since they don't get saved to the item
             renderTank(poseStack, buffer, Direction.NORTH,
                     stored, storedAmount, maxAmount, FluidStack.EMPTY,

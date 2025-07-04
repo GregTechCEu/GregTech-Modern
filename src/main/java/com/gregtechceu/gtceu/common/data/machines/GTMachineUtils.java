@@ -33,6 +33,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumChestItemRender;
+import com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumTankFluidRender;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
@@ -424,23 +426,22 @@ public class GTMachineUtils {
         return definition;
     }
 
-    public static MachineDefinition[] registerSuperTanks(String tank_type, int... tiers) {
+    public static MachineDefinition[] registerQuantumTanks(String tank_type, int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type,
-                    MachineDefinition::createDefinition,
-                    (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
-                    MetaMachineBlock::new,
-                    QuantumTankMachineItem::create,
-                    MetaMachineBlockEntity::createBlockEntity)
+                    MachineDefinition::new, (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
+                    MetaMachineBlock::new, QuantumTankMachineItem::new,
+                    MetaMachineBlockEntity::new)
                     .langValue(toEnglishName(tank_type) + " " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
+                    .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
+                            .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
+                    .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
@@ -452,7 +453,7 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static MachineDefinition[] registerSuperChests(String chest_type, int... tiers) {
+    public static MachineDefinition[] registerQuantumChests(String chest_type, int... tiers) {
         return registerTieredMachines(chest_type,
                 (holder, tier) -> new QuantumChestMachine(holder, tier,
                         tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
@@ -460,8 +461,9 @@ public class GTMachineUtils {
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .rotationState(RotationState.ALL)
                         .allowExtendedFacing(true)
-                        .renderer(() -> new QuantumTankRenderer(tier))
-                        .hasTESR(true)
+                        .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
+                                .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
+                        .hasBER(true)
                         .tooltipBuilder(CHEST_TOOLTIPS)
                         .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
                                 Component.translatable("gtceu.universal.tooltip.item_storage_total",
