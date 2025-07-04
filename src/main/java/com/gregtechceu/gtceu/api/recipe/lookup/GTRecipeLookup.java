@@ -393,7 +393,6 @@ public class GTRecipeLookup {
      * @return a list of all the AbstractMapIngredients comprising the recipe
      */
     @NotNull
-
     protected List<List<AbstractMapIngredient>> fromRecipe(@NotNull GTRecipe recipe) {
         int initialCapacity = (recipe.inputs.size() + recipe.tickInputs.size()) * 2;
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(initialCapacity);
