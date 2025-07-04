@@ -39,6 +39,7 @@ public class RecipeHandlerList {
 
     @Setter
     @Getter
+    @NotNull
     private RecipeHandlerGroup group = RecipeHandlerGroupColor.UNDYED;
 
     protected RecipeHandlerList(IO handlerIO) {
