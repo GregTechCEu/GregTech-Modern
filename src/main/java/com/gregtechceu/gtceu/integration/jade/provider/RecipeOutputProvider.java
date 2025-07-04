@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +29,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
@@ -133,7 +133,8 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     for (Tag tag : itemTags) {
                         if (tag instanceof CompoundTag tCompoundTag) {
                             if (tCompoundTag.contains("count_provider")) {
-                                var ingredient = IntProviderIngredient.SERIALIZER.parse((JsonObject)NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tCompoundTag));
+                                var ingredient = IntProviderIngredient.SERIALIZER
+                                        .parse((JsonObject) NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tCompoundTag));
                                 outputItems.add(ingredient);
                             } else {
                                 var stack = GTUtil.loadItemStack(tCompoundTag);

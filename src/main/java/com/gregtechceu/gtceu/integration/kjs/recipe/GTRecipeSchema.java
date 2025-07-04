@@ -689,7 +689,7 @@ public interface GTRecipeSchema {
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, IntProvider range) {
             FluidStack stack = new FluidStack(output.getFluid(), (int) output.getAmount(), output.getNbt());
             return output(FluidRecipeCapability.CAP,
-                IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
+                    IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
         }
 
         //////////////////////////////////////

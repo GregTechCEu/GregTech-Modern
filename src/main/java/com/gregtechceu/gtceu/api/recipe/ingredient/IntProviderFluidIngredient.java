@@ -82,7 +82,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return new IntProviderFluidIngredient(inner, provider);
     }
 
-    public static IntProviderFluidIngredient of (FluidStack inner, int min, int max){
+    public static IntProviderFluidIngredient of(FluidStack inner, int min, int max) {
         return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
     }
 
@@ -106,11 +106,11 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return new IntProviderFluidIngredient(inner, amount);
     }
 
-    public CompoundTag toNBT(){
-        return (CompoundTag)JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, this.toJson());
+    public CompoundTag toNBT() {
+        return (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, this.toJson());
     }
 
-    public static IntProviderFluidIngredient fromNBT(CompoundTag nbt){
+    public static IntProviderFluidIngredient fromNBT(CompoundTag nbt) {
         return IntProviderFluidIngredient.fromJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt));
     }
 }
