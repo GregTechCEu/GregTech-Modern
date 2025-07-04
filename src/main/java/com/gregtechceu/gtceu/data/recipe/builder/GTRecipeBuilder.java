@@ -575,6 +575,10 @@ public class GTRecipeBuilder {
         return outputItems(machine.asStack(count));
     }
 
+    protected GTRecipeBuilder outputItems(Ingredient ingredient) {
+        return output(ItemRecipeCapability.CAP, ingredient);
+    }
+
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
         return outputItems(IntProviderIngredient.of(output, intProvider));
     }
