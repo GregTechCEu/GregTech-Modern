@@ -1113,8 +1113,8 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputFluid(OutputFluid value) {
-            if (value instanceof IntProviderFluidIngredient) {
-                return ((IntProviderFluidIngredient) value).toJson();
+            if (value instanceof IntProviderFluidIngredient provider) {
+                return provider.toJson();
             }
             var fluid = ((FluidStackJS) value).getFluidStack();
             return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();

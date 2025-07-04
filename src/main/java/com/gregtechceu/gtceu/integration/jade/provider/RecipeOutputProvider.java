@@ -93,7 +93,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                     var fluidTag = new CompoundTag();
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
-                        provider.writeToNBT(fluidTag);
+                        fluidTag = provider.toNBT();
                     } else {
                         stack.writeToNBT(fluidTag);
                     }
@@ -138,7 +138,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (Tag tag : fluidTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {
                         if (tCompoundTag.contains("Minimum")) {
-                            var ingredient = IntProviderFluidIngredient.loadFluidIngredientFromNBT(tCompoundTag);
+                            var ingredient = IntProviderFluidIngredient.fromNBT(tCompoundTag);
                             outputFluids.add(ingredient);
                         } else {
                             var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
@@ -166,13 +166,13 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 item.setCount(1);
                 iTooltip.add(helper.smallItem(item));
                 Component text;
-                if (itemOutput instanceof IntProviderIngredient) {
+                if (itemOutput instanceof IntProviderIngredient provider) {
                     text = Component.literal(" ")
                             .append(String
-                                    .valueOf(((IntProviderIngredient) itemOutput).getCountProvider().getMinValue()))
+                                    .valueOf(provider.getCountProvider().getMinValue()))
                             .append("-")
                             .append(String
-                                    .valueOf(((IntProviderIngredient) itemOutput).getCountProvider().getMaxValue()))
+                                    .valueOf(provider.getCountProvider().getMaxValue()))
                             .append("× ")
                             .append(getItemName(item))
                             .withStyle(ChatFormatting.WHITE);
@@ -193,13 +193,13 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
                 iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
                 Component text;
-                if (fluidOutput instanceof IntProviderFluidIngredient) {
+                if (fluidOutput instanceof IntProviderFluidIngredient provider) {
                     text = Component.literal(" ")
                             .append(FluidTextHelper.getUnicodeMillibuckets(
-                                    ((IntProviderFluidIngredient) fluidOutput).getCountProvider().getMinValue(), true))
+                                    provider.getCountProvider().getMinValue(), true))
                             .append("-")
                             .append(FluidTextHelper.getUnicodeMillibuckets(
-                                    ((IntProviderFluidIngredient) fluidOutput).getCountProvider().getMaxValue(), true))
+                                    provider.getCountProvider().getMaxValue(), true))
                             .append(" ")
                             .append(getFluidName(fluidOutput.getStacks()[0]))
                             .withStyle(ChatFormatting.WHITE);
