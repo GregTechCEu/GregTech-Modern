@@ -255,7 +255,7 @@ public class GTRecipeBuilder {
             inputCWU(cwu);
         } else if (cwu < 0) {
             tickOutput.remove(CWURecipeCapability.CAP);
-            outputCWU(cwu);
+            outputCWU(-cwu);
         }
         perTick = lastPerTick;
         return this;
@@ -573,6 +573,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(MachineDefinition machine, int count) {
         return outputItems(machine.asStack(count));
+    }
+
+    protected GTRecipeBuilder outputItems(Ingredient ingredient) {
+        return output(ItemRecipeCapability.CAP, ingredient);
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {

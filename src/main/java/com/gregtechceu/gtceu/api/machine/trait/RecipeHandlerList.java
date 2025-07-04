@@ -9,6 +9,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,10 +35,21 @@ public class RecipeHandlerList {
     @Getter
     private final IO handlerIO;
     @Getter
-    private boolean isDistinct = false;
+    private int color = -1;
+
+    @Setter
+    @Getter
+    private RecipeHandlerGroup group = null;
 
     protected RecipeHandlerList(IO handlerIO) {
         this.handlerIO = handlerIO;
+    }
+
+    public static RecipeHandlerList of(IO io, int color, IRecipeHandler<?>... handlers) {
+        RecipeHandlerList rhl = new RecipeHandlerList(io);
+        rhl.addHandlers(handlers);
+        rhl.setColor(color);
+        return rhl;
     }
 
     public static RecipeHandlerList of(IO io, IRecipeHandler<?>... handlers) {
@@ -49,6 +61,13 @@ public class RecipeHandlerList {
     public static RecipeHandlerList of(IO io, Iterable<IRecipeHandler<?>> handlers) {
         RecipeHandlerList rhl = new RecipeHandlerList(io);
         rhl.addHandlers(handlers);
+        return rhl;
+    }
+
+    public static RecipeHandlerList of(IO io, int color, Iterable<IRecipeHandler<?>> handlers) {
+        RecipeHandlerList rhl = new RecipeHandlerList(io);
+        rhl.addHandlers(handlers);
+        rhl.setColor(color);
         return rhl;
     }
 
@@ -84,11 +103,33 @@ public class RecipeHandlerList {
     }
 
     protected void setDistinct(boolean distinct, boolean notify) {
-        if (isDistinct != distinct) {
-            isDistinct = distinct;
+        boolean currentDistinct = isDistinct();
+        if (currentDistinct != distinct) {
+            this.group = currentDistinct ? new RecipeHandlerGroupColor(color) :
+                    RecipeHandlerGroupDistinctness.BUS_DISTINCT;
             for (var rht : allHandlerTraits) {
-                rht.setDistinct(isDistinct);
+                rht.setDistinct(distinct);
                 if (notify) rht.notifyListeners();
+            }
+        }
+    }
+
+    public boolean isDistinct() {
+        return this.group == RecipeHandlerGroupDistinctness.BUS_DISTINCT;
+    }
+
+    public void setColor(int color) {
+        setColor(color, false);
+    }
+
+    public void setColor(int color, boolean notify) {
+        this.color = color;
+        if (this.group != RecipeHandlerGroupDistinctness.BUS_DISTINCT) {
+            this.group = new RecipeHandlerGroupColor(color);
+        }
+        if (notify) {
+            for (var rht : allHandlerTraits) {
+                rht.notifyListeners();
             }
         }
     }

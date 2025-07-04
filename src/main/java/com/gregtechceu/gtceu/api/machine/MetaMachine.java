@@ -109,7 +109,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Persisted(key = "cover")
     protected final MachineCoverContainer coverContainer;
     @Getter
-    @Setter
     @Persisted
     @DescSynced
     @RequireRerender
@@ -182,6 +181,13 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
+
+    public void setPaintingColor(int color) {
+        this.paintingColor = color;
+        this.onPaintingColorChanged(color);
+    }
+
+    public void onPaintingColorChanged(int color) {}
 
     public long getOffsetTimer() {
         return holder.getOffsetTimer();

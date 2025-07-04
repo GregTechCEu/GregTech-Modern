@@ -243,6 +243,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("gtFluidOut", GTRecipeComponents.FLUID_OUT);
         event.register("gtEuIn", GTRecipeComponents.EU_IN);
         event.register("gtEuOut", GTRecipeComponents.EU_OUT);
+        event.register("gtCwuIn", GTRecipeComponents.CWU_IN);
+        event.register("gtCwuOut", GTRecipeComponents.CWU_OUT);
 
         event.register("gtChance", GTRecipeComponents.CHANCE_LOGIC_MAP);
         event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUTPUT);
