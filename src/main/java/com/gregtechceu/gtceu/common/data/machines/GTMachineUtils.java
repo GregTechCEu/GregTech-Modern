@@ -32,9 +32,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumChestItemRender;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.QuantumTankFluidRender;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
@@ -441,7 +439,7 @@ public class GTMachineUtils {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
-                            .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
+                            .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumTankRender)))
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
@@ -463,7 +461,8 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .allowExtendedFacing(true)
                         .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
-                                .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
+                                .andThen(
+                                        b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumChestRender)))
                         .hasBER(true)
                         .tooltipBuilder(CHEST_TOOLTIPS)
                         .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
@@ -581,7 +580,7 @@ public class GTMachineUtils {
                 .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(texture,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
-                        .andThen(b -> b.addDynamicRenderer(new BoilerMultiPartRender(firebox, casing))))
+                        .andThen(b -> b.addDynamicRenderer(() -> () -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
                 .tooltips(
                         Component.translatable("gtceu.multiblock.large_boiler.max_temperature", maxTemperature + 274,
                                 maxTemperature),

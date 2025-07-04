@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -183,7 +184,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return true;
     }
 
-    public ICoverRenderer getCoverRenderer() {
+    public Supplier<Supplier<ICoverRenderer>> getCoverRenderer() {
         return coverDefinition.getCoverRenderer();
     }
 

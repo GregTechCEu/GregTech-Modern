@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
@@ -165,8 +166,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      *
      * @param render The {@link DynamicRender dynamic render} to add
      */
-    public MachineModelBuilder<T> addDynamicRenderer(DynamicRender<?, ?> render) {
-        this.dynamicRenders.add(render);
+    public MachineModelBuilder<T> addDynamicRenderer(Supplier<Supplier<DynamicRender<?, ?>>> render) {
+        this.dynamicRenders.add(render.get().get());
         return this;
     }
 

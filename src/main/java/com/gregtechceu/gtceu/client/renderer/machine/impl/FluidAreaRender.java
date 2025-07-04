@@ -9,13 +9,11 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.RenderTypeHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -30,7 +28,7 @@ import java.util.Optional;
 
 public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaRender> {
 
-    private static final List<RelativeDirection> DEFAULT_FACES = Collections.singletonList(RelativeDirection.UP);
+    public static final List<RelativeDirection> DEFAULT_FACES = Collections.singletonList(RelativeDirection.UP);
 
     // spotless:off
     @SuppressWarnings("deprecation")
@@ -62,20 +60,6 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
             this.fixedFluid = false;
         }
         this.drawFaces = drawFaces.isEmpty() ? DEFAULT_FACES : drawFaces;
-    }
-
-    public static FluidAreaRender createLargeMachineRender() {
-        return new FluidAreaRender(FluidBlockRenderer.Builder.create()
-                .setFaceOffset(-0.125f)
-                .setForcedLight(LightTexture.FULL_BRIGHT)
-                .getRenderer(), Optional.empty(), DEFAULT_FACES);
-    }
-
-    public static FluidAreaRender createPBFLavaRender() {
-        return new FluidAreaRender(FluidBlockRenderer.Builder.create()
-                .setFaceOffset(-0.125f)
-                .setForcedLight(LightTexture.FULL_BRIGHT)
-                .getRenderer(), Optional.of(Fluids.LAVA.getSource()), DEFAULT_FACES);
     }
 
     @Override
@@ -118,7 +102,7 @@ public class FluidAreaRender extends DynamicRender<IFluidRenderMulti, FluidAreaR
         var consumer = buffer.getBuffer(RenderTypeHelper.getEntityRenderType(fluidRenderType, false));
 
         for (RelativeDirection face : this.drawFaces) {
-            var dir = face.getRelativeFacing(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
+            var dir = face.getRelative(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
                     machine.self().isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 

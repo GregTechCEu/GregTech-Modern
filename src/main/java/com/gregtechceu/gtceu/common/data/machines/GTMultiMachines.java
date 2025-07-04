@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
@@ -114,7 +114,7 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_primitive_bricks"),
                     GTCEu.id("block/multiblock/primitive_blast_furnace"))
-                    .andThen(b -> b.addDynamicRenderer(FluidAreaRender.createPBFLavaRender())))
+                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createPBFLavaRender)))
             .hasBER(true)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -627,7 +627,8 @@ public class GTMultiMachines {
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(
-                            new BoilerMultiPartRender(BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
+                            () -> () -> DynamicRenderHelper.makeBoilerPartRender(
+                                    BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
             .register();
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis("fusion_reactor",
@@ -719,7 +720,7 @@ public class GTMultiMachines {
                     .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
-                            .andThen(b -> b.addDynamicRenderer(new FusionRingRender())))
+                            .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createFusionRingRender)))
                     .hasBER(true)
                     .register(),
             LuV, ZPM, UV);

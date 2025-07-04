@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.api.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
+
+import java.util.function.Supplier;
 
 public final class CoverDefinition {
 
@@ -24,12 +27,13 @@ public final class CoverDefinition {
     private final ResourceLocation id;
     private final CoverBehaviourProvider behaviorCreator;
     @Getter
-    private final ICoverRenderer coverRenderer;
+    private final Supplier<Supplier<ICoverRenderer>> coverRenderer;
 
-    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator, ICoverRenderer coverRenderer) {
+    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator,
+                           Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         this.behaviorCreator = behaviorCreator;
         this.id = id;
-        this.coverRenderer = coverRenderer;
+        this.coverRenderer = GTMemoizer.memoize(() -> () -> coverRenderer.get().get());
     }
 
     public CoverBehavior createCoverBehavior(ICoverable metaTileEntity, Direction side) {

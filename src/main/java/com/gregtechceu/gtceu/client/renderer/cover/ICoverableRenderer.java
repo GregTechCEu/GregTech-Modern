@@ -62,7 +62,8 @@ public interface ICoverableRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().renderCover(quads, side, rand, cover, pos, level, modelData, renderType);
+                cover.getCoverRenderer().get().get()
+                        .renderCover(quads, side, rand, cover, pos, level, modelData, renderType);
             }
         }
     }

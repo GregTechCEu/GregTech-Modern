@@ -37,9 +37,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     protected float delta = 0;
     protected int lastColor = -1;
 
-    public FusionRingRender() {
-        super();
-    }
+    public FusionRingRender() {}
 
     @Override
     public DynamicRenderType<FusionReactorMachine, FusionRingRender> getType() {

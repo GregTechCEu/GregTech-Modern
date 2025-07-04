@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
@@ -539,7 +539,7 @@ public class GTMachines {
                 }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
-                    .andThen(b -> b.addDynamicRenderer(new QuantumTankFluidRender())))
+                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumTankRender)))
             .hasBER(true)
             .register();
 
@@ -557,7 +557,7 @@ public class GTMachines {
                 }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
-                    .andThen(b -> b.addDynamicRenderer(new QuantumChestItemRender())))
+                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumChestRender)))
             .hasBER(true)
             .register();
 
