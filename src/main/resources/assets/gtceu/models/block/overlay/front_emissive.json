@@ -3,15 +3,15 @@
     "parent": "block/block",
     "elements": [
         {
-            "from": [-0.001, -0.001, -0.001],
-            "to": [16, 16, 0],
+            "from": [-0.002, -0.002, -0.002],
+            "to": [16.002, 16.002, -0.002],
             "faces": {
                 "north": {"uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north"}
             }
         },
         {
-            "from": [-0.001, -0.001, -0.001],
-            "to": [16, 16, 0],
+            "from": [-0.004, -0.004, -0.004],
+            "to": [16.004, 16.004, -0.004],
             "faces": {
                 "north": {"uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101, "emissivity":  15}
             }

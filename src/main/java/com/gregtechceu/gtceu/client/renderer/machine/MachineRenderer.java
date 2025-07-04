@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.IColoredHatch;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
@@ -139,14 +138,6 @@ public class MachineRenderer extends TextureOverrideRenderer
                         }
                     }
                 }
-
-                /*if (machine instanceof IColoredHatch coloredHatch) {
-                    if (coloredHatch.getPaintingColor() != -1 && side == frontFacing) {
-                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
-                                modelFacing, ModelFactory.getBlockSprite(COLOR_OVERLAY), blockModelState,
-                                9, 15, true, false));
-                    }
-                }*/
 
                 // render covers
                 int start = quads.size();

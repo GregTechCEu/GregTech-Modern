@@ -1,5 +1,5 @@
 {
-	"parent": "gtceu:block/overlay/front_emissive_color_ring",
+	"parent": "gtceu:block/overlay/front_color_ring",
 	"textures": {
 		"particle": "#overlay_fluid_hatch",
 		"overlay": "gtceu:block/overlay/appeng/me_input_hatch"
