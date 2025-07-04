@@ -140,13 +140,13 @@ public class MachineRenderer extends TextureOverrideRenderer
                     }
                 }
 
-                if (machine instanceof IColoredHatch coloredHatch) {
+                /*if (machine instanceof IColoredHatch coloredHatch) {
                     if (coloredHatch.getPaintingColor() != -1 && side == frontFacing) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY,
                                 modelFacing, ModelFactory.getBlockSprite(COLOR_OVERLAY), blockModelState,
                                 9, 15, true, false));
                     }
-                }
+                }*/
 
                 // render covers
                 int start = quads.size();
