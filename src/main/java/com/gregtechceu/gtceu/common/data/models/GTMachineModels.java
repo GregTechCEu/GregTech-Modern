@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.models;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -75,6 +76,11 @@ public class GTMachineModels {
     });
     public static final ResourceLocation LP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_bronze");
     public static final ResourceLocation HP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_steel");
+
+    public static final ResourceLocation OVERLAY_MODEL = GTCEu.id("block/overlay/front");
+    public static final ResourceLocation OVERLAY_COLOR_RING_MODEL = GTCEu.id("block/overlay/front_color_ring");
+    public static final ResourceLocation OVERLAY_EMISSIVE_MODEL = GTCEu.id("block/overlay/2_layer/front_emissive");
+    public static final ResourceLocation OVERLAY_EMISSIVE_COLOR_RING_MODEL = GTCEu.id("block/overlay/2_layer/front_emissive_color_ring");
     // spotless:on
 
     // region generic models
@@ -102,6 +108,42 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(overlayModel));
             tieredHullTextures(model, builder.getOwner().getTier());
             builder.forAllStatesModels(state -> model);
+
+            builder.addReplaceableTextures("bottom", "top", "side");
+        };
+    }
+
+    public static MachineBuilder.ModelInitializer createColorOverlayTieredHullMachineModel(final ResourceLocation overlay,
+                                                                                           final @Nullable ResourceLocation emissiveOverlay) {
+        final ResourceLocation defaultParent = emissiveOverlay != null ? OVERLAY_EMISSIVE_MODEL : OVERLAY_MODEL;
+        final ResourceLocation coloredParent = emissiveOverlay != null ?
+                OVERLAY_EMISSIVE_COLOR_RING_MODEL : OVERLAY_COLOR_RING_MODEL;
+        return (ctx, prov, builder) -> {
+            final BlockModelBuilder defaultModel = prov.models()
+                    .withExistingParent(ctx.getName() + "_uncolored", defaultParent)
+                    .texture("overlay", overlay);
+            if (emissiveOverlay != null) defaultModel.texture("overlay_emissive", emissiveOverlay);
+            tieredHullTextures(defaultModel, builder.getOwner().getTier());
+
+            // don't create the painted model if we won't use it
+            final BlockModelBuilder coloredModel;
+            if (builder.getOwner().getStateDefinition().getProperties().contains(IPaintable.IS_PAINTED_PROPERTY)) {
+                coloredModel = prov.models()
+                        .withExistingParent(ctx.getName() + "_colored", coloredParent)
+                        .texture("overlay", overlay);
+                if (emissiveOverlay != null) coloredModel.texture("overlay_emissive", emissiveOverlay);
+                tieredHullTextures(coloredModel, builder.getOwner().getTier());
+            } else {
+                coloredModel = null;
+            }
+
+            builder.forAllStatesModels(state -> {
+                if (state.getOptionalValue(IPaintable.IS_PAINTED_PROPERTY).orElse(false)) {
+                    return coloredModel;
+                } else {
+                    return defaultModel;
+                }
+            });
 
             builder.addReplaceableTextures("bottom", "top", "side");
         };
@@ -250,6 +292,12 @@ public class GTMachineModels {
     // endregion
 
     // region per-machine models
+
+    // spotless:off
+    public static final String OVERLAY_FLUID_HATCH_TEX = "overlay_fluid_hatch";
+    public static final String OVERLAY_FLUID_HATCH_HALF_PX_TEX = "overlay_fluid_hatch_half_px_out";
+    public static final String OVERLAY_ITEM_HATCH = "overlay_item_hatch";
+    // spotless:on
 
     public static MachineBuilder.ModelInitializer createSimpleGeneratorModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
@@ -444,7 +492,6 @@ public class GTMachineModels {
                 .condition(EMISSIVE_ROTOR_PROPERTY, emissive);
     }
 
-    public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");
     public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
         ImmutableMap.Builder<Material, ResourceLocation> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));

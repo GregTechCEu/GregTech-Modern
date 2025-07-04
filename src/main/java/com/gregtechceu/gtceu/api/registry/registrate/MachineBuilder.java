@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -235,6 +236,28 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> overlayTieredHullModel(ResourceLocation overlayModel) {
         return model(createOverlayTieredHullMachineModel(overlayModel));
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay) {
+        return colorOverlayTieredHullModel(overlay, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(String overlay,
+                                                                  @Nullable String emissiveOverlay) {
+        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+        return colorOverlayTieredHullModel(overlayTex, emissiveOverlayTex);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay) {
+        return colorOverlayTieredHullModel(overlay, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                  @Nullable ResourceLocation emissiveOverlay) {
+        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        return model(createColorOverlayTieredHullMachineModel(overlay, emissiveOverlay));
     }
 
     public MachineBuilder<DEFINITION> overlaySteamHullModel(String name) {

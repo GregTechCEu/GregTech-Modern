@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 public interface IPaintable {
+
+    BooleanProperty IS_PAINTED_PROPERTY = BooleanProperty.create("is_painted");
 
     /**
      * Get painting color.

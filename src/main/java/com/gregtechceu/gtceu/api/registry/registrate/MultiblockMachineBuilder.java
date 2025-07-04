@@ -231,6 +231,27 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay, @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                @Nullable ResourceLocation emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+    }
+
+    @Override
     public MultiblockMachineBuilder workableTieredHullModel(ResourceLocation workableModel) {
         return (MultiblockMachineBuilder) super.workableTieredHullModel(workableModel);
     }

@@ -183,6 +183,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public void setPaintingColor(int color) {
+        if (color != this.paintingColor) {
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(IS_PAINTED_PROPERTY)) {
+                setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, color != -1));
+            }
+        }
         this.paintingColor = color;
         this.onPaintingColorChanged(color);
     }
