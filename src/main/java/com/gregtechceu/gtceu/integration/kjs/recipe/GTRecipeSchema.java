@@ -213,7 +213,7 @@ public interface GTRecipeSchema {
             if (cwu > 0) {
                 inputCWU(cwu);
             } else if (cwu < 0) {
-                outputCWU(cwu);
+                outputCWU(-cwu);
             }
             perTick = lastPerTick;
             return this;
