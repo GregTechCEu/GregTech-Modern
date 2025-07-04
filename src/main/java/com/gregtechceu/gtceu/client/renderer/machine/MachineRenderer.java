@@ -52,7 +52,6 @@ public class MachineRenderer extends TextureOverrideRenderer
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
-    public static final ResourceLocation COLOR_OVERLAY = GTCEu.id("block/overlay/machine/overlay_color");
 
     public MachineRenderer(ResourceLocation modelLocation) {
         super(modelLocation);
@@ -190,7 +189,6 @@ public class MachineRenderer extends TextureOverrideRenderer
             register.accept(PIPE_OVERLAY);
             register.accept(FLUID_OUTPUT_OVERLAY);
             register.accept(ITEM_OUTPUT_OVERLAY);
-            register.accept(COLOR_OVERLAY);
         }
     }
 
