@@ -117,8 +117,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 continue;
             }
 
-            FluidStack[] fluids;
-            int amount;
+            FluidStack[] fluids = null;
+            int amount = 0;
 
             if (io == IO.OUT) {
 

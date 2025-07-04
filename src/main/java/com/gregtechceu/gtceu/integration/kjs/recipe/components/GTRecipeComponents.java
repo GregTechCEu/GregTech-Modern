@@ -282,9 +282,6 @@ public class GTRecipeComponents {
 
         @Override
         public FluidIngredientJS read(RecipeJS recipe, Object from) {
-            if (from instanceof IntProviderFluidIngredient intProvider) {
-                return new FluidIngredientJS(intProvider.replicate());
-            }
             return FluidIngredientJS.of(from);
         }
     };

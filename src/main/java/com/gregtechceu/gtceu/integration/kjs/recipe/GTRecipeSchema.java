@@ -35,6 +35,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +60,6 @@ import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeConstructor;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
-import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
@@ -683,7 +683,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
-            return outputFluidsRanged(output, UniformInt.of(min, max)));
+            return outputFluidsRanged(output, UniformInt.of(min, max));
         }
 
         public GTRecipeJS outputFluidsRanged(FluidStackJS output, IntProvider range) {
@@ -1087,33 +1087,7 @@ public interface GTRecipeSchema {
 
         @Override
         public OutputFluid readOutputFluid(Object from) {
-            if (from instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
-                return ingredientJS;
-            } else if (from instanceof IntProviderFluidIngredient ingredient) {
-                return new GTRecipeComponents.FluidIngredientJS(ingredient.replicate());
-            } else if (from instanceof FluidIngredient ingredient) {
-                return new GTRecipeComponents.FluidIngredientJS(ingredient);
-            } else if (from instanceof JsonObject json) {
-                return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.fromJson(json));
-            } else if (from instanceof FluidStackJS fluidStackJS) {
-                return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.of(
-                        new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(),
-                                fluidStackJS.getNbt())));
-            }
-
-            var list = ListJS.of(from);
-            if (list != null && !list.isEmpty()) {
-                List<FluidStack> stacks = new ArrayList<>();
-                for (var object : list) {
-                    FluidStackJS stackJS = FluidStackJS.of(object);
-                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
-                }
-                return new GTRecipeComponents.FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
-            } else {
-                FluidStackJS stackJS = FluidStackJS.of(from);
-                return new GTRecipeComponents.FluidIngredientJS(FluidIngredient
-                        .of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
-            }
+            return GTRecipeComponents.FluidIngredientJS.of(from);
         }
 
         @Override
@@ -1121,7 +1095,7 @@ public interface GTRecipeSchema {
             if (value instanceof FluidIngredient ingredient) {
                 return ingredient.toJson();
             } else if (value instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
-                return ingredient.getIngredient().toJson();
+                return ingredientJS.getIngredient().toJson();
             }
             var fluid = ((FluidStackJS) value).getFluidStack();
             return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();

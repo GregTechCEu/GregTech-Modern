@@ -46,10 +46,6 @@ public class IntProviderFluidIngredient extends FluidIngredient {
         return ipfi;
     }
 
-    public IntProviderFluidIngredient replicate() {
-        return new IntProviderFluidIngredient(this.inner, this.countProvider);
-    }
-
     @Override
     public int getAmount() {
         return -1;
@@ -83,7 +79,7 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     }
 
     public static IntProviderFluidIngredient of(FluidIngredient inner, IntProvider provider) {
-        return new IntProviderFluidIngredient(inner.copy(), provider);
+        return new IntProviderFluidIngredient(inner, provider);
     }
 
     public static IntProviderFluidIngredient of (FluidStack inner, int min, int max){
@@ -102,9 +98,6 @@ public class IntProviderFluidIngredient extends FluidIngredient {
     public static IntProviderFluidIngredient fromJson(JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
-        }
-        if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -28,12 +27,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -500,50 +497,6 @@ public class GTUtil {
         } catch (RuntimeException var2) {
             GTCEu.LOGGER.debug("Tried to load invalid item: {}", compoundTag, var2);
             return ItemStack.EMPTY;
-        }
-    }
-
-    public static CompoundTag saveIngredient(Ingredient ingredient, CompoundTag compoundTag) {
-        ItemStack itemStack = ingredient.getItems()[0];
-        ResourceLocation resourceLocation = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-        compoundTag.putString("id", resourceLocation.toString());
-        if (ingredient instanceof IntProviderIngredient) {
-            compoundTag.putInt("Minimum", ((IntProviderIngredient) ingredient).getCountProvider().getMinValue());
-            compoundTag.putInt("Maximum", ((IntProviderIngredient) ingredient).getCountProvider().getMaxValue());
-        } else {
-            compoundTag.putInt("Count", itemStack.getCount());
-            if (itemStack.getTag() != null) {
-                compoundTag.put("tag", itemStack.getTag().copy());
-            }
-        }
-        return compoundTag;
-    }
-
-    public static Ingredient loadIngredient(CompoundTag compoundTag) {
-        try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
-            int count = compoundTag.getInt("Count");
-            ItemStack stack = new ItemStack(item, count);
-            if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
-                stack.setTag(compoundTag.getCompound("tag"));
-                if (stack.getTag() != null) {
-                    stack.getItem().verifyTagAfterLoad(stack.getTag());
-                }
-            }
-
-            if (stack.isDamageableItem()) {
-                stack.setDamageValue(stack.getDamageValue());
-            }
-            Ingredient output = Ingredient.of(item);
-            if (compoundTag.contains("Minimum")) {
-                int min = compoundTag.getInt("Minimum");
-                int max = compoundTag.getInt("Maximum");
-                return IntProviderIngredient.of(output, UniformInt.of(min, max));
-            }
-            return output;
-        } catch (RuntimeException var2) {
-            GTCEu.LOGGER.debug("Tried to load invalid item: {}", compoundTag, var2);
-            return Ingredient.EMPTY;
         }
     }
 

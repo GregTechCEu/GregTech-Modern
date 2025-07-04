@@ -70,7 +70,7 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         count = countD < 1 ? 1 : (int) Math.round(countD);
                         stack.setCount(count);
                     }
-                    itemOutputs.add((Ingredient) item.content);
+                    itemOutputs.add(Ingredient.of(stack));
                 }
 
                 List<FluidIngredient> fluidOutputs = new ArrayList<>();
@@ -87,7 +87,7 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         amount = amountD < 1 ? 1 : (int) Math.round(amountD);
                         stack.setAmount(amount);
                     }
-                    fluidOutputs.add((FluidIngredient) fluid.content);
+                    fluidOutputs.add(FluidIngredient.of(stack));
                 }
 
                 if (!itemOutputs.isEmpty() || !fluidOutputs.isEmpty()) {

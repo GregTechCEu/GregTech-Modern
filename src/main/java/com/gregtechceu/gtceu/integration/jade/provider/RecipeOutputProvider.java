@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -9,14 +10,17 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -70,7 +74,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                     var itemTag = new CompoundTag();
                     if (item.content instanceof IntProviderIngredient provider) {
-                        itemTag = JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
+                        itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
                     } else {
                         GTUtil.saveItemStack(stack, itemTag);
                     }
@@ -129,14 +133,13 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     for (Tag tag : itemTags) {
                         if (tag instanceof CompoundTag tCompoundTag) {
                             if (tCompoundTag.contains("count_provider")) {
-                                var ingredient = IntProviderIngredient.SERIALIZER.parse(NbtOps.INSTANCE.converTo(JsonOps.INSTANCE, tCompoundTag);
-                                outputFluids.add(ingredient);
+                                var ingredient = IntProviderIngredient.SERIALIZER.parse((JsonObject)NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, tCompoundTag));
+                                outputItems.add(ingredient);
                             } else {
                                 var stack = GTUtil.loadItemStack(tCompoundTag);
                                 if (!stack.isEmpty()) {
                                     outputItems.add(SizedIngredient.create(stack));
                                 }
-                            }
                             }
                         }
                     }
@@ -147,7 +150,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {
-                        if (tCompoundTag.contains("Minimum")) {
+                        if (tCompoundTag.contains("count_provider")) {
                             var ingredient = IntProviderFluidIngredient.fromNBT(tCompoundTag);
                             outputFluids.add(ingredient);
                         } else {
@@ -182,17 +185,15 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                                     .valueOf(provider.getCountProvider().getMinValue()))
                             .append("-")
                             .append(String
-                                    .valueOf(provider.getCountProvider().getMaxValue()))
-                            .append("× ")
-                            .append(getItemName(item))
-                            .withStyle(ChatFormatting.WHITE);
+                                    .valueOf(provider.getCountProvider().getMaxValue()));
                 } else {
                     text = Component.literal(" ")
-                            .append(String.valueOf(count))
-                            .append("× ")
-                            .append(getItemName(item))
-                            .withStyle(ChatFormatting.WHITE);
+                            .append(String.valueOf(count));
                 }
+                text = Component.literal(text.getString())
+                        .append("× ")
+                        .append(getItemName(item))
+                        .withStyle(ChatFormatting.WHITE);
                 iTooltip.append(text);
             }
         }
@@ -209,17 +210,15 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                                     provider.getCountProvider().getMinValue(), true))
                             .append("-")
                             .append(FluidTextHelper.getUnicodeMillibuckets(
-                                    provider.getCountProvider().getMaxValue(), true))
-                            .append(" ")
-                            .append(getFluidName(fluidOutput.getStacks()[0]))
-                            .withStyle(ChatFormatting.WHITE);
+                                    provider.getCountProvider().getMaxValue(), true));
                 } else {
                     text = Component.literal(" ")
-                            .append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true))
-                            .append(" ")
-                            .append(getFluidName(fluidOutput.getStacks()[0]))
-                            .withStyle(ChatFormatting.WHITE);
+                            .append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
                 }
+                text = Component.literal(text.getString())
+                        .append(" ")
+                        .append(getFluidName(fluidOutput.getStacks()[0]))
+                        .withStyle(ChatFormatting.WHITE);
                 iTooltip.append(text);
             }
         }

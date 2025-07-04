@@ -350,7 +350,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
             if (isXEI) tank.setShowAmount(false);
             if (content != null) {
-                boolean isRanged = this.of(content.content) instanceof IntProviderFluidIngredient;
                 float chance = (float) recipeType.getChanceFunction()
                         .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
                 tank.setXEIChance(chance);
