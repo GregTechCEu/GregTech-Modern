@@ -198,15 +198,16 @@ public class GTMachineUtils {
         return Pair.of(lowTier, highTier);
     }
 
-    public static MachineDefinition[] registerFluidHatches(String name, String displayname, String model,
+    public static MachineDefinition[] registerFluidHatches(String name, String displayname, String overlayTexture,
                                                            String tooltip, IO io, int initialCapacity, int slots,
                                                            int[] tiers, PartAbility... abilities) {
+        final String emissiveOverlay = slots > 4 ? OVERLAY_FLUID_HATCH_HALF_PX_TEX : OVERLAY_FLUID_HATCH_TEX;
         return registerTieredMachines(name,
                 (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
                 (tier, builder) -> {
                     builder.langValue(VNF[tier] + ' ' + displayname)
                             .rotationState(RotationState.ALL)
-                            .overlayTieredHullModel(model)
+                            .colorOverlayTieredHullModel(overlayTexture, emissiveOverlay)
                             .abilities(abilities)
                             .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
