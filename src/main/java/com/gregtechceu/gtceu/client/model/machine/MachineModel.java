@@ -273,9 +273,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         renderBaseModel(quads, renderState, blockState, side, rand, modelData, renderType);
 
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            return replacePartBaseModel(quads, part, frontFacing, side, rand, modelData, renderType);
+            quads = replacePartBaseModel(quads, part, frontFacing, side, rand, modelData, renderType);
         }
-        return quads;
+        if (machine != null) {
+            // we have to recalculate CTM ourselves.
+            // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
+            return CustomBakedModel.reBakeCustomQuads(quads, machine.getLevel(), machine.getPos(),
+                    blockState, side, 0.0f);
+        } else {
+            return quads;
+        }
     }
 
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MachineRenderState renderState,
@@ -310,11 +317,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 newQuads = renderPartOverrides(controllerModel, controller, originalQuads,
                         part, frontFacing, side, rand, modelData, renderType);
             }
-            // if overriding the existing textures, we have to recalculate CTM ourselves.
-            // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
             if (newQuads != null) {
-                return CustomBakedModel.reBakeCustomQuads(newQuads,
-                        part.self().getLevel(), part.self().getPos(), part.self().getBlockState(), side, 0.0f);
+                return newQuads;
             }
             // spotless:on
         }
