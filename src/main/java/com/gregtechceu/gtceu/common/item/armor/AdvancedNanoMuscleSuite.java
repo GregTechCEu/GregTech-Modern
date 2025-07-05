@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,35 +105,48 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                 // Charge all inventory slots
                 for (int i = 0; i < inventoryIndexMap.size(); i++) {
                     Pair<NonNullList<ItemStack>, IntList> inventoryMap = inventoryIndexMap.get(i);
-                    var inventoryIterator = inventoryMap.getSecond().iterator();
-                    while (inventoryIterator.hasNext()) {
-                        int slot = inventoryIterator.nextInt();
-                        IElectricItem chargable = GTCapabilityHelper.getElectricItem(inventoryMap.getFirst().get(slot));
+                    NonNullList<ItemStack> itemList = inventoryMap.getFirst();
+                    IntList slots = inventoryMap.getSecond();
 
-                        // Safety check the null, it should not actually happen. Also don't try and charge itself
-                        if (chargable == null || chargable == cont) {
-                            inventoryIterator.remove();
-                            continue;
-                        }
+                    // Remove invalid or self-referencing electric items
+                IntList safeSlots = new IntArrayList(slots);  // copy to mutable list
 
+                safeSlots.removeIf(slot -> {
+                    ItemStack stack = itemList.get(slot);
+                    IElectricItem chargable = GTCapabilityHelper.getElectricItem(stack);
+                    return chargable == null || chargable == cont;      
+                });
+
+                inventoryIndexMap.set(i, Pair.of(itemList, safeSlots)); // replace with mutable, updated list
+
+
+                  // Now do the charging
+                    for (int j = 0; j < safeSlots.size(); j++) {
+                        int slot = safeSlots.getInt(j);
+                        IElectricItem chargable = GTCapabilityHelper.getElectricItem(itemList.get(slot));
                         long attemptedChargeAmount = chargable.getTransferLimit() * 10;
 
-                        // Accounts for tick differences when charging items
-                        if (chargable.getCharge() < chargable.getMaxCharge() && cont.canUse(attemptedChargeAmount) &&
-                                timer % 10 == 0) {
+                        if (chargable.getCharge() < chargable.getMaxCharge() &&
+                            cont.canUse(attemptedChargeAmount) &&
+                            timer % 10 == 0) {
+
                             long delta = chargable.charge(attemptedChargeAmount, cont.getTier(), true, false);
                             if (delta > 0) {
                                 cont.discharge(delta, cont.getTier(), true, false, false);
                             }
+
                             if (chargable.getCharge() == chargable.getMaxCharge()) {
-                                inventoryIterator.remove();
+                                safeSlots.removeInt(j);
+                                j--; // Decrement index to account for removed element
                             }
+
                             player.inventoryMenu.sendAllDataToRemote();
                         }
                     }
 
-                    if (inventoryMap.getSecond().isEmpty()) inventoryIndexMap.remove(inventoryMap);
+                    if (safeSlots.isEmpty()) inventoryIndexMap.remove(inventoryMap);
                 }
+
             }
         }
 
