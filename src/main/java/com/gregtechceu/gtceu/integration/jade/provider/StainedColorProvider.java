@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import snownee.jade.api.BlockAccessor;
@@ -23,24 +20,16 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
         if (blockAccessor.getServerData().contains("StainedColor")) {
             int paintingColor = blockAccessor.getServerData().getInt("StainedColor");
             if (paintingColor != -1) {
-                iTooltip.add(Component
-                        .translatable("gtceu.top.stained",
-                                String.format("#%06X", paintingColor))
-                        .withStyle(Style.EMPTY.withColor(paintingColor)));
+                iTooltip.add(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
+                        .withStyle(style -> style.withColor(paintingColor)));
             }
         }
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            MetaMachine metaMachine = blockEntity.getMetaMachine();
-            if (metaMachine != null) {
-                int paintingColor = metaMachine.getPaintingColor();
-                compoundTag.putInt("StainedColor", paintingColor);
-            }
-        } else if (blockAccessor.getBlockEntity() instanceof PipeBlockEntity<?, ?> pipe) {
-            int paintingColor = pipe.getPaintingColor();
+        if (blockAccessor.getBlockEntity() instanceof IPaintable paintable) {
+            int paintingColor = paintable.getPaintingColor();
             compoundTag.putInt("StainedColor", paintingColor);
         }
     }

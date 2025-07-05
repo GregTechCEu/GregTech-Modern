@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.top.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,17 +27,13 @@ public class StainedColorProvider implements IProbeInfoProvider {
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
         BlockEntity blockEntity = level.getBlockEntity(iProbeHitData.getPos());
-        int paintingColor = -1;
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-            paintingColor = machineBlockEntity.getMetaMachine().getPaintingColor();
-        } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipe) {
-            paintingColor = pipe.getPaintingColor();
-        }
-        if (paintingColor != -1) {
-            IProbeInfo horizontal = iProbeInfo
-                    .horizontal(iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-            horizontal.mcText(Component.translatable("gtceu.top.stained",
-                    String.format("#%06X", paintingColor)));
+        if (blockEntity instanceof IPaintable paintable) {
+            int paintingColor = paintable.getPaintingColor();
+
+            IProbeInfo horizontal = iProbeInfo.horizontal(iProbeInfo
+                    .defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+            horizontal.mcText(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
+                    .withStyle(style -> style.withColor(paintingColor)));
         }
     }
 }
