@@ -957,7 +957,7 @@ public class GTRecipeBuilder {
         return outputFluidsRanged(FluidIngredient.of(output), intProvider);
     }
 
-    public GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {
+    protected GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {
         return outputFluids(IntProviderFluidIngredient.of(output, intProvider));
     }
 

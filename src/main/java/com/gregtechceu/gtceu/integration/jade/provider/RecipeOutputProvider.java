@@ -20,8 +20,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -73,8 +75,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                         itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
                     } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
-                        if (stacks.length == 0) continue;
-                        if (stacks[0].isEmpty()) continue;
+                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
                         var stack = stacks[0];
                         GTUtil.saveItemStack(stack, itemTag);
                         if (item.chance < item.maxChance) {
@@ -180,20 +181,15 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 int count = item.getCount();
                 item.setCount(1);
                 iTooltip.add(helper.smallItem(item));
-                Component text;
+                MutableComponent text = CommonComponents.space();
                 if (itemOutput instanceof IntProviderIngredient provider) {
-                    text = Component.literal(" ")
-                            .append(String
-                                    .valueOf(provider.getCountProvider().getMinValue()))
+                    text.append(String.valueOf(provider.getCountProvider().getMinValue()))
                             .append("-")
-                            .append(String
-                                    .valueOf(provider.getCountProvider().getMaxValue()));
+                            .append(String.valueOf(provider.getCountProvider().getMaxValue()));
                 } else {
-                    text = Component.literal(" ")
-                            .append(String.valueOf(count));
+                    text.append(String.valueOf(count));
                 }
-                text = Component.literal(text.getString())
-                        .append("× ")
+                text.append("× ")
                         .append(getItemName(item))
                         .withStyle(ChatFormatting.WHITE);
                 iTooltip.append(text);
@@ -205,20 +201,17 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         for (FluidIngredient fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
                 iTooltip.add(GTElementHelper.smallFluid(getFluid(fluidOutput.getStacks()[0])));
-                Component text;
+                MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
-                    text = Component.literal(" ")
-                            .append(FluidTextHelper.getUnicodeMillibuckets(
-                                    provider.getCountProvider().getMinValue(), true))
+                    text.append(FluidTextHelper.getUnicodeMillibuckets(
+                            provider.getCountProvider().getMinValue(), true))
                             .append("-")
                             .append(FluidTextHelper.getUnicodeMillibuckets(
                                     provider.getCountProvider().getMaxValue(), true));
                 } else {
-                    text = Component.literal(" ")
-                            .append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
+                    text.append(FluidTextHelper.getUnicodeMillibuckets(fluidOutput.getAmount(), true));
                 }
-                text = Component.literal(text.getString())
-                        .append(" ")
+                text.append(CommonComponents.space())
                         .append(getFluidName(fluidOutput.getStacks()[0]))
                         .withStyle(ChatFormatting.WHITE);
                 iTooltip.append(text);
