@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -52,7 +50,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IAddInformation {
@@ -174,10 +171,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var level = context.getLevel();
         var pos = context.getClickedPos();
 
-        int maxBlocksToRecolor = Math.max(1,
-                player != null && player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
-
         if (player != null) {
+            int maxBlocksToRecolor = player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1;
+
             var first = level.getBlockEntity(pos);
             if (first == null || !handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
                 handleBlocks(pos, maxBlocksToRecolor, context);
@@ -220,45 +216,18 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     break;
                 }
             }
-        } else if (first instanceof PipeBlockEntity pipe) {
-            var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(PipeBlockEntity.class, pipe,
+        } else if (first instanceof IPipeNode pipe) {
+            var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
+                    first.getLevel(), IPipeNode::getPipePos,
                     gtPipePredicate, limit, limit * 6);
-            for (var c : collected) {
-                if (!paintPaintable(c, color)) {
-                    continue;
-                }
-                if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(),
-                        ItemStack.EMPTY)) {
-                    break;
-                }
-            }
-        } else if (first instanceof MetaMachineBlockEntity mmbe) {
-            var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(MetaMachineBlockEntity.class, mmbe,
-                    gtMetaMachinePredicate, limit, limit * 6);
-            for (var c : collected) {
-                if (!paintPaintable(c.getMetaMachine(), color)) {
-                    continue;
-                }
-                if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(),
-                        ItemStack.EMPTY)) {
-                    break;
-                }
-            }
-
-        } else if (first instanceof IPaintable) {
-            var collected = BreadthFirstBlockSearch.conditionalBlockEntitySearch(BlockEntity.class, first,
-                    paintablePredicateWrapper, limit, limit * 6);
-            for (var c : collected) {
-                if (!paintPaintable((IPaintable) c, color)) {
-                    continue;
-                }
-                if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(),
-                        ItemStack.EMPTY)) {
-                    break;
-                }
-            }
-        } else if (first instanceof ShulkerBoxBlockEntity shulkerBoxBE) {
-            var tag = shulkerBoxBE.saveWithFullMetadata();
+            paintPaintables(collected, context);
+        } else if (first instanceof IPaintable paintable) {
+            var collected = BreadthFirstBlockSearch.conditionalSearch(IPaintable.class, paintable,
+                    first.getLevel(), p -> ((BlockEntity) p).getBlockPos(),
+                    paintablePredicate, limit, limit * 6);
+            paintPaintables(collected, context);
+        } else if (first instanceof ShulkerBoxBlockEntity shulkerBox) {
+            var tag = shulkerBox.saveWithoutMetadata();
             var level = first.getLevel();
             var pos = first.getBlockPos();
             recolorBlockNoState(SHULKER_BOX_MAP, color, level, pos, Blocks.SHULKER_BOX);
@@ -294,13 +263,25 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
     }
 
-    private boolean tryPaintBlock(Level world, BlockPos pos) {
-        var blockState = world.getBlockState(pos);
+    private <T extends IPaintable> void paintPaintables(Set<T> paintables, UseOnContext context) {
+        for (var c : paintables) {
+            if (!paintPaintable(c, color)) {
+                continue;
+            }
+            //noinspection DataFlowIssue
+            if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(), ItemStack.EMPTY)) {
+                break;
+            }
+        }
+    }
+
+    private boolean tryPaintBlock(Level level, BlockPos pos) {
+        var blockState = level.getBlockState(pos);
         var block = blockState.getBlock();
         if (color == null) {
-            return tryStripBlockColor(world, pos, block);
+            return tryStripBlockColor(level, pos, block);
         }
-        return recolorBlockState(world, pos, color) || tryPaintSpecialBlock(world, pos, block);
+        return recolorBlockState(level, pos, color) || tryPaintSpecialBlock(level, pos, block);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -470,35 +451,20 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         tagCompound.putInt("UsesLeft", usesLeft);
     }
 
-    private static final BiPredicate<IPaintable, IPaintable> paintablePredicate = (parent, child) -> {
+    private static final TriPredicate<IPaintable, IPaintable, Direction> paintablePredicate = (parent, child, dir) -> {
         if (!parent.getClass().equals(child.getClass())) {
             return false;
         }
         return parent.getPaintingColor() == child.getPaintingColor();
     };
 
-    private static final TriPredicate<BlockEntity, BlockEntity, Direction> paintablePredicateWrapper = (parent, child,
-                                                                                                        direction) -> {
-        if (parent == null && child instanceof IPaintable) return true;
-        return parent instanceof IPaintable pp && child instanceof IPaintable pc && paintablePredicate.test(pp, pc);
-    };
-
     @SuppressWarnings("rawtypes")
-    private static final TriPredicate<PipeBlockEntity, PipeBlockEntity, Direction> gtPipePredicate = (parent, child,
-                                                                                                      direction) -> {
+    private static final TriPredicate<IPipeNode, IPipeNode, Direction> gtPipePredicate = (parent, child, direction) -> {
         if (parent == null) return true;
-        if (!paintablePredicate.test(parent, child)) {
+        if (!paintablePredicate.test(parent, child, direction)) {
             return false;
         }
         return parent.isConnected(direction) && child.isConnected(direction.getOpposite());
-    };
-
-    private static final TriPredicate<MetaMachineBlockEntity, MetaMachineBlockEntity, Direction> gtMetaMachinePredicate = (parent,
-                                                                                                                           child,
-                                                                                                                           direction) -> {
-        if (parent == null) return true;
-        return paintablePredicate.test(parent.getMetaMachine(), child.getMetaMachine()) &&
-                parent.getMetaMachine().getDefinition().equals(child.getMetaMachine().getDefinition());
     };
 
     private static class AE2CallWrapper {
