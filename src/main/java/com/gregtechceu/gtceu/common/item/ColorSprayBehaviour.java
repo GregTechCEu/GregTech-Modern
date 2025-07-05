@@ -211,7 +211,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 if (c.getColor() == ae2Color) {
                     continue;
                 }
-                c.recolourBlock(null, ae2Color, player);
+                c.recolourBlock(context.getClickedFace(), ae2Color, player);
                 if (!useItemDurability(player, context.getHand(), context.getItemInHand(), ItemStack.EMPTY)) {
                     break;
                 }
@@ -345,18 +345,19 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static boolean recolorBlockNoState(Map<DyeColor, Block> map, DyeColor color, Level world, BlockPos pos,
-                                               Block _default) {
-        Block newBlock = map.getOrDefault(color, _default);
-        BlockState old = world.getBlockState(pos);
-        if (newBlock == Blocks.AIR) newBlock = _default;
+    private static boolean recolorBlockNoState(Map<DyeColor, Block> map, @Nullable DyeColor color,
+                                               Level level, BlockPos pos, Block defaultBlock) {
+        Block newBlock = map.getOrDefault(color, defaultBlock);
+        if (newBlock == Blocks.AIR) newBlock = defaultBlock;
+
+        BlockState old = level.getBlockState(pos);
         if (newBlock != null && newBlock != old.getBlock()) {
             BlockState state = newBlock.defaultBlockState();
             for (Property property : old.getProperties()) {
+                if (!state.hasProperty(property)) continue;
                 state.setValue(property, old.getValue(property));
             }
-            world.setBlock(pos, state, 3);
-            world.sendBlockUpdated(pos, old, state, 3);
+            level.setBlockAndUpdate(pos, state);
             return true;
         }
         return false;
@@ -366,31 +367,31 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private static boolean tryStripBlockColor(Level world, BlockPos pos, Block block) {
         // MC special cases
         if (block instanceof StainedGlassBlock) {
-            world.setBlock(pos, Blocks.GLASS.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.GLASS.defaultBlockState());
             return true;
         }
         if (block instanceof StainedGlassPaneBlock) {
-            world.setBlock(pos, Blocks.GLASS_PANE.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.GLASS_PANE.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(BlockTags.TERRACOTTA) && block != Blocks.TERRACOTTA) {
-            world.setBlock(pos, Blocks.TERRACOTTA.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.TERRACOTTA.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(BlockTags.WOOL) && block != Blocks.WHITE_WOOL) {
-            world.setBlock(pos, Blocks.WHITE_WOOL.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.WHITE_WOOL.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(BlockTags.WOOL_CARPETS) && block != Blocks.WHITE_CARPET) {
-            world.setBlock(pos, Blocks.WHITE_CARPET.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.WHITE_CARPET.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK) && block != Blocks.WHITE_CONCRETE) {
-            world.setBlock(pos, Blocks.WHITE_CONCRETE.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.WHITE_CONCRETE.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK) && block != Blocks.WHITE_CONCRETE_POWDER) {
-            world.setBlock(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState(), 3);
+            world.setBlockAndUpdate(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState());
             return true;
         }
         if (block.defaultBlockState().is(BlockTags.CANDLES) && block != Blocks.WHITE_CANDLE) {
