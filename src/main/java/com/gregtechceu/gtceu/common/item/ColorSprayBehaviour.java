@@ -268,7 +268,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             if (!paintPaintable(c, color)) {
                 continue;
             }
-            //noinspection DataFlowIssue
+            // noinspection DataFlowIssue
             if (!useItemDurability(context.getPlayer(), context.getHand(), context.getItemInHand(), ItemStack.EMPTY)) {
                 break;
             }
