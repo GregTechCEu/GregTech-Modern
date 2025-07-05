@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.TriPredicate;
 
-import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
@@ -199,7 +198,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return true;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "DataFlowIssue" })
     private boolean handleSpecialBlockEntities(BlockEntity first, int limit, UseOnContext context) {
         var player = context.getPlayer();
         if (player == null) {
@@ -297,6 +296,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return false;
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     private boolean tryPaintSpecialBlock(Level world, BlockPos pos, Block block) {
         if (block.defaultBlockState().is(Tags.Blocks.GLASS)) {
             if (recolorBlockNoState(GLASS_MAP, this.color, world, pos, Blocks.GLASS)) {
@@ -454,6 +454,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private static final TriPredicate<IPaintable, IPaintable, Direction> paintablePredicate = (parent, child, dir) -> {
+        if (parent == null) return true;
         if (!parent.getClass().equals(child.getClass())) {
             return false;
         }
@@ -485,13 +486,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {
             if (parent == null) return true;
             var childDirection = direction.getOpposite();
-            if (parent.getPart(direction) != null || parent.getCableConnectionType(direction) == AECableType.NONE ||
-                    child.getPart(childDirection) != null ||
-                    child.getCableConnectionType(childDirection) == AECableType.NONE ||
-                    parent.getColor() != child.getColor()) {
-                return false;
-            }
-            return true;
+            return parent.getPart(direction) == null && parent.getCableConnectionType(direction).isValid() &&
+                    child.getPart(childDirection) == null && child.getCableConnectionType(childDirection).isValid() &&
+                    parent.getColor() == child.getColor();
         }
     }
 }
