@@ -24,26 +24,32 @@ public class RegisterGTCapesEvent extends Event {
     public RegisterGTCapesEvent() {}
 
     /**
-     * Makes a cape available to the {@code /gtceu cape} command, allowing it to be used in advancements etc.
+     * Registers a cape to the cape registry.
      *
-     * @param id      An identifier for giving the cape with commands etc.
-     * @param texture The ResourceLocation that points to the texture of the cape accessible via {@code id}
+     * @param id      An identifier for the cape
+     * @param texture The full path to the cape's texture in a resource pack
      */
     public void registerCape(ResourceLocation id, ResourceLocation texture) {
         CapeRegistry.registerCape(id, texture);
     }
 
     /**
-     * Adds a cape that will always be unlocked for all players.
+     * Registers a cape that will always be unlocked for all players.
      *
-     * @param id      An identifier for giving the cape with commands etc.
-     * @param texture A ResourceLocation pointing to the cape texture.
+     * @param id      An identifier for the cape
+     * @param texture The full path to the cape's texture in a resource pack
      */
     public void registerFreeCape(ResourceLocation id, ResourceLocation texture) {
         CapeRegistry.registerFreeCape(id, texture);
     }
 
-    public void unlockCapeFor(UUID owner, ResourceLocation capeId) {
-        CapeRegistry.unlockCape(owner, capeId);
+    /**
+     * Automatically makes a cape available to a player.
+     *
+     * @param owner The UUID of the player to give the cape to
+     * @param cape  The cape to give
+     */
+    public void unlockCapeFor(UUID owner, ResourceLocation cape) {
+        CapeRegistry.unlockCape(owner, cape);
     }
 }
