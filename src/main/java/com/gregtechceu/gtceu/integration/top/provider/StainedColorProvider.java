@@ -27,13 +27,15 @@ public class StainedColorProvider implements IProbeInfoProvider {
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
         BlockEntity blockEntity = level.getBlockEntity(iProbeHitData.getPos());
-        if (blockEntity instanceof IPaintable paintable) {
-            int paintingColor = paintable.getPaintingColor();
-
-            IProbeInfo horizontal = iProbeInfo.horizontal(iProbeInfo
-                    .defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-            horizontal.mcText(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
-                    .withStyle(style -> style.withColor(paintingColor)));
+        if (!(blockEntity instanceof IPaintable paintable)) {
+            return;
         }
+
+        int paintingColor = paintable.getPaintingColor();
+
+        IProbeInfo horizontal = iProbeInfo.horizontal(iProbeInfo
+                .defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+        horizontal.mcText(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
+                .withStyle(style -> style.withColor(paintingColor)));
     }
 }

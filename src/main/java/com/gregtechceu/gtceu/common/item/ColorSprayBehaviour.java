@@ -171,17 +171,18 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var level = context.getLevel();
         var pos = context.getClickedPos();
 
-        if (player != null) {
-            int maxBlocksToRecolor = player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1;
-
-            var first = level.getBlockEntity(pos);
-            if (first == null || !handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
-                handleBlocks(pos, maxBlocksToRecolor, context);
-            }
-            GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
-            return InteractionResult.SUCCESS;
+        if (player == null) {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
+
+        int maxBlocksToRecolor = player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1;
+
+        var first = level.getBlockEntity(pos);
+        if (first == null || !handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
+            handleBlocks(pos, maxBlocksToRecolor, context);
+        }
+        GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
+        return InteractionResult.SUCCESS;
     }
 
     private static boolean paintPaintable(IPaintable paintable, DyeColor color) {
