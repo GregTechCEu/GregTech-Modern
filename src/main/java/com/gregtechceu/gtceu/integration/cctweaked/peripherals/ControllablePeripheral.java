@@ -18,10 +18,8 @@ public class ControllablePeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult setWorkingEnabled(IControllable controllable, boolean enabled) {
-        boolean wasEnabled = controllable.isWorkingEnabled();
+    public static void setWorkingEnabled(IControllable controllable, boolean enabled) {
         controllable.setWorkingEnabled(enabled);
-        return MethodResult.of(wasEnabled);
     }
 
     @LuaFunction
