@@ -68,8 +68,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private static final ImmutableMap<DyeColor, Block> SHULKER_BOX_MAP;
     private static final ImmutableMap<DyeColor, Block> CANDLE_MAP;
 
-    private static ResourceLocation getId(String modid, DyeColor color, String postfix) {
-        return new ResourceLocation(modid, "%s_%s".formatted(color.getSerializedName(), postfix));
+    @SuppressWarnings("deprecation")
+    private static Block getBlock(DyeColor color, String postfix) {
+        ResourceLocation id = new ResourceLocation("minecraft", color.getSerializedName() + "_" + postfix);
+        return BuiltInRegistries.BLOCK.get(id);
     }
 
     static {
@@ -84,36 +86,15 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         ImmutableMap.Builder<DyeColor, Block> candleBuilder = ImmutableMap.builder();
 
         for (DyeColor color : DyeColor.values()) {
-            // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
-            if (color.ordinal() > 15 && GTCEu.isModLoaded(GTValues.MODID_TINTED)) {
-                glassBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
-                glassPaneBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass_pane")));
-                terracottaBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "terracotta")));
-                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "wool")));
-                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "carpet")));
-                concreteBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete")));
-                concretePowderBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete_powder")));
-                shulkerBoxBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
-                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
-            } else {
-                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass")));
-                glassPaneBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
-                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "terracotta")));
-                woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "wool")));
-                carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "carpet")));
-                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete")));
-                concretePowderBuilder.put(color,
-                        BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "shulker_box")));
-                candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "candle")));
-            }
+            glassBuilder.put(color, getBlock(color, "stained_glass"));
+            glassPaneBuilder.put(color, getBlock(color, "stained_glass_pane"));
+            terracottaBuilder.put(color, getBlock(color, "terracotta"));
+            woolBuilder.put(color, getBlock(color, "wool"));
+            carpetBuilder.put(color, getBlock(color, "carpet"));
+            concreteBuilder.put(color, getBlock(color, "concrete"));
+            concretePowderBuilder.put(color, getBlock(color, "concrete_powder"));
+            shulkerBoxBuilder.put(color, getBlock(color, "shulker_box"));
+            candleBuilder.put(color, getBlock(color, "candle"));
         }
         GLASS_MAP = glassBuilder.build();
         GLASS_PANE_MAP = glassPaneBuilder.build();
@@ -124,7 +105,6 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         CONCRETE_POWDER_MAP = concretePowderBuilder.build();
         SHULKER_BOX_MAP = shulkerBoxBuilder.build();
         CANDLE_MAP = candleBuilder.build();
-
     }
 
     private final Supplier<ItemStack> empty;
