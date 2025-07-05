@@ -8,13 +8,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
-import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
@@ -58,7 +55,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : tiers) {
             MultiblockMachineBuilder builder = this.builders[tier];
@@ -69,7 +66,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public MultiblockMachineDefinition[] register() {
+    public MultiblockMachineDefinition @NotNull [] register() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +

@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -171,7 +172,7 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     @Override
-    public String packId() {
+    public @NotNull String packId() {
         return this.name;
     }
 

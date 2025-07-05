@@ -68,7 +68,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : this.tiers) {
             MachineBuilder<?> builder = this.builders[tier];
@@ -79,7 +79,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @Override
-    public MachineDefinition[] register() {
+    public MachineDefinition @NotNull [] register() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +

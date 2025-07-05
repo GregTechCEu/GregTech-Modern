@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMachineBuilder tieredBuilder;
 
     public KJSWrappingMachineBuilder(ResourceLocation id, KJSTieredMachineBuilder tieredBuilder) {
@@ -62,13 +62,13 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public MachineDefinition register() {
+    public @NotNull MachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {

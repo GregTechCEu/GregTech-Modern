@@ -15,13 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
     public KJSWrappingMultiblockBuilder(ResourceLocation id, KJSTieredMultiblockBuilder tieredBuilder) {
@@ -45,13 +46,13 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public MultiblockMachineDefinition register() {
+    public @NotNull MultiblockMachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {
