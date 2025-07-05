@@ -176,6 +176,10 @@ public class GTDynamicDataPack implements PackResources {
         return this.name;
     }
 
+    public boolean isBuiltin() {
+        return true;
+    }
+
     @Override
     public void close() {
         // NOOP

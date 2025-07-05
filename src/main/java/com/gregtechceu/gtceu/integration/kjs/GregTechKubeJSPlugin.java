@@ -231,6 +231,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerClasses(type, filter);
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
+        filter.deny("com.gregtechceu.gtceu.core");
+        filter.deny("com.gregtechceu.gtceu.common.network");
     }
 
     @Override

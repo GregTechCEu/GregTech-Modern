@@ -231,6 +231,10 @@ public class GTDynamicResourcePack implements PackResources {
         return this.name;
     }
 
+    public boolean isBuiltin() {
+        return true;
+    }
+
     @Override
     public void close() {
         // NOOP
