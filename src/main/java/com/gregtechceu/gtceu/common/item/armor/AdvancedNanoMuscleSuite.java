@@ -108,21 +108,22 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                     NonNullList<ItemStack> itemList = inventoryMap.getFirst();
                     IntList slots = inventoryMap.getSecond();
 
-                    // Remove invalid or self-referencing electric items
-                IntList safeSlots = new IntArrayList(slots);  // copy to mutable list
+                    // Ensure slots list is mutable
+                    if (!(slots instanceof IntArrayList)) {
+                        slots = new IntArrayList(slots);
+                        inventoryIndexMap.set(i, Pair.of(itemList, slots));
+                    }
 
-                safeSlots.removeIf(slot -> {
-                    ItemStack stack = itemList.get(slot);
-                    IElectricItem chargable = GTCapabilityHelper.getElectricItem(stack);
-                    return chargable == null || chargable == cont;      
-                });
-
-                inventoryIndexMap.set(i, Pair.of(itemList, safeSlots)); // replace with mutable, updated list
+                    slots.removeIf(slot -> {
+                        ItemStack stack = itemList.get(slot);
+                        IElectricItem chargable = GTCapabilityHelper.getElectricItem(stack);
+                        return chargable == null || chargable == cont;
+                    });
 
 
-                  // Now do the charging
-                    for (int j = 0; j < safeSlots.size(); j++) {
-                        int slot = safeSlots.getInt(j);
+                    // Now do the charging
+                    for (int j = 0; j < slots.size(); j++) {
+                        int slot = slots.getInt(j);
                         IElectricItem chargable = GTCapabilityHelper.getElectricItem(itemList.get(slot));
                         long attemptedChargeAmount = chargable.getTransferLimit() * 10;
 
@@ -136,7 +137,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                             }
 
                             if (chargable.getCharge() == chargable.getMaxCharge()) {
-                                safeSlots.removeInt(j);
+                                slots.removeInt(j);
                                 j--; // Decrement index to account for removed element
                             }
 
@@ -144,7 +145,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                         }
                     }
 
-                    if (safeSlots.isEmpty()) inventoryIndexMap.remove(inventoryMap);
+                    if (slots.isEmpty()) inventoryIndexMap.remove(inventoryMap);
                 }
 
             }
