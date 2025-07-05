@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -54,6 +55,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -326,7 +328,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
         event.add("GTOres", GTOres.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
-        // MaterialColor stuff, for TagPrefix
+        // Cape related
+        event.add("GTCapes", GTCapes.class);
+        event.add("CapeRegistry", CapeRegistry.class);
     }
 
     @Override
