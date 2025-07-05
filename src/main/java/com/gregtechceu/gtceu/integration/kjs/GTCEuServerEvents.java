@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.kjs;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
-
 import com.gregtechceu.gtceu.integration.kjs.events.RegisterCapesEventJS;
+
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 
