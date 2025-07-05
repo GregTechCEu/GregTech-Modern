@@ -88,7 +88,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 "See GTMachines for examples");
         MachineDefinition[] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
-            String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
+            String tierName = VN[tier].toLowerCase(Locale.ROOT);
             MachineBuilder<?> builder = GTRegistration.REGISTRATE.machine(
                     String.format("%s_%s", tierName, this.id.getPath()),
                     holder -> machine.create(holder, tier, tankScalingFunction));
