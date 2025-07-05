@@ -6,9 +6,12 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -46,6 +49,16 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     public KJSWrappingMachineBuilder addDefaultTooltips(boolean addDefaultTooltips) {
         tieredBuilder.addDefaultTooltips(addDefaultTooltips);
         return this;
+    }
+
+    @Override
+    public void generateDataJsons(@NotNull DataJsonGenerator generator) {
+        tieredBuilder.generateDataJsons(generator);
+    }
+
+    @Override
+    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+        tieredBuilder.generateAssetJsons(generator);
     }
 
     @Override

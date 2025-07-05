@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -57,6 +58,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -75,6 +77,7 @@ import java.util.function.*;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -87,14 +90,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
 
-    @Setter // non-final for KJS
-    protected Function<ResourceLocation, DEFINITION> definition;
-    @Setter // non-final for KJS
-    protected Function<IMachineBlockEntity, MetaMachine> machine;
+    protected final Function<ResourceLocation, DEFINITION> definition;
+    protected final Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
+    @Getter
     @Setter
     private MachineBuilder.ModelInitializer model = null;
     @Nullable
+    @Getter
     @Setter
     private NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
     @Getter
@@ -166,7 +169,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean regressWhenWaiting = true;
 
-    @Nullable
     @Setter
     private boolean allowCoverOnFront = false;
     @Setter
@@ -412,6 +414,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     @Override
+    public void generateAssetJsons(AssetJsonGenerator generator) {
+        super.generateAssetJsons(generator);
+        KJSCallWrapper.generateAssetJsons(generator, this, this.value);
+    }
+
+    @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         if (langValue() != null) {
@@ -592,4 +600,23 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         }
     }
     // spotless:on
+
+    protected static final class KJSCallWrapper {
+
+        public static <D extends MachineDefinition> void generateAssetJsons(AssetJsonGenerator generator,
+                                                                            MachineBuilder<D> builder, D definition) {
+            if (builder.model() == null && builder.blockModel() == null) return;
+
+            final ResourceLocation id = definition.getId();
+            // Fake a data provider for the GT model builders
+            var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
+            if (builder.blockModel() != null) {
+                builder.blockModel().accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+            } else {
+                GTMachineModels.createMachineModel(builder.model()).accept(context, RUNTIME_BLOCKSTATE_PROVIDER);
+            }
+
+            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
+        }
+    }
 }

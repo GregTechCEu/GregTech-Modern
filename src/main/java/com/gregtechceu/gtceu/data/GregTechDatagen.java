@@ -13,8 +13,7 @@ public class GregTechDatagen {
 
     // we only register this so the class gets loaded. the key gets overwritten in #initPre.
     private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.register("ex_blockstate",
-            (registrate, event, existing) -> new GTBlockstateProvider(registrate,
-                    event.getGenerator().getPackOutput(), event.getExistingFileHelper(), existing));
+            GTBlockstateProvider::new);
 
     public static void initPre() {
         // replace some default providers with ours

@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ExistingFileHelper.ResourceType;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -39,14 +40,15 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
     public static final ResourceType TEXTURE = new ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
     public static final ResourceType MODEL = new ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
 
-    private final AbstractRegistrate<?> parent;
-
-    public GTBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput, ExistingFileHelper exFileHelper,
+    public GTBlockstateProvider(AbstractRegistrate<?> parent, GatherDataEvent event,
                                 Map<ProviderType<?>, RegistrateProvider> existing) {
-        super(parent, packOutput, exFileHelper);
-        this.parent = parent;
+        this(parent, event.getGenerator().getPackOutput(), event.getExistingFileHelper());
         // replace the default blockstate provider with this one
         existing.put(ProviderType.BLOCKSTATE, this);
+    }
+
+    public GTBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput, ExistingFileHelper exFileHelper) {
+        super(parent, packOutput, exFileHelper);
     }
 
     private static GTBlockstateProvider CURRENT_PROVIDER = null;

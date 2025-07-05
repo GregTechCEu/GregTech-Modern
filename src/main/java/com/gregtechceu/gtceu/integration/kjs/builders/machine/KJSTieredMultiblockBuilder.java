@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
@@ -11,18 +8,27 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
+import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
+
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition[]> {
+
+    private final MultiblockMachineBuilder[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
     public volatile int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -41,12 +47,23 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
+    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+        super.generateAssetJsons(generator);
+        for (int tier : this.tiers) {
+            MultiblockMachineBuilder builder = this.builders[tier];
+            if (builder != null) {
+                builder.generateAssetJsons(generator);
+            }
+        }
+    }
+
+    @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : tiers) {
-            MachineDefinition def = value[tier];
-            if (def.getLangValue() != null) {
-                lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
+            MultiblockMachineBuilder builder = this.builders[tier];
+            if (builder != null) {
+                builder.generateLang(lang);
             }
         }
     }
@@ -69,6 +86,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
             builder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
+            this.builders[tier] = builder;
             definitions[tier] = builder.register();
         }
         return value = definitions;
