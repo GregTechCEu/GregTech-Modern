@@ -46,24 +46,22 @@ public class IOCoverRenderer implements ICoverRenderer {
                            @Nullable ResourceLocation invertedOverlay,
                            @Nullable ResourceLocation emissiveOverlay,
                            @Nullable ResourceLocation invertedEmissiveOverlay) {
-        if (GTCEu.isClientSide()) {
-            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
-                var atlas = event.getAtlas();
+        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+            var atlas = event.getAtlas();
 
-                if (overlay != null) {
-                    overlaySprite = atlas.getSprite(overlay);
-                }
-                if (invertedOverlay != null) {
-                    invertedOverlaySprite = atlas.getSprite(invertedOverlay);
-                }
-                if (emissiveOverlay != null) {
-                    emissiveOverlaySprite = atlas.getSprite(emissiveOverlay);
-                }
-                if (invertedEmissiveOverlay != null) {
-                    invertedEmissiveOverlaySprite = atlas.getSprite(invertedEmissiveOverlay);
-                }
-            });
-        }
+            if (overlay != null) {
+                overlaySprite = atlas.getSprite(overlay);
+            }
+            if (invertedOverlay != null) {
+                invertedOverlaySprite = atlas.getSprite(invertedOverlay);
+            }
+            if (emissiveOverlay != null) {
+                emissiveOverlaySprite = atlas.getSprite(emissiveOverlay);
+            }
+            if (invertedEmissiveOverlay != null) {
+                invertedEmissiveOverlaySprite = atlas.getSprite(invertedEmissiveOverlay);
+            }
+        });
     }
 
     @Override

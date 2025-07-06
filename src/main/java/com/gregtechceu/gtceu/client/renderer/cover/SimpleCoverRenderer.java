@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
@@ -35,21 +34,19 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     }
 
     public SimpleCoverRenderer(ResourceLocation texture, ResourceLocation emissiveTexture) {
-        if (GTCEu.isClientSide()) {
-            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
-                var atlas = event.getAtlas();
+        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+            var atlas = event.getAtlas();
 
-                sprite = atlas.getSprite(texture);
-                if (emissiveTexture != null) {
-                    emissiveSprite = atlas.getSprite(emissiveTexture);
-                } else {
-                    ResourceLocation emissiveTex = texture.withSuffix("_emissive");
-                    if (atlas.getTextureLocations().contains(emissiveTex)) {
-                        emissiveSprite = atlas.getSprite(emissiveTex);
-                    }
+            sprite = atlas.getSprite(texture);
+            if (emissiveTexture != null) {
+                emissiveSprite = atlas.getSprite(emissiveTexture);
+            } else {
+                ResourceLocation emissiveTex = texture.withSuffix("_emissive");
+                if (atlas.getTextureLocations().contains(emissiveTex)) {
+                    emissiveSprite = atlas.getSprite(emissiveTex);
                 }
-            });
-        }
+            }
+        });
     }
 
     @OnlyIn(Dist.CLIENT)

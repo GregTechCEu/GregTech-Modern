@@ -62,7 +62,9 @@ public interface ICoverableRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().get().get()
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                cover.getCoverRenderer().get()
                         .renderCover(quads, side, rand, cover, pos, level, modelData, renderType);
             }
         }

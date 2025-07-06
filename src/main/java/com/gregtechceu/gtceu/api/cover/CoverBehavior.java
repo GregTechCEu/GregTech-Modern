@@ -184,7 +184,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return true;
     }
 
-    public Supplier<Supplier<ICoverRenderer>> getCoverRenderer() {
+    public @Nullable Supplier<ICoverRenderer> getCoverRenderer() {
         return coverDefinition.getCoverRenderer();
     }
 

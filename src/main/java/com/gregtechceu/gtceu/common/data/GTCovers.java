@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -106,21 +107,26 @@ public class GTCovers {
     // *********** UTIL METHODS ***********//
     ///////////////////////////////////////////////
 
-    public static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+    private static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
         return register(id, behaviorCreator, () -> () -> new SimpleCoverRenderer(GTCEu.id("block/cover/" + id)));
     }
 
-    public static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+    private static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+                                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
+        return register(GTCEu.id(id), behaviorCreator, coverRenderer);
+    }
+
+    public static CoverDefinition register(ResourceLocation id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
-        var definition = new CoverDefinition(GTCEu.id(id), behaviorCreator, coverRenderer);
-        GTRegistries.COVERS.register(GTCEu.id(id), definition);
+        var definition = new CoverDefinition(id, behaviorCreator, coverRenderer);
+        GTRegistries.COVERS.register(definition.getId(), definition);
         return definition;
     }
 
-    public static CoverDefinition[] registerTiered(String id,
-                                                   CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
-                                                   Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
-                                                   int... tiers) {
+    private static CoverDefinition[] registerTiered(String id,
+                                                    CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
+                                                    Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
+                                                    int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
             var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
@@ -128,9 +134,9 @@ public class GTCovers {
         }).toArray(CoverDefinition[]::new);
     }
 
-    public static CoverDefinition[] registerTiered(String id,
-                                                   CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
-                                                   int... tiers) {
+    private static CoverDefinition[] registerTiered(String id,
+                                                    CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
+                                                    int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
             var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
