@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -172,6 +173,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureFormed() {
         isFormed = true;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, true));
+        }
+
         this.parts.clear();
         Set<IMultiPart> set = getMultiblockState().getMatchContext().getOrCreate("parts", Collections::emptySet);
         for (IMultiPart part : set) {
@@ -192,6 +198,11 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onStructureInvalid() {
         isFormed = false;
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, false));
+        }
+
         for (IMultiPart part : parts) {
             part.removedFromController(this);
         }
@@ -242,9 +253,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         }
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
-                blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+                blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getPos(),
-                    blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
+                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();

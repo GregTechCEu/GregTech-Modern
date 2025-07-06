@@ -1,13 +1,18 @@
 package com.gregtechceu.gtceu.client.util;
 
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBufferHelper {
@@ -87,5 +92,97 @@ public class RenderBufferHelper {
             sinTheta = sinTheta1;
 
         }
+    }
+
+    public static void renderCube(VertexConsumer buffer, PoseStack.Pose pose,
+                                  int color, int combinedLight, TextureAtlasSprite sprite,
+                                  float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+        renderCube(buffer, pose, EnumSet.allOf(Direction.class),
+                color, combinedLight, sprite,
+                minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    public static void renderCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
+                                  int color, int combinedLight, TextureAtlasSprite sprite,
+                                  float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+        float uMin = sprite.getU0(), uMax = sprite.getU1(), vMin = sprite.getV0(), vMax = sprite.getV1();
+
+        if (sidesToRender.contains(Direction.UP))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.UP,
+                    minX, maxY, minZ, uMin, vMax,
+                    minX, maxY, maxZ, uMax, vMax,
+                    maxX, maxY, maxZ, uMax, vMin,
+                    maxX, maxY, minZ, uMin, vMin);
+
+        if (sidesToRender.contains(Direction.DOWN))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.DOWN,
+                    minX, minY, minZ, uMin, vMax,
+                    maxX, minY, minZ, uMax, vMax,
+                    maxX, minY, maxZ, uMax, vMin,
+                    minX, minY, maxZ, uMin, vMin);
+
+        if (sidesToRender.contains(Direction.NORTH))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.NORTH,
+                    minX, minY, minZ, uMin, vMax,
+                    minX, maxY, minZ, uMax, vMax,
+                    maxX, maxY, minZ, uMax, vMin,
+                    maxX, minY, minZ, uMin, vMin);
+
+        if (sidesToRender.contains(Direction.SOUTH))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.SOUTH,
+                    minX, minY, maxZ, uMin, vMax,
+                    maxX, minY, maxZ, uMax, vMax,
+                    maxX, maxY, maxZ, uMax, vMin,
+                    minX, maxY, maxZ, uMin, vMin);
+
+        if (sidesToRender.contains(Direction.WEST))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.WEST,
+                    minX, minY, minZ, uMin, vMax,
+                    minX, minY, maxZ, uMax, vMax,
+                    minX, maxY, maxZ, uMax, vMin,
+                    minX, maxY, minZ, uMin, vMin);
+
+        if (sidesToRender.contains(Direction.EAST))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.EAST,
+                    maxX, minY, minZ, uMin, vMax,
+                    maxX, maxY, minZ, uMax, vMax,
+                    maxX, maxY, maxZ, uMax, vMin,
+                    maxX, minY, maxZ, uMin, vMin);
+    }
+
+    public static void renderCubeFace(VertexConsumer buffer, PoseStack.Pose pose,
+                                      int color, int combinedLight, Direction normalDir,
+                                      float x1, float y1, float z1, float u1, float v1,
+                                      float x2, float y2, float z2, float u2, float v2,
+                                      float x3, float y3, float z3, float u3, float v3,
+                                      float x4, float y4, float z4, float u4, float v4) {
+        Vector3f normal = normalDir.step();
+
+        vertex(buffer, pose, x1, y1, z1, color, u1, v1, combinedLight, normal.x(), normal.y(), normal.z());
+        vertex(buffer, pose, x2, y2, z2, color, u2, v2, combinedLight, normal.x(), normal.y(), normal.z());
+        vertex(buffer, pose, x3, y3, z3, color, u3, v3, combinedLight, normal.x(), normal.y(), normal.z());
+        vertex(buffer, pose, x4, y4, z4, color, u4, v4, combinedLight, normal.x(), normal.y(), normal.z());
+    }
+
+    public static void vertex(VertexConsumer buffer, PoseStack.Pose pose,
+                              float x, float y, float z,
+                              int color, float texU, float texV, int lightmapUV,
+                              float normalX, float normalY, float normalZ) {
+        vertex(buffer, pose, x, y, z, color,
+                texU, texV, OverlayTexture.NO_OVERLAY, lightmapUV,
+                normalX, normalY, normalZ);
+    }
+
+    public static void vertex(VertexConsumer buffer, PoseStack.Pose pose,
+                              float x, float y, float z, int color,
+                              float texU, float texV, int overlayUV, int lightmapUV,
+                              float normalX, float normalY, float normalZ) {
+        buffer.vertex(pose.pose(), x, y, z);
+        buffer.color(color);
+        buffer.uv(texU, texV);
+        buffer.overlayCoords(overlayUV);
+        buffer.uv2(lightmapUV);
+        buffer.normal(pose.normal(), normalX, normalY, normalZ);
+        buffer.endVertex();
     }
 }

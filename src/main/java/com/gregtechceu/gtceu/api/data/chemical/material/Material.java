@@ -367,9 +367,9 @@ public class Material implements Comparable<Material> {
     }
 
     public int getLayerARGB(int layerIndex) {
-        // get 2nd digit as positive if emissive layer
+        // parse emissive layer value as -(layer + 101)
         if (layerIndex < -100) {
-            layerIndex = (Math.abs(layerIndex) % 100) / 10;
+            layerIndex = -layerIndex - 101;
         }
         if (layerIndex > materialInfo.colors.size() - 1 || layerIndex < 0) return -1;
         int layerColor = getMaterialARGB(layerIndex);

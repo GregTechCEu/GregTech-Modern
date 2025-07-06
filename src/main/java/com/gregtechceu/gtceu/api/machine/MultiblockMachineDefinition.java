@@ -57,12 +57,8 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private BiConsumer<IMultiController, List<Component>> additionalDisplay;
 
-    protected MultiblockMachineDefinition(ResourceLocation id) {
+    public MultiblockMachineDefinition(ResourceLocation id) {
         super(id);
-    }
-
-    public static MultiblockMachineDefinition createDefinition(ResourceLocation id) {
-        return new MultiblockMachineDefinition(id);
     }
 
     public List<MultiblockShapeInfo> getMatchingShapes() {

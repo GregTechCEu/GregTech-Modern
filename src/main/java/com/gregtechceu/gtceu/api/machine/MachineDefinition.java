@@ -2,17 +2,19 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -27,6 +30,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +44,8 @@ import java.util.function.*;
  * Representing basic information of a machine.
  */
 public class MachineDefinition implements Supplier<IMachineBlock> {
+
+    public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
     @Getter
     private final ResourceLocation id;
@@ -96,7 +103,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Getter
     @Setter
-    private IRenderer renderer;
+    private RotationState rotationState;
     @Setter
     private VoxelShape shape;
     @Getter
@@ -123,12 +130,19 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter
     private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 
-    protected MachineDefinition(ResourceLocation id) {
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private StateDefinition<MachineDefinition, MachineRenderState> stateDefinition;
+    @Accessors(fluent = true)
+    @Getter
+    private MachineRenderState defaultRenderState;
+
+    public MachineDefinition(ResourceLocation id) {
         this.id = id;
     }
 
-    public static MachineDefinition createDefinition(ResourceLocation id) {
-        return new MachineDefinition(id);
+    public final void registerDefaultState(MachineRenderState state) {
+        this.defaultRenderState = state;
     }
 
     public Block getBlock() {
@@ -171,7 +185,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     @Override
     public String toString() {
-        return "[Definition: %s]".formatted(id);
+        return id.toString();
     }
 
     public String getDescriptionId() {

@@ -78,6 +78,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     private static final double MOTION_MULTIPLIER = 0.04;
     private static final int BASE_EU_CONSUMPTION = 6;
 
+    @Nullable
     @Getter
     @Persisted
     @DescSynced
@@ -220,6 +221,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public void updateCollectionSubscription() {
         if (drainEnergy(true) && isWorkingEnabled) {
             collectionSubs = subscribeServerTick(collectionSubs, this::update);
+            setActive(true);
             active = true;
         } else if (collectionSubs != null) {
             collectionSubs.unsubscribe();
@@ -228,13 +230,17 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         }
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+        setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, active));
+    }
+
     public void update() {
         if (drainEnergy(false)) {
             if (aabb == null || rangeDirty) {
                 rangeDirty = false;
-                BlockPos pos1, pos2;
-                pos1 = getPos().offset(-range, 0, -range);
-                pos2 = getPos().offset(range, 2, range);
+                BlockPos pos1 = getPos().offset(-range, 0, -range);
+                BlockPos pos2 = getPos().offset(range, 2, range);
                 this.aabb = AABB.of(BoundingBox.fromCorners(pos1, pos2));
             }
             moveItemsInRange();
@@ -355,8 +361,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
+        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
             updateBatterySubscription();
+        }
     }
 
     @Override
@@ -498,8 +505,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {

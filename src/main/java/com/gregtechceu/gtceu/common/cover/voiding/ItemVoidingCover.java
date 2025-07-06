@@ -29,6 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -125,8 +126,8 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         var superTips = super.sideTips(player, pos, state, toolTypes, side);
         if (superTips != null) return superTips;
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {

@@ -43,6 +43,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -294,7 +295,7 @@ public class GTCommands {
         for (ResourceLocation id : registry.keys()) {
             T entry = registry.get(id);
             JsonElement json = codec.encodeStart(ops, entry).getOrThrow(false, GTCEu.LOGGER::error);
-            GTDynamicDataPack.writeJson(id, folder, parent, json);
+            GTDynamicDataPack.writeJson(id, folder, parent, json.toString().getBytes(StandardCharsets.UTF_8));
             dumpedCount++;
         }
         final int result = dumpedCount;

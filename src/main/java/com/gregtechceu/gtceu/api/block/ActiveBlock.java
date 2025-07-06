@@ -7,18 +7,17 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ActiveBlock extends AppearanceBlock {
-
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public ActiveBlock(Properties properties) {
         super(properties);

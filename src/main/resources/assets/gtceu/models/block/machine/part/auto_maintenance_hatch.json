@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/overlay/2_layer/front_emissive",
+    "textures": {
+        "overlay": "gtceu:block/overlay/machine/overlay_maintenance_full_auto",
+        "overlay_emissive": "gtceu:block/overlay/machine/overlay_maintenance_full_auto_emissive"
+    }
+}

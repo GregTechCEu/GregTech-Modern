@@ -14,9 +14,11 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
@@ -29,6 +31,44 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DiodePartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+
+    // spotless:off
+    public enum AmpMode implements StringRepresentable {
+        MODE_1A("1a", 1),
+        MODE_2A("2a", 2),
+        MODE_4A("4a", 4),
+        MODE_8A("8a", 8),
+        MODE_16A("16a", 16);
+
+        public static final AmpMode[] VALUES = values();
+
+        @Getter
+        private final String serializedName;
+        @Getter
+        private final int ampValue;
+
+        AmpMode(String serializedName, int ampValue) {
+            this.serializedName = serializedName;
+            this.ampValue = ampValue;
+        }
+
+        public AmpMode cycle() {
+            return VALUES[(this.ordinal() + 1) % VALUES.length];
+        }
+
+        public static AmpMode getByValue(int amps) {
+            return switch (amps) {
+                case 2 -> MODE_2A;
+                case 4 -> MODE_4A;
+                case 8 -> MODE_8A;
+                case 16 -> MODE_16A;
+                default -> MODE_1A;
+            };
+        }
+    }
+
+    public static final EnumProperty<DiodePartMachine.AmpMode> AMP_MODE_PROPERTY = EnumProperty.create("amp_mode", AmpMode.class);
+    // spotless:on
 
     public static int MAX_AMPS = 16;
 
@@ -83,7 +123,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     @Override
     public int tintColor(int index) {
-        if (index == 2) {
+        if (index == 2 || index == 3) {
             return GTValues.VC[getTier()];
         }
         return super.tintColor(index);
@@ -99,10 +139,13 @@ public class DiodePartMachine extends TieredIOPartMachine {
                                                   BlockHitResult hitResult) {
         cycleAmpMode();
         if (getLevel().isClientSide) {
+            setRenderState(getRenderState()
+                    .setValue(AMP_MODE_PROPERTY, AmpMode.getByValue(this.amps)));
+
             scheduleRenderUpdate();
-            return InteractionResult.CONSUME;
+            playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
+            return InteractionResult.SUCCESS;
         }
-        playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
         return InteractionResult.CONSUME;
     }
 

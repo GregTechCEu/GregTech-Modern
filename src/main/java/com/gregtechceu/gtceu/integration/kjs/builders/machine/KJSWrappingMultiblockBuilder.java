@@ -15,13 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
     public KJSWrappingMultiblockBuilder(ResourceLocation id, KJSTieredMultiblockBuilder tieredBuilder) {
@@ -45,13 +46,13 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public MultiblockMachineDefinition register() {
+    public @NotNull MultiblockMachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {
@@ -64,19 +65,19 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id) {
-        return MultiblockMachineBuilder.createMulti(GTRegistration.REGISTRATE, id.getPath(),
+        return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
                 WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineBlockEntity::new);
     }
 
     public static MultiblockMachineBuilder createKJSMulti(ResourceLocation id,
                                                           KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        return MultiblockMachineBuilder.createMulti(GTRegistration.REGISTRATE, id.getPath(),
+        return new MultiblockMachineBuilder(GTRegistration.REGISTRATE, id.getPath(),
                 machine::create,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::createBlockEntity);
+                MetaMachineBlockEntity::new);
     }
 }

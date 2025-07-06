@@ -117,6 +117,10 @@ public class CommonProxy {
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
+
+        // Initialize the model generator before any content is loaded so machine models can use the generated data
+        GregTechDatagen.initPre();
+
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -149,7 +153,7 @@ public class CommonProxy {
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
 
-        GregTechDatagen.init();
+        GregTechDatagen.initPost();
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getRegistries().forEach(registry -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.

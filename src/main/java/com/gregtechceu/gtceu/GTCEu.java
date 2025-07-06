@@ -19,9 +19,8 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
 import me.shedaniel.rei.api.client.REIRuntime;
-import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 
@@ -31,7 +30,7 @@ public class GTCEu {
     public static final String MOD_ID = "gtceu";
     private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
-    public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
+    public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public GTCEu() {
         GTCEu.init();
@@ -44,7 +43,7 @@ public class GTCEu {
     }
 
     public static ResourceLocation id(String path) {
-        if (Strings.isBlank(path)) {
+        if (path.isBlank()) {
             return TEMPLATE_LOCATION;
         }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
@@ -20,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -60,6 +60,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
@@ -69,10 +70,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Persisted
     private final NotifiableItemStackHandler itemStackHandler;
     @Getter
-    @Setter
     @Persisted
     @DescSynced
-    @RequireRerender
     private boolean isTaped;
     @Getter
     @Setter
@@ -88,8 +87,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId, boolean isConfigurable) {
-        super(metaTileEntityId, isConfigurable ? 3 : 1);
+    public MaintenanceHatchPartMachine(IMachineBlockEntity holder, boolean isConfigurable) {
+        super(holder, isConfigurable ? GTValues.HV : GTValues.LV);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = createInventory();
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
@@ -296,6 +295,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public boolean isFullAuto() {
         return false;
+    }
+
+    @Override
+    public void setTaped(boolean isTaped) {
+        if (this.isTaped != isTaped) {
+            this.isTaped = isTaped;
+            setRenderState(getRenderState().setValue(MAINTENANCE_TAPED_PROPERTY, isTaped));
+        }
     }
 
     @Override

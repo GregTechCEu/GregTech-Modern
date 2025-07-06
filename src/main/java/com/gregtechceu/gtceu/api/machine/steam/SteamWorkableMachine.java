@@ -64,7 +64,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
     public int activeRecipeType;
     @Persisted
     @DescSynced
-    @Getter
     @RequireRerender
     protected Direction outputFacing;
     @Persisted
@@ -131,22 +130,41 @@ public abstract class SteamWorkableMachine extends SteamMachine
         recipeLogic.inValid();
     }
 
+    public boolean hasOutputFacing() {
+        return true;
+    }
+
     /**
      * @param outputFacing the facing to set
      */
     public void setOutputFacing(@NotNull Direction outputFacing) {
-        if (!hasFrontFacing() || this.outputFacing != getFrontFacing()) {
+        if (hasOutputFacing() && (!hasFrontFacing() || this.outputFacing != getFrontFacing())) {
             this.outputFacing = outputFacing;
         }
+    }
+
+    public @Nullable Direction getOutputFacing() {
+        if (hasOutputFacing()) {
+            return outputFacing;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isFacingValid(Direction facing) {
+        if (facing == getOutputFacing()) {
+            return false;
+        }
+        return super.isFacingValid(facing);
     }
 
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                               BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown() && !isRemote()) {
+        if (!playerIn.isShiftKeyDown()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
             setOutputFacing(gridSide);
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
@@ -177,8 +195,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {

@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.google.gson.JsonObject;
 
@@ -50,37 +51,47 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     @Override
     public boolean matches(CraftingContainer container, Level level) {
-        int plateSize = 0;
+        int platesCount = 0;
         boolean foundBlockItem = false;
         for (int i = 0; i < container.getContainerSize(); i++) {
             var item = container.getItem(i);
             if (item.isEmpty()) continue;
             if (FacadeItemBehaviour.isValidFacade(item)) {
+                if (foundBlockItem) {
+                    return false;
+                }
                 foundBlockItem = true;
-                continue;
+            } else if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
+                if (platesCount > 3) {
+                    return false;
+                }
+                platesCount++;
+            } else {
+                return false;
             }
-            if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
-                plateSize++;
-                continue;
-            }
-            return false;
         }
-        return foundBlockItem && plateSize == 3;
+        return foundBlockItem && platesCount == 3;
     }
 
     @Override
     public ItemStack assemble(CraftingContainer container, RegistryAccess registryManager) {
         ItemStack itemStack = GTItems.COVER_FACADE.asStack();
+        BlockState facadeState = null;
+
         for (int i = 0; i < container.getContainerSize(); i++) {
             var item = container.getItem(i);
             if (item.isEmpty()) continue;
             if (FacadeItemBehaviour.isValidFacade(item)) {
-                FacadeItemBehaviour.setFacadeStack(itemStack, item);
-                itemStack.setCount(6);
+                facadeState = FacadeItemBehaviour.getFacadeState(item);
                 break;
             }
         }
-        return itemStack;
+        if (facadeState != null) {
+            FacadeItemBehaviour.setFacadeState(itemStack, facadeState);
+            itemStack.setCount(6);
+            return itemStack;
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -94,13 +105,13 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        return false;
+        return width * height >= 4;
     }
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryManager) {
         var result = GTItems.COVER_FACADE.asStack();
-        FacadeItemBehaviour.setFacadeStack(GTItems.COVER_FACADE.asStack(), new ItemStack(Blocks.STONE));
+        FacadeItemBehaviour.setFacadeState(result, Blocks.STONE.defaultBlockState());
         return result;
     }
 

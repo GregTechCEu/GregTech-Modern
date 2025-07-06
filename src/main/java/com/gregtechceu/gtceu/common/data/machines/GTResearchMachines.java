@@ -2,17 +2,18 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -25,36 +26,36 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
-@net.minecraft.MethodsReturnNonnullByDefault
-@javax.annotation.ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class GTResearchMachines {
 
     public static final MultiblockMachineDefinition RESEARCH_STATION = REGISTRATE
@@ -62,7 +63,7 @@ public class GTResearchMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
-            .tooltipBuilder((s, l) -> l.addAll(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip")))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
@@ -105,7 +106,7 @@ public class GTResearchMachines {
                             COMPUTER_CASING.getDefaultState())
                     .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
-            .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/advanced_computer_casing"),
                     GTCEu.id("block/multiblock/research_station"))
             .register();
 
@@ -114,8 +115,11 @@ public class GTResearchMachines {
             .tier(ZPM)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
-            .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"),
-                    GTCEu.id("block/machine/part/object_holder_active")))
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
+                    .andThen((ctx, prov, model) -> {
+                        model.addReplaceableTextures("bottom", "top", "side");
+                    }))
             .register();
 
     public static final MachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
@@ -145,7 +149,7 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2, 1))
                             .or(autoAbilities(true, false, false)))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/hpca/high_power_casing"),
                     GTCEu.id("block/multiblock/data_bank"))
             .register();
 
@@ -184,7 +188,7 @@ public class GTResearchMachines {
                     .where('M', GTMachines.MAINTENANCE_HATCH, Direction.NORTH)
                     .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
                     .build())
-            .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
 
@@ -196,8 +200,7 @@ public class GTResearchMachines {
             // good API addition for packdevs
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltipBuilder((s, l) -> l
-                    .addAll(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip")))
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AA", "CC", "CC", "CC", "AA")
                     .aisle("VA", "XV", "XV", "XV", "VA")
@@ -286,7 +289,7 @@ public class GTResearchMachines {
 
                 return shapeInfo;
             })
-            .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/hpca"))
             .register();
 
@@ -331,7 +334,7 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 9),
                     Component.translatable("gtceu.part_sharing.disabled"))
-            .overlayTieredHullRenderer("data_access_hatch")
+            .overlayTieredHullModel("data_access_hatch")
             .register();
 
     public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE
@@ -343,7 +346,7 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
                     Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 16),
                     Component.translatable("gtceu.part_sharing.disabled"))
-            .overlayTieredHullRenderer("data_access_hatch")
+            .overlayTieredHullModel("data_access_hatch")
             .register();
 
     public static final MachineDefinition CREATIVE_DATA_ACCESS_HATCH = REGISTRATE
@@ -357,7 +360,7 @@ public class GTResearchMachines {
                 CREATIVE_TOOLTIPS.accept(s, list);
                 list.add(Component.translatable("gtceu.part_sharing.enabled"));
             })
-            .overlayTieredHullRenderer("data_access_hatch_creative")
+            .overlayTieredHullModel("data_access_hatch_creative")
             .register();
 
     //////////////////////////////////////
@@ -370,8 +373,9 @@ public class GTResearchMachines {
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
-            HPCAEmptyPartMachine::new, "empty", null, null, false)
-            .tooltips(Component.translatable("gtceu.part_sharing.disabled")).register();
+            HPCAEmptyPartMachine::new, "empty", false)
+            .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
+            .register();
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_computation_component", "HPCA Computation Component",
             holder -> new HPCAComputationPartMachine(holder, false), "computation", false)
@@ -396,7 +400,7 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
-            holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", null, null, false)
+            holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", false)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1),
                     Component.translatable("gtceu.part_sharing.disabled"))
@@ -428,7 +432,7 @@ public class GTResearchMachines {
                 .tier(tier)
                 .rotationState(RotationState.ALL)
                 .abilities(abilities)
-                .overlayTieredHullRenderer(model);
+                .overlayTieredHullModel(model);
     }
 
     private static MachineBuilder<MachineDefinition> registerHPCAPart(String name, String displayName,
@@ -438,35 +442,11 @@ public class GTResearchMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartRenderer(
-                        isAdvanced,
+                .modelProperty(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY, false)
+                .modelProperty(IWorkable.ACTIVE_PROPERTY, false)
+                .model(createHPCAPartModel(isAdvanced,
                         GTCEu.id("block/overlay/machine/hpca/" + texture),
-                        GTCEu.id("block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))));
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static MachineBuilder<MachineDefinition> registerHPCAPart(String name,
-                                                                      String displayName,
-                                                                      Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                      String texture,
-                                                                      @Nullable String activeTexture,
-                                                                      @Nullable String damagedTexture,
-                                                                      boolean isAdvanced) {
-        return REGISTRATE.machine(name, constructor)
-                .langValue(displayName)
-                .rotationState(RotationState.ALL)
-                .abilities(PartAbility.HPCA_COMPONENT)
-                .renderer(() -> new HPCAPartRenderer(
-                        isAdvanced,
-                        GTCEu.id("block/overlay/machine/hpca/" + texture),
-                        activeTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + activeTexture),
-                        activeTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + activeTexture + "_emissive"),
-                        damagedTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + damagedTexture),
-                        damagedTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_active"),
-                        damagedTexture == null ? null :
-                                GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_emissive")));
+                        GTCEu.id("block/overlay/machine/hpca/damaged" + (isAdvanced ? "_advanced" : ""))));
     }
 
     public static void init() {}

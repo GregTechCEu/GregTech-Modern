@@ -32,6 +32,7 @@ public class StainedColorProvider implements IProbeInfoProvider {
         }
 
         int paintingColor = paintable.getPaintingColor();
+        if (paintingColor == -1) return;
 
         IProbeInfo horizontal = iProbeInfo.horizontal(iProbeInfo
                 .defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));

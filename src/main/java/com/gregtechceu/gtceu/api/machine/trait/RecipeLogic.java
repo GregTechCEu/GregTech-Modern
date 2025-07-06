@@ -27,7 +27,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,13 +44,21 @@ import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
-    public enum Status {
+    public enum Status implements StringRepresentable {
+
         IDLE,
         WORKING,
         WAITING,
-        SUSPEND
+        SUSPEND;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
 
+    public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = EnumProperty.create("recipe_logic_status",
+            RecipeLogic.Status.class);
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
 
     public final IRecipeLogicMachine machine;
@@ -115,21 +125,15 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         this.machine = machine;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unused")
     protected void onStatusSynced(Status newValue, Status oldValue) {
-        getMachine().scheduleRenderUpdate();
+        scheduleRenderUpdate();
         updateSound();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings("unused")
     protected void onActiveSynced(boolean newActive, boolean oldActive) {
-        getMachine().scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        getMachine().scheduleRenderUpdate();
+        scheduleRenderUpdate();
     }
 
     /**
@@ -355,6 +359,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
+            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;

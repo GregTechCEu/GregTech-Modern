@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/uv_macerator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/uv_macerator"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/uv_macerator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/uv_macerator",
+      "y": 270
+    }
+  }
+}

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
@@ -39,6 +41,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,8 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     // Hard-coded blacklist for blockentities
     private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
+
+    public static final BooleanProperty RANDOM_TICK_PROPERTY = BooleanProperty.create("random_tick_mode");
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -102,10 +107,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
+            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, false));
         }
     }
 
@@ -210,12 +217,13 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
+        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, isWorkingEnabled));
         updateSubscription();
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
@@ -241,6 +249,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
+            setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, isRandomTickMode));
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();

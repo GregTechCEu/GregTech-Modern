@@ -1,0 +1,11 @@
+{
+    "parent": "gtceu:block/cube_2_layer/tinted_bot/bottom_top",
+    "textures": {
+        "bot_bottom": "gtceu:block/storage/drums/drum/bottom",
+        "bot_top": "gtceu:block/storage/drums/drum/top",
+        "bot_side": "gtceu:block/storage/drums/drum/side",
+        "top_bottom": "gtceu:block/storage/drums/drum_top/bottom",
+        "top_top": "gtceu:block/storage/drums/drum_top/top",
+        "top_side": "gtceu:block/storage/drums/drum_top/side"
+    }
+}

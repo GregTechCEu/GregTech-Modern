@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -183,7 +184,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
         return true;
     }
 
-    public ICoverRenderer getCoverRenderer() {
+    public @Nullable Supplier<ICoverRenderer> getCoverRenderer() {
         return coverDefinition.getCoverRenderer();
     }
 
@@ -199,8 +200,8 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GuiTextures.TOOL_REMOVE_COVER;
         }

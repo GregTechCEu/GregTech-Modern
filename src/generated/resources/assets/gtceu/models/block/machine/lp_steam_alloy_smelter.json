@@ -1,0 +1,116 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:lp_steam_alloy_smelter",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/alloy_smelter/overlay_front",
+            "overlay_front_emissive": "gtceu:block/machines/alloy_smelter/overlay_front_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/alloy_smelter/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/machines/alloy_smelter/overlay_front_active_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/alloy_smelter/overlay_front_active",
+            "overlay_front_emissive": "gtceu:block/machines/alloy_smelter/overlay_front_active_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_bronze",
+          "textures": {
+            "overlay_front": "gtceu:block/machines/alloy_smelter/overlay_front",
+            "overlay_front_emissive": "gtceu:block/machines/alloy_smelter/overlay_front_emissive"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 270
+      },
+      "when": {
+        "steam_vent": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "x": 90
+      },
+      "when": {
+        "steam_vent": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 270
+      },
+      "when": {
+        "steam_vent": "left"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 90
+      },
+      "when": {
+        "steam_vent": "right"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent"
+      },
+      "when": {
+        "steam_vent": "front"
+      }
+    },
+    {
+      "apply": {
+        "model": "gtceu:block/overlay/machine/overlay_steam_vent",
+        "y": 180
+      },
+      "when": {
+        "steam_vent": "back"
+      }
+    }
+  ]
+}

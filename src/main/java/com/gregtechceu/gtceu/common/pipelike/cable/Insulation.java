@@ -85,9 +85,9 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
 
     public PipeModel createPipeModel(Material material) {
         Supplier<ResourceLocation> wireSideTexturePath = () -> MaterialIconType.wire
-                .getBlockTexturePath(material.getMaterialIconSet(), true).withSuffix("_side");
+                .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         Supplier<ResourceLocation> wireEndTexturePath = () -> MaterialIconType.wire
-                .getBlockTexturePath(material.getMaterialIconSet(), true).withSuffix("_end");
+                .getBlockTexturePath(material.getMaterialIconSet(), "end", true);
         Supplier<@Nullable ResourceLocation> wireSideOverlayTexturePath = () -> MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side_overlay", true);
         Supplier<@Nullable ResourceLocation> wireEndOverlayTexturePath = () -> MaterialIconType.wire

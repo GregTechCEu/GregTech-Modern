@@ -2,21 +2,25 @@ package com.gregtechceu.gtceu.client.model;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -55,12 +59,10 @@ public class PipeModel {
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_DL = GTCEu.id("block/pipe/blocked/pipe_blocked_dl");
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_DR = GTCEu.id("block/pipe/blocked/pipe_blocked_dr");
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_LR = GTCEu.id("block/pipe/blocked/pipe_blocked_lr");
-    private static final EnumMap<Direction, EnumMap<Border, Direction>> FACE_BORDER_MAP = new EnumMap<>(
-            Direction.class);
     private static final Int2ObjectMap<TextureAtlasSprite> RESTRICTOR_MAP = new Int2ObjectOpenHashMap<>();
     private static boolean isRestrictorInitialized;
 
-    public static void initializeRestrictor(Function<ResourceLocation, TextureAtlasSprite> atlas) {
+    protected static void initializeRestrictor(Function<ResourceLocation, TextureAtlasSprite> atlas) {
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_UP), Border.TOP);
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_DOWN), Border.BOTTOM);
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_UD), Border.TOP, Border.BOTTOM);
@@ -78,20 +80,18 @@ public class PipeModel {
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY), Border.TOP, Border.BOTTOM, Border.LEFT, Border.RIGHT);
     }
 
-    static {
-        FACE_BORDER_MAP.put(Direction.DOWN,
-                borderMap(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST));
-        FACE_BORDER_MAP.put(Direction.UP,
-                borderMap(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST));
-        FACE_BORDER_MAP.put(Direction.NORTH,
-                borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
-        FACE_BORDER_MAP.put(Direction.SOUTH,
-                borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
-        FACE_BORDER_MAP.put(Direction.WEST,
-                borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
-        FACE_BORDER_MAP.put(Direction.EAST,
-                borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
-    }
+    private static final EnumMap<Direction, EnumMap<Border, Direction>> FACE_BORDER_MAP = Util.make(() -> {
+        EnumMap<Direction, EnumMap<Border, Direction>> map = new EnumMap<>(Direction.class);
+
+        map.put(Direction.DOWN, borderMap(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST));
+        map.put(Direction.UP, borderMap(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST));
+        map.put(Direction.NORTH, borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
+        map.put(Direction.SOUTH, borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
+        map.put(Direction.WEST, borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
+        map.put(Direction.EAST, borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
+
+        return map;
+    });
 
     public final static int ITEM_CONNECTIONS = 0b001100;
     public final float thickness;
@@ -100,17 +100,20 @@ public class PipeModel {
 
     public MemoizedSupplier<ResourceLocation> sideTexture, endTexture;
     @Nullable
-    public MemoizedSupplier<@Nullable ResourceLocation> secondarySideTexture, secondaryEndTexture;
+    public MemoizedSupplier<ResourceLocation> secondarySideTexture, secondaryEndTexture;
     @Setter
-    public ResourceLocation sideOverlayTexture, endOverlayTexture;
+    public @Nullable ResourceLocation sideOverlayTexture, endOverlayTexture;
 
     @OnlyIn(Dist.CLIENT)
-    TextureAtlasSprite sideSprite, endSprite, secondarySideSprite, secondaryEndSprite, sideOverlaySprite,
-            endOverlaySprite;
+    private @Nullable TextureAtlasSprite sideSprite, endSprite;
+    @OnlyIn(Dist.CLIENT)
+    private @Nullable TextureAtlasSprite secondarySideSprite, secondaryEndSprite;
+    @OnlyIn(Dist.CLIENT)
+    private @Nullable TextureAtlasSprite sideOverlaySprite, endOverlaySprite;
 
     public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture,
-                     @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture,
-                     @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
+                     @Nullable Supplier<ResourceLocation> secondarySideTexture,
+                     @Nullable Supplier<ResourceLocation> secondaryEndTexture) {
         this.sideTexture = GTMemoizer.memoize(sideTexture);
         this.endTexture = GTMemoizer.memoize(endTexture);
         this.secondarySideTexture = secondarySideTexture != null ? GTMemoizer.memoize(secondarySideTexture) :
@@ -131,6 +134,32 @@ public class PipeModel {
                     normal.getY() == 0 ? max : normal.getY() > 0 ? 1 : min,
                     normal.getZ() == 0 ? max : normal.getZ() > 0 ? 1 : min));
         }
+
+        if (!isRestrictorInitialized) {
+            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+                initializeRestrictor(event.getAtlas()::getSprite);
+            });
+
+            isRestrictorInitialized = true;
+        }
+        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+            TextureAtlas atlas = event.getAtlas();
+
+            sideSprite = atlas.getSprite(sideTexture.get());
+            endSprite = atlas.getSprite(endTexture.get());
+            if (secondarySideTexture != null) {
+                secondarySideSprite = atlas.getSprite(secondarySideTexture.get());
+            }
+            if (secondaryEndTexture != null) {
+                secondaryEndSprite = atlas.getSprite(secondaryEndTexture.get());
+            }
+            if (sideOverlayTexture != null) {
+                sideOverlaySprite = atlas.getSprite(sideOverlayTexture);
+            }
+            if (endOverlayTexture != null) {
+                endOverlaySprite = atlas.getSprite(endOverlayTexture);
+            }
+        });
     }
 
     public VoxelShape getShapes(int connections) {
@@ -146,29 +175,6 @@ public class PipeModel {
 
     @OnlyIn(Dist.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, int connections, int blockedConnections) {
-        if (!isRestrictorInitialized) {
-            initializeRestrictor(ModelFactory::getBlockSprite);
-            isRestrictorInitialized = true;
-        }
-        if (sideSprite == null) {
-            sideSprite = ModelFactory.getBlockSprite(sideTexture.get());
-        }
-        if (endSprite == null) {
-            endSprite = ModelFactory.getBlockSprite(endTexture.get());
-        }
-        if (secondarySideTexture != null && secondarySideTexture.get() != null && secondarySideSprite == null) {
-            secondarySideSprite = ModelFactory.getBlockSprite(secondarySideTexture.get());
-        }
-        if (secondaryEndTexture != null && secondaryEndTexture.get() != null && secondaryEndSprite == null) {
-            secondaryEndSprite = ModelFactory.getBlockSprite(secondaryEndTexture.get());
-        }
-        if (sideOverlayTexture != null && sideOverlaySprite == null) {
-            sideOverlaySprite = ModelFactory.getBlockSprite(sideOverlayTexture);
-        }
-        if (endOverlayTexture != null && endOverlaySprite == null) {
-            endOverlaySprite = ModelFactory.getBlockSprite(endOverlayTexture);
-        }
-
         if (side != null) {
             if (thickness == 1) { // full block
                 List<BakedQuad> quads = new ArrayList<>();
@@ -250,12 +256,9 @@ public class PipeModel {
         return quads;
     }
 
-    @NotNull
+    @SuppressWarnings("DataFlowIssue")
     @OnlyIn(Dist.CLIENT)
-    public TextureAtlasSprite getParticleTexture() {
-        if (sideSprite == null) {
-            sideSprite = ModelFactory.getBlockSprite(sideTexture.get());
-        }
+    public @NotNull TextureAtlasSprite getParticleTexture() {
         return sideSprite;
     }
 
@@ -282,13 +285,13 @@ public class PipeModel {
         register.accept(endTexture.get());
         if (secondarySideTexture != null) {
             secondarySideTexture.invalidate();
-            if (secondarySideTexture.get() != null) {
+            if (secondarySideTexture.get() != GTModels.BLANK_TEXTURE) {
                 register.accept(secondarySideTexture.get());
             }
         }
         if (secondaryEndTexture != null) {
             secondaryEndTexture.invalidate();
-            if (secondaryEndTexture.get() != null) {
+            if (secondaryEndTexture.get() != GTModels.BLANK_TEXTURE) {
                 register.accept(secondaryEndTexture.get());
             }
         }

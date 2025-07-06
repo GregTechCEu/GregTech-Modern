@@ -42,7 +42,17 @@ legacyForge {
             sourceSet = sourceSets.extra
             ideName = "Client 2"
 
-            programArguments.addAll('--username', 'YoungOnion')
+            programArguments.addAll('--username', 'YoungOnion', '--uuid', '3a27782d-6864-4814-a9fe-7c6931f29a8a')
+            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        server {
+            server()
+            sourceSet = sourceSets.extra
+            ideName = "Server"
+
+            gameDirectory.set(file('run/server'))
+            programArguments.addAll('--nogui', '--world', 'world-extra')
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 

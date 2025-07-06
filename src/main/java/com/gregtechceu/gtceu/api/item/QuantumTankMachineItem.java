@@ -16,10 +16,6 @@ public class QuantumTankMachineItem extends MetaMachineItem {
         super(block, properties);
     }
 
-    public static QuantumTankMachineItem create(IMachineBlock block, Properties properties) {
-        return new QuantumTankMachineItem(block, properties);
-    }
-
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new QuantumFluidHandlerItemStack(stack, QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition()));

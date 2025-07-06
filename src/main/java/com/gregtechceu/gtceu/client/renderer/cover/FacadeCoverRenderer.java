@@ -1,28 +1,24 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.client.model.ModelUtil;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.ItemBakedModel;
+import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
-
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
@@ -30,109 +26,137 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
-import org.joml.AxisAngle4d;
-import org.joml.Quaternionf;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * It can only be used for item.
  * call it in other renderer to render a facade cover.
  */
-public class FacadeCoverRenderer implements ICoverRenderer {
+public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
-    public final static FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
+    private static final AABB FACADE_PLANE = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
+    private static final EnumSet<Direction> FACADE_EDGE_FACES = EnumSet.of(Direction.DOWN, Direction.UP,
+            Direction.SOUTH, Direction.WEST, Direction.EAST);
+    private static final Map<Direction, AABB> COVER_BACK_CUBES = Util.make(new EnumMap<>(Direction.class), map -> {
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            var normal = dir.getNormal();
+            var cube = new AABB(
+                    normal.getX() > 0 ? 1 : 0,
+                    normal.getY() > 0 ? 1 : 0,
+                    normal.getZ() > 0 ? 1 : 0,
+                    normal.getX() >= 0 ? 1 : 0,
+                    normal.getY() >= 0 ? 1 : 0,
+                    normal.getZ() >= 0 ? 1 : 0);
+            map.put(dir, cube);
+        }
+    });
 
-    protected FacadeCoverRenderer() {}
+    public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
+    private static final Int2ObjectMap<ItemBakedModel> CACHE = new Int2ObjectArrayMap<>();
 
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean useBlockLight(ItemStack stack) {
-        return true;
+    private @Nullable BakedModel defaultItemModel;
+
+    private FacadeCoverRenderer() {}
+
+    @OnlyIn(Dist.CLIENT)
+    public FacadeCoverRenderer(@Nullable BakedModel defaultItemModel) {
+        this.defaultItemModel = defaultItemModel;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
-                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
-        var mc = Minecraft.getInstance();
-        var renderItem = FacadeItemBehaviour.getFacadeStack(stack);
-        BlockState blockState = null;
-        if (renderItem.getItem() instanceof BlockItem blockItem) {
-            blockState = blockItem.getBlock().defaultBlockState();
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                             @NotNull RandomSource rand, @NotNull ModelData extraData,
+                                             @Nullable RenderType renderType) {
+        if (defaultItemModel != null) {
+            return defaultItemModel.getQuads(state, side, rand, extraData, renderType);
         }
-        if (blockState != null && mc.level != null) {
-            model = mc.getBlockRenderer().getBlockModel(blockState);
+        return Collections.emptyList();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public @NotNull List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+        if (!(stack.getItem() instanceof ComponentItem)) {
+            return Collections.singletonList(this);
+        }
+        BlockState facadeState = FacadeItemBehaviour.getFacadeStateNullable(stack);
+        if (facadeState == null) {
+            return Collections.singletonList(this);
+        }
+
+        int hash = facadeState.hashCode();
+        ItemBakedModel model = CACHE.computeIfAbsent(hash, $ -> new ItemBakedModel() {
+
+            @Override
+            public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                                     @NotNull RandomSource rand) {
+                return getQuads(state, side, rand, ModelData.EMPTY, null);
+            }
+
+            @Override
+            public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                                     @NotNull RandomSource rand, @NotNull ModelData extraData,
+                                                     @Nullable RenderType renderType) {
+                return getFacadeQuads(facadeState, rand, extraData, renderType);
+            }
+        });
+        return Collections.singletonList(model);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public List<BakedQuad> getFacadeQuads(BlockState state, @NotNull RandomSource rand,
+                                          @NotNull ModelData extraData, @Nullable RenderType renderType) {
+        List<BakedQuad> quads = new ArrayList<>();
+
+        var mc = Minecraft.getInstance();
+        if (mc.level != null) {
+            BakedModel model = mc.getBlockRenderer().getBlockModel(state);
             if (!model.isCustomRenderer()) {
-                matrixStack.pushPose();
-                ModelFactory.MODEL_TRANSFORM_BLOCK.getTransform(transformType).apply(leftHand, matrixStack);
-                matrixStack.translate(0, -0.1D, -0.5D);
-                if (transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND ||
-                        transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
-                    matrixStack.translate(0.5, 0.5, 0.5);
+                var level = new FacadeBlockAndTintGetter(mc.level, BlockPos.ZERO, state, null);
+                extraData = model.getModelData(level, BlockPos.ZERO, state, extraData);
 
-                    matrixStack.mulPose(new Quaternionf(new AxisAngle4d().set(90, 0, 1, 0)));
-                    matrixStack.translate(-0.5, -0.5, -0.5);
+                quads.addAll(model.getQuads(state, null, rand, extraData, renderType));
+                quads.addAll(model.getQuads(state, Direction.NORTH, rand, extraData, renderType));
+
+                for (Direction modelSide : FACADE_EDGE_FACES) {
+                    quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, ICoverableRenderer.COVER_BACK_PLATE[0],
+                            BlockModelRotation.X0_Y0, -1, 0, false, true));
                 }
-                var pose = matrixStack.last();
-
-                var level = new FacadeBlockAndTintGetter(mc.level, BlockPos.ZERO, blockState, null);
-                var quads = new LinkedList<>(ModelUtil.getBakedModelQuads(model, level, BlockPos.ZERO, blockState,
-                        Direction.NORTH, mc.level.random));
-
-                var cube = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
-
-                for (Direction side : GTUtil.DIRECTIONS) {
-                    if (side != Direction.NORTH) {
-                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire")))
-                                .cube(cube).cubeUV().tintIndex(-1).bake());
-                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire")))
-                                .cube(cube).cubeUV().tintIndex(-1).bake());
-                    }
-                }
-
-                for (BakedQuad bakedQuad : quads) {
-                    buffer.getBuffer(RenderType.cutout()).putBulkData(pose, bakedQuad, 1, 1, 1, combinedLight,
-                            combinedOverlay);
-                }
-
-                matrixStack.popPose();
             }
         }
+        return quads;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
-                            BlockAndTintGetter level, ModelState modelState) {
+                            @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (coverBehavior instanceof FacadeCover facadeCover) {
             var state = facadeCover.getFacadeState();
             if (state.getRenderShape() == RenderShape.MODEL) {
-                BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-                BakedModel model = brd.getBlockModel(state);
+                BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+                ModelData extraData = model.getModelData(level, BlockPos.ZERO, state, modelData);
+
+                var facadeQuads = model.getQuads(state, coverBehavior.attachedSide, rand, extraData, renderType);
                 if (side == coverBehavior.attachedSide) {
-                    quads.addAll(ModelUtil.getBakedModelQuads(model, level, pos, state, side, rand));
+                    quads.addAll(facadeQuads);
                 } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
-                    var normal = coverBehavior.attachedSide.getNormal();
-                    var cube = new AABB(
-                            normal.getX() == 0 ? 0 : normal.getX() > 0 ? 1 : 0,
-                            normal.getY() == 0 ? 0 : normal.getY() > 0 ? 1 : 0,
-                            normal.getZ() == 0 ? 0 : normal.getZ() > 0 ? 1 : 0,
-                            normal.getX() == 0 ? 1 : normal.getX() > 0 ? 1 : 0,
-                            normal.getY() == 0 ? 1 : normal.getY() > 0 ? 1 : 0,
-                            normal.getZ() == 0 ? 1 : normal.getZ() > 0 ? 1 : 0);
-                    for (BakedQuad quad : ModelUtil.getBakedModelQuads(model, level, pos, state,
-                            coverBehavior.attachedSide, rand)) {
-                        quads.add(FaceQuad.builder(coverBehavior.attachedSide.getOpposite(), quad.getSprite())
-                                .cube(cube)
-                                .shade(quad.isShade())
-                                .tintIndex(quad.getTintIndex())
-                                .bake());
+                    AABB cube = COVER_BACK_CUBES.get(coverBehavior.attachedSide);
+
+                    for (BakedQuad quad : facadeQuads) {
+                        quads.add(StaticFaceBakery.bakeFace(cube, coverBehavior.attachedSide.getOpposite(),
+                                quad.getSprite(), BlockModelRotation.X0_Y0,
+                                quad.getTintIndex(), 0, false, quad.isShade()));
                     }
                 }
             }

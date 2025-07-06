@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/zpm_assembler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/zpm_assembler"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/zpm_assembler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/zpm_assembler",
+      "y": 270
+    }
+  }
+}

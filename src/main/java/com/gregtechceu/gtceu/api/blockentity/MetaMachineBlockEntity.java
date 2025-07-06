@@ -13,13 +13,22 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
-import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.datafixers.TagFixer;
 
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -44,28 +53,47 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
+public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MetaMachineBlockEntity.class);
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    @Getter
     public final MetaMachine metaMachine;
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    private MachineRenderState renderState;
     private final long offset = GTValues.RNG.nextInt(20);
 
-    protected MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public MetaMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+        this.renderState = getDefinition().defaultRenderState();
         this.metaMachine = getDefinition().createMetaMachine(this);
-    }
 
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos,
-                                                           BlockState blockState) {
-        return new MetaMachineBlockEntity(type, pos, blockState);
+        this.getRootStorage().attach(getSyncStorage());
     }
-
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> metaMachineBlockEntityBlockEntityType) {}
 
     @Override
     public MultiManagedStorage getRootStorage() {
         return managedStorage;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void onChanged() {
+        var level = getLevel();
+        if (level != null && !level.isClientSide && level.getServer() != null) {
+            level.getServer().execute(this::setChanged);
+        }
     }
 
     @Override
@@ -77,6 +105,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void setRenderState(MachineRenderState state) {
+        this.renderState = state;
+        scheduleRenderUpdate();
     }
 
     @Override
@@ -103,8 +137,8 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         return metaMachine.sideTips(player, pos, state, toolTypes, side);
     }
 
@@ -262,19 +296,17 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
      * Why, Forge, Why?
      * Why must you make me add a method for no good reason?
      */
+    @SuppressWarnings("unchecked")
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        GTRendererProvider instance = GTRendererProvider.getInstance();
-        if (instance != null) {
-            IRenderer renderer = instance.getRenderer(this);
-            if (renderer != null) {
-                if (renderer.getViewDistance() == 64 /* the default */) {
-                    return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
-                }
+        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
 
-                int viewDistHalf = renderer.getViewDistance() / 2;
-                return new AABB(worldPosition).inflate(viewDistHalf);
+        if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
+            if (modelWithBER.getBlockEntityType() == this.getType()) {
+                return ((IBlockEntityRendererBakedModel<MetaMachineBlockEntity>) modelWithBER)
+                        .getRenderBoundingBox(this);
             }
         }
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));

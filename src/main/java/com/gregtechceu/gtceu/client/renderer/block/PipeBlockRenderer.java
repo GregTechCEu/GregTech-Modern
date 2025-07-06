@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.client.Minecraft;
@@ -27,6 +25,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -80,14 +79,10 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
         } else if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
             var quads = new LinkedList<>(
                     pipeModel.bakeQuads(side, pipeNode.getVisualConnections(), pipeNode.getBlockedConnections()));
-            var modelState = ModelFactory.getRotation(pipeNode.getCoverContainer().getFrontFacing());
-            var modelFacing = side == null ? null :
-                    ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
-            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing, pos,
-                    level, modelState);
+
+            ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
+                    ModelData.EMPTY, null);
             if (!pipeNode.getFrameMaterial().isNull()) {
-                ResourceLocation rl = MaterialIconType.frameGt
-                        .getBlockTexturePath(pipeNode.getFrameMaterial().getMaterialIconSet(), true);
                 BlockState blockState = GTMaterialBlocks.MATERIAL_BLOCKS
                         .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                         .getDefaultState();

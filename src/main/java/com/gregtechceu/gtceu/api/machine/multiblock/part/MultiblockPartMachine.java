@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -39,7 +39,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
-    @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
@@ -77,6 +76,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
                 controllers.add(controller);
             }
+        }
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, !controllers.isEmpty()));
+        } else {
+            scheduleRenderUpdate();
         }
     }
 

@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/overlay/2_layer/tinted/front",
+    "textures": {
+        "overlay": "gtceu:block/overlay/machine/overlay_laser_target",
+        "overlay_tinted": "gtceu:block/overlay/machine/overlay_laser_tinted"
+    }
+}

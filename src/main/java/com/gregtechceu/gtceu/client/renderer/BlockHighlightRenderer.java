@@ -8,16 +8,18 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
-import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
-import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -33,17 +35,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
+import lombok.experimental.ExtensionMethod;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.Set;
 import java.util.function.Function;
 
+import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
+
 @OnlyIn(Dist.CLIENT)
+@ExtensionMethod(PoseStackExtensions.class)
 public class BlockHighlightRenderer {
 
     public static void renderBlockHighlight(PoseStack poseStack, Camera camera, BlockHitResult target,
@@ -58,6 +62,7 @@ public class BlockHighlightRenderer {
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
+            Vec3 cameraPos = camera.getPosition();
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
                 IToolGridHighlight gridHighlight = null;
@@ -71,8 +76,8 @@ public class BlockHighlightRenderer {
                         gridHighlight = new IToolGridHighlight() {
 
                             @Override
-                            public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
-                                                            Set<GTToolType> toolTypes, Direction side) {
+                            public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
+                                                                      Set<GTToolType> toolTypes, Direction side) {
                                 return behavior.showSideTip(state, side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION :
                                         null;
                             }
@@ -83,14 +88,10 @@ public class BlockHighlightRenderer {
                     return;
                 }
                 var state = level.getBlockState(blockPos);
-                Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
-                poseStack.translate(-pos.x, -pos.y, -pos.z);
                 if (gridHighlight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
-                    var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                    RenderSystem.lineWidth(3);
                     final IToolGridHighlight finalGridHighlight = gridHighlight;
-                    drawGridOverlays(poseStack, buffer, target,
+                    drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
                             side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, side));
                 } else {
                     var facing = target.getDirection();
@@ -99,20 +100,24 @@ public class BlockHighlightRenderer {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();
                         RenderSystem.defaultBlendFunc();
-                        poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01,
-                                facing.getStepZ() * 0.01);
-                        RenderUtils.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
+                        poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f,
+                                facing.getStepZ() * 0.01f);
+                        RenderUtil.moveToFace(poseStack,
+                                blockPos.getX() - cameraPos.x(),
+                                blockPos.getY() - cameraPos.y(),
+                                blockPos.getZ() - cameraPos.z(),
+                                facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
-                            RenderUtils.rotateToFace(poseStack, facing, Direction.SOUTH);
+                            RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
                         } else {
-                            RenderUtils.rotateToFace(poseStack, facing, null);
+                            RenderUtil.rotateToFace(poseStack, facing, Direction.NORTH);
                         }
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
-                        texture.copy()
-                                .draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-                                        MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 4, 4,
-                                        8, 8);
+
+                        drawResourceTexture(poseStack, multiBufferSource, texture, 0xffffffff,
+                                4, 4, 8, 8);
+
                         RenderSystem.disableBlend();
                         RenderSystem.enableDepthTest();
                     }
@@ -125,13 +130,9 @@ public class BlockHighlightRenderer {
             ICoverable coverable = GTCapabilityHelper.getCoverable(level, blockPos, target.getDirection());
             if (coverable != null && CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
                     coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
-                Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
-                poseStack.translate(-pos.x, -pos.y, -pos.z);
-                var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target,
+                drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
                         side -> coverable.hasCover(side) ? null : GuiTextures.TOOL_ATTACH_COVER);
 
                 poseStack.popPose();
@@ -142,14 +143,11 @@ public class BlockHighlightRenderer {
                     null;
             if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
                     pipeBlockEntity.getPipeType().type().equals(type.type())) {
-                Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
-                poseStack.translate(-pos.x, -pos.y, -pos.z);
-                var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ?
-                        pipeBlockEntity.getPipeTexture(true) : null);
+                drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
+                        side -> level.isEmptyBlock(blockPos.relative(side)) ?
+                                pipeBlockEntity.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }
@@ -160,16 +158,16 @@ public class BlockHighlightRenderer {
     private static float gColour;
     private static float bColour;
 
-    private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult,
-                                         Function<Direction, ResourceTexture> test) {
+    private static void drawGridOverlays(PoseStack poseStack, MultiBufferSource bufferSource, Vec3 cameraPos,
+                                         BlockHitResult blockHitResult, Function<Direction, ResourceTexture> texture) {
         rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         var blockPos = blockHitResult.getBlockPos();
         var facing = blockHitResult.getDirection();
-        float maxX = blockPos.getX() + 1;
         float minX = blockPos.getX();
-        float maxY = blockPos.getY() + 1;
+        float maxX = blockPos.getX() + 1;
         float minY = blockPos.getY();
+        float maxY = blockPos.getY() + 1;
         float maxZ = blockPos.getZ() + 1.01f;
         var attachSide = ICoverable.traceCoverSide(blockHitResult);
         var topRight = new Vector3f(maxX, maxY, maxZ);
@@ -186,122 +184,36 @@ public class BlockHighlightRenderer {
         bottomLeft.sub(cubeCenter);
         topLeft.sub(cubeCenter);
 
-        ResourceTexture leftBlocked;
-        ResourceTexture topBlocked;
-        ResourceTexture rightBlocked;
-        ResourceTexture bottomBlocked;
-        ResourceTexture frontBlocked = test.apply(facing);
-        ResourceTexture backBlocked = test.apply(facing.getOpposite());
-        boolean hoverLeft, hoverTop, hoverRight, hoverBottom, hoverFront, hoverBack;
-        hoverFront = attachSide == facing;
-        hoverBack = attachSide == facing.getOpposite();
-        final Vector3f down = new Vector3f(0, -1, 0);
+        var south = Direction.SOUTH.step();
+        var frontVec = getDirectionAxis(facing);
+        var rotationAngle = getRotationAngle(south, frontVec);
+        var rotationAxis = getRotationAxis(south, frontVec);
+        topRight.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        bottomRight.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        bottomLeft.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        topLeft.rotateAxis(rotationAngle, rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
 
-        switch (facing) {
-            case WEST -> {
-                topRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
-                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
-                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
-                topLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
-                shift.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
-                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, down));
+        Direction front = facing;
+        Direction back = facing.getOpposite();
+        Direction left = RelativeDirection.LEFT.getActualDirection(facing);
+        Direction right = RelativeDirection.RIGHT.getActualDirection(facing);
+        Direction top = RelativeDirection.UP.getActualDirection(facing);
+        Direction bottom = RelativeDirection.DOWN.getActualDirection(facing);
 
-                leftBlocked = test.apply(Direction.NORTH);
-                topBlocked = test.apply(Direction.UP);
-                rightBlocked = test.apply(Direction.SOUTH);
-                bottomBlocked = test.apply(Direction.DOWN);
-                hoverLeft = attachSide == Direction.NORTH;
-                hoverTop = attachSide == Direction.UP;
-                hoverRight = attachSide == Direction.SOUTH;
-                hoverBottom = attachSide == Direction.DOWN;
-            }
-            case EAST -> {
-                topRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-                bottomRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-                bottomLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-                topLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-                shift.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-                shiftVert.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, down));
-
-                leftBlocked = test.apply(Direction.SOUTH);
-                topBlocked = test.apply(Direction.UP);
-                rightBlocked = test.apply(Direction.NORTH);
-                bottomBlocked = test.apply(Direction.DOWN);
-                hoverLeft = attachSide == Direction.SOUTH;
-                hoverTop = attachSide == Direction.UP;
-                hoverRight = attachSide == Direction.NORTH;
-                hoverBottom = attachSide == Direction.DOWN;
-            }
-            case NORTH -> {
-                topRight.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-                topLeft.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-                shift.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.PI, down));
-
-                leftBlocked = test.apply(Direction.EAST);
-                topBlocked = test.apply(Direction.UP);
-                rightBlocked = test.apply(Direction.WEST);
-                bottomBlocked = test.apply(Direction.DOWN);
-                hoverLeft = attachSide == Direction.EAST;
-                hoverTop = attachSide == Direction.UP;
-                hoverRight = attachSide == Direction.WEST;
-                hoverBottom = attachSide == Direction.DOWN;
-            }
-            case UP -> {
-                Vector3f side = new Vector3f(1, 0, 0);
-                topRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-                bottomRight.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-                bottomLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-                topLeft.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-                shift.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-                shiftVert.rotate(new Quaternionf().rotateAxis(-Mth.HALF_PI, side));
-
-                leftBlocked = test.apply(Direction.EAST);
-                topBlocked = test.apply(Direction.SOUTH);
-                rightBlocked = test.apply(Direction.WEST);
-                bottomBlocked = test.apply(Direction.NORTH);
-                hoverLeft = attachSide == Direction.EAST;
-                hoverTop = attachSide == Direction.SOUTH;
-                hoverRight = attachSide == Direction.WEST;
-                hoverBottom = attachSide == Direction.NORTH;
-            }
-            case DOWN -> {
-                Vector3f side = new Vector3f(1, 0, 0);
-                topRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-                bottomRight.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-                bottomLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-                topLeft.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-                shift.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-                shiftVert.rotate(new Quaternionf().rotateAxis(Mth.HALF_PI, side));
-
-                leftBlocked = test.apply(Direction.WEST);
-                topBlocked = test.apply(Direction.SOUTH);
-                rightBlocked = test.apply(Direction.EAST);
-                bottomBlocked = test.apply(Direction.NORTH);
-                hoverLeft = attachSide == Direction.WEST;
-                hoverTop = attachSide == Direction.SOUTH;
-                hoverRight = attachSide == Direction.EAST;
-                hoverBottom = attachSide == Direction.NORTH;
-            }
-            default -> {
-                leftBlocked = test.apply(Direction.WEST);
-                topBlocked = test.apply(Direction.UP);
-                rightBlocked = test.apply(Direction.EAST);
-                bottomBlocked = test.apply(Direction.DOWN);
-                hoverLeft = attachSide == Direction.WEST;
-                hoverTop = attachSide == Direction.UP;
-                hoverRight = attachSide == Direction.EAST;
-                hoverBottom = attachSide == Direction.DOWN;
-            }
-        }
+        ResourceTexture leftBlocked = texture.apply(left);
+        ResourceTexture rightBlocked = texture.apply(right);
+        ResourceTexture topBlocked = texture.apply(top);
+        ResourceTexture bottomBlocked = texture.apply(bottom);
+        ResourceTexture frontBlocked = texture.apply(front);
+        ResourceTexture backBlocked = texture.apply(back);
 
         topRight.add(cubeCenter);
         bottomRight.add(cubeCenter);
         bottomLeft.add(cubeCenter);
         topLeft.add(cubeCenter);
 
+        var buffer = bufferSource.getBuffer(RenderType.lines());
+        RenderSystem.lineWidth(3);
         var mat = poseStack.last().pose();
         // straight top bottom lines
         drawLine(mat, buffer, new Vector3f(topRight).add(new Vector3f(shift).mul(-1)),
@@ -320,38 +232,43 @@ public class BlockHighlightRenderer {
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01, facing.getStepZ() * 0.01);
-        RenderUtils.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
-        if (facing.getAxis() == Direction.Axis.Y) {
-            RenderUtils.rotateToFace(poseStack, facing, Direction.SOUTH);
-        } else {
-            RenderUtils.rotateToFace(poseStack, facing, null);
-        }
+        poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f, facing.getStepZ() * 0.01f);
+        RenderUtil.moveToFace(poseStack,
+                blockPos.getX() - cameraPos.x(),
+                blockPos.getY() - cameraPos.y(),
+                blockPos.getZ() - cameraPos.z(),
+                facing);
+        RenderUtil.rotateToFace(poseStack, facing, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
+        poseStack.scale(0.9f, 0.9f, 1);
 
-        var graphics = GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
-                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()));
         if (leftBlocked != null) {
-            leftBlocked.copy().scale(0.9f).setColor(hoverLeft ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 6, 4, 4);
+            int color = attachSide == left ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, leftBlocked, color, 0, 6, 4, 4);
         }
         if (topBlocked != null) {
-            topBlocked.copy().scale(0.9f).setColor(hoverTop ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 0, 4, 4);
+            int color = attachSide == top ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, topBlocked, color, 6, 12, 4, 4);
         }
         if (rightBlocked != null) {
-            rightBlocked.copy().scale(0.9f).setColor(hoverRight ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 6, 4, 4);
+            int color = attachSide == right ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, rightBlocked, color, 12, 6, 4, 4);
         }
         if (bottomBlocked != null) {
-            bottomBlocked.copy().scale(0.9f).setColor(hoverBottom ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 12, 4, 4);
+            int color = attachSide == bottom ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, bottomBlocked, color, 6, 0, 4, 4);
         }
         if (frontBlocked != null) {
-            frontBlocked.copy().scale(0.9f).setColor(hoverFront ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 6, 4, 4);
+            int color = attachSide == front ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, frontBlocked, color, 6, 6, 4, 4);
         }
         if (backBlocked != null) {
-            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 0, 4, 4);
-            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 0, 4, 4);
-            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 12, 4, 4);
-            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 12, 4, 4);
+            int color = attachSide == back ? 0xffffffff : 0x44ffffff;
+            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 0, 4, 4);
+            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 0, 4, 4);
+            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 12, 4, 4);
+            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 12, 4, 4);
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
@@ -369,5 +286,20 @@ public class BlockHighlightRenderer {
                 .color(rColour, gColour, bColour, 1f)
                 .normal(normal.x, normal.y, normal.z)
                 .endVertex();
+    }
+
+    private static void drawResourceTexture(PoseStack poseStack, MultiBufferSource bufferSource,
+                                            ResourceTexture texture, int color,
+                                            float x, float y, float w, float h) {
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.text(texture.imageLocation));
+        var pose = poseStack.last().pose();
+        float u0 = texture.offsetX, v0 = texture.offsetY;
+        float u1 = texture.imageWidth, v1 = texture.imageHeight;
+        // spotless:off
+        consumer.vertex(pose, x, y + h, 0).color(color).uv(u0, v0 + v1).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, x + w, y + h, 0).color(color).uv(u0 + u1, v0 + v1).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, x + w, y, 0).color(color).uv(u0 + u1, v0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        consumer.vertex(pose, x, y, 0).color(color).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        // spotless:on
     }
 }

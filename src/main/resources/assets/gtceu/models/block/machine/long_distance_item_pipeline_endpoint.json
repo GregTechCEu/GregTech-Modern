@@ -1,0 +1,10 @@
+{
+    "parent": "gtceu:block/machine/template/pipeline_endpoint_machine",
+    "textures": {
+        "overlay": "gtceu:block/pipe/ld_item_pipe/overlay",
+        "overlay_emissive": "gtceu:block/pipe/ld_item_pipe/overlay_emissive",
+
+        "hatch_in": "gtceu:block/overlay/machine/overlay_item_hatch_input",
+        "hatch_out": "gtceu:block/overlay/machine/overlay_item_hatch_output"
+    }
+}

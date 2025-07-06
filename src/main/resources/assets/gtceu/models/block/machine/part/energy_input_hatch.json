@@ -1,0 +1,7 @@
+{
+    "parent": "gtceu:block/overlay/2_layer/tinted/front",
+    "textures": {
+        "overlay": "gtceu:block/overlay/machine/overlay_energy_2a_in",
+        "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_2a_tinted"
+    }
+}

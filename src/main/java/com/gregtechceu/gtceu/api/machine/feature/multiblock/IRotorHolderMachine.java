@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,10 @@ public interface IRotorHolderMachine extends IMultiPart {
 
     int SPEED_INCREMENT = 1;
     int SPEED_DECREMENT = 3;
+
+    BooleanProperty HAS_ROTOR_PROPERTY = BooleanProperty.create("has_rotor");
+    BooleanProperty ROTOR_SPINNING_PROPERTY = BooleanProperty.create("rotor_spinning");
+    BooleanProperty EMISSIVE_ROTOR_PROPERTY = BooleanProperty.create("emissive_rotor");
 
     /**
      * @return the base efficiency of the rotor holder in %

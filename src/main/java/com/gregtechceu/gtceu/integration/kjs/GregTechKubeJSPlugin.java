@@ -61,8 +61,11 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
@@ -84,8 +87,10 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockStateProvider;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -99,6 +104,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.mojang.serialization.DataResult;
+import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.client.LangEventJS;
@@ -200,9 +206,23 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
     }
 
+    public static RuntimeBlockStateProvider RUNTIME_BLOCKSTATE_PROVIDER = null;
+
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
+        // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
+        RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockStateProvider(GTRegistration.REGISTRATE,
+                new PackOutput(KubeJSPaths.DIRECTORY),
+                (loc, json) -> {
+                    if (loc.getPath().endsWith(".json")) {
+                        loc = loc.withPath(p -> p.substring(0, p.length() - 5));
+                    }
+                    generator.json(loc, json);
+                });
+
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateAssetJsons(generator));
+
+        RUNTIME_BLOCKSTATE_PROVIDER = null;
     }
 
     @Override
@@ -215,6 +235,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerClasses(type, filter);
         // allow user to access all gtceu classes by importing them.
         filter.allow("com.gregtechceu.gtceu");
+        filter.deny("com.gregtechceu.gtceu.core");
+        filter.deny("com.gregtechceu.gtceu.common.network");
     }
 
     @Override
@@ -288,12 +310,19 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTBlocks", GTBlocks.class);
         event.add("GTMaterialBlocks", GTMaterialBlocks.class);
         event.add("GCYMBlocks", GCYMBlocks.class);
+        event.add("GTItems", GTItems.class);
+        event.add("GTMaterialItems", GTMaterialItems.class);
+        // Machine related
         event.add("GTMachines", GTMachines.class);
         event.add("GTMultiMachines", GTMultiMachines.class);
         event.add("GTMachineUtils", GTMachineUtils.class);
         event.add("GCYMMachines", GCYMMachines.class);
-        event.add("GTItems", GTItems.class);
-        event.add("GTMaterialItems", GTMaterialItems.class);
+        // Multiblock related
+        event.add("RotationState", RotationState.class);
+        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
+        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("Predicates", Predicates.class);
+        event.add("PartAbility", PartAbility.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);
@@ -315,12 +344,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("SoundType", SoundType.class);
         // GUI related
         event.add("GuiTextures", GuiTextures.class);
-        // Multiblock related
-        event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
-        event.add("Predicates", Predicates.class);
-        event.add("PartAbility", PartAbility.class);
+        // Client/Server data related
+        event.add("GTModels", GTModels.class);
+        event.add("GTMachineModels", GTMachineModels.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
