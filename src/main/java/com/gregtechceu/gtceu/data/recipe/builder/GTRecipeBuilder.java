@@ -19,10 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -216,28 +213,43 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputEU(long eu) {
-        return input(EURecipeCapability.CAP, eu);
+        return inputEU(eu, 1);
+    }
+
+    public GTRecipeBuilder inputEU(long voltage, long amperage) {
+        return input(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 
     public GTRecipeBuilder EUt(long eu) {
-        if (eu == 0) {
+        return EUt(eu, 1);
+    }
+
+    public GTRecipeBuilder EUt(long voltage, long amperage) {
+        if (voltage == 0) {
             GTCEu.LOGGER.error("EUt can't be explicitly set to 0, id: {}", id);
+        }
+        if (amperage < 1) {
+            GTCEu.LOGGER.error("Amperage must be a positive integer, id: {}", id);
         }
         var lastPerTick = perTick;
         perTick = true;
-        if (eu > 0) {
+        if (voltage > 0) {
             tickInput.remove(EURecipeCapability.CAP);
-            inputEU(eu);
-        } else if (eu < 0) {
+            inputEU(voltage, amperage);
+        } else if (voltage < 0) {
             tickOutput.remove(EURecipeCapability.CAP);
-            outputEU(-eu);
+            outputEU(-voltage, amperage);
         }
         perTick = lastPerTick;
         return this;
     }
 
     public GTRecipeBuilder outputEU(long eu) {
-        return output(EURecipeCapability.CAP, eu);
+        return outputEU(eu, 1);
+    }
+
+    public GTRecipeBuilder outputEU(long voltage, long amperage) {
+        return output(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
     }
 
     public GTRecipeBuilder inputCWU(int cwu) {
@@ -1523,9 +1535,9 @@ public class GTRecipeBuilder {
     //////////////////////////////////////
     // ******* Quick Query *******//
     //////////////////////////////////////
-    public long EUt() {
-        if (!tickInput.containsKey(EURecipeCapability.CAP)) return 0;
-        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return 0;
+    public EnergyStack EUt() {
+        if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
+        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
         return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content);
     }
 

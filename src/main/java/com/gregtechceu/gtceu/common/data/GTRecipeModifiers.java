@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -251,7 +252,7 @@ public class GTRecipeModifiers {
         long eut = 4 * (long) (parallels / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
         ModifierFunction baseModifier = r -> {
             var copy = r.copy();
-            EURecipeCapability.putEUContent(copy.tickInputs, Math.max(1, eut));
+            EURecipeCapability.putEUContent(copy.tickInputs, new EnergyStack(Math.max(1, eut)));
             copy.duration = Math.max(1, duration);
             return copy;
         };

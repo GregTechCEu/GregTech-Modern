@@ -86,7 +86,7 @@ public class RecipeHandlerList {
             allHandlers.add(handler);
             if (handler instanceof NotifiableRecipeHandlerTrait<?> rht) allHandlerTraits.add(rht);
         }
-        if (handlerIO == IO.OUT) sort();
+        if (handlerIO.support(IO.OUT)) sort();
     }
 
     private void sort() {

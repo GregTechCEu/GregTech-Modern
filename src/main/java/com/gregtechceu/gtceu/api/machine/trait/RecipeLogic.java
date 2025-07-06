@@ -552,7 +552,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag cacheTag = new ListTag();
             for (var entry : cache.object2IntEntrySet()) {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.serializer.toNbtGeneric(cap.of(entry.getKey()));
+                var obj = cap.contentToNbt(entry.getKey());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", entry.getIntValue());
                 cacheTag.add(compoundTag);
@@ -585,7 +585,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag cacheTag = new ListTag();
             for (var entry : cache.object2IntEntrySet()) {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.serializer.toNbtGeneric(cap.of(entry.getKey()));
+                var obj = cap.contentToNbt(entry.getKey());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", entry.getIntValue());
                 cacheTag.add(compoundTag);

@@ -157,7 +157,7 @@ public class MultiblockState {
     }
 
     public Collection<BlockPos> getCache() {
-        return cache.stream().map(BlockPos::of).collect(Collectors.toList());
+        return cache.longStream().mapToObj(BlockPos::of).collect(Collectors.toSet());
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState state) {

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -167,9 +168,9 @@ public interface ModifierFunction {
                     copied.duration = Math.max(1, durationModifier.apply(recipe.duration));
                 }
                 if (eutModifier != ContentModifier.IDENTITY) {
-                    long preEUt = RecipeHelper.getRealEUt(recipe);
-                    long eut = Math.max(1, eutModifier.apply(Math.abs(preEUt)));
-                    EURecipeCapability.putEUContent(preEUt > 0 ? copied.tickInputs : copied.tickOutputs, eut);
+                    var preEUt = RecipeHelper.getRealEUtWithIO(recipe);
+                    EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt.stack(), eutModifier);
+                    EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
                 }
                 return copied;
             };

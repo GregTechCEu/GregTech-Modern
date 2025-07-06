@@ -115,7 +115,8 @@ class RecipeRunner {
     }
 
     private RecipeHandlingResult handleContents() {
-        return handleContentsInternal(io);
+        var result = handleContentsInternal(io);
+        return result;
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
@@ -124,9 +125,9 @@ class RecipeRunner {
             return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
         }
 
-        var handlers = capabilityProxies.get(capIO);
+        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && capIO == IO.OUT) {
+        if (!isTick && capIO.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
 

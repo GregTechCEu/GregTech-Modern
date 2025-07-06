@@ -114,9 +114,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                         .map(IEnergyContainer.class::cast)
                         .toList();
 
-                if (handlerList.getHandlerIO() == IO.IN) {
+                if (handlerList.getHandlerIO().support(IO.IN)) {
                     inputs.addAll(containers);
-                } else if (handlerList.getHandlerIO() == IO.OUT) {
+                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
                     outputs.addAll(containers);
                 }
 

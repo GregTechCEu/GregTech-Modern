@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntFunction;
 
 import static net.minecraft.ChatFormatting.*;
 
@@ -141,6 +142,12 @@ public class GTValues {
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
 
+    public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
+            GREEN + BOLD + "A" +
+            BLUE + BOLD + "X" +
+            YELLOW + BOLD + "+" +
+            RED + BOLD + value;
+
     /**
      * The short names for the voltages, formatted for text
      */
@@ -160,38 +167,22 @@ public class GTValues {
             YELLOW + "UXV",
             BLUE.toString() + BOLD + "OpV",
             RED.toString() + BOLD + "MAX",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "1",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "2",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "3",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "4",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "5",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "6",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "7",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "8",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "9",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "10",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "11",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "12",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "13",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "14",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "15",
-            RED.toString() + BOLD + "M" + GREEN + BOLD + "A" + BLUE + BOLD + "X" + YELLOW + BOLD + "+" + RED + BOLD +
-                    "16",
+            MAX_PLUS_FORMAT.apply(1),
+            MAX_PLUS_FORMAT.apply(2),
+            MAX_PLUS_FORMAT.apply(3),
+            MAX_PLUS_FORMAT.apply(4),
+            MAX_PLUS_FORMAT.apply(5),
+            MAX_PLUS_FORMAT.apply(6),
+            MAX_PLUS_FORMAT.apply(7),
+            MAX_PLUS_FORMAT.apply(8),
+            MAX_PLUS_FORMAT.apply(9),
+            MAX_PLUS_FORMAT.apply(10),
+            MAX_PLUS_FORMAT.apply(11),
+            MAX_PLUS_FORMAT.apply(12),
+            MAX_PLUS_FORMAT.apply(13),
+            MAX_PLUS_FORMAT.apply(14),
+            MAX_PLUS_FORMAT.apply(15),
+            MAX_PLUS_FORMAT.apply(16),
     };
 
     public static final String[] VCF = new String[] {

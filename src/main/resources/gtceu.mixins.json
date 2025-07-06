@@ -36,7 +36,6 @@
         "BlockMixin",
         "BlockPropertiesAccessor",
         "ChunkGeneratorMixin",
-        "ChunkMixin",
         "EntityMixin",
         "IFoliagePlacerTypeAccessor",
         "IngredientAccessor",
