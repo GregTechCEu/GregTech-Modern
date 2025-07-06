@@ -592,7 +592,7 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder customTags(TagKey<Item> key) {
-            this.itemTags.add(TagUtil.createItemTag( key.location().getPath()));
+            this.itemTags.add(key);
             return this;
         }
 
@@ -1297,7 +1297,6 @@ public class Material implements Comparable<Material> {
 
             var mat = new Material(materialInfo, properties, flags);
             if (!itemTags.isEmpty()) {
-
                 mat.setItemTags(itemTags);
             }
             if (formula != null) {
