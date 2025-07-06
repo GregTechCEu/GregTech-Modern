@@ -73,7 +73,7 @@ public class EnergyContainerList implements IEnergyContainer {
      * @param voltage  the sum of voltage * amperage for each hatch
      * @param amperage the total amperage of all hatches
      *
-     * @return [newVoltage, newAmperage]
+     * @return EnergyStack
      */
     public static EnergyStack calculateVoltageAmperage(long voltage, long amperage) {
         if (voltage > 1 && amperage > 1) {
