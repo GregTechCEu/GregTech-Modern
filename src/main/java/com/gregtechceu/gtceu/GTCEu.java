@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
@@ -117,11 +116,14 @@ public class GTCEu {
      * @return if the current thread is the client thread
      */
     public static boolean isClientThread() {
-        return isClientSide() && EffectiveSide.get().isClient();
+        return isClientSide() && Minecraft.getInstance().isSameThread();
     }
 
     /**
-     * @return if the FML environment is a client
+     * @return if the game is the <strong>PHYSICAL</strong> client, e.g. not a dedicated server.
+     * @apiNote Do not use this to check if you're currently on the server thread for side-specific actions!
+     *          It does <strong>NOT</strong> work for that. Use {@link #isClientThread()} instead.
+     * @see #isClientThread()
      */
     public static boolean isClientSide() {
         return FMLEnvironment.dist.isClient();

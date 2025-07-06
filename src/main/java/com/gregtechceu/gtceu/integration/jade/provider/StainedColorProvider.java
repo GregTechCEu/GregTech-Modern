@@ -16,8 +16,6 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import java.util.Locale;
-
 public class StainedColorProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Override
@@ -27,7 +25,7 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
             if (paintingColor != -1) {
                 iTooltip.add(Component
                         .translatable("gtceu.top.stained",
-                                "#" + Integer.toHexString(paintingColor).toUpperCase(Locale.ROOT))
+                                String.format("#%06X", paintingColor))
                         .withStyle(Style.EMPTY.withColor(paintingColor)));
             }
         }

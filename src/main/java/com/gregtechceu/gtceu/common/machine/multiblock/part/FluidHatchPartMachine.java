@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -54,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot, IPaintable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -141,6 +142,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     }
 
     @Override
+    public void onPaintingColorChanged(int color) {
+        getHandlerList().setColor(color, true);
+    }
+
+    @Override
     public void addedToController(IMultiController controller) {
         if (!controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
@@ -162,6 +168,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             }
         }
         setCircuitSlotEnabled(true);
+    }
+
+    @Override
+    public int tintColor(int index) {
+        if (index == 9) return getRealColor();
+        return -1;
     }
 
     //////////////////////////////////////
@@ -250,6 +262,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
             if (newHolder.getMetaMachine() instanceof FluidHatchPartMachine newMachine) {
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
+                newMachine.setPaintingColor(this.getPaintingColor());
                 for (int i = 0; i < this.tank.getTanks(); i++) {
                     newMachine.tank.setFluidInTank(i, this.tank.getFluidInTank(i));
                 }

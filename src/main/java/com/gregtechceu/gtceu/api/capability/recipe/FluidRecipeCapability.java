@@ -12,14 +12,12 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
-import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -29,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
@@ -284,10 +283,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        return contents.stream().map(content -> content.content)
+        List<Object> entryLists = contents.stream()
+                .map(Content::getContent)
                 .map(this::of)
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
+
+        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
+        return entryLists;
     }
 
     public Object createXEIContainer(List<?> contents) {
@@ -322,10 +325,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
-            if (storage instanceof CycleFluidEntryHandler cycleHandler) {
-                tank.setFluidTank(cycleHandler, index);
-            } else if (storage instanceof IFluidHandlerModifiable fluidHandler) {
-                tank.setFluidTank(new OverlayingFluidStorage(fluidHandler, index));
+            if (storage instanceof IFluidHandler fluidHandler) {
+                tank.setFluidTank(fluidHandler, index);
             }
             tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
             tank.setAllowClickFilled(!isXEI);

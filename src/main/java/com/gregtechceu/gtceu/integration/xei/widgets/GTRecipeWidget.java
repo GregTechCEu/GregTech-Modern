@@ -108,7 +108,7 @@ public class GTRecipeWidget extends WidgetGroup {
         EnergyStack EUt = RecipeHelper.getRealEUt(recipe);
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
-        yOffset += EUt.voltage() > 0 ? 30 : 0;
+        yOffset += !EUt.isEmpty() ? 30 : 0;
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
             yOffset -= 10;
         }
@@ -155,7 +155,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (EUt.isInput() && !EUt.isEmpty()) {
+        if (EUt.isInput()) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
                     tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {

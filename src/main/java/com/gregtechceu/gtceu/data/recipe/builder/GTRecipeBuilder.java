@@ -267,7 +267,7 @@ public class GTRecipeBuilder {
             inputCWU(cwu);
         } else if (cwu < 0) {
             tickOutput.remove(CWURecipeCapability.CAP);
-            outputCWU(cwu);
+            outputCWU(-cwu);
         }
         perTick = lastPerTick;
         return this;
@@ -585,6 +585,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(MachineDefinition machine, int count) {
         return outputItems(machine.asStack(count));
+    }
+
+    protected GTRecipeBuilder outputItems(Ingredient ingredient) {
+        return output(ItemRecipeCapability.CAP, ingredient);
     }
 
     public GTRecipeBuilder outputItemsRanged(ItemStack output, IntProvider intProvider) {
@@ -1484,7 +1488,10 @@ public class GTRecipeBuilder {
                                           boolean isInput,
                                           Map<RecipeCapability<?>, List<Content>> table,
                                           int addedEntries) {
-        int max = isInput ? recipeType.getMaxInputs(capability) : recipeType.getMaxOutputs(capability);
+        var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;
+        if (!recipeCapabilityMax.containsKey(capability)) return;
+
+        int max = recipeCapabilityMax.getInt(capability);
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",

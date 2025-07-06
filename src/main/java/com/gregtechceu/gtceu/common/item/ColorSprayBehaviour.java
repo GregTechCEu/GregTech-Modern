@@ -214,8 +214,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return false;
             }
             paintable.setPaintingColor(-1);
-        } else if (paintable.getPaintingColor() != color.getTextColor()) {
-            paintable.setPaintingColor(color.getTextColor());
+        } else if (paintable.getPaintingColor() != color.getMapColor().col) {
+            paintable.setPaintingColor(color.getMapColor().col);
         } else {
             return false;
         }

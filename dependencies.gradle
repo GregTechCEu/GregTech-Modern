@@ -12,9 +12,10 @@ dependencies {
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    annotationProcessor(forge.mixinExtras.common)
-    api(forge.mixinExtras.common)
-    jarJar(forge.mixinExtras.forge)
+    compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
+    jarJar(api(forge.mixinExtras.forge.get())).version {
+        require("[${forge.versions.mixinExtras.get()},)")
+    }
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
