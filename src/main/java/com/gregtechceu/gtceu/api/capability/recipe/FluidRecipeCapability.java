@@ -259,7 +259,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 Object2IntOpenHashMap<FluidStack> distinctInv = new Object2IntOpenHashMap<>();
-                if (!handler.shouldSearchContent()) continue;
                 for (var content : handler.getContents()) {
                     if (content instanceof FluidStack stack && !stack.isEmpty()) {
                         distinctInv.addTo(stack, stack.getAmount());
@@ -277,7 +276,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
                 Object2IntOpenHashMap<FluidStack> inventory = new Object2IntOpenHashMap<>();
                 for (var handler : handlers) {
-                    if (!handler.shouldSearchContent()) continue;
                     for (var content : handler.getContents()) {
                         if (content instanceof FluidStack stack && !stack.isEmpty()) {
                             inventory.addTo(stack, stack.getAmount());
