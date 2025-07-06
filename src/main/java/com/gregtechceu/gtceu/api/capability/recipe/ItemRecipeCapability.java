@@ -301,6 +301,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
         Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
         for (var handler : handlerLists) {
+            if (!handler.hasCapability(ItemRecipeCapability.CAP)) continue;
             addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
         }
 

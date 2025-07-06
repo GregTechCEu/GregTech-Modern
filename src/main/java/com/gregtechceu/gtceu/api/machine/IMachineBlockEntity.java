@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * Also delivers most of the Information about TileEntities.
  */
 public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
-                                     IAutoPersistBlockEntity, IForgeBlockEntity {
+                                     IAutoPersistBlockEntity, IPaintable, IForgeBlockEntity {
 
     ModelProperty<BlockAndTintGetter> MODEL_DATA_LEVEL = new ModelProperty<>();
     ModelProperty<BlockPos> MODEL_DATA_POS = new ModelProperty<>();
@@ -112,5 +113,20 @@ public interface IMachineBlockEntity extends IToolGridHighlight, IAsyncAutoSyncB
     default void loadCustomPersistedData(CompoundTag tag) {
         IAutoPersistBlockEntity.super.loadCustomPersistedData(tag);
         getMetaMachine().loadCustomPersistedData(tag);
+    }
+
+    @Override
+    default int getPaintingColor() {
+        return getMetaMachine().getPaintingColor();
+    }
+
+    @Override
+    default void setPaintingColor(int color) {
+        getMetaMachine().setPaintingColor(color);
+    }
+
+    @Override
+    default int getDefaultPaintingColor() {
+        return getMetaMachine().getDefaultPaintingColor();
     }
 }
