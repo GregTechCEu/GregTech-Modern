@@ -300,7 +300,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     public MachineModelBuilder<T> forAllStatesModels(Function<MachineRenderState, ModelFile> mapper) {
-        return forAllStatesExcept(mapper.andThen(m -> ConfiguredModel.builder().modelFile(m).build()));
+        return forAllStates(mapper.andThen(m -> ConfiguredModel.builder().modelFile(m).build()));
     }
 
     public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ConfiguredModel[]> mapper) {
@@ -324,11 +324,11 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     // spotless:off
-    public MachineModelBuilder<T> replaceForAllStates(BiFunction<MachineRenderState, @Nullable List<ConfiguredModel>, ConfiguredModel[]> mapper) {
+    public MachineModelBuilder<T> replaceForAllStates(BiFunction<MachineRenderState, ConfiguredModel[], ConfiguredModel[]> mapper) {
         return replaceForAllStatesExcept(mapper);
     }
 
-    public MachineModelBuilder<T> replaceForAllStatesExcept(BiFunction<MachineRenderState, @Nullable List<ConfiguredModel>, ConfiguredModel[]> mapper,
+    public MachineModelBuilder<T> replaceForAllStatesExcept(BiFunction<MachineRenderState, ConfiguredModel[], ConfiguredModel[]> mapper,
                                                             Property<?>... ignored) {
         Set<PartialState<T>> seen = new HashSet<>();
         for (MachineRenderState fullState : owner.getStateDefinition().getPossibleStates()) {
@@ -339,7 +339,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             PartialState<T> partialState = new PartialState<>(owner, propertyValues, this);
             if (seen.add(partialState)) {
                 ConfiguredModelListAccessor old = (ConfiguredModelListAccessor) getModels().get(partialState);
-                List<ConfiguredModel> oldModels = old != null ? old.gtceu$getModels() : null;
+                if (old == null) continue;
+                ConfiguredModel[] oldModels = old.gtceu$getModels().toArray(ConfiguredModel[]::new);
 
                 replaceModels(partialState, mapper.apply(fullState, oldModels));
             }

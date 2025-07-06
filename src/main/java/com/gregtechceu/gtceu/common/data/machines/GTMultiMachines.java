@@ -788,18 +788,15 @@ public class GTMultiMachines {
                                 // replace the parent model for the formed large miner
                                 modelBuilder.replaceForAllStates((state, models) -> {
                                     if (!state.getValue(LargeMinerMachine.IS_FORMED_PROPERTY)) {
-                                        if (models == null) return null;
-                                        else return models.toArray(ConfiguredModel[]::new);
+                                        return models;
                                     }
 
                                     var parentModel = prov.models()
                                             .getExistingFile(GTCEu.id("block/machine/large_miner_active"));
-
-                                    assert models != null;
                                     for (ConfiguredModel model : models) {
                                         ((BlockModelBuilder) model.model).parent(parentModel);
                                     }
-                                    return models.toArray(ConfiguredModel[]::new);
+                                    return models;
                                 });
                             }))
                     .tooltips(

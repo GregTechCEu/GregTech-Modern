@@ -271,6 +271,28 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return model(createOverlaySteamHullMachineModel(overlayModel));
     }
 
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay) {
+        return colorOverlaySteamHullModel(overlay, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(String overlay,
+                                                                 @Nullable String emissiveOverlay) {
+        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
+                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+        return colorOverlaySteamHullModel(overlayTex, emissiveOverlayTex);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay) {
+        return colorOverlaySteamHullModel(overlay, null);
+    }
+
+    public MachineBuilder<DEFINITION> colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                                 @Nullable ResourceLocation emissiveOverlay) {
+        modelProperty(IPaintable.IS_PAINTED_PROPERTY, false);
+        return model(createColorOverlaySteamHullMachineModel(overlay, emissiveOverlay));
+    }
+
     public MachineBuilder<DEFINITION> workableTieredHullModel(ResourceLocation workableModel) {
         modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));

@@ -818,7 +818,7 @@ public class GTMachines {
             .machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
-            .overlaySteamHullModel("item_input_bus")
+            .colorOverlaySteamHullModel("overlay_pipe_in", OVERLAY_ITEM_HATCH)
             .langValue("Steam Input Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
@@ -830,7 +830,7 @@ public class GTMachines {
             .machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
-            .overlaySteamHullModel("item_output_bus")
+            .colorOverlaySteamHullModel("overlay_pipe_out", OVERLAY_ITEM_HATCH)
             .langValue("Steam Output Bus")
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),

@@ -268,7 +268,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public MultiblockMachineBuilder tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         return (MultiblockMachineBuilder) super.tooltipBuilder(tooltipBuilder);
     }
 
@@ -295,6 +295,27 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder overlaySteamHullModel(ResourceLocation overlayModel) {
         return (MultiblockMachineBuilder) super.overlaySteamHullModel(overlayModel);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay, @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                               @Nullable ResourceLocation emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+    }
+
+    @Override
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay);
     }
 
     @Override
