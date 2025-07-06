@@ -64,6 +64,11 @@ public class SerializerIngredient implements IContentSerializer<Ingredient> {
     }
 
     @Override
+    public Class<Ingredient> contentClass() {
+        return Ingredient.class;
+    }
+
+    @Override
     public Codec<Ingredient> codec() {
         return CODEC;
     }

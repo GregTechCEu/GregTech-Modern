@@ -1,20 +1,20 @@
 package com.gregtechceu.gtceu.common.network.packets.prospecting;
 
-import com.lowdragmc.lowdraglib.networking.IHandlerContext;
-import com.lowdragmc.lowdraglib.networking.IPacket;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import java.util.Collection;
 
-public abstract class SPacketProspect<T> implements IPacket {
+public abstract class SPacketProspect<T> implements GTNetwork.INetPacket {
 
     protected final Table<ResourceKey<Level>, BlockPos, T> data;
 
@@ -51,6 +51,20 @@ public abstract class SPacketProspect<T> implements IPacket {
         data.put(key, position, prospected);
     }
 
+    public SPacketProspect(FriendlyByteBuf buf) {
+        this();
+        var rowCount = buf.readInt();
+        for (int i = 0; i < rowCount; i++) {
+            var rowKey = buf.readResourceKey(Registries.DIMENSION);
+            var entryCount = buf.readInt();
+            for (int j = 0; j < entryCount; j++) {
+                var blockPos = buf.readBlockPos();
+                var t = decodeData(buf);
+                data.put(rowKey, blockPos, t);
+            }
+        }
+    }
+
     public abstract void encodeData(FriendlyByteBuf buf, T data);
 
     public abstract T decodeData(FriendlyByteBuf buf);
@@ -69,19 +83,5 @@ public abstract class SPacketProspect<T> implements IPacket {
     }
 
     @Override
-    public void decode(FriendlyByteBuf buf) {
-        var rowCount = buf.readInt();
-        for (int i = 0; i < rowCount; i++) {
-            var rowKey = buf.readResourceKey(Registries.DIMENSION);
-            var entryCount = buf.readInt();
-            for (int j = 0; j < entryCount; j++) {
-                var blockPos = buf.readBlockPos();
-                var t = decodeData(buf);
-                data.put(rowKey, blockPos, t);
-            }
-        }
-    }
-
-    @Override
-    public abstract void execute(IHandlerContext handler);
+    public abstract void execute(NetworkEvent.Context context);
 }

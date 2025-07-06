@@ -12,9 +12,10 @@ dependencies {
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    annotationProcessor(forge.mixinExtras.common)
-    api(forge.mixinExtras.common)
-    jarJar(forge.mixinExtras.forge)
+    compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
+    jarJar(api(forge.mixinExtras.forge.get())).version {
+        require("[${forge.versions.mixinExtras.get()},)")
+    }
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
@@ -63,10 +64,14 @@ dependencies {
     // GameStages
     modCompileOnly(forge.gamestages)
 
+    // CC: Tweaked
+    modCompileOnly(forge.cc.tweaked.core.api)
+    modCompileOnly(forge.cc.tweaked.forge.api)
+
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.kotlinforforge)
+    modRuntimeOnly(forge.spark)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modRuntimeOnly(forge.emi)
@@ -80,6 +85,7 @@ dependencies {
     modExtraRuntimeOnly(forge.trenzalore)
     modExtraRuntimeOnly(forge.curios)
 //    modExtraRuntimeOnly(forge.worldstripper)
+    modExtraRuntimeOnly(forge.cc.tweaked.forge.impl)
 
     modExtraRuntimeOnly(forge.bundles.kjs)
 
@@ -98,7 +104,7 @@ dependencies {
     modExtraRuntimeOnly(forge.gamestages)
     modExtraRuntimeOnly(forge.bookshelf)
 
-    modExtraRuntimeOnly(forge.spark)
+    modExtraRuntimeOnly(forge.kotlinforforge)
     modExtraRuntimeOnly(forge.observable)
     //////////////////////////
 

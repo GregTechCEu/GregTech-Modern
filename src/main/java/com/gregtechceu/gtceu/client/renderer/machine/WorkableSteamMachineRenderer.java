@@ -24,11 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote SteamBoilerRenderer
- */
 public class WorkableSteamMachineRenderer extends SteamHullMachineRenderer {
 
     public static final ResourceLocation VENT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_steam_vent");

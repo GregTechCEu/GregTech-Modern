@@ -15,11 +15,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/15
- * @implNote InfiniteWaterCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class InfiniteWaterCover extends CoverBehavior {

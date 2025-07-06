@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Map<ResourceLocation, byte[]> DATA = new HashMap<>();
+    protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
 
     private final String name;
 
@@ -59,7 +58,11 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static void clearServer() {
-        DATA.clear();
+        CONTENTS.clearData();
+    }
+
+    private static void addToData(ResourceLocation location, byte[] bytes) {
+        CONTENTS.addToData(location, bytes);
     }
 
     public static void addRecipe(FinishedRecipe recipe) {
@@ -69,13 +72,13 @@ public class GTDynamicDataPack implements PackResources {
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeJson);
         }
-        DATA.put(getRecipeLocation(recipeId), recipeJson.toString().getBytes(StandardCharsets.UTF_8));
+        addToData(getRecipeLocation(recipeId), recipeJson.toString().getBytes(StandardCharsets.UTF_8));
         if (recipe.serializeAdvancement() != null) {
             JsonObject advancement = recipe.serializeAdvancement();
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(recipe.getAdvancementId(), "advancements", parent, advancement);
             }
-            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())),
+            addToData(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())),
                     advancement.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
@@ -93,10 +96,11 @@ public class GTDynamicDataPack implements PackResources {
         try {
             Path file;
             if (subdir != null) {
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
+                // assume JSON
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
-                                                                                // if a full path is given.
+                // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
             }
             Files.createDirectories(file.getParent());
             try (OutputStream output = Files.newOutputStream(file)) {
@@ -109,24 +113,23 @@ public class GTDynamicDataPack implements PackResources {
 
     public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
         ResourceLocation l = getAdvancementLocation(loc);
-        synchronized (DATA) {
-            DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
-        }
+        addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
+        if (elements.length > 0 && elements[0].equals("pack.png")) {
+            return () -> GTCEu.class.getResourceAsStream("/icon.png");
+        }
         return null;
     }
 
+    @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
-            var byteArray = DATA.get(location);
-            if (byteArray != null)
-                return () -> new ByteArrayInputStream(byteArray);
-            else return null;
+            return CONTENTS.getResource(location);
         } else {
             return null;
         }
@@ -135,15 +138,7 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public void listResources(PackType packType, String namespace, String path, ResourceOutput resourceOutput) {
         if (packType == PackType.SERVER_DATA) {
-            if (!path.endsWith("/")) path += "/";
-            final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath))
-                    .forEach((id) -> {
-                        IoSupplier<InputStream> resource = this.getResource(packType, id);
-                        if (resource != null) {
-                            resourceOutput.accept(id, resource);
-                        }
-                    });
+            CONTENTS.listResources(namespace, path, resourceOutput);
         }
     }
 

@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -57,12 +57,12 @@ public class EnergyContainerList implements IEnergyContainer {
             }
         }
 
-        long[] voltageAmperage = calculateVoltageAmperage(totalInputVoltage, inputAmperage);
-        this.inputVoltage = voltageAmperage[0];
-        this.inputAmperage = voltageAmperage[1];
+        EnergyStack voltageAmperage = calculateVoltageAmperage(totalInputVoltage, inputAmperage);
+        this.inputVoltage = voltageAmperage.voltage();
+        this.inputAmperage = voltageAmperage.amperage();
         voltageAmperage = calculateVoltageAmperage(totalOutputVoltage, outputAmperage);
-        this.outputVoltage = voltageAmperage[0];
-        this.outputAmperage = voltageAmperage[1];
+        this.outputVoltage = voltageAmperage.voltage();
+        this.outputAmperage = voltageAmperage.amperage();
         this.highestInputVoltage = highestInputVoltage;
         this.numHighestInputContainers = numHighestInputContainers;
     }
@@ -73,10 +73,9 @@ public class EnergyContainerList implements IEnergyContainer {
      * @param voltage  the sum of voltage * amperage for each hatch
      * @param amperage the total amperage of all hatches
      *
-     * @return [newVoltage, newAmperage]
+     * @return EnergyStack
      */
-    @NotNull
-    private static long[] calculateVoltageAmperage(long voltage, long amperage) {
+    public static EnergyStack calculateVoltageAmperage(long voltage, long amperage) {
         if (voltage > 1 && amperage > 1) {
             // don't operate if there is no voltage or no amperage
             if (hasPrimeFactorGreaterThanTwo(amperage)) {
@@ -104,7 +103,7 @@ public class EnergyContainerList implements IEnergyContainer {
                 amperage = 1;
             }
         }
-        return new long[] { voltage, amperage };
+        return new EnergyStack(voltage, amperage);
     }
 
     private static boolean hasPrimeFactorGreaterThanTwo(long l) {
@@ -133,10 +132,9 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
         long amperesUsed = 0L;
-        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            amperesUsed += iEnergyContainer.acceptEnergyFromNetwork(null, voltage, amperage);
-            if (amperage == amperesUsed) {
+        for (IEnergyContainer container : this.energyContainerList) {
+            amperesUsed += container.acceptEnergyFromNetwork(null, voltage, amperage);
+            if (amperesUsed >= amperage) {
                 return amperesUsed;
             }
         }
@@ -146,10 +144,9 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long changeEnergy(long energyToAdd) {
         long energyAdded = 0L;
-        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            energyAdded += iEnergyContainer.changeEnergy(energyToAdd - energyAdded);
-            if (energyAdded == energyToAdd) {
+        for (IEnergyContainer container : this.energyContainerList) {
+            energyAdded += container.changeEnergy(energyToAdd - energyAdded);
+            if (energyAdded >= energyToAdd) {
                 return energyAdded;
             }
         }
@@ -159,8 +156,8 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long getEnergyStored() {
         long energyStored = 0L;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            energyStored += iEnergyContainer.getEnergyStored();
+        for (IEnergyContainer container : energyContainerList) {
+            energyStored += container.getEnergyStored();
         }
         return energyStored;
     }
@@ -168,8 +165,8 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long getEnergyCapacity() {
         long energyCapacity = 0L;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            energyCapacity += iEnergyContainer.getEnergyCapacity();
+        for (IEnergyContainer container : energyContainerList) {
+            energyCapacity += container.getEnergyCapacity();
         }
         return energyCapacity;
     }
@@ -187,9 +184,8 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long getInputPerSec() {
         long sum = 0;
-        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            sum += iEnergyContainer.getInputPerSec();
+        for (IEnergyContainer container : this.energyContainerList) {
+            sum += container.getInputPerSec();
         }
         return sum;
     }
@@ -197,9 +193,8 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public long getOutputPerSec() {
         long sum = 0;
-        List<? extends IEnergyContainer> energyContainerList = this.energyContainerList;
-        for (IEnergyContainer iEnergyContainer : energyContainerList) {
-            sum += iEnergyContainer.getOutputPerSec();
+        for (IEnergyContainer container : this.energyContainerList) {
+            sum += container.getOutputPerSec();
         }
         return sum;
     }

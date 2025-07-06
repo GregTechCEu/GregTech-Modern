@@ -30,9 +30,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @Author GlodBlock
- * @Description The Output Bus that can directly send its contents to ME storage network.
- * @Date 2023/4/19-20:37
+ * The Output Bus that can directly send its contents to ME storage network.
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

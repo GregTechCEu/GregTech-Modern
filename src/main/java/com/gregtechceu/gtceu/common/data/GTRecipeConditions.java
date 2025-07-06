@@ -8,11 +8,6 @@ import com.gregtechceu.gtceu.common.recipe.condition.*;
 
 import net.minecraftforge.fml.ModLoader;
 
-/**
- * @author KilaBash
- * @date 2023/2/21
- * @implNote GTRecipeConditions
- */
 public final class GTRecipeConditions {
 
     static {

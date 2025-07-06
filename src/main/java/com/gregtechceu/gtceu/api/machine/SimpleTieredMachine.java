@@ -58,10 +58,7 @@ import java.util.function.BiFunction;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote SimpleMachine
- *           All simple single machines are implemented here.
+ * All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -114,7 +111,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
         this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args).shouldSearchContent(false);
+        this.circuitInventory = createCircuitItemHandler(args);
     }
 
     //////////////////////////////////////

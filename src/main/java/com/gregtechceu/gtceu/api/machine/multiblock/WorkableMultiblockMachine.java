@@ -23,7 +23,9 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
@@ -36,11 +38,6 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/3
- * @implNote WorkableMultiblockMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine
@@ -120,7 +117,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         capabilitiesFlat.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
+        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (io == IO.NONE) continue;
@@ -213,10 +211,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             for (long pos : activeBlocks) {
                 var blockPos = BlockPos.of(pos);
                 var blockState = getLevel().getBlockState(blockPos);
-                if (blockState.getBlock() instanceof ActiveBlock block) {
-                    var newState = block.changeActive(blockState, active);
+                if (blockState.hasProperty(ActiveBlock.ACTIVE)) {
+                    var newState = blockState.setValue(ActiveBlock.ACTIVE, active);
                     if (newState != blockState) {
-                        getLevel().setBlockAndUpdate(blockPos, newState);
+                        getLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
                     }
                 }
             }

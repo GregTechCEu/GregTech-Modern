@@ -144,8 +144,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         duration = 0;
         isActive = false;
         lastFailedMatches = null;
-        if (status != Status.SUSPEND)
-            status = Status.IDLE;
+        if (status != Status.SUSPEND) {
+            setStatus(Status.IDLE);
+        }
         updateTickSubscription();
     }
 
@@ -214,13 +215,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        var match = RecipeHelper.matchRecipe(machine, recipe);
-        if (!match.isSuccess()) return match;
-
-        var matchTick = RecipeHelper.matchTickRecipe(machine, recipe);
-        if (!matchTick.isSuccess()) return matchTick;
-
-        return ActionResult.SUCCESS;
+        return RecipeHelper.matchContents(machine, recipe);
     }
 
     protected ActionResult checkRecipe(GTRecipe recipe) {
@@ -247,7 +242,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public void handleRecipeWorking() {
-        Status last = this.status;
         assert lastRecipe != null;
         var conditionResult = RecipeHelper.checkConditions(lastRecipe, this);
         if (conditionResult.isSuccess()) {
@@ -268,11 +262,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
         if (isWaiting()) {
             regressRecipe();
-        }
-        if (last == Status.WORKING && getStatus() != Status.WORKING) {
-            RecipeHelper.postWorking(machine, lastRecipe);
-        } else if (last != Status.WORKING && getStatus() == Status.WORKING) {
-            RecipeHelper.preWorking(machine, lastRecipe);
         }
     }
 
@@ -345,7 +334,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             isActive = false;
             return;
         }
-        RecipeHelper.preWorking(machine, recipe);
         var handledIO = handleRecipeIO(recipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
@@ -434,7 +422,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         machine.afterWorking();
         if (lastRecipe != null) {
             consecutiveRecipes++;
-            RecipeHelper.postWorking(machine, lastRecipe);
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
@@ -449,7 +436,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 }
             }
             // try it again
-            if (!recipeDirty && !suspendAfterFinish && checkRecipe(lastRecipe).isSuccess()) {
+            var recipeCheck = checkRecipe(lastRecipe);
+            if (!recipeDirty && !suspendAfterFinish && recipeCheck.isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
                 if (suspendAfterFinish) {
@@ -457,6 +445,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     suspendAfterFinish = false;
                 } else {
                     setStatus(Status.IDLE);
+                    waitingReason = recipeCheck.reason();
                 }
                 consecutiveRecipes = 0;
                 progress = 0;
@@ -480,18 +469,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void interruptRecipe() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.postWorking(machine, lastRecipe);
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
         }
     }
 
-    public void inValid() {
-        if (lastRecipe != null && isWorking()) {
-            RecipeHelper.postWorking(machine, lastRecipe);
-        }
-    }
+    // Remains for legacy + for subclasses
+    public void inValid() {}
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -527,7 +512,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public IGuiTexture getFancyTooltipIcon() {
-        if (isWaiting()) {
+        if (waitingReason != null) {
             return GuiTextures.INSUFFICIENT_INPUT;
         }
         return IGuiTexture.EMPTY;
@@ -535,7 +520,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public List<Component> getFancyTooltip() {
-        if (isWaiting() && waitingReason != null) {
+        if (waitingReason != null) {
             return List.of(waitingReason);
         }
         return Collections.emptyList();
@@ -543,7 +528,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public boolean showFancyTooltip() {
-        return isWaiting();
+        return waitingReason != null;
     }
 
     protected Map<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
@@ -562,7 +547,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag cacheTag = new ListTag();
             for (var entry : cache.object2IntEntrySet()) {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.serializer.toNbtGeneric(cap.of(entry.getKey()));
+                var obj = cap.contentToNbt(entry.getKey());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", entry.getIntValue());
                 cacheTag.add(compoundTag);
@@ -595,7 +580,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag cacheTag = new ListTag();
             for (var entry : cache.object2IntEntrySet()) {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.serializer.toNbtGeneric(cap.of(entry.getKey()));
+                var obj = cap.contentToNbt(entry.getKey());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", entry.getIntValue());
                 cacheTag.add(compoundTag);

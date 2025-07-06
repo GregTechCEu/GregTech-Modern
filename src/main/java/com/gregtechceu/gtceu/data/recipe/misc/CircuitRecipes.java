@@ -1029,7 +1029,7 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_mv").EUt(VA[LV]).duration(300)
                 .inputItems(GOOD_CIRCUIT_BOARD)
-                .inputItems(CustomTags.LV_CIRCUITS, 2)
+                .inputItems(ELECTRONIC_CIRCUIT_LV, 2)
                 .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireGtSingle, Copper, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_MV)

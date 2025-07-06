@@ -21,11 +21,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author KilaBash
- * @date 2023/3/31
- * @implNote IMachineBlock
- */
 public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
 
     DirectionProperty UPWARDS_FACING_PROPERTY = DirectionProperty.create("upwards_facing", Direction.Plane.HORIZONTAL);
@@ -60,14 +55,13 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
     default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                    BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
-            if (state.getValue(BlockProperties.SERVER_TICK) && !level.isClientSide) {
+            if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
                     if (pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().serverTick();
                     }
                 };
-            }
-            if (level.isClientSide) {
+            } else {
                 return (pLevel, pPos, pState, pTile) -> {
                     if (pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().clientTick();

@@ -29,11 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote GTRecipeSerializer
- */
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
@@ -106,6 +101,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
         int duration = buf.readVarInt();
+        int amperage = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -193,7 +189,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     private static Codec<GTRecipe> makeCodec(boolean isKubeLoaded) {
-        // @formatter:off
+        // spotless:off
         if (!isKubeLoaded) {
             return RecordCodecBuilder.create(instance -> instance.group(
                             GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
@@ -242,7 +238,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory))
                     .apply(instance, GTRecipe::new));
         }
-        // @formatter:on
+        // spotless:on
     }
 
     public static class KJSCallWrapper {

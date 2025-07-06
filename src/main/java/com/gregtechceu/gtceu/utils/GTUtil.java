@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,6 +41,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -50,22 +52,23 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
-/**
- * @author KilaBash
- * @date 2023/2/17
- * @implNote GTUtil
- */
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
+        var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
+        BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
+                .filter((pos) -> (pos.getX() == 0 || pos.getY() == 0 || pos.getZ() == 0) && !pos.equals(BlockPos.ZERO))
+                .map(BlockPos::immutable)
+                .forEach(builder::add);
+        return builder.build();
+    });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
 
@@ -282,29 +285,28 @@ public class GTUtil {
         return replacement;
     }
 
-    public static <T> int getRandomItem(RandomSource random, List<? extends Entry<Integer, T>> randomList, int size) {
-        if (randomList.isEmpty())
-            return -1;
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(RandomSource random, List<T> randomList) {
+        if (randomList.isEmpty()) return null;
+        int size = randomList.size();
         int[] baseOffsets = new int[size];
         int currentIndex = 0;
         for (int i = 0; i < size; i++) {
-            Entry<Integer, T> entry = randomList.get(i);
-            if (entry.getKey() <= 0) {
-                throw new IllegalArgumentException("Invalid weight: " + entry.getKey());
+            int weight = randomList.get(i).weight();
+            if (weight <= 0) {
+                throw new IllegalArgumentException("Invalid weight: " + weight);
             }
-            currentIndex += entry.getKey();
+            currentIndex += weight;
             baseOffsets[i] = currentIndex;
         }
         int randomValue = random.nextInt(currentIndex);
         for (int i = 0; i < size; i++) {
-            if (randomValue < baseOffsets[i])
-                return i;
+            if (randomValue < baseOffsets[i]) return randomList.get(i);
         }
         throw new IllegalArgumentException("Invalid weight");
     }
 
-    public static <T> int getRandomItem(List<? extends Entry<Integer, T>> randomList, int size) {
-        return getRandomItem(GTValues.RNG, randomList, size);
+    public static <T extends WeightedEntry> @Nullable T getRandomItem(List<T> randomList) {
+        return getRandomItem(GTValues.RNG, randomList);
     }
 
     @SuppressWarnings("unchecked")
@@ -384,18 +386,20 @@ public class GTUtil {
     public static DyeColor determineDyeColor(int rgbColor) {
         float[] c = GradientUtil.getRGB(rgbColor);
 
-        Map<Double, DyeColor> distances = new HashMap<>();
+        double min = Double.MAX_VALUE;
+        DyeColor minColor = null;
         for (DyeColor dyeColor : DyeColor.values()) {
             float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
             double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
                     (c[2] - c2[2]) * (c[2] - c2[2]);
 
-            distances.put(distance, dyeColor);
+            if (Double.compare(min, distance) < 0) {
+                minColor = dyeColor;
+                min = distance;
+            }
         }
-
-        double min = Collections.min(distances.keySet());
-        return distances.get(min);
+        return minColor;
     }
 
     public static int convertRGBtoARGB(int colorValue) {
@@ -486,7 +490,7 @@ public class GTUtil {
                 }
             }
 
-            if (stack.getItem().canBeDepleted()) {
+            if (stack.isDamageableItem()) {
                 stack.setDamageValue(stack.getDamageValue());
             }
             return stack;

@@ -7,11 +7,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/**
- * @author KilaBash
- * @date 2023/7/13
- * @implNote MinerPipeBlock
- */
 public class MinerPipeBlock extends Block {
 
     public static VoxelShape SHAPE = Block.box(4, 0, 4, 12, 16, 12);

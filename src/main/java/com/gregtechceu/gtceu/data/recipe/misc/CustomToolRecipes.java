@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -11,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
@@ -227,14 +230,22 @@ public final class CustomToolRecipes {
                     'C', CustomTags.LV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
-                    "lv_magnet_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
-                    "MwM", "MBM", "CPC",
-                    'M', new MaterialEntry(rod, GTMaterials.SteelMagnetic),
-                    'P', new MaterialEntry(plate, GTMaterials.Steel),
-                    'C', new MaterialEntry(cableGtSingle, GTMaterials.Tin),
-                    'B', batteryItem.asStack());
+            {
+                var magnetStack = GTItems.ITEM_MAGNET_LV.asStack();
+                var tag = magnetStack.getOrCreateTag();
+                var filter = (SimpleItemFilter) ItemFilter
+                        .loadFilter(ItemMagnetBehavior.Filter.SIMPLE.getFilter(magnetStack));
+                filter.setBlackList(true);
+                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
+                VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
+                        "lv_magnet_" + batteryItem.getId().getPath(),
+                        Ingredient.of(batteryItem), magnetStack,
+                        "MwM", "MBM", "CPC",
+                        'M', new MaterialEntry(rod, GTMaterials.SteelMagnetic),
+                        'P', new MaterialEntry(plate, GTMaterials.Steel),
+                        'C', new MaterialEntry(cableGtSingle, GTMaterials.Tin),
+                        'B', batteryItem.asStack());
+            }
         }
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
@@ -262,14 +273,22 @@ public final class CustomToolRecipes {
                     'C', CustomTags.HV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
-                    "hv_magnet_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
-                    "MwM", "MBM", "CPC",
-                    'M', new MaterialEntry(rod, GTMaterials.NeodymiumMagnetic),
-                    'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
-                    'C', new MaterialEntry(cableGtSingle, GTMaterials.Gold),
-                    'B', batteryItem.asStack());
+            {
+                var magnetStack = GTItems.ITEM_MAGNET_HV.asStack();
+                var tag = magnetStack.getOrCreateTag();
+                var filter = (SimpleItemFilter) ItemFilter
+                        .loadFilter(ItemMagnetBehavior.Filter.SIMPLE.getFilter(magnetStack));
+                filter.setBlackList(true);
+                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
+                VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
+                        "hv_magnet_" + batteryItem.getId().getPath(),
+                        Ingredient.of(batteryItem), magnetStack,
+                        "MwM", "MBM", "CPC",
+                        'M', new MaterialEntry(rod, GTMaterials.NeodymiumMagnetic),
+                        'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
+                        'C', new MaterialEntry(cableGtSingle, GTMaterials.Gold),
+                        'B', batteryItem.asStack());
+            }
         }
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {

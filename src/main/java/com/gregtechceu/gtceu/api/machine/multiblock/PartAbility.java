@@ -12,13 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.function.Supplier;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote MultiblockAbility
- *           Fine, It's not really needed。It used to specify which blocks are available.
- *           Only registered blocks can be used as part of gtceu's multiblock.
- */
 public class PartAbility {
 
     public static final PartAbility EXPORT_ITEMS = new PartAbility("export_items");

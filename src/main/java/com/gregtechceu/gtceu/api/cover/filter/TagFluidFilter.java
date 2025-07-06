@@ -13,11 +13,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote TagFluidFilter
- */
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
 
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();

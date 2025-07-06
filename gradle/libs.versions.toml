@@ -5,8 +5,7 @@ minecraftForge = "1.20.1-47.3.0"
 parchment = "2023.09.03" # https://parchmentmc.org/docs/getting-started
 shadow = "8.3.5"
 spotless = "7.0.2"
-# TODO: Update to stable MDG when https://github.com/neoforged/ModDevGradle/issues/227 is fixed
-modDevGradle = "2.0.64-beta"
+modDevGradle = "2.0.86"
 machete = "2.0.1"
 lombok = "8.11"
 jetbrains-annotations = "26.0.1"
