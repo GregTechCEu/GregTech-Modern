@@ -142,8 +142,8 @@ public class RenderBufferHelper {
                     minX, maxY, maxZ, uMax, vMin,
                     minX, maxY, minZ, uMin, vMin);
 
-        if (sidesToRender.contains(Direction.WEST))
-            renderCubeFace(buffer, pose, color, combinedLight, Direction.WEST,
+        if (sidesToRender.contains(Direction.EAST))
+            renderCubeFace(buffer, pose, color, combinedLight, Direction.EAST,
                     maxX, minY, minZ, uMin, vMax,
                     maxX, maxY, minZ, uMax, vMax,
                     maxX, maxY, maxZ, uMax, vMin,
