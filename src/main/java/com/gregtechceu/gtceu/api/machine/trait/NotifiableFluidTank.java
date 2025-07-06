@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -116,13 +117,32 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 continue;
             }
 
-            var fluids = ingredient.getStacks();
-            if (fluids.length == 0 || fluids[0].isEmpty()) {
-                it.remove();
-                continue;
-            }
+            FluidStack[] fluids;
+            int amount;
 
-            int amount = ingredient.getAmount();
+            if (io == IO.OUT && ingredient instanceof IntProviderFluidIngredient provider) {
+                provider.setFluidStacks(null);
+                provider.setSampledCount(-1);
+
+                if (simulate) {
+                    fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                    amount = provider.getCountProvider().getMaxValue();
+                } else {
+                    fluids = provider.getStacks();
+                    if (fluids.length == 0 || fluids[0].isEmpty()) {
+                        it.remove();
+                        continue;
+                    }
+                    amount = fluids[0].getAmount();
+                }
+            } else {
+                fluids = ingredient.getStacks();
+                if (fluids.length == 0 || fluids[0].isEmpty()) {
+                    it.remove();
+                    continue;
+                }
+                amount = ingredient.getAmount();
+            }
 
             if (io == IO.OUT && !allowSameFluids) {
                 CustomFluidTank existing = null;

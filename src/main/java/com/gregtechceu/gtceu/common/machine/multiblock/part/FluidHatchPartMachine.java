@@ -88,7 +88,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
         this.circuitSlotEnabled = true;
-        this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        this.circuitInventory = createCircuitItemHandler(io);
     }
 
     //////////////////////////////////////

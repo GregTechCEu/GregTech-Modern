@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
@@ -442,6 +443,8 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
+            } else if (o instanceof IntProviderFluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient.copy());
             } else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {

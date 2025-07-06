@@ -127,7 +127,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
                     if (zone.strength() <= 0) {
                         if (serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
                             LevelChunk chunk = serverLevel.getChunk(chunkPos.x, chunkPos.z);
-                            GTNetwork.NETWORK.sendToTrackingChunk(new SPacketRemoveHazardZone(chunkPos), chunk);
+                            GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(chunkPos));
                         }
                         return null;
                     } else return zone;

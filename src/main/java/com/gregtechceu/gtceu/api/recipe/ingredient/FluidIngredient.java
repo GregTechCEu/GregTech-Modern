@@ -38,10 +38,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Nullable
     public FluidStack[] stacks;
     @Getter
-    private int amount;
+    protected int amount;
     @Getter
-    private CompoundTag nbt;
-    private boolean changed = true;
+    protected CompoundTag nbt;
+    protected boolean changed = true;
 
     protected FluidIngredient(Value[] values, int amount, @Nullable CompoundTag nbt) {
         this.values = values;
@@ -231,6 +231,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonSyntaxException("Expected fluid ingredient to be object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
+        if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
+            return IntProviderFluidIngredient.fromJson(json);
+        }
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {

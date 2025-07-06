@@ -2327,6 +2327,7 @@
   "gtceu.gui.content.chance_tier_boost_minus": "Bonus Chance: -%s%%/tier",
   "gtceu.gui.content.chance_tier_boost_plus": "Bonus Chance: +%s%%/tier",
   "gtceu.gui.content.count_range": "%s-%sx",
+  "gtceu.gui.content.fluid_range": "%s-%smB",
   "gtceu.gui.content.per_tick": "§aConsumed/Produced Per Tick§r",
   "gtceu.gui.content.tips.per_second_short": "§a/second§r",
   "gtceu.gui.content.tips.per_tick_short": "§a/tick§r",

@@ -10,11 +10,16 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
+import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
@@ -25,8 +30,11 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -57,6 +65,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) return content.copy();
+        if (content instanceof IntProviderFluidIngredient provider) {
+            return IntProviderFluidIngredient.of(provider.getInner(),
+                    new FlooredInt(
+                            new AddedFloat(
+                                    new MultipliedFloat(
+                                            new CastedFloat(provider.getCountProvider()),
+                                            ConstantFloat.of((float) modifier.multiplier())),
+                                    ConstantFloat.of((float) modifier.addition()))));
+        }
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
         return copy;
@@ -259,7 +276,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 Object2IntOpenHashMap<FluidStack> distinctInv = new Object2IntOpenHashMap<>();
-                if (!handler.shouldSearchContent()) continue;
                 for (var content : handler.getContents()) {
                     if (content instanceof FluidStack stack && !stack.isEmpty()) {
                         distinctInv.addTo(stack, stack.getAmount());
@@ -277,7 +293,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
                 Object2IntOpenHashMap<FluidStack> inventory = new Object2IntOpenHashMap<>();
                 for (var handler : handlers) {
-                    if (!handler.shouldSearchContent()) continue;
                     for (var content : handler.getContents()) {
                         if (content instanceof FluidStack stack && !stack.isEmpty()) {
                             inventory.addTo(stack, stack.getAmount());
@@ -352,7 +367,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
-
+                    if (ingredient instanceof IntProviderFluidIngredient provider) {
+                        IntProvider countProvider = provider.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    }
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
@@ -369,7 +389,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
-        int amount = ingredient.getAmount();
+        int amount;
+        if (ingredient instanceof IntProviderFluidIngredient provider) {
+            amount = provider.getCountProvider().getMaxValue();
+        } else {
+            amount = ingredient.getAmount();
+        }
         CompoundTag tag = ingredient.getNbt();
 
         FluidTagList tags = new FluidTagList();

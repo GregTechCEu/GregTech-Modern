@@ -398,7 +398,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     var fluidInfo = ProspectorMode.FluidInfo
                             .fromVeinWorldEntry(veinData.getFluidVeinWorldEntry(chunkX, chunkZ));
                     var packet = new SPacketProspectBedrockFluid(level.dimension(), pos, fluidInfo);
-                    GTNetwork.NETWORK.sendToPlayer(packet, (ServerPlayer) player);
+                    GTNetwork.sendToPlayer((ServerPlayer) player, packet);
 
                     if (player.isCreative()) {
                         list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.amount",
