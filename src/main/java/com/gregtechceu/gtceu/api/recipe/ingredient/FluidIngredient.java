@@ -259,12 +259,12 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return FluidIngredient.fromJson(json, true);
     }
 
-    public static FluidIngredient fromJson(@Nullable JsonElement json, boolean allowAir) {
+    public static FluidIngredient fromJson(@Nullable JsonElement json, boolean allowEmpty) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
         }
         if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected fluid ingredient to be object");
+            throw new JsonSyntaxException("Expected fluid ingredient to be an object");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
@@ -277,8 +277,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
             return FluidIngredient.fromValue(value, amount, nbt);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "value");
-            if (jsonArray.isEmpty() && !allowAir) {
-                throw new JsonSyntaxException("Fluid array cannot be empty, at least one fluid be defined");
+            if (jsonArray.isEmpty() && !allowEmpty) {
+                throw new JsonSyntaxException("Fluid array cannot be empty, at least one fluid must be defined");
             }
             List<Value> values = new ArrayList<>();
             for (JsonElement e : jsonArray) {
