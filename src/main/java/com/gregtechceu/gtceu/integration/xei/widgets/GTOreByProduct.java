@@ -232,7 +232,7 @@ public class GTOreByProduct {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
             addChance(7000, 0);
-            fluidInputs.add(FluidTagList.of(washedIn.getFirst().getFluidTag(), washedIn.getSecond(), null));
+            fluidInputs.add(FluidTagList.of(washedIn.first().getFluidTag(), washedIn.secondInt(), null));
         } else {
             addEmptyOutputs(2);
             fluidInputs.add(new FluidStackList());
