@@ -5571,5 +5571,8 @@
     "config.gtceu.option.coloredWireOutline": "coloredWireOutline",
     "item.gtceu.armor.chestplate": "Нагрудник (%s)",
     "item.gtceu.armor.helmet": "Шлем (%s)",
-    "item.gtceu.armor.leggings": "Поножи (%s)"
+    "item.gtceu.armor.leggings": "Поножи (%s)",
+    "config.gtceu.option.batchDuration": "batchDuration",
+    "gtceu.gui.content.chance_no_boost": "Шанс: %s%%",
+    "gtceu.gui.content.chance_no_boost_logic": "Шанс: %s%% (%s)"
 }
