@@ -17,7 +17,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=false,recipe_logic_status=suspend": {
       "model": {
@@ -28,7 +29,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=false,recipe_logic_status=waiting": {
       "model": {
@@ -39,7 +41,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=false,recipe_logic_status=working": {
       "model": {
@@ -50,7 +53,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=true,recipe_logic_status=idle": {
       "model": {
@@ -61,7 +65,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=true,recipe_logic_status=suspend": {
       "model": {
@@ -72,7 +77,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=true,recipe_logic_status=waiting": {
       "model": {
@@ -83,7 +89,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     },
     "is_formed=true,recipe_logic_status=working": {
       "model": {
@@ -94,7 +101,8 @@
           "side": "gtceu:block/casings/pump_deck/side",
           "top": "gtceu:block/casings/pump_deck/top"
         }
-      }
+      },
+      "uvlock": true
     }
   }
 }
