@@ -263,15 +263,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
         }
-        if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected fluid ingredient to be an object");
-        }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         if (GsonHelper.isObjectNode(jsonObject, "count_provider")) {
             return IntProviderFluidIngredient.fromJson(json);
         }
+
         int amount = GsonHelper.getAsInt(jsonObject, "amount", 0);
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
+
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
             Value value = FluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"));
             return FluidIngredient.fromValue(value, amount, nbt);
@@ -295,8 +294,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
                 Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(value));
                 return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
             }
+        } else {
+            throw new JsonSyntaxException("expected 'value' to be an object, an array or a string.");
         }
-        throw new JsonSyntaxException("expected value to be either object or array.");
     }
 
     private static FluidIngredient.Value valueFromJson(JsonObject json) {
