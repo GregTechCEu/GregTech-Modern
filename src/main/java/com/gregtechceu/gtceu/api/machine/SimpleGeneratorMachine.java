@@ -71,11 +71,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     }
 
     @Override
-    protected long getMaxInputOutputAmperage() {
-        return 1L;
-    }
-
-    @Override
     public int tintColor(int index) {
         if (index == 2) {
             return GTValues.VC[getTier()];
@@ -101,7 +96,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
-        long EUt = recipe.getOutputEUt();
+        long EUt = recipe.getOutputEUt().getTotalEU();
         if (EUt <= 0) return ModifierFunction.NULL;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);

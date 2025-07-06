@@ -113,6 +113,7 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
     /**
      * @return input eu/s
      */
+    @Override
     default long getInputPerSec() {
         return 0L;
     }
@@ -120,6 +121,7 @@ public interface IEnergyContainer extends IEnergyInfoProvider {
     /**
      * @return output eu/s
      */
+    @Override
     default long getOutputPerSec() {
         return 0L;
     }

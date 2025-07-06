@@ -363,7 +363,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
             GTRecipe match = matches.next();
             if (match == null) continue;
 
-            long eut = match.getInputEUt();
+            long eut = match.getInputEUt().getTotalEU();
             if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
                 if (RecipeHelper.handleRecipeIO(this, match, IO.OUT, this.chanceCaches).isSuccess()) {
                     blockDrops.clear();

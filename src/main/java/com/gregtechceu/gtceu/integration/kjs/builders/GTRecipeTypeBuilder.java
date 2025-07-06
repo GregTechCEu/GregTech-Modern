@@ -56,7 +56,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         slotOverlays = new Byte2ObjectArrayMap<>();
         this.sound = null;
         this.hasResearchSlot = false;
-        this.maxTooltips = 3;
+        this.maxTooltips = 4;
         this.smallRecipeMap = null;
         this.iconSupplier = null;
         this.uiBuilder = null;

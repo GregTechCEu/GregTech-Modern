@@ -410,8 +410,8 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether insufficient energy supply should reset Machine recipe progress to zero.",
                 "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed",
-                "Default: false" })
-        public boolean recipeProgressLowEnergy = false;
+                "Default: true" })
+        public boolean recipeProgressLowEnergy = true;
         @Configurable
         @Configurable.Comment({
                 "Whether to require a Wrench, Wirecutter, or other GregTech tools to break machines, casings, wires, and more.",
@@ -442,6 +442,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Whether to play machine sounds while machines are active.", "Default: true" })
         public boolean machineSounds = true;
+        @Configurable
+        @Configurable.Comment({ "Duration in ticks that batching will try to reach.", "Default: 100" })
+        public int batchDuration = 100;
         @Configurable
         @Configurable.Comment({ "Whether Steam Multiblocks should use Steel instead of Bronze.", "Default: false" })
         public boolean steelSteamMultiblocks = false;
