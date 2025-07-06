@@ -93,6 +93,14 @@ public class GTMachineModels {
         };
     }
 
+    public static MachineBuilder.ModelInitializer createBasicReplaceableTextureMachineModel(ResourceLocation baseModel) {
+        return (ctx, prov, builder) -> {
+            var model = prov.models().getExistingFile(baseModel);
+            builder.forAllStatesModels(state -> model);
+            builder.addReplaceableTextures("bottom", "top", "side");
+        };
+    }
+
     public static MachineBuilder.ModelInitializer createTieredHullMachineModel(ResourceLocation parentModel) {
         return (ctx, prov, builder) -> {
             BlockModelBuilder model = prov.models().nested()

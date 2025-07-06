@@ -9,14 +9,7 @@
   ],
   "variants": {
     "": {
-      "model": {
-        "parent": "gtceu:block/machine/part/pump_hatch",
-        "textures": {
-          "bottom": "gtceu:block/casings/pump_deck/bottom",
-          "side": "gtceu:block/casings/pump_deck/side",
-          "top": "gtceu:block/casings/pump_deck/top"
-        }
-      }
+      "model": "gtceu:block/machine/part/pump_hatch"
     }
   }
 }

@@ -858,7 +858,7 @@ public class GTMachines {
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
-            .sidedOverlayCasingModel(GTCEu.id("block/casings/pump_deck"), GTCEu.id("block/machine/part/pump_hatch"))
+            .model(createBasicReplaceableTextureMachineModel(GTCEu.id("block/machine/part/pump_hatch")))
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE
