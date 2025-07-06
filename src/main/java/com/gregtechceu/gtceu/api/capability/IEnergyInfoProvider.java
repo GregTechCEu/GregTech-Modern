@@ -8,6 +8,10 @@ public interface IEnergyInfoProvider {
 
     EnergyInfo getEnergyInfo();
 
+    long getInputPerSec();
+
+    long getOutputPerSec();
+
     boolean supportsBigIntEnergyValues();
 
     /**

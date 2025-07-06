@@ -49,8 +49,8 @@ public class Predicates {
         var candidates = new ArrayList<BlockState>();
         for (BlockState state : allowedStates) {
             candidates.add(state);
-            if (state.getBlock() instanceof ActiveBlock block) {
-                candidates.add(block.changeActive(state, !block.isActive(state)));
+            if (state.hasProperty(ActiveBlock.ACTIVE)) {
+                candidates.add(state.setValue(ActiveBlock.ACTIVE, !state.getValue(ActiveBlock.ACTIVE)));
             }
         }
         return new TraceabilityPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));

@@ -2,9 +2,15 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -18,28 +24,41 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecipeHelper {
 
-    public static long getRealEUt(@NotNull GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt > 0) return EUt;
-        return -recipe.getOutputEUt();
+    public static EnergyStack getRealEUt(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return stack;
+        return recipe.getOutputEUt();
+    }
+
+    /**
+     * Get a pair of the absolute EU/t value this recipe inputs or outputs and if it's input or output
+     *
+     * @param recipe
+     * @return A pair of {@code (EnergyStack, isInput)}
+     */
+    public static EnergyStack.WithIO getRealEUtWithIO(@NotNull GTRecipe recipe) {
+        EnergyStack stack = recipe.getInputEUt();
+        if (!stack.isEmpty()) return new EnergyStack.WithIO(stack, IO.IN);
+        return new EnergyStack.WithIO(recipe.getOutputEUt(), IO.OUT);
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt == 0) EUt = recipe.getOutputEUt();
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
-        long EUt = recipe.getInputEUt();
-        if (EUt == 0) EUt = recipe.getOutputEUt();
+        EnergyStack stack = getRealEUt(recipe);
+        long EUt = stack.getTotalEU();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
@@ -324,5 +343,49 @@ public class RecipeHelper {
         }
 
         return outputs;
+    }
+
+    public static void addToRecipeHandlerMap(RecipeHandlerGroup key, RecipeHandlerList handler,
+                                             Map<RecipeHandlerGroup, List<RecipeHandlerList>> map) {
+        // Add undyed RHL's to every group that's not distinct, and also the undyed group itself.
+        if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
+            for (var entry : map.entrySet()) {
+                if (entry.getKey().equals(RecipeHandlerGroupDistinctness.BUS_DISTINCT) ||
+                        entry.getKey().equals(RecipeHandlerGroupColor.UNDYED)) {
+                    continue;
+                }
+                entry.getValue().add(handler);
+            }
+        }
+        // Add other RHL's to their own group, or create it (using the undyed group as base) if it does not exist.
+        List<RecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
+
+        map.computeIfAbsent(key, $ -> new ArrayList<>(undyed)).add(handler);
+    }
+
+    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
+                                            @Nullable ItemStack output) {
+        int[] divisors = new int[] { 2, 5, 10, 25, 50 };
+        int ratio = -1;
+
+        for (int divisor : divisors) {
+
+            if (!isFluidStackDivisibleForDistillery(fluidInput, divisor))
+                continue;
+
+            if (!isFluidStackDivisibleForDistillery(fluidOutput, divisor))
+                continue;
+
+            if (output != null && output.getCount() % divisor != 0)
+                continue;
+
+            ratio = divisor;
+        }
+
+        return Math.max(1, ratio);
+    }
+
+    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
+        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

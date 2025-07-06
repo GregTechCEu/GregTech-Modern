@@ -37,7 +37,13 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         // expand the overlay quads ever so slightly to combat z-fighting.
         overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand)
-                .forEach(quad -> quads.add(Quad.from(quad, overlayQuadsOffset()).rebake()));
+                .forEach(quad -> {
+                    // skip the color overlay on unpainted hatches
+                    if (quad.getTintIndex() == 9 && (machine == null || machine.getPaintingColor() == -1)) {
+                        return;
+                    }
+                    quads.add(Quad.from(quad, overlayQuadsOffset()).rebake());
+                });
     }
 
     public float overlayQuadsOffset() {

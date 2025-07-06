@@ -5,9 +5,12 @@ import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -317,6 +320,28 @@ public class GTRecipeComponents {
             return componentType();
         }
     };
+    public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "energy_stack";
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return EnergyStack.class;
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, EnergyStack.WithIO value) {
+            return EnergyStack.WithIO.CODEC.encodeStart(JsonOps.INSTANCE, value).result().orElse(null);
+        }
+
+        @Override
+        public EnergyStack.WithIO read(RecipeJS recipe, Object from) {
+            return KJSHelpers.parseIOEnergyStack(from);
+        }
+    };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
@@ -326,13 +351,13 @@ public class GTRecipeComponents {
             GTRecipeCapabilities.FLUID, false);
     public static final ContentJS<FluidIngredientJS> FLUID_OUT = new ContentJS<>(FLUID_INGREDIENT,
             GTRecipeCapabilities.FLUID, true);
-    public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_IN = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             false);
-    public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_OUT = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             true);
-    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             false);
-    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             true);
 
     public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);
@@ -399,6 +424,8 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
+            } else if (o instanceof IntProviderFluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient.copy());
             } else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -65,6 +66,7 @@ public final class ProxySlotRecipeHandler {
             sharedFluid = new ProxyFluidRecipeHandler(machine);
             slotFluid = new ProxyFluidRecipeHandler(machine);
             addHandlers(circuit, sharedItem, slotItem, sharedFluid, slotFluid);
+            this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
 
         public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {

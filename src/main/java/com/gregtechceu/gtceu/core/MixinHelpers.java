@@ -72,8 +72,11 @@ public class MixinHelpers {
                 if (material.isNull()) return;
                 var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
 
-                var materialTags = entry.tagPrefix().getAllItemTags(material);
-                for (TagKey<Item> materialTag : materialTags) {
+                var prefixTagKeys = entry.tagPrefix().getAllItemTags(material);
+                for (TagKey<Item> prefixTag : prefixTagKeys) {
+                    tagMap.computeIfAbsent(prefixTag.location(), path -> new ArrayList<>()).addAll(entries);
+                }
+                for (TagKey<Item> materialTag : material.getItemTags()) {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
 

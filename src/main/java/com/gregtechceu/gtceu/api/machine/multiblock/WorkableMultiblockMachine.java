@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -210,10 +211,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             for (long pos : activeBlocks) {
                 var blockPos = BlockPos.of(pos);
                 var blockState = getLevel().getBlockState(blockPos);
-                if (blockState.getBlock() instanceof ActiveBlock block) {
-                    var newState = block.changeActive(blockState, active);
+                if (blockState.hasProperty(ActiveBlock.ACTIVE)) {
+                    var newState = blockState.setValue(ActiveBlock.ACTIVE, active);
                     if (newState != blockState) {
-                        getLevel().setBlockAndUpdate(blockPos, newState);
+                        getLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
                     }
                 }
             }

@@ -64,4 +64,8 @@ repositories {
         forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
         filter { includeGroup("thedarkcolour") }
     }
+    exclusiveContent { // CC: Tweaked
+        forRepository { maven { url = "https://maven.squiddev.cc" } }
+        filter { includeGroup("cc.tweaked") }
+    }
 }

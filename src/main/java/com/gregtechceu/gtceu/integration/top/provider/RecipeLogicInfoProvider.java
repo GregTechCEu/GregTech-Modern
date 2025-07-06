@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -41,49 +41,39 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
     @Override
     protected void addProbeInfo(RecipeLogic capability, IProbeInfo probeInfo, Player player, BlockEntity blockEntity,
                                 IProbeHitData data) {
-        // do not show energy usage on machines that do not use energy
         if (capability.isWorking()) {
-            // TODO PrimitiveRecipeLogic
-            // if (capability instanceof PrimitiveRecipeLogic) {
-            // return; // do not show info for primitive machines, as they are supposed to appear powerless
-            // }
             var recipe = capability.getLastRecipe();
             if (recipe != null) {
-                long EUt = recipe.getInputEUt();
-                boolean isInput = true;
-                if (EUt == 0) {
-                    isInput = false;
-                    EUt = recipe.getOutputEUt();
+                var EUt = RecipeHelper.getRealEUtWithIO(recipe);
+                if (EUt.isEmpty()) {
+                    // do not show energy usage on machines that do not use energy
+                    return;
                 }
-                long absEUt = Math.abs(EUt);
-                String text = null;
+                String formatted = FormattingUtil.formatNumbers(EUt.getTotalEU()) + TextStyleClass.INFO;
+                Component text = null;
 
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
                     if (machine instanceof SteamMachine) {
-                        text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " mB/t " +
-                                LocalizationUtils.format("material.steam");
+                        text = Component.literal(formatted + " mB/t").withStyle(ChatFormatting.GREEN);
                     }
                 }
 
                 if (text == null) {
-                    // Default behavior, if this TE is not a steam machine (or somehow not instanceof
-                    // IGregTechTileEntity...)
-                    text = ChatFormatting.RED.toString() + absEUt + TextStyleClass.INFO + " EU/t" +
-                            ChatFormatting.GREEN + " (" + GTValues.VNF[GTUtil.getTierByVoltage(absEUt)] +
-                            ChatFormatting.GREEN + ")";
+                    text = Component.literal(formatted + " EU/t ").withStyle(ChatFormatting.RED)
+                            .append(Component.literal("(").withStyle(ChatFormatting.GREEN))
+                            .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
+                            .append(Component.literal(")").withStyle(ChatFormatting.GREEN));
                 }
 
-                if (EUt > 0) {
-                    if (isInput) {
-                        probeInfo.text(CompoundText.create()
-                                .text(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text))
-                                .style(TextStyleClass.INFO));
-                    } else {
-                        probeInfo.text(CompoundText.create()
-                                .text(Component.translatable("gtceu.top.energy_production").append(" ").append(text))
-                                .style(TextStyleClass.INFO));
-                    }
+                if (EUt.isInput()) {
+                    probeInfo.text(CompoundText.create()
+                            .text(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text))
+                            .style(TextStyleClass.INFO));
+                } else {
+                    probeInfo.text(CompoundText.create()
+                            .text(Component.translatable("gtceu.top.energy_production").append(" ").append(text))
+                            .style(TextStyleClass.INFO));
                 }
             }
         }

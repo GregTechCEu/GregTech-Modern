@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -55,6 +56,10 @@ public abstract class RecipeCapability<T> {
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
         return Content.codec(capability).listOf();
+    }
+
+    public Tag contentToNbt(Object value) {
+        return this.serializer.toNbt(this.of(value));
     }
 
     /**

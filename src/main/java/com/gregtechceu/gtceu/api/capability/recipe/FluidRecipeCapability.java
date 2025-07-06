@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -8,11 +10,16 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+import com.gregtechceu.gtceu.common.valueprovider.AddedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.CastedFloat;
+import com.gregtechceu.gtceu.common.valueprovider.FlooredInt;
+import com.gregtechceu.gtceu.common.valueprovider.MultipliedFloat;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
@@ -23,8 +30,11 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -36,6 +46,8 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
 public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
@@ -53,6 +65,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public FluidIngredient copyWithModifier(FluidIngredient content, ContentModifier modifier) {
         if (content.isEmpty()) return content.copy();
+        if (content instanceof IntProviderFluidIngredient provider) {
+            return IntProviderFluidIngredient.of(provider.getInner(),
+                    new FlooredInt(
+                            new AddedFloat(
+                                    new MultipliedFloat(
+                                            new CastedFloat(provider.getCountProvider()),
+                                            ConstantFloat.of((float) modifier.multiplier())),
+                                    ConstantFloat.of((float) modifier.addition()))));
+        }
         FluidIngredient copy = content.copy();
         copy.setAmount(modifier.apply(copy.getAmount()));
         return copy;
@@ -239,45 +260,49 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     private static List<Object2IntMap<FluidStack>> getInputContents(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
-        List<RecipeHandlerList> distinct = new ArrayList<>();
-        List<IRecipeHandler<?>> indistinct = new ArrayList<>();
 
-        for (var handlerList : handlerLists) {
-            if (handlerList.isDistinct() && handlerList.hasCapability(FluidRecipeCapability.CAP)) {
-                distinct.add(handlerList);
-            } else if (handlerList.hasCapability(FluidRecipeCapability.CAP)) {
-                indistinct.addAll(handlerList.getCapability(FluidRecipeCapability.CAP));
-            }
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
+        for (var handler : handlerLists) {
+            if (!handler.hasCapability(FluidRecipeCapability.CAP)) continue;
+            addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
         }
 
-        List<Object2IntMap<FluidStack>> invs = new ArrayList<>(distinct.size() + 1);
-        Object2IntOpenHashMap<FluidStack> combined = new Object2IntOpenHashMap<>();
-        for (var handler : indistinct) {
-            if (!handler.shouldSearchContent()) continue;
-            for (var content : handler.getContents()) {
-                if (content instanceof FluidStack stack && !stack.isEmpty()) {
-                    combined.addTo(stack, stack.getAmount());
-                }
-            }
-        }
-
-        for (var handlerList : distinct) {
+        List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
+                RecipeHandlerGroupDistinctness.BUS_DISTINCT,
+                Collections.emptyList());
+        List<Object2IntMap<FluidStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
+        // Handle distinct groups first, adding an inventory based on their contents individually.
+        for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
-            // Clone has the desired effect here - it will shallow copy the keys, which we don't change and deep copy
-            // the values, as they are primitives.
-            var inventory = combined.clone();
-            for (var handler : handlers) {
-                if (!handler.shouldSearchContent()) continue;
+            for (IRecipeHandler<?> handler : handlers) {
+                Object2IntOpenHashMap<FluidStack> distinctInv = new Object2IntOpenHashMap<>();
                 for (var content : handler.getContents()) {
                     if (content instanceof FluidStack stack && !stack.isEmpty()) {
-                        inventory.addTo(stack, stack.getAmount());
+                        distinctInv.addTo(stack, stack.getAmount());
                     }
                 }
+                if (!distinctInv.isEmpty()) invs.add(distinctInv);
             }
-            if (!inventory.isEmpty()) invs.add(inventory);
         }
 
-        if (!combined.isEmpty()) invs.add(combined);
+        // Then handle other groups. The logic of undyed busses belonging to
+        // everything has already been taken care of by addToRecipeMap()
+        for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
+            if (RecipeHandlerGroupDistinctness.BUS_DISTINCT == handlerListEntry.getKey()) continue;
+            for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
+                var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
+                Object2IntOpenHashMap<FluidStack> inventory = new Object2IntOpenHashMap<>();
+                for (var handler : handlers) {
+                    for (var content : handler.getContents()) {
+                        if (content instanceof FluidStack stack && !stack.isEmpty()) {
+                            inventory.addTo(stack, stack.getAmount());
+                        }
+                    }
+                }
+                if (!inventory.isEmpty()) invs.add(inventory);
+            }
+        }
+
         return invs;
     }
 
@@ -342,7 +367,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                         FluidStack stack = ingredient.getStacks()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
-
+                    if (ingredient instanceof IntProviderFluidIngredient provider) {
+                        IntProvider countProvider = provider.getCountProvider();
+                        tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
+                                countProvider.getMinValue(), countProvider.getMaxValue())
+                                .withStyle(ChatFormatting.GOLD));
+                    }
                     GTRecipeWidget.setConsumedChance(content,
                             recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
@@ -359,7 +389,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapFluid(FluidIngredient ingredient) {
-        int amount = ingredient.getAmount();
+        int amount;
+        if (ingredient instanceof IntProviderFluidIngredient provider) {
+            amount = provider.getCountProvider().getMaxValue();
+        } else {
+            amount = ingredient.getAmount();
+        }
         CompoundTag tag = ingredient.getNbt();
 
         FluidTagList tags = new FluidTagList();

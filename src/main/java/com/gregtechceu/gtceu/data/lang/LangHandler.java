@@ -975,7 +975,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
         provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.amperage", "Amperage: %s");
+        provider.add("gtceu.recipe.voltage", "Voltage: %s V @ %s A");
+        provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
         provider.add("gtceu.recipe.temperature", "Temp: %sK");
@@ -1348,6 +1349,7 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
+        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

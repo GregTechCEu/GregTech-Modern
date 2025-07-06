@@ -207,7 +207,7 @@ public class RenderUtil {
                 if (items.length > 0) {
                     ItemStack output = items[0];
                     if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, stack)) {
-                        originalMethod.call(entity, level, stack, x, y, seed, z);
+                        originalMethod.call(entity, level, output, x, y, seed, z);
                         return true;
                     }
                 }

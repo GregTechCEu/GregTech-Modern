@@ -11,11 +11,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -100,14 +100,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         var rotorHolder = turbineMachine.getRotorHolder();
         if (rotorHolder == null) return ModifierFunction.NULL;
 
-        long EUt = recipe.getOutputEUt();
+        EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        if (EUt <= 0 || turbineMaxVoltage <= EUt || holderEfficiency <= 0) return ModifierFunction.NULL;
+        if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0) return ModifierFunction.NULL;
 
         // get the amount of parallel required to match the desired output voltage
-        int maxParallel = (int) (turbineMaxVoltage / EUt);
+        int maxParallel = (int) (turbineMaxVoltage / EUt.getTotalEU());
         int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, maxParallel);
         double eutMultiplier = turbineMachine.productionBoost() * actualParallel;
 
@@ -149,8 +149,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
                 long maxProduction = getOverclockVoltage();
                 long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
-                        recipeLogic.getLastRecipe().getOutputEUt() : 0;
-                String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
+                        recipeLogic.getLastRecipe().getOutputEUt().voltage() : 0;
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
