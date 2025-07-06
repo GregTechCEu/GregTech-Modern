@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -37,6 +36,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
@@ -49,8 +49,8 @@ public class Predicates {
         var candidates = new ArrayList<BlockState>();
         for (BlockState state : allowedStates) {
             candidates.add(state);
-            if (state.hasProperty(ActiveBlock.ACTIVE)) {
-                candidates.add(state.setValue(ActiveBlock.ACTIVE, !state.getValue(ActiveBlock.ACTIVE)));
+            if (state.hasProperty(ACTIVE)) {
+                candidates.add(state.setValue(ACTIVE, !state.getValue(ACTIVE)));
             }
         }
         return new TraceabilityPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -212,8 +212,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             for (long pos : activeBlocks) {
                 var blockPos = BlockPos.of(pos);
                 var blockState = getLevel().getBlockState(blockPos);
-                if (blockState.hasProperty(ActiveBlock.ACTIVE)) {
-                    var newState = blockState.setValue(ActiveBlock.ACTIVE, active);
+                if (blockState.hasProperty(GTBlockStateProperties.ACTIVE)) {
+                    var newState = blockState.setValue(GTBlockStateProperties.ACTIVE, active);
                     if (newState != blockState) {
                         getLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
                     }
