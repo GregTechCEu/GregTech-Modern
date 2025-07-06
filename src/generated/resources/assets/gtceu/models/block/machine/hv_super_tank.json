@@ -12,9 +12,9 @@
       "model": {
         "parent": "gtceu:block/machine/template/quantum/quantum_tank",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/ulv/bottom",
-          "side": "gtceu:block/casings/voltage/ulv/side",
-          "top": "gtceu:block/casings/voltage/ulv/top"
+          "bottom": "gtceu:block/casings/voltage/hv/bottom",
+          "side": "gtceu:block/casings/voltage/hv/side",
+          "top": "gtceu:block/casings/voltage/hv/top"
         }
       }
     }
