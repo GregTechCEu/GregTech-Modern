@@ -17,7 +17,7 @@ public class FluidVeinWorldEntry {
     private final MemoizedSupplier<BedrockFluidDefinition> vein;
     @Nullable
     @Getter
-    private String vein_id;
+    private String veinId;
     @Getter
     private int fluidYield;
     @Getter
@@ -27,8 +27,9 @@ public class FluidVeinWorldEntry {
         this(GTMemoizer.memoize(() -> vein));
         if (vein != null) {
             ResourceLocation key = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein);
-            if (key != null)
-                this.vein_id = key.toString();
+            if (key != null) {
+                this.veinId = key.toString();
+            }
         }
         this.fluidYield = fluidYield;
         this.operationsRemaining = operationsRemaining;
@@ -62,30 +63,30 @@ public class FluidVeinWorldEntry {
         var tag = new CompoundTag();
         tag.putInt("fluidYield", fluidYield);
         tag.putInt("operationsRemaining", operationsRemaining);
-        if (vein_id != null) {
-            tag.putString("vein", vein_id);
+        if (veinId != null) {
+            tag.putString("vein", veinId);
         }
         return tag;
     }
 
     @NotNull
     public static FluidVeinWorldEntry readFromNBT(@NotNull CompoundTag tag) {
-        String vein_id;
+        String veinId;
         MemoizedSupplier<BedrockFluidDefinition> vein;
 
         if (tag.contains("vein")) {
-            vein_id = tag.getString("vein");
+            veinId = tag.getString("vein");
             vein = GTMemoizer.memoize(() -> {
-                ResourceLocation key = new ResourceLocation(vein_id);
+                ResourceLocation key = new ResourceLocation(veinId);
                 return GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(key);
             });
         } else {
-            vein_id = null;
+            veinId = null;
             vein = GTMemoizer.memoize(() -> null);
         }
 
         FluidVeinWorldEntry info = new FluidVeinWorldEntry(vein);
-        info.vein_id = vein_id;
+        info.veinId = veinId;
         info.fluidYield = tag.getInt("fluidYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");
         return info;
