@@ -64,6 +64,7 @@ public class GTCapes {
         event.unlockCapeFor(UUID.fromString("c43b3c3d-7da6-4c2b-b335-703fce2ed795"), GREGTECH_CAPE); // Ghostipedia
         event.unlockCapeFor(UUID.fromString("88374b6a-4710-46cd-bb04-a1580905a918"), GREGTECH_CAPE); // Ghzdude
         event.unlockCapeFor(UUID.fromString("5d7073e3-882f-4c4a-94b3-0e5ba1c11e02"), GREGTECH_CAPE); // htmlcsjs
+        event.unlockCapeFor(UUID.fromString("c18c1d7f-3174-42c6-81dc-3c7ff9f720c3"), GREGTECH_CAPE); // jurrejelle
         event.unlockCapeFor(UUID.fromString("29f1e04c-58d8-4a3b-9eff-f85be7825256"), GREGTECH_CAPE); // kross000
         event.unlockCapeFor(UUID.fromString("2fa297a6-7803-4629-8360-7059155cf43e"), GREGTECH_CAPE); // KilaBash
         event.unlockCapeFor(UUID.fromString("44f38ff8-aad7-49c3-acb3-d92317af9078"), GREGTECH_CAPE); // LAGIdiot

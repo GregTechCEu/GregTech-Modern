@@ -60,7 +60,9 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * The main use of this is differentiating circuit inventories from item inventories
      * 
      * @return {@code true} if this {@code IRecipeHandler} has content to be searched
+     * @deprecated since all contents should be searched.
      */
+    @Deprecated(since = "7.0.0", forRemoval = true)
     default boolean shouldSearchContent() {
         return true;
     }

@@ -35,6 +35,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,12 +43,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
+import dev.latvian.mods.kubejs.fluid.OutputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
@@ -695,6 +698,16 @@ public interface GTRecipeSchema {
             return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
+        public GTRecipeJS outputFluidsRanged(FluidStackJS output, int min, int max) {
+            return outputFluidsRanged(output, UniformInt.of(min, max));
+        }
+
+        public GTRecipeJS outputFluidsRanged(FluidStackJS output, IntProvider range) {
+            FluidStack stack = new FluidStack(output.getFluid(), (int) output.getAmount(), output.getNbt());
+            return output(FluidRecipeCapability.CAP,
+                    IntProviderFluidIngredient.of(FluidIngredient.of(stack), range));
+        }
+
         //////////////////////////////////////
         // ********** DATA ***********//
         //////////////////////////////////////
@@ -1086,6 +1099,22 @@ public interface GTRecipeSchema {
         @Override
         public InputFluid readInputFluid(Object from) {
             return super.readInputFluid(from);
+        }
+
+        @Override
+        public OutputFluid readOutputFluid(Object from) {
+            return GTRecipeComponents.FluidIngredientJS.of(from);
+        }
+
+        @Override
+        public JsonElement writeOutputFluid(OutputFluid value) {
+            if (value instanceof FluidIngredient ingredient) {
+                return ingredient.toJson();
+            } else if (value instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
+                return ingredientJS.getIngredient().toJson();
+            }
+            var fluid = ((FluidStackJS) value).getFluidStack();
+            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
     }
 

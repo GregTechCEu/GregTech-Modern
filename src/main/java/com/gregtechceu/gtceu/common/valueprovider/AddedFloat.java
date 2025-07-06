@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.valueprovider;
 import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
 
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.FloatProviderType;
 
@@ -41,7 +42,8 @@ public class AddedFloat extends FloatProvider {
 
     @Override
     public float getMaxValue() {
-        return this.source.getMaxValue() + this.modifier.getMaxValue();
+        return this.source.getMaxValue() +
+                (this.modifier instanceof ConstantFloat c ? c.getValue() : this.modifier.getMaxValue());
     }
 
     @Override

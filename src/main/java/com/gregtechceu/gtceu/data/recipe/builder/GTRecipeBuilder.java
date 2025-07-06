@@ -968,6 +968,14 @@ public class GTRecipeBuilder {
         return output(FluidRecipeCapability.CAP, outputs);
     }
 
+    public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
+        return outputFluidsRanged(FluidIngredient.of(output), intProvider);
+    }
+
+    protected GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {
+        return outputFluids(IntProviderFluidIngredient.of(output, intProvider));
+    }
+
     //////////////////////////////////////
     // ********** DATA ***********//
     //////////////////////////////////////

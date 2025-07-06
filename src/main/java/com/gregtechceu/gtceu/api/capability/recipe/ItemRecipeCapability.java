@@ -316,7 +316,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 Object2IntOpenCustomHashMap<ItemStack> distinctInv = new Object2IntOpenCustomHashMap<>(strat);
-                if (!handler.shouldSearchContent()) continue;
                 for (var content : handler.getContents()) {
                     if (content instanceof ItemStack stack && !stack.isEmpty()) {
                         distinctInv.addTo(stack, stack.getCount());
@@ -334,7 +333,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
                 Object2IntOpenCustomHashMap<ItemStack> inventory = new Object2IntOpenCustomHashMap<>(strat);
                 for (var handler : handlers) {
-                    if (!handler.shouldSearchContent()) continue;
                     for (var content : handler.getContents()) {
                         if (content instanceof ItemStack stack && !stack.isEmpty()) {
                             inventory.addTo(stack, stack.getCount());
