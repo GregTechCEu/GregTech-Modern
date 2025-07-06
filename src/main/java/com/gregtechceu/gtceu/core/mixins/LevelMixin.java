@@ -64,7 +64,7 @@ public abstract class LevelMixin implements LevelAccessor {
     @Inject(method = "markAndNotifyBlock",
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/world/level/Level;blockUpdated(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V",
-                    remap = true),
+                     remap = true),
             remap = false)
     private void gtceu$updateChunkMultiblocks(BlockPos pos, LevelChunk chunk,
                                               BlockState oldState, BlockState newState, int flags, int recursionLeft,
