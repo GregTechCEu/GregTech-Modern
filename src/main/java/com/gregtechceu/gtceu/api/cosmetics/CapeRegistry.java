@@ -248,7 +248,7 @@ public class CapeRegistry extends SavedData {
             return false;
         }
         CURRENT_CAPES.put(player, cape);
-        GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(player, cape));
+        GTNetwork.sendToAll(new SPacketNotifyCapeChange(player, cape));
         save();
         return true;
     }
@@ -258,12 +258,11 @@ public class CapeRegistry extends SavedData {
         if (player instanceof ServerPlayer serverPlayer) {
             UUID uuid = player.getUUID();
             // sync to others
-            GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
+            GTNetwork.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
             // sync to the one who's logging in
             for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
                 uuid = otherPlayer.getUUID();
-                GTNetwork.NETWORK.sendToPlayer(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)),
-                        serverPlayer);
+                GTNetwork.sendToPlayer(serverPlayer, new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
             }
         }
     }

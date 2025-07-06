@@ -82,7 +82,7 @@ public class ServerCache extends WorldCache {
             }
         }
 
-        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
+        GTNetwork.sendToPlayer(player, new SPacketProspectOre(dim, foundVeins));
     }
 
     public void prospectByOreMaterial(ResourceKey<Level> dim, Material material, BlockPos origin, ServerPlayer player,
@@ -95,7 +95,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
+        GTNetwork.sendToPlayer(player, new SPacketProspectOre(dim, foundVeins));
     }
 
     public void prospectByDepositName(ResourceKey<Level> dim, String depositName, BlockPos origin, ServerPlayer player,
@@ -108,7 +108,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
+        GTNetwork.sendToPlayer(player, new SPacketProspectOre(dim, foundVeins));
     }
 
     public void prospectAllInChunk(ResourceKey<Level> dim, ChunkPos pos, ServerPlayer player) {
@@ -119,7 +119,7 @@ public class ServerCache extends WorldCache {
                 foundVeins.add(nearbyVein);
             }
         }
-        GTNetwork.NETWORK.sendToPlayer(new SPacketProspectOre(dim, foundVeins), player);
+        GTNetwork.sendToPlayer(player, new SPacketProspectOre(dim, foundVeins));
     }
 
     public void removeAllInChunk(ResourceKey<Level> dim, ChunkPos pos) {
