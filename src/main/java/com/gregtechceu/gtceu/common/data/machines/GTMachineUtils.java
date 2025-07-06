@@ -445,6 +445,7 @@ public class GTMachineUtils {
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(maxAmount)))
+                    .tier(tier)
                     .register();
             TANK_CAPACITY.put(register, maxAmount);
             definitions[tier] = register;
