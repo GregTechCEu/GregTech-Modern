@@ -1114,26 +1114,12 @@ public interface GTRecipeSchema {
         public JsonElement writeOutputFluid(OutputFluid value) {
             if (value instanceof GTRecipeComponents.FluidIngredientJS ing) {
                 return ing.ingredient().toJson();
+            } else if (value instanceof FluidIngredient ingredient) {
+                return ingredient.toJson();
             }
 
             var fluid = ((FluidStackJS) value).getFluidStack();
             return FluidIngredient.of(fluid.getFluid(), (int) fluid.getAmount(), fluid.getTag()).toJson();
-        }
-
-        @Override
-        public OutputFluid readOutputFluid(Object from) {
-            return GTRecipeComponents.FluidIngredientJS.of(from);
-        }
-
-        @Override
-        public JsonElement writeOutputFluid(OutputFluid value) {
-            if (value instanceof FluidIngredient ingredient) {
-                return ingredient.toJson();
-            } else if (value instanceof GTRecipeComponents.FluidIngredientJS ingredientJS) {
-                return ingredientJS.getIngredient().toJson();
-            }
-            var fluid = ((FluidStackJS) value).getFluidStack();
-            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
     }
 
