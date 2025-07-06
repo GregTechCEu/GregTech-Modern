@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
@@ -133,8 +134,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidTank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidTank;
-        this.tank = 0;
+        setFluidTank(fluidTank, 0);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -149,8 +149,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidHandler, int tank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidHandler;
-        this.tank = tank;
+        setFluidTank(fluidHandler, tank);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -158,17 +157,17 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     public TankWidget setFluidTank(IFluidHandler fluidTank) {
-        this.fluidTank = fluidTank;
-        this.tank = 0;
-        if (isClientSideWidget) {
-            setClientSideWidget();
-        }
-        return this;
+        return setFluidTank(fluidTank, 0);
     }
 
     public TankWidget setFluidTank(IFluidHandler fluidTank, int tank) {
-        this.fluidTank = fluidTank;
-        this.tank = tank;
+        if (fluidTank instanceof NotifiableFluidTank notifiable) {
+            this.fluidTank = notifiable.getStorages()[tank];
+            this.tank = 0;
+        } else {
+            this.fluidTank = fluidTank;
+            this.tank = tank;
+        }
         if (isClientSideWidget) {
             setClientSideWidget();
         }

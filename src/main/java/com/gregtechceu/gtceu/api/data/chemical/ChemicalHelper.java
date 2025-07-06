@@ -43,22 +43,27 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.
 @MethodsReturnNonnullByDefault
 public class ChemicalHelper {
 
-    public static MaterialStack getMaterialStack(@Nullable Object object) {
-        if (object instanceof MaterialStack materialStack) {
-            return materialStack;
-        } else if (object instanceof MaterialEntry entry) {
-            return getMaterialStack(entry);
+    public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
+        if (object instanceof ItemMaterialInfo materialInfo) {
+            return materialInfo;
+        } else if (object instanceof MaterialStack materialStack) {
+            return new ItemMaterialInfo(materialStack);
         } else if (object instanceof ItemStack itemStack) {
-            return getMaterialStack(itemStack);
+            return ItemMaterialData.getMaterialInfo(itemStack.getItem());
         } else if (object instanceof ItemLike item) {
-            return getMaterialStack(item);
+            return ItemMaterialData.getMaterialInfo(item);
+        } else if (object instanceof MaterialEntry entry) {
+            var items = getItems(entry);
+            if (!items.isEmpty()) {
+                return ItemMaterialData.getMaterialInfo(items.get(0));
+            }
         } else if (object instanceof Ingredient ing) {
             for (var stack : ing.getItems()) {
-                var ms = getMaterialStack(stack);
-                if (!ms.isEmpty()) return ms;
+                var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
+                if (ms != null) return ms;
             }
         }
-        return MaterialStack.EMPTY;
+        return null;
     }
 
     public static MaterialStack getMaterialStack(ItemStack itemStack) {

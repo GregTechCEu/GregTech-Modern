@@ -99,9 +99,9 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                         .map(IEnergyContainer.class::cast)
                         .toList();
 
-                if (handlerList.getHandlerIO() == IO.IN) {
+                if (handlerList.getHandlerIO().support(IO.IN)) {
                     powerInput.addAll(containers);
-                } else if (handlerList.getHandlerIO() == IO.OUT) {
+                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
                     powerOutput.addAll(containers);
                 }
 

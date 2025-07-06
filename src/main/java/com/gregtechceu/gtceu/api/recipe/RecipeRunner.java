@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -14,8 +16,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
 class RecipeRunner {
 
@@ -110,8 +116,7 @@ class RecipeRunner {
 
     private RecipeHandlingResult handleContents() {
         var result = handleContentsInternal(io);
-        if (result.isSuccess()) return result;
-        return handleContentsInternal(IO.BOTH);
+        return result;
     }
 
     private RecipeHandlingResult handleContentsInternal(IO capIO) {
@@ -120,20 +125,19 @@ class RecipeRunner {
             return new RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
         }
 
-        var handlers = capabilityProxies.get(capIO);
+        List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(capIO, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && capIO == IO.OUT) {
+        if (!isTick && capIO.support(IO.OUT)) {
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
-        List<RecipeHandlerList> distinct = new ArrayList<>();
-        List<RecipeHandlerList> indistinct = new ArrayList<>();
-        for (var handler : handlers) {
-            if (handler.isDistinct()) distinct.add(handler);
-            else indistinct.add(handler);
-        }
 
-        // handle distinct first
-        for (var handler : distinct) {
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
+        for (var handler : handlers) {
+            addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
+        }
+        // Specifically check distinct handlers first
+        for (RecipeHandlerList handler : handlerGroups.getOrDefault(RecipeHandlerGroupDistinctness.BUS_DISTINCT,
+                Collections.emptyList())) {
             var res = handler.handleRecipe(io, recipe, searchRecipeContents, true);
             if (res.isEmpty()) {
                 if (!simulated) {
@@ -144,18 +148,29 @@ class RecipeRunner {
             }
         }
 
-        for (var handler : indistinct) {
-            recipeContents = handler.handleRecipe(io, recipe, recipeContents, simulated);
-            if (recipeContents.isEmpty()) {
-                return RecipeHandlingResult.SUCCESS;
+        // Check the others
+        for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
+            if (RecipeHandlerGroupDistinctness.BUS_DISTINCT == handlerListEntry.getKey()) continue;
+            // List to keep track of the remaining items for this RecipeHandlerGroup
+            Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
+            boolean found = false;
+            for (RecipeHandlerList handler : handlerListEntry.getValue()) {
+                copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
+                if (copiedRecipeContents.isEmpty()) {
+                    found = true;
+                    break;
+                }
             }
-        }
-
-        for (var handler : distinct) {
-            var res = handler.handleRecipe(io, recipe, recipeContents, simulated);
-            if (res.isEmpty()) {
-                recipeContents.clear();
-                return RecipeHandlingResult.SUCCESS;
+            if (!found) continue;
+            if (simulated) return RecipeHandlingResult.SUCCESS;
+            // Start actually removing items, keep track of the remaining items for this RecipeHandlerGroup
+            copiedRecipeContents = recipeContents;
+            for (RecipeHandlerList handler : handlerListEntry.getValue()) {
+                copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, false);
+                if (copiedRecipeContents.isEmpty()) {
+                    recipeContents.clear();
+                    return RecipeHandlingResult.SUCCESS;
+                }
             }
         }
 

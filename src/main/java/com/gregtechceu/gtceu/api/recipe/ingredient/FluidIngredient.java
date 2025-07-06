@@ -33,7 +33,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             dynamic -> FluidIngredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
             ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
 
-    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, null);
+    public static final FluidIngredient EMPTY = new FluidIngredient(new Value[0], 0, null);
     public FluidIngredient.Value[] values;
     @Nullable
     public FluidStack[] stacks;
@@ -43,15 +43,15 @@ public class FluidIngredient implements Predicate<FluidStack> {
     private CompoundTag nbt;
     private boolean changed = true;
 
-    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
-        this.values = empty.toArray(Value[]::new);
+    protected FluidIngredient(Value[] values, int amount, @Nullable CompoundTag nbt) {
+        this.values = values;
         this.amount = amount;
         this.nbt = nbt;
     }
 
     public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount,
                                              @Nullable CompoundTag nbt) {
-        FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
+        FluidIngredient ingredient = new FluidIngredient(stream.toArray(Value[]::new), amount, nbt);
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
 
@@ -79,7 +79,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public FluidIngredient copy() {
-        return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
+        return new FluidIngredient(values, this.amount,
                 this.nbt == null ? null : this.nbt.copy());
     }
 
@@ -110,20 +110,26 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
         if (!Objects.equals(this.nbt, other.nbt)) return false;
         if (this.values.length != other.values.length) return false;
-        for (Value value1 : this.values) {
-            for (Value value2 : other.values) {
-                if (value1 instanceof TagValue tagValue) {
-                    if (!(value2 instanceof TagValue tagValue1)) {
+
+        Value[] myValues = this.values.clone();
+        Value[] otherValues = other.values.clone();
+        Arrays.parallelSort(myValues, VALUE_COMPARATOR);
+        Arrays.parallelSort(otherValues, VALUE_COMPARATOR);
+
+        for (Value value1 : myValues) {
+            for (Value value2 : otherValues) {
+                if (value1 instanceof TagValue first) {
+                    if (!(value2 instanceof TagValue second)) {
                         return false;
                     }
-                    if (tagValue.tag != tagValue1.tag) {
+                    if (first.tag != second.tag) {
                         return false;
                     }
-                } else if (value1 instanceof FluidValue) {
-                    if (!(value2 instanceof FluidValue)) {
+                } else if (value1 instanceof FluidValue first) {
+                    if (!(value2 instanceof FluidValue second)) {
                         return false;
                     }
-                    if (!value1.getFluids().containsAll(value2.getFluids())) {
+                    if (first.fluid != second.fluid) {
                         return false;
                     }
                 }
@@ -262,13 +268,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
     }
 
-    public static interface Value {
+    public interface Value {
 
-        public Collection<Fluid> getFluids();
+        Collection<Fluid> getFluids();
 
-        public JsonObject serialize();
-
-        public Value copy();
+        JsonObject serialize();
     }
 
     public static class TagValue implements Value {
@@ -297,11 +301,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Value copy() {
-            return new TagValue(this.tag);
-        }
-
-        @Override
         public int hashCode() {
             return tag.hashCode();
         }
@@ -309,7 +308,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public static class FluidValue implements Value {
 
-        private final Fluid fluid;
+        public final Fluid fluid;
 
         public FluidValue(Fluid item) {
             this.fluid = item;
@@ -328,13 +327,31 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Value copy() {
-            return new FluidValue(this.fluid);
-        }
-
-        @Override
         public int hashCode() {
             return fluid.hashCode();
         }
     }
+
+    public static final Comparator<Fluid> FLUID_COMPARATOR = Comparator.comparing(BuiltInRegistries.FLUID::getKey);
+
+    public static final Comparator<FluidIngredient.Value> VALUE_COMPARATOR = new Comparator<>() {
+
+        @Override
+        public int compare(FluidIngredient.Value value1, FluidIngredient.Value value2) {
+            if (value1 instanceof FluidIngredient.TagValue first) {
+                if (!(value2 instanceof FluidIngredient.TagValue second)) {
+                    return 1;
+                }
+                if (first.getTag() != second.getTag()) {
+                    return 1;
+                }
+            } else if (value1 instanceof FluidIngredient.FluidValue first) {
+                if (!(value2 instanceof FluidIngredient.FluidValue second)) {
+                    return 1;
+                }
+                return FLUID_COMPARATOR.compare(first.fluid, second.fluid);
+            }
+            return 0;
+        }
+    };
 }

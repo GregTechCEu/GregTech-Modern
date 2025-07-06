@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
+import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -52,6 +49,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +68,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
             MetaMachine.MANAGED_FIELD_HOLDER);
+
+    public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
     @Getter
     @Persisted
@@ -154,7 +155,6 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         if (!forDrop) tag.put("lockedFluid", lockedFluid.writeToNBT(new CompoundTag()));
         tag.put("stored", stored.writeToNBT(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
-        tag.putLong("maxAmount", maxAmount);
     }
 
     @Override

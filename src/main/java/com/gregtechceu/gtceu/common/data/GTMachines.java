@@ -34,7 +34,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.ModLoader;
@@ -540,81 +539,11 @@ public class GTMachines {
             .hasTESR(true)
             .register();
 
-    public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getHoverName(),
-                    FormattingUtil.formatNumbers(storedAmount)));
-        }
-    };
+    public static final MachineDefinition[] SUPER_CHEST = registerSuperChests("super_chest", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_CHEST = registerSuperChests("quantum_chest", HIGH_TIERS);
 
-    public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
-            (holder, tier) -> new QuantumChestMachine(holder, tier, 4_000_000 * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Super Chest " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumChestRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(CHEST_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            LOW_TIERS);
-
-    public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
-            (holder, tier) -> new QuantumChestMachine(holder, tier,
-                    tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Quantum Chest " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumChestRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(CHEST_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_total",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            HIGH_TIERS);
-
-    public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Super Tank " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            LOW_TIERS);
-
-    public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
-            (holder, tier) -> new QuantumTankMachine(holder, tier,
-                    4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1)),
-            (tier, builder) -> builder
-                    .langValue("Quantum Tank " + LVT[tier])
-                    .blockProp(BlockBehaviour.Properties::dynamicShape)
-                    .rotationState(RotationState.ALL)
-                    .allowExtendedFacing(true)
-                    .renderer(() -> new QuantumTankRenderer(tier))
-                    .hasTESR(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(4_000_000 * (long) Math.pow(2, tier - 1))))
-                    .register(),
-            HIGH_TIERS);
+    public static final MachineDefinition[] SUPER_TANK = registerSuperTanks("super_tank", LOW_TIERS);
+    public static final MachineDefinition[] QUANTUM_TANK = registerSuperTanks("quantum_tank", HIGH_TIERS);
 
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
     public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
@@ -656,6 +585,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
+                    .allowCoverOnFront(true)
                     .register(),
             ALL_TIERS);
 
@@ -669,6 +599,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
+                    .allowCoverOnFront(true)
                     .register(),
             ALL_TIERS);
 
@@ -870,6 +801,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
                     Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
+            .allowCoverOnFront(true)
             .register();
 
     public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE
@@ -881,6 +813,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.steam_bus.tooltip"),
                     Component.translatable("gtceu.universal.tooltip.item_storage_capacity", 4))
+            .allowCoverOnFront(true)
             .register();
 
     public static final MachineDefinition STEAM_HATCH = REGISTRATE
@@ -891,6 +824,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                     SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
                     Component.translatable("gtceu.machine.steam.steam_hatch.tooltip"))
+            .allowCoverOnFront(true)
             .register();
 
     public static final MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)

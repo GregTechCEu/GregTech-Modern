@@ -139,12 +139,12 @@ public enum RelativeDirection {
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> Comparator.comparingInt(BlockPos::getY);
-            case DOWN -> Comparator.comparingInt(pos -> -pos.getY());
-            case EAST -> Comparator.comparingInt(BlockPos::getX);
-            case WEST -> Comparator.comparingInt(pos -> -pos.getX());
-            case NORTH -> Comparator.comparingInt(BlockPos::getZ);
-            case SOUTH -> Comparator.comparingInt(pos -> -pos.getZ());
+            case UP -> Comparator.comparingInt(pos -> -pos.getY());
+            case DOWN -> Comparator.comparingInt(BlockPos::getY);
+            case EAST -> Comparator.comparingInt(pos -> -pos.getX());
+            case WEST -> Comparator.comparingInt(BlockPos::getX);
+            case NORTH -> Comparator.comparingInt(pos -> -pos.getZ());
+            case SOUTH -> Comparator.comparingInt(BlockPos::getZ);
         };
     }
 

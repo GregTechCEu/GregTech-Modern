@@ -159,7 +159,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         CompoundTag behaviourTag = getBehaviorsTag(stack);
         getToolStats().getBehaviors().forEach(behavior -> behavior.addBehaviorNBT(stack, behaviourTag));
 
-        if (aoeDefinition != AoESymmetrical.none()) {
+        if (!aoeDefinition.isZero()) {
             behaviourTag.putInt(MAX_AOE_COLUMN_KEY, aoeDefinition.column);
             behaviourTag.putInt(MAX_AOE_ROW_KEY, aoeDefinition.row);
             behaviourTag.putInt(MAX_AOE_LAYER_KEY, aoeDefinition.layer);
@@ -359,10 +359,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockStartBreak(stack, pos, player));
 
         if (!player.isShiftKeyDown()) {
-            ServerPlayer playerMP = (ServerPlayer) player;
+            ServerPlayer serverPlayer = (ServerPlayer) player;
             int result = -1;
             if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(playerMP, stack, pos);
+                result = shearBlockRoutine(serverPlayer, stack, pos);
             }
             if (result != 0) {
                 // prevent exploits with instantly breakable blocks
@@ -378,7 +378,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
 
                 if (effective) {
-                    if (areaOfEffectBlockBreakRoutine(stack, playerMP)) {
+                    if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
@@ -687,7 +687,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         boolean addedBehaviorNewLine = false;
         AoESymmetrical aoeDefinition = getAoEDefinition(stack);
 
-        if (aoeDefinition != AoESymmetrical.none()) {
+        if (!aoeDefinition.isZero()) {
             addedBehaviorNewLine = tooltip.add(CommonComponents.EMPTY);
             tooltip.add(Component.translatable("item.gtceu.tool.behavior.aoe_mining",
                     aoeDefinition.column * 2 + 1, aoeDefinition.row * 2 + 1, aoeDefinition.layer + 1));
@@ -767,7 +767,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             case "enchantment.cofhcore.smelting": // cofhcore
             case "enchantment.as.smelting": // astral sorcery
                 // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack) == AoESymmetrical.none() &&
+                return getToolStats().getAoEDefinition(stack).isZero() &&
                         !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
         }
 

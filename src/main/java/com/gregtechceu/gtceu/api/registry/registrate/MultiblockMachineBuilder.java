@@ -88,6 +88,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         super(registrate, name, MultiblockMachineDefinition::createDefinition, metaMachine::apply, blockFactory,
                 itemFactory, blockEntityFactory);
         allowExtendedFacing(true);
+        allowCoverOnFront(true);
     }
 
     public static MultiblockMachineBuilder createMulti(Registrate registrate, String name,
@@ -380,6 +381,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
         return (MultiblockMachineBuilder) super.allowExtendedFacing(allowExtendedFacing);
+    }
+
+    @Override
+    public MultiblockMachineBuilder allowCoverOnFront(boolean allowCoverOnFront) {
+        return (MultiblockMachineBuilder) super.allowCoverOnFront(allowCoverOnFront);
     }
 
     @Override

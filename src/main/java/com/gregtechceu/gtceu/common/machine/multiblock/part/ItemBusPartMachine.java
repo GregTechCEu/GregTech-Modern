@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +52,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
+public class ItemBusPartMachine extends TieredIOPartMachine
+                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemBusPartMachine.class,
             TieredIOPartMachine.MANAGED_FIELD_HOLDER);
@@ -61,6 +64,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
+    @Getter(AccessLevel.PROTECTED)
     private boolean hasCircuitSlot = true;
     @Getter
     @Setter
@@ -126,6 +130,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
         getHandlerList().setDistinct(isDistinct);
+        getHandlerList().setColor(getPaintingColor());
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
     }
 
@@ -136,6 +141,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             inventorySubs.unsubscribe();
             inventorySubs = null;
         }
+    }
+
+    @Override
+    public void onPaintingColorChanged(int color) {
+        getHandlerList().setColor(color, true);
     }
 
     @Override
@@ -167,6 +177,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             }
         }
         setCircuitSlotEnabled(true);
+    }
+
+    @Override
+    public int tintColor(int index) {
+        if (index == 9) return getRealColor();
+        return -1;
     }
 
     @Override
@@ -267,6 +283,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
                 // and conveyors will drop to the floor on block override.
                 newMachine.setFrontFacing(this.getFrontFacing());
                 newMachine.setUpwardsFacing(this.getUpwardsFacing());
+                newMachine.setPaintingColor(this.getPaintingColor());
             }
         }
         return true;
