@@ -308,7 +308,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             // spotless:off
             if (model instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(originalQuads, controller, part, frontFacing, side,
-                        rand,  modelData, renderType);
+                        rand, modelData, renderType);
             } else if (model instanceof MachineModel controllerModel) {
                 newQuads = renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
                         side, rand, modelData, renderType);
