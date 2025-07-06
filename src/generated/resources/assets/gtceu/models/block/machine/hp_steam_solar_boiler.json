@@ -1,0 +1,59 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hp_steam_solar_boiler",
+  "multipart": [
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "idle"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "working"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top_active"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "waiting"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/casings/steam/bricked_steel",
+          "textures": {
+            "overlay_top": "gtceu:block/generators/boiler/solar/overlay_top"
+          }
+        }
+      },
+      "when": {
+        "recipe_logic_status": "suspend"
+      }
+    }
+  ]
+}

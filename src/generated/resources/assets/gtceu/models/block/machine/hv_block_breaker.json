@@ -1,0 +1,39 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:hv_block_breaker",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/block_breaker/overlay_front"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/block_breaker/overlay_front"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/block_breaker/overlay_front_active"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/hv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/block_breaker/overlay_front_active"
+        }
+      }
+    }
+  }
+}

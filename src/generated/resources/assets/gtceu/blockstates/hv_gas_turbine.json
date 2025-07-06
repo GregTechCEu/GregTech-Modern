@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/hv_gas_turbine",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/hv_gas_turbine",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/hv_gas_turbine"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/hv_gas_turbine",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/hv_gas_turbine",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/hv_gas_turbine",
+      "y": 270
+    }
+  }
+}

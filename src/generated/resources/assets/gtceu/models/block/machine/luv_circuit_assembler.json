@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:luv_circuit_assembler",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/luv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/circuit_assembler/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/circuit_assembler/overlay_front_emissive",
+          "overlay_top": "gtceu:block/machines/circuit_assembler/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/circuit_assembler/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/luv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/circuit_assembler/overlay_front_paused",
+          "overlay_front_emissive": "gtceu:block/machines/circuit_assembler/overlay_front_paused_emissive",
+          "overlay_top": "gtceu:block/machines/circuit_assembler/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/circuit_assembler/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/luv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/circuit_assembler/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/circuit_assembler/overlay_front_active_emissive",
+          "overlay_top": "gtceu:block/machines/circuit_assembler/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/circuit_assembler/overlay_top_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/luv",
+        "textures": {
+          "overlay_front": "gtceu:block/machines/circuit_assembler/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/circuit_assembler/overlay_front_active_emissive",
+          "overlay_top": "gtceu:block/machines/circuit_assembler/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/circuit_assembler/overlay_top_active_emissive"
+        }
+      }
+    }
+  }
+}

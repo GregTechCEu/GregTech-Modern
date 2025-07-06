@@ -2327,6 +2327,7 @@
   "gtceu.gui.content.chance_tier_boost_minus": "ɹǝıʇ/%s%%- :ǝɔuɐɥƆ snuoᗺ",
   "gtceu.gui.content.chance_tier_boost_plus": "ɹǝıʇ/%s%%+ :ǝɔuɐɥƆ snuoᗺ",
   "gtceu.gui.content.count_range": "x%s-%s",
+  "gtceu.gui.content.fluid_range": "ᗺɯ%s-%s",
   "gtceu.gui.content.per_tick": "ɹ§ʞɔı⟘ ɹǝԀ pǝɔnpoɹԀ/pǝɯnsuoƆɐ§",
   "gtceu.gui.content.tips.per_second_short": "ɹ§puoɔǝs/ɐ§",
   "gtceu.gui.content.tips.per_tick_short": "ɹ§ʞɔıʇ/ɐ§",
