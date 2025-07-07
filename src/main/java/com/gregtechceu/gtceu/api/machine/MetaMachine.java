@@ -550,14 +550,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public void addDebugOverlayText(Consumer<String> lines) {
         lines.accept(ChatFormatting.UNDERLINE + "Targeted Machine: ");
         lines.accept(this.getDefinition().getId().toString());
-        // add owner info
-        if (this.getOwner() != null) {
-            List<Component> list = new ArrayList<>();
-            this.getOwner().displayInfo(list);
-            for (Component c : list) {
-                lines.accept(c.getString());
-            }
-        }
 
         // add render state info
         MachineRenderState renderState = this.getRenderState();
