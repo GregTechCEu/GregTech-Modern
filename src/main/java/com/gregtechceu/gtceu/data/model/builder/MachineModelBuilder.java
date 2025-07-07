@@ -49,7 +49,9 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     @Getter
     private final List<PartBuilder> parts = new ArrayList<>();
     private final Set<MachineRenderState> coveredStates = new HashSet<>();
+    @Getter
     private final List<String> replaceableTextures = new ArrayList<>();
+    @Getter
     private final SortedMap<String, ResourceLocation> textureOverrides = new TreeMap<>();
 
     protected MachineModelBuilder(T parent, ExistingFileHelper existingFileHelper, MachineDefinition owner) {
