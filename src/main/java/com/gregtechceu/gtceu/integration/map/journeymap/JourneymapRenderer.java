@@ -162,7 +162,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
             return MATERIAL_ICONS.get(material);
         }
 
-        int materialABGR = GradientUtil.argbToAbgr(material.getMaterialARGB());
+        int materialABGR = GradientUtil.convertARGBToABGR(material.getMaterialARGB());
 
         ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(), true);
         TextureAtlasSprite baseTexture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -184,7 +184,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
             }
         }
         if (material.getMaterialSecondaryARGB() != -1) {
-            int materialSecondaryABGR = GradientUtil.argbToAbgr(material.getMaterialSecondaryARGB());
+            int materialSecondaryABGR = GradientUtil.convertARGBToABGR(material.getMaterialSecondaryARGB());
             ResourceLocation layer2 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(),
                     "secondary", true);
             if (layer2 == null) {

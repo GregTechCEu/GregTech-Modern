@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -91,7 +91,7 @@ public class FluidBuilder {
      * @return this
      */
     public @NotNull FluidBuilder color(int color) {
-        this.color = GTUtil.convertRGBtoARGB(color);
+        this.color = GradientUtil.convertRGBtoARGB(color);
         if (this.color == INFER_COLOR) {
             return disableColor();
         }
@@ -348,7 +348,7 @@ public class FluidBuilder {
     private void determineColor(@NotNull Material material) {
         if (color != INFER_COLOR) return;
         if (isColorEnabled && !material.isNull()) {
-            color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
+            color = GradientUtil.convertRGBtoARGB(material.getMaterialRGB());
         }
     }
 
