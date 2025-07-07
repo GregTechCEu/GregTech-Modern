@@ -184,6 +184,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
+    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
+                                           @NotNull BlockState state, @NotNull ModelData modelData) {
+        return modelData.derive()
+                .with(MODEL_DATA_LEVEL, level)
+                .with(MODEL_DATA_POS, pos)
+                .build();
+    }
+
+    @Override
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                              @NotNull RandomSource rand,
                                              @NotNull ModelData modelData, @Nullable RenderType renderType) {
