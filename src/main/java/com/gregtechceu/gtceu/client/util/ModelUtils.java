@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+import com.gregtechceu.gtceu.core.mixins.ldlib.CustomBakedModelAccessor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -88,6 +90,18 @@ public class ModelUtils {
     @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+        // Unwrap all machine models from the LDLib CTM models so we don't need to be as aggressive with mixins.
+        // Also, the caching they have stops our models from updating properly.
+        for (var entry : event.getModels().entrySet()) {
+            BakedModel model = entry.getValue();
+            if (!(model instanceof CustomBakedModelAccessor ctmModel)) {
+                continue;
+            }
+            if (ctmModel.gtceu$getParent() instanceof MachineModel machine) {
+                entry.setValue(machine);
+            }
+        }
+
         for (var listener : EVENT_LISTENERS) {
             Class<?> eventClass = listener.eventClass();
             if (eventClass != null && eventClass.isInstance(event)) {

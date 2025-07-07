@@ -23,7 +23,6 @@
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
         "ldlib.CustomBakedModelAccessor",
-        "ldlib.CustomBakedModelMixin",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",

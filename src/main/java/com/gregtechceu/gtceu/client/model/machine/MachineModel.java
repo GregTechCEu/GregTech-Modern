@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
-import com.gregtechceu.gtceu.core.mixins.ldlib.CustomBakedModelAccessor;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
@@ -346,10 +345,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             } else if (model instanceof MachineModel controllerModel) {
                 newQuads = renderPartOverrides(controllerModel, controller, originalQuads, part, frontFacing,
                         side, rand, modelData, renderType);
-            } else if (model instanceof CustomBakedModelAccessor ctmModel &&
-                       ctmModel.gtceu$getParent() instanceof MachineModel controllerModel) {
-                newQuads = renderPartOverrides(controllerModel, controller, originalQuads,
-                        part, frontFacing, side, rand, modelData, renderType);
             }
             if (newQuads != null) {
                 return newQuads;
