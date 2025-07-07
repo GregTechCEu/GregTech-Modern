@@ -127,7 +127,6 @@ public class GTMachineModels {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
                 BlockModelBuilder model = colorOverlayHullModel(overlay, emissiveOverlay, state, prov.models());
-                tieredHullTextures(model, builder.getOwner().getTier());
                 return tieredHullTextures(model, builder.getOwner().getTier());
             });
 
