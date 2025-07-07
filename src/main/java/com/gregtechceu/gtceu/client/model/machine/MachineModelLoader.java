@@ -29,7 +29,6 @@ import net.minecraftforge.common.util.TransformationHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -91,7 +90,8 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     }
 
     @Override
-    public @Nullable UnbakedMachineModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
+    public @Nullable UnbakedMachineModel read(JsonObject json,
+                                              JsonDeserializationContext context) throws JsonParseException {
         ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(json, "machine"));
         MachineDefinition definition = GTRegistries.MACHINES.get(machineId);
         if (definition == null) return null;

@@ -214,6 +214,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         BlockPos pos = modelData.get(MODEL_DATA_POS);
 
         var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        return getRenderQuads(machine, blockState, side, rand, modelData, renderType);
+    }
+
+    @Override
+    public @NotNull List<BakedQuad> getRenderQuads(@Nullable MetaMachine machine, @Nullable BlockState blockState,
+                                                   @Nullable Direction side, RandomSource rand,
+                                                   @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (machine == null) return Collections.emptyList();
 
         // render machine quads
@@ -250,7 +257,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         // render covers
         int start = quads.size();
-        ICoverableRenderer.super.renderCovers(quads, machine.getCoverContainer(), pos, level,
+        ICoverableRenderer.super.renderCovers(quads, machine.getCoverContainer(), machine.getPos(), machine.getLevel(),
                 side, rand, modelData, renderType);
         var iterator = quads.listIterator(start);
         while (iterator.hasNext()) {
@@ -259,6 +266,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         return quads;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<BakedQuad> renderMachine(@Nullable MetaMachine machine, @Nullable BlockState blockState,
                                          Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                          @NotNull ModelData modelData, @Nullable RenderType renderType) {
@@ -272,17 +280,20 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
         renderBaseModel(quads, renderState, blockState, side, rand, modelData, renderType);
 
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
-            quads = replacePartBaseModel(quads, part, frontFacing, side, rand, modelData, renderType);
-        }
         if (machine != null) {
+            for (DynamicRender render : dynamicRenders) {
+                render.getRenderQuads(machine, blockState, side, rand, modelData, renderType);
+            }
+            if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+                quads = replacePartBaseModel(quads, part, frontFacing, side, rand, modelData, renderType);
+            }
+
             // we have to recalculate CTM ourselves.
             // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
             return CustomBakedModel.reBakeCustomQuads(quads, machine.getLevel(), machine.getPos(),
                     blockState, side, 0.0f);
-        } else {
-            return quads;
         }
+        return quads;
     }
 
     public void renderBaseModel(List<BakedQuad> quads, @NotNull MachineRenderState renderState,

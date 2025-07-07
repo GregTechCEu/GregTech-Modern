@@ -6,20 +6,10 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.IMachineRendererModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-
 import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public abstract class DynamicRender<T extends IMachineFeature, S extends DynamicRender<T, S>> extends BaseBakedModel
                                    implements Comparable<DynamicRender<T, S>>, IMachineRendererModel<T> {
@@ -38,13 +28,6 @@ public abstract class DynamicRender<T extends IMachineFeature, S extends Dynamic
     @Override
     public MachineDefinition getDefinition() {
         return parent.getDefinition();
-    }
-
-    @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction elementSide,
-                                             @NotNull RandomSource rand, @NotNull ModelData extraData,
-                                             @Nullable RenderType renderType) {
-        return List.of();
     }
 
     @Override
