@@ -32,7 +32,6 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
-import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
@@ -558,12 +557,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             for (Component c : list) {
                 lines.accept(c.getString());
             }
-        }
-        if (this.getPaintingColor() != -1) {
-            // add the paint color line with a "close enough" approximation of the actual colorp
-            lines.accept("Color: " +
-                    GradientUtil.determineFormatByMapColor(this.paintingColor) +
-                    String.format("#%06X", paintingColor));
         }
 
         // add render state info

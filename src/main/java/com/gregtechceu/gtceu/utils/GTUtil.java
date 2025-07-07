@@ -46,7 +46,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -383,28 +382,34 @@ public class GTUtil {
 
     /**
      * Determines dye color nearest to specified RGB color
-     * 
-     * @apiNote use {@link GradientUtil#determineDyeColorByTextColor(int)} instead
      */
-    @ApiStatus.Obsolete(since = "7.0.0")
     public static DyeColor determineDyeColor(int rgbColor) {
-        return GradientUtil.determineDyeColorByTextColor(rgbColor);
+        float[] c = GradientUtil.getRGB(rgbColor);
+
+        double min = Double.MAX_VALUE;
+        DyeColor minColor = null;
+        for (DyeColor dyeColor : DyeColor.values()) {
+            float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
+
+            double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
+                    (c[2] - c2[2]) * (c[2] - c2[2]);
+
+            if (Double.compare(min, distance) < 0) {
+                minColor = dyeColor;
+                min = distance;
+            }
+        }
+        return minColor;
     }
 
-    /**
-     * @apiNote use {@link GradientUtil#convertRGBtoARGB(int)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
     public static int convertRGBtoARGB(int colorValue) {
-        return GradientUtil.convertRGBtoARGB(colorValue);
+        return convertRGBtoARGB(colorValue, 0xFF);
     }
 
-    /**
-     * @apiNote use {@link GradientUtil#convertRGBtoARGB(int, int)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
     public static int convertRGBtoARGB(int colorValue, int opacity) {
-        return GradientUtil.convertRGBtoARGB(colorValue, opacity);
+        // preserve existing opacity if present
+        if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
+        return opacity << 24 | colorValue;
     }
 
     /**

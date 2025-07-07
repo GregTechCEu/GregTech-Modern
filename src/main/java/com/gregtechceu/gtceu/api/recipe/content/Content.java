@@ -169,7 +169,7 @@ public class Content {
         String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
                 percent + "%";
 
-        int color = chance == 0 ? 0xFF0000 : GradientUtil.convertHSLToRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
+        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
                 (int) ((y + (height / 3f) + 6) * 2 - height), color, true);

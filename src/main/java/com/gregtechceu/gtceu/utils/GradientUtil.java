@@ -1,61 +1,20 @@
 package com.gregtechceu.gtceu.utils;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.item.DyeColor;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.ApiStatus;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 
 public class GradientUtil {
 
     private GradientUtil() {}
 
-    public static final Function<DyeColor, ChatFormatting> DYE_COLOR_TO_FORMATTING = Util.make(() -> {
-        Object2ObjectMap<DyeColor, ChatFormatting> map = new Object2ObjectOpenHashMap<>();
-        map.put(DyeColor.WHITE, ChatFormatting.WHITE);
-        map.put(DyeColor.ORANGE, ChatFormatting.GOLD);
-        map.put(DyeColor.MAGENTA, ChatFormatting.DARK_PURPLE);
-        map.put(DyeColor.LIGHT_BLUE, ChatFormatting.BLUE);
-        map.put(DyeColor.YELLOW, ChatFormatting.YELLOW);
-        map.put(DyeColor.LIME, ChatFormatting.GREEN);
-        map.put(DyeColor.PINK, ChatFormatting.LIGHT_PURPLE);
-        map.put(DyeColor.GRAY, ChatFormatting.DARK_GRAY);
-        map.put(DyeColor.LIGHT_GRAY, ChatFormatting.GRAY);
-        map.put(DyeColor.CYAN, ChatFormatting.DARK_AQUA);
-        map.put(DyeColor.PURPLE, ChatFormatting.LIGHT_PURPLE);
-        map.put(DyeColor.BLUE, ChatFormatting.DARK_BLUE);
-        map.put(DyeColor.BROWN, ChatFormatting.GOLD);
-        map.put(DyeColor.GREEN, ChatFormatting.DARK_GREEN);
-        map.put(DyeColor.RED, ChatFormatting.RED);
-        map.put(DyeColor.BLACK, ChatFormatting.BLACK);
-        return map;
-    });
-
-    public static int convertRGBtoARGB(int colorValue) {
-        return convertRGBtoARGB(colorValue, 0xFF);
-    }
-
-    public static int convertRGBtoARGB(int colorValue, int opacity) {
-        // preserve existing opacity if present
-        if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
-        return opacity << 24 | colorValue;
-    }
-
-    public static int convertARGBToABGR(int argb) {
+    public static int argbToAbgr(int argb) {
         int r = (argb >> 16) & 0xFF;
         int b = argb & 0xFF;
         return (argb & 0xFF00FF00) | (b << 16) | r;
     }
 
-    public static int convertARGBToRGBA(int argb) {
+    public static int argbToRgba(int argb) {
         return argb << 8 | (argb >>> 24);
     }
 
@@ -114,7 +73,7 @@ public class GradientUtil {
     }
 
     public static IntIntPair getGradient(int rgb, int luminanceDifference) {
-        float[] hsl = convertRGBtoHSL(rgb);
+        float[] hsl = RGBtoHSL(rgb);
         float[] upshade = new float[3];
         float[] downshade = new float[3];
         System.arraycopy(hsl, 0, upshade, 0, 3);
@@ -123,12 +82,12 @@ public class GradientUtil {
         if (upshade[2] > 100.0F) upshade[2] = 100.0F;
         downshade[2] = downshade[2] - luminanceDifference;
         if (downshade[2] < 0.0F) downshade[2] = 0.0F;
-        int upshadeRgb = convertHSLToRGB(upshade);
-        int downshadeRgb = convertHSLToRGB(downshade);
+        int upshadeRgb = toRGB(upshade);
+        int downshadeRgb = toRGB(downshade);
         return IntIntPair.of(downshadeRgb, upshadeRgb);
     }
 
-    public static float[] convertRGBtoHSL(int rgbColor) {
+    public static float[] RGBtoHSL(int rgbColor) {
         // Get RGB values in the range 0 - 1
         float r = ((rgbColor >> 16) & 0xFF) / 255f;
         float g = ((rgbColor >> 8) & 0xFF) / 255f;
@@ -167,11 +126,11 @@ public class GradientUtil {
         return new float[] { h, s * 100, l * 100 };
     }
 
-    public static int convertHSLToRGB(float[] hsl) {
-        return convertHSLToRGB(hsl[0], hsl[1], hsl[2]);
+    public static int toRGB(float[] hsv) {
+        return toRGB(hsv[0], hsv[1], hsv[2]);
     }
 
-    public static int convertHSLToRGB(float h, float s, float l) {
+    public static int toRGB(float h, float s, float l) {
         // Formula needs all values between 0 - 1
         h = h % 360.0F;
         h /= 360.0F;
@@ -211,107 +170,5 @@ public class GradientUtil {
             return p + ((q - p) * 6 * ((2.0F / 3.0F) - h));
         }
         return p;
-    }
-
-    /**
-     * Determines the dye color with the nearest text color to the specified RGB value
-     */
-    public static DyeColor determineDyeColorByTextColor(int textColor) {
-        return determineEnumColor(textColor, DyeColor.class, DyeColor::getTextColor);
-    }
-
-    /**
-     * Determines the dye color with the nearest map color to the specified RGB value
-     */
-    public static DyeColor determineDyeColorByMapColor(int mapColor) {
-        return determineEnumColor(mapColor, DyeColor.class, dye -> dye.getMapColor().col);
-    }
-
-    /**
-     * Determines the text (color) format string with the nearest color to the specified RGB value
-     */
-    @SuppressWarnings("DataFlowIssue")
-    public static ChatFormatting determineFormatByTextColor(int rgbColor) {
-        return determineEnumColor(rgbColor, ChatFormatting.class, ChatFormatting::isColor, ChatFormatting::getColor);
-    }
-
-    /**
-     * Determines the nearest <strong>dye color</strong> to the specified map color
-     * and finds the matching text color format.
-     */
-    public static ChatFormatting determineFormatByMapColor(int mapColor) {
-        DyeColor dye = determineDyeColorByMapColor(mapColor);
-        return DYE_COLOR_TO_FORMATTING.apply(dye);
-    }
-
-    public static <T extends Enum<T>> T determineEnumColor(int rgbColor, Class<T> clazz, ToIntFunction<T> colorGetter) {
-        return determineEnumColor(rgbColor, clazz, c -> true, colorGetter);
-    }
-
-    public static <T extends Enum<T>> T determineEnumColor(int rgbColor, Class<T> clazz,
-                                                           Predicate<T> validColor, ToIntFunction<T> colorGetter) {
-        float[] rgb = getRGB(rgbColor);
-
-        double min = Double.MAX_VALUE;
-        T minColor = null;
-        for (T color : clazz.getEnumConstants()) {
-            if (!validColor.test(color)) continue;
-
-            float[] dyeRGB = getRGB(colorGetter.applyAsInt(color));
-
-            float rDist = (rgb[0] - dyeRGB[0]);
-            float bDist = (rgb[1] - dyeRGB[1]);
-            float gDist = (rgb[2] - dyeRGB[2]);
-
-            double squareDistance = rDist * rDist + bDist * bDist + gDist * gDist;
-
-            if (Double.compare(min, squareDistance) < 0) {
-                minColor = color;
-                min = squareDistance;
-            }
-        }
-        return minColor;
-    }
-
-    // Deprecated functions
-
-    /**
-     * @apiNote use {@link ##convertARGBToABGR(int)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public static int argbToAbgr(int argb) {
-        return convertARGBToABGR(argb);
-    }
-
-    /**
-     * @apiNote use {@link #convertARGBToRGBA(int)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public static int argbToRgba(int argb) {
-        return convertARGBToRGBA(argb);
-    }
-
-    /**
-     * @apiNote use {@link #convertHSLToRGB(float[])} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public static int toRGB(float[] hsv) {
-        return convertHSLToRGB(hsv);
-    }
-
-    /**
-     * @apiNote use {@link #convertHSLToRGB(float, float, float)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public static int toRGB(float h, float s, float l) {
-        return convertHSLToRGB(h, s, l);
-    }
-
-    /**
-     * @apiNote use {@link #convertRGBtoHSL(int)} instead
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public static float[] RGBtoHSL(int rgbColor) {
-        return convertRGBtoHSL(rgbColor);
     }
 }
