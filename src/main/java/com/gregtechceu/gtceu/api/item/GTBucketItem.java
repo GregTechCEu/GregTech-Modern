@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -97,19 +99,22 @@ public class GTBucketItem extends BucketItem {
 
         BlockState blockstate = level.getBlockState(pos);
         Block block = blockstate.getBlock();
-        boolean flag = blockstate.canBeReplaced(this.getFluid());
-        boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer &&
-                ((LiquidBlockContainer) block).canPlaceLiquid(level, pos, blockstate, this.getFluid());
-        var fluidType = this.getFluid().getFluidType();
-        Optional<FluidStack> containedFluidStack = Optional.ofNullable(container).flatMap(FluidUtil::getFluidContained);
-        if (!flag1) {
+        boolean canReplace = blockstate.canBeReplaced(this.getFluid());
+        boolean canPlace = blockstate.isAir() || canReplace ||
+                block instanceof LiquidBlockContainer lbc && lbc.canPlaceLiquid(level, pos, blockstate, this.getFluid());
+
+        if (!canPlace) {
             return result != null && this.emptyContents(player, level,
                     result.getBlockPos().relative(result.getDirection()), null, container);
         }
+
+        var fluidType = this.getFluid().getFluidType();
+        Optional<FluidStack> containedFluidStack = Optional.ofNullable(container).flatMap(FluidUtil::getFluidContained);
         if (containedFluidStack.isPresent() && fluidType.isVaporizedOnPlacement(level, pos, containedFluidStack.get())) {
             fluidType.onVaporize(player, level, pos, containedFluidStack.get());
             return true;
         }
+
         if (doesFluidVaporize(material, level)) {
             int i = pos.getX();
             int j = pos.getY();
@@ -118,44 +123,46 @@ public class GTBucketItem extends BucketItem {
                     2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
 
             for (int l = 0; l < 8; ++l) {
-                level.addParticle(ParticleTypes.LARGE_SMOKE, (double) i + Math.random(),
-                        (double) j + Math.random(), (double) k + Math.random(), 0.0D, 0.0D, 0.0D);
+                double xi = i + GTValues.RNG.nextDouble();
+                double xj = j + GTValues.RNG.nextDouble();
+                double xk = k + GTValues.RNG.nextDouble();
+                level.addParticle(ParticleTypes.LARGE_SMOKE, xi, xj, xk, 0.0D, 0.0D, 0.0D);
             }
             return true;
         }
+
         if (block instanceof LiquidBlockContainer blockContainer &&
                 blockContainer.canPlaceLiquid(level, pos, blockstate, getFluid())) {
-            blockContainer.placeLiquid(level, pos, blockstate,
-                    ((FlowingFluid) this.getFluid()).getSource(false));
-            this.playEmptySound(player, level, pos);
-            return true;
+            var flowingFluid = ((FlowingFluid) this.getFluid());
+            blockContainer.placeLiquid(level, pos, blockstate, flowingFluid.getSource(false));
         } else {
-            if(!level.isClientSide && flag && !blockstate.liquid()) {
+            if(!level.isClientSide && canReplace && !blockstate.liquid()) {
                 level.destroyBlock(pos, true);
             }
 
             var fluidBlockState = material.getFluid().defaultFluidState().createLegacyBlock();
-            if(!level.setBlock(pos, fluidBlockState, 11) && blockstate.getFluidState().isSource()) {
+            if (!level.setBlock(pos, fluidBlockState, 11) && blockstate.getFluidState().isSource()) {
                 return false;
             }
-
-            this.playEmptySound(player, level, pos);
-            return true;
         }
+        this.playEmptySound(player, level, pos);
+        return true;
     }
 
     private boolean doesFluidVaporize(Material mat, Level level) {
-        if(level.dimensionType().ultraWarm() && this.getFluid().defaultFluidState().is(FluidTags.WATER)) {
-            return true; // default water in nether behaviour
+        // water in nether behavior
+        if (level.dimensionType().ultraWarm() && this.getFluid().defaultFluidState().is(FluidTags.WATER)) {
+            return true;
         }
-        if(material.getFluidBuilder().hasFluidBlock()) {
-            var fluidStorage = material.getProperty(PropertyKey.FLUID).getStorage();
-            if(fluidStorage.getQueuedBuilder(FluidStorageKeys.PLASMA) != null) { // has plasma
-                return true;
-            }
-            if (fluidStorage.getQueuedBuilder(FluidStorageKeys.GAS) != null) { // has gas
-                return true;
-            }
+        var fluidStorage = mat.getProperty(PropertyKey.FLUID).getStorage();
+        var plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
+        var gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
+        if (plasmaEntry != null) {
+            var plasmaBuilder = plasmaEntry.getBuilder();
+            return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
+        } else if (gasEntry != null) {
+            var gasBuilder = gasEntry.getBuilder();
+            return gasBuilder != null && gasBuilder.hasFluidBlock();
         }
         return false;
     }
