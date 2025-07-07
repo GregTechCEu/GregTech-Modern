@@ -304,7 +304,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         if (machine != null) {
             for (DynamicRender render : dynamicRenders) {
-                render.getRenderQuads(machine, blockState, side, rand, modelData, renderType);
+                quads.addAll(render.getRenderQuads(machine, blockState, side, rand, modelData, renderType));
             }
             if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
                 quads = replacePartBaseModel(quads, part, frontFacing, side, rand, modelData, renderType);
