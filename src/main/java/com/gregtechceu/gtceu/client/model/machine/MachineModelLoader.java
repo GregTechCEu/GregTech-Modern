@@ -91,10 +91,10 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     }
 
     @Override
-    public UnbakedMachineModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
+    public @Nullable UnbakedMachineModel read(JsonObject json, JsonDeserializationContext context) throws JsonParseException {
         ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(json, "machine"));
         MachineDefinition definition = GTRegistries.MACHINES.get(machineId);
-        Preconditions.checkNotNull(definition, "A machine with id " + machineId + " does not exist.");
+        if (definition == null) return null;
 
         // load the inner models
         final Map<String, UnbakedModel> variants = new HashMap<>();
