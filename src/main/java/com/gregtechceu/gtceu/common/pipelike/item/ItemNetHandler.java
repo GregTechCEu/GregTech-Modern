@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -11,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.RobotArmCover;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +26,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +40,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     private final Level world;
     @Getter
     private final Direction facing;
-    private final Map<FacingPos, Integer> simulatedTransfersGlobalRoundRobin = new HashMap<>();
+    private final Object2IntOpenHashMap<FacingPos> simulatedTransfersGlobalRoundRobin = new Object2IntOpenHashMap<>();
     private int simulatedTransfers = 0;
 
     private final ItemStackHandler testHandler = new ItemStackHandler(1);
@@ -364,15 +366,17 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
     public ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate,
                                         int allowed, boolean ignoreLimit) {
-        int rate;
-        boolean isStackSpecific = false;
-        rate = arm.getFilterHandler().getFilter().testItemCount(stack);
+        int rate = arm.getFilterHandler().getFilter().testItemCount(stack);
         int count;
         switch (arm.getTransferMode()) {
             case TRANSFER_ANY:
                 return insert(handler, stack, simulate, allowed, ignoreLimit);
             case KEEP_EXACT:
-                count = rate - countStack(handler, stack, arm, isStackSpecific);
+                if (arm.getFilterHandler().getFilter().supportsAmounts()) {
+                    count = rate - countStack(handler, stack, arm);
+                } else {
+                    count = rate;
+                }
                 if (count <= 0) return stack;
                 count = Math.min(allowed, Math.min(stack.getCount(), count));
                 return insert(handler, stack, simulate, count, ignoreLimit);
@@ -393,14 +397,17 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return stack;
     }
 
-    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm, boolean isStackSpecific) {
+    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
+        ItemFilter filter = arm.getFilterHandler().getFilter();
+        boolean ignoreNBT = filter instanceof SimpleItemFilter simple && simple.isIgnoreNbt();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
-            if (isStackSpecific ? ItemStackHashStrategy.comparingAllButCount().equals(stack, slot) :
-                    arm.getFilterHandler().getFilter().test(slot)) {
+            if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
+            else if (!ItemStack.isSameItemSameTags(stack, slot)) continue;
+            if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }
         }
@@ -450,33 +457,40 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     private void transferTo(ItemRoutePath handler, boolean simulate, int amount) {
-        if (simulate)
-            simulatedTransfersGlobalRoundRobin.merge(handler.toFacingPos(), amount, Integer::sum);
-        else
-            pipe.getTransferred().merge(handler.toFacingPos(), amount, Integer::sum);
+        if (simulate) {
+            simulatedTransfersGlobalRoundRobin.addTo(handler.toFacingPos(), amount);
+        } else {
+            pipe.getTransferred().mergeInt(handler.toFacingPos(), amount, Integer::sum);
+        }
     }
 
     private boolean contains(ItemRoutePath handler, boolean simulate) {
-        return simulate ? simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos()) :
-                pipe.getTransferred().containsKey(handler.toFacingPos());
+        if (simulate) {
+            return simulatedTransfersGlobalRoundRobin.containsKey(handler.toFacingPos());
+        } else {
+            return pipe.getTransferred().containsKey(handler.toFacingPos());
+        }
     }
 
     private int didTransferTo(ItemRoutePath handler, boolean simulate) {
-        if (simulate)
+        if (simulate) {
             return simulatedTransfersGlobalRoundRobin.getOrDefault(handler.toFacingPos(), 0);
-        return pipe.getTransferred().getOrDefault(handler.toFacingPos(), 0);
+        } else {
+            return pipe.getTransferred().getOrDefault(handler.toFacingPos(), 0);
+        }
     }
 
     private void resetTransferred(boolean simulated) {
-        if (simulated)
+        if (simulated) {
             simulatedTransfersGlobalRoundRobin.clear();
-        else
+        } else {
             pipe.resetTransferred();
+        }
     }
 
     private void decrementBy(int amount) {
-        for (Map.Entry<FacingPos, Integer> entry : pipe.getTransferred().entrySet()) {
-            entry.setValue(entry.getValue() - amount);
+        for (var entry : pipe.getTransferred().object2IntEntrySet()) {
+            entry.setValue(entry.getIntValue() - amount);
         }
     }
 

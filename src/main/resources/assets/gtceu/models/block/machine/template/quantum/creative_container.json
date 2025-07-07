@@ -1,0 +1,10 @@
+{
+    "parent": "gtceu:block/machine/template/quantum/quantum_container",
+    "textures": {
+        "bottom": "gtceu:block/casings/voltage/max/bottom",
+        "top": "gtceu:block/casings/voltage/max/top",
+        "side": "gtceu:block/casings/voltage/max/side",
+
+        "overlay_container": "gtceu:block/overlay/machine/overlay_creativecontainer_emissive"
+    }
+}

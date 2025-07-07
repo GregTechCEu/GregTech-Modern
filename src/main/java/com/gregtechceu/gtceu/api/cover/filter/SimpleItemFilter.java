@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
 
@@ -21,11 +20,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote ItemFilterHandler
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
@@ -160,9 +154,9 @@ public class SimpleItemFilter implements ItemFilter {
         int totalCount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
+            if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
-            } else if (ItemHandlerHelper.canItemStacksStack(candidate, itemStack)) {
+            } else if (ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

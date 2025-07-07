@@ -11,7 +11,7 @@ def mod_url = getConfig("mod_url")
 def mod_issue_tracker = getConfig("mod_issue_tracker")
 
 String suffix = System.getenv("VERSION_SUFFIX")
-String version_toml = "$version" + (suffix ? "-$suffix" : "")
+String version_toml = "$version" + (suffix ? "+$suffix" : "")
 
 tasks.register('printVersion') {
     doLast {

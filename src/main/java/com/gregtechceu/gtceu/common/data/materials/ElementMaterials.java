@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -46,6 +47,7 @@ public class ElementMaterials {
         Americium = new Material.Builder(GTCEu.id("americium"))
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(1449))
+                .plasma()
                 .color(0x287869).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .element(GTElements.Am)
@@ -843,6 +845,7 @@ public class ElementMaterials {
         Tin = new Material.Builder(GTCEu.id("tin"))
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(505))
+                .plasma()
                 .ore()
                 .color(0xfafeff).secondaryColor(0x4e676c)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
@@ -859,6 +862,8 @@ public class ElementMaterials {
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(48, new int[] { 4, 9, 7, 4 })
+                        .enchantability(18).toughness(5.0f).knockbackResistance(0.4f).build())
                 .rotorStats(130, 115, 3.0f, 1600)
                 .fluidPipeProperties(2426, 150, true)
                 .blast(b -> b.temp(1941, GasTier.MID)

@@ -515,6 +515,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
+        multilineLang(provider, "gtceu.multiblock.dimensions", "Dimensions: \n" +
+                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
 
         multiLang(provider, "gtceu.machine.charcoal_pile.tooltip",
                 "Turns Logs into §aCharcoal§7 when §cignited§7.",
@@ -789,7 +791,7 @@ public class MachineLang {
         provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
                 "Auto-Pull Disabled");
         provider.add("gtceu.machine.me.copy_paste.tooltip",
-                "Left-click with Data Stick to copy settings, right-click to apply");
+                "Sneak right-click with Data Stick to copy settings, right-click to apply");
         provider.add("gtceu.machine.me.import_copy_settings",
                 "Saved settings to Data Stick");
         provider.add("gtceu.machine.me.import_paste_settings",

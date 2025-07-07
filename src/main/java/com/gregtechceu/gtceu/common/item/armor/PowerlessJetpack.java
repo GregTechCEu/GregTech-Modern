@@ -32,9 +32,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -219,7 +219,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                                   IInteractionItem, IComponentCapability {
 
         public final int maxCapacity;
-        private final Pair<Integer, Integer> durabilityBarColors;
+        private final IntIntPair durabilityBarColors;
 
         public Behaviour(int internalCapacity) {
             this.maxCapacity = internalCapacity;
@@ -235,7 +235,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         @Nullable
         @Override
-        public Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+        public IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
             return durabilityBarColors;
         }
 

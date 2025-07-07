@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,23 +31,16 @@ import org.jetbrains.annotations.Nullable;
 public class Content {
 
     @Getter
-    public Object content;
-    public int chance;
-    public int maxChance;
-    public int tierChanceBoost;
-    @Nullable
-    public String slotName;
-    @Nullable
-    public String uiName;
+    public final Object content;
+    public final int chance;
+    public final int maxChance;
+    public final int tierChanceBoost;
 
-    public Content(Object content, int chance, int maxChance, int tierChanceBoost, @Nullable String slotName,
-                   @Nullable String uiName) {
+    public Content(Object content, int chance, int maxChance, int tierChanceBoost) {
         this.content = content;
         this.chance = chance;
         this.maxChance = maxChance;
         this.tierChanceBoost = fixBoost(tierChanceBoost);
-        this.slotName = slotName == null || slotName.isEmpty() ? null : slotName;
-        this.uiName = uiName == null || uiName.isEmpty() ? null : uiName;
     }
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
@@ -56,23 +51,24 @@ public class Content {
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.maxChance),
                 Codec.INT.optionalFieldOf("tierChanceBoost", 0)
-                        .forGetter(val -> val.tierChanceBoost),
-                Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
-                Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : ""))
+                        .forGetter(val -> val.tierChanceBoost))
                 .apply(instance, Content::new));
     }
 
     public Content copy(RecipeCapability<?> capability) {
-        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost, slotName, uiName);
+        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
     }
 
     public Content copy(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
         if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
-                    slotName, uiName);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
         }
+    }
+
+    public boolean isChanced() {
+        return chance > 0 && chance < maxChance;
     }
 
     /**
@@ -122,7 +118,7 @@ public class Content {
             // 5 == max num of characters that fit in a slot at 0.5x render size
             if (s.length() > 5) {
                 s = "X-Y";
-                color = 0xEE0000;
+                color = ChatFormatting.GOLD.getColor(); // Orange?
             }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
                     (int) ((y + (height / 3f) + 6) * 2), color, true);
@@ -136,15 +132,24 @@ public class Content {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);
-            int amount = ingredient.getAmount();
             Font fontRenderer = Minecraft.getInstance().font;
-            String s = FormattingUtil.formatBuckets(amount);
-            if (fontRenderer.width(s) > 32)
-                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
-            if (fontRenderer.width(s) > 32)
-                s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
+            int color;
+            String s;
+            if (content instanceof IntProviderFluidIngredient) {
+                // with only 5 characters worth of space, that's not enough for a fluid range
+                color = ChatFormatting.GOLD.getColor();
+                s = "X-Y";
+            } else {
+                int amount = ingredient.getAmount();
+                color = 0xFFFFFF;
+                s = FormattingUtil.formatBuckets(amount);
+                if (fontRenderer.width(s) > 32)
+                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
+                if (fontRenderer.width(s) > 32)
+                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
+            }
             graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
-                    (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+                    (int) ((y + (height / 3f) + 6) * 2), color, true);
             graphics.pose().popPose();
         }
     }
@@ -156,7 +161,7 @@ public class Content {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        var func = function == null ? ChanceBoostFunction.OVERCLOCK : function;
+        var func = function == null ? ChanceBoostFunction.NONE : function;
         int chance = func.getBoostedChance(this, recipeTier, chanceTier);
         float chanceFloat = 1f * chance / this.maxChance;
         String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
@@ -193,8 +198,6 @@ public class Content {
                 ", chance=" + chance +
                 ", maxChance=" + maxChance +
                 ", tierChanceBoost=" + tierChanceBoost +
-                ", slotName='" + slotName + '\'' +
-                ", uiName='" + uiName + '\'' +
                 '}';
     }
 }

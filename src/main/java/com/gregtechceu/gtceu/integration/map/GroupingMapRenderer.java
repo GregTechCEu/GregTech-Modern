@@ -95,4 +95,11 @@ public class GroupingMapRenderer extends GenericMapRenderer {
             renderer.setLayerActive(name, active);
         }
     }
+
+    @Override
+    public void clear() {
+        for (GenericMapRenderer renderer : rendererList) {
+            renderer.clear();
+        }
+    }
 }

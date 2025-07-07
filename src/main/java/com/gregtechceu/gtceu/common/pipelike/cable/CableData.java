@@ -2,19 +2,13 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-import java.util.Objects;
-
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableData
- */
 @Accessors(fluent = true)
 public class CableData implements IAttachData {
 
@@ -56,6 +50,6 @@ public class CableData implements IAttachData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(properties, connections);
+        return GTMath.hashInts(properties.hashCode(), connections);
     }
 }

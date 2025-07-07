@@ -69,11 +69,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author h3tr
- * @date 2023/7/13
- * @implNote FisherMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FisherMachine extends TieredEnergyMachine
@@ -134,6 +129,8 @@ public class FisherMachine extends TieredEnergyMachine
 
     @Getter
     @Setter
+    @Persisted
+    @DescSynced
     protected boolean junkEnabled = true;
 
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
@@ -495,8 +492,8 @@ public class FisherMachine extends TieredEnergyMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
@@ -534,8 +531,7 @@ public class FisherMachine extends TieredEnergyMachine
                 // remove the output facing when wrenching the current one to disable it
                 setOutputFacingItems(null);
             }
-
-            return InteractionResult.CONSUME;
+            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);

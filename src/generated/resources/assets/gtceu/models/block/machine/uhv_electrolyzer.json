@@ -1,0 +1,59 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uhv_electrolyzer",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/electrolyzer/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/electrolyzer/overlay_back_emissive",
+          "overlay_front": "gtceu:block/machines/electrolyzer/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/electrolyzer/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/electrolyzer/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/electrolyzer/overlay_side_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/electrolyzer/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/electrolyzer/overlay_back_emissive",
+          "overlay_front": "gtceu:block/machines/electrolyzer/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/electrolyzer/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/electrolyzer/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/electrolyzer/overlay_side_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/electrolyzer/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/electrolyzer/overlay_back_active_emissive",
+          "overlay_front": "gtceu:block/machines/electrolyzer/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/electrolyzer/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/electrolyzer/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/electrolyzer/overlay_side_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uhv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/electrolyzer/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/electrolyzer/overlay_back_active_emissive",
+          "overlay_front": "gtceu:block/machines/electrolyzer/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/electrolyzer/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/electrolyzer/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/electrolyzer/overlay_side_active_emissive"
+        }
+      }
+    }
+  }
+}

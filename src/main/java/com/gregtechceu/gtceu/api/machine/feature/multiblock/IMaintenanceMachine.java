@@ -10,11 +10,13 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.ArrayList;
 
 public interface IMaintenanceMachine extends IMultiPart {
 
+    BooleanProperty MAINTENANCE_TAPED_PROPERTY = BooleanProperty.create("maintenance_taped");
     int MINIMUM_MAINTENANCE_TIME = 3456000; // 48 real-life hours = 3456000 ticks
     byte ALL_PROBLEMS = 0;
     byte NO_PROBLEMS = 0b111111;
@@ -171,22 +173,22 @@ public interface IMaintenanceMachine extends IMultiPart {
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 
                 if ((getMaintenanceProblems() & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wrench"));
 
                 if (((getMaintenanceProblems() >> 1) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver"));
 
                 if (((getMaintenanceProblems() >> 2) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet"));
 
                 if (((getMaintenanceProblems() >> 3) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer"));
 
                 if (((getMaintenanceProblems() >> 4) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter"));
 
                 if (((getMaintenanceProblems() >> 5) & 1) == 0)
-                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar", "\n"));
+                    tooltips.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar"));
 
                 return tooltips;
             }, this::hasMaintenanceProblems, () -> null));

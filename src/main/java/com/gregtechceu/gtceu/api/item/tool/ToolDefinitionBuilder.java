@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -57,7 +58,7 @@ public class ToolDefinitionBuilder {
     @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
     @Setter
-    private AoESymmetrical aoe = AoESymmetrical.none();
+    private AoESymmetrical aoe = AoESymmetrical.ZERO;
     private final Set<Block> effectiveBlocks = new ObjectOpenHashSet<>();
     private Predicate<BlockState> effectiveStates;
     private final Object2IntMap<Enchantment> defaultEnchantments = new Object2IntArrayMap<>();
@@ -140,11 +141,10 @@ public class ToolDefinitionBuilder {
     }
 
     public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level) {
-        return this.defaultEnchantment(enchantment, level, 0);
-    }
+        if (ConfigHolder.INSTANCE.recipes.enchantedTools) {
+            this.defaultEnchantments.put(enchantment, level);
+        }
 
-    public ToolDefinitionBuilder defaultEnchantment(Enchantment enchantment, int level, int growth) {
-        this.defaultEnchantments.put(enchantment, level);
         return this;
     }
 

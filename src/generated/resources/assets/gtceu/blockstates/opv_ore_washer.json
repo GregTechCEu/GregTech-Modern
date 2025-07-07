@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/opv_ore_washer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/opv_ore_washer"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/opv_ore_washer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/opv_ore_washer",
+      "y": 270
+    }
+  }
+}

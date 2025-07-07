@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -90,7 +91,6 @@ public final class MaterialRegistryManager implements IMaterialRegistryManager {
         return registeredMaterials;
     }
 
-    @Nullable
     @Override
     public Material getMaterial(@NotNull String name) {
         if (!name.isEmpty()) {
@@ -106,7 +106,7 @@ public final class MaterialRegistryManager implements IMaterialRegistryManager {
             }
             return getRegistry(modid).get(materialName);
         }
-        return null;
+        return GTMaterials.NULL;
     }
 
     @Override

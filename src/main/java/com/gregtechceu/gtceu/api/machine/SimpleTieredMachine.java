@@ -58,10 +58,7 @@ import java.util.function.BiFunction;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote SimpleMachine
- *           All simple single machines are implemented here.
+ * All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -316,7 +313,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IFancyUIMachine.super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        if (isCircuitSlotEnabled()) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        }
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -404,8 +403,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {

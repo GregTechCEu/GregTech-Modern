@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
@@ -21,7 +23,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
@@ -74,8 +75,6 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void onStructureFormed() {
-        getDefinition().setPartSorter(Comparator.comparingInt(p -> p.self().getPos().getY()));
-        getDefinition().setAllowExtendedFacing(false);
         super.onStructureFormed();
         final int startY = getPos().getY() + yOffset;
         List<IMultiPart> parts = getParts().stream()
@@ -96,7 +95,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
                 var part = parts.get(outputIndex);
                 if (part.self().getPos().getY() == y) {
-                    var handler = part.getRecipeHandlers().stream()
+                    var handler = part.getRecipeHandlers().get(0).getCapability(FluidRecipeCapability.CAP)
+                            .stream()
                             .filter(IFluidHandler.class::isInstance)
                             .findFirst()
                             .map(IFluidHandler.class::cast)
@@ -128,24 +128,29 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         super.onStructureInvalid();
     }
 
-    public int limitParallel(GTRecipe recipe, int multiplier) {
+    @Override
+    public int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick) {
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
 
-        var maxAmount = recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
+        var contents = (tick ? recipe.tickInputs : recipe.inputs).get(FluidRecipeCapability.CAP);
+        if (contents == null || contents.isEmpty()) return multiplier;
+
+        int maxAmount = contents.stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .map(i -> i.getStacks()[0])
-                .mapToInt(FluidStack::getAmount)
+                .mapToInt(FluidIngredient::getAmount)
                 .max()
                 .orElse(0);
 
         if (maxAmount == 0) return multiplier;
+        if (multiplier > Integer.MAX_VALUE / maxAmount) {
+            maxMultiplier = multiplier = Integer.MAX_VALUE / maxAmount;
+        }
 
         while (minMultiplier != maxMultiplier) {
-            if (multiplier > Integer.MAX_VALUE / maxAmount) multiplier = Integer.MAX_VALUE / maxAmount;
-            GTRecipe copy = recipe.copy(ContentModifier.multiplier(multiplier), false);
+            GTRecipe copy = modifyOutputs(recipe, ContentModifier.multiplier(multiplier));
             boolean filled = getRecipeLogic().applyFluidOutputs(copy, FluidAction.SIMULATE);
             int[] bin = ParallelLogic.adjustMultiplier(filled, minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
@@ -153,6 +158,15 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             maxMultiplier = bin[2];
         }
         return multiplier;
+    }
+
+    private static GTRecipe modifyOutputs(GTRecipe recipe, ContentModifier cm) {
+        return new GTRecipe(recipe.recipeType, recipe.id, recipe.inputs, cm.applyContents(recipe.outputs),
+                recipe.tickInputs, cm.applyContents(recipe.tickOutputs), recipe.inputChanceLogics,
+                recipe.outputChanceLogics,
+                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.ingredientActions,
+                recipe.data, recipe.duration, recipe.recipeCategory);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {
@@ -179,130 +193,39 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        @Nullable
-        public Iterator<GTRecipe> searchRecipe() {
-            var recipeType = machine.getRecipeType();
-            if (recipeType == GTRecipeTypes.DISTILLERY_RECIPES) return super.searchRecipe();
+        protected ActionResult matchRecipe(GTRecipe recipe) {
+            var match = matchDTRecipe(recipe);
+            if (!match.isSuccess()) return match;
 
-            // Do recipe searching ourselves, so we can match the outputs how we want
-            IRecipeCapabilityHolder holder = this.machine;
-            if (!holder.hasProxies()) return null;
-            var iterator = recipeType.getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel &&
-                    this.matchDTRecipe(recipe, holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
-
-            boolean any = false;
-            while (iterator.hasNext()) {
-                GTRecipe recipe = iterator.next();
-                if (recipe == null) continue;
-                any = true;
-                break;
-            }
-
-            if (any) {
-                iterator.reset();
-                return iterator;
-            }
-
-            for (GTRecipeType.ICustomRecipeLogic logic : recipeType.getCustomRecipeLogicRunners()) {
-                GTRecipe recipe = logic.createCustomRecipe(holder);
-                if (recipe != null) return Collections.singleton(recipe).iterator();
-            }
-            return Collections.emptyIterator();
+            return RecipeHelper.matchTickRecipe(this.machine, recipe);
         }
 
         @Override
-        public void findAndHandleRecipe() {
-            lastFailedMatches = null;
-            if (!recipeDirty && lastRecipe != null &&
-                    matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                    lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                    lastRecipe.checkConditions(this).isSuccess()) {
-                var recipe = lastRecipe;
-                lastRecipe = null;
-                lastOriginRecipe = null;
-                setupRecipe(recipe);
-            } else {
-                workingRecipe = null;
-                lastRecipe = null;
-                lastOriginRecipe = null;
-                handleSearchingRecipes(searchRecipe());
-            }
+        protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
+            workingRecipe = null;
+            super.handleSearchingRecipes(matches);
         }
 
-        @Override
-        public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-            var matchCopy = match.copy();
-            var modified = machine.fullModifyRecipe(matchCopy);
-            if (modified != null) {
-                if (modified.checkConditions(this).isSuccess() &&
-                        matchDTRecipe(modified, machine).isSuccess() &&
-                        modified.matchTickRecipe(machine).isSuccess()) {
-                    setupRecipe(modified);
-                }
-                if (lastRecipe != null && getStatus() == Status.WORKING) {
-                    lastOriginRecipe = match;
-                    lastFailedMatches = null;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public void onRecipeFinish() {
-            machine.afterWorking();
-            if (lastRecipe != null) {
-                lastRecipe.postWorking(machine);
-                handleRecipeIO(lastRecipe, IO.OUT);
-                if (machine.alwaysTryModifyRecipe()) {
-                    if (lastOriginRecipe != null) {
-                        var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
-                        if (modified == null) markLastRecipeDirty();
-                        else lastRecipe = modified;
-                    } else {
-                        markLastRecipeDirty();
-                    }
-                }
-
-                if (!recipeDirty && !suspendAfterFinish &&
-                        matchDTRecipe(lastRecipe, this.machine).isSuccess() &&
-                        lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                        lastRecipe.checkConditions(this).isSuccess()) {
-                    setupRecipe(lastRecipe);
-                    if (isActive) consecutiveRecipes++;
-                } else {
-                    if (suspendAfterFinish) {
-                        setStatus(Status.SUSPEND);
-                        suspendAfterFinish = false;
-                    } else {
-                        setStatus(Status.IDLE);
-                    }
-                    consecutiveRecipes = 0;
-                    progress = 0;
-                    duration = 0;
-                    isActive = false;
-                }
-            }
-        }
-
-        private GTRecipe.ActionResult matchDTRecipe(GTRecipe recipe, IRecipeCapabilityHolder holder) {
-            var result = recipe.matchRecipeContents(IO.IN, holder, recipe.inputs, false);
+        private ActionResult matchDTRecipe(GTRecipe recipe) {
+            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
+                    Collections.emptyMap(), false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = recipe.matchRecipeContents(IO.OUT, holder, out, false);
+                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, Collections.emptyMap(), false, true);
                 if (!result.isSuccess()) return result;
             }
 
             if (!applyFluidOutputs(recipe, FluidAction.SIMULATE)) {
-                return GTRecipe.ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
-                        .append(": ")
-                        .append(FluidRecipeCapability.CAP.getName()));
+                return ActionResult
+                        .fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
+                                .append(": ")
+                                .append(FluidRecipeCapability.CAP.getName()));
             }
 
-            return GTRecipe.ActionResult.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
         private void updateWorkingRecipe(GTRecipe recipe) {
@@ -322,21 +245,31 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io != IO.OUT) {
-                if (super.handleRecipeIO(recipe, io)) {
+                var handleIO = super.handleRecipeIO(recipe, io);
+                if (handleIO.isSuccess()) {
                     updateWorkingRecipe(recipe);
-                    return true;
+                } else {
+                    this.workingRecipe = null;
                 }
-                this.workingRecipe = null;
-                return false;
+                return handleIO;
             }
+
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                recipe.handleRecipe(io, this.machine, false, out, chanceCaches);
+                RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
             }
-            return applyFluidOutputs(recipe, FluidAction.EXECUTE);
+
+            if (applyFluidOutputs(recipe, FluidAction.EXECUTE)) {
+                workingRecipe = null;
+                return ActionResult.SUCCESS;
+            }
+
+            return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
+                    .append(": ")
+                    .append(FluidRecipeCapability.CAP.getName()));
         }
 
         private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action) {

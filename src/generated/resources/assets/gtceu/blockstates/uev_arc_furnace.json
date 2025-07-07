@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/uev_arc_furnace",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/uev_arc_furnace"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/uev_arc_furnace",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/uev_arc_furnace",
+      "y": 270
+    }
+  }
+}

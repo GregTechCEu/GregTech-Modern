@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -20,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
@@ -32,6 +35,7 @@ import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -313,10 +317,7 @@ public class GTRecipeComponents {
 
         @Override
         public ExtendedOutputItem read(RecipeJS recipe, Object from) {
-            if (from instanceof IntProviderIngredient intProvider) {
-                return new ExtendedOutputItem(intProvider, 1);
-            }
-            return ExtendedOutputItem.fromOutputItem(recipe.readOutputItem(from));
+            return ExtendedOutputItem.of(from, recipe);
         }
 
         @Override
@@ -345,6 +346,28 @@ public class GTRecipeComponents {
             return componentType();
         }
     };
+    public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = new RecipeComponent<>() {
+
+        @Override
+        public String componentType() {
+            return "energy_stack";
+        }
+
+        @Override
+        public Class<?> componentClass() {
+            return EnergyStack.class;
+        }
+
+        @Override
+        public JsonElement write(RecipeJS recipe, EnergyStack.WithIO value) {
+            return EnergyStack.WithIO.CODEC.encodeStart(JsonOps.INSTANCE, value).result().orElse(null);
+        }
+
+        @Override
+        public EnergyStack.WithIO read(RecipeJS recipe, Object from) {
+            return KJSHelpers.parseIOEnergyStack(from);
+        }
+    };
 
     public static final ContentJS<InputItem> ITEM_IN = new ContentJS<>(ItemComponents.INPUT, GTRecipeCapabilities.ITEM,
             false);
@@ -354,13 +377,13 @@ public class GTRecipeComponents {
             GTRecipeCapabilities.FLUID, false);
     public static final ContentJS<FluidIngredientJS> FLUID_OUT = new ContentJS<>(FLUID_INGREDIENT_OUT,
             GTRecipeCapabilities.FLUID, true);
-    public static final ContentJS<Long> EU_IN = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_IN = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             false);
-    public static final ContentJS<Long> EU_OUT = new ContentJS<>(NumberComponent.ANY_LONG, GTRecipeCapabilities.EU,
+    public static final ContentJS<EnergyStack.WithIO> EU_OUT = new ContentJS<>(ENERGY_STACK, GTRecipeCapabilities.EU,
             true);
-    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_IN = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             false);
-    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.ANY_INT, GTRecipeCapabilities.CWU,
+    public static final ContentJS<Integer> CWU_OUT = new ContentJS<>(NumberComponent.INT, GTRecipeCapabilities.CWU,
             true);
 
     public static final CapabilityMapComponent IN = new CapabilityMapComponent(false);
@@ -389,6 +412,7 @@ public class GTRecipeComponents {
 
     public static class FluidIngredientJS implements InputFluid, OutputFluid {
 
+        @Getter
         private final FluidIngredient ingredient;
 
         public FluidIngredientJS(FluidIngredient ingredient) {
@@ -419,6 +443,8 @@ public class GTRecipeComponents {
         public static FluidIngredientJS of(Object o) {
             if (o instanceof FluidIngredientJS ingredientJS) {
                 return ingredientJS;
+            } else if (o instanceof IntProviderFluidIngredient ingredient) {
+                return new FluidIngredientJS(ingredient.copy());
             } else if (o instanceof FluidIngredient ingredient) {
                 return new FluidIngredientJS(ingredient);
             } else if (o instanceof JsonElement json) {

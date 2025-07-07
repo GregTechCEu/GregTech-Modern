@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/lp_steam_compressor",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/lp_steam_compressor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/lp_steam_compressor"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/lp_steam_compressor",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/lp_steam_compressor",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/lp_steam_compressor",
+      "y": 270
+    }
+  }
+}

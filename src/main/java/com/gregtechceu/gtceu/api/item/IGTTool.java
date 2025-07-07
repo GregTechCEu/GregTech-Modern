@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -8,9 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
@@ -19,6 +17,7 @@ import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -28,18 +27,15 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -55,9 +51,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -72,6 +66,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -153,17 +148,18 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         // Set tool and material enchantments
         Object2IntMap<Enchantment> enchantments = new Object2IntOpenHashMap<>(toolProperty.getEnchantments());
         enchantments.putAll(toolStats.getDefaultEnchantments(stack));
-        enchantments.forEach((enchantment, level) -> {
+        for (var entry : Object2IntMaps.fastIterable(enchantments)) {
+            var enchantment = entry.getKey();
             if (enchantment.canEnchant(stack)) {
-                stack.enchant(enchantment, level);
+                stack.enchant(enchantment, entry.getIntValue());
             }
-        });
+        }
 
         // Set behaviours
         CompoundTag behaviourTag = getBehaviorsTag(stack);
         getToolStats().getBehaviors().forEach(behavior -> behavior.addBehaviorNBT(stack, behaviourTag));
 
-        if (aoeDefinition != AoESymmetrical.none()) {
+        if (!aoeDefinition.isZero()) {
             behaviourTag.putInt(MAX_AOE_COLUMN_KEY, aoeDefinition.column);
             behaviourTag.putInt(MAX_AOE_ROW_KEY, aoeDefinition.row);
             behaviourTag.putInt(MAX_AOE_LAYER_KEY, aoeDefinition.layer);
@@ -363,10 +359,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockStartBreak(stack, pos, player));
 
         if (!player.isShiftKeyDown()) {
-            ServerPlayer playerMP = (ServerPlayer) player;
+            ServerPlayer serverPlayer = (ServerPlayer) player;
             int result = -1;
             if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(playerMP, stack, pos);
+                result = shearBlockRoutine(serverPlayer, stack, pos);
             }
             if (result != 0) {
                 // prevent exploits with instantly breakable blocks
@@ -382,11 +378,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
 
                 if (effective) {
-                    if (areaOfEffectBlockBreakRoutine(stack, playerMP)) {
+                    if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
-                            if (getBehaviorsTag(stack).getBoolean(TREE_FELLING_KEY) && state.is(BlockTags.LOGS)) {
+                            var tag = getBehaviorsTag(stack);
+                            if (tag.getBoolean(TREE_FELLING_KEY) &&
+                                    !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
+                                    state.is(BlockTags.LOGS)) {
                                 TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
@@ -427,22 +426,22 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (repair.getItem() instanceof IGTTool gtTool) {
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
-        UnificationEntry entry = ChemicalHelper.getUnificationEntry(repair.getItem());
-        if (entry == null || entry.material == null) return false;
-        if (entry.material == getToolMaterial(toRepair)) {
+        MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
+        if (entry.isEmpty()) return false;
+        if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
-                return entry.tagPrefix == TagPrefix.planks;
+            if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
+                return entry.tagPrefix() == TagPrefix.planks;
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix == TagPrefix.plate) {
+            if (entry.tagPrefix() == TagPrefix.plate) {
                 return true;
             }
-            if (entry.material.hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix == TagPrefix.ingot;
+            if (entry.material().hasProperty(PropertyKey.INGOT)) {
+                return entry.tagPrefix() == TagPrefix.ingot;
             }
-            if (entry.material.hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix == TagPrefix.gem;
+            if (entry.material().hasProperty(PropertyKey.GEM)) {
+                return entry.tagPrefix() == TagPrefix.gem;
             }
         }
         return false;
@@ -477,7 +476,27 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default boolean definition$shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return oldStack.getItem() != newStack.getItem() || oldStack.getDamageValue() < newStack.getDamageValue();
+        if (!oldStack.is(newStack.getItem())) {
+            return true;
+        }
+        if (newStack.isDamageableItem() && oldStack.isDamageableItem()) {
+            CompoundTag newTag = newStack.getTag();
+            CompoundTag oldTag = oldStack.getTag();
+            if (newTag != null && oldTag != null) {
+                Set<String> newKeys = new HashSet<>(newTag.getAllKeys());
+                Set<String> oldKeys = new HashSet<>(oldTag.getAllKeys());
+                newKeys.remove(ItemStack.TAG_DAMAGE);
+                oldKeys.remove(ItemStack.TAG_DAMAGE);
+                newKeys.remove(CHARGE_KEY);
+                oldKeys.remove(CHARGE_KEY);
+                if (!newKeys.equals(oldKeys)) {
+                    return true;
+                }
+                return !newKeys.stream().allMatch((key) -> Objects.equals(newTag.get(key), oldTag.get(key)));
+            }
+            return newTag != null || oldTag != null;
+        }
+        return !ItemStack.isSameItem(oldStack, newStack);
     }
 
     default boolean definition$hasCraftingRemainingItem(ItemStack stack) {
@@ -582,22 +601,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+        var heldItem = player.getItemInHand(hand);
         // TODO: relocate to keybind action when keybind PR happens
-        if (player.isShiftKeyDown() && getMaxAoEDefinition(stack) != AoESymmetrical.none()) {
-            ItemStack heldItem = player.getItemInHand(hand);
-            if (player instanceof ServerPlayer serverPlayer) {
-                HeldItemUIFactory.INSTANCE.openUI(serverPlayer, hand);
-            }
-            return InteractionResultHolder.success(heldItem);
-        }
-
-        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+        for (var behavior : getToolStats().getBehaviors()) {
             if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(stack);
+                return InteractionResultHolder.success(heldItem);
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResultHolder.pass(heldItem);
     }
 
     default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {
@@ -618,9 +629,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
     }
 
-    // Client-side methods
-
-    @OnlyIn(Dist.CLIENT)
     default void definition$appendHoverText(@NotNull ItemStack stack, @Nullable Level world,
                                             @NotNull List<Component> tooltip, TooltipFlag flag) {
         if (!(stack.getItem() instanceof IGTTool tool)) return;
@@ -632,12 +640,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // electric info
         if (this.isElectric()) {
-
-            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
-                    FormattingUtil.formatNumbers(getCharge(stack)),
-                    FormattingUtil.formatNumbers(getMaxCharge(stack)),
-                    GTValues.VNF[getElectricTier()]));
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier());
+            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+                    false);
         }
 
         // durability info
@@ -671,7 +675,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
             int harvestLevel = tool.getTotalHarvestLevel(stack);
             String harvestName = "item.gtceu.tool.harvest_level." + harvestLevel;
-            if (I18n.exists(harvestName)) { // if there's a defined name for the harvest level, use it
+            if (Language.getInstance().has(harvestName)) { // if there's a defined name for the harvest level, use it
                 tooltip.add(Component.translatable("item.gtceu.tool.tooltip.harvest_level_extra", harvestLevel,
                         Component.translatable(harvestName)));
             } else {
@@ -683,8 +687,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         boolean addedBehaviorNewLine = false;
         AoESymmetrical aoeDefinition = getAoEDefinition(stack);
 
-        if (aoeDefinition != AoESymmetrical.none()) {
-            addedBehaviorNewLine = tooltip.add(Component.literal(""));
+        if (!aoeDefinition.isZero()) {
+            addedBehaviorNewLine = tooltip.add(CommonComponents.EMPTY);
             tooltip.add(Component.translatable("item.gtceu.tool.behavior.aoe_mining",
                     aoeDefinition.column * 2 + 1, aoeDefinition.row * 2 + 1, aoeDefinition.layer + 1));
         }
@@ -693,29 +697,29 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (behaviorsTag.getBoolean(RELOCATE_MINED_BLOCKS_KEY)) {
             if (!addedBehaviorNewLine) {
                 addedBehaviorNewLine = true;
-                tooltip.add(Component.literal(""));
+                tooltip.add(CommonComponents.EMPTY);
             }
             tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining"));
         }
 
         if (!addedBehaviorNewLine && !toolStats.getBehaviors().isEmpty()) {
-            tooltip.add(Component.literal(""));
+            tooltip.add(CommonComponents.EMPTY);
         }
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
         // unique tooltip
-        String uniqueTooltip = "item.gtceu.tool." + BuiltInRegistries.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
-        if (I18n.exists(uniqueTooltip)) {
-            tooltip.add(Component.literal(""));
+        String uniqueTooltip = this.getToolType().getUnlocalizedName() + ".tooltip";
+        if (Language.getInstance().has(uniqueTooltip)) {
+            tooltip.add(CommonComponents.EMPTY);
             tooltip.add(Component.translatable(uniqueTooltip));
         }
 
-        tooltip.add(Component.literal(""));
+        tooltip.add(CommonComponents.EMPTY);
 
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClassNames(stack).stream()
-                        .filter(s -> I18n.exists("gtceu.tool.class." + s))
+                        .filter(s -> Language.getInstance().has("gtceu.tool.class." + s))
                         .map(s -> Component.translatable("gtceu.tool.class." + s))
                         .collect(Component::empty, FormattingUtil::combineComponents,
                                 FormattingUtil::combineComponents)));
@@ -763,17 +767,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             case "enchantment.cofhcore.smelting": // cofhcore
             case "enchantment.as.smelting": // astral sorcery
                 // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack) == AoESymmetrical.none() &&
+                return getToolStats().getAoEDefinition(stack).isZero() &&
                         !getBehaviorsTag(stack).contains(TREE_FELLING_KEY);
         }
 
-        // Block Mending and Unbreaking on Electric tools
-        if (isElectric() &&
-                (enchantment instanceof MendingEnchantment || enchantment instanceof DigDurabilityEnchantment)) {
-            return false;
-        }
-
-        if (enchantment.category == null) return true;
         // bypass EnumEnchantmentType#canEnchantItem and define custom stack-aware logic.
         // the Minecraft method takes an Item, and does not respect NBT nor meta.
         switch (enchantment.category) {
@@ -832,45 +829,14 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     @Override
-    default ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        CompoundTag tag = getBehaviorsTag(holder.getHeld());
-        AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
-        return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
-                .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
-                .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
-                .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(15, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseColumn(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(50, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseRow(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 24, 20, 20, new TextTexture("+"), (data) -> {
-                    AoESymmetrical.increaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new ButtonWidget(85, 44, 20, 20, new TextTexture("-"), (data) -> {
-                    AoESymmetrical.decreaseLayer(tag, defaultDefinition);
-                    holder.markAsDirty();
-                }))
-                .widget(new LabelWidget(23, 65,
-                        () -> Integer.toString(1 +
-                                2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(58, 65,
-                        () -> Integer.toString(
-                                1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
-                .widget(new LabelWidget(93, 65, () -> Integer
-                        .toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
+    default ModularUI createUI(Player player, HeldItemUIFactory.HeldItemHolder holder) {
+        for (var behavior : getToolStats().getBehaviors()) {
+            if (!(behavior instanceof IToolUIBehavior uiBehavior) || !uiBehavior.openUI(player, holder.getHand())) {
+                continue;
+            }
+            return uiBehavior.createUI(player, holder);
+        }
+        return new ModularUI(holder, player);
     }
 
     default Set<GTToolType> getToolClasses(ItemStack stack) {

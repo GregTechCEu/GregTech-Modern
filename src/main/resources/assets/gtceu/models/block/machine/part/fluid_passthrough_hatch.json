@@ -1,28 +1,40 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
-	"textures": {
-		"overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
-		"overlay_fluid_hatch_input": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
-		"overlay_fluid_hatch_output": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
-		"overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "north"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south"}
-			}
-		},
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_input", "cullface": "north"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_output", "cullface": "south"}
-			}
-		}
-	]
+    "credit": "Made with Blockbench",
+    "parent": "block/block",
+    "textures": {
+        "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
+        "overlay_fluid_hatch_input": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+        "overlay_fluid_hatch_output": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
+        "overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
+            }
+        },
+        {
+            "from": [ -0.002,  0, -0.002 ],
+            "to":   [ 16.002, 16, 16.002 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in",  "cullface": "north" },
+                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south" }
+            }
+        },
+        {
+            "from": [ -0.004,  0, -0.004 ],
+            "to":   [ 16.004, 16, 16.004 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_input",  "cullface": "north" },
+                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_output", "cullface": "south" }
+            }
+        }
+    ]
 }

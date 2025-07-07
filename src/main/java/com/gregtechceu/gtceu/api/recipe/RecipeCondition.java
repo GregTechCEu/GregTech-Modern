@@ -20,11 +20,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author KilaBash
- * @date 2022/05/27
- * @implNote RecipeCondition, global conditions
- */
 @Accessors(chain = true)
 public abstract class RecipeCondition {
 
@@ -69,7 +64,12 @@ public abstract class RecipeCondition {
 
     public abstract Component getTooltips();
 
-    public abstract boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic);
+    public boolean check(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        boolean test = testCondition(recipe, recipeLogic);
+        return test != isReverse;
+    }
+
+    protected abstract boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic);
 
     public abstract RecipeCondition createTemplate();
 

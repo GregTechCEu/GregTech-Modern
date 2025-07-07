@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtceu:block/machine/mv_pump",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtceu:block/machine/mv_pump",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/mv_pump"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/mv_pump",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/mv_pump",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/mv_pump",
+      "y": 270
+    }
+  }
+}

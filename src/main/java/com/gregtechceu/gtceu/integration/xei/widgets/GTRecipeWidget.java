@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
+import com.gregtechceu.gtceu.api.gui.widget.ButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -15,16 +16,17 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -46,11 +48,6 @@ import java.util.regex.Pattern;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
-/**
- * @author KilaBash
- * @date 2023/2/25
- * @implNote GTRecipeWidget
- */
 public class GTRecipeWidget extends WidgetGroup {
 
     public static final String RECIPE_CONTENT_GROUP_ID = "recipeContentGroup";
@@ -108,13 +105,10 @@ public class GTRecipeWidget extends WidgetGroup {
 
         addWidget(group);
 
-        var EUt = RecipeHelper.getInputEUt(recipe);
-        if (EUt == 0) {
-            EUt = RecipeHelper.getOutputEUt(recipe);
-        }
+        EnergyStack EUt = RecipeHelper.getRealEUt(recipe);
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
-        yOffset += EUt > 0 ? 20 : 0;
+        yOffset += !EUt.isEmpty() ? 30 : 0;
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
             yOffset -= 10;
         }
@@ -153,16 +147,15 @@ public class GTRecipeWidget extends WidgetGroup {
         String tierText = GTValues.VNF[tier];
         int textsY = yOffset - 10;
         int duration = recipe.duration;
-        long inputEUt = RecipeHelper.getInputEUt(recipe);
-        long outputEUt = RecipeHelper.getOutputEUt(recipe);
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
+        var EUt = RecipeHelper.getRealEUtWithIO(recipe);
+        List<Component> texts = getRecipeParaText(recipe, duration, EUt);
         for (Component text : texts) {
             textsY += 10;
             LabelWidget labelWidget = new LabelWidget(3 - xOffset, textsY, text).setTextColor(-1).setDropShadow(true);
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (inputEUt > 0) {
+        if (EUt.isInput()) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
                     tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {
@@ -173,30 +166,21 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
                     voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
                     cd -> setRecipeOC(cd.button, cd.isShiftClick))
-                    .setHoverTooltips(
-                            Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[minTier]),
-                            Component.translatable("gtceu.oc.tooltip.1"),
-                            Component.translatable("gtceu.oc.tooltip.2"),
-                            Component.translatable("gtceu.oc.tooltip.3"),
-                            Component.translatable("gtceu.oc.tooltip.4")));
+                    .setHoverTooltips(LangHandler.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])
+                            .toArray(Component[]::new)));
             addWidget(this.voltageTextWidget = voltageTextWidget);
         }
     }
 
     @NotNull
-    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration, long inputEUt, long outputEUt) {
+    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration,
+                                                     EnergyStack.WithIO eu) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
             texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
         }
-        var EUt = inputEUt;
-        boolean isOutput = false;
-        if (EUt == 0) {
-            EUt = outputEUt;
-            isOutput = true;
-        }
-        if (EUt > 0) {
-            long euTotal = EUt * duration;
+        if (eu.voltage() > 0) {
+            long euTotal = eu.getTotalEU() * duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
@@ -207,8 +191,10 @@ public class GTRecipeWidget extends WidgetGroup {
             } else {
                 texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
-            texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
-                    FormattingUtil.formatNumbers(EUt)));
+            texts.add(Component.translatable(eu.isInput() ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
+                    FormattingUtil.formatNumbers(eu.getTotalEU())));
+            texts.add(Component.translatable("gtceu.recipe.voltage",
+                    FormattingUtil.formatNumbers(eu.voltage()), FormattingUtil.formatNumbers(eu.amperage())));
         }
 
         return texts;
@@ -251,24 +237,27 @@ public class GTRecipeWidget extends WidgetGroup {
         if (isShiftClick) {
             oc = OverclockingLogic.PERFECT_OVERCLOCK;
         }
-        setRecipeTextWidget(oc);
+        if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+            oc = FusionReactorMachine.FUSION_OC;
+        }
+        setRecipeOverclockWidget(oc);
         setRecipeWidget();
     }
 
-    private void setRecipeTextWidget(OverclockingLogic logic) {
-        long inputEUt = RecipeHelper.getInputEUt(recipe);
+    private void setRecipeOverclockWidget(OverclockingLogic logic) {
+        EnergyStack inputEUt = recipe.getInputEUt();
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
-        if (tier > minTier && inputEUt != 0) {
+        if (tier > minTier && !inputEUt.isEmpty()) {
             int ocs = tier - minTier;
             if (minTier == ULV) ocs--;
-            var params = new OverclockingLogic.OCParams(inputEUt, recipe.duration, ocs, 1);
+            var params = new OverclockingLogic.OCParams(inputEUt.voltage(), recipe.duration, ocs, 1);
             var result = logic.runOverclockingLogic(params, V[tier]);
             duration = (int) (duration * result.durationMultiplier());
-            inputEUt = (long) (inputEUt * result.eutMultiplier());
+            inputEUt = inputEUt.multiplyVoltage(result.eutMultiplier());
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
+        List<Component> texts = getRecipeParaText(recipe, duration, new EnergyStack.WithIO(inputEUt, IO.IN));
         for (int i = 0; i < texts.size(); i++) {
             recipeParaTexts.get(i).setComponent(texts.get(i));
         }
@@ -286,29 +275,43 @@ public class GTRecipeWidget extends WidgetGroup {
                 tooltips.add(Component.translatable("gtceu.gui.content.chance_nc"));
             } else {
                 float baseChanceFloat = 100f * content.chance / content.maxChance;
-                float boostedChanceFloat = 100f * boostedChance / content.maxChance;
-                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
-                            .withStyle(ChatFormatting.YELLOW));
-                } else {
-                    tooltips.add(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", baseChanceFloat));
-                }
                 if (content.tierChanceBoost != 0) {
+                    float boostedChanceFloat = 100f * boostedChance / content.maxChance;
+
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.chance_base_logic",
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltips.add(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base",
+                                        baseChanceFloat));
+                    }
+
                     String key = "gtceu.gui.content.chance_tier_boost_" +
                             ((content.tierChanceBoost > 0) ? "plus" : "minus");
                     tooltips.add(FormattingUtil.formatPercentage2Places(key,
                             Math.abs(100f * content.tierChanceBoost / content.maxChance)));
-                }
-                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                            FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
-                            .withStyle(ChatFormatting.YELLOW));
+
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.chance_boosted_logic",
+                                FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltips.add(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
+                                        boostedChanceFloat));
+                    }
                 } else {
-                    tooltips.add(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
-                                    boostedChanceFloat));
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltips.add(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                                        baseChanceFloat));
+                    }
                 }
             }
         }
@@ -381,17 +384,21 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
-                        widget -> {
-                            var index = WidgetUtils.widgetIdIndex(widget);
-                            if (index >= 0 && index < contents.size()) {
-                                var content = contents.get(index);
-                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null, minTier, tier);
-                                widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
-                                        recipe.getType().getChanceFunction()));
-                            }
-                        });
+                var widgetClass = cap.getWidgetClass();
+                if (widgetClass != null) {
+                    WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass,
+                            widget -> {
+                                var index = WidgetUtils.widgetIdIndex(widget);
+                                if (index >= 0 && index < contents.size()) {
+                                    var content = contents.get(index);
+                                    cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
+                                            content,
+                                            null, minTier, tier);
+                                    widget.setOverlay(content.createOverlay(index >= nonTickCount, minTier, tier,
+                                            recipe.getType().getChanceFunction()));
+                                }
+                            });
+                }
             }
         }
     }

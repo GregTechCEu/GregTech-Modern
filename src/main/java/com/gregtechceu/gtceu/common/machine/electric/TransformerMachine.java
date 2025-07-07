@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
@@ -24,17 +25,15 @@ import lombok.Setter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/10
- * @implNote TransformerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TransformerMachine extends TieredEnergyMachine implements IControllable {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TransformerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
+    public static final BooleanProperty TRANSFORM_UP_PROPERTY = BooleanProperty.create("transform_up");
+
     @Persisted
     @DescSynced
     @Getter
@@ -63,7 +62,6 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
 
     @SuppressWarnings("unused")
     private void onTransformUpdated(boolean newValue, boolean oldValue) {
-        scheduleRenderUpdate();
         updateEnergyContainer(newValue);
     }
 
@@ -122,6 +120,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         if (this.isTransformUp != isTransformUp && !isRemote()) {
             this.isTransformUp = isTransformUp;
             updateEnergyContainer(isTransformUp);
+            setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, isTransformUp));
         }
     }
 

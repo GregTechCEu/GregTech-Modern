@@ -10,11 +10,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author Screret
- * @date 2023/12/20
- * @implNote OreVeinWorldEntry
- */
 public class OreVeinWorldEntry {
 
     @Nullable

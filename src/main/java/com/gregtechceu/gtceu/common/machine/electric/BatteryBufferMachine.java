@@ -28,7 +28,6 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,11 +35,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/10
- * @implNote BatteryBufferMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BatteryBufferMachine extends TieredEnergyMachine
@@ -53,7 +47,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     @Persisted
     @Getter
-    @Setter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
@@ -148,6 +141,12 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     // ****** Battery Logic ******//
     //////////////////////////////////////
 
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        energyContainer.checkOutputSubscription();
+    }
+
     private List<Object> getNonFullBatteries() {
         List<Object> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
@@ -215,6 +214,16 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         }
 
         @Override
+        public void checkOutputSubscription() {
+            if (isWorkingEnabled()) {
+                super.checkOutputSubscription();
+            } else if (outputSubs != null) {
+                outputSubs.unsubscribe();
+                outputSubs = null;
+            }
+        }
+
+        @Override
         public void serverTick() {
             var outFacing = getFrontFacing();
             var energyContainer = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(outFacing),
@@ -247,6 +256,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyOutputPerSec += charged;
                 }
 
                 if (changed) {
@@ -305,6 +315,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         changed = true;
                     }
                     energy -= charged;
+                    energyInputPerSec += charged;
                 }
 
                 if (changed) {

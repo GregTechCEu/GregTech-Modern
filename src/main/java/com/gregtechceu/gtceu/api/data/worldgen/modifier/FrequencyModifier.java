@@ -19,11 +19,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/20
- * @implNote GTOrePlacementModifier
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FrequencyModifier extends PlacementModifier {

@@ -25,6 +25,8 @@ import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
@@ -33,14 +35,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author lucifer_ll
- * @date 2023/7/12
- * @implNote ChargerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine, IMachineLife {
@@ -50,11 +48,20 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
             TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
-    public enum State {
+    public enum State implements StringRepresentable {
+
         IDLE,
         RUNNING,
-        FINISHED
+        FINISHED;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
     }
+
+    public static final EnumProperty<ChargerMachine.State> STATE_PROPERTY = EnumProperty.create("charger_state",
+            ChargerMachine.State.class);
 
     @Persisted
     @Getter
@@ -181,6 +188,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
+            setRenderState(getRenderState().setValue(STATE_PROPERTY, newState));
         }
     }
 
@@ -228,19 +236,20 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 long distributed = energy / electricItems.size();
 
                 boolean changed = false;
-                var charged = 0L;
                 for (var electricItem : electricItems) {
+                    long charged = 0;
                     if (electricItem instanceof IElectricItem item) {
-                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM),
+                        charged = item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM),
                                 getTier(), true, false);
                     } else if (electricItem instanceof IEnergyStorage energyStorage) {
-                        energy += FeCompat.insertEu(energyStorage,
+                        charged = FeCompat.insertEu(energyStorage,
                                 Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM), false);
                     }
                     if (charged > 0) {
                         changed = true;
                     }
                     energy -= charged;
+                    energyInputPerSec += charged;
                 }
 
                 if (changed) {

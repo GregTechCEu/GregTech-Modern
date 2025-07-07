@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -36,11 +35,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/17
- * @implNote SimpleGeneratorMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleGeneratorMachine extends WorkableTieredMachine
@@ -77,11 +71,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     }
 
     @Override
-    protected long getMaxInputOutputAmperage() {
-        return 1L;
-    }
-
-    @Override
     public int tintColor(int index) {
         if (index == 2) {
             return GTValues.VC[getTier()];
@@ -107,7 +96,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
-        long EUt = RecipeHelper.getOutputEUt(recipe);
+        long EUt = recipe.getOutputEUt().getTotalEU();
         if (EUt <= 0) return ModifierFunction.NULL;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
@@ -122,7 +111,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     }
 
     @Override
-    public boolean dampingWhenWaiting() {
+    public boolean regressWhenWaiting() {
         return false;
     }
 

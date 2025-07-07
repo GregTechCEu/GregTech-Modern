@@ -22,4 +22,6 @@ public enum ControllerMode {
         this.localeName = localeName;
         this.side = side;
     }
+
+    public static final String nullLocaleName = "cover.machine_controller.mode.null";
 }

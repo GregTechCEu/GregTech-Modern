@@ -38,11 +38,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.lowdragmc.lowdraglib.gui.util.DrawerHelper.drawStringFixedCorner;
 
-/**
- * @Author GlodBlock
- * @Description A configurable slot for {@link FluidStack}
- * @Date 2023/4/21-0:50
- */
 public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhostFluidTarget {
 
     public AEFluidConfigSlotWidget(int x, int y, ConfigWidget widget, int index) {
@@ -121,7 +116,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 writeClientAction(REMOVE_ID, buf -> {});
 
                 if (!parentWidget.isStocking()) {
-                    this.parentWidget.disableAmount();
+                    this.parentWidget.disableAmountClient();
                 }
             } else if (button == 0) {
                 // Left click to set/select
@@ -129,7 +124,7 @@ public class AEFluidConfigSlotWidget extends AEConfigSlotWidget implements IGhos
                 FluidUtil.getFluidContained(hold).ifPresent(f -> writeClientAction(UPDATE_ID, f::writeToPacket));
 
                 if (!parentWidget.isStocking()) {
-                    this.parentWidget.enableAmount(this.index);
+                    this.parentWidget.enableAmountClient(this.index);
                     this.select = true;
                 }
             }

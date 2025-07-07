@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:ev_pump",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/machine/template/pump_machine",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
+        }
+      }
+    }
+  }
+}

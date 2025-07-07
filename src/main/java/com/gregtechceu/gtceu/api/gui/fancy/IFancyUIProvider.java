@@ -11,11 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/6/27
- * @implNote IFancyUIProvider
- */
 public interface IFancyUIProvider {
 
     /**

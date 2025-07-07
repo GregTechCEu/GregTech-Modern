@@ -394,11 +394,11 @@ public class SecondDegreeMaterials {
                 .color(0xc7c7c7).secondaryColor(0x212121).iconSet(FLINT)
                 .flags(NO_SMASHING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 1)
-                .toolStats(ToolProperty.Builder.of(1.5F, 1.0F, 64, 2)
+                .toolStats(ToolProperty.Builder.of(0.0F, 1.0F, 64, 1)
                         .types(GTToolType.MORTAR, GTToolType.KNIFE, GTToolType.AXE, GTToolType.PICKAXE, GTToolType.HOE,
                                 GTToolType.SWORD, GTToolType.SHOVEL)
                         .enchantability(5).ignoreCraftingTools()
-                        .enchantment(Enchantments.FIRE_ASPECT, 2).build())
+                        .enchantment(Enchantments.FIRE_ASPECT, 1).build())
                 .buildAndRegister();
 
         Air = new Material.Builder(GTCEu.id("air"))
@@ -529,29 +529,6 @@ public class SecondDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS)
-                .buildAndRegister();
-
-        RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
-                .liquid()
-                .color(0x9f6b26)
-                .buildAndRegister();
-
-        DebrominatedBrine = new Material.Builder(GTCEu.id("debrominated_brine"))
-                .liquid()
-                .color(0xab8c6d)
-                .buildAndRegister();
-
-        BrominatedChlorineVapor = new Material.Builder(GTCEu.id("brominated_chlorine_vapor"))
-                .gas()
-                .color(0xbb9b72)
-                .components(Chlorine, 1, Bromine, 1, Steam, 1)
-                .flags(DISABLE_DECOMPOSITION)
-                .buildAndRegister();
-
-        AcidicBromineExhaust = new Material.Builder(GTCEu.id("acidic_bromine_exhaust"))
-                .gas()
-                .color(0x8f681e)
-                .components(Steam, 3, Chlorine, 1)
                 .buildAndRegister();
     }
 }

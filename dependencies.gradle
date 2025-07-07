@@ -12,9 +12,10 @@ dependencies {
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    annotationProcessor(forge.mixinExtras.common)
-    api(forge.mixinExtras.common)
-    jarJar(forge.mixinExtras.forge)
+    compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
+    jarJar(api(forge.mixinExtras.forge.get())).version {
+        require("[${forge.versions.mixinExtras.get()},)")
+    }
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
@@ -48,8 +49,10 @@ dependencies {
     // Teams
     modCompileOnly(forge.ftblibrary)
     modCompileOnly(forge.ftbteams)
+    modCompileOnly(forge.ftbquests)
     modCompileOnly(forge.resourcefullib)
     modCompileOnly(forge.argonauts)
+    modCompileOnly(forge.heracles)
 
     // Maps
     modCompileOnly(forge.ftbchunks)
@@ -58,10 +61,17 @@ dependencies {
     modCompileOnly(forge.journeymap.api)
     modCompileOnly(forge.journeymap.forge)
 
+    // GameStages
+    modCompileOnly(forge.gamestages)
+
+    // CC: Tweaked
+    modCompileOnly(forge.cc.tweaked.core.api)
+    modCompileOnly(forge.cc.tweaked.forge.api)
+
     // Standard runtime mods //
     modRuntimeOnly(forge.jade)
     modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.kotlinforforge)
+    modRuntimeOnly(forge.spark)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modRuntimeOnly(forge.emi)
@@ -75,18 +85,26 @@ dependencies {
     modExtraRuntimeOnly(forge.trenzalore)
     modExtraRuntimeOnly(forge.curios)
 //    modExtraRuntimeOnly(forge.worldstripper)
+    modExtraRuntimeOnly(forge.cc.tweaked.forge.impl)
 
     modExtraRuntimeOnly(forge.bundles.kjs)
 
     modExtraRuntimeOnly(forge.ftblibrary)
     modExtraRuntimeOnly(forge.ftbteams)
+    modExtraRuntimeOnly(forge.ftbquests)
+
+    modExtraRuntimeOnly(forge.heracles)
+    modExtraRuntimeOnly(forge.resourcefullib)
 
 //    modExtraRuntimeOnly(forge.xaerosminimap)
 //    modExtraRuntimeOnly(forge.xaerosworldmap)
 //    modExtraRuntimeOnly(forge.journeymap.forge)
 //    modExtraRuntimeOnly(forge.ftbchunks)
 
-    modExtraRuntimeOnly(forge.spark)
+    modExtraRuntimeOnly(forge.gamestages)
+    modExtraRuntimeOnly(forge.bookshelf)
+
+    modExtraRuntimeOnly(forge.kotlinforforge)
     modExtraRuntimeOnly(forge.observable)
     //////////////////////////
 

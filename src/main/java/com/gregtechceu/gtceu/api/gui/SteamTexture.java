@@ -2,11 +2,6 @@ package com.gregtechceu.gtceu.api.gui;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote SteamTexture
- */
 public class SteamTexture {
 
     private static final String BRONZE = "bronze";

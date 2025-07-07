@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -36,12 +35,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import com.google.common.collect.Multimap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -50,11 +46,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/2/22
- * @implNote ComponentItem
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item
@@ -241,6 +232,18 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                // this will cancel the left click animation
+                return interactionItem.onEntitySwing(stack, entity);
+            }
+        }
+        // normal behavior
+        return super.onEntitySwing(stack, entity);
+    }
+
+    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
                                                   InteractionHand usedHand) {
         for (IItemComponent component : components) {
@@ -354,19 +357,6 @@ public class ComponentItem extends Item
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(@NotNull final ItemStack itemStack, @NotNull final Capability<T> cap) {
-        for (IItemComponent component : components) {
-            if (component instanceof IComponentCapability componentCapability) {
-                var value = componentCapability.getCapability(itemStack, cap);
-                if (value.isPresent()) {
-                    return value;
-                }
-            }
-        }
-        return LazyOptional.empty();
-    }
-
-    @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return burnTime;
     }
@@ -379,6 +369,18 @@ public class ComponentItem extends Item
             }
         }
         return super.getFoodProperties(stack, entity);
+    }
+
+    @Override
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public @Nullable FoodProperties getFoodProperties() {
+        // If item has `foodProperties` from super, return it.
+        if (super.isEdible()) return super.getFoodProperties();
+        // If item has `IEdibleItem` components, return food stats from default stack
+        if (isEdible()) return getFoodProperties(this.getDefaultInstance(), null);
+        // Not edible, so null.
+        return null;
     }
 
     @Override

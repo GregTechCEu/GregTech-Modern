@@ -15,11 +15,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
-/**
- * @author KilaBash
- * @date 2023/3/13
- * @implNote FluidFilterBehaviour
- */
 public record FluidFilterBehaviour(Function<ItemStack, FluidFilter> filterCreator) implements IItemUIFactory {
 
     @Override

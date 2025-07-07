@@ -13,11 +13,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/2/20
- * @implNote ItemRecipeCapability
- */
 public class CWURecipeCapability extends RecipeCapability<Integer> {
 
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
