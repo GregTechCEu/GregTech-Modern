@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.client.forge;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
@@ -13,11 +15,19 @@ import com.gregtechceu.gtceu.core.mixins.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -26,7 +36,9 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.apache.commons.lang3.mutable.MutableInt;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -87,6 +99,57 @@ public class ForgeClientEventListener {
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
             GTValues.CLIENT_TIME++;
         }
+    }
+
+    private static final String BLOCK_INFO_LINE_START = ChatFormatting.UNDERLINE + "Targeted Block: ";
+
+    @SubscribeEvent
+    public static void onDebugTextEvent(CustomizeGuiOverlayEvent.DebugText event) {
+        Minecraft mc = Minecraft.getInstance();
+        // don't render machine state information if F3 screen isn't up or reduced debug info is enabled
+        if (!mc.options.renderDebug || mc.showOnlyReducedInfo()) return;
+        Entity cameraEntity = mc.getCameraEntity();
+        if (cameraEntity == null || mc.level == null) return;
+
+        BlockHitResult hit = ToolHelper.entityPickBlock(cameraEntity, ForgeGui.rayTraceDistance, 0, false);
+        if (hit.getType() == HitResult.Type.MISS) return;
+        BlockPos hitPos = hit.getBlockPos();
+        BlockEntity blockEntity = mc.level.getBlockEntity(hitPos);
+        // only try to find the correct location if we have a valid machine
+        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
+
+        final List<String> rightLines = event.getRight();
+        int lineCount = rightLines.size();
+
+        // look for the empty line after the "Targeted Block" section
+        // and default to the end if there isn't anything after it
+        int targetedBlockLine = -1;
+        int afterBlockSection = lineCount - 1;
+        for (int i = 0; i < lineCount; i++) {
+            String line = rightLines.get(i);
+            // this is formatted like this so we don't need to check targetedBlockLine == -1 twice
+            if (targetedBlockLine == -1) {
+                if (line.startsWith(BLOCK_INFO_LINE_START)) {
+                    targetedBlockLine = i;
+                }
+            } else {
+                if (line.isBlank()) {
+                    afterBlockSection = i;
+                    // we can break here because targetedBlockLine must be not -1 for this branch to be reached
+                    break;
+                }
+            }
+        }
+        if (targetedBlockLine == -1) {
+            // couldn't find the start of the targeted block info, exit
+            return;
+        }
+
+        // actually add the text lines
+        MutableInt index = new MutableInt(afterBlockSection);
+
+        rightLines.add(index.getAndIncrement(), "");
+        machineBE.getMetaMachine().addDebugOverlayText(line -> rightLines.add(index.getAndIncrement(), line));
     }
 
     @SubscribeEvent

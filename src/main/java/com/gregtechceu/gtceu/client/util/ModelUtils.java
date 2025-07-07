@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
@@ -10,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -21,6 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -33,6 +37,20 @@ public class ModelUtils {
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
+    }
+
+    public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {
+        Property<?> property = entry.getKey();
+        Comparable<?> value = entry.getValue();
+
+        String valueString = Util.getPropertyName(property, value);
+        if (Boolean.TRUE.equals(value)) {
+            valueString = ChatFormatting.GREEN + valueString;
+        } else if (Boolean.FALSE.equals(value)) {
+            valueString = ChatFormatting.RED + valueString;
+        }
+
+        return property.getName() + ": " + valueString;
     }
 
     public static void registerAtlasStitchedEventListener(AssetEventListener.AtlasStitched listener) {
