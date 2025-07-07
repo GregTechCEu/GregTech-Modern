@@ -535,7 +535,7 @@ public class GTMachineModels {
                         .parent(prov.models().getExistingFile(overlayModel));
                 tieredHullTextures(baseModel, builder.getOwner().getTier());
 
-                if (!state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
+                if (state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
                     baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 }
                 return baseModel;
