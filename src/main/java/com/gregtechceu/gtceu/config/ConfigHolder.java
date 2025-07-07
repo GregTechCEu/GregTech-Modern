@@ -728,8 +728,8 @@ public class ConfigHolder {
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
         @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                "16777215 (#FFFFFF) is no coloring (like GTCE) (default).",
-                "13819135 (#D2DCFF in decimal) is the classic blue from GT5." })
+                "#FFFFFF is no coloring (like GTCE) (default).",
+                "#D2DCFF is the classic blue from GT5." })
         @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
         @Configurable.Gui.ColorValue
         public String defaultUIColor = "#FFFFFF";
@@ -749,6 +749,11 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererConfigs renderer = new RendererConfigs();
+
+        public int getDefaultPaintingColor() {
+            // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
+            return Long.decode(defaultPaintingColor).intValue() | 0xff000000;
+        }
 
         public static class ArmorHud {
 

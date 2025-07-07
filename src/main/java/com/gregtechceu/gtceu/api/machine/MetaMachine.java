@@ -186,14 +186,15 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public void setPaintingColor(int color) {
-        if (color != this.paintingColor) {
-            MachineRenderState renderState = getRenderState();
-            if (renderState.hasProperty(IS_PAINTED_PROPERTY)) {
-                setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, color != -1));
-            }
-        }
+        if (color == this.paintingColor) return;
+
         this.paintingColor = color;
         this.onPaintingColorChanged(color);
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IS_PAINTED_PROPERTY)) {
+            setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, this.isPainted()));
+        }
     }
 
     public void onPaintingColorChanged(int color) {}
@@ -222,6 +223,14 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public void onLoad() {
         traits.forEach(MachineTrait::onMachineLoad);
         coverContainer.onLoad();
+
+        // update the painted model property if the machine is painted
+        if (this.isPainted()) {
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(IS_PAINTED_PROPERTY) && !renderState.getValue(IS_PAINTED_PROPERTY)) {
+                setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, true));
+            }
+        }
     }
 
     /**

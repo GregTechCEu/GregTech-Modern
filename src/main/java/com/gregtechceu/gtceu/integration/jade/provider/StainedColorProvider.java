@@ -19,7 +19,7 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("StainedColor")) {
             int paintingColor = blockAccessor.getServerData().getInt("StainedColor");
-            if (paintingColor != -1) {
+            if (paintingColor != IPaintable.UNPAINTED_COLOR) {
                 iTooltip.add(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
                         .withStyle(style -> style.withColor(paintingColor)));
             }
@@ -29,7 +29,7 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IPaintable paintable) {
-            int paintingColor = paintable.getPaintingColor();
+            int paintingColor = paintable.isPainted() ? paintable.getPaintingColor() : IPaintable.UNPAINTED_COLOR;
             compoundTag.putInt("StainedColor", paintingColor);
         }
     }
