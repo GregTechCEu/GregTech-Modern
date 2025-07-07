@@ -44,6 +44,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -183,13 +184,26 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
                                            @NotNull BlockState state, @NotNull ModelData modelData) {
-        return modelData.derive()
+        ModelData.Builder builder = modelData.derive()
                 .with(MODEL_DATA_LEVEL, level)
-                .with(MODEL_DATA_POS, pos)
-                .build();
+                .with(MODEL_DATA_POS, pos);
+        MetaMachine machine = MetaMachine.getMachine(level, pos);
+        MachineRenderState renderState = machine == null ? definition.defaultRenderState() : machine.getRenderState();
+
+        // add the inner model's model data too
+        if (multiPart != null) {
+            multiPart.addMachineModelData(renderState, level, pos, state, modelData, builder);
+        } else {
+            ModelData data = modelsByState.get(renderState).getModelData(level, pos, state, modelData);
+            for (ModelProperty key : data.getProperties()) {
+                builder.with(key, data.get(key));
+            }
+        }
+        return builder.build();
     }
 
     @Override
@@ -222,7 +236,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
         BlockPos pos = modelData.get(MODEL_DATA_POS);
 
-        var machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         return getRenderQuads(machine, blockState, side, rand, modelData, renderType);
     }
 
