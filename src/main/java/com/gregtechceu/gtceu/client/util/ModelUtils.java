@@ -33,7 +33,7 @@ public class ModelUtils {
 
     private ModelUtils() {}
 
-    private static final Set<AssetEventListener<?>> EVENT_LISTENERS = new ReferenceOpenHashSet<>();
+    private static final List<AssetEventListener<?>> EVENT_LISTENERS = new ArrayList<>();
 
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
