@@ -4,7 +4,7 @@
     "refmap": "gtceu.refmap.json",
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_17",
-    "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
         "AbstractClientPlayerAccessor",
         "BiomeColorsMixin",
