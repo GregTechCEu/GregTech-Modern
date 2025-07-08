@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
-import com.gregtechceu.gtceu.core.mixins.ldlib.CustomBakedModelAccessor;
+
+import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -23,11 +24,9 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ModelUtils {
@@ -94,10 +93,10 @@ public class ModelUtils {
         // Also, the caching they have stops our models from updating properly.
         for (var entry : event.getModels().entrySet()) {
             BakedModel model = entry.getValue();
-            if (!(model instanceof CustomBakedModelAccessor ctmModel)) {
+            if (!(model instanceof CustomBakedModel ctmModel)) {
                 continue;
             }
-            if (ctmModel.gtceu$getParent() instanceof MachineModel machine) {
+            if (ctmModel.getParent() instanceof MachineModel machine) {
                 entry.setValue(machine);
             }
         }

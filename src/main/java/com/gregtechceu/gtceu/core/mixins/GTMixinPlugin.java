@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.LoadingModList;
+
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -57,7 +58,6 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
-
 
     private static void addModCompatMixin(String modId) {
         MOD_COMPAT_MIXINS.put(modId, MIXIN_PACKAGE + modId);

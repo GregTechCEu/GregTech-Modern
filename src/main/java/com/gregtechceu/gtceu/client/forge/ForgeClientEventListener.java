@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
-import com.gregtechceu.gtceu.core.mixins.AbstractClientPlayerAccessor;
-import com.gregtechceu.gtceu.core.mixins.PlayerInfoAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
