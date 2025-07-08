@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.registrate;
 
 import com.google.common.collect.BiMap;
 import com.tterrag.registrate.providers.ProviderType;

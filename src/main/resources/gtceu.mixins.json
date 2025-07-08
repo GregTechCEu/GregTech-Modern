@@ -31,7 +31,6 @@
         "xaeroworldmap.WorldMapSessionMixin"
     ],
     "mixins": [
-        "AbstractRegistrateAccessor",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
@@ -48,7 +47,6 @@
         "PotionBrewingAccessor",
         "PrimedTntAccessor",
         "RecipeManagerMixin",
-        "RegistrateDataProviderAccessor",
         "RepairItemRecipeMixin",
         "ServerChunkProviderMixin",
         "ServerGamePacketListenerImplAccessor",
@@ -67,6 +65,8 @@
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
         "ldlib.SyncUtilsMixin",
+        "registrate.AbstractRegistrateAccessor",
+        "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin",
         "top.ConfigMixin"
