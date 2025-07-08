@@ -155,12 +155,13 @@ public class CapeRegistry extends SavedData {
     }
 
     /**
-     * Registers a cape.
+     * Registers a cape.<br>
+     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * directly.
      *
      * @param id      An identifier for the cape
      * @param texture The full path to the cape's texture in a resource pack
      *
-     * @deprecated use the {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)}.
      * @see RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)
      */
     @ApiStatus.Internal
@@ -169,12 +170,13 @@ public class CapeRegistry extends SavedData {
     }
 
     /**
-     * Registers a cape that will always be unlocked for all players.
+     * Registers a cape that will always be unlocked for all players.<br>
+     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * directly.
      *
      * @param id      An identifier for the cape
      * @param texture The full path to the cape's texture in a resource pack
      *
-     * @deprecated use {@link RegisterGTCapesEvent#registerFreeCape(ResourceLocation, ResourceLocation)}.
      * @see RegisterGTCapesEvent#registerFreeCape(ResourceLocation, ResourceLocation)
      */
     @ApiStatus.Internal
