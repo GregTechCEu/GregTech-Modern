@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.forge;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;

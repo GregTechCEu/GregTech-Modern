@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.forge;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
