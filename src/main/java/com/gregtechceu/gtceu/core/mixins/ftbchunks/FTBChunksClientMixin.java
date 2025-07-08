@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 
-@Mixin(value = FTBChunksClient.class)
+@Mixin(value = FTBChunksClient.class, remap = false)
 public class FTBChunksClientMixin {
 
     @Unique
