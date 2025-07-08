@@ -48,7 +48,6 @@
         "PrimedTntAccessor",
         "RecipeManagerMixin",
         "RepairItemRecipeMixin",
-        "ServerChunkProviderMixin",
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",

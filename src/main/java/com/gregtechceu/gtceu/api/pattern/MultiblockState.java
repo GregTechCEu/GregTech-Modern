@@ -181,7 +181,7 @@ public class MultiblockState {
                             return;
                         }
                     }
-                    if (controller.checkPatternWithLock()) {
+                    if (controller.checkPattern()) {
                         // refresh structure
                         controller.self().setFlipped(this.neededFlip);
                         controller.onStructureFormed();
@@ -191,7 +191,8 @@ public class MultiblockState {
                         controller.onStructureInvalid();
                         var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                         mwsd.removeMapping(this);
-                        mwsd.addAsyncLogic(controller);
+
+                        controller.self().updatePatternRefreshSubscription();
                     }
                 }
             }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -39,8 +40,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -67,6 +66,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Persisted
     @DescSynced
     protected boolean isFlipped;
+    @Nullable
+    private TickableSubscription patternRefreshSubscription;
 
     public MultiblockControllerMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -88,17 +89,17 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
+        if (!isRemote()) {
+            updatePatternRefreshSubscription();
         }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            MultiblockWorldSavedData.getOrCreate(serverLevel).removeAsyncLogic(this);
-        }
+
+        unsubscribe(patternRefreshSubscription);
+        patternRefreshSubscription = null;
     }
 
     @Override
@@ -147,26 +148,32 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
-    @Getter
-    private final Lock patternLock = new ReentrantLock();
 
-    @Override
-    public void asyncCheckPattern(long periodID) {
-        if ((getMultiblockState().hasError() || !isFormed) && (getHolder().getOffset() + periodID) % 4 == 0 &&
-                checkPatternWithTryLock()) { // per second
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().execute(() -> {
-                    patternLock.lock();
-                    if (checkPatternWithLock()) { // formed
-                        setFlipped(getMultiblockState().isNeededFlip());
-                        onStructureFormed();
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        mwsd.addMapping(getMultiblockState());
-                        mwsd.removeAsyncLogic(this);
-                    }
-                    patternLock.unlock();
-                });
-            }
+    public final void updatePatternRefreshSubscription() {
+        if (getMultiblockState().hasError() && !isFormed()) {
+            patternRefreshSubscription = subscribeServerTick(patternRefreshSubscription, this::refreshPatternState);
+        } else {
+            unsubscribe(patternRefreshSubscription);
+            patternRefreshSubscription = null;
+        }
+    }
+
+    protected final void refreshPatternState() {
+        // check the multiblock pattern every 40 ticks, or 2 seconds
+        if (getOffsetTimer() % 40 != 0) {
+            return;
+        }
+        if (!(getLevel() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        if (checkPattern()) {
+            setFlipped(getMultiblockState().isNeededFlip());
+            onStructureFormed();
+            var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+            mwsd.addMapping(getMultiblockState());
+
+            updatePatternRefreshSubscription();
         }
     }
 
@@ -221,8 +228,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     public void onPartUnload() {
         parts.removeIf(part -> part.self().isInValid());
         getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
+        if (!isRemote()) {
+            updatePatternRefreshSubscription();
         }
         updatePartPositions();
     }
@@ -234,7 +241,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             this.onStructureInvalid();
             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
             mwsd.removeMapping(getMultiblockState());
-            mwsd.addAsyncLogic(this);
+
+            updatePatternRefreshSubscription();
         }
     }
 

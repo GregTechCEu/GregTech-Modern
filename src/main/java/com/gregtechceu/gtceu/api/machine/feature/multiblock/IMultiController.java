@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.locks.Lock;
 
 public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
@@ -38,47 +37,13 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     /**
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
-     * You can override it but it's unsafe for calling. because it will also be called in an async thread.
      * <br>
-     * you should always use {@link IMultiController#checkPatternWithLock()} and
-     * {@link IMultiController#checkPatternWithTryLock()} instead.
      *
      * @return whether it can be formed.
      */
     default boolean checkPattern() {
         BlockPattern pattern = getPattern();
         return pattern != null && pattern.checkPatternAt(getMultiblockState(), false);
-    }
-
-    /**
-     * Check pattern with a lock.
-     */
-    default boolean checkPatternWithLock() {
-        var lock = getPatternLock();
-        lock.lock();
-        try {
-            return checkPattern();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * Check pattern with a try lock
-     *
-     * @return false - checking failed or cant get the lock.
-     */
-    default boolean checkPatternWithTryLock() {
-        var lock = getPatternLock();
-        if (lock.tryLock()) {
-            try {
-                return checkPattern();
-            } finally {
-                lock.unlock();
-            }
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -102,14 +67,6 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      */
     @NotNull
     MultiblockState getMultiblockState();
-
-    /**
-     * Called in an async thread. It's unsafe, Don't modify anything of world but checking information.
-     * It will be called per 5 tick.
-     *
-     * @param periodID period Tick
-     */
-    void asyncCheckPattern(long periodID);
 
     /**
      * Called when structure is formed, have to be called after {@link #checkPattern()}. (server-side / fake scene only)
@@ -165,11 +122,6 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * Called from part, when part is invalid due to chunk unload or broken.
      */
     void onPartUnload();
-
-    /**
-     * Get lock for pattern checking.
-     */
-    Lock getPatternLock();
 
     /**
      * should add part to the part list.
