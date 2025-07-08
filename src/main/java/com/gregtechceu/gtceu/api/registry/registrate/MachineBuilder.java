@@ -225,7 +225,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> defaultModel() {
-        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
     }
 
     public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
@@ -473,7 +473,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
         if (model == null && blockModel == null) {
-            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
         }
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
