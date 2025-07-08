@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -24,7 +23,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 
@@ -187,15 +185,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Override
     public String toString() {
         return registryName.toString();
-    }
-
-    @Nullable
-    public GTRecipe getRecipe(RecipeManager recipeManager, ResourceLocation id) {
-        var recipes = ((RecipeManagerInvoker) recipeManager).getRecipeFromType(this);
-        if (recipes.get(id) instanceof GTRecipe recipe) {
-            return recipe;
-        }
-        return null;
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
