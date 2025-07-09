@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -112,6 +113,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     public MultiblockMachineBuilder recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return this;
+    }
+
+    @Override
+    public MultiblockMachineBuilder machine(Function<IMachineBlockEntity, MetaMachine> metaMachine) {
+        return (MultiblockMachineBuilder) super.machine(metaMachine);
     }
 
     @Override
