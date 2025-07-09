@@ -539,7 +539,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
-        return definition;
+        return value = definition;
     }
 
     @FunctionalInterface
