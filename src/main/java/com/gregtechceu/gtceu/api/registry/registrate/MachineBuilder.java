@@ -91,6 +91,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
+    @Setter
     protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Getter
@@ -389,11 +390,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     public MachineBuilder<DEFINITION> clearModelProperties() {
         this.modelProperties.clear();
-        return this;
-    }
-
-    public MachineBuilder<DEFINITION> machine(Function<IMachineBlockEntity, MetaMachine> newMachine) {
-        this.machine = newMachine;
         return this;
     }
 
