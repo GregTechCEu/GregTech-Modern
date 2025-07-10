@@ -39,7 +39,7 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        IFluidRenderMulti.super.onStructureInvalid();
+        IFluidRenderMulti.super.onStructureFormed();
     }
 
     @Override
