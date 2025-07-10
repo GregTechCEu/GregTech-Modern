@@ -12,6 +12,7 @@ import java.util.Map;
 
 public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeComponent<V> value)
         implements RecipeComponent<Map<K, V>> {
+
     @Override
     public Map<K, V> replace(Context cx, KubeRecipe recipe, Map<K, V> original, ReplacementMatchInfo match,
                              Object with) {
