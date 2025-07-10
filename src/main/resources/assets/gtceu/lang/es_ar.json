@@ -1,1 +1,19 @@
-{}
+{
+    "death.attack.gtceu.heat": "%s fue hervido vivo",
+    "death.attack.gtceu.chemical": "%s tuvo un accidente químico",
+    "death.attack.gtceu.shovel": "%s fue cavado por %s",
+    "death.attack.gtceu.turbine": "%s puso su cabeza en una turbina",
+    "death.attack.gtceu.electric": "%s fue electrocutado",
+    "death.attack.gtceu.explosion": "%s explotó",
+    "death.attack.gtceu.explosion.player": "%s explotó con la ayuda de %s",
+    "death.attack.gtceu.frost": "%s exploró la criogenia",
+    "death.attack.gtceu.medical_condition/chemical_burns": "%s tuvo un accidente químico",
+    "death.attack.gtceu.radiation": "%s brilla de alegría ahora",
+    "death.attack.gtceu.heat.player": "%s fue hervido vivo por %s",
+    "death.attack.gtceu.pickaxe": "%s fue minado por %s",
+    "death.attack.gtceu.screwdriver": "¡%s molestó a %s una última vez!",
+    "death.attack.gtceu.mortar": "%s fue molido a polvo por %s",
+    "death.attack.gtceu.screwdriver_lv": "%s tuvo sus clavos removidos por %s",
+    "enchantment.disjunction": "Disyunción",
+    "enchantment.damage.disjunction": "Disyunción"
+}
