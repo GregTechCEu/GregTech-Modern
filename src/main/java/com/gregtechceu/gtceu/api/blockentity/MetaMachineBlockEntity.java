@@ -145,7 +145,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         var result = getCapability(getMetaMachine(), cap, side);
-        return result == null ? super.getCapability(cap, side) : result;
+        return result.isPresent() ? result : super.getCapability(cap, side);
     }
 
     @Override
@@ -155,7 +155,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         }
     }
 
-    @Nullable
     public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap,
                                                     @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
@@ -218,25 +217,21 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var handler = machine.getItemHandlerCap(side, true);
             if (handler != null) {
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> handler));
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
             }
         } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
             var handler = machine.getFluidHandlerCap(side, true);
             if (handler != null) {
-                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap,
-                        LazyOptional.of(() -> handler));
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
             }
         } else if (cap == ForgeCapabilities.ENERGY) {
             if (machine instanceof IEnergyStorage energyStorage) {
-                return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> energyStorage));
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> energyStorage));
             }
             var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
-                return ForgeCapabilities.ENERGY.orEmpty(cap,
-                        LazyOptional.of(() -> list.get(0)));
+                return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_LASER) {
             if (machine instanceof ILaserContainer energyContainer) {
@@ -266,18 +261,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
         }
         if (GTCEu.Mods.isAE2Loaded()) {
-            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
-                if (machine instanceof IInWorldGridNodeHost nodeHost) {
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
-                }
-                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
-                if (!list.isEmpty()) {
-                    // TODO wrap list in the future (or not.)
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
-                }
+            LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            if (opt.isPresent()) {
+                // noinspection unchecked
+                return (LazyOptional<T>) opt;
             }
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide,
@@ -316,5 +306,23 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     public void load(CompoundTag tag) {
         TagFixer.fixFluidTags(tag);
         super.load(tag);
+    }
+
+    public static class AE2CallWrapper {
+
+        public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
+                                                                Direction side) {
+            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
+                if (machine instanceof IInWorldGridNodeHost nodeHost) {
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
+                }
+                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
+                if (!list.isEmpty()) {
+                    // TODO wrap list in the future (or not.)
+                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                }
+            }
+            return LazyOptional.empty();
+        }
     }
 }
