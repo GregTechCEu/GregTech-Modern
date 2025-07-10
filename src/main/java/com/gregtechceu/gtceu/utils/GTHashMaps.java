@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 public final class GTHashMaps {
 
@@ -93,48 +92,39 @@ public final class GTHashMaps {
     }
 
     /**
-     * Maps all fluids in the {@link IFluidHandler} into a {@link FluidKey}, {@link Integer} value as amount
+     * Collects the FluidStacks in an IFluidHandler into a map of FluidStack -> total amount
+     * Note that FluidStacks are compared by their Fluid and Tag, not their amount
      *
-     * @param fluidInputs The combined fluid input inventory handler, in the form of an {@link IFluidHandler}
-     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
-     *         required
+     * @param fluidInputs The {@link IFluidHandler} to query from
+     * @return a map of FluidStack -> amount
      */
-    public static Map<FluidKey, Integer> fromFluidHandler(IFluidHandler fluidInputs) {
-        final Object2IntMap<FluidKey> map = new Object2IntLinkedOpenHashMap<>();
-
+    public static Map<FluidStack, Integer> fromFluidHandler(IFluidHandler fluidInputs) {
+        Object2IntLinkedOpenHashMap<FluidStack> map = new Object2IntLinkedOpenHashMap<>();
         // Create a single stack of the combined count for each item
-
         for (int i = 0; i < fluidInputs.getTanks(); i++) {
             FluidStack fluidStack = fluidInputs.getFluidInTank(i);
-            if (fluidStack != FluidStack.EMPTY && fluidStack.getAmount() > 0) {
-                FluidKey key = new FluidKey(fluidStack);
-                map.put(key, map.getInt(key) + fluidStack.getAmount());
+            if (!fluidStack.isEmpty()) {
+                map.addTo(fluidStack, fluidStack.getAmount());
             }
         }
-
         return map;
     }
 
     /**
-     * Maps all fluids in the {@link FluidStack} {@link Collection} into a {@link FluidKey}, {@link Integer} value as
-     * amount
+     * Collects FluidStacks into a map of FluidStack -> total amount
+     * Note that FluidStacks are compared by their Fluid and Tag, not their amount
      *
-     * @param fluidInputs The combined fluid input inventory handler, in the form of an {@link IFluidHandler}
-     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
-     *         required
+     * @param fluidInputs an iterable set of FluidStacks
+     * @return a map of FluidStack -> amount
      */
-    public static Map<FluidKey, Integer> fromFluidCollection(Collection<FluidStack> fluidInputs) {
-        final Object2IntMap<FluidKey> map = new Object2IntLinkedOpenHashMap<>();
-
+    public static Map<FluidStack, Integer> fromFluidCollection(Iterable<FluidStack> fluidInputs) {
+        Object2IntLinkedOpenHashMap<FluidStack> map = new Object2IntLinkedOpenHashMap<>();
         // Create a single stack of the combined count for each item
-
         for (FluidStack fluidStack : fluidInputs) {
-            if (fluidStack != null && fluidStack.getAmount() > 0) {
-                FluidKey key = new FluidKey(fluidStack);
-                map.put(key, map.getInt(key) + fluidStack.getAmount());
+            if (fluidStack != null && !fluidStack.isEmpty()) {
+                map.addTo(fluidStack, fluidStack.getAmount());
             }
         }
-
         return map;
     }
 }

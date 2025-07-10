@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -82,7 +85,30 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
         if (this.damaged != damaged) {
             this.damaged = damaged;
             markDirty();
+
+            MachineRenderState state = getRenderState();
+            if (state.hasProperty(HPCA_PART_DAMAGED_PROPERTY)) {
+                setRenderState(state.setValue(HPCA_PART_DAMAGED_PROPERTY, damaged));
+            }
         }
+    }
+
+    @Override
+    public boolean beforeWorking(IWorkableMultiController controller) {
+        MachineRenderState state = getRenderState();
+        if (state.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+            setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, true));
+        }
+        return super.beforeWorking(controller);
+    }
+
+    @Override
+    public boolean afterWorking(IWorkableMultiController controller) {
+        MachineRenderState state = getRenderState();
+        if (state.hasProperty(IWorkable.ACTIVE_PROPERTY)) {
+            setRenderState(state.setValue(IWorkable.ACTIVE_PROPERTY, false));
+        }
+        return super.afterWorking(controller);
     }
 
     @Override

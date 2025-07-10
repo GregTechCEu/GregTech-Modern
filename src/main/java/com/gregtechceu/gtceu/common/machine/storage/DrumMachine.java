@@ -195,7 +195,6 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         }
     }
 
-    @SuppressWarnings("resource")
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                    BlockHitResult hit) {
@@ -230,8 +229,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingFluids()) {
                 return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;

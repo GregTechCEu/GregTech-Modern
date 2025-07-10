@@ -58,10 +58,7 @@ import java.util.function.BiFunction;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @author KilaBash
- * @date 2023/2/19
- * @implNote SimpleMachine
- *           All simple single machines are implemented here.
+ * All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -114,7 +111,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
         this.chargerInventory = createChargerItemHandler(args);
-        this.circuitInventory = createCircuitItemHandler(args).shouldSearchContent(false);
+        this.circuitInventory = createCircuitItemHandler(args);
     }
 
     //////////////////////////////////////
@@ -406,8 +403,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     // ******* Rendering ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {

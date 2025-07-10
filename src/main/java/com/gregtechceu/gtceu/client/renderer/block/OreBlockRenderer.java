@@ -24,11 +24,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author KilaBash
- * @date 2023/2/27
- * @implNote OreBlockRenderer
- */
 @MethodsReturnNonnullByDefault
 public class OreBlockRenderer {
 
@@ -48,7 +43,7 @@ public class OreBlockRenderer {
         for (OreBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
-            OreBlockRenderer.cloneBlockModel(modelId, model.block.tagPrefix, model.block.material);
+            OreBlockRenderer.cloneBlockModel(blockId, model.block.tagPrefix, model.block.material);
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
                     new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));

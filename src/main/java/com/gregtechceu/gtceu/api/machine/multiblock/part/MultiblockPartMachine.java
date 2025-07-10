@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -31,11 +31,6 @@ import java.util.SortedSet;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote MultiblockPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
@@ -44,7 +39,6 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
-    @RequireRerender
     @UpdateListener(methodName = "onControllersUpdated")
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
@@ -83,6 +77,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                 controllers.add(controller);
             }
         }
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IMultiController.IS_FORMED_PROPERTY)) {
+            setRenderState(renderState.setValue(IMultiController.IS_FORMED_PROPERTY, !controllers.isEmpty()));
+        } else {
+            scheduleRenderUpdate();
+        }
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
             } else {
-                handlerList = RecipeHandlerList.of(handlerIO, handlers);
+                handlerList = RecipeHandlerList.of(handlerIO, getPaintingColor(), handlers);
             }
         }
         return handlerList;

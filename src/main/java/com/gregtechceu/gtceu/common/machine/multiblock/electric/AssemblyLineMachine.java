@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
@@ -57,14 +56,9 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return checkFluidInputs(recipe);
     }
 
-    @Override
-    public void onStructureFormed() {
-        getDefinition().setPartSorter(Comparator.comparing(it -> multiblockPartSorter().apply(it.self().getPos())));
-        super.onStructureFormed();
-    }
-
-    private Function<BlockPos, Integer> multiblockPartSorter() {
-        return RelativeDirection.RIGHT.getSorter(getFrontFacing(), getUpwardsFacing(), isFlipped());
+    public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {
+        return Comparator.comparing(p -> p.self().getPos(),
+                RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
     private boolean checkItemInputs(@NotNull GTRecipe recipe) {
@@ -75,7 +69,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (itemHandlers.size() < inputsSize) return false;
 
         var itemInventory = itemHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(ItemStack.class::isInstance)
                         .map(ItemStack.class::cast)
@@ -107,7 +100,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (fluidHandlers.size() < inputsSize) return false;
 
         var fluidInventory = fluidHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(FluidStack.class::isInstance)
                         .map(FluidStack.class::cast)

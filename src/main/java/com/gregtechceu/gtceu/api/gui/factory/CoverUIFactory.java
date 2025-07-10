@@ -16,11 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote CoverUIFactory
- */
 public class CoverUIFactory extends UIFactory<CoverBehavior> {
 
     public static final CoverUIFactory INSTANCE = new CoverUIFactory();

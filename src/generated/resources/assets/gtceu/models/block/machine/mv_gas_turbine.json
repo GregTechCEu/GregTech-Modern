@@ -1,0 +1,59 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:mv_gas_turbine",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_side": "gtceu:block/generators/gas_turbine/overlay_side",
+          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_side": "gtceu:block/generators/gas_turbine/overlay_side",
+          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_side": "gtceu:block/generators/gas_turbine/overlay_side_active",
+          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/overlay/2_layer/tinted/front",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/mv/bottom",
+          "overlay": "gtceu:block/overlay/machine/overlay_energy_1a_out",
+          "overlay_side": "gtceu:block/generators/gas_turbine/overlay_side_active",
+          "overlay_tinted": "gtceu:block/overlay/machine/overlay_energy_1a_tinted",
+          "side": "gtceu:block/casings/voltage/mv/side",
+          "top": "gtceu:block/casings/voltage/mv/top"
+        }
+      }
+    }
+  }
+}

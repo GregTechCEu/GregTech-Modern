@@ -39,6 +39,10 @@ public class TorchPlaceBehavior implements IToolBehavior {
         ItemStack stack = player.getItemInHand(hand);
         CompoundTag behaviourTag = ToolHelper.getBehaviorsTag(stack);
 
+        if (!context.getPlayer().getOffhandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
         if (!behaviourTag.getBoolean(TORCH_PLACING_KEY)) {
             return InteractionResult.PASS;
         }

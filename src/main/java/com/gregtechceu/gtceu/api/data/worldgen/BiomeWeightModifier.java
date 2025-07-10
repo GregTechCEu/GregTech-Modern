@@ -9,10 +9,10 @@ import net.minecraft.world.level.biome.Biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
-public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
+public class BiomeWeightModifier implements ToIntFunction<Holder<Biome>> {
 
     public static final BiomeWeightModifier EMPTY = new BiomeWeightModifier(HolderSet::direct, 0);
 
@@ -30,7 +30,7 @@ public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
     }
 
     @Override
-    public Integer apply(Holder<Biome> biome) {
+    public int applyAsInt(Holder<Biome> biome) {
         return biomes.get().contains(biome) ? addedWeight : 0;
     }
 }

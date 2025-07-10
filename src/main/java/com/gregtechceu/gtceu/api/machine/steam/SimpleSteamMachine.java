@@ -14,10 +14,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.Tables;
+import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +54,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     public final NotifiableItemStackHandler importItems;
     @Persisted
     public final NotifiableItemStackHandler exportItems;
+    @Getter
     @Setter
     @Persisted
     private boolean needsVenting;
@@ -59,6 +63,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super(holder, isHighPressure, args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
+
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            // outputFacing will always be opposite the front facing on init
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, RelativeDirection.BACK));
+        }
     }
 
     //////////////////////////////////////
@@ -105,14 +115,50 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         return isHighPressure() ? 12F : 6F;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public @NotNull Direction getVentingDirection() {
         return getOutputFacing();
     }
 
+    public void updateModelVentDirection() {
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            Direction upwardsDir = getUpwardsFacing();
+            // the up facing is already rotated if extended facing is enabled for the machine
+            if (getFrontFacing() == Direction.UP && !allowExtendedFacing()) {
+                upwardsDir = upwardsDir.getOpposite();
+            }
+            var relative = RelativeDirection.findRelativeOf(getFrontFacing(), getVentingDirection(), upwardsDir);
+            setRenderState(renderState.setValue(VENT_DIRECTION_PROPERTY, relative));
+        }
+    }
+
     @Override
-    public boolean isNeedsVenting() {
-        return this.needsVenting;
+    public void setOutputFacing(@NotNull Direction outputFacing) {
+        var oldFacing = getOutputFacing();
+        super.setOutputFacing(outputFacing);
+        if (getOutputFacing() != oldFacing) {
+            updateModelVentDirection();
+        }
+    }
+
+    @Override
+    public void setFrontFacing(Direction facing) {
+        var oldFacing = getFrontFacing();
+        super.setFrontFacing(facing);
+        if (getFrontFacing() != oldFacing) {
+            updateModelVentDirection();
+        }
+    }
+
+    @Override
+    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+        var oldFacing = getUpwardsFacing();
+        super.setUpwardsFacing(upwardsFacing);
+        if (getUpwardsFacing() != oldFacing) {
+            updateModelVentDirection();
+        }
     }
 
     @Override

@@ -1,19 +1,22 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraftforge.client.model.SimpleModelState;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import com.mojang.math.Transformation;
 import org.jetbrains.annotations.Contract;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.security.InvalidParameterException;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,7 +24,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class GTMatrixUtils {
 
-    protected static final Table<Direction, Direction, SimpleModelState> rotations = Tables
+    @SuppressWarnings("UnstableApiUsage")
+    private static final ImmutableMap<Direction, Vector3fc> directionAxises = Util.make(() -> {
+        ImmutableMap.Builder<Direction, Vector3fc> map = ImmutableMap.builderWithExpectedSize(6);
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            map.put(dir, dir.step());
+        }
+        return map.build();
+    });
+    private static final Table<Direction, Direction, Matrix4fc> rotations = Tables
             .synchronizedTable(HashBasedTable.create());
 
     /**
@@ -30,7 +41,7 @@ public class GTMatrixUtils {
      * @return the angle of rotation to make {@code from} point in the direction of {@code to}
      */
     @Contract(pure = true)
-    public static float getRotationAngle(final Vector3f from, final Vector3f to) {
+    public static float getRotationAngle(final Vector3fc from, final Vector3fc to) {
         return (float) Math.acos(from.dot(to));
     }
 
@@ -41,7 +52,7 @@ public class GTMatrixUtils {
      * @param to   the wanted vector
      * @return the axis of rotation to make {@code from} point in the direction of {@code to}
      */
-    public static Vector3f getRotationAxis(Vector3f from, final Vector3f to) {
+    public static Vector3f getRotationAxis(Vector3f from, final Vector3fc to) {
         return getRotationAxis(from, to, from);
     }
 
@@ -51,7 +62,7 @@ public class GTMatrixUtils {
      * @param dest the vector to save the result to
      * @return {@code dest}
      */
-    public static Vector3f getRotationAxis(Vector3f from, Vector3f to, Vector3f dest) {
+    public static Vector3f getRotationAxis(Vector3fc from, Vector3fc to, Vector3f dest) {
         return from.cross(to, dest).normalize();
     }
 
@@ -64,31 +75,29 @@ public class GTMatrixUtils {
      * @param to         the destination vector
      * @param additional additional vectors to transform
      */
-    public static void rotateMatrix(Matrix4f matrix, Vector3f from, Vector3f to, Vector3f... additional) {
+    public static void rotateMatrix(Matrix4f matrix, Vector3f from, Vector3fc to, Vector3f... additional) {
         if (from.equals(to)) {
             return;
         }
-        if (-from.x == to.x && -from.y == to.y && -from.z == to.z) {
-            rotateMatrix(matrix, Mth.PI, 0, 1, 0, additional);
+        if (-from.x() == to.x() && -from.y() == to.y() && -from.z() == to.z()) {
+            rotateMatrix(matrix, Mth.PI, getDirectionAxis(Direction.UP), additional);
         } else {
             var angle = getRotationAngle(from, to);
             getRotationAxis(from, to);
-            rotateMatrix(matrix, angle, from.x, from.y, from.z, additional);
+            rotateMatrix(matrix, angle, from, additional);
         }
     }
 
     /**
      * @param matrix     the matrix to transform
      * @param angle      the angle of rotation (radians)
-     * @param x          axis of rotation x value
-     * @param y          axis of rotation y value
-     * @param z          axis of rotation z value
+     * @param axis       axis of rotation
      * @param additional additional vectors to transform
      */
-    public static void rotateMatrix(Matrix4f matrix, float angle, float x, float y, float z, Vector3f... additional) {
-        matrix.rotate(angle, x, y, z);
+    public static void rotateMatrix(Matrix4f matrix, float angle, Vector3fc axis, Vector3f... additional) {
+        matrix.rotate(angle, axis);
         for (var vec : additional) {
-            vec.rotateAxis(angle, x, y, z);
+            vec.rotateAxis(angle, axis.x(), axis.y(), axis.z());
         }
     }
 
@@ -109,16 +118,16 @@ public class GTMatrixUtils {
     public static Vector3f rotateMatrixToFront(Matrix4f matrix, Direction frontFace) {
         // rotate frontFacing to correct cardinal direction
         var front = frontFace.step();
-        rotateMatrix(matrix, Direction.NORTH.step(), frontFace.step(), front);
+        rotateMatrix(matrix, Direction.NORTH.step(), getDirectionAxis(frontFace), front);
         return front;
     }
 
     public static void rotateMatrixToUp(Matrix4f matrix, Vector3f front, Direction upwardsFace) {
         // rotate upwards face to the correct orientation
-        rotateMatrix(matrix, upwardFacingAngle(upwardsFace), front.x, front.y, front.z);
+        rotateMatrix(matrix, upwardFacingAngle(upwardsFace), front);
     }
 
-    public static SimpleModelState createRotationState(Direction frontFace, Direction upwardFace) {
+    public static Matrix4fc createRotationState(Direction frontFace, Direction upwardFace) {
         if (rotations.contains(frontFace, upwardFace)) {
             var rotation = rotations.get(frontFace, upwardFace);
             assert rotation != null;
@@ -128,8 +137,11 @@ public class GTMatrixUtils {
         var front = rotateMatrixToFront(matrix, frontFace);
         front.absolute();
         rotateMatrixToUp(matrix, front, upwardFace);
-        var rotation = new SimpleModelState(new Transformation(matrix));
-        rotations.put(frontFace, upwardFace, rotation);
-        return rotation;
+        rotations.put(frontFace, upwardFace, matrix);
+        return matrix;
+    }
+
+    public static Vector3fc getDirectionAxis(Direction dir) {
+        return Objects.requireNonNull(directionAxises.get(dir));
     }
 }

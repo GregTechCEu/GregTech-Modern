@@ -60,11 +60,6 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/14
- * @implNote SteamBoilerMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
@@ -132,8 +127,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     @Override
-    public void setOutputFacing(@NotNull Direction outputFacing) {
-        // no op - boilers do not have output facings
+    public boolean hasOutputFacing() {
+        return false;
     }
 
     //////////////////////////////////////

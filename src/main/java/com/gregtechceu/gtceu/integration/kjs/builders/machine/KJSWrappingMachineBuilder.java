@@ -6,16 +6,19 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @HideFromJS
-    @Getter(onMethod_ = @HideFromJS)
+    @Getter
     private final KJSTieredMachineBuilder tieredBuilder;
 
     public KJSWrappingMachineBuilder(ResourceLocation id, KJSTieredMachineBuilder tieredBuilder) {
@@ -49,13 +52,23 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public void generateLang(LangEventJS lang) {
+    public void generateDataJsons(@NotNull DataJsonGenerator generator) {
+        tieredBuilder.generateDataJsons(generator);
+    }
+
+    @Override
+    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+        tieredBuilder.generateAssetJsons(generator);
+    }
+
+    @Override
+    public void generateLang(@NotNull LangEventJS lang) {
         super.generateLang(lang);
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public MachineDefinition register() {
+    public @NotNull MachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {

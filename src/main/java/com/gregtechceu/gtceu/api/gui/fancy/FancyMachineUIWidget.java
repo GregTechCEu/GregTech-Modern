@@ -20,11 +20,6 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * @author KilaBash
- * @date 2023/6/27
- * @implNote FancyMachineUIWidget
- */
 @Getter
 public class FancyMachineUIWidget extends WidgetGroup {
 

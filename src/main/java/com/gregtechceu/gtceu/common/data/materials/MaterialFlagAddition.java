@@ -164,8 +164,9 @@ public class MaterialFlagAddition {
         oreProp.setOreByProducts(GarnetYellow, Calcium);
 
         oreProp = Ilmenite.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Iron, Rutile);
+        oreProp.setOreByProducts(Iron, Rutile, Rutile, IlmeniteSlag);
         oreProp.setSeparatedInto(Iron);
+        oreProp.setWashedIn(SodiumPersulfate);
 
         oreProp = Bauxite.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Grossular, Rutile, Gallium);

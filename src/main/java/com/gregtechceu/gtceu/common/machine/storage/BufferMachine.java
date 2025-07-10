@@ -244,8 +244,8 @@ public class BufferMachine extends TieredMachine implements IMachineLife, IAutoO
     // ******* Rendering ********//
     ///////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems() || side == getOutputFacingFluids()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;

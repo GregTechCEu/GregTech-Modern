@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.*;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -17,10 +15,14 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -29,28 +31,34 @@ import net.minecraft.world.entity.player.Player;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/6
- * @implNote WorkableElectricMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine,
                                                IDisplayUIMachine, ITieredMachine, IOverclockMachine {
 
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            WorkableElectricMultiblockMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     // runtime
     protected EnergyContainerList energyContainer;
     @Getter
     protected int tier;
+    @Persisted
+    @Getter
+    protected boolean batchEnabled;
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -84,14 +92,17 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public void addDisplayText(List<Component> textList) {
         int numParallels;
+        int batchParallels;
         boolean exact = false;
         if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
             numParallels = recipeLogic.getLastRecipe().parallels;
+            batchParallels = recipeLogic.getLastRecipe().batchParallels;
             exact = true;
         } else {
             numParallels = getParallelHatch()
                     .map(IParallelHatch::getCurrentParallel)
                     .orElse(0);
+            batchParallels = 0;
         }
 
         MultiblockDisplayText.builder(textList, isFormed())
@@ -100,6 +111,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addEnergyTierLine(tier)
                 .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
                 .addParallelsLine(numParallels, exact)
+                .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent())
@@ -129,6 +141,23 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IFancyUIProvider> getSubTabs() {
         return getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast).toList();
+    }
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        if (getDefinition().getRecipeModifier() instanceof RecipeModifierList list && Arrays.stream(list.getModifiers())
+                .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
+            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                    GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
+                    GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
+                    this::isBatchEnabled,
+                    (cd, p) -> batchEnabled = p)
+                    .setTooltipsSupplier(
+                            p -> List.of(
+                                    Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
+        }
+
+        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
     }
 
     @Override

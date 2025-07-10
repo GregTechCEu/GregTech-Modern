@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -105,6 +106,8 @@ public class FirstDegreeMaterials {
                 .components(Tin, 1, Copper, 3)
                 .toolStats(ToolProperty.Builder.of(3.0F, 2.0F, 192, 2)
                         .enchantability(18).addTypes(GTToolType.MORTAR).build())
+                .armorStats(ArmorProperty.Builder.of(17, new int[] { 3, 7, 6, 2 })
+                        .enchantability(8).build())
                 .rotorStats(115, 105, 2.5f, 192)
                 .fluidPipeProperties(1696, 20, true)
                 .buildAndRegister();
@@ -628,6 +631,8 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(5.0F, 3.0F, 512, 3)
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
+                .armorStats(ArmorProperty.Builder.of(19, new int[] { 3, 7, 5, 2 })
+                        .enchantability(14).build())
                 .rotorStats(130, 105, 3.0f, 512)
                 .fluidPipeProperties(1855, 50, true)
                 .cableProperties(V[EV], 2, 2)
@@ -884,6 +889,7 @@ public class FirstDegreeMaterials {
         MagnesiumChloride = new Material.Builder(GTCEu.id("magnesium_chloride"))
                 .dust(1)
                 .color(0xeee4e9).secondaryColor(0xD40D5C)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 1, Chlorine, 2)
                 .buildAndRegister();
 
@@ -943,6 +949,7 @@ public class FirstDegreeMaterials {
         SodiumBicarbonate = new Material.Builder(GTCEu.id("sodium_bicarbonate"))
                 .dust(1)
                 .color(0xFFFFFF).secondaryColor(0xa7d2df).iconSet(ROUGH)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Hydrogen, 1, Carbon, 1, Oxygen, 3)
                 .buildAndRegister();
 
@@ -1665,6 +1672,11 @@ public class FirstDegreeMaterials {
                 .color(0x0cbdd7)
                 .components(Hydrogen, 2, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.ANY, GTMedicalConditions.CHEMICAL_BURNS, true)
+                .buildAndRegister();
+
+        IlmeniteSlag = new Material.Builder(GTCEu.id("ilmenite_slag"))
+                .dust()
+                .color(0x8B0000).iconSet(SAND)
                 .buildAndRegister();
     }
 }

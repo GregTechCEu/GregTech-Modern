@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
-/**
- * @author screret
- * @date 6/28/2023
- * @implNote Implement on paintable block entities
- */
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 public interface IPaintable {
+
+    BooleanProperty IS_PAINTED_PROPERTY = BooleanProperty.create("is_painted");
+    int UNPAINTED_COLOR = 0xffffffff;
 
     /**
      * Get painting color.
@@ -26,7 +26,7 @@ public interface IPaintable {
      * If the block is painted.
      */
     default boolean isPainted() {
-        return getPaintingColor() != -1 && getPaintingColor() != getDefaultPaintingColor();
+        return getPaintingColor() != UNPAINTED_COLOR && getPaintingColor() != getDefaultPaintingColor();
     }
 
     /**

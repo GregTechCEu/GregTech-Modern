@@ -1,0 +1,51 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:zpm_mixer",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/mixer/overlay_back",
+          "overlay_front": "gtceu:block/machines/mixer/overlay_front",
+          "overlay_side": "gtceu:block/machines/mixer/overlay_side",
+          "overlay_top": "gtceu:block/machines/mixer/overlay_top"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/mixer/overlay_back",
+          "overlay_front": "gtceu:block/machines/mixer/overlay_front",
+          "overlay_side": "gtceu:block/machines/mixer/overlay_side",
+          "overlay_top": "gtceu:block/machines/mixer/overlay_top"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/mixer/overlay_back_active",
+          "overlay_front": "gtceu:block/machines/mixer/overlay_front_active",
+          "overlay_side": "gtceu:block/machines/mixer/overlay_side_active",
+          "overlay_top": "gtceu:block/machines/mixer/overlay_top_active"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/zpm",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/mixer/overlay_back_active",
+          "overlay_front": "gtceu:block/machines/mixer/overlay_front_active",
+          "overlay_side": "gtceu:block/machines/mixer/overlay_side_active",
+          "overlay_top": "gtceu:block/machines/mixer/overlay_top_active"
+        }
+      }
+    }
+  }
+}

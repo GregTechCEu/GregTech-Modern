@@ -4,11 +4,6 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 
 import lombok.Getter;
 
-/**
- * @author KilaBash
- * @date 2023/2/28
- * @implNote TieredMachine
- */
 public class TieredMachine extends MetaMachine implements ITieredMachine {
 
     @Getter

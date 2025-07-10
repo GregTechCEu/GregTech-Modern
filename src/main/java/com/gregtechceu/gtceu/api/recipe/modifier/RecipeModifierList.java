@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class RecipeModifierList implements RecipeModifier {
 
+    @Getter
     private final RecipeModifier[] modifiers;
 
     public RecipeModifierList(RecipeModifier... modifiers) {

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.cover.IIOCover;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
@@ -56,14 +57,9 @@ import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/12
- * @implNote ConveyorCover
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ConveyorCover extends CoverBehavior implements IUICover, IControllable {
+public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConveyorCover.class,
             CoverBehavior.MANAGED_FIELD_HOLDER);

@@ -10,11 +10,13 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.ArrayList;
 
 public interface IMaintenanceMachine extends IMultiPart {
 
+    BooleanProperty MAINTENANCE_TAPED_PROPERTY = BooleanProperty.create("maintenance_taped");
     int MINIMUM_MAINTENANCE_TIME = 3456000; // 48 real-life hours = 3456000 ticks
     byte ALL_PROBLEMS = 0;
     byte NO_PROBLEMS = 0b111111;

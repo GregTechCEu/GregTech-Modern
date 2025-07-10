@@ -19,11 +19,6 @@ import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * @author KilaBash
- * @date 2023/3/4
- * @implNote SteamHatchPartMachine
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamHatchPartMachine extends FluidHatchPartMachine {
@@ -54,5 +49,14 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
                         GuiTextures.SLOT_STEAM.get(IS_STEEL), 7, 84, true));
+    }
+
+    // By returning false here, we don't allow shift-clicking
+    // with a screwdriver to swap the IO, since this is a
+    // hatch that only allows steam in, not
+    // a steam version of an input/output hatch
+    @Override
+    public boolean swapIO() {
+        return false;
     }
 }
