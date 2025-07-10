@@ -57,7 +57,6 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
         if (stack.hasTag()) {
             poseStack.pushPose();
-            poseStack.translate(-0.5D, -0.5D, -0.5D);
 
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
