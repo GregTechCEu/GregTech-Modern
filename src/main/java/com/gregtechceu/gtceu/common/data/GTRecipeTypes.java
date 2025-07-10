@@ -640,6 +640,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, true, GuiTextures.VIAL_OVERLAY_2)
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
+            .setMaxTooltips(5)
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 
     public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1)
