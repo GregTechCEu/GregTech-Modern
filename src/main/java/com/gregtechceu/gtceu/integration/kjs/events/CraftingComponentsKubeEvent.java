@@ -13,10 +13,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import dev.latvian.mods.kubejs.bindings.ItemWrapper;
 import dev.latvian.mods.kubejs.event.KubeStartupEvent;
-import dev.latvian.mods.kubejs.plugin.builtin.wrapper.ItemWrapper;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
+import dev.latvian.mods.kubejs.script.KubeJSContext;
 import dev.latvian.mods.kubejs.util.ID;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -134,7 +137,7 @@ public class CraftingComponentsKubeEvent implements KubeStartupEvent {
     }
 
     private static ItemStack parseItemStack(Context cx, Object o) {
-        ItemStack stack = ItemWrapper.wrap(cx, o);
+        ItemStack stack = ItemStackJS.wrap(RegistryAccessContainer.of(cx), o);
         if (stack == null || stack.isEmpty()) return null;
         return stack;
     }

@@ -11,6 +11,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -61,7 +62,7 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
             var state = level.getBlockState(pos);
             if (level.isClientSide) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-                self().requestModelDataUpdate();
+                ClientCallWrapper.requestModelDataUpdate(this);
             } else {
                 level.blockEvent(pos, state.getBlock(), 1, 0);
             }
@@ -129,5 +130,15 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
     @Override
     default int getDefaultPaintingColor() {
         return getMetaMachine().getDefaultPaintingColor();
+    }
+
+    final class ClientCallWrapper {
+
+        public static void requestModelDataUpdate(IBlockEntityExtension blockEntity) {
+            if (Minecraft.getInstance().isSameThread()) {
+                // don't update model data on worker threads
+                blockEntity.requestModelDataUpdate();
+            }
+        }
     }
 }

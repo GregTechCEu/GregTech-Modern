@@ -75,6 +75,8 @@ public class FluidVeinWorldEntry {
                         .flatMap(reg -> reg.get(ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id)))
                         .orElse(null);
             }));
+        } else {
+            info.setDefinition(() -> null);
         }
         return info;
     }

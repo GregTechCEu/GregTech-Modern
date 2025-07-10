@@ -119,7 +119,7 @@ public interface GTShapedRecipeSchema {
 
     RecipeKey<ItemStack> RESULT = ItemStackComponent.STRICT_ITEM_STACK.outputKey("result");
     RecipeKey<List<String>> PATTERN = StringGridComponent.STRING_GRID.otherKey("pattern");
-    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT.instance()
+    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT
             .asPatternKey().inputKey("key");
     RecipeKey<Boolean> MIRROR = BooleanComponent.BOOLEAN.otherKey(KubeJSCraftingRecipe.MIRROR_KEY)
             .optional(true).exclude()

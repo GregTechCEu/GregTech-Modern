@@ -578,7 +578,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
             for (int i = 0; i < chanceTag.size(); ++i) {
                 CompoundTag chanceKey = chanceTag.getCompound(i);
-                var entry = cap.fromNbt(chanceKey.get("entry"), MixinHelpers.getCurrentBERegistries());
+                var entry = cap.fromNbt(chanceKey.get("entry"), GTRegistries.builtinRegistry());
                 int value = chanceKey.getInt("cached_chance");
                 // noinspection unchecked
                 map.put(entry, value);
@@ -588,7 +588,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             ListTag cacheTag = new ListTag();
             for (var entry : cache.object2IntEntrySet()) {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.toNbt(entry.getKey(), MixinHelpers.getCurrentBERegistries());
+                var obj = cap.toNbt(entry.getKey(), GTRegistries.builtinRegistry());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", entry.getIntValue());
                 cacheTag.add(compoundTag);
