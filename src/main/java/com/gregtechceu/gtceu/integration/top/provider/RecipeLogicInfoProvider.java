@@ -60,10 +60,17 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 }
 
                 if (text == null) {
-                    text = Component.literal(formatted + " EU/t ").withStyle(ChatFormatting.RED)
-                            .append(Component.literal("(").withStyle(ChatFormatting.GREEN))
+                    var tier = GTUtil.getTierByVoltage(EUt.voltage());
+                    String minAmperage = FormattingUtil
+                            .formatNumber2Places((float) (EUt.getTotalEU()) / GTValues.V[tier]) + TextStyleClass.INFO;
+
+                    text = Component.literal(minAmperage + " A ").withStyle(ChatFormatting.RED)
+                            .append(Component.literal("@ ").withStyle(ChatFormatting.GREEN))
                             .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
-                            .append(Component.literal(")").withStyle(ChatFormatting.GREEN));
+                            .append(Component.literal(" (")
+                                    .append(Component.literal(formatted))
+                                    .append(Component.literal(" EU/t)"))
+                                    .withStyle(ChatFormatting.WHITE));
                 }
 
                 if (EUt.isInput()) {
