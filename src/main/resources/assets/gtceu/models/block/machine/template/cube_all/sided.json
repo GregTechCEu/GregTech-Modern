@@ -27,8 +27,8 @@
             }
         },
         {
-            "from": [ -0.004, -0.004, -0.004 ],
-            "to":   [ 16.004, 16.004, 16.004 ],
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back",   "cullface": "south" },
@@ -39,8 +39,8 @@
             }
         },
         {
-            "from": [ -0.008, -0.008, -0.008 ],
-            "to":   [ 16.008, 16.008, 16.008 ],
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
