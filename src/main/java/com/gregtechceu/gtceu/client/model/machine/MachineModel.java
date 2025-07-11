@@ -64,8 +64,6 @@ import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
                                 IMachineRendererModel<MetaMachine> {
 
-    public static final IQuadTransformer COVER_OVERLAY_OFFSET = GTQuadTransformers.offset(0.008f);
-
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
     public static final ResourceLocation ITEM_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_item_output");
@@ -275,13 +273,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render covers
-        int start = quads.size();
-        ICoverableRenderer.super.renderCovers(quads, machine.getCoverContainer(), machine.getPos(), machine.getLevel(),
+        ICoverableRenderer.super.renderCovers(quads, machine.getCoverContainer(), pos, level,
                 side, rand, modelData, renderType);
-        var iterator = quads.listIterator(start);
-        // while (iterator.hasNext()) {
-        //     COVER_OVERLAY_OFFSET.processInPlace(iterator.next());
-        // }
         return quads;
     }
 

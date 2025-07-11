@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
+import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -10,20 +11,28 @@ import net.minecraftforge.client.model.QuadTransformers;
 public final class GTQuadTransformers {
 
     public static IQuadTransformer offset(float by) {
-        if (by == 0.0f) return QuadTransformers.empty();
+        return offset(by, by, by);
+    }
+
+    public static IQuadTransformer offset(float xOffset, float yOffset, float zOffset) {
+        if (xOffset == 0.0f && yOffset == 0.0f && zOffset == 0.0f) return QuadTransformers.empty();
 
         return quad -> {
             int[] vertices = quad.getVertices();
             Direction direction = quad.getDirection();
+            FaceInfo faceInfo = FaceInfo.fromFacing(direction);
 
             for (int i = 0; i < 4; i++) {
                 int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
                 float x = Float.intBitsToFloat(vertices[offset]);
                 float y = Float.intBitsToFloat(vertices[offset + 1]);
                 float z = Float.intBitsToFloat(vertices[offset + 2]);
-                x += by * direction.getStepX();
-                y += by * direction.getStepY();
-                z += by * direction.getStepZ();
+
+                FaceInfo.VertexInfo normal = faceInfo.getVertexInfo(i);
+
+                x += xOffset * normal.xFace;
+                y += yOffset * normal.yFace;
+                z += zOffset * normal.zFace;
 
                 vertices[offset] = Float.floatToRawIntBits(x);
                 vertices[offset + 1] = Float.floatToRawIntBits(y);
