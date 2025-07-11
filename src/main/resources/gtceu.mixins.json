@@ -64,6 +64,7 @@
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
+        "ldlib.DummyWorldMixin",
         "ldlib.SyncUtilsMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",

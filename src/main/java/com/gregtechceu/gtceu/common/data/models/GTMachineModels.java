@@ -459,28 +459,32 @@ public class GTMachineModels {
 
     public static MachineBuilder.ModelInitializer createRotorHolderModel() {
         return (ctx, prov, builder) -> {
+            BlockModelProvider models = prov.models();
             var blockModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(ROTOR_HOLDER_BLOCK));
             tieredHullTextures(blockModel, builder.getOwner().getTier());
 
             builder.part(blockModel).end();
             builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED_PROPERTY, true).end();
-            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_IDLE, false, false);
-            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_IDLE.withSuffix(EMISSIVE_SUFFIX), false, true);
-            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING, true, false);
-            makeRotorHolderPart(builder, ROTOR_HOLDER_ROTOR_SPINNING.withSuffix(EMISSIVE_SUFFIX), true, true);
+
+            makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_IDLE, false, false);
+            makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_IDLE.withSuffix(EMISSIVE_SUFFIX), false, true);
+            makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_SPINNING, true, false);
+            makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_SPINNING.withSuffix(EMISSIVE_SUFFIX), true, true);
 
             builder.addReplaceableTextures("bottom", "top", "side");
         };
     }
 
-    private static void makeRotorHolderPart(MachineModelBuilder<BlockModelBuilder> builder, ResourceLocation model,
-                                            boolean spinning, boolean emissive) {
-        builder.part(model)
-                .condition(IS_FORMED_PROPERTY, true)
-                .condition(HAS_ROTOR_PROPERTY, true)
-                .condition(ROTOR_SPINNING_PROPERTY, spinning)
-                .condition(EMISSIVE_ROTOR_PROPERTY, emissive);
+    private static void makeRotorHolderState(MachineModelBuilder<BlockModelBuilder> builder,
+                                             BlockModelProvider provider, ResourceLocation model,
+                                             boolean spinning, boolean emissive) {
+        builder.partialState()
+                .with(IS_FORMED_PROPERTY, true)
+                .with(HAS_ROTOR_PROPERTY, true)
+                .with(ROTOR_SPINNING_PROPERTY, spinning)
+                .with(EMISSIVE_ROTOR_PROPERTY, emissive)
+                .setModel(provider.getExistingFile(model));
     }
 
     public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
