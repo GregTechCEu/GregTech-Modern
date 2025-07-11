@@ -84,7 +84,7 @@ public class GTRecipeTypeUI {
     protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
     @Setter
     @Getter
-    protected int maxTooltips = 4;
+    protected int maxTooltips = 3;
 
     private CompoundTag customUICache;
     private Size xeiSize;
