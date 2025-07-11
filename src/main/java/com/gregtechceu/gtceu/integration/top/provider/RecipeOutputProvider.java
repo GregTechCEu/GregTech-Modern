@@ -27,7 +27,6 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import org.jetbrains.annotations.Nullable;
-import snownee.jade.util.FluidTextHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,9 +132,8 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                 String spacer = " ";
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
                     spacer += (Component.translatable("gtceu.gui.content.range",
-                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
-                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true))) +
-                            " ";
+                            String.valueOf(provider.getCountProvider().getMinValue()),
+                            String.valueOf(provider.getCountProvider().getMaxValue()))) + " ";
                     fluidOutput.setAmount(provider.getCountProvider().getMaxValue()); // no roll
                 }
                 horizontalPane.element(new FluidStackElement(fluidOutput.getStacks()[0],
