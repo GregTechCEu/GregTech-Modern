@@ -23,16 +23,19 @@ public final class GTQuadTransformers {
             FaceInfo faceInfo = FaceInfo.fromFacing(direction);
 
             for (int i = 0; i < 4; i++) {
+                FaceInfo.VertexInfo normal = faceInfo.getVertexInfo(i);
+                int xNormal = Direction.from3DDataValue(normal.xFace).getStepX();
+                int yNormal = Direction.from3DDataValue(normal.yFace).getStepY();
+                int zNormal = Direction.from3DDataValue(normal.zFace).getStepZ();
+
                 int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
                 float x = Float.intBitsToFloat(vertices[offset]);
                 float y = Float.intBitsToFloat(vertices[offset + 1]);
                 float z = Float.intBitsToFloat(vertices[offset + 2]);
 
-                FaceInfo.VertexInfo normal = faceInfo.getVertexInfo(i);
-
-                x += xOffset * normal.xFace;
-                y += yOffset * normal.yFace;
-                z += zOffset * normal.zFace;
+                x += xOffset * xNormal;
+                y += yOffset * yNormal;
+                z += zOffset * zNormal;
 
                 vertices[offset] = Float.floatToRawIntBits(x);
                 vertices[offset + 1] = Float.floatToRawIntBits(y);

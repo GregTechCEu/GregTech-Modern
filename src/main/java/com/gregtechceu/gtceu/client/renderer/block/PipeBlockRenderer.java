@@ -85,13 +85,19 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
         if (!(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode)) {
             return pipeModel.bakeQuads(side, 0, 0);
         }
+        RenderType renderType = CURRENT_RENDER_TYPE.get();
+        ModelData modelData = CURRENT_MODEL_DATA.get().get(MODEL_DATA);
+        if (modelData == null) modelData = ModelData.EMPTY;
 
-        List<BakedQuad> quads = new LinkedList<>(pipeModel.bakeQuads(side,
-                pipeNode.getVisualConnections(), pipeNode.getBlockedConnections()));
+        List<BakedQuad> quads = new LinkedList<>();
+
+        if (renderType == null || renderType == RenderType.cutoutMipped()) {
+            quads.addAll(pipeModel.bakeQuads(side, pipeNode.getVisualConnections(), pipeNode.getBlockedConnections()));
+        }
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
-                ModelData.EMPTY, null);
+                modelData, renderType);
 
-        if (pipeNode.getFrameMaterial().isNull()) {
+        if (pipeNode.getFrameMaterial().isNull() || (renderType != null && renderType != RenderType.translucent())) {
             return quads;
         }
 
@@ -99,13 +105,12 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                 .getDefaultState();
         BakedModel frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(frameState);
 
-        RenderType renderType = CURRENT_RENDER_TYPE.get();
-        ModelData modelData = CURRENT_MODEL_DATA.get().get(MODEL_DATA);
-        modelData = frameModel.getModelData(level, pos, frameState, modelData != null ? modelData : ModelData.EMPTY);
+        modelData = frameModel.getModelData(level, pos, frameState, modelData);
 
-        List<BakedQuad> frameQuads = frameModel.getQuads(state, side, rand, modelData, renderType);
-        frameQuads = new LinkedList<>(frameQuads);
-
+        List<BakedQuad> frameQuads = new LinkedList<>();
+        if (side == null || pipeNode.getCoverContainer().getCoverAtSide(side) == null) {
+            frameQuads.addAll(frameModel.getQuads(state, side, rand, modelData, renderType));
+        }
         if (side == null) {
             for (Direction face : GTUtil.DIRECTIONS) {
                 if (pipeNode.getCoverContainer().getCoverAtSide(face) != null) {

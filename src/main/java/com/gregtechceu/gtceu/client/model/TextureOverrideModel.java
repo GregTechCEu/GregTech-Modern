@@ -21,7 +21,7 @@ import java.util.*;
 
 public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
-    public static final IQuadTransformer OVERLAY_OFFSET = GTQuadTransformers.offset(0.001f);
+    public static final IQuadTransformer OVERLAY_OFFSET = GTQuadTransformers.offset(0.002f);
 
     @NotNull
     @Getter
