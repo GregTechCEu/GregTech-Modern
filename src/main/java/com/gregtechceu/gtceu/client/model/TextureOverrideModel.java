@@ -62,7 +62,6 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
                 newQuads.add(GTQuadTransformers.setSprite(quad, replacement));
             } else {
                 newQuads.add(quad);
-                //newQuads.add(OVERLAY_OFFSET.process(quad));
             }
         }
         return newQuads;

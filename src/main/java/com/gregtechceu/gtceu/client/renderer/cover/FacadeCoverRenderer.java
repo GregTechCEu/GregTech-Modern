@@ -128,7 +128,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return Collections.emptyList();
         }
 
-        List<BakedQuad> quads = new ArrayList<>();
+        List<BakedQuad> quads = new LinkedList<>();
         BakedModel model = mc.getBlockRenderer().getBlockModel(state);
 
         if (!model.isCustomRenderer()) {
@@ -138,7 +138,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             quads.addAll(model.getQuads(state, null, rand, extraData, renderType));
             quads.addAll(model.getQuads(state, Direction.NORTH, rand, extraData, renderType));
 
-            quads = new ArrayList<>(TextureOverrideModel.OVERLAY_OFFSET.process(quads));
+            quads = new LinkedList<>(TextureOverrideModel.OVERLAY_OFFSET.process(quads));
 
             for (Direction modelSide : FACADE_EDGE_FACES) {
                 quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, ICoverableRenderer.COVER_BACK_PLATE[0]));
@@ -160,14 +160,13 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return;
         }
 
-        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         Direction attachedSide = coverBehavior.attachedSide;
 
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
         ModelData extraData = model.getModelData(level, BlockPos.ZERO, state, modelData);
 
         List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
-        facadeQuads = new ArrayList<>(facadeQuads);
+        facadeQuads = new LinkedList<>(facadeQuads);
 
         List<BakedQuad> coverQuads = new ArrayList<>();
         if (side == attachedSide) {
@@ -181,7 +180,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         quad.getTintIndex(), 0, false, quad.isShade()));
             }
         }
+
         // offset all the cover quads by a small value and bake their tint color into the vertices
+        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         for (BakedQuad quad : coverQuads) {
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
