@@ -972,10 +972,11 @@ public class LangHandler {
                 "§4§lWARNING:§r§4 DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r");
         provider.add("gtceu.recipe.total", "Total: %s EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
-        provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
+        provider.add("gtceu.recipe.eu", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
+        provider.add("gtceu.recipe.eu.total", "%s EU/t");
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.voltage", "Voltage: %s V @ %s A");
+        provider.add("gtceu.recipe.voltage", "Usage: %s A @ %s");
         provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
