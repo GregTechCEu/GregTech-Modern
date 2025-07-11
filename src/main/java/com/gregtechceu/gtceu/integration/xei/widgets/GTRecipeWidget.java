@@ -283,12 +283,14 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         voltageTextWidget.setText(tierText);
         voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
-        recipeVoltageText.setComponent(Component.translatable("gtceu.recipe.eu",
-                FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
-                .withStyle(ChatFormatting.UNDERLINE));
-        recipeVoltageText.setHoverTooltips(
-                Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(inputEUt.getTotalEU()))
-                        .withStyle(ChatFormatting.UNDERLINE));
+        if (recipeVoltageText != null) {
+            recipeVoltageText.setComponent(Component.translatable("gtceu.recipe.eu",
+                            FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
+                    .withStyle(ChatFormatting.UNDERLINE));
+            recipeVoltageText.setHoverTooltips(
+                    Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(inputEUt.getTotalEU()))
+                            .withStyle(ChatFormatting.UNDERLINE));
+        }
         detectAndSendChanges();
         updateScreen();
     }
