@@ -17,8 +17,8 @@
             }
         },
         {
-            "from": [  0,  0, 16.004 ],
-            "to":   [ 16, 16, 16.004 ],
+            "from": [  0,  0, -0.004 ],
+            "to":   [ 16, 16, -0.004 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -26,8 +26,8 @@
             }
         },
         {
-            "from": [  0,  0, 16.008 ],
-            "to":   [ 16, 16, 16.008 ],
+            "from": [  0,  0, -0.008 ],
+            "to":   [ 16, 16, -0.008 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {

@@ -2,8 +2,8 @@
     "parent": "block/block",
     "elements": [
         {
-            "from": [  0,  0, 16.004 ],
-            "to":   [ 16, 16, 16.004 ],
+            "from": [  0,  0, -0.004 ],
+            "to":   [ 16, 16, -0.004 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
