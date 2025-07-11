@@ -200,7 +200,6 @@ public class GTRecipeWidget extends WidgetGroup {
             texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
         }
         if (eu.voltage() > 0) {
-
             long euTotal = eu.getTotalEU() * duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
@@ -285,7 +284,7 @@ public class GTRecipeWidget extends WidgetGroup {
         voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
         if (recipeVoltageText != null) {
             recipeVoltageText.setComponent(Component.translatable("gtceu.recipe.eu",
-                            FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
+                    FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
                     .withStyle(ChatFormatting.UNDERLINE));
             recipeVoltageText.setHoverTooltips(
                     Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(inputEUt.getTotalEU()))
