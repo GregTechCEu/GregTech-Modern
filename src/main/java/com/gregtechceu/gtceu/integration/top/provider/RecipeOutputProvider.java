@@ -27,6 +27,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.apiimpl.styles.ItemStyle;
 import org.jetbrains.annotations.Nullable;
+import snownee.jade.util.FluidTextHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,9 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 String spacer = " ";
                 if (itemOutput instanceof IntProviderIngredient provider) {
-                    spacer += provider.getCountProvider().getMinValue() + "-" +
-                            provider.getCountProvider().getMaxValue() + " ";
+                    spacer += (Component.translatable("gtceu.gui.content.range",
+                            String.valueOf(provider.getCountProvider().getMinValue()),
+                            String.valueOf(provider.getCountProvider().getMaxValue()))) + " ";
                     provider.setItemStacks(null); // no roll
                     provider.setSampledCount(1);
                 }
@@ -130,8 +132,10 @@ public class RecipeOutputProvider extends CapabilityInfoProvider<RecipeLogic> {
                         .horizontal(verticalPane.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 String spacer = " ";
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
-                    spacer += provider.getCountProvider().getMinValue() + "-" +
-                            provider.getCountProvider().getMaxValue() + " ";
+                    spacer += (Component.translatable("gtceu.gui.content.range",
+                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
+                            FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true))) +
+                            " ";
                     fluidOutput.setAmount(provider.getCountProvider().getMaxValue()); // no roll
                 }
                 horizontalPane.element(new FluidStackElement(fluidOutput.getStacks()[0],

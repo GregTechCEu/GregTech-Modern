@@ -55,7 +55,8 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                 if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
                     var machine = machineBlockEntity.getMetaMachine();
                     if (machine instanceof SteamMachine) {
-                        text = Component.literal(formatted + " mB/t").withStyle(ChatFormatting.GREEN);
+                        text = Component.translatable("gtceu.jade.fluid_use", formatted)
+                                .withStyle(ChatFormatting.GREEN);
                     }
                 }
 
@@ -64,12 +65,12 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                     String minAmperage = FormattingUtil
                             .formatNumber2Places((float) (EUt.getTotalEU()) / GTValues.V[tier]) + TextStyleClass.INFO;
 
-                    text = Component.literal(minAmperage + " A ").withStyle(ChatFormatting.RED)
-                            .append(Component.literal("@ ").withStyle(ChatFormatting.GREEN))
+                    text = Component.translatable("gtceu.jade.amperage_use", minAmperage).withStyle(ChatFormatting.RED)
+                            .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN))
                             .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
-                            .append(Component.literal(" (")
-                                    .append(Component.literal(formatted))
-                                    .append(Component.literal(" EU/t)"))
+                            .append(Component.translatable("gtceu.universal.padded_parentheses",
+                                    (Component.translatable("gtceu.recipe.eu.total",
+                                            FormattingUtil.formatNumbers(EUt))))
                                     .withStyle(ChatFormatting.WHITE));
                 }
 

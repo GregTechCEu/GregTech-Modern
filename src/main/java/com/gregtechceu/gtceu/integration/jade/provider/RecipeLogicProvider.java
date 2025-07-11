@@ -83,17 +83,18 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
-                                .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
+                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                                .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
                         var tier = GTUtil.getTierByVoltage(voltage);
                         float minAmperage = (float) EUt / GTValues.V[tier];
 
-                        text = Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
+                        text = Component
+                                .translatable("gtceu.jade.amperage_use",
+                                        FormattingUtil.formatNumber2Places(minAmperage))
                                 .withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" A "))
-                                .append(Component.literal("@ ").withStyle(ChatFormatting.GREEN));
+                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
@@ -106,9 +107,9 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                                             .append(FormattingUtil.formatNumbers(speed))));
 
                         }
-                        text.append(Component.literal(" (")
-                                .append(Component.literal(FormattingUtil.formatNumbers(EUt)))
-                                .append(Component.literal(" EU/t)"))
+                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
+                                (Component.translatable("gtceu.recipe.eu.total",
+                                        FormattingUtil.formatNumbers(EUt))))
                                 .withStyle(ChatFormatting.WHITE));
                     }
 
