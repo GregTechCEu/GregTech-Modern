@@ -233,14 +233,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 GTCEu.LOGGER.error("Try to init pattern previews before level load");
                 throw new IllegalStateException();
             }
-            LEVEL = new TrackedDummyWorld() {
-
-                @SuppressWarnings("UnstableApiUsage")
-                @Override
-                public @Nullable ModelDataManager getModelDataManager() {
-                    return getLevel().getModelDataManager();
-                }
-            };
+            LEVEL = new TrackedDummyWorld();
         }
         return new PatternPreviewWidget(controllerDefinition);
     }
