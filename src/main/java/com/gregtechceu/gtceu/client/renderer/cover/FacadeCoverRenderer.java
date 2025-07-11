@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.util.FacadeBlockAndTintGetter;
+import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -158,6 +160,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return;
         }
 
+        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         Direction attachedSide = coverBehavior.attachedSide;
 
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
@@ -180,9 +183,59 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
         // offset all the cover quads by a small value and bake their tint color into the vertices
         for (BakedQuad quad : coverQuads) {
+            if (quad.isTinted()) {
+                // if the quad has a tint index set, bake the tint into the vertex
+                int color = blockColors.getColor(state, level, pos, quad.getTintIndex());
+                quad = GTQuadTransformers.setColor(quad, color, true);
+            } else {
+                // otherwise just copy the quad so we don't mutate the original model with the overlay offset
+                quad = GTQuadTransformers.copy(quad);
+            }
             TextureOverrideModel.OVERLAY_OFFSET.processInPlace(quad);
 
             quads.add(quad);
         }
+    }
+
+    @Override
+    public boolean useAmbientOcclusion() {
+        if (defaultItemModel != null) {
+            return defaultItemModel.useAmbientOcclusion();
+        }
+        return super.useAmbientOcclusion();
+    }
+
+    @Override
+    public @NotNull TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData) {
+        if (defaultItemModel != null) {
+            return defaultItemModel.getParticleIcon(modelData);
+        }
+        return super.getParticleIcon();
+    }
+
+    @Override
+    public @NotNull BakedModel applyTransform(@NotNull ItemDisplayContext transformType,
+                                              @NotNull PoseStack poseStack, boolean leftHand) {
+        if (defaultItemModel != null) {
+            defaultItemModel.applyTransform(transformType, poseStack, leftHand);
+        }
+        return this;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull ItemTransforms getTransforms() {
+        if (defaultItemModel != null) {
+            return defaultItemModel.getTransforms();
+        }
+        return super.getTransforms();
+    }
+
+    @Override
+    public @NotNull ItemOverrides getOverrides() {
+        if (defaultItemModel != null) {
+            return defaultItemModel.getOverrides();
+        }
+        return super.getOverrides();
     }
 }

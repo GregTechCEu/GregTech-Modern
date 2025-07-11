@@ -61,6 +61,15 @@ public final class GTQuadTransformers {
                 sprite, quad.isShade(), quad.hasAmbientOcclusion());
     }
 
+    public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
+        int[] vertices = quad.getVertices().clone();
+        BakedQuad copy = new BakedQuad(vertices, clearTintIndex ? -1 : quad.getTintIndex(), quad.getDirection(),
+                quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+
+        QuadTransformers.applyingColor(argbColor).processInPlace(copy);
+        return copy;
+    }
+
     public static BakedQuad copy(BakedQuad quad) {
         return new BakedQuad(quad.getVertices().clone(), quad.getTintIndex(), quad.getDirection(),
                 quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
