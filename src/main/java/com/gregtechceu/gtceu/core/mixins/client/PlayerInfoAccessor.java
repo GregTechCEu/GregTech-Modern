@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.client;
 
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.resources.ResourceLocation;

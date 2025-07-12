@@ -1,5 +1,5 @@
 {
-    "parent": "gtceu:block/cube/tinted/bottom_top",
+    "parent": "gtceu:block/machine/template/sided/sided",
     "textures": {
         "overlay_front": "#overlay",
         "overlay_back": "#overlay",

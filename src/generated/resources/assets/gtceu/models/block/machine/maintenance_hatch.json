@@ -13,7 +13,6 @@
         "parent": "gtceu:block/machine/part/maintenance_hatch",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/lv/bottom",
-          "overlay_2": "gtceu:block/overlay/machine/overlay_maintenance_taped",
           "side": "gtceu:block/casings/voltage/lv/side",
           "top": "gtceu:block/casings/voltage/lv/top"
         }
@@ -24,6 +23,7 @@
         "parent": "gtceu:block/machine/part/maintenance_hatch",
         "textures": {
           "bottom": "gtceu:block/casings/voltage/lv/bottom",
+          "overlay_2": "gtceu:block/overlay/machine/overlay_maintenance_taped",
           "side": "gtceu:block/casings/voltage/lv/side",
           "top": "gtceu:block/casings/voltage/lv/top"
         }

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
@@ -215,9 +215,17 @@ public abstract class LevelRendererMixin {
 
     @Unique
     private @NotNull MaterialEntry gtceu$getTranslucentBlockMaterial(BlockState state, BlockPos pos) {
+        assert level != null;
+        // skip non-solid blocks from other mods (like vanilla ice blocks)
+        if (!state.isSolidRender(level, pos) && !(state.getBlock() instanceof MaterialBlock)) {
+            return MaterialEntry.NULL_ENTRY;
+        }
+
         BakedModel blockModel = minecraft.getBlockRenderer().getBlockModel(state);
         ModelData modelData = level.getModelDataManager().getAt(pos);
         if (modelData == null) modelData = ModelData.EMPTY;
+        modelData = blockModel.getModelData(level, pos, state, modelData);
+
         gtceu$modelRandom.setSeed(state.getSeed(pos));
         if (blockModel.getRenderTypes(state, gtceu$modelRandom, modelData).contains(RenderType.translucent())) {
             return ChemicalHelper.getMaterialEntry(state.getBlock());

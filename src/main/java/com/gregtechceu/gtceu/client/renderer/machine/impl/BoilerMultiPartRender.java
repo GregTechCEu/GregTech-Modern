@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -115,11 +115,8 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
         int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());
         if (belowControllerY == partY) {
-            // IDK why but the field isn't synced properly, so I have to check it manually
-            RecipeLogic.Status status = controller.self().getRenderState()
-                    .getOptionalValue(RecipeLogic.STATUS_PROPERTY).orElse(RecipeLogic.Status.IDLE);
             // firebox
-            if (status == RecipeLogic.Status.WORKING) {
+            if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
                 emitQuads(quads, fireboxActiveModel, machine.getLevel(), partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {

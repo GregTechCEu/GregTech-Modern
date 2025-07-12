@@ -143,17 +143,22 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine == null) return builder.build();
 
+        addMachineModelData(machine.getRenderState(), level, pos, state, modelData, builder);
+        return builder.build();
+    }
+
+    public void addMachineModelData(MachineRenderState renderState, BlockAndTintGetter level, BlockPos pos,
+                                    BlockState state, ModelData baseData, ModelData.Builder builder) {
         MultipartModelData.Builder multiPartData = MultipartModelData.builder();
-        var selectors = getSelectors(machine.getRenderState());
+
+        var selectors = getSelectors(renderState);
         for (int i = 0; i < selectors.length(); i++) {
             if (selectors.get(i)) {
                 BakedModel model = this.selectors.get(i).getRight();
-                multiPartData.with(model, model.getModelData(level, pos, state, modelData));
+                multiPartData.with(model, model.getModelData(level, pos, state, baseData));
             }
         }
         builder.with(MultipartModelData.PROPERTY, multiPartData.build());
-
-        return builder.build();
     }
 
     @Override

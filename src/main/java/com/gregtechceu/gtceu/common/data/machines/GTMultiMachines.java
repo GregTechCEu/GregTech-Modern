@@ -577,8 +577,19 @@ public class GTMultiMachines {
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
-            .sidedWorkableCasingModel(GTCEu.id("block/casings/pump_deck"),
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .model(createSidedWorkableCasingMachineModel(GTCEu.id("block/casings/pump_deck"),
                     GTCEu.id("block/multiblock/primitive_pump"))
+                    .andThen(builder -> {
+                        builder.replaceForAllStates((state, models) -> {
+                            for (int i = 0; i < models.length; i++) {
+                                models[i] = ConfiguredModel.builder()
+                                        .modelFile(models[i].model).uvLock(true)
+                                        .buildLast();
+                            }
+                            return models;
+                        });
+                    }))
             .register();
 
     public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE

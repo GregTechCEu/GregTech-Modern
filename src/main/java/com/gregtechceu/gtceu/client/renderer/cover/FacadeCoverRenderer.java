@@ -128,8 +128,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 quads.addAll(model.getQuads(state, Direction.NORTH, rand, extraData, renderType));
 
                 for (Direction modelSide : FACADE_EDGE_FACES) {
-                    quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide, ICoverableRenderer.COVER_BACK_PLATE[0],
-                            BlockModelRotation.X0_Y0, -1, 0, false, true));
+                    quads.add(StaticFaceBakery.bakeFace(FACADE_PLANE, modelSide,
+                            ICoverableRenderer.COVER_BACK_PLATE[0]));
                 }
             }
         }

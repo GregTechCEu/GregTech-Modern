@@ -46,14 +46,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public enum Status implements StringRepresentable {
 
-        IDLE,
-        WORKING,
-        WAITING,
-        SUSPEND;
+        IDLE("idle"),
+        WORKING("working"),
+        WAITING("waiting"),
+        SUSPEND("suspend");
 
-        @Override
-        public @NotNull String getSerializedName() {
-            return name().toLowerCase(Locale.ROOT);
+        @Getter
+        private final String serializedName;
+
+        Status(String name) {
+            this.serializedName = name;
         }
     }
 

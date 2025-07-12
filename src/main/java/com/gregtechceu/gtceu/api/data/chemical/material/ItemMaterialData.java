@@ -176,12 +176,13 @@ public class ItemMaterialData {
         for (var entry : UNRESOLVED_ITEM_MATERIAL_INFO.entrySet()) {
             List<MaterialStack> stacks = new ArrayList<>();
             var stack = entry.getKey();
-            var count = stack.getCount();
+            int outputCount = stack.getCount();
             for (var input : entry.getValue()) {
                 var matStack = getMaterialInfo(input.getItem());
+                int inputCount = input.getCount();
                 if (matStack != null) {
                     matStack.getMaterials()
-                            .forEach(ms -> stacks.add(new MaterialStack(ms.material(), ms.amount() / count)));
+                            .forEach(ms -> stacks.add(ms.multiply(inputCount).divide(outputCount)));
                 }
             }
             if (stacks.isEmpty()) continue;

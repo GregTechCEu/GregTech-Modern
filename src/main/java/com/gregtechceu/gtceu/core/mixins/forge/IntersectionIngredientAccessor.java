@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.forge;
 
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.util.VariantRotationHelpers;

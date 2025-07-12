@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.world.item.ItemStack;

@@ -496,7 +496,7 @@ public class GuiTextures {
 
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(
-            "gtceu:textures/items/metaitems/cover.controller.png");
+            "gtceu:textures/items/machine_controller_cover.png");
 
     // Terminal
     public static final ResourceTexture ICON_REMOVE = new ResourceTexture(

@@ -91,7 +91,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected final TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
-    protected final Function<IMachineBlockEntity, MetaMachine> machine;
+    @Setter
+    protected Function<IMachineBlockEntity, MetaMachine> machine;
     @Nullable
     @Getter
     @Setter
@@ -137,7 +138,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
     @Setter
-    private int paintingColor = Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue();
+    private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     @Setter
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
             GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
@@ -225,7 +226,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> defaultModel() {
-        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
     }
 
     public MachineBuilder<DEFINITION> tieredHullModel(ResourceLocation model) {
@@ -473,7 +474,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
         if (model == null && blockModel == null) {
-            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
+            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
         }
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(this, definition);
         if (this.langValue != null) {
@@ -539,7 +540,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.MACHINES.register(definition.getId(), definition);
-        return definition;
+        return value = definition;
     }
 
     @FunctionalInterface

@@ -2010,7 +2010,7 @@ public class GTItems {
                             .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 400), .40f)
                             .effect(() -> new MobEffectInstance(MobEffects.POISON, 100), .05f)
                             .build())))
-            .tag(CustomTags.DOUGHS)
+            .tag(CustomTags.WHEAT_DOUGHS)
             .register();
     public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::create)
             .onRegister(burnTime(75)).register();

@@ -6,21 +6,45 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 public interface IMachineRendererModel<T extends IMachineFeature> extends IBlockEntityRendererBakedModel<BlockEntity> {
 
     MachineDefinition getDefinition();
+
+    @Override
+    @NotNull
+    default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+                                     @NotNull ModelData data, @Nullable RenderType renderType) {
+        return Collections.emptyList();
+    }
+
+    default @NotNull List<BakedQuad> getRenderQuads(@Nullable T machine,
+                                                    @Nullable BlockState blockState,
+                                                    @Nullable Direction side, RandomSource rand,
+                                                    @NotNull ModelData modelData, @Nullable RenderType renderType) {
+        return getQuads(blockState, side, rand, modelData, renderType);
+    }
 
     void render(T machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                 int packedLight, int packedOverlay);

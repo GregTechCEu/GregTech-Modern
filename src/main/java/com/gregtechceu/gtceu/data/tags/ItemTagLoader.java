@@ -21,8 +21,13 @@ public class ItemTagLoader {
 
     @SuppressWarnings("DataFlowIssue")
     public static void init(RegistrateItemTagsProvider provider) {
+        provider.addTag(CustomTags.DOUGHS).addTag(CustomTags.WHEAT_DOUGHS);
+        provider.addTag(CustomTags.WHEAT_GRAINS).add(GTMaterialItems.MATERIAL_ITEMS.get(dust, Wheat).get());
+        provider.addTag(CustomTags.GRAINS).addTag(CustomTags.WHEAT_GRAINS);
+
         provider.copy(CustomTags.CONCRETE_BLOCK, CustomTags.CONCRETE_ITEM);
         provider.copy(CustomTags.CONCRETE_POWDER_BLOCK, CustomTags.CONCRETE_POWDER_ITEM);
+
         // spotless:off
         // the coral blocks: alive, dead, both
         provider.addTag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)

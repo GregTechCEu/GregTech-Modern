@@ -101,7 +101,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
         int duration = buf.readVarInt();
-        int amperage = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(

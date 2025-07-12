@@ -127,7 +127,6 @@ public class GTMachineModels {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
                 BlockModelBuilder model = colorOverlayHullModel(overlay, emissiveOverlay, state, prov.models());
-                tieredHullTextures(model, builder.getOwner().getTier());
                 return tieredHullTextures(model, builder.getOwner().getTier());
             });
 
@@ -207,15 +206,9 @@ public class GTMachineModels {
                 return;
             }
 
-            ModelFile ventModel = prov.models().getBuilder(VENT_OVERLAY.toString())
-                    .texture("steam_vent", VENT_OVERLAY)
-                    .element()
-                    .from(-0.002f, -0.002f, -0.002f).to(16.002f, 16.002f, 16.002f)
-                    .face(Direction.NORTH).uvs(0, 0, 16, 16).texture("#steam_vent").cullface(Direction.NORTH).end()
-                    .end();
             for (RelativeDirection relative : RelativeDirection.VALUES) {
                 Direction dir = relative.global;
-                builder.part().modelFile(ventModel)
+                builder.part().modelFile(prov.models().getExistingFile(VENT_OVERLAY))
                         .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
                         .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
                         .addModel()
@@ -542,7 +535,7 @@ public class GTMachineModels {
                         .parent(prov.models().getExistingFile(overlayModel));
                 tieredHullTextures(baseModel, builder.getOwner().getTier());
 
-                if (!state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
+                if (state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
                     baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 }
                 return baseModel;
