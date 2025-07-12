@@ -188,7 +188,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         Direction attachedSide = coverBehavior.attachedSide;
 
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-        ModelData extraData = model.getModelData(level, BlockPos.ZERO, state, modelData);
+        ModelData extraData = model.getModelData(level, pos, state, modelData);
 
         List<BakedQuad> facadeQuads = model.getQuads(state, attachedSide, rand, extraData, renderType);
         facadeQuads = new LinkedList<>(facadeQuads);
