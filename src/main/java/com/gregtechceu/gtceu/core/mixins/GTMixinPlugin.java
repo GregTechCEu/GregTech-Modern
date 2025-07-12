@@ -33,6 +33,7 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
         addModCompatMixin("ftbchunks");
         addModCompatMixin("xaerominimap");
         addModCompatMixin("xaeroworldmap");
+        addModCompatMixin("kubejs");
     }
 
     @Override
