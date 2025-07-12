@@ -368,9 +368,10 @@ public class GTMachineModels {
     public static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
     public static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
 
-    public static final ResourceLocation CONVERTER_FE_IN_EMISSIVE = GTCEu.id("block/overlay/converter/converter_native_in_emissive");
-    public static final ResourceLocation CONVERTER_FE_OUT_EMISSIVE = GTCEu.id("block/overlay/converter/converter_native_out_emissive");
-
+    public static final ResourceLocation CONVERTER_FE_IN_EMISSIVE = GTCEu
+            .id("block/overlay/converter/converter_native_in_emissive");
+    public static final ResourceLocation CONVERTER_FE_OUT_EMISSIVE = GTCEu
+            .id("block/overlay/converter/converter_native_out_emissive");
 
     public static MachineBuilder.ModelInitializer createConverterModel(int amperage) {
         return (ctx, prov, builder) -> {
@@ -455,9 +456,11 @@ public class GTMachineModels {
                 EnergyIOOverlay otherFace = (transformUp ? IN_OVERLAYS_FOR_AMP : OUT_OVERLAYS_FOR_AMP)
                         .get(baseAmp * 4);
 
-                EnergyIOOverlay frontFaceEmissive = (transformUp ? OUT_OVERLAYS_EMISSIVE_FOR_AMP : IN_OVERLAYS_EMISSIVE_FOR_AMP)
+                EnergyIOOverlay frontFaceEmissive = (transformUp ? OUT_OVERLAYS_EMISSIVE_FOR_AMP :
+                        IN_OVERLAYS_EMISSIVE_FOR_AMP)
                         .get(baseAmp);
-                EnergyIOOverlay otherFaceEmissive = (transformUp ? IN_OVERLAYS_EMISSIVE_FOR_AMP : OUT_OVERLAYS_EMISSIVE_FOR_AMP)
+                EnergyIOOverlay otherFaceEmissive = (transformUp ? IN_OVERLAYS_EMISSIVE_FOR_AMP :
+                        OUT_OVERLAYS_EMISSIVE_FOR_AMP)
                         .get(baseAmp * 4);
 
                 BlockModelBuilder model = prov.models().nested()
