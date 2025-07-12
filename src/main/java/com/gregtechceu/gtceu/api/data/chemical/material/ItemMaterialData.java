@@ -176,7 +176,6 @@ public class ItemMaterialData {
         for (var iter = UNRESOLVED_ITEM_MATERIAL_INFO.entrySet().iterator(); iter.hasNext();) {
             var entry = iter.next();
             var stack = entry.getKey();
-            // var existingMaterialInfo = ITEM_MATERIAL_INFO.get(stack.getItem());
             var existingMaterialInfo = recurseFindMaterialInfo(ITEM_MATERIAL_INFO.get(stack.getItem()), stack);
             if (existingMaterialInfo != null) {
                 RecyclingRecipes.registerRecyclingRecipes(provider, stack.copyWithCount(1),
