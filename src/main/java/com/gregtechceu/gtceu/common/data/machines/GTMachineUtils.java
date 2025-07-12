@@ -196,16 +196,25 @@ public class GTMachineUtils {
         return Pair.of(lowTier, highTier);
     }
 
-    public static MachineDefinition[] registerFluidHatches(String name, String displayname, String overlayTexture,
-                                                           String tooltip, IO io, int initialCapacity, int slots,
+    public static MachineDefinition[] registerFluidHatches(String name, String displayName, String tooltip,
+                                                           IO io, int initialCapacity, int slots,
                                                            int[] tiers, PartAbility... abilities) {
+        final String pipeOverlay;
+        if (slots >= 9) {
+            pipeOverlay = "overlay_pipe_9x";
+        } else if (slots >= 4) {
+            pipeOverlay = "overlay_pipe_4x";
+        } else {
+            pipeOverlay = null;
+        }
+        final String ioOverlay = io == OUT ? "overlay_pipe_out_emissive" : "overlay_pipe_in_emissive";
         final String emissiveOverlay = slots > 4 ? OVERLAY_FLUID_HATCH_HALF_PX_TEX : OVERLAY_FLUID_HATCH_TEX;
         return registerTieredMachines(name,
                 (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
                 (tier, builder) -> {
-                    builder.langValue(VNF[tier] + ' ' + displayname)
+                    builder.langValue(VNF[tier] + ' ' + displayName)
                             .rotationState(RotationState.ALL)
-                            .colorOverlayTieredHullModel(overlayTexture, emissiveOverlay)
+                            .colorOverlayTieredHullModel(ioOverlay, pipeOverlay, emissiveOverlay)
                             .abilities(abilities)
                             .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
@@ -427,16 +436,16 @@ public class GTMachineUtils {
         return definition;
     }
 
-    public static MachineDefinition[] registerQuantumTanks(String tank_type, int... tiers) {
+    public static MachineDefinition[] registerQuantumTanks(String name, int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = REGISTRATE.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + tank_type,
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                     MachineDefinition::new, (holder) -> new QuantumTankMachine(holder, tier, maxAmount),
                     MetaMachineBlock::new, QuantumTankMachineItem::new,
                     MetaMachineBlockEntity::new)
-                    .langValue(toEnglishName(tank_type) + " " + LVT[tier])
+                    .langValue(toEnglishName(name) + " " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
@@ -455,11 +464,11 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static MachineDefinition[] registerQuantumChests(String chest_type, int... tiers) {
-        return registerTieredMachines(chest_type,
+    public static MachineDefinition[] registerQuantumChests(String name, int... tiers) {
+        return registerTieredMachines(name,
                 (holder, tier) -> new QuantumChestMachine(holder, tier,
                         tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
-                (tier, builder) -> builder.langValue(toEnglishName(chest_type) + " " + LVT[tier])
+                (tier, builder) -> builder.langValue(toEnglishName(name) + " " + LVT[tier])
                         .blockProp(BlockBehaviour.Properties::dynamicShape)
                         .rotationState(RotationState.ALL)
                         .allowExtendedFacing(true)
