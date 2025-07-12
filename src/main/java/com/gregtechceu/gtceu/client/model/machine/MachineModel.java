@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
@@ -8,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.SpriteCapturer;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
@@ -37,6 +39,8 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +64,7 @@ import java.util.stream.Collectors;
 import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
-                                IMachineRendererModel<MetaMachine> {
+                                IMachineRendererModel<MetaMachine>, IBlockEntityRendererBakedModel<BlockEntity> {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -459,5 +463,31 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             }
         }
         return false;
+    }
+
+    @Override
+    public int getViewDistance() {
+        int distance = 0;
+        if (dynamicRenders.isEmpty()) return distance;
+
+        for (DynamicRender<?, ?> model : dynamicRenders) {
+            distance = Math.max(distance, model.getViewDistance());
+        }
+        return distance;
+    }
+
+    @Override
+    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+        return getDefinition().getBlockEntityType();
+    }
+
+    @Override
+    public void render(@NotNull BlockEntity blockEntity, float partialTick,
+                       @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+                       int packedLight, int packedOverlay) {
+        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
+        if (machineBE.getDefinition() != getDefinition()) return;
+
+        this.render(machineBE.getMetaMachine(), partialTick, poseStack, buffer, packedLight, packedOverlay);
     }
 }

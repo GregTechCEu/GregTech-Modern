@@ -127,7 +127,8 @@ public class GTMachineModels {
                                                                                            @Nullable ResourceLocation emissiveOverlay) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state, prov.models());
+                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state,
+                        prov.models());
                 return tieredHullTextures(model, builder.getOwner().getTier());
             });
 
@@ -182,7 +183,8 @@ public class GTMachineModels {
                                                                                           @Nullable ResourceLocation emissiveOverlay) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state, prov.models());
+                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state,
+                        prov.models());
                 steamCasingTextures(model, state.getOptionalValue(SteamMachine.STEEL_PROPERTY).orElse(false));
                 return model;
             });

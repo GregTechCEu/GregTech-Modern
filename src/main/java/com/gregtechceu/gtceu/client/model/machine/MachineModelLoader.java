@@ -9,11 +9,9 @@ import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedMode
 import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 import com.gregtechceu.gtceu.client.model.machine.variant.VariantState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -22,11 +20,9 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.common.util.TransformationHelper;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.google.common.base.Splitter;
@@ -69,25 +65,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
     private static final UnbakedModel MISSING_MARKER = new BasicUnbakedModel();
 
-    private static final Map<ResourceLocation, List<DynamicRender<?, ?>>> DYNAMIC_RENDERERS = new HashMap<>();
-
     private MachineModelLoader() {}
-
-    @SubscribeEvent
-    public static void loadDynamicModels(ModelEvent.ModifyBakingResult event) {
-        if (DYNAMIC_RENDERERS.isEmpty()) return;
-
-        Map<ResourceLocation, BakedModel> models = event.getModels();
-        for (var entry : DYNAMIC_RENDERERS.entrySet()) {
-            ResourceLocation machineId = entry.getKey();
-            for (DynamicRender<?, ?> renderer : entry.getValue()) {
-                String rendererName = renderer.getType().getId().getPath();
-
-                String fakeModelPath = DynamicRenderManager.MODEL_ID_FORMATTER.apply(machineId.getPath(), rendererName);
-                models.put(machineId.withPath(fakeModelPath), renderer);
-            }
-        }
-    }
 
     @Override
     public @Nullable UnbakedMachineModel read(JsonObject json,
@@ -168,7 +146,6 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                         .getOrThrow(false, LOGGER::error);
                 dynamicRenders.add(render);
             }
-            DYNAMIC_RENDERERS.put(machineId, dynamicRenders);
         }
 
         // CTM info etc.

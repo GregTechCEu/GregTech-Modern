@@ -539,7 +539,7 @@ public class GTMachines {
                 }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
-                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumTankRender)))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
             .hasBER(true)
             .register();
 
@@ -557,7 +557,7 @@ public class GTMachines {
                 }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
-                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumChestRender)))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
             .hasBER(true)
             .register();
 

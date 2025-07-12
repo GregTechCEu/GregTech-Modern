@@ -450,7 +450,7 @@ public class GTMachineUtils {
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
-                            .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumTankRender)))
+                            .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
@@ -474,7 +474,7 @@ public class GTMachineUtils {
                         .allowExtendedFacing(true)
                         .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
                                 .andThen(
-                                        b -> b.addDynamicRenderer(() -> DynamicRenderHelper::createQuantumChestRender)))
+                                        b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
                         .hasBER(true)
                         .tooltipBuilder(CHEST_TOOLTIPS)
                         .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
@@ -592,7 +592,7 @@ public class GTMachineUtils {
                 .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(texture,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
-                        .andThen(b -> b.addDynamicRenderer(() -> () -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
+                        .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
                 .tooltips(
                         Component.translatable("gtceu.multiblock.large_boiler.max_temperature", maxTemperature + 274,
                                 maxTemperature),
