@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -184,9 +186,15 @@ public abstract class LevelRendererMixin {
                 doRenderColoredOutline = true;
                 rgb = GTValues.VCM[tiered.getTier()];
             }
-        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof CableBlockEntity cbe) {
+        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             doRenderColoredOutline = true;
-            rgb = GTValues.VCM[GTUtil.getTierByVoltage(cbe.getNodeData().getVoltage())];
+            if (!pipe.getFrameMaterial().isNull()) {
+                rgb = pipe.getFrameMaterial().getMaterialRGB();
+            } else if (pipe instanceof CableBlockEntity cable) {
+                rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];
+            } else if (state.getBlock() instanceof MaterialPipeBlock<?,?,?> materialPipe) {
+                rgb = materialPipe.material.getMaterialRGB();
+            }
         }
 
         VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));

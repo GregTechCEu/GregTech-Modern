@@ -35,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -50,13 +49,15 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     public enum State implements StringRepresentable {
 
-        IDLE,
-        RUNNING,
-        FINISHED;
+        IDLE("idle"),
+        RUNNING("running"),
+        FINISHED("finished");
 
-        @Override
-        public String getSerializedName() {
-            return name().toLowerCase(Locale.ROOT);
+        @Getter
+        private final String serializedName;
+
+        State(String name) {
+            this.serializedName = name;
         }
     }
 

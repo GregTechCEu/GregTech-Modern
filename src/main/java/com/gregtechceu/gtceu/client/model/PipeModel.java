@@ -177,7 +177,7 @@ public class PipeModel {
     public List<BakedQuad> bakeQuads(@Nullable Direction side, int connections, int blockedConnections) {
         if (side != null) {
             if (thickness == 1) { // full block
-                List<BakedQuad> quads = new ArrayList<>();
+                List<BakedQuad> quads = new LinkedList<>();
                 quads.add(FaceQuad.builder(side, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                 if (secondarySideSprite != null) {
                     quads.add(FaceQuad.builder(side, secondarySideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
@@ -186,7 +186,7 @@ public class PipeModel {
             }
 
             if (PipeBlockEntity.isConnected(connections, side)) { // side connected
-                List<BakedQuad> quads = new ArrayList<>();
+                List<BakedQuad> quads = new LinkedList<>();
                 quads.add(FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV()
                         .tintIndex(1).bake());
                 if (secondaryEndSprite != null) {

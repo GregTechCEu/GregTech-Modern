@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,15 +33,16 @@ public interface IMachineRendererModel<T extends IMachineFeature> extends IBlock
 
     MachineDefinition getDefinition();
 
+    @ApiStatus.NonExtendable
     @Override
-    @NotNull
-    default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
-                                     @NotNull ModelData data, @Nullable RenderType renderType) {
+    default @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                              @NotNull RandomSource rand, @NotNull ModelData data,
+                                              @Nullable RenderType renderType) {
         return Collections.emptyList();
     }
 
-    default @NotNull List<BakedQuad> getRenderQuads(@Nullable T machine,
-                                                    @Nullable BlockState blockState,
+    default @NotNull List<BakedQuad> getRenderQuads(@Nullable T machine, @Nullable BlockAndTintGetter level,
+                                                    @Nullable BlockPos pos, @Nullable BlockState blockState,
                                                     @Nullable Direction side, RandomSource rand,
                                                     @NotNull ModelData modelData, @Nullable RenderType renderType) {
         return getQuads(blockState, side, rand, modelData, renderType);

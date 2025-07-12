@@ -36,13 +36,18 @@
     "display": {
         "firstperson_righthand": {
             "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 0, 0 ],
+            "translation": [ 0, 2, 0 ],
             "scale": [ 0.4, 0.4, 0.4 ]
         },
         "firstperson_lefthand": {
             "rotation": [ 0, 315, 0 ],
-            "translation": [ 0, 0, 0 ],
+            "translation": [ 0, 2, 0 ],
             "scale": [ 0.40, 0.40, 0.40 ]
+        },
+        "gui": {
+            "rotation": [30, 225, 0],
+            "translation": [-4, 2, 0],
+            "scale": [0.7, 0.7, 0.7]
         }
     }
 }

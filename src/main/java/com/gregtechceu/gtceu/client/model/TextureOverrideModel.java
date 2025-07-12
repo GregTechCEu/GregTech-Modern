@@ -21,7 +21,7 @@ import java.util.*;
 
 public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrapper<T> {
 
-    private static final IQuadTransformer OVERLAY_OFFSET = GTQuadTransformers.offset(0.001f);
+    public static final IQuadTransformer OVERLAY_OFFSET = GTQuadTransformers.offset(0.002f);
 
     @NotNull
     @Getter
@@ -61,7 +61,7 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
             if (replacement != null) {
                 newQuads.add(GTQuadTransformers.setSprite(quad, replacement));
             } else {
-                newQuads.add(OVERLAY_OFFSET.process(quad));
+                newQuads.add(quad);
             }
         }
         return newQuads;

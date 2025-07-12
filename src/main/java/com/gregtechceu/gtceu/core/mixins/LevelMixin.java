@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 
 import com.lowdragmc.lowdraglib.async.AsyncThreadData;
@@ -22,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Mixin(Level.class)
 public abstract class LevelMixin implements LevelAccessor {
@@ -72,7 +76,12 @@ public abstract class LevelMixin implements LevelAccessor {
         if (!(((Object) this) instanceof ServerLevel serverLevel)) return;
 
         MultiblockWorldSavedData mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-        for (var structure : mwsd.getControllersInChunk(chunk.getPos())) {
+        Set<MultiblockState> defensiveCopy = new HashSet<>(mwsd.getControllersInChunk(chunk.getPos()));
+        for (MultiblockState structure : defensiveCopy) {
+            if (!structure.getController().isFormed()) {
+                // skip for unloaded/unformed multiblocks
+                continue;
+            }
             if (structure.isPosInCache(pos)) {
                 serverLevel.getServer().executeBlocking(() -> structure.onBlockStateChanged(pos, newState));
             }

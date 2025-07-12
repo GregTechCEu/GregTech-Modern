@@ -56,10 +56,10 @@ public interface ICoverableRenderer {
                             normal.getZ() >= 0 ? 0.999 : min);
                     if (side == null) { // render back
                         quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().tintIndex(-1).bake());
+                                .cube(cube).cubeUV().bake());
                     } else if (side != face.getOpposite()) { // render sides
                         quads.add(FaceQuad.builder(side, COVER_BACK_PLATE[0])
-                                .cube(cube).cubeUV().tintIndex(-1).bake());
+                                .cube(cube).cubeUV().bake());
                     }
                 }
                 // it won't ever be null on the client

@@ -2,8 +2,8 @@
     "parent": "gtceu:block/machine/template/rotor_holder/rotor_idle",
     "elements": [
         {
-            "from": [ -16, -16, -0.008 ],
-            "to":   [  32,  32, -0.008 ],
+            "from": [ -16, -16, -0.016 ],
+            "to":   [  32,  32, -0.016 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {

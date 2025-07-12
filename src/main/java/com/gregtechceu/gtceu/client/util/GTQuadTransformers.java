@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.client.util;
 
+import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -10,20 +11,31 @@ import net.minecraftforge.client.model.QuadTransformers;
 public final class GTQuadTransformers {
 
     public static IQuadTransformer offset(float by) {
-        if (by == 0.0f) return QuadTransformers.empty();
+        return offset(by, by, by);
+    }
+
+    public static IQuadTransformer offset(float xOffset, float yOffset, float zOffset) {
+        if (xOffset == 0.0f && yOffset == 0.0f && zOffset == 0.0f) return QuadTransformers.empty();
 
         return quad -> {
             int[] vertices = quad.getVertices();
             Direction direction = quad.getDirection();
+            FaceInfo faceInfo = FaceInfo.fromFacing(direction);
 
             for (int i = 0; i < 4; i++) {
+                FaceInfo.VertexInfo normal = faceInfo.getVertexInfo(i);
+                int xNormal = Direction.from3DDataValue(normal.xFace).getStepX();
+                int yNormal = Direction.from3DDataValue(normal.yFace).getStepY();
+                int zNormal = Direction.from3DDataValue(normal.zFace).getStepZ();
+
                 int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
                 float x = Float.intBitsToFloat(vertices[offset]);
                 float y = Float.intBitsToFloat(vertices[offset + 1]);
                 float z = Float.intBitsToFloat(vertices[offset + 2]);
-                x += by * direction.getStepX();
-                y += by * direction.getStepY();
-                z += by * direction.getStepZ();
+
+                x += xOffset * xNormal;
+                y += yOffset * yNormal;
+                z += zOffset * zNormal;
 
                 vertices[offset] = Float.floatToRawIntBits(x);
                 vertices[offset + 1] = Float.floatToRawIntBits(y);
@@ -50,6 +62,15 @@ public final class GTQuadTransformers {
         }
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
                 sprite, quad.isShade(), quad.hasAmbientOcclusion());
+    }
+
+    public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
+        int[] vertices = quad.getVertices().clone();
+        BakedQuad copy = new BakedQuad(vertices, clearTintIndex ? -1 : quad.getTintIndex(), quad.getDirection(),
+                quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+
+        QuadTransformers.applyingColor(argbColor).processInPlace(copy);
+        return copy;
     }
 
     public static BakedQuad copy(BakedQuad quad) {

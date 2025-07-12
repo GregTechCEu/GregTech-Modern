@@ -14,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,12 +30,18 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
             LargeChemicalBathMachine.class, WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
+    @Setter
     @DescSynced
     @RequireRerender
-    private final Set<BlockPos> fluidBlockOffsets = new HashSet<>();
+    private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
 
     public LargeChemicalBathMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -48,29 +56,26 @@ public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine 
         IFluidRenderMulti.super.onStructureInvalid();
     }
 
+    @NotNull
     @Override
-    public void saveOffsets() {
+    public Set<BlockPos> saveOffsets() {
         Direction up = RelativeDirection.UP.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
         Direction back = getFrontFacing().getOpposite();
-        Direction clockWise;
-        Direction counterClockWise;
-        if (up == Direction.UP || up == Direction.DOWN) {
-            clockWise = getFrontFacing().getClockWise();
-            counterClockWise = getFrontFacing().getCounterClockWise();
-        } else {
-            clockWise = Direction.UP;
-            counterClockWise = Direction.DOWN;
-        }
+        Direction clockWise = RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
+        Direction counterClockWise = RelativeDirection.LEFT.getRelative(getFrontFacing(), getUpwardsFacing(),
+                isFlipped());
 
         BlockPos pos = getPos();
-        BlockPos center = pos.relative(up, 3);
+        BlockPos center = pos.relative(up);
 
-        for (int i = 0; i < 3; i++) {
+        Set<BlockPos> offsets = new HashSet<>();
+
+        for (int i = 0; i < 5; i++) {
             center = center.relative(back);
-            if (i % 2 == 0)
-                fluidBlockOffsets.add(center.subtract(pos));
-            fluidBlockOffsets.add(center.relative(clockWise).subtract(pos));
-            fluidBlockOffsets.add(center.relative(counterClockWise).subtract(pos));
+            offsets.add(center.subtract(pos));
+            offsets.add(center.relative(clockWise).subtract(pos));
+            offsets.add(center.relative(counterClockWise).subtract(pos));
         }
+        return offsets;
     }
 }

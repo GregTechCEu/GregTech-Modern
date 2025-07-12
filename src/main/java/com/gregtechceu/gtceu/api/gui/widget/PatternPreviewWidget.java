@@ -42,7 +42,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelDataManager;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -52,7 +51,6 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.shedaniel.rei.impl.client.gui.screen.AbstractDisplayViewingScreen;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -233,14 +231,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 GTCEu.LOGGER.error("Try to init pattern previews before level load");
                 throw new IllegalStateException();
             }
-            LEVEL = new TrackedDummyWorld() {
-
-                @SuppressWarnings("UnstableApiUsage")
-                @Override
-                public @Nullable ModelDataManager getModelDataManager() {
-                    return getLevel().getModelDataManager();
-                }
-            };
+            LEVEL = new TrackedDummyWorld();
         }
         return new PatternPreviewWidget(controllerDefinition);
     }

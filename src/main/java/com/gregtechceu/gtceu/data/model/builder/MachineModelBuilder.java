@@ -66,12 +66,21 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         json.addProperty("machine", owner.getId().toString());
         StateDefinition<MachineDefinition, MachineRenderState> stateDefinition = owner.getStateDefinition();
         if (getModels().isEmpty() && getParts().isEmpty()) {
-            throw new IllegalStateException("A machine model must have either a variant or multipart model!");
+            throw new IllegalStateException("A machine model must have a variant or multipart model!");
+        }
+        List<MachineRenderState> missingStates = new ArrayList<>(stateDefinition.getPossibleStates());
+        missingStates.removeAll(coveredStates);
+
+        if (!getParts().isEmpty()) {
+            JsonArray parts = new JsonArray();
+            for (PartBuilder part : getParts()) {
+                missingStates.removeIf(part::matchesState);
+                parts.add(part.toJson());
+            }
+            json.add("multipart", parts);
         }
 
         if (!getModels().isEmpty()) {
-            List<MachineRenderState> missingStates = Lists.newArrayList(stateDefinition.getPossibleStates());
-            missingStates.removeAll(coveredStates);
             Preconditions.checkState(missingStates.isEmpty(),
                     "Render state for machine %s does not cover all states. Missing: %s", owner, missingStates);
             final JsonObject variants = new JsonObject();
@@ -82,13 +91,6 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                     });
 
             json.add("variants", variants);
-        }
-        if (!getParts().isEmpty()) {
-            JsonArray parts = new JsonArray();
-            for (PartBuilder part : getParts()) {
-                parts.add(part.toJson());
-            }
-            json.add("multipart", parts);
         }
 
         if (!this.dynamicRenders.isEmpty()) {
@@ -285,9 +287,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      * @see MachineModelBuilder#part(ResourceLocation)
      */
     public PartBuilder part(ModelFile model) {
-        PartBuilder part = new PartBuilder(new ConfiguredModelList(new ConfiguredModel(model)));
-        this.parts.add(part);
-        return part;
+        return part().modelFile(model).addModel();
     }
 
     /**
@@ -641,6 +641,45 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                 groupJson.add("OR", innerWhen);
             }
             return groupJson;
+        }
+
+        protected boolean matchesState(MachineRenderState state) {
+            return matchesState(state, this.useOr, this.conditions, this.nestedConditionGroups);
+        }
+
+        protected boolean matchesState(MachineRenderState state, boolean useOr,
+                                       Multimap<Property<?>, Comparable<?>> conditions,
+                                       List<ConditionGroup> nestedConditionGroups) {
+            var stateValues = state.getValues();
+            boolean matched = !useOr;
+
+            if (!conditions.isEmpty()) {
+                for (var entry : stateValues.entrySet()) {
+                    Property<?> property = entry.getKey();
+                    Comparable<?> value = entry.getValue();
+                    boolean contains = conditions.containsEntry(property, value);
+
+                    if (useOr) {
+                        // any OR condition can match
+                        matched |= contains;
+                    } else {
+                        // all AND conditions must match
+                        matched &= contains;
+                    }
+                }
+            } else if (!nestedConditionGroups.isEmpty()) {
+                for (ConditionGroup group : this.nestedConditionGroups) {
+                    if (useOr) {
+                        matched |= matchesState(state, group.useOr, group.conditions, group.nestedConditionGroups);
+                    } else {
+                        matched &= matchesState(state, group.useOr, group.conditions, group.nestedConditionGroups);
+                    }
+                }
+            } else {
+                return true;
+            }
+
+            return matched;
         }
 
         public class ConditionGroup {
