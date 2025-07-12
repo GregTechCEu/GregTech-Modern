@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -189,6 +190,8 @@ public abstract class LevelRendererMixin {
             doRenderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
+            } else if (pipe instanceof CableBlockEntity cable) {
+                rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];
             } else if (state.getBlock() instanceof MaterialPipeBlock<?,?,?> materialPipe) {
                 rgb = materialPipe.material.getMaterialRGB();
             }
