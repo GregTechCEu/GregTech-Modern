@@ -27,12 +27,10 @@ public class MultiblockStructureProvider implements IProbeInfoProvider {
                              BlockState blockState, IProbeHitData iProbeHitData) {
         if (level.getBlockEntity(iProbeHitData.getPos()) instanceof MetaMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                if (controller.getMultiblockState().getController() != null) {
-                    if (!controller.getMultiblockState().getController().isFormed()) {
-                        iProbeInfo.text(CompoundText.create().error("gtceu.top.invalid_structure"));
-                    } else {
-                        iProbeInfo.text(CompoundText.create().ok("gtceu.top.valid_structure"));
-                    }
+                if (!controller.isFormed()) {
+                    iProbeInfo.text(CompoundText.create().error("gtceu.top.invalid_structure"));
+                } else {
+                    iProbeInfo.text(CompoundText.create().ok("gtceu.top.valid_structure"));
                 }
             }
         }
