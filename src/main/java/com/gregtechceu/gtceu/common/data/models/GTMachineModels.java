@@ -427,16 +427,14 @@ public class GTMachineModels {
             builder.forAllStatesModels(renderState -> {
                 DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
                 final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
-                final EnergyIOOverlay energyInEmissive = IN_OVERLAYS_EMISSIVE_FOR_AMP.get(mode.getAmpValue());
                 final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
-                final EnergyIOOverlay energyOutEmissive = OUT_OVERLAYS_EMISSIVE_FOR_AMP.get(mode.getAmpValue());
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
-                        .texture("overlay_in_io_emissive", energyInEmissive.getIoPartEmissive())
+                        .texture("overlay_in_io_emissive", energyIn.getIoPartEmissive())
                         .texture("overlay_in_io", energyIn.getIoPart())
                         .texture("overlay_in_tinted", energyIn.getTintedPart())
-                        .texture("overlay_out_io_emissive", energyOutEmissive.getIoPartEmissive())
+                        .texture("overlay_out_io_emissive", energyOut.getIoPartEmissive())
                         .texture("overlay_out_io", energyOut.getIoPart())
                         .texture("overlay_out_tinted", energyOut.getTintedPart());
                 tieredHullTextures(model, builder.getOwner().getTier());
@@ -456,19 +454,12 @@ public class GTMachineModels {
                 EnergyIOOverlay otherFace = (transformUp ? IN_OVERLAYS_FOR_AMP : OUT_OVERLAYS_FOR_AMP)
                         .get(baseAmp * 4);
 
-                EnergyIOOverlay frontFaceEmissive = (transformUp ? OUT_OVERLAYS_EMISSIVE_FOR_AMP :
-                        IN_OVERLAYS_EMISSIVE_FOR_AMP)
-                        .get(baseAmp);
-                EnergyIOOverlay otherFaceEmissive = (transformUp ? IN_OVERLAYS_EMISSIVE_FOR_AMP :
-                        OUT_OVERLAYS_EMISSIVE_FOR_AMP)
-                        .get(baseAmp * 4);
-
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                         .texture("overlay_in_io", frontFace.getIoPart())
-                        .texture("overlay_in_io_emissive", frontFaceEmissive.getIoPartEmissive())
+                        .texture("overlay_in_io_emissive", frontFace.getIoPartEmissive())
                         .texture("overlay_in_tinted", frontFace.getTintedPart())
-                        .texture("overlay_out_io_emissive", otherFaceEmissive.getIoPartEmissive())
+                        .texture("overlay_out_io_emissive", otherFace.getIoPartEmissive())
                         .texture("overlay_out_tinted", otherFace.getTintedPart());
                 tieredHullTextures(model, builder.getOwner().getTier());
                 return model;

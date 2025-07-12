@@ -60,31 +60,7 @@ public class EnergyIOOverlay {
                 map.defaultReturnValue(ENERGY_IN_1A);
             });
 
-    public static final Int2ObjectMap<EnergyIOOverlay> IN_OVERLAYS_EMISSIVE_FOR_AMP = Util.make(
-            new Int2ObjectArrayMap<>(6),
-            map -> {
-                map.put(1, ENERGY_IN_1A);
-                map.put(2, ENERGY_IN_2A);
-                map.put(4, ENERGY_IN_4A);
-                map.put(8, ENERGY_IN_8A);
-                map.put(16, ENERGY_IN_16A);
-                map.put(64, ENERGY_IN_64A);
-                map.defaultReturnValue(ENERGY_IN_1A);
-            });
-
     public static final Int2ObjectMap<EnergyIOOverlay> OUT_OVERLAYS_FOR_AMP = Util.make(new Int2ObjectArrayMap<>(6),
-            map -> {
-                map.put(1, ENERGY_OUT_1A);
-                map.put(2, ENERGY_OUT_2A);
-                map.put(4, ENERGY_OUT_4A);
-                map.put(8, ENERGY_OUT_8A);
-                map.put(16, ENERGY_OUT_16A);
-                map.put(64, ENERGY_OUT_64A);
-                map.defaultReturnValue(ENERGY_OUT_1A);
-            });
-
-    public static final Int2ObjectMap<EnergyIOOverlay> OUT_OVERLAYS_EMISSIVE_FOR_AMP = Util.make(
-            new Int2ObjectArrayMap<>(6),
             map -> {
                 map.put(1, ENERGY_OUT_1A);
                 map.put(2, ENERGY_OUT_2A);
