@@ -134,7 +134,9 @@ public class StaticFaceBakery {
             QuadTransformers.applyingLightmap(data.blockLight(), data.skyLight()).processInPlace(quad);
             QuadTransformers.applyingColor(data.color()).processInPlace(quad);
         }
-        QuadTransformers.settingEmissivity(emissivity).processInPlace(quad);
+        if (emissivity > 0) {
+            QuadTransformers.settingEmissivity(emissivity).processInPlace(quad);
+        }
 
         return quad;
     }

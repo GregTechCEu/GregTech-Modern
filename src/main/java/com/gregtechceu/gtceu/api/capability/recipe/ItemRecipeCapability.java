@@ -292,6 +292,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (invMultiplier == limit) return limit;
             maxMultiplier = Math.max(maxMultiplier, invMultiplier);
         }
+
         return maxMultiplier;
     }
 
@@ -314,24 +315,26 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         // Handle distinct groups first, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
+            Object2IntOpenCustomHashMap<ItemStack> distinctInv = new Object2IntOpenCustomHashMap<>(strat);
+
             for (IRecipeHandler<?> handler : handlers) {
-                Object2IntOpenCustomHashMap<ItemStack> distinctInv = new Object2IntOpenCustomHashMap<>(strat);
                 for (var content : handler.getContents()) {
                     if (content instanceof ItemStack stack && !stack.isEmpty()) {
                         distinctInv.addTo(stack, stack.getCount());
                     }
                 }
-                if (!distinctInv.isEmpty()) invs.add(distinctInv);
             }
+            if (!distinctInv.isEmpty()) invs.add(distinctInv);
         }
 
-        // Then handle other groups. The logic of undyed busses belonging to
+        // Then handle other groups. The logic of undyed buses belonging to
         // everything has already been taken care of by addToRecipeMap()
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
-            if (RecipeHandlerGroupDistinctness.BUS_DISTINCT == handlerListEntry.getKey()) continue;
+            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
+
+            Object2IntOpenCustomHashMap<ItemStack> inventory = new Object2IntOpenCustomHashMap<>(strat);
             for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-                Object2IntOpenCustomHashMap<ItemStack> inventory = new Object2IntOpenCustomHashMap<>(strat);
                 for (var handler : handlers) {
                     for (var content : handler.getContents()) {
                         if (content instanceof ItemStack stack && !stack.isEmpty()) {
@@ -339,8 +342,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         }
                     }
                 }
-                if (!inventory.isEmpty()) invs.add(inventory);
             }
+            if (!inventory.isEmpty()) invs.add(inventory);
         }
 
         return invs;

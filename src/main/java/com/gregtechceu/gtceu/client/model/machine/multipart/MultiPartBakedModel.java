@@ -96,7 +96,7 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
         if (blockState == null) blockState = definition.defaultBlockState();
 
         BitSet bitset = getSelectors(renderState);
-        List<BakedQuad> quads = new ArrayList<>();
+        List<BakedQuad> quads = new LinkedList<>();
         long k = random.nextLong();
 
         for (int j = 0; j < bitset.length(); ++j) {

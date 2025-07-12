@@ -101,8 +101,8 @@ public class RotorHolderPartMachine extends TieredPartMachine
         super.onLoad();
         if (!isRemote()) {
             updateRotorSubscription();
+            rotorInvSubs = this.inventory.addChangedListener(this::onRotorInventoryChanged);
         }
-        rotorInvSubs = this.inventory.addChangedListener(this::onRotorInventoryChanged);
     }
 
     @Override
@@ -179,7 +179,6 @@ public class RotorHolderPartMachine extends TieredPartMachine
 
     public void setRotorSpeed(int rotorSpeed) {
         if ((this.rotorSpeed > 0 && rotorSpeed <= 0) || (this.rotorSpeed <= 0 && rotorSpeed > 0)) {
-            scheduleRenderUpdate();
             setRenderState(getRenderState().setValue(ROTOR_SPINNING_PROPERTY, rotorSpeed > 0));
         }
         this.rotorSpeed = rotorSpeed;
