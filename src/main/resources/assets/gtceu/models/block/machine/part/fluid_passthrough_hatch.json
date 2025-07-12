@@ -32,6 +32,8 @@
         {
             "from": [ -0.02, -0.02, -0.02 ],
             "to":   [ 16.02, 16.02, 16.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south" }
