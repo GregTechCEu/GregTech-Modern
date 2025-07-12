@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -57,7 +58,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @Override
-    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         super.generateAssetJsons(generator);
         for (int tier : this.tiers) {
             MachineBuilder<?> builder = this.builders[tier];

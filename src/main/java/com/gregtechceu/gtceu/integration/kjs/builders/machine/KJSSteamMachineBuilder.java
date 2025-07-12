@@ -14,19 +14,23 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
 public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Setter
-    public volatile boolean hasHighPressure = true;
+    public volatile boolean hasLowPressure = true, hasHighPressure = true;
     @Setter
     public volatile SteamCreationFunction machine = SimpleSteamMachine::new;
     @Setter
     public volatile SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
-    private volatile MachineDefinition hp = null;
+
+    private volatile MachineBuilder<?> lowPressureBuilder = null, highPressureBuilder = null;
+    private volatile MachineDefinition hpValue = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -34,19 +38,21 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Override
     public MachineDefinition register() {
-        MachineBuilder<?> lowPressureBuilder = GTRegistration.REGISTRATE.machine(
-                String.format("lp_%s", this.id.getPath()),
-                holder -> machine.create(holder, false));
-        lowPressureBuilder.langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
-                .tier(0)
-                .recipeModifier(SimpleSteamMachine::recipeModifier)
-                .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
-                .workableSteamHullModel(false, id.withPrefix("block/machines/"));
-        definition.apply(false, lowPressureBuilder);
-        var lowPressure = lowPressureBuilder.register();
+        if (hasLowPressure) {
+            this.lowPressureBuilder = GTRegistration.REGISTRATE.machine(
+                    String.format("lp_%s", this.id.getPath()),
+                    holder -> machine.create(holder, false));
+            lowPressureBuilder.langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
+                    .tier(0)
+                    .recipeModifier(SimpleSteamMachine::recipeModifier)
+                    .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
+                    .workableSteamHullModel(false, id.withPrefix("block/machines/"));
+            definition.apply(false, lowPressureBuilder);
+            value = lowPressureBuilder.register();
+        }
 
         if (hasHighPressure) {
-            MachineBuilder<?> highPressureBuilder = GTRegistration.REGISTRATE.machine(
+            this.highPressureBuilder = GTRegistration.REGISTRATE.machine(
                     String.format("hp_%s", this.id.getPath()),
                     holder -> machine.create(holder, true));
             highPressureBuilder.langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -55,19 +61,37 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
                     .modelProperty(SimpleSteamMachine.VENT_DIRECTION_PROPERTY, RelativeDirection.BACK)
                     .workableSteamHullModel(true, id.withPrefix("block/machines/"));
             definition.apply(true, highPressureBuilder);
-            hp = highPressureBuilder.register();
+            hpValue = highPressureBuilder.register();
         }
 
-        return value = lowPressure;
+        return value != null ? value : hpValue;
+    }
+
+    @Override
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+        super.generateAssetJsons(generator);
+        if (this.lowPressureBuilder != null) {
+            this.lowPressureBuilder.generateAssetJsons(generator);
+        }
+        if (this.highPressureBuilder != null) {
+            this.highPressureBuilder.generateAssetJsons(generator);
+        }
     }
 
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        if (hp != null) {
-            lang.add(GTCEu.MOD_ID, hp.getDescriptionId(), hp.getLangValue());
+        if (value != null) {
+            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
         }
+        if (hpValue != null) {
+            lang.add(GTCEu.MOD_ID, hpValue.getDescriptionId(), hpValue.getLangValue());
+        }
+    }
+
+    @Override
+    public MachineDefinition get() {
+        return value != null ? value : hpValue;
     }
 
     @FunctionalInterface
