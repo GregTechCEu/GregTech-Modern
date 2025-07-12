@@ -70,7 +70,7 @@ public class RecipeLogicInfoProvider extends CapabilityInfoProvider<RecipeLogic>
                             .append(GTValues.VNF[GTUtil.getTierByVoltage(EUt.voltage())])
                             .append(Component.translatable("gtceu.universal.padded_parentheses",
                                     (Component.translatable("gtceu.recipe.eu.total",
-                                            FormattingUtil.formatNumbers(EUt))))
+                                            formatted)))
                                     .withStyle(ChatFormatting.WHITE));
                 }
 
