@@ -2123,8 +2123,8 @@
     "gtceu.recipe.cleanroom_sterile.display_name": "Стерильная чистая комната",
     "gtceu.recipe.dimensions": "Измерение: %s",
     "gtceu.recipe.duration": "Длительность: %s сек",
-    "gtceu.recipe.eu": "Потребление: %s EU/т",
-    "gtceu.recipe.eu_inverted": "Производство: %s EU/т",
+    "gtceu.recipe.eu": "Потребление: %s A @ %s",
+    "gtceu.recipe.eu_inverted": "Производство: %s A @ %s",
     "gtceu.recipe.eu_to_start": "EU для запуска: %sEU%s",
     "gtceu.recipe.explosive": "Взрывчатка: %s",
     "gtceu.recipe.not_consumed": "Не расходуется",
@@ -5578,5 +5578,8 @@
     "gtceu.gui.content.fluid_range": "%s-%sмВ",
     "gtceu.machine.batch_disabled": "Группирование выключено",
     "gtceu.machine.batch_enabled": "Группирование включено",
-    "gtceu.multiblock.batch_enabled": "Группирование: Включено (%sx)"
+    "gtceu.multiblock.batch_enabled": "Группирование: Включено (%sx)",
+    "gtceu.recipe.eu.total": "%s EU/т",
+    "gtceu.recipe.total_eu": "Общее исп.: %s EU/т",
+    "gtceu.recipe.voltage": "Исп.: %s A @ %s"
 }
