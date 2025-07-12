@@ -176,8 +176,8 @@ public class ItemMaterialData {
         for (var iter = UNRESOLVED_ITEM_MATERIAL_INFO.entrySet().iterator(); iter.hasNext();) {
             var entry = iter.next();
             var stack = entry.getKey();
-            var existingMaterialInfo = ITEM_MATERIAL_INFO.get(stack.getItem());
-            recurseFindMaterialInfo(existingMaterialInfo, stack);
+            // var existingMaterialInfo = ITEM_MATERIAL_INFO.get(stack.getItem());
+            var existingMaterialInfo = recurseFindMaterialInfo(ITEM_MATERIAL_INFO.get(stack.getItem()), stack);
             if (existingMaterialInfo != null) {
                 RecyclingRecipes.registerRecyclingRecipes(provider, stack.copyWithCount(1),
                         existingMaterialInfo.getMaterials(), false, null);
@@ -186,12 +186,12 @@ public class ItemMaterialData {
         }
     }
 
-    private static void recurseFindMaterialInfo(ItemMaterialInfo info, ItemStack stack) {
+    private static ItemMaterialInfo recurseFindMaterialInfo(ItemMaterialInfo info, ItemStack stack) {
         // grab material info from each input
         for (var input : UNRESOLVED_ITEM_MATERIAL_INFO.get(stack)) {
             // recurse if its nested inputs, not yet resolved
             if (UNRESOLVED_ITEM_MATERIAL_INFO.containsKey(input)) {
-                recurseFindMaterialInfo(info, input);
+                info = recurseFindMaterialInfo(info, input);
             } else {
                 // add the info from an item that is resolved (or not in the map to begin with)
                 var singularMatInfo = getMaterialInfo(input.getItem());
@@ -211,5 +211,6 @@ public class ItemMaterialData {
                 }
             }
         }
+        return info;
     }
 }
