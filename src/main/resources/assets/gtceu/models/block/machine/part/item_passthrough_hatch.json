@@ -21,16 +21,16 @@
             }
         },
         {
-            "from": [ -0.002,  0, -0.002 ],
-            "to":   [ 16.002, 16, 16.002 ],
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south" }
             }
         },
         {
-            "from": [ -0.004,  0, -0.004 ],
-            "to":   [ 16.004, 16, 16.004 ],
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_input",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_output", "cullface": "south" }

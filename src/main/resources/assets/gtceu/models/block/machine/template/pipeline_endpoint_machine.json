@@ -23,8 +23,8 @@
       }
     },
     {
-      "from": [ -0.002, -0.002, -0.002 ],
-      "to":   [ 16.002, 16.002, 16.002 ],
+      "from": [ -0.01, -0.01, -0.01 ],
+      "to":   [ 16.01, 16.01, 16.01 ],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#pipe_in",  "rotation": 0,   "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#pipe_out", "rotation": 0,   "cullface": "south" },
@@ -35,23 +35,31 @@
       }
     },
     {
-      "from": [ -0.004, -0.004, -0.004 ],
-      "to":   [ 16.004, 16.004, 16.004 ],
-      "forge_data": { "block_light": 15, "sky_light": 15 },
-      "shade": false,
+      "from": [ -0.02, -0.02, -0.02 ],
+      "to":   [ 16.02, 16.02, 16.02 ],
       "faces": {
-        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 0,   "cullface": "up",    "tintindex": -101 },
-        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",  "tintindex": -101 },
-        "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101 },
-        "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101 }
-      }
-    },
-    {
-      "from": [ -0.004, -0.004, -0.004 ],
-      "to":   [ 16.004, 16.004, 16.004 ],
-      "faces": {
-        "north": { "texture": "#hatch_in",  "cullface": "north" },
-        "south": { "texture": "#hatch_out", "cullface": "south" }
+        "up": {
+          "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 0, "cullface": "up",
+          "tintindex": -101, "forge_data": { "block_light": 15, "sky_light": 15 }, "shade": false
+        },
+        "down": {
+          "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 180, "cullface": "down",
+          "tintindex": -101, "forge_data": { "block_light": 15, "sky_light": 15 }, "shade": false
+        },
+        "west": {
+          "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 90, "cullface": "west",
+          "tintindex": -101, "forge_data": { "block_light": 15, "sky_light": 15 }, "shade": false
+        },
+        "east": {
+          "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "rotation": 270, "cullface": "east",
+          "tintindex": -101, "forge_data": { "block_light": 15, "sky_light": 15 }, "shade": false
+        },
+        "north": {
+          "texture": "#hatch_in",  "cullface": "north"
+        },
+        "south": {
+          "texture": "#hatch_out",  "cullface": "south"
+        }
       }
     }
   ]
