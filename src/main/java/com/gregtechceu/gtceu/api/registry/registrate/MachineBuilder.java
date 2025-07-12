@@ -599,7 +599,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                     .color(() -> () -> IMachineBlock::colorTinted)
                     .initialProperties(() -> Blocks.DISPENSER)
                     .properties(BlockBehaviour.Properties::noLootTable)
-                    .addLayer(() -> RenderType::cutoutMipped)
+                    .addLayer(() -> RenderType::cutout)
                     .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
                     .properties(builder.blockProp)
                     .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
