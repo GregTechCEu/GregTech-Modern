@@ -28,8 +28,8 @@
             }
         },
         {
-            "from": [ -0.02, -0.02, -0.02 ],
-            "to":   [ 16.02, 16.02, 16.02 ],
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "south" },
@@ -40,8 +40,8 @@
             }
         },
         {
-            "from": [ -0.08, -0.08, -0.08 ],
-            "to":   [ 16.08, 16.08, 16.08 ],
+            "from": [ -0.04, -0.04, -0.04 ],
+            "to":   [ 16.04, 16.04, 16.04 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -54,8 +54,8 @@
             }
         },
         {
-            "from": [ -0.06, -0.06, -0.06 ],
-            "to":   [ 16.06, 16.06, 16.06 ],
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_tinted",  "cullface": "north", "tintindex": 2 },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 3 },
