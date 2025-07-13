@@ -1,5 +1,41 @@
 # ChangeLog
 
+## Version [v7.0.0](https://github.com/GregTechCEu/GregTech-Modern/compare/57a22b718f9c3702667c56c3263e8ec1196c5680...v7.0.0-1.21.1)
+### Added
+
+- Readd KJS vein events & rework registration so other mods can hopefully launch. by @screret in [#3136](https://github.com/GregTechCEu/GregTech-Modern/pull/3136)
+- Merge 1.20 based on #3258 by @screret in [#3266](https://github.com/GregTechCEu/GregTech-Modern/pull/3266)
+- merge 1.20 on #3378 by @screret in [#3377](https://github.com/GregTechCEu/GregTech-Modern/pull/3377)
+- merge 1.20 on 3406 by @screret in [#3408](https://github.com/GregTechCEu/GregTech-Modern/pull/3408)
+
+### Fixed
+
+- update ldlib on 1.21 by @screret in [#2043](https://github.com/GregTechCEu/GregTech-Modern/pull/2043)
+- Re-fix oregen because I forgor 💀  by @screret in [#3100](https://github.com/GregTechCEu/GregTech-Modern/pull/3100)
+- fix searching in creative causing a crash by @screret in [#3113](https://github.com/GregTechCEu/GregTech-Modern/pull/3113)
+- Fix Minecraft blaming GT if neoforge encountered a mod loading error before registration events. by @screret in [#3131](https://github.com/GregTechCEu/GregTech-Modern/pull/3131)
+- Fix fluid stack GUI encoding & machine item saving by @screret in [#3132](https://github.com/GregTechCEu/GregTech-Modern/pull/3132)
+- Fix recipe viewer displays by @screret in [#3134](https://github.com/GregTechCEu/GregTech-Modern/pull/3134)
+- Readd KJS vein events & rework registration so other mods can hopefully launch. by @screret in [#3136](https://github.com/GregTechCEu/GregTech-Modern/pull/3136)
+- fix tools' enchantments being merged completely incorrectly by @screret in [#3173](https://github.com/GregTechCEu/GregTech-Modern/pull/3173)
+- Merge 1.20 based on #3258 by @screret in [#3266](https://github.com/GregTechCEu/GregTech-Modern/pull/3266)
+- merge 1.20 on #3378 by @screret in [#3377](https://github.com/GregTechCEu/GregTech-Modern/pull/3377)
+- merge 1.20 on 3406 by @screret in [#3408](https://github.com/GregTechCEu/GregTech-Modern/pull/3408)
+
+### Changed
+
+- update KJS to latest dev build by @screret in [#2153](https://github.com/GregTechCEu/GregTech-Modern/pull/2153)
+- Fix fluid stack GUI encoding & machine item saving by @screret in [#3132](https://github.com/GregTechCEu/GregTech-Modern/pull/3132)
+- Readd KJS vein events & rework registration so other mods can hopefully launch. by @screret in [#3136](https://github.com/GregTechCEu/GregTech-Modern/pull/3136)
+- Update zh_cn.json (1.21) by @iouter in [#3144](https://github.com/GregTechCEu/GregTech-Modern/pull/3144)
+- Update zh_tw.json (1.21) by @IamNotBrianZ in [#3167](https://github.com/GregTechCEu/GregTech-Modern/pull/3167)
+- Update zh_cn.json 1.21 by @iouter in [#3243](https://github.com/GregTechCEu/GregTech-Modern/pull/3243)
+- Merge 1.20 based on #3258 by @screret in [#3266](https://github.com/GregTechCEu/GregTech-Modern/pull/3266)
+- merge 1.20 on #3378 by @screret in [#3377](https://github.com/GregTechCEu/GregTech-Modern/pull/3377)
+- merge 1.20 on 3406 by @screret in [#3408](https://github.com/GregTechCEu/GregTech-Modern/pull/3408)
+- Update zh_cn.json 1.21 by @iouter in [#3347](https://github.com/GregTechCEu/GregTech-Modern/pull/3347)
+
+ 
 ## Version [v1.6.4](https://github.com/GregTechCEu/GregTech-Modern/compare/v1.6.3-1.20.1...v1.6.4-1.20.1)
 ### Added
 
