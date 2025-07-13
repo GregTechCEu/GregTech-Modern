@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
+import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 
 import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
@@ -89,8 +90,18 @@ public class ModelUtils {
     @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        // Unwrap all machine models from the LDLib CTM models so we don't need to be as aggressive with mixins.
-        // Also, the caching they have stops our models from updating properly.
+        for (var listener : EVENT_LISTENERS) {
+            Class<?> eventClass = listener.eventClass();
+            if (eventClass != null && eventClass.isInstance(event)) {
+                ((AssetEventListener<ModelEvent.ModifyBakingResult>) listener).accept(event);
+            }
+        }
+
+        // don't process the CTM model unwrapping here if modernfix dynamic resources is enabled
+        if (GTCEu.Mods.isModernFixLoaded() && GTModernFixIntegration.isDynamicResourcesEnabled()) return;
+
+        // Unwrap all machine models from LDLib CTM models so we don't need to be as aggressive with mixins
+        // Also, the caching they have stops our models from updating properly
         for (var entry : event.getModels().entrySet()) {
             BakedModel model = entry.getValue();
             if (!(model instanceof CustomBakedModel ctmModel)) {
@@ -98,13 +109,6 @@ public class ModelUtils {
             }
             if (ctmModel.getParent() instanceof MachineModel machine) {
                 entry.setValue(machine);
-            }
-        }
-
-        for (var listener : EVENT_LISTENERS) {
-            Class<?> eventClass = listener.eventClass();
-            if (eventClass != null && eventClass.isInstance(event)) {
-                ((AssetEventListener<ModelEvent.ModifyBakingResult>) listener).accept(event);
             }
         }
     }

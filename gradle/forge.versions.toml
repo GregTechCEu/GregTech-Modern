@@ -27,6 +27,7 @@ ccTweaked = "1.114.3"
 jade = "11.6.3"
 embeddium = "0.3.31+mc1.20.1"
 oculus = "1.20.1-1.8.0"
+modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
 
 ## cursemaven ##
 worldStripper = "4578579"
@@ -81,6 +82,7 @@ ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
 embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
+modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }

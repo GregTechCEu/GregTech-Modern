@@ -119,6 +119,7 @@ public class GTValues {
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
             MODID_SHIMMER = "shimmer",
+            MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
