@@ -135,6 +135,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
         return copied;
     }
 
