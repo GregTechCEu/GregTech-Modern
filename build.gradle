@@ -96,7 +96,7 @@ tasks.withType(JavaCompile).configureEach {
 
 machete {
     // disable machete locally for faster builds
-    enabled = isCI
+    enabled = false
     // Only optimize reobf jars
     ignoredTasks.addAll("jar", "slimJar")
     additionalTasks.addAll("reobfJar", "reobfSlimJar")
