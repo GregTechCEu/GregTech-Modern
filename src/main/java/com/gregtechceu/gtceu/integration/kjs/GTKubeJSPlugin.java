@@ -107,9 +107,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
