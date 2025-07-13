@@ -13,9 +13,11 @@ import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -43,6 +45,12 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     public KJSWrappingMultiblockBuilder definition(KJSTieredMultiblockBuilder.DefinitionFunction definition) {
         tieredBuilder.definition(definition);
         return this;
+    }
+
+    @Override
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+        super.generateAssetJsons(generator);
+        tieredBuilder.generateAssetJsons(generator);
     }
 
     @Override

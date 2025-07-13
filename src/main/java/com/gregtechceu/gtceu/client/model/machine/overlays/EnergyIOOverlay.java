@@ -12,30 +12,42 @@ import lombok.Getter;
 public class EnergyIOOverlay {
 
     public static final EnergyIOOverlay ENERGY_IN_1A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_1a_tinted", "block/overlay/machine/overlay_energy_1a_in");
+            "block/overlay/machine/overlay_energy_1a_tinted", "block/overlay/machine/overlay_energy_1a_in",
+            "block/overlay/machine/overlay_energy_1a_in_emissive");
     public static final EnergyIOOverlay ENERGY_IN_2A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_2a_tinted", "block/overlay/machine/overlay_energy_2a_in");
+            "block/overlay/machine/overlay_energy_2a_tinted", "block/overlay/machine/overlay_energy_2a_in",
+            "block/overlay/machine/overlay_energy_2a_in_emissive");
     public static final EnergyIOOverlay ENERGY_IN_4A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_4a_tinted", "block/overlay/machine/overlay_energy_4a_in");
+            "block/overlay/machine/overlay_energy_4a_tinted", "block/overlay/machine/overlay_energy_4a_in",
+            "block/overlay/machine/overlay_energy_4a_in_emissive");
     public static final EnergyIOOverlay ENERGY_IN_8A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_8a_tinted", "block/overlay/machine/overlay_energy_8a_in");
+            "block/overlay/machine/overlay_energy_8a_tinted", "block/overlay/machine/overlay_energy_8a_in",
+            "block/overlay/machine/overlay_energy_8a_in_emissive");
     public static final EnergyIOOverlay ENERGY_IN_16A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_16a_tinted", "block/overlay/machine/overlay_energy_16a_in");
+            "block/overlay/machine/overlay_energy_16a_tinted", "block/overlay/machine/overlay_energy_16a_in",
+            "block/overlay/machine/overlay_energy_16a_in_emissive");
     public static final EnergyIOOverlay ENERGY_IN_64A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_64a_tinted", "block/overlay/machine/overlay_energy_64a_in");
+            "block/overlay/machine/overlay_energy_64a_tinted", "block/overlay/machine/overlay_energy_64a_in",
+            "block/overlay/machine/overlay_energy_64a_in_emissive");
 
     public static final EnergyIOOverlay ENERGY_OUT_1A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_1a_tinted", "block/overlay/machine/overlay_energy_1a_out");
+            "block/overlay/machine/overlay_energy_1a_tinted", "block/overlay/machine/overlay_energy_1a_out",
+            "block/overlay/machine/overlay_energy_1a_out_emissive");
     public static final EnergyIOOverlay ENERGY_OUT_2A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_2a_tinted", "block/overlay/machine/overlay_energy_2a_out");
+            "block/overlay/machine/overlay_energy_2a_tinted", "block/overlay/machine/overlay_energy_2a_out",
+            "block/overlay/machine/overlay_energy_2a_out_emissive");
     public static final EnergyIOOverlay ENERGY_OUT_4A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_4a_tinted", "block/overlay/machine/overlay_energy_4a_out");
+            "block/overlay/machine/overlay_energy_4a_tinted", "block/overlay/machine/overlay_energy_4a_out",
+            "block/overlay/machine/overlay_energy_4a_out_emissive");
     public static final EnergyIOOverlay ENERGY_OUT_8A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_8a_tinted", "block/overlay/machine/overlay_energy_8a_out");
+            "block/overlay/machine/overlay_energy_8a_tinted", "block/overlay/machine/overlay_energy_8a_out",
+            "block/overlay/machine/overlay_energy_8a_out_emissive");
     public static final EnergyIOOverlay ENERGY_OUT_16A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_16a_tinted", "block/overlay/machine/overlay_energy_16a_out");
+            "block/overlay/machine/overlay_energy_16a_tinted", "block/overlay/machine/overlay_energy_16a_out",
+            "block/overlay/machine/overlay_energy_16a_out_emissive");
     public static final EnergyIOOverlay ENERGY_OUT_64A = new EnergyIOOverlay(
-            "block/overlay/machine/overlay_energy_64a_tinted", "block/overlay/machine/overlay_energy_64a_out");
+            "block/overlay/machine/overlay_energy_64a_tinted", "block/overlay/machine/overlay_energy_64a_out",
+            "block/overlay/machine/overlay_energy_64a_out_emissive");
 
     public static final Int2ObjectMap<EnergyIOOverlay> IN_OVERLAYS_FOR_AMP = Util.make(new Int2ObjectArrayMap<>(6),
             map -> {
@@ -63,9 +75,12 @@ public class EnergyIOOverlay {
     private final ResourceLocation tintedPart;
     @Getter
     private final ResourceLocation ioPart;
+    @Getter
+    private final ResourceLocation ioPartEmissive;
 
-    public EnergyIOOverlay(String tintedPart, String ioPart) {
+    public EnergyIOOverlay(String tintedPart, String ioPart, String ioPartEmissive) {
         this.tintedPart = GTCEu.id(tintedPart);
         this.ioPart = GTCEu.id(ioPart);
+        this.ioPartEmissive = GTCEu.id(ioPartEmissive);
     }
 }

@@ -737,7 +737,9 @@ public class GTBlocks {
             .block("rubber_leaves", LeavesBlock::new)
             .initialProperties(() -> Blocks.OAK_LEAVES)
             .lang("Rubber Leaves")
-            .exBlockstate(GTModels.createModelBlockState(GTCEu.id("block/rubber_leaves")))
+            .blockstate((ctx, prov) -> {
+                prov.simpleBlock(ctx.get(), prov.models().leaves(ctx.getName(), prov.blockTexture(ctx.get())));
+            })
             .loot((table, block) -> table.add(block,
                     table.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
             .tag(BlockTags.LEAVES, BlockTags.MINEABLE_WITH_HOE)

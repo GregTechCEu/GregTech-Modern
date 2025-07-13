@@ -1,7 +1,7 @@
 {
-    "parent": "gtceu:block/overlay/2_layer/front_emissive",
+    "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
     "textures": {
-        "overlay": "gtceu:block/overlay/machine/overlay_pipe_in",
+        "overlay": "gtceu:block/overlay/machine/overlay_pipe",
         "overlay_emissive": "gtceu:block/overlay/machine/overlay_dual_hatch"
     }
 }

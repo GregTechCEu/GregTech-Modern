@@ -10,6 +10,8 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -27,6 +29,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RuntimeExistingFileHelper extends ExistingFileHelper {
 
     public static final RuntimeExistingFileHelper INSTANCE = new RuntimeExistingFileHelper();
+
+    protected final Multimap<PackType, ResourceLocation> generated = HashMultimap.create();
 
     protected RuntimeExistingFileHelper() {
         super(Collections.emptySet(), Collections.emptySet(), false, null, null);
@@ -51,7 +55,7 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
 
     @Override
     public boolean exists(ResourceLocation loc, PackType packType) {
-        return true;
+        return generated.get(packType).contains(loc) || getManager(packType).getResource(loc).isPresent();
     }
 
     @Override
@@ -60,7 +64,9 @@ public class RuntimeExistingFileHelper extends ExistingFileHelper {
     }
 
     @Override
-    public void trackGenerated(ResourceLocation loc, PackType packType, String suffix, String prefix) {}
+    public void trackGenerated(ResourceLocation loc, PackType packType, String suffix, String prefix) {
+        this.generated.put(packType, getLocation(loc, prefix, suffix));
+    }
 
     @Override
     public Resource getResource(ResourceLocation loc, PackType packType,

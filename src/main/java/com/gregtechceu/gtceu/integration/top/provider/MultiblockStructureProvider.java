@@ -15,7 +15,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
-public class MulitblockStructureProvider implements IProbeInfoProvider {
+public class MultiblockStructureProvider implements IProbeInfoProvider {
 
     @Override
     public ResourceLocation getID() {
@@ -27,7 +27,7 @@ public class MulitblockStructureProvider implements IProbeInfoProvider {
                              BlockState blockState, IProbeHitData iProbeHitData) {
         if (level.getBlockEntity(iProbeHitData.getPos()) instanceof MetaMachineBlockEntity blockEntity) {
             if (blockEntity.getMetaMachine() instanceof IMultiController controller) {
-                if (controller.getMultiblockState().hasError()) {
+                if (!controller.isFormed()) {
                     iProbeInfo.text(CompoundText.create().error("gtceu.top.invalid_structure"));
                 } else {
                     iProbeInfo.text(CompoundText.create().ok("gtceu.top.valid_structure"));

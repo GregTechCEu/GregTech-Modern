@@ -173,29 +173,43 @@ public class ItemMaterialData {
 
     @ApiStatus.Internal
     public static void resolveItemMaterialInfos(Consumer<FinishedRecipe> provider) {
-        for (var entry : UNRESOLVED_ITEM_MATERIAL_INFO.entrySet()) {
-            List<MaterialStack> stacks = new ArrayList<>();
+        for (var iter = UNRESOLVED_ITEM_MATERIAL_INFO.entrySet().iterator(); iter.hasNext();) {
+            var entry = iter.next();
             var stack = entry.getKey();
-            int outputCount = stack.getCount();
-            for (var input : entry.getValue()) {
-                var matStack = getMaterialInfo(input.getItem());
+            var existingMaterialInfo = recurseFindMaterialInfo(ITEM_MATERIAL_INFO.get(stack.getItem()), stack);
+            if (existingMaterialInfo != null) {
+                RecyclingRecipes.registerRecyclingRecipes(provider, stack.copyWithCount(1),
+                        existingMaterialInfo.getMaterials(), false, null);
+            }
+            iter.remove();
+        }
+    }
+
+    private static ItemMaterialInfo recurseFindMaterialInfo(ItemMaterialInfo info, ItemStack stack) {
+        // grab material info from each input
+        for (var input : UNRESOLVED_ITEM_MATERIAL_INFO.get(stack)) {
+            // recurse if its nested inputs, not yet resolved
+            if (UNRESOLVED_ITEM_MATERIAL_INFO.containsKey(input)) {
+                info = recurseFindMaterialInfo(info, input);
+            } else {
+                // add the info from an item that is resolved (or not in the map to begin with)
+                var singularMatInfo = getMaterialInfo(input.getItem());
                 int inputCount = input.getCount();
-                if (matStack != null) {
-                    matStack.getMaterials()
-                            .forEach(ms -> stacks.add(ms.multiply(inputCount).divide(outputCount)));
+                int outputCount = stack.getCount();
+                if (singularMatInfo != null) { // if that material info exists
+                    List<MaterialStack> stackList = new ArrayList<>();
+                    for (var matStack : singularMatInfo.getMaterials()) {
+                        stackList.add(matStack.multiply(inputCount).divide(outputCount));
+                    }
+                    if (info == null) { // if the info isn't set initialize it
+                        info = new ItemMaterialInfo(stackList);
+                        ITEM_MATERIAL_INFO.put(stack.getItem(), info);
+                    } else { // otherwise, add to it
+                        info.addMaterialStacks(stackList);
+                    }
                 }
             }
-            if (stacks.isEmpty()) continue;
-            var matInfo = ITEM_MATERIAL_INFO.get(stack.getItem());
-            if (matInfo == null) {
-                matInfo = new ItemMaterialInfo(stacks);
-                ITEM_MATERIAL_INFO.put(stack.getItem(), matInfo);
-            } else {
-                matInfo.addMaterialStacks(stacks);
-            }
-            RecyclingRecipes.registerRecyclingRecipes(provider, entry.getKey().copyWithCount(1),
-                    matInfo.getMaterials(), false, null);
         }
-        UNRESOLVED_ITEM_MATERIAL_INFO.clear();
+        return info;
     }
 }

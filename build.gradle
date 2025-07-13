@@ -27,6 +27,11 @@ sourceSets {
         srcDir 'src/generated/resources'
     }
 
+    client {
+        compileClasspath += main.output
+        runtimeClasspath += main.output + main.runtimeClasspath
+    }
+
     test {
         kotlin {
             srcDirs += 'src/test/java'
@@ -39,10 +44,39 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output + main.runtimeClasspath
     }
+
+    clientExtra {
+        compileClasspath += client.output + extra.compileClasspath
+        runtimeClasspath += client.output + client.runtimeClasspath + extra.runtimeClasspath
+    }
 }
 
+configurations {
+    // set these as unresolvable so we don't accidentally force all dependents to use them with us
+    clientRuntimeOnly.canBeResolved = false
+    extraRuntimeOnly.canBeResolved = false
+    clientExtraRuntimeOnly.canBeResolved = false
+
+    runtimeClasspath.extendsFrom localRuntime
+    extraRuntimeClasspath.extendsFrom extraLocalRuntime
+    clientRuntimeClasspath.extendsFrom clientLocalRuntime
+    extraClientRuntimeClasspath.extendsFrom clientExtraLocalRuntime
+}
+
+afterEvaluate {
+    configurations {
+        // same as above but for the modRuntimeOnly configurations
+        modClientRuntimeOnly.canBeResolved = false
+        modExtraRuntimeOnly.canBeResolved = false
+        modClientExtraRuntimeOnly.canBeResolved = false
+    }
+}
 obfuscation {
-    createRemappingConfiguration(configurations.extraRuntimeOnly)
+    createRemappingConfiguration(configurations.localRuntime)
+    createRemappingConfiguration(configurations.clientLocalRuntime)
+
+    createRemappingConfiguration(configurations.extraLocalRuntime)
+    createRemappingConfiguration(configurations.clientExtraLocalRuntime)
 }
 
 apply from: "$rootDir/gradle/scripts/jars.gradle"

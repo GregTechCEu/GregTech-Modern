@@ -43,9 +43,6 @@ dependencies {
     modCompileOnly(forge.embeddium)
     modCompileOnly(forge.oculus)
 
-    // JAVD
-    modCompileOnly(forge.javd)
-
     // Teams
     modCompileOnly(forge.ftblibrary)
     modCompileOnly(forge.ftbteams)
@@ -69,43 +66,47 @@ dependencies {
     modCompileOnly(forge.cc.tweaked.forge.api)
 
     // Standard runtime mods //
-    modRuntimeOnly(forge.jade)
-    modRuntimeOnly(forge.ae2)
-    modRuntimeOnly(forge.spark)
+    modLocalRuntime(forge.jade)
+    modLocalRuntime(forge.ae2)
+    modLocalRuntime(forge.spark)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
-    modRuntimeOnly(forge.emi)
-//    modRuntimeOnly(forge.jei.forge.impl)
-//    modRuntimeOnly(forge.bundles.rei.runtime)
+    modLocalRuntime(forge.emi)
+//    modLocalRuntime(forge.jei.forge.impl)
+//    modLocalRuntime(forge.bundles.rei.runtime)
+
+    // Client-only runtime mods //
+    modClientLocalRuntime(forge.embeddium)
+    modClientLocalRuntime(forge.oculus)
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
     //////////////////////////////////////////////////////
-    modExtraRuntimeOnly(forge.javd)
-    modExtraRuntimeOnly(forge.trenzalore)
-    modExtraRuntimeOnly(forge.curios)
-//    modExtraRuntimeOnly(forge.worldstripper)
-    modExtraRuntimeOnly(forge.cc.tweaked.forge.impl)
+    modExtraLocalRuntime(forge.javd)
+    modExtraLocalRuntime(forge.trenzalore)
+    modExtraLocalRuntime(forge.curios)
+//    modExtraLocalRuntime(forge.worldstripper)
+    modExtraLocalRuntime(forge.cc.tweaked.forge.impl)
 
-    modExtraRuntimeOnly(forge.bundles.kjs)
+    modExtraLocalRuntime(forge.bundles.kjs)
 
-    modExtraRuntimeOnly(forge.ftblibrary)
-    modExtraRuntimeOnly(forge.ftbteams)
-    modExtraRuntimeOnly(forge.ftbquests)
+    modExtraLocalRuntime(forge.ftblibrary)
+    modExtraLocalRuntime(forge.ftbteams)
+    modExtraLocalRuntime(forge.ftbquests)
 
-    modExtraRuntimeOnly(forge.heracles)
-    modExtraRuntimeOnly(forge.resourcefullib)
+    modExtraLocalRuntime(forge.heracles)
+    modExtraLocalRuntime(forge.resourcefullib)
 
-//    modExtraRuntimeOnly(forge.xaerosminimap)
-//    modExtraRuntimeOnly(forge.xaerosworldmap)
-//    modExtraRuntimeOnly(forge.journeymap.forge)
-//    modExtraRuntimeOnly(forge.ftbchunks)
+//    modExtraLocalRuntime(forge.xaerosminimap)
+//    modExtraLocalRuntime(forge.xaerosworldmap)
+//    modExtraLocalRuntime(forge.journeymap.forge)
+//    modExtraLocalRuntime(forge.ftbchunks)
 
-    modExtraRuntimeOnly(forge.gamestages)
-    modExtraRuntimeOnly(forge.bookshelf)
+    modExtraLocalRuntime(forge.gamestages)
+    modExtraLocalRuntime(forge.bookshelf)
 
-    modExtraRuntimeOnly(forge.kotlinforforge)
-    modExtraRuntimeOnly(forge.observable)
+    modExtraLocalRuntime(forge.kotlinforforge)
+    modExtraLocalRuntime(forge.observable)
     //////////////////////////
 
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

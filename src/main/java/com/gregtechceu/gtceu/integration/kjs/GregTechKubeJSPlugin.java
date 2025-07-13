@@ -68,6 +68,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyU
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -206,23 +207,28 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
     }
 
-    public static RuntimeBlockStateProvider RUNTIME_BLOCKSTATE_PROVIDER = null;
+    // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
+    public static RuntimeBlockStateProvider RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockStateProvider(
+            GTRegistration.REGISTRATE, new PackOutput(KubeJSPaths.DIRECTORY),
+            (loc, json) -> {
+                if (!loc.getPath().endsWith(".json")) {
+                    loc = loc.withSuffix(".json");
+                }
+                GTDynamicResourcePack.addResource(loc, json);
+            });
+
+    public static void generateMachineBlockModels() {
+        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
+            try {
+                builderBase.generateAssetJsons(null);
+            } catch (IllegalStateException ignored) {}
+        });
+        GregTechKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER.run();
+    }
 
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
-        // Fake a data provider for the GT model builders so we don't need to handle this ourselves in any way :3
-        RUNTIME_BLOCKSTATE_PROVIDER = new RuntimeBlockStateProvider(GTRegistration.REGISTRATE,
-                new PackOutput(KubeJSPaths.DIRECTORY),
-                (loc, json) -> {
-                    if (loc.getPath().endsWith(".json")) {
-                        loc = loc.withPath(p -> p.substring(0, p.length() - 5));
-                    }
-                    generator.json(loc, json);
-                });
-
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateAssetJsons(generator));
-
-        RUNTIME_BLOCKSTATE_PROVIDER = null;
     }
 
     @Override

@@ -134,7 +134,7 @@ public class GCYMMachines {
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_chemical_bath"))
-                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::makeRecipeFluidAreaRender)))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
@@ -195,7 +195,7 @@ public class GCYMMachines {
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
                     GTCEu.id("block/multiblock/gcym/large_mixer"))
-                    .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper::makeRecipeFluidAreaRender)))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE

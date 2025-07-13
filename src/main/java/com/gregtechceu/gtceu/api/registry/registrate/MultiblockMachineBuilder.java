@@ -231,8 +231,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay, @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+    public MultiblockMachineBuilder colorOverlayTieredHullModel(String overlay,
+                                                                @Nullable String pipeOverlay,
+                                                                @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
@@ -242,8 +244,9 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
 
     @Override
     public MultiblockMachineBuilder colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                @Nullable ResourceLocation pipeOverlay,
                                                                 @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, emissiveOverlay);
+        return (MultiblockMachineBuilder) super.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
@@ -309,14 +312,17 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay, @Nullable String emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+    public MultiblockMachineBuilder colorOverlaySteamHullModel(String overlay,
+                                                               @Nullable ResourceLocation pipeOverlay,
+                                                               @Nullable String emissiveOverlay) {
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override
     public MultiblockMachineBuilder colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                               @Nullable ResourceLocation pipeOverlay,
                                                                @Nullable ResourceLocation emissiveOverlay) {
-        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, emissiveOverlay);
+        return (MultiblockMachineBuilder) super.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
     }
 
     @Override

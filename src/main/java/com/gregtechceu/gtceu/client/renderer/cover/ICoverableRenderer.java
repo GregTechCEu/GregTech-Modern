@@ -44,16 +44,16 @@ public interface ICoverableRenderer {
             var cover = coverable.getCoverAtSide(face);
             if (cover != null) {
                 if (thickness > 0 && cover.shouldRenderPlate()) {
-                    double min = thickness;
-                    double max = 1d - thickness;
+                    double min = thickness + 0.01;
+                    double max = 0.99 - thickness;
                     var normal = face.getNormal();
                     var cube = new AABB(
-                            normal.getX() > 0 ? max : 0.001,
-                            normal.getY() > 0 ? max : 0.001,
-                            normal.getZ() > 0 ? max : 0.001,
-                            normal.getX() >= 0 ? 0.999 : min,
-                            normal.getY() >= 0 ? 0.999 : min,
-                            normal.getZ() >= 0 ? 0.999 : min);
+                            normal.getX() > 0 ? max : 0.01,
+                            normal.getY() > 0 ? max : 0.01,
+                            normal.getZ() > 0 ? max : 0.01,
+                            normal.getX() >= 0 ? 0.99 : min,
+                            normal.getY() >= 0 ? 0.99 : min,
+                            normal.getZ() >= 0 ? 0.99 : min);
                     if (side == null) { // render back
                         quads.add(FaceQuad.builder(face.getOpposite(), COVER_BACK_PLATE[0])
                                 .cube(cube).cubeUV().bake());
