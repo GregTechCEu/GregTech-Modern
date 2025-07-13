@@ -305,7 +305,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
         }
 
         for (IBrewingRecipe brewingRecipe : getPotionBrewing().getRecipes()) {
-            if (!(brewingRecipe instanceof BrewingRecipe impl)) {
+            if (!(brewingRecipe instanceof BrewingRecipe impl) || !impl.getOutput().has(DataComponents.POTION_CONTENTS)) {
                 continue;
             }
 
