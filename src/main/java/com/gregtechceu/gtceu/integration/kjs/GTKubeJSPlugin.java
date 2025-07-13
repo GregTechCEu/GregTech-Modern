@@ -128,11 +128,9 @@ import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.rhino.Wrapper;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class GTKubeJSPlugin implements KubeJSPlugin {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    private static void registerKJSMachines(RegisterEvent event) {
+    public static void registerKJSMachines(RegisterEvent event) {
         if (event.getRegistryKey() != GTRegistries.MACHINE_REGISTRY) {
             return;
         }

@@ -88,6 +88,7 @@ import com.gregtechceu.gtceu.data.tools.GTToolTiers;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.GTKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationKubeEvent;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.top.TheOneProbePlugin;
@@ -158,6 +159,9 @@ public class CommonInit {
     public static void init(final IEventBus modBus) {
         CommonInit.modBus = modBus;
         modBus.register(CommonInit.class);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            modBus.addListener(EventPriority.LOWEST, GTKubeJSPlugin::registerKJSMachines);
+        }
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
