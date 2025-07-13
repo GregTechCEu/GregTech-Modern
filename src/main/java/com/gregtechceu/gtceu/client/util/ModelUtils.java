@@ -76,7 +76,8 @@ public class ModelUtils {
         }, removeOnReload);
     }
 
-    public static void registerBakeEventListener(boolean removeOnReload, AssetEventListener.ModifyBakingResult listener) {
+    public static void registerBakeEventListener(boolean removeOnReload,
+                                                 AssetEventListener.ModifyBakingResult listener) {
         EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
     }
 
@@ -88,6 +89,7 @@ public class ModelUtils {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new ResourceManagerReloadListener() {
+
             @Override
             public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
                 EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
