@@ -12,6 +12,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -57,7 +58,7 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         tieredBuilder.generateAssetJsons(generator);
     }
 

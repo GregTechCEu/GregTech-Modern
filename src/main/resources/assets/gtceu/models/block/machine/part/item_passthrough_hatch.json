@@ -2,10 +2,11 @@
     "credit": "Made with Blockbench",
     "parent": "block/block",
     "textures": {
-        "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in",
+        "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
+        "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
         "overlay_item_hatch_input": "gtceu:block/overlay/machine/overlay_item_hatch_input",
         "overlay_item_hatch_output": "gtceu:block/overlay/machine/overlay_item_hatch_output",
-        "overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out"
+        "overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
     },
     "elements": [
         {
@@ -21,16 +22,26 @@
             }
         },
         {
-            "from": [ -0.002,  0, -0.002 ],
-            "to":   [ 16.002, 16, 16.002 ],
+            "from": [ -0.01, -0.01, -0.01 ],
+            "to":   [ 16.01, 16.01, 16.01 ],
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe",  "cullface": "north" },
+                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "south" }
+            }
+        },
+        {
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
+            "shade": false,
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south" }
             }
         },
         {
-            "from": [ -0.004,  0, -0.004 ],
-            "to":   [ 16.004, 16, 16.004 ],
+            "from": [ -0.02, -0.02, -0.02 ],
+            "to":   [ 16.02, 16.02, 16.02 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_input",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_item_hatch_output", "cullface": "south" }

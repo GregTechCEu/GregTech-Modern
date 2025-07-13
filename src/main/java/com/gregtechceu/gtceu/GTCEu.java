@@ -190,6 +190,10 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_SHIMMER);
         }
 
+        public static boolean isModernFixLoaded() {
+            return isModLoaded(GTValues.MODID_MODERNFIX);
+        }
+
         public static boolean isJAVDLoaded() {
             return isModLoaded(GTValues.MODID_JAVD);
         }

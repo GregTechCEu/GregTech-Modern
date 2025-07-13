@@ -97,11 +97,6 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     }
 
     @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    @Override
     public boolean shouldRenderOffScreen(FusionReactorMachine machine) {
         return machine.recipeLogic.isWorking() || delta > 0;
     }
@@ -115,6 +110,4 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
     public AABB getRenderBoundingBox(FusionReactorMachine machine) {
         return new AABB(machine.getPos()).inflate(getViewDistance() / 2.0D);
     }
-
-    public static void initType() {}
 }

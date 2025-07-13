@@ -1,25 +1,13 @@
 {
-    "parent": "block/block",
+    "parent": "block/orientable_with_bottom",
     "textures": {
         "particle": "#side",
+        "south": "#back",
+
         "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
         "top": "gtceu:block/casings/hpca/computer_casing/top",
         "front": "gtceu:block/casings/hpca/computer_casing/front",
         "back": "gtceu:block/casings/hpca/computer_casing/back",
         "side": "gtceu:block/casings/hpca/computer_casing/side"
-    },
-    "elements": [
-        {
-            "from": [  0,  0,  0 ],
-            "to":   [ 16, 16, 16 ],
-            "faces": {
-                "down":  { "texture": "#bottom", "cullface": "down"  },
-                "up":    { "texture": "#top",    "cullface": "up"    },
-                "north": { "texture": "#front",  "cullface": "north" },
-                "south": { "texture": "#back",   "cullface": "south" },
-                "west":  { "texture": "#side",   "cullface": "west"  },
-                "east":  { "texture": "#side",   "cullface": "east"  }
-            }
-        }
-    ]
+    }
 }

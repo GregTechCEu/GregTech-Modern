@@ -13,6 +13,9 @@ logoFile = "icon.png"
 displayURL = "${mod_url}"
 credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
 
+[mods."modernfix:integration"]
+client_entrypoint = "com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration"
+
 [[dependencies.${mod_id}]]
 modId = "forge"
 mandatory = true
@@ -85,4 +88,11 @@ modId = "jade"
 mandatory = false
 versionRange = "[${jade_version},)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "modernfix"
+mandatory = false
+versionRange = "[${modernfix_version},)"
+ordering = "BEFORE"
 side = "BOTH"

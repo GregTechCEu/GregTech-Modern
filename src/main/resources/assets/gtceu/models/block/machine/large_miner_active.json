@@ -1,7 +1,7 @@
 {
     "parent": "gtceu:block/machine/template/cube_all/sided",
     "textures": {
-        "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in"
+        "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe"
     },
     "elements": [
         {
@@ -46,7 +46,7 @@
             "from": [  0,   0, 16 ],
             "to":   [ 16, -16, 32 ],
             "faces": {
-                "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in", "cullface": "down" }
+                "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "down" }
             }
         }
     ]

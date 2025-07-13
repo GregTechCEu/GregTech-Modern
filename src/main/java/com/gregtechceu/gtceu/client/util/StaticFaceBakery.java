@@ -34,12 +34,13 @@ public class StaticFaceBakery {
     public static final AABB COVER_OVERLAY = new AABB(-.008f, -.008f, -.008f,
             1.008f, 1.008f, 1.008f);
 
-    public static final int VERTEX_INT_SIZE = 8;
+    private static final int VERTEX_INT_SIZE = 8;
     private static final float RESCALE_22_5 = 1.0F / (float) Math.cos((float) (Math.PI / 8)) - 1.0F;
     private static final float RESCALE_45 = 1.0F / (float) Math.cos((float) (Math.PI / 4)) - 1.0F;
-    public static final int VERTEX_COUNT = 4;
+    private static final int VERTEX_COUNT = 4;
+    private static final int POSITION_INDEX = 0;
     private static final int COLOR_INDEX = 3;
-    public static final int UV_INDEX = 4;
+    private static final int UV_INDEX = 4;
 
     /**
      * bake a quad of specific face.
@@ -208,9 +209,9 @@ public class StaticFaceBakery {
     private static void fillVertex(int[] vertexData, int vertexIndex, Vector3f face,
                                    TextureAtlasSprite sprite, BlockFaceUV blockFaceUV) {
         int i = vertexIndex * VERTEX_INT_SIZE;
-        vertexData[i] = Float.floatToRawIntBits(face.x());
-        vertexData[i + 1] = Float.floatToRawIntBits(face.y());
-        vertexData[i + 2] = Float.floatToRawIntBits(face.z());
+        vertexData[i + POSITION_INDEX] = Float.floatToRawIntBits(face.x());
+        vertexData[i + POSITION_INDEX + 1] = Float.floatToRawIntBits(face.y());
+        vertexData[i + POSITION_INDEX + 2] = Float.floatToRawIntBits(face.z());
         vertexData[i + COLOR_INDEX] = 0xffffffff;
         vertexData[i + UV_INDEX] = Float.floatToRawIntBits(
                 sprite.getU(blockFaceUV.getU(vertexIndex) * 0.999 + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001));
@@ -318,23 +319,24 @@ public class StaticFaceBakery {
         FaceInfo faceInfo = FaceInfo.fromFacing(direction);
 
         for (int vert1 = 0; vert1 < 4; ++vert1) {
-            int e1 = 8 * vert1;
+            int e1 = vert1 * VERTEX_INT_SIZE;
             FaceInfo.VertexInfo vertexInfo = faceInfo.getVertexInfo(vert1);
             float x1 = shape[vertexInfo.xFace];
             float y1 = shape[vertexInfo.yFace];
             float z1 = shape[vertexInfo.zFace];
-            vertices[e1] = Float.floatToRawIntBits(x1);
-            vertices[e1 + 1] = Float.floatToRawIntBits(y1);
-            vertices[e1 + 2] = Float.floatToRawIntBits(z1);
+            vertices[e1 + POSITION_INDEX] = Float.floatToRawIntBits(x1);
+            vertices[e1 + POSITION_INDEX + 1] = Float.floatToRawIntBits(y1);
+            vertices[e1 + POSITION_INDEX + 2] = Float.floatToRawIntBits(z1);
 
             for (int vert2 = 0; vert2 < 4; ++vert2) {
-                int e2 = 8 * vert2;
-                float x2 = Float.intBitsToFloat(verticesCopy[e2]);
-                float y2 = Float.intBitsToFloat(verticesCopy[e2 + 1]);
-                float z2 = Float.intBitsToFloat(verticesCopy[e2 + 2]);
+                int e2 = vert2 * VERTEX_INT_SIZE;
+                float x2 = Float.intBitsToFloat(verticesCopy[e2 + POSITION_INDEX]);
+                float y2 = Float.intBitsToFloat(verticesCopy[e2 + POSITION_INDEX + 1]);
+                float z2 = Float.intBitsToFloat(verticesCopy[e2 + POSITION_INDEX + 2]);
+
                 if (Mth.equal(x1, x2) && Mth.equal(y1, y2) && Mth.equal(z1, z2)) {
-                    vertices[e1 + 4] = verticesCopy[e2 + 4];
-                    vertices[e1 + 4 + 1] = verticesCopy[e2 + 4 + 1];
+                    vertices[e1 + UV_INDEX] = verticesCopy[e2 + UV_INDEX];
+                    vertices[e1 + UV_INDEX + 1] = verticesCopy[e2 + UV_INDEX + 1];
                 }
             }
         }

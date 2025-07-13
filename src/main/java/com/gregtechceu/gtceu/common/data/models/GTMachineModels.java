@@ -78,10 +78,10 @@ public class GTMachineModels {
     public static final ResourceLocation LP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_bronze");
     public static final ResourceLocation HP_STEAM_HULL_MODEL = GTCEu.id("block/casings/steam/bricked_steel");
 
-    public static final ResourceLocation OVERLAY_MODEL = GTCEu.id("block/overlay/front");
-    public static final ResourceLocation OVERLAY_COLOR_RING_MODEL = GTCEu.id("block/overlay/front_color_ring");
-    public static final ResourceLocation OVERLAY_EMISSIVE_MODEL = GTCEu.id("block/overlay/2_layer/front_emissive");
-    public static final ResourceLocation OVERLAY_EMISSIVE_COLOR_RING_MODEL = GTCEu.id("block/overlay/2_layer/front_emissive_color_ring");
+    public static final ResourceLocation HATCH_PART_MODEL = GTCEu.id("block/machine/template/part/hatch_machine");
+    public static final ResourceLocation HATCH_PART_COLOR_RING_MODEL = GTCEu.id("block/machine/template/part/hatch_machine_color_ring");
+    public static final ResourceLocation HATCH_PART_EMISSIVE_MODEL = GTCEu.id("block/machine/template/part/hatch_machine_emissive");
+    public static final ResourceLocation HATCH_PART_EMISSIVE_COLOR_RING_MODEL = GTCEu.id("block/machine/template/part/hatch_machine_emissive_color_ring");
     // spotless:on
 
     // region generic models
@@ -123,10 +123,12 @@ public class GTMachineModels {
     }
 
     public static MachineBuilder.ModelInitializer createColorOverlayTieredHullMachineModel(ResourceLocation overlay,
+                                                                                           @Nullable ResourceLocation pipeOverlay,
                                                                                            @Nullable ResourceLocation emissiveOverlay) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                BlockModelBuilder model = colorOverlayHullModel(overlay, emissiveOverlay, state, prov.models());
+                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state,
+                        prov.models());
                 return tieredHullTextures(model, builder.getOwner().getTier());
             });
 
@@ -177,10 +179,12 @@ public class GTMachineModels {
     }
 
     public static MachineBuilder.ModelInitializer createColorOverlaySteamHullMachineModel(ResourceLocation overlay,
+                                                                                          @Nullable ResourceLocation pipeOverlay,
                                                                                           @Nullable ResourceLocation emissiveOverlay) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                BlockModelBuilder model = colorOverlayHullModel(overlay, emissiveOverlay, state, prov.models());
+                BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state,
+                        prov.models());
                 steamCasingTextures(model, state.getOptionalValue(SteamMachine.STEEL_PROPERTY).orElse(false));
                 return model;
             });
@@ -364,6 +368,11 @@ public class GTMachineModels {
     public static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
     public static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
 
+    public static final ResourceLocation CONVERTER_FE_IN_EMISSIVE = GTCEu
+            .id("block/overlay/converter/converter_native_in_emissive");
+    public static final ResourceLocation CONVERTER_FE_OUT_EMISSIVE = GTCEu
+            .id("block/overlay/converter/converter_native_out_emissive");
+
     public static MachineBuilder.ModelInitializer createConverterModel(int amperage) {
         return (ctx, prov, builder) -> {
             final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(amperage);
@@ -373,12 +382,17 @@ public class GTMachineModels {
                     .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", energyIn.getIoPart())
                     .texture("overlay_in_tinted", energyIn.getTintedPart())
+                    .texture("overlay_in_io_emissive", energyIn.getIoPartEmissive())
+                    .texture("overlay_out_io_emissive", CONVERTER_FE_OUT_EMISSIVE)
                     .texture("overlay_out_io", CONVERTER_FE_OUT);
             tieredHullTextures(euToFeModel, builder.getOwner().getTier());
+
             BlockModelBuilder feToEuModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                     .texture("overlay_in_io", energyOut.getIoPart())
                     .texture("overlay_in_tinted", energyOut.getTintedPart())
+                    .texture("overlay_in_io_emissive", energyOut.getIoPartEmissive())
+                    .texture("overlay_out_io_emissive", CONVERTER_FE_IN_EMISSIVE)
                     .texture("overlay_out_io", CONVERTER_FE_IN);
             tieredHullTextures(feToEuModel, builder.getOwner().getTier());
 
@@ -417,8 +431,10 @@ public class GTMachineModels {
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
+                        .texture("overlay_in_io_emissive", energyIn.getIoPartEmissive())
                         .texture("overlay_in_io", energyIn.getIoPart())
                         .texture("overlay_in_tinted", energyIn.getTintedPart())
+                        .texture("overlay_out_io_emissive", energyOut.getIoPartEmissive())
                         .texture("overlay_out_io", energyOut.getIoPart())
                         .texture("overlay_out_tinted", energyOut.getTintedPart());
                 tieredHullTextures(model, builder.getOwner().getTier());
@@ -441,8 +457,9 @@ public class GTMachineModels {
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
                         .texture("overlay_in_io", frontFace.getIoPart())
+                        .texture("overlay_in_io_emissive", frontFace.getIoPartEmissive())
                         .texture("overlay_in_tinted", frontFace.getTintedPart())
-                        .texture("overlay_out_io", otherFace.getIoPart())
+                        .texture("overlay_out_io_emissive", otherFace.getIoPartEmissive())
                         .texture("overlay_out_tinted", otherFace.getTintedPart());
                 tieredHullTextures(model, builder.getOwner().getTier());
                 return model;
@@ -550,7 +567,7 @@ public class GTMachineModels {
     }
 
     // spotless:off
-    public static final ResourceLocation HPCA_PART_MODEL = GTCEu.id("block/machine/template/hpca_part_machine");
+    public static final ResourceLocation HPCA_PART_MODEL = GTCEu.id("block/machine/template/part/hpca_part_machine");
     public static final ResourceLocation COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/computer_casing/");
     public static final ResourceLocation ADVANCED_COMPUTER_CASING_TEXTURE = GTCEu.id("block/casings/hpca/advanced_computer_casing/");
 
@@ -703,19 +720,23 @@ public class GTMachineModels {
         return ConfiguredModel.builder().modelFile(model).build();
     }
 
-    public static BlockModelBuilder colorOverlayHullModel(ResourceLocation overlayTexture,
-                                                          @Nullable ResourceLocation emissiveOverlayTexture,
+    public static BlockModelBuilder colorOverlayHullModel(ResourceLocation overlay,
+                                                          @Nullable ResourceLocation pipeOverlay,
+                                                          @Nullable ResourceLocation emissiveOverlay,
                                                           MachineRenderState state, BlockModelProvider models) {
         ResourceLocation parent;
         if (state.getOptionalValue(IPaintable.IS_PAINTED_PROPERTY).orElse(false)) {
-            parent = emissiveOverlayTexture != null ? OVERLAY_EMISSIVE_COLOR_RING_MODEL : OVERLAY_COLOR_RING_MODEL;
+            parent = emissiveOverlay != null ? HATCH_PART_EMISSIVE_COLOR_RING_MODEL : HATCH_PART_COLOR_RING_MODEL;
         } else {
-            parent = emissiveOverlayTexture != null ? OVERLAY_EMISSIVE_MODEL : OVERLAY_MODEL;
+            parent = emissiveOverlay != null ? HATCH_PART_EMISSIVE_MODEL : HATCH_PART_MODEL;
         }
         BlockModelBuilder model = models.nested().parent(models.getExistingFile(parent))
-                .texture("overlay", overlayTexture);
-        if (emissiveOverlayTexture != null) {
-            model.texture("overlay_emissive", emissiveOverlayTexture);
+                .texture("overlay", overlay);
+        if (emissiveOverlay != null) {
+            model.texture("overlay_emissive", emissiveOverlay);
+        }
+        if (pipeOverlay != null) {
+            model.texture("overlay_pipe", pipeOverlay);
         }
         return model;
     }

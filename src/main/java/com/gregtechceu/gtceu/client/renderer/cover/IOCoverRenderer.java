@@ -46,7 +46,7 @@ public class IOCoverRenderer implements ICoverRenderer {
                            @Nullable ResourceLocation invertedOverlay,
                            @Nullable ResourceLocation emissiveOverlay,
                            @Nullable ResourceLocation invertedEmissiveOverlay) {
-        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
             if (overlay != null) {

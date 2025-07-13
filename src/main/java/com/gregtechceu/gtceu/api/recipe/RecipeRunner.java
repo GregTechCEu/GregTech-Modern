@@ -103,7 +103,7 @@ class RecipeRunner {
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
                 chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache,
-                        recipe.parallels);
+                        recipe.parallels * recipe.batchParallels);
 
                 for (Content cont : chancedContents) {
                     contentList.add(cont.content);

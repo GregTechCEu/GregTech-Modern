@@ -1,5 +1,5 @@
 {
-  "parent": "gtceu:block/machine/template/hpca_part_machine",
+  "parent": "gtceu:block/machine/template/part/hpca_part_machine",
   "textures": {
     "back": "gtceu:block/casings/hpca/computer_casing/back",
     "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",

@@ -170,8 +170,8 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
      *
      * @param render The {@link DynamicRender dynamic render} to add
      */
-    public MachineModelBuilder<T> addDynamicRenderer(Supplier<Supplier<DynamicRender<?, ?>>> render) {
-        this.dynamicRenders.add(render.get().get());
+    public MachineModelBuilder<T> addDynamicRenderer(Supplier<DynamicRender<?, ?>> render) {
+        this.dynamicRenders.add(render.get());
         return this;
     }
 

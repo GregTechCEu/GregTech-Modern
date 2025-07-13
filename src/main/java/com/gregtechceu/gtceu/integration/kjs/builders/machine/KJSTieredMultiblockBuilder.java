@@ -17,6 +17,7 @@ import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
@@ -44,7 +45,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public void generateAssetJsons(@NotNull AssetJsonGenerator generator) {
+    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         super.generateAssetJsons(generator);
         for (int tier : this.tiers) {
             MultiblockMachineBuilder builder = this.builders[tier];
