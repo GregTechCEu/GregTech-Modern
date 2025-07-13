@@ -62,18 +62,18 @@ public class ModelUtils {
         return property.getName() + ": " + valueString;
     }
 
-    public static void registerAtlasStitchedEventListener(AssetEventListener.AtlasStitched listener,
-                                                          boolean removeOnReload) {
+    public static void registerAtlasStitchedEventListener(boolean removeOnReload,
+                                                          AssetEventListener.AtlasStitched listener) {
         EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
     }
 
     public static void registerAtlasStitchedEventListener(boolean removeOnReload, final ResourceLocation atlasLocation,
                                                           final AssetEventListener.AtlasStitched listener) {
-        registerAtlasStitchedEventListener(event -> {
+        registerAtlasStitchedEventListener(removeOnReload, event -> {
             if (event.getAtlas().location().equals(atlasLocation)) {
                 listener.accept(event);
             }
-        }, removeOnReload);
+        });
     }
 
     public static void registerBakeEventListener(boolean removeOnReload,
@@ -81,8 +81,8 @@ public class ModelUtils {
         EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
     }
 
-    public static void registerAddModelsEventListener(AssetEventListener.RegisterAdditional listener,
-                                                      boolean removeOnReload) {
+    public static void registerAddModelsEventListener(boolean removeOnReload,
+                                                      AssetEventListener.RegisterAdditional listener) {
         EVENT_LISTENERS.add(new EventListenerHolder(listener, removeOnReload));
     }
 
