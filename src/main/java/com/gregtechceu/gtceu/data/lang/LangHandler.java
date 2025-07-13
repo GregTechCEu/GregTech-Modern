@@ -1360,10 +1360,6 @@ public class LangHandler {
         provider.add("gtceu.gui.content.range", "%s-%s");
         provider.add("gtceu.gui.content.times_item", "x %s");
 
-        provider.add("gtceu.jade.fluid_use", "%s mB/t");
-        provider.add("gtceu.jade.amperage_use", "%s A");
-        provider.add("gtceu.jade.at", " @ ");
-
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");
         provider.add("gtceu.chance_logic.xor", "XOR");
