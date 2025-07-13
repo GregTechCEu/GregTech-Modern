@@ -93,7 +93,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
     }
 
     @Override
-    public boolean isCustomRenderer() {
+    public boolean isBlockEntityRenderer() {
         return false;
     }
 

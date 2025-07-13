@@ -400,9 +400,14 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public boolean isCustomRenderer() {
+        return isBlockEntityRenderer();
+    }
+
+    @Override
+    public boolean isBlockEntityRenderer() {
         if (dynamicRenders.isEmpty()) return false;
         for (DynamicRender<?, ?> render : dynamicRenders) {
-            if (render.isCustomRenderer()) return true;
+            if (render.isBlockEntityRenderer()) return true;
         }
         return false;
     }
