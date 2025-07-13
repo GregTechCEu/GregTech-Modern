@@ -8,10 +8,10 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 
 public interface ICoverableRenderer {
 
@@ -31,8 +30,8 @@ public interface ICoverableRenderer {
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
 
     @OnlyIn(Dist.CLIENT)
-    static void initSprites(Function<ResourceLocation, TextureAtlasSprite> atlas) {
-        COVER_BACK_PLATE[0] = atlas.apply(GTCEu.id("block/material_sets/dull/wire_side"));
+    static void initSprites(TextureAtlas atlas) {
+        COVER_BACK_PLATE[0] = atlas.getSprite(GTCEu.id("block/material_sets/dull/wire_side"));
     }
 
     @OnlyIn(Dist.CLIENT)

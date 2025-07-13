@@ -71,7 +71,7 @@ public class BoilerMultiPartRender extends DynamicRender<LargeBoilerMachine, Boi
         this.fireboxActive = fireboxActive;
 
         this.casing = casing;
-        ModelUtils.registerBakeEventListener(event -> {
+        ModelUtils.registerBakeEventListener(true, event -> {
             this.fireboxIdleModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxIdle));
             this.fireboxActiveModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.fireboxActive));
             this.casingModel = event.getModels().get(BlockModelShaper.stateToModelLocation(this.casing));

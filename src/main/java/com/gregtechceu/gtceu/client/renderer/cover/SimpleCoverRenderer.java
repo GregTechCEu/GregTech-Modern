@@ -34,7 +34,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     }
 
     public SimpleCoverRenderer(ResourceLocation texture, ResourceLocation emissiveTexture) {
-        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
             sprite = atlas.getSprite(texture);
