@@ -25,6 +25,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -54,10 +55,19 @@ public class ChemicalHelper {
                 return ItemMaterialData.getMaterialInfo(items.get(0));
             }
         } else if (object instanceof Ingredient ing) {
+            if (!ing.isCustom()) {
+                for (Ingredient.Value value : ing.getValues()) {
+                    if (value instanceof Ingredient.TagValue) {
+                        return null;
+                    }
+                }
+            }
             for (var stack : ing.getItems()) {
                 var ms = ItemMaterialData.getMaterialInfo(stack.getItem());
                 if (ms != null) return ms;
             }
+        } else if (object instanceof SizedIngredient ing) {
+            return getMaterialInfo(ing.ingredient());
         }
         return null;
     }

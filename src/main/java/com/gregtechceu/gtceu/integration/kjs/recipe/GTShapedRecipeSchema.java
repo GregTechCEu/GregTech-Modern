@@ -117,6 +117,8 @@ public interface GTShapedRecipeSchema {
         }
     }
 
+    KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("shaped"), ShapedKubeRecipe.class, ShapedKubeRecipe::new);
+
     RecipeKey<ItemStack> RESULT = ItemStackComponent.STRICT_ITEM_STACK.outputKey("result");
     RecipeKey<List<String>> PATTERN = StringGridComponent.STRING_GRID.otherKey("pattern");
     RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT
@@ -132,7 +134,7 @@ public interface GTShapedRecipeSchema {
             .functionNames(List.of("kjsShrink"));
 
     RecipeSchema SCHEMA = new RecipeSchema(RESULT, PATTERN, KEY, MIRROR, SHRINK, CATEGORY)
-            .factory(new KubeRecipeFactory(GTCEu.id("shaped"), ShapedKubeRecipe.class, ShapedKubeRecipe::new))
+            .factory(RECIPE_FACTORY)
             .constructor(RESULT, PATTERN, KEY)
             .uniqueId(RESULT)
             .typeOverride(KubeJS.id("shaped"))

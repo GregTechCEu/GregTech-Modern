@@ -116,6 +116,7 @@ import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
@@ -252,6 +253,12 @@ public class GTKubeJSPlugin implements KubeJSPlugin {
             event.register(id, GTRecipeSchema.SCHEMA);
         }
         event.namespace(GTCEu.MOD_ID).register("shaped", GTShapedRecipeSchema.SCHEMA);
+    }
+
+    @Override
+    public void registerRecipeFactories(RecipeFactoryRegistry registry) {
+        registry.register(GTRecipeSchema.RECIPE_FACTORY);
+        registry.register(GTShapedRecipeSchema.RECIPE_FACTORY);
     }
 
     @Override
