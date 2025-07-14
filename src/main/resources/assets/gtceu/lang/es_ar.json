@@ -22,7 +22,7 @@
     "item.gtceu.mpic_wafer.tooltip": "§7Circuito Crudo de Potencia",
     "item.gtceu.simple_soc_wafer.tooltip": "§7Circuito Crudo Simple",
     "block.gtceu.steam_grinder": "Moledora a Vapor",
-    "block.gtceu.steam_input_bus": "Bus de Entrada de Vapor",
+    "block.gtceu.steam_input_bus": "Canal de Entrada (Vapor)",
     "death.attack.gtceu.axe": "%s fue hachado por %s",
     "death.attack.gtceu.file": "%s fue limado con una M de 'Muerto' por %s",
     "death.attack.gtceu.crowbar": "%s perdió mitad de una vida por %s",
