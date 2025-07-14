@@ -5,7 +5,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     alias libs.plugins.modDevGradle
-    alias libs.plugins.machete // automatic jar compressing on build
     //alias libs.plugins.shadow
     alias libs.plugins.spotless
     alias libs.plugins.lombok
@@ -92,14 +91,6 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:-removal"
     options.compilerArgs << "-Aquiet=true" // Suppress mixin notes
-}
-
-machete {
-    // disable machete locally for faster builds
-    enabled = false
-    // Only optimize reobf jars
-    ignoredTasks.addAll("jar", "slimJar")
-    additionalTasks.addAll("reobfJar", "reobfSlimJar")
 }
 
 lombok {
