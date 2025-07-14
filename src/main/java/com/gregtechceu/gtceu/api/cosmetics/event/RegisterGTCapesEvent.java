@@ -17,7 +17,6 @@ import java.util.UUID;
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.
  **/
-@SuppressWarnings("deprecation") // why does JavaDoc not have an "internal" tag?
 public class RegisterGTCapesEvent extends Event {
 
     @ApiStatus.Internal

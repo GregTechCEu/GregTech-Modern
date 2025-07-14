@@ -133,6 +133,7 @@ public class LangHandler {
         provider.add("command.gtceu.place_vein.failure", "Failed to place vein %s at position %s");
         provider.add("command.gtceu.place_vein.success", "Placed vein %s at position %s");
         provider.add("command.gtceu.share_prospection_data.notification", "%s is sharing prospecting data with you!");
+        provider.add("command.gtceu.cape.failure.does_not_exist", "Cape %s does not exist");
         provider.add("command.gtceu.cape.give.failed", "No new capes were unlocked");
         provider.add("command.gtceu.cape.give.success.multiple", "Unlocked %s capes for %s players");
         provider.add("command.gtceu.cape.give.success.single", "Unlocked %s capes for %s");
@@ -1211,35 +1212,6 @@ public class LangHandler {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        provider.add("gtceu.command.usage", "Usage: /gtceu <worldgen/hand/recipecheck>");
-        provider.add("gtceu.command.worldgen.usage", "Usage: /gtceu worldgen <reload>");
-        provider.add("gtceu.command.worldgen.reload.usage", "Usage: /gtceu worldgen reload");
-        provider.add("gtceu.command.worldgen.reload.success", "Worldgen successfully reloaded from config.");
-        provider.add("gtceu.command.worldgen.reload.failed",
-                "Worldgen reload failed. Check console for errors.");
-        provider.add("gtceu.command.hand.groovy", "Consider using §6/gs hand");
-        provider.add("gtceu.command.hand.usage", "Usage: /gtceu hand");
-        provider.add("gtceu.command.hand.item_id", "Item: %s (Metadata: %d)");
-        provider.add("gtceu.command.hand.electric", "Electric Info: %d / %d EU - Tier: %d; Is Battery: %s");
-        provider.add("gtceu.command.hand.fluid", "Fluid Info: %d / %d mB; Can Fill: %s; Can Drain: %s");
-        provider.add("gtceu.command.hand.fluid2", "Fluid Id:");
-        provider.add("gtceu.command.hand.material", "Material Id:");
-        provider.add("gtceu.command.hand.ore_prefix", "Ore prefix:");
-        provider.add("gtceu.command.hand.meta_item", "MetaItem Id:");
-        provider.add("gtceu.command.hand.tag_entries", "§3Tag entries:");
-        provider.add("gtceu.command.hand.tool_stats", "Tool Stats Class: %s");
-        provider.add("gtceu.command.hand.not_a_player", "This command is only usable by a player.");
-        provider.add("gtceu.command.hand.no_item",
-                "You must hold something in main hand or off hand before executing this command.");
-        provider.add("gtceu.command.recipecheck.usage", "Usage: /gtceu recipecheck");
-        provider.add("gtceu.command.recipecheck.begin", "Starting recipe conflict check...");
-        provider.add("gtceu.command.recipecheck.end",
-                "Recipe conflict check found %d possible conflicts. Check the server log for more info");
-        provider.add("gtceu.command.recipecheck.end_no_conflicts", "No recipe conflicts found!");
-        provider.add("gtceu.command.copy.copied_and_click", "copied to clipboard. Click to copy again");
-        provider.add("gtceu.command.copy.click_to_copy", "Click to copy");
-        provider.add("gtceu.command.copy.copied_start", "Copied [");
-        provider.add("gtceu.command.copy.copied_end", "] to the clipboard");
         provider.add("gtceu.chat.cape",
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
         provider.add("gtceu.universal.clear_nbt_recipe.tooltip", "§cThis will destroy all contents!");
