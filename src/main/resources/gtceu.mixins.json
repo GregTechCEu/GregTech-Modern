@@ -59,7 +59,6 @@
         "emi.FluidEmiStackMixin",
         "forge.ConfiguredModelBuilderAccessor",
         "forge.ConfiguredModelListAccessor",
-        "forge.ModelBuilderAccessor",
         "forge.IntersectionIngredientAccessor",
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
