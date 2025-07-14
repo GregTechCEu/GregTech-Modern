@@ -64,6 +64,7 @@
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "ldlib.ButtonWidgetMixin",
         "ldlib.DummyWorldMixin",
         "ldlib.ItemStackPayloadMixin",
         "ldlib.TrackedDummyWorldMixin",
