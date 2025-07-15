@@ -63,7 +63,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
         return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
     }
 
-    default boolean isCustomRenderer() {
+    default boolean isBlockEntityRenderer() {
         return false;
     }
 }

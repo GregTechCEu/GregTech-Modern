@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 
@@ -74,7 +73,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     private static @Nullable TextureAtlasSprite fluidOutputOverlaySprite;
     private static @Nullable TextureAtlasSprite itemOutputOverlaySprite;
     private static @Nullable TextureAtlasSprite blankSprite;
-    private static boolean overlaysInitialized = false;
 
     public static final Map<String, List<String>> TEXTURE_REMAPS = Util.make(new HashMap<>(), map -> {
         var all = List.of("all");
@@ -133,22 +131,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         for (DynamicRender<?, ?> render : this.dynamicRenders) {
             render.setParent(this);
         }
+    }
 
-        if (!overlaysInitialized) {
-            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
-                spriteCapturer.getCapturedMaterials().clear();
-
-                TextureAtlas atlas = event.getAtlas();
-
-                pipeOverlaySprite = atlas.getSprite(PIPE_OVERLAY);
-                fluidOutputOverlaySprite = atlas.getSprite(FLUID_OUTPUT_OVERLAY);
-                itemOutputOverlaySprite = atlas.getSprite(ITEM_OUTPUT_OVERLAY);
-                blankSprite = atlas.getSprite(GTModels.BLANK_TEXTURE);
-
-                ICoverableRenderer.initSprites(atlas::getSprite);
-            });
-            overlaysInitialized = true;
-        }
+    public static void initSprites(TextureAtlas atlas) {
+        pipeOverlaySprite = atlas.getSprite(PIPE_OVERLAY);
+        fluidOutputOverlaySprite = atlas.getSprite(FLUID_OUTPUT_OVERLAY);
+        itemOutputOverlaySprite = atlas.getSprite(ITEM_OUTPUT_OVERLAY);
+        blankSprite = atlas.getSprite(GTModels.BLANK_TEXTURE);
     }
 
     @SuppressWarnings("deprecation")
@@ -400,9 +389,14 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public boolean isCustomRenderer() {
+        return isBlockEntityRenderer();
+    }
+
+    @Override
+    public boolean isBlockEntityRenderer() {
         if (dynamicRenders.isEmpty()) return false;
         for (DynamicRender<?, ?> render : dynamicRenders) {
-            if (render.isCustomRenderer()) return true;
+            if (render.isBlockEntityRenderer()) return true;
         }
         return false;
     }

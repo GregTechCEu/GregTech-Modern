@@ -4,20 +4,17 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
 
 public class SerializerIngredient implements IContentSerializer<Ingredient> {
 
-    public static final Codec<Ingredient> CODEC = Codec.PASSTHROUGH.xmap(
-            dynamic -> Ingredient.fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()),
-            ingredient -> new Dynamic<>(JsonOps.INSTANCE, ingredient.toJson()));
+    public static final Codec<Ingredient> CODEC = ExtraCodecs.JSON.xmap(Ingredient::fromJson, Ingredient::toJson);
 
     public static SerializerIngredient INSTANCE = new SerializerIngredient();
 

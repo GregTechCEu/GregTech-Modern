@@ -35,7 +35,7 @@ public abstract class DynamicRender<T extends IMachineFeature, S extends Dynamic
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return IMachineRendererModel.super.isCustomRenderer();
+    public boolean isBlockEntityRenderer() {
+        return true;
     }
 }

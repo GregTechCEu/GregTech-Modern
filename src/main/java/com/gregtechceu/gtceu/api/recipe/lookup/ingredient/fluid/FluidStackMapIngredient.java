@@ -30,7 +30,7 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.FluidValue fluidValue) {
-                FluidStack stack = new FluidStack(fluidValue.fluid, ingredient.getAmount(), ingredient.getNbt());
+                FluidStack stack = new FluidStack(fluidValue.fluid(), ingredient.getAmount(), ingredient.getNbt());
                 ingredients.add(new FluidStackMapIngredient(stack, ingredient));
             }
         }

@@ -136,13 +136,13 @@ public class PipeModel {
         }
 
         if (!isRestrictorInitialized) {
-            ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+            ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
                 initializeRestrictor(event.getAtlas()::getSprite);
             });
 
             isRestrictorInitialized = true;
         }
-        ModelUtils.registerAtlasStitchedEventListener(InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             TextureAtlas atlas = event.getAtlas();
 
             sideSprite = atlas.getSprite(sideTexture.get());

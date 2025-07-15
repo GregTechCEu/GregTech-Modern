@@ -64,7 +64,6 @@
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
-        "kubejs.KubeJSForgeMixin",
         "ldlib.SyncUtilsMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",

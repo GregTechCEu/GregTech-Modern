@@ -25,7 +25,7 @@ public class FluidTagMapIngredient extends AbstractMapIngredient {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.TagValue tagValue) {
-                ingredients.add(new FluidTagMapIngredient(tagValue.getTag()));
+                ingredients.add(new FluidTagMapIngredient(tagValue.tag()));
             }
         }
         return ingredients;
