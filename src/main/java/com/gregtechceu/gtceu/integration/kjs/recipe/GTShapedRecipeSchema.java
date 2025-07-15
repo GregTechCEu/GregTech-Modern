@@ -117,21 +117,20 @@ public interface GTShapedRecipeSchema {
         }
     }
 
+    // spotless:off
     KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("shaped"), ShapedKubeRecipe.class, ShapedKubeRecipe::new);
 
     RecipeKey<ItemStack> RESULT = ItemStackComponent.STRICT_ITEM_STACK.outputKey("result");
     RecipeKey<List<String>> PATTERN = StringGridComponent.STRING_GRID.otherKey("pattern");
-    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT
-            .asPatternKey().inputKey("key");
-    RecipeKey<Boolean> MIRROR = BooleanComponent.BOOLEAN.otherKey(KubeJSCraftingRecipe.MIRROR_KEY)
-            .optional(true).exclude()
+    RecipeKey<TinyMap<Character, Ingredient>> KEY = IngredientComponent.INGREDIENT.asPatternKey().inputKey("key");
+    RecipeKey<Boolean> MIRROR = BooleanComponent.BOOLEAN.otherKey(KubeJSCraftingRecipe.MIRROR_KEY).optional(true).exclude()
             .functionNames(List.of("kjsMirror"));
-    RecipeKey<Boolean> SHRINK = BooleanComponent.BOOLEAN.otherKey("kubejs:shrink")
-            .optional(true).exclude()
+    RecipeKey<Boolean> SHRINK = BooleanComponent.BOOLEAN.otherKey("kubejs:shrink").optional(true).exclude()
             .functionNames(List.of("kjsShrink"));
     RecipeKey<CraftingBookCategory> CATEGORY = BookCategoryComponent.CRAFTING_BOOK_CATEGORY.otherKey("category")
             .optional(CraftingBookCategory.MISC)
             .functionNames(List.of("kjsShrink"));
+    // spotless:on
 
     RecipeSchema SCHEMA = new RecipeSchema(RESULT, PATTERN, KEY, MIRROR, SHRINK, CATEGORY)
             .factory(RECIPE_FACTORY)

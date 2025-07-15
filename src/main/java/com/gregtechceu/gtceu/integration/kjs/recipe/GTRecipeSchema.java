@@ -858,9 +858,9 @@ public interface GTRecipeSchema {
         }
     }
 
+    // spotless:off
     KubeRecipeFactory RECIPE_FACTORY = new KubeRecipeFactory(GTCEu.id("machine"), GTKubeRecipe.class, GTKubeRecipe::new);
 
-    // spotless:off
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id", ComponentRole.OTHER);
     RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.key("duration", ComponentRole.OTHER).optional(new TickDuration(100));
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data", ComponentRole.OTHER).optional(r -> new CompoundTag());
