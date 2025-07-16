@@ -282,7 +282,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.register("extendedOutputItem", GTRecipeComponents.EXTENDED_OUTPUT);
 
         event.register("fluidIngredient", GTRecipeComponents.FLUID_INGREDIENT);
-        event.register("fluidIngredientOut", GTRecipeComponents.FLUID_INGREDIENT_OUT);
     }
 
     @Override
@@ -485,7 +484,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence str) return MedicalCondition.CONDITIONS.get(str.toString());
             return null;
         });
-        // jank because Rhino doesn't agree that it's an interface
         typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);

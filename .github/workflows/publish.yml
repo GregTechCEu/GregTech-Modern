@@ -103,7 +103,7 @@ jobs:
           files: |
             ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
             ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
-          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          name: 'GregTech CEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version-type: ${{ env.VERSION_TYPE }}
           changelog: ${{ inputs.release-body }}
@@ -136,7 +136,7 @@ jobs:
           files: |
             ./gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar
             ./!(gtceu-${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}.jar)
-          name: 'GregTechCEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
+          name: 'GregTech CEu ${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version: 'mc${{ env.MC_VERSION }}-${{ needs.build.outputs.ver }}'
           version-type: ${{ env.VERSION_TYPE }}
           changelog: ${{ inputs.release-body }}

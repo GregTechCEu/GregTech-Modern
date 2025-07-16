@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class PotionFluidHelper {
 
@@ -60,7 +59,8 @@ public class PotionFluidHelper {
 
     public static FluidIngredient getPotionFluidIngredientFrom(Ingredient potion, int amount) {
         if (potion instanceof StrictNBTIngredientAccessor strict) {
-            return FluidIngredient.of(Stream.of(GTFluids.POTION.get()), amount, strict.getStack().getTag());
+            return FluidIngredient.fromValue(new FluidIngredient.FluidValue(GTFluids.POTION.get()),
+                    amount, strict.getStack().getTag());
         }
 
         List<FluidStack> fluids = new ArrayList<>();
@@ -70,7 +70,7 @@ public class PotionFluidHelper {
                 fluids.add(fluidStack);
             }
         }
-        return FluidIngredient.of(fluids.toArray(FluidStack[]::new));
+        return FluidIngredient.of(fluids);
     }
 
     public static FluidStack getFluidFromPotionItem(ItemStack stack, int amount) {

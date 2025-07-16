@@ -89,10 +89,3 @@ mandatory = false
 versionRange = "[${jade_version},)"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "modernfix"
-mandatory = false
-versionRange = "[${modernfix_version},)"
-ordering = "BEFORE"
-side = "BOTH"
