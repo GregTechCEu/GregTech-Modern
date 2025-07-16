@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.client.model.SpriteCapturer;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartUnbakedModel;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -58,17 +57,15 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
             Material material = new Material(TextureAtlas.LOCATION_BLOCKS, entry.getValue());
             textureOverrides.put(entry.getKey(), spriteGetter.apply(material));
         }
-        final var spriteCapturer = new SpriteCapturer(spriteGetter);
 
         Map<MachineRenderState, BakedModel> baseModels = new IdentityHashMap<>();
         models.forEach((machineState, unbaked) -> {
-            baseModels.put(machineState, unbaked.bake(baker, spriteCapturer, modelState, modelLocation));
+            baseModels.put(machineState, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
         });
         MultiPartBakedModel multiPart = this.multiPart == null ? null :
-                this.multiPart.bake(baker, spriteCapturer, modelState, modelLocation);
+                this.multiPart.bake(baker, spriteGetter, modelState, modelLocation);
 
-        MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart,
-                this.dynamicRenders, spriteCapturer,
+        MachineModel model = new MachineModel(this.getDefinition(), baseModels, multiPart, this.dynamicRenders,
                 context.getTransforms(), context.getRootTransform(), modelState,
                 context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion());
 

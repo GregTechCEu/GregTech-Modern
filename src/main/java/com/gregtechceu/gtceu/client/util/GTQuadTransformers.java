@@ -60,8 +60,9 @@ public final class GTQuadTransformers {
             vertices[offset] = Float.floatToRawIntBits(u);
             vertices[offset + 1] = Float.floatToRawIntBits(v);
         }
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
+        BakedQuad newQuad = new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
                 sprite, quad.isShade(), quad.hasAmbientOcclusion());
+        return newQuad.gtceu$setTextureKey(quad.gtceu$getTextureKey());
     }
 
     public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
@@ -70,12 +71,13 @@ public final class GTQuadTransformers {
                 quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
 
         QuadTransformers.applyingColor(argbColor).processInPlace(copy);
-        return copy;
+        return copy.gtceu$setTextureKey(quad.gtceu$getTextureKey());
     }
 
     public static BakedQuad copy(BakedQuad quad) {
         return new BakedQuad(quad.getVertices().clone(), quad.getTintIndex(), quad.getDirection(),
-                quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+                quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion())
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
     }
 
     private GTQuadTransformers() {}

@@ -16,6 +16,8 @@ legacyForge {
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
+    interfaceInjectionData = project.files('injected_interfaces/interfaces.json')
+
     addModdingDependenciesTo(sourceSets.test)
 //    addModdingDependenciesTo(sourceSets.extra)
 

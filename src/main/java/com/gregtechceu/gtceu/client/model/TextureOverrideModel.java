@@ -25,9 +25,9 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
 
     @NotNull
     @Getter
-    protected final Map<TextureAtlasSprite, TextureAtlasSprite> textureOverrides;
+    protected final Map<String, TextureAtlasSprite> textureOverrides;
 
-    public TextureOverrideModel(T child, Map<TextureAtlasSprite, TextureAtlasSprite> textureOverrides) {
+    public TextureOverrideModel(T child, Map<String, TextureAtlasSprite> textureOverrides) {
         super(child);
         this.textureOverrides = textureOverrides;
     }
@@ -43,21 +43,16 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
         return retextureQuads(super.getQuads(state, side, rand, extraData, renderType), textureOverrides);
     }
 
-    public static Map<TextureAtlasSprite, TextureAtlasSprite> resolveOverrides(Map<String, TextureAtlasSprite> overrides,
-                                                                               Map<String, TextureAtlasSprite> toOverride) {
-        Map<TextureAtlasSprite, TextureAtlasSprite> textures = new HashMap<>();
-        for (var entry : overrides.entrySet()) {
-            textures.put(toOverride.get(entry.getKey()), entry.getValue());
-        }
-        return textures;
-    }
-
-    public static List<BakedQuad> retextureQuads(List<BakedQuad> quads,
-                                                 Map<TextureAtlasSprite, TextureAtlasSprite> overrides) {
+    public static List<BakedQuad> retextureQuads(List<BakedQuad> quads, Map<String, TextureAtlasSprite> overrides) {
         List<BakedQuad> newQuads = new LinkedList<>();
         for (BakedQuad quad : quads) {
-            TextureAtlasSprite original = quad.getSprite();
-            TextureAtlasSprite replacement = overrides.get(original);
+            String textureKey = quad.gtceu$getTextureKey();
+            if (textureKey == null || textureKey.isEmpty()) continue;
+            if (textureKey.charAt(0) == '#') {
+                textureKey = textureKey.substring(1);
+            }
+
+            TextureAtlasSprite replacement = overrides.get(textureKey);
             if (replacement != null) {
                 newQuads.add(GTQuadTransformers.setSprite(quad, replacement));
             } else {

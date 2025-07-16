@@ -139,7 +139,7 @@ public class StaticFaceBakery {
             QuadTransformers.settingEmissivity(emissivity).processInPlace(quad);
         }
 
-        return quad;
+        return quad.gtceu$setTextureKey(face.texture);
     }
 
     public static BlockFaceUV recomputeUVs(BlockFaceUV uv, Direction facing, Transformation modelRotation) {
