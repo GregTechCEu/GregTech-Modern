@@ -324,7 +324,8 @@ public class MetaTileEntityMachineRecipeLoader {
                     .outputItems(transformer)
                     // Lower-tier recipes faster because they have crafting table equivalents
                     .duration(tier < IV ? 20 : 100)
-                    .EUt(tier < GTValues.IV ? VA[LV] : VA[tier]);
+                    .EUt(tier < GTValues.IV ? VA[LV] : VA[tier])
+                    .addMaterialInfo(true);
 
             if (tier >= MV) {
                 b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
@@ -340,12 +341,13 @@ public class MetaTileEntityMachineRecipeLoader {
             if (hiAmp == null || lowAmp == null) continue;
 
             GTRecipeBuilder b = ASSEMBLER_RECIPES
-                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "hi_amp_2a_transformer")
+                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "_hi_amp_2a_transformer")
                     .inputItems(lowAmp)
                     .inputItems(GTCraftingComponents.CABLE_TIER_UP_DOUBLE.get(tier))
                     .inputItems(GTCraftingComponents.CABLE_DOUBLE.get(tier), 4)
                     .outputItems(hiAmp)
-                    .duration(100).EUt(VA[tier]);
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true);
 
             if (tier >= MV) {
                 b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
@@ -361,12 +363,13 @@ public class MetaTileEntityMachineRecipeLoader {
             if (hiAmp == null || lowAmp == null) continue;
 
             GTRecipeBuilder b = ASSEMBLER_RECIPES
-                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "hi_amp_4a_transformer")
+                    .recipeBuilder(VN[tier].toLowerCase(Locale.ROOT) + "_hi_amp_4a_transformer")
                     .inputItems(lowAmp)
                     .inputItems(GTCraftingComponents.CABLE_TIER_UP_QUAD.get(tier))
                     .inputItems(GTCraftingComponents.CABLE_QUAD.get(tier), 4)
                     .outputItems(hiAmp)
-                    .duration(100).EUt(VA[tier]);
+                    .duration(100).EUt(VA[tier])
+                    .addMaterialInfo(true);
 
             if (tier >= MV) {
                 b.inputItems(GTCraftingComponents.POWER_COMPONENT.get(tier), 2);
