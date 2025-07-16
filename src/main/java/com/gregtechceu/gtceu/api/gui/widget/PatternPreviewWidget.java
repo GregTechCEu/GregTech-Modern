@@ -213,7 +213,8 @@ public class PatternPreviewWidget extends WidgetGroup {
         Stream<BlockPos> stream = pattern.blockMap.keySet().stream()
                 .filter(pos -> layer == -1 || layer + pattern.minY == pos.getY());
         if (pattern.controllerBase.isFormed()) {
-            LongSet modelDisabled = pattern.controllerBase.getMultiblockState().getMatchContext().getOrDefault("renderMask",
+            LongSet modelDisabled = pattern.controllerBase.getMultiblockState().getMatchContext().getOrDefault(
+                    "renderMask",
                     LongSets.EMPTY_SET);
             if (!modelDisabled.isEmpty()) {
                 stream = stream.filter(pos -> !modelDisabled.contains(pos.asLong()));
