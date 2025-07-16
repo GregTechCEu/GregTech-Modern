@@ -294,6 +294,8 @@ public class GTMachineModels {
     public static final String OVERLAY_ITEM_HATCH = "overlay_item_hatch";
     // spotless:on
 
+    public static final ResourceLocation GENERATOR_MODEL = GTCEu.id("block/machine/template/generator_machine");
+
     public static MachineBuilder.ModelInitializer createSimpleGeneratorModel(ResourceLocation overlayDir) {
         return (ctx, prov, builder) -> {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
@@ -301,10 +303,7 @@ public class GTMachineModels {
             builder.forAllStatesModels(state -> {
                 RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
 
-                BlockModelBuilder model = prov.models().nested()
-                        .parent(prov.models().getExistingFile(GTCEu.id("block/overlay/2_layer/tinted/front")))
-                        .texture("overlay", ENERGY_OUT_1A.getIoPart())
-                        .texture("overlay_tinted", ENERGY_OUT_1A.getTintedPart());
+                BlockModelBuilder model = prov.models().nested().parent(prov.models().getExistingFile(GENERATOR_MODEL));
                 tieredHullTextures(model, builder.getOwner().getTier());
                 addWorkableOverlays(overlays, status, model);
 

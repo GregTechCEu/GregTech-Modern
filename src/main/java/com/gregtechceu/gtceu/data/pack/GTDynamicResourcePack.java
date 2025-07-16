@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.atlas.SpriteSources;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.BuiltInMetadata;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
@@ -46,6 +47,9 @@ import static com.gregtechceu.gtceu.data.pack.GTDynamicDataPack.writeJson;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTDynamicResourcePack implements PackResources {
+
+    private static final PackMetadataSection VERSION_METADATA_SECTION = new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+    private static final BuiltInMetadata METADATA = BuiltInMetadata.of(PackMetadataSection.TYPE, VERSION_METADATA_SECTION);
 
     protected static final ObjectSet<String> CLIENT_DOMAINS = new ObjectOpenHashSet<>();
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
@@ -227,15 +231,10 @@ public class GTDynamicResourcePack implements PackResources {
         return type == PackType.CLIENT_RESOURCES ? CLIENT_DOMAINS : Set.of();
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     @Override
-    public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if (metaReader == PackMetadataSection.TYPE) {
-            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"),
-                    SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
-        }
-        return null;
+    public <T> T getMetadataSection(MetadataSectionSerializer<T> section) {
+        return METADATA.get(section);
     }
 
     @Override
