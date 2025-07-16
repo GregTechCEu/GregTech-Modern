@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.data.pack;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.BuiltInMetadata;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
@@ -17,6 +17,7 @@ import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 
 import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -37,9 +38,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class GTDynamicDataPack implements PackResources {
-
-    private static final PackMetadataSection VERSION_METADATA_SECTION = new PackMetadataSection(Component.literal("GTCEu dynamic data"), SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
-    private static final BuiltInMetadata METADATA = BuiltInMetadata.of(PackMetadataSection.TYPE, VERSION_METADATA_SECTION);
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
@@ -77,11 +75,8 @@ public class GTDynamicDataPack implements PackResources {
         }
         addToData(getRecipeLocation(recipeId), recipeBytes);
 
-        ResourceLocation advancementId = recipe.getAdvancementId();
-        if (advancementId != null) {
+        if (recipe.serializeAdvancement() != null) {
             JsonObject advancement = recipe.serializeAdvancement();
-            if (advancement == null) return;
-
             byte[] advancementBytes = advancement.toString().getBytes(StandardCharsets.UTF_8);
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(recipe.getAdvancementId(), "advancements", parent, advancementBytes);
@@ -93,7 +88,7 @@ public class GTDynamicDataPack implements PackResources {
 
     /**
      * if subdir is null, no file ending is appended.
-     * 
+     *
      * @param id     the resource location of the file to be written.
      * @param subdir a nullable subdirectory for the data.
      * @param parent the parent folder where to write data to.
@@ -151,14 +146,29 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     @Override
-    public @NotNull Set<String> getNamespaces(PackType type) {
+    public Set<String> getNamespaces(PackType type) {
         return type == PackType.SERVER_DATA ? SERVER_DOMAINS : Set.of();
     }
 
     @Nullable
     @Override
-    public <T> T getMetadataSection(MetadataSectionSerializer<T> section) {
-        return METADATA.get(section);
+    public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
+        if (metaReader == PackMetadataSection.TYPE) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic data"),
+                    SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
+        } else if (metaReader.getMetadataSectionName().equals("filter")) {
+            JsonObject filter = new JsonObject();
+            JsonArray block = new JsonArray();
+            GTRecipes.RECIPE_FILTERS.forEach((id) -> { // Collect removed recipes in here, in the pack filter section.
+                JsonObject entry = new JsonObject();
+                entry.addProperty("namespace", "^" + id.getNamespace().replaceAll("[\\W]", "\\\\$0") + "$");
+                entry.addProperty("path", "^recipes/" + id.getPath().replaceAll("[\\W]", "\\\\$0") + "\\.json" + "$");
+                block.add(entry);
+            });
+            filter.add("block", block);
+            return metaReader.fromJson(filter);
+        }
+        return null;
     }
 
     @Override
