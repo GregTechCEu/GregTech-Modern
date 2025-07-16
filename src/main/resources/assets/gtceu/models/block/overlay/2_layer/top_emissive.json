@@ -14,15 +14,15 @@
             }
         },
         {
-            "from": [  0, 16.004,  0 ],
-            "to":   [ 16, 16.004, 16 ],
+            "from": [  0, 16.01,  0 ],
+            "to":   [ 16, 16.01, 16 ],
             "faces": {
                 "up": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "up" }
             }
         },
         {
-            "from": [  0, 16.006,  0 ],
-            "to":   [ 16, 16.006, 16 ],
+            "from": [  0, 16.02,  0 ],
+            "to":   [ 16, 16.02, 16 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {

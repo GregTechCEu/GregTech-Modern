@@ -5,15 +5,15 @@
     },
     "elements": [
         {
-            "from": [  0,  0, -0.004 ],
-            "to":   [ 16, 16, -0.004 ],
+            "from": [  0,  0, -0.01 ],
+            "to":   [ 16, 16, -0.01 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
             }
         },
         {
-            "from": [  0,  0, -0.006 ],
-            "to":   [ 16, 16, -0.006 ],
+            "from": [  0,  0, -0.02 ],
+            "to":   [ 16, 16, -0.02 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -21,8 +21,8 @@
             }
         },
         {
-            "from": [  0,  0, -0.008 ],
-            "to":   [ 16, 16, -0.008 ],
+            "from": [  0,  0, -0.03 ],
+            "to":   [ 16, 16, -0.03 ],
             "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
