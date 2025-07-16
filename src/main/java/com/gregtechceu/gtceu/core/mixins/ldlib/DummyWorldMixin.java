@@ -13,20 +13,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(value = DummyWorld.class, remap = false)
 public abstract class DummyWorldMixin implements ILevelExtension, IBlockGetterExtension {
+
+    @Unique
+    private final ModelDataManager gtceu$modelDataManager = new ModelDataManager((Level) (Object) this);
 
     @Shadow
     public abstract @NotNull Level getLevel();
 
     @Override
     public @Nullable ModelDataManager getModelDataManager() {
-        return getLevel().getModelDataManager();
+        return gtceu$modelDataManager;
     }
 
     @Override
     public @NotNull ModelData getModelData(@NotNull BlockPos pos) {
-        return getLevel().getModelData(pos);
+        return gtceu$modelDataManager.getAt(pos);
     }
 }

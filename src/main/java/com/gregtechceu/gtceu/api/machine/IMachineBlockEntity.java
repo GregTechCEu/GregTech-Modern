@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.core.mixins.LevelAccessor;
 
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -134,11 +134,13 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
 
     final class ClientCallWrapper {
 
-        public static void requestModelDataUpdate(IBlockEntityExtension blockEntity) {
-            if (Minecraft.getInstance().isSameThread()) {
+        public static void requestModelDataUpdate(IMachineBlockEntity blockEntity) {
+            LevelAccessor accessor = (LevelAccessor) blockEntity.level();
+            if (accessor == null || Thread.currentThread() != accessor.gtceu$getThread()) {
                 // don't update model data on worker threads
-                blockEntity.requestModelDataUpdate();
+                return;
             }
+            blockEntity.requestModelDataUpdate();
         }
     }
 }

@@ -37,6 +37,6 @@ public abstract class TrackedDummyWorldMixin extends DummyWorld implements ILeve
             return ModelData.EMPTY;
         }
         Level proxy = proxyWorld.get();
-        return proxy != null ? proxy.getModelData(pos) : ModelData.EMPTY;
+        return proxy != null ? proxy.getModelData(pos) : super.getModelData(pos);
     }
 }

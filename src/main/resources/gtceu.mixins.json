@@ -41,6 +41,7 @@
         "FluidStackAccessor",
         "InventoryMixin",
         "IOWorkerMixin",
+        "LevelAccessor",
         "LevelMixin",
         "LootPoolAccessor",
         "MappedRegistryMixin",
