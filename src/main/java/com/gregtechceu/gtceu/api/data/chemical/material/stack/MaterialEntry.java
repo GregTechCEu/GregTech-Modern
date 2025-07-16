@@ -30,6 +30,10 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
     }
 
+    public boolean isIgnored() {
+        return tagPrefix().isIgnored(material());
+    }
+
     @Override
     public String toString() {
         if (tagPrefix.isEmpty()) {

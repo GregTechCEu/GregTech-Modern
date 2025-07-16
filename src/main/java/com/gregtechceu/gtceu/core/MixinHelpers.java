@@ -150,7 +150,7 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
                 // Add tool tags
-                if (!entry.tagPrefix().miningToolTag().isEmpty()) {
+                if (!entry.isIgnored() && !entry.tagPrefix().miningToolTag().isEmpty()) {
                     tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
