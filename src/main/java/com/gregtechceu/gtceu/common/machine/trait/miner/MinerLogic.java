@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
-import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
@@ -204,9 +203,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
             } else {
                 // the miner cannot drain, therefore it is inactive
                 if (this.isWorking()) {
-                    setWaiting(
-                            ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ")
-                                    .append(ItemRecipeCapability.CAP.getName()), ItemRecipeCapability.CAP));
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ")
+                            .append(ItemRecipeCapability.CAP.getName()));
                 }
             }
 

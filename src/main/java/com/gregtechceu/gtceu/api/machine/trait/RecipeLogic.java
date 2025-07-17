@@ -80,7 +80,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Nullable
     @Persisted
     @DescSynced
-    private ActionResult waitingReason = null;
+    private Component waitingReason = null;
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
@@ -267,19 +267,16 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 progress++;
                 totalContinuousRunningTime++;
             } else {
-
+                setWaiting(handleTick.reason());
                 runAttempt++;
                 if (runAttempt > 5) {
                     runAttempt = 0;
                     setStatus(Status.SUSPEND);
-                    waitingReason = handleTick;
-                } else {
-                    setWaiting(handleTick);
                 }
                 runDelay = runAttempt * 10;
             }
         } else {
-            setWaiting(conditionResult);
+            setWaiting(conditionResult.reason());
         }
         if (isWaiting()) {
             regressRecipe();
@@ -384,7 +381,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    public void setWaiting(@Nullable ActionResult reason) {
+    public void setWaiting(@Nullable Component reason) {
         setStatus(Status.WAITING);
         waitingReason = reason;
         machine.onWaiting();
@@ -469,7 +466,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     suspendAfterFinish = false;
                 } else {
                     setStatus(Status.IDLE);
-                    waitingReason = recipeCheck;
+                    waitingReason = recipeCheck.reason();
                 }
                 consecutiveRecipes = 0;
                 progress = 0;
@@ -545,7 +542,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Override
     public List<Component> getFancyTooltip() {
         if (waitingReason != null) {
-            return List.of(waitingReason.reason());
+            return List.of(waitingReason);
         }
         return Collections.emptyList();
     }

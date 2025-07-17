@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -165,14 +164,13 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                 } else {
                     getRecipeLogic()
-                            .setWaiting(ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_in")
-                                    .append(": ").append(EURecipeCapability.CAP.getName()), EURecipeCapability.CAP));
+                            .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                    .append(": ").append(EURecipeCapability.CAP.getName()));
                 }
             }
         } else {
-            getRecipeLogic().setWaiting(
-                    ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
-                            .append(EURecipeCapability.CAP.getName()), EURecipeCapability.CAP));
+            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
         }
         updateTickSubscription();
     }
