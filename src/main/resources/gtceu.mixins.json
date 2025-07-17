@@ -62,7 +62,6 @@
         "forge.ConfiguredModelBuilderAccessor",
         "forge.ConfiguredModelListAccessor",
         "forge.IntersectionIngredientAccessor",
-        "forge.ModelBuilderAccessor",
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
