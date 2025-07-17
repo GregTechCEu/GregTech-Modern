@@ -642,7 +642,8 @@ public final class MaterialRecipeHandler {
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
-                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ? material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
+                        material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
                 if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
                             .inputItems(dust, material, (int) (materialAmount / M))
