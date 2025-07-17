@@ -285,11 +285,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     protected void regressRecipe() {
         if (progress > 0 && machine.regressWhenWaiting()) {
-            if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
-                this.progress = 1;
-            } else {
-                this.progress = Math.max(1, progress - 2);
-            }
+            this.progress = 1;
         }
     }
 
