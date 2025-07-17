@@ -220,7 +220,7 @@ public class RecipeHelper {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
-        if (result.isSuccess() || result.capability() == null) return result.result();
+        if (result.isSuccess() || result.capability() == null) return result;
 
         if (!simulated) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
@@ -228,7 +228,7 @@ public class RecipeHelper {
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()));
+                .append(": ").append(result.capability().getName()), result.capability());
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -254,7 +254,7 @@ public class RecipeHelper {
             } else if (!condition.check(recipe, recipeLogic)) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
                         .append(": ")
-                        .append(condition.getTooltips()));
+                        .append(condition.getTooltips()), null);
             }
         }
 
@@ -269,7 +269,7 @@ public class RecipeHelper {
             }
 
             if (!passed) {
-                return ActionResult.fail(component);
+                return ActionResult.fail(component, null);
             }
         }
         return ActionResult.SUCCESS;

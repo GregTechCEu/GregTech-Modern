@@ -114,6 +114,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     @Getter
     protected long totalContinuousRunningTime;
+    protected int runAttempt = 0;
+    protected int runDelay = 0;
     @Persisted
     @Setter
     protected boolean suspendAfterFinish = false;
@@ -188,7 +190,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (!isSuspend()) {
             if (!isIdle() && lastRecipe != null) {
                 if (progress < duration) {
-                    handleRecipeWorking();
+                    if (runDelay > 0) {
+                        runDelay--;
+                    } else {
+                        handleRecipeWorking();
+                    }
                 }
                 if (progress >= duration) {
                     onRecipeFinish();
@@ -262,6 +268,12 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 totalContinuousRunningTime++;
             } else {
                 setWaiting(handleTick.reason());
+                runAttempt++;
+                if (runAttempt > 5) {
+                    runAttempt = 0;
+                    setStatus(Status.SUSPEND);
+                }
+                runDelay = runAttempt * 10;
             }
         } else {
             setWaiting(conditionResult.reason());
@@ -428,6 +440,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
+            runAttempt = 0;
+            runDelay = 0;
             consecutiveRecipes++;
             handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
