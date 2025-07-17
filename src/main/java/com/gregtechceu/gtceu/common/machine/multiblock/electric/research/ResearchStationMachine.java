@@ -154,7 +154,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 if (recipeMatch.isSuccess()) {
                     setupRecipe(modified);
                 } else {
-                    setWaiting(recipeMatch.reason());
+                    setWaiting(recipeMatch);
                 }
                 if (lastRecipe != null && getStatus() == Status.WORKING) {
                     lastOriginRecipe = match;

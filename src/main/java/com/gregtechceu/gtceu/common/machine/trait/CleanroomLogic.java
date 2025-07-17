@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -82,8 +83,9 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                         adjustCleanAmount(true);
                     }
 
-                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
-                            .append(EURecipeCapability.CAP.getName()));
+                    setWaiting(
+                            ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                                    .append(EURecipeCapability.CAP.getName()), EURecipeCapability.CAP));
                     return;
                 }
                 setStatus(Status.WORKING);
