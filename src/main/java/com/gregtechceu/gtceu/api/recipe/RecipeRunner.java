@@ -24,19 +24,6 @@ import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMa
 
 public class RecipeRunner {
 
-    /*
-     * public record RecipeHandlingResult(ActionResult result, @Nullable RecipeCapability<?> capability) {
-     * 
-     * public static RecipeHandlingResult SUCCESS = new RecipeHandlingResult(ActionResult.SUCCESS, null);
-     * public static RecipeHandlingResult NO_CAPABILITIES = new
-     * RecipeRunner.RecipeHandlingResult(ActionResult.FAIL_NO_CAPABILITIES, null);
-     * 
-     * public boolean isSuccess() {
-     * return result.isSuccess();
-     * }
-     * }
-     */
-
     private final GTRecipe recipe;
     private final IO io;
     private final boolean isTick;
@@ -180,7 +167,7 @@ public class RecipeRunner {
 
         for (var entry : recipeContents.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return new ActionResult(false, null, entry.getKey());
+                return ActionResult.fail(null, entry.getKey());
             }
         }
 
