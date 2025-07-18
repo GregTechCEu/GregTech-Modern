@@ -22,7 +22,7 @@ jobs:
         with:
           mode: exactly
           count: 0
-          labels: 'do not merge'
+          labels: 'do not merge, admin merge'
           exit_type: failure
 
       - name: Check for Required Type Labels # require at least one of these labels
@@ -38,6 +38,6 @@ jobs:
         with:
           mode: exactly
           count: 1
-          labels: 'release: api - X.0.0, release: major - 0.X.0, releasee: Patch - 0.0.X, release: stale'
+          labels: 'release: api - X.0.0, release: major - 0.X.0, release: Patch - 0.0.X, release: stale'
           exit_type: failure
           
