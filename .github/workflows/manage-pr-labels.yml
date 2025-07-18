@@ -22,7 +22,7 @@ jobs:
         with:
           mode: exactly
           count: 0
-          labels: 'do not merge'
+          labels: 'do not merge, admin merge'
           exit_type: failure
 
       - name: Check for Required Type Labels # require at least one of these labels
