@@ -66,7 +66,7 @@ public enum SyncedKeyMapping {
     }
 
     /**
-     * Create a new SyncdKeyMapping for a specified key code.
+     * Create a new SyncedKeyMapping for a specified key code.
      *
      * @param keyCode The key code.
      */
