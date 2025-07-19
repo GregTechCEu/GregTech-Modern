@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingBusFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -54,7 +54,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
-    int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     @DescSynced
     @Persisted
@@ -65,7 +64,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Setter
     @Persisted
     @DropSaved
-    private int minItemStackSize = 1;
+    private int minStackSize = 1;
     @Getter
     @Setter
     @Persisted
@@ -114,9 +113,10 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
-        if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
+        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
+                                                                                                  // Avoid Crash loops.
         if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (autoPull){
+            if (autoPull) {
                 refreshList();
             }
             syncME();
@@ -134,7 +134,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= minItemStackSize) {
+                if (extracted >= minStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
@@ -234,7 +234,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
-            if (amount >= minItemStackSize) {
+            if (amount >= minStackSize) {
                 if (topItems.size() < CONFIG_SIZE) {
                     topItems.offer(entry);
                 } else if (amount > topItems.peek().getLongValue()) {
@@ -275,7 +275,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingBusFancyConfigurator(this));
+        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     @Override

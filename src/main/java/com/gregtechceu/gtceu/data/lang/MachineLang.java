@@ -807,6 +807,8 @@ public class MachineLang {
                 "Min. Fluid Count");
         provider.add("gtceu.gui.adv_stocking_config.min_item_count",
                 "Minimum Item Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.adv_stocking_config.min_fluid_count",
+                "Minimum Fluid Stack Size for Automated Pulling");
         provider.add("gtceu.gui.title.adv_stocking_config.ticks_per_cycle",
                 "Ticks Per Cycle");
         provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",

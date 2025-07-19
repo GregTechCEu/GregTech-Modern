@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingHatchFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -57,7 +57,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             MEStockingHatchPartMachine.class, MEInputHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     private static final int CONFIG_SIZE = 16;
-    Integer ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     @DescSynced
     @Persisted
@@ -68,7 +67,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Setter
     @Persisted
     @DropSaved
-    private int minFluidStackSize = 1;
+    private int minStackSize = 1;
 
     @Getter
     @Setter
@@ -118,9 +117,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
-        if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
+        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
+                                                                                                  // Avoid Crash loops.
         if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (autoPull){
+            if (autoPull) {
                 refreshList();
             }
             syncME();
@@ -136,7 +136,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= minFluidStackSize) {
+                if (extracted >= minStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
@@ -218,7 +218,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
-            if (amount >= minFluidStackSize) {
+            if (amount >= minStackSize) {
                 if (topFluids.size() < CONFIG_SIZE) {
                     topFluids.offer(entry);
                 } else if (amount > topFluids.peek().getLongValue()) {
@@ -258,7 +258,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingHatchFancyConfigurator(this));
+        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     ////////////////////////////////
