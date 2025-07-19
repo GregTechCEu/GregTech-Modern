@@ -1111,6 +1111,7 @@
   "block.gtceu.substation_capacitor.tooltip_filled": "§cEnergy Capacity: §f%d EU",
   "block.gtceu.superconducting_coil": "Superconducting Coil Block",
   "block.gtceu.tempered_glass": "Tempered Glass",
+  "block.gtceu.test_render": "Test Render",
   "block.gtceu.the_end_marker": "The End",
   "block.gtceu.the_nether_marker": "The Nether",
   "block.gtceu.titanium_crate": "Titanium Crate",
