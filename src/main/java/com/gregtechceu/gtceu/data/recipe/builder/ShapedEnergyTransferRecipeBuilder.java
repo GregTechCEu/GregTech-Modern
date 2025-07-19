@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
+import com.gregtechceu.gtceu.utils.NBTtoJSONConverter;
 
 import com.lowdragmc.lowdraglib.utils.Builder;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -155,7 +155,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
                 result.addProperty("count", output.getCount());
             }
             if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
+                result.add("nbt", NBTtoJSONConverter.nbtToJSON(output.getTag()));
             }
             json.add("result", result);
         }

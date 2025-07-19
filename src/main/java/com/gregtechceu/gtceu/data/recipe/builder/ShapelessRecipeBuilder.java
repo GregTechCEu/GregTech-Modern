@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
-
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+import com.gregtechceu.gtceu.utils.NBTtoJSONConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -106,7 +105,7 @@ public class ShapelessRecipeBuilder {
                 result.addProperty("count", output.getCount());
             }
             if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
+                result.add("nbt", NBTtoJSONConverter.nbtToJSON(output.getTag()));
             }
             json.add("result", result);
         }
