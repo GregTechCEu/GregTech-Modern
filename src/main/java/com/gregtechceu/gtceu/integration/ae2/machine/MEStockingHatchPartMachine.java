@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingHatchFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -15,6 +17,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -59,6 +62,15 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Getter
     private boolean autoPull;
 
+    @Getter
+    @Persisted
+    @DropSaved
+    private int minFluidStackSize = 1;
+    @Getter
+    @Persisted
+    @DropSaved
+    private int ticksPerCycle = 20;
+
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
@@ -101,7 +113,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
-        if (autoPull && getOffsetTimer() % 100 == 0) {
+        if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
         }
@@ -123,6 +135,11 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             }
             slot.setStock(null);
         }
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this); //removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -151,6 +168,13 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             }
         }
         return false;
+    }
+    public void setMinItemStackSize(Integer value) {
+        minFluidStackSize = value;
+    }
+
+    public void setTicksPerCycle(Integer value) {
+        ticksPerCycle = value;
     }
 
     @Override
@@ -195,12 +219,13 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
-
-            if (topFluids.size() < CONFIG_SIZE) {
-                topFluids.offer(entry);
-            } else if (amount > topFluids.peek().getLongValue()) {
-                topFluids.poll();
-                topFluids.offer(entry);
+            if(amount >=minFluidStackSize) {
+                if (topFluids.size() < CONFIG_SIZE) {
+                    topFluids.offer(entry);
+                } else if (amount > topFluids.peek().getLongValue()) {
+                    topFluids.poll();
+                    topFluids.offer(entry);
+                }
             }
         }
 
@@ -234,6 +259,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new AutoStockingHatchFancyConfigurator(this));
     }
 
     ////////////////////////////////

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingBusFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -14,6 +16,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -55,6 +58,15 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Persisted
     @Getter
     private boolean autoPull;
+
+    @Getter
+    @Persisted
+    @DropSaved
+    private int minItemStackSize = 1;
+    @Getter
+    @Persisted
+    @DropSaved
+    private int ticksPerCycle = 20;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
@@ -98,7 +110,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
-        if (autoPull && getOffsetTimer() % 100 == 0) {
+        if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
         }
@@ -122,6 +134,11 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             }
             slot.setStock(null);
         }
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this); //removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -164,6 +181,14 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             }
         }
         return false;
+    }
+
+    public void setMinItemStackSize(Integer value) {
+        minItemStackSize = value;
+    }
+
+    public void setTicksPerCycle(Integer value) {
+        ticksPerCycle = value;
     }
 
     @Override
@@ -211,12 +236,13 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
-
-            if (topItems.size() < CONFIG_SIZE) {
-                topItems.offer(entry);
-            } else if (amount > topItems.peek().getLongValue()) {
-                topItems.poll();
-                topItems.offer(entry);
+            if (amount >= minItemStackSize) {
+                if (topItems.size() < CONFIG_SIZE) {
+                    topItems.offer(entry);
+                } else if (amount > topItems.peek().getLongValue()) {
+                    topItems.poll();
+                    topItems.offer(entry);
+                }
             }
         }
 
@@ -251,6 +277,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new AutoStockingBusFancyConfigurator(this));
     }
 
     @Override
