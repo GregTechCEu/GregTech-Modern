@@ -25,9 +25,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.NBTtoJSONConverter;
 import com.gregtechceu.gtceu.utils.ResearchManager;
-
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -1285,8 +1284,8 @@ public class GTRecipeBuilder {
     public void toJson(JsonObject json) {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
-        if (data != null && !data.isEmpty()) {
-            json.add("data", NBTToJsonConverter.getObject(data));
+        if (!data.isEmpty()) {
+            json.add("data", NBTtoJSONConverter.nbtToJSON(data));
         }
         json.add("inputs", capabilitiesToJson(input));
         json.add("outputs", capabilitiesToJson(output));
