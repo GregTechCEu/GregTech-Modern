@@ -118,7 +118,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
-        if  (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; //Emergency Check to Avoid Crash loops.
+        if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
         if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
@@ -175,6 +175,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
         return false;
     }
+
     @Override
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;

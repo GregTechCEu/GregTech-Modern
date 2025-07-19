@@ -18,6 +18,7 @@ public class AutoStockingHatchFancyConfigurator implements IFancyConfigurator {
 
     private MEStockingHatchPartMachine machine;
     Integer ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
+
     public AutoStockingHatchFancyConfigurator(MEStockingHatchPartMachine machine) {
         this.machine = machine;
     }

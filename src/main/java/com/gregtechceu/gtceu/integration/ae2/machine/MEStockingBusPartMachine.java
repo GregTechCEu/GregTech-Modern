@@ -114,7 +114,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
-        if  (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; //Emergency Check to Avoid Crash loops.
+        if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
         if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
