@@ -6,10 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncdata.annotations.SaveField;
+import com.gregtechceu.gtceu.syncdata.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -28,9 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DiodePartMachine extends TieredIOPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DiodePartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     // spotless:off
     public enum AmpMode implements StringRepresentable {
@@ -72,12 +67,12 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     public static int MAX_AMPS = 16;
 
-    @Persisted
+    @SaveField
     protected NotifiableEnergyContainer energyContainer;
 
     @Getter
-    @DescSynced
-    @Persisted(key = "amp_mode")
+    @SyncToClient
+    @SaveField(nbtKey = "amp_mode")
     private int amps;
 
     public DiodePartMachine(IMachineBlockEntity holder, int tier) {
@@ -93,10 +88,10 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     private void cycleAmpMode() {
         amps = amps == getMaxAmperage() ? 1 : amps << 1;
-        if (!getLevel().isClientSide) {
+        if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("amps");
             reinitializeEnergyContainer();
             notifyBlockUpdate();
-            markDirty();
         }
     }
 
@@ -147,10 +142,5 @@ public class DiodePartMachine extends TieredIOPartMachine {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.CONSUME;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -14,13 +14,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.syncdata.annotations.SaveField;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,16 +41,13 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
     public static final long AMPS_PER_BATTERY = 2L;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BatteryBufferMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     @Getter
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
     @Getter
-    @Persisted
+    @SaveField
     protected final CustomItemStackHandler batteryInventory;
 
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
@@ -65,10 +61,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
@@ -260,7 +252,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    BatteryBufferMachine.this.markDirty();
                     checkOutputSubscription();
                 }
 
@@ -319,7 +310,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    BatteryBufferMachine.this.markDirty();
                     checkOutputSubscription();
                 }
 

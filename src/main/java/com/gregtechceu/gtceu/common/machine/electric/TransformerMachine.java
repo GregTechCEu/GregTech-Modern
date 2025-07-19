@@ -5,11 +5,9 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncdata.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.syncdata.annotations.SaveField;
+import com.gregtechceu.gtceu.syncdata.annotations.SyncToClient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -29,17 +27,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class TransformerMachine extends TieredEnergyMachine implements IControllable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(TransformerMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
-
     public static final BooleanProperty TRANSFORM_UP_PROPERTY = BooleanProperty.create("transform_up");
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
-    @UpdateListener(methodName = "onTransformUpdated")
     private boolean isTransformUp;
-    @Persisted
+    @SaveField
     @Getter
     @Setter
     private boolean isWorkingEnabled;
@@ -55,14 +49,11 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @SuppressWarnings("unused")
-    private void onTransformUpdated(boolean newValue, boolean oldValue) {
-        updateEnergyContainer(newValue);
+    @ClientFieldChangeListener(fieldName = "isTransformUp")
+    private void onTransformUpdated() {
+        updateEnergyContainer(isTransformUp);
     }
 
     @Override
@@ -119,6 +110,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     public void setTransformUp(boolean isTransformUp) {
         if (this.isTransformUp != isTransformUp && !isRemote()) {
             this.isTransformUp = isTransformUp;
+            syncDataHolder.markClientSyncFieldDirty("isTransformUp");
             updateEnergyContainer(isTransformUp);
             setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, isTransformUp));
         }

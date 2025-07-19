@@ -3,22 +3,21 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.syncdata.annotations.CustomDataField;
+import com.gregtechceu.gtceu.syncdata.annotations.FieldDataModifier;
+import com.gregtechceu.gtceu.syncdata.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,11 +25,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class HullMachine extends TieredPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HullMachine.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
+    @CustomDataField
+    @SaveField(nbtKey = "grid_node")
     private final Object gridNodeHost;
-    @Persisted
+
+    @SaveField
     protected NotifiableEnergyContainer energyContainer;
 
     public HullMachine(IMachineBlockEntity holder, int tier) {
@@ -76,26 +75,21 @@ public class HullMachine extends TieredPartMachine {
         }
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
+    @FieldDataModifier(fieldName = "gridNodeHost", target = FieldDataModifier.ModifyTarget.SAVE_NBT)
+    private Tag saveGridNodeHost(Tag saved) {
         if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
-            CompoundTag nbt = new CompoundTag();
-            connectedBlockEntity.getMainNode().saveToNBT(nbt);
-            tag.put("grid_node", nbt);
+            var compound = new CompoundTag();
+            connectedBlockEntity.getMainNode().saveToNBT(compound);
+            return compound;
         }
+        return saved;
     }
 
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
-            connectedBlockEntity.getMainNode().loadFromNBT(tag.getCompound("grid_node"));
+    @FieldDataModifier(fieldName = "gridNodeHost", target = FieldDataModifier.ModifyTarget.LOAD_NBT)
+    private void loadGridNodeHost(Tag saved) {
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+                saved instanceof CompoundTag tag) {
+            connectedBlockEntity.getMainNode().loadFromNBT(tag);
         }
     }
 
