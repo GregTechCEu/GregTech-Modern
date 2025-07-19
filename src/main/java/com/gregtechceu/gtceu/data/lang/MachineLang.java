@@ -812,7 +812,7 @@ public class MachineLang {
         provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",
                 "Delay between item list updates");
         provider.add("gtceu.gui.adv_stocking_config.title",
-                "Configure AutoStocking");
+                "Configure Automatic Stocking");
 
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");
