@@ -119,8 +119,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void autoIO() {
         super.autoIO();
         if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
-        if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
-            refreshList();
+        if (getOffsetTimer() % ticksPerCycle == 0) {
+            if (autoPull){
+                refreshList();
+            }
             syncME();
         }
     }
@@ -134,7 +136,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted > 0) {
+                if (extracted >= minFluidStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }

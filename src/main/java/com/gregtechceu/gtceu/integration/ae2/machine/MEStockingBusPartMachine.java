@@ -115,8 +115,10 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void autoIO() {
         super.autoIO();
         if (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; // Emergency Check to Avoid Crash loops.
-        if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
-            refreshList();
+        if (getOffsetTimer() % ticksPerCycle == 0) {
+            if (autoPull){
+                refreshList();
+            }
             syncME();
         }
     }
@@ -132,7 +134,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted > 0) {
+                if (extracted >= minItemStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
