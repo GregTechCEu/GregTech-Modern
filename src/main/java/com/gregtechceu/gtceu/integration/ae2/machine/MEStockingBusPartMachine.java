@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -53,6 +54,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             MEStockingBusPartMachine.class, MEInputBusPartMachine.MANAGED_FIELD_HOLDER);
+    int ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     @DescSynced
     @Persisted
@@ -60,13 +62,15 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     private boolean autoPull;
 
     @Getter
+    @Setter
     @Persisted
     @DropSaved
     private int minItemStackSize = 1;
     @Getter
+    @Setter
     @Persisted
     @DropSaved
-    private int ticksPerCycle = 20;
+    private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
@@ -110,6 +114,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
+        if  (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; //Emergency Check to Avoid Crash loops.
         if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
@@ -138,7 +143,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     @Override
     public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); //removes the cover configurator, it's pointless and clashes with layout.
+        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -183,14 +188,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         return false;
     }
 
-    public void setMinItemStackSize(Integer value) {
-        minItemStackSize = value;
-    }
-
-    public void setTicksPerCycle(Integer value) {
-        ticksPerCycle = value;
-    }
-
     @Override
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
@@ -225,7 +222,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
             long amount = entry.getLongValue();
-            if (!topItems.isEmpty() && amount < topItems.peek().getLongValue()) continue;
             AEKey what = entry.getKey();
 
             if (amount <= 0) continue;

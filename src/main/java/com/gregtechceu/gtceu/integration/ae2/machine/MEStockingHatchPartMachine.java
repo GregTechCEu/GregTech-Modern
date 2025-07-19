@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -56,6 +57,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             MEStockingHatchPartMachine.class, MEInputHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     private static final int CONFIG_SIZE = 16;
+    Integer ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     @DescSynced
     @Persisted
@@ -63,13 +65,16 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     private boolean autoPull;
 
     @Getter
+    @Setter
     @Persisted
     @DropSaved
     private int minFluidStackSize = 1;
+
     @Getter
+    @Setter
     @Persisted
     @DropSaved
-    private int ticksPerCycle = 20;
+    private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
@@ -113,6 +118,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
+        if  (ticksPerCycle == 0) ticksPerCycle = ME_UPDATE_INTERVAL; //Emergency Check to Avoid Crash loops.
         if (autoPull && getOffsetTimer() % ticksPerCycle == 0) {
             refreshList();
             syncME();
@@ -139,7 +145,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); //removes the cover configurator, it's pointless and clashes with layout.
+        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -169,14 +175,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
         return false;
     }
-    public void setMinItemStackSize(Integer value) {
-        minFluidStackSize = value;
-    }
-
-    public void setTicksPerCycle(Integer value) {
-        ticksPerCycle = value;
-    }
-
     @Override
     public void setAutoPull(boolean autoPull) {
         this.autoPull = autoPull;
@@ -207,8 +205,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
             long amount = entry.getLongValue();
-            if (!topFluids.isEmpty() && amount < topFluids.peek().getLongValue()) continue;
-
             AEKey what = entry.getKey();
 
             if (amount <= 0) continue;
@@ -219,7 +215,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
-            if(amount >=minFluidStackSize) {
+            if (amount >= minFluidStackSize) {
                 if (topFluids.size() < CONFIG_SIZE) {
                     topFluids.offer(entry);
                 } else if (amount > topFluids.peek().getLongValue()) {

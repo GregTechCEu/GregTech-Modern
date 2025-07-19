@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.Component;
 public class AutoStockingBusFancyConfigurator implements IFancyConfigurator {
 
     private MEStockingBusPartMachine machine;
+    Integer ME_UPDATE_INTERVAL = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
 
     public AutoStockingBusFancyConfigurator(MEStockingBusPartMachine machine) {
         this.machine = machine;
@@ -35,12 +37,12 @@ public class AutoStockingBusFancyConfigurator implements IFancyConfigurator {
     public Widget createConfigurator() {
         var group = new WidgetGroup(0, 0, 90, 70);
         group.addWidget(new LabelWidget(4, 2, "gtceu.gui.title.adv_stocking_config.min_item_count"));
-        group.addWidget(new IntInputWidget(4, 12, 81, 14, () -> machine.getMinItemStackSize(),
-                machine::setMinItemStackSize)
+        group.addWidget(new IntInputWidget(4, 12, 81, 14, machine::getMinItemStackSize,
+                machine::setMinItemStackSize).setMin(1)
                 .appendHoverTooltips(Component.translatable("gtceu.gui.adv_stocking_config.min_item_count")));
         group.addWidget(new LabelWidget(4, 36, "gtceu.gui.title.adv_stocking_config.ticks_per_cycle"));
-        group.addWidget(new IntInputWidget(4, 46, 81, 14, () -> machine.getTicksPerCycle(),
-                machine::setTicksPerCycle)
+        group.addWidget(new IntInputWidget(4, 46, 81, 14, machine::getTicksPerCycle,
+                machine::setTicksPerCycle).setMin(ME_UPDATE_INTERVAL)
                 .appendHoverTooltips(Component.translatable("gtceu.gui.adv_stocking_config.ticks_per_cycle")));
         return group;
     }
