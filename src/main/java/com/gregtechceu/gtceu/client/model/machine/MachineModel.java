@@ -388,11 +388,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public boolean isBlockEntityRenderer() {
-        if (dynamicRenders.isEmpty()) return false;
-        for (DynamicRender<?, ?> render : dynamicRenders) {
-            if (render.isBlockEntityRenderer()) return true;
-        }
-        return false;
+        return true;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -400,6 +396,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void render(MetaMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
+        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer, packedLight, packedOverlay);
         if (dynamicRenders.isEmpty()) return;
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
@@ -434,6 +431,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRenderOffScreen(MetaMachine machine) {
+        if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
         for (DynamicRender render : dynamicRenders) {
             if (render.shouldRenderOffScreen(machine)) return true;
@@ -444,6 +442,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
+        if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
         for (DynamicRender model : dynamicRenders) {
             if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
@@ -455,7 +454,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @Override
     public int getViewDistance() {
-        int distance = 0;
+        int distance = 12;
         if (dynamicRenders.isEmpty()) return distance;
 
         for (DynamicRender<?, ?> model : dynamicRenders) {

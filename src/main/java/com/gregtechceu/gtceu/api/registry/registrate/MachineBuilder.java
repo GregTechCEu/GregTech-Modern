@@ -113,7 +113,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean allowExtendedFacing = false;
     @Setter
-    private boolean hasBER;
+    private boolean hasBER = true;
     @Setter
     private boolean renderMultiblockWorldPreview = true;
     @Setter
