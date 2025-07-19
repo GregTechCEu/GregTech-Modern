@@ -169,12 +169,12 @@ public enum RelativeDirection implements StringRepresentable {
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> Comparator.comparingInt(pos -> -pos.getY());
-            case DOWN -> Comparator.comparingInt(BlockPos::getY);
-            case EAST -> Comparator.comparingInt(pos -> -pos.getX());
-            case WEST -> Comparator.comparingInt(BlockPos::getX);
+            case UP -> Comparator.comparingInt(BlockPos::getY);
+            case DOWN -> Comparator.comparingInt(pos -> -pos.getY());
             case NORTH -> Comparator.comparingInt(pos -> -pos.getZ());
+            case EAST -> Comparator.comparingInt(BlockPos::getX);
             case SOUTH -> Comparator.comparingInt(BlockPos::getZ);
+            case WEST -> Comparator.comparingInt(pos -> -pos.getX());
         };
     }
 
