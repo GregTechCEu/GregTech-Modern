@@ -3,14 +3,8 @@ package com.gregtechceu.gtceu.common.data.models;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -21,11 +15,7 @@ import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
-import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
-import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
-import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.Util;
@@ -44,8 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-import static com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController.IS_FORMED_PROPERTY;
-import static com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 
@@ -147,7 +136,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
                 return addWorkableOverlays(overlays, status, model);
@@ -158,7 +147,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createOverlaySteamHullMachineModel(ResourceLocation overlayModel) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(state -> {
-                boolean steel = state.getOptionalValue(SteamMachine.STEEL_PROPERTY).orElse(false);
+                boolean steel = state.getOptionalValue(IS_STEEL_MACHINE).orElse(false);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(overlayModel));
@@ -177,7 +166,7 @@ public class GTMachineModels {
             builder.forAllStatesModels(state -> {
                 BlockModelBuilder model = colorOverlayHullModel(overlay, pipeOverlay, emissiveOverlay, state,
                         prov.models());
-                steamCasingTextures(model, state.getOptionalValue(SteamMachine.STEEL_PROPERTY).orElse(false));
+                steamCasingTextures(model, state.getOptionalValue(IS_STEEL_MACHINE).orElse(false));
                 return model;
             });
 
@@ -198,7 +187,7 @@ public class GTMachineModels {
             makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.WAITING);
             makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.SUSPEND);
 
-            if (!builder.getOwner().defaultRenderState().hasProperty(IExhaustVentMachine.VENT_DIRECTION_PROPERTY)) {
+            if (!builder.getOwner().defaultRenderState().hasProperty(VENT_DIRECTION)) {
                 return;
             }
 
@@ -208,7 +197,7 @@ public class GTMachineModels {
                         .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
                         .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
                         .addModel()
-                        .condition(IExhaustVentMachine.VENT_DIRECTION_PROPERTY, relative);
+                        .condition(VENT_DIRECTION, relative);
             }
         };
     }
@@ -219,7 +208,7 @@ public class GTMachineModels {
                                                 WorkableOverlays overlays, RecipeLogic.Status status) {
         BlockModelBuilder model = models.nested().parent(parentModel);
         addWorkableOverlays(overlays, status, model);
-        builder.part(model).condition(RecipeLogic.STATUS_PROPERTY, status);
+        builder.part(model).condition(RECIPE_LOGIC_STATUS, status);
     }
 
     public static MachineBuilder.ModelInitializer createWorkableCasingMachineModel(ResourceLocation baseCasingTexture,
@@ -228,7 +217,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(CUBE_ALL_SIDED_OVERLAY_MODEL))
@@ -258,7 +247,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
@@ -293,7 +282,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStatesModels(state -> {
-                RecipeLogic.Status status = state.getValue(RecipeLogic.STATUS_PROPERTY);
+                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested().parent(prov.models().getExistingFile(GENERATOR_MODEL));
                 tieredHullTextures(model, builder.getOwner().getTier());
@@ -329,7 +318,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createChargerModel() {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(renderState -> {
-                ChargerMachine.State state = renderState.getValue(ChargerMachine.STATE_PROPERTY);
+                ChargerMachine.State state = renderState.getValue(CHARGER_STATE);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
@@ -388,10 +377,10 @@ public class GTMachineModels {
             tieredHullTextures(feToEuModel, builder.getOwner().getTier());
 
             builder.partialState()
-                    .with(ConverterMachine.FE_TO_EU_PROPERTY, false)
+                    .with(IS_FE_TO_EU, false)
                     .setModel(euToFeModel)
                     .partialState()
-                    .with(ConverterMachine.FE_TO_EU_PROPERTY, true)
+                    .with(IS_FE_TO_EU, true)
                     .setModel(feToEuModel)
                     .end();
         };
@@ -404,7 +393,7 @@ public class GTMachineModels {
             ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
             builder.forAllStatesModels(state -> {
-                if (state.getOptionalValue(CrateMachine.TAPED_PROPERTY).orElse(false)) {
+                if (state.getOptionalValue(IS_TAPED).orElse(false)) {
                     return tapedModel;
                 } else {
                     return baseModel;
@@ -416,7 +405,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createDiodeModel() {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(renderState -> {
-                DiodePartMachine.AmpMode mode = renderState.getValue(DiodePartMachine.AMP_MODE_PROPERTY);
+                DiodePartMachine.AmpMode mode = renderState.getValue(DIODE_AMP_MODE);
                 final EnergyIOOverlay energyIn = IN_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
                 final EnergyIOOverlay energyOut = OUT_OVERLAYS_FOR_AMP.get(mode.getAmpValue());
 
@@ -439,7 +428,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createTransformerModel(int baseAmp) {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(renderState -> {
-                boolean transformUp = renderState.getValue(TransformerMachine.TRANSFORM_UP_PROPERTY);
+                boolean transformUp = renderState.getValue(IS_TRANSFORM_UP);
                 EnergyIOOverlay frontFace = (transformUp ? OUT_OVERLAYS_FOR_AMP : IN_OVERLAYS_FOR_AMP)
                         .get(baseAmp);
                 EnergyIOOverlay otherFace = (transformUp ? IN_OVERLAYS_FOR_AMP : OUT_OVERLAYS_FOR_AMP)
@@ -473,7 +462,7 @@ public class GTMachineModels {
             tieredHullTextures(blockModel, builder.getOwner().getTier());
 
             builder.part(blockModel).end();
-            builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED_PROPERTY, true).end();
+            builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED, true).end();
 
             makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_IDLE, false, false);
             makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_IDLE.withSuffix(EMISSIVE_SUFFIX), false, true);
@@ -488,10 +477,10 @@ public class GTMachineModels {
                                              BlockModelProvider provider, ResourceLocation model,
                                              boolean spinning, boolean emissive) {
         builder.partialState()
-                .with(IS_FORMED_PROPERTY, true)
-                .with(HAS_ROTOR_PROPERTY, true)
-                .with(ROTOR_SPINNING_PROPERTY, spinning)
-                .with(EMISSIVE_ROTOR_PROPERTY, emissive)
+                .with(IS_FORMED, true)
+                .with(HAS_ROTOR, true)
+                .with(IS_ROTOR_SPINNING, spinning)
+                .with(IS_EMISSIVE_ROTOR, emissive)
                 .setModel(provider.getExistingFile(model));
     }
 
@@ -517,11 +506,11 @@ public class GTMachineModels {
             WorkableOverlays beOverlays = WorkableOverlays.get(beModeModelPath, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                boolean rtMode = state.getValue(WorldAcceleratorMachine.RANDOM_TICK_PROPERTY);
+                boolean rtMode = state.getValue(IS_RANDOM_TICK_MODE);
                 WorkableOverlays overlays = rtMode ? rtOverlays : beOverlays;
 
-                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
-                boolean workingEnabled = state.getValue(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY);
+                boolean active = state.getValue(IS_ACTIVE);
+                boolean workingEnabled = state.getValue(IS_WORKING_ENABLED);
                 RecipeLogic.Status status = active ?
                         workingEnabled ?
                                 RecipeLogic.Status.WORKING :
@@ -547,7 +536,7 @@ public class GTMachineModels {
                         .parent(prov.models().getExistingFile(overlayModel));
                 tieredHullTextures(baseModel, builder.getOwner().getTier());
 
-                if (state.getValue(IMaintenanceMachine.MAINTENANCE_TAPED_PROPERTY)) {
+                if (state.getValue(IS_TAPED)) {
                     baseModel.texture("overlay_2", MAINTENANCE_TAPED_OVERLAY);
                 }
                 return baseModel;
@@ -577,8 +566,8 @@ public class GTMachineModels {
             casingTexture(baseModel, "side", textures);
 
             builder.forAllStatesModels(state -> {
-                boolean damaged = state.getValue(IHPCAComponentHatch.HPCA_PART_DAMAGED_PROPERTY);
-                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
+                boolean damaged = state.getValue(IS_HPCA_PART_DAMAGED);
+                boolean active = state.getValue(IS_ACTIVE);
 
                 return prov.models().nested().parent(baseModel)
                         .texture("overlay", overlay.getTexture(active, damaged))
@@ -607,8 +596,8 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                boolean active = state.getValue(IWorkable.ACTIVE_PROPERTY);
-                boolean workingEnabled = state.getValue(WorldAcceleratorMachine.WORKING_ENABLED_PROPERTY);
+                boolean active = state.getValue(IS_ACTIVE);
+                boolean workingEnabled = state.getValue(IS_WORKING_ENABLED);
                 RecipeLogic.Status status = active ?
                                             workingEnabled ?
                                             RecipeLogic.Status.WORKING :
@@ -678,7 +667,7 @@ public class GTMachineModels {
                                                           @Nullable ResourceLocation emissiveOverlay,
                                                           MachineRenderState state, BlockModelProvider models) {
         ResourceLocation parent;
-        if (state.getOptionalValue(IPaintable.IS_PAINTED_PROPERTY).orElse(false)) {
+        if (state.getOptionalValue(IS_PAINTED).orElse(false)) {
             parent = emissiveOverlay != null ? HATCH_PART_EMISSIVE_COLOR_RING_MODEL : HATCH_PART_COLOR_RING_MODEL;
         } else {
             parent = emissiveOverlay != null ? HATCH_PART_EMISSIVE_MODEL : HATCH_PART_MODEL;
