@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -57,7 +58,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     // Hard-coded blacklist for blockentities
     private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
 
-    public static final BooleanProperty RANDOM_TICK_PROPERTY = BooleanProperty.create("random_tick_mode");
+    public static final BooleanProperty RANDOM_TICK_PROPERTY = GTMachineModelProperties.IS_RANDOM_TICK_MODE;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
