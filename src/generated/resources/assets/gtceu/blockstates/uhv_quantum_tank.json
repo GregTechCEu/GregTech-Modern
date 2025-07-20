@@ -20,7 +20,7 @@
       "x": 90
     },
     "facing=east,upwards_facing=east": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 90
     },
@@ -34,12 +34,12 @@
       "y": 90
     },
     "facing=east,upwards_facing=west": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 90
     },
     "facing=north,upwards_facing=east": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/uhv_quantum_tank"
     },
     "facing=north,upwards_facing=north": {
@@ -50,11 +50,11 @@
       "model": "gtceu:block/machine/uhv_quantum_tank"
     },
     "facing=north,upwards_facing=west": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/uhv_quantum_tank"
     },
     "facing=south,upwards_facing=east": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 180
     },
@@ -68,12 +68,12 @@
       "y": 180
     },
     "facing=south,upwards_facing=west": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 180
     },
     "facing=up,upwards_facing=east": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "x": 270
     },
@@ -87,12 +87,12 @@
       "x": 270
     },
     "facing=up,upwards_facing=west": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "x": 270
     },
     "facing=west,upwards_facing=east": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 270
     },
@@ -106,7 +106,7 @@
       "y": 270
     },
     "facing=west,upwards_facing=west": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/uhv_quantum_tank",
       "y": 270
     }

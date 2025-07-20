@@ -257,8 +257,8 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1099))
                 .color(0x20FFFF).secondaryColor(0x429393).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL,
-                        GENERATE_FRAME)
+                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_SPRING_SMALL,
+                        GENERATE_FOIL, GENERATE_FRAME)
                 .element(GTElements.Eu)
                 .cableProperties(V[UHV], 2, 32)
                 .fluidPipeProperties(7750, 300, true)

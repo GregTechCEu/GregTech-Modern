@@ -424,14 +424,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
-            if (!playerIn.isShiftKeyDown() || !controllable.isWorkingEnabled()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            } else {
-                controllable.setSuspendAfterFinish(true);
-                playerIn.sendSystemMessage(Component.translatable("behaviour.soft_hammer.idle_after_cycle"));
-            }
+            controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+            playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
         return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
     }

@@ -118,6 +118,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected int runDelay = 0;
     @Persisted
     @Setter
+    @Getter
     protected boolean suspendAfterFinish = false;
     @Getter
     protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
@@ -367,6 +368,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (this.status == Status.WORKING) {
                 this.totalContinuousRunningTime = 0;
             }
+            if (status == Status.SUSPEND && suspendAfterFinish) {
+                suspendAfterFinish = false;
+            }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
             setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
@@ -408,13 +412,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean isWorkingEnabled() {
-        return !isSuspend();
+        return !isSuspend() && !isSuspendAfterFinish();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (!isWorkingAllowed) {
-            setStatus(Status.SUSPEND);
+            setSuspendAfterFinish(true);
         } else {
             if (lastRecipe != null && duration > 0) {
                 setStatus(Status.WORKING);
@@ -459,7 +463,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             } else {
                 if (suspendAfterFinish) {
                     setStatus(Status.SUSPEND);
-                    suspendAfterFinish = false;
                 } else {
                     setStatus(Status.IDLE);
                     waitingReason = recipeCheck.reason();
