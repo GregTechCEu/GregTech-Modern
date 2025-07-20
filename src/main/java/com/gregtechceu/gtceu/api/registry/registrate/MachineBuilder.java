@@ -60,6 +60,7 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
@@ -79,8 +80,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin.RUNTIME_BLOCKSTATE_PROVIDER;
 
+@SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
 
@@ -370,6 +373,22 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                                                                               @Nullable T defaultValue) {
         this.modelProperties.put(property, defaultValue);
         return this;
+    }
+
+    // KJS helpers for model property defaults
+    // These don't need to be copied to the multiblock builder because KJS doesn't care about the return type downgrade
+
+    public MachineBuilder<DEFINITION> kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
+        return modelProperty(property, defaultValue);
+    }
+
+    public MachineBuilder<DEFINITION> kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
+        return modelProperty(property, defaultValue);
+    }
+
+    public <T extends Enum<T> & Comparable<T>> MachineBuilder<DEFINITION> kjs$modelPropertyEnum(Property<T> property,
+                                                                                                T defaultValue) {
+        return modelProperty(property, defaultValue);
     }
 
     @Tolerate
