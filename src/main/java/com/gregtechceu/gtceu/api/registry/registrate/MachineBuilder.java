@@ -202,7 +202,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
         // noinspection ConstantValue
         if (type == null) {
-            GTCEu.LOGGER.error("Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
+            GTCEu.LOGGER.error(
+                    "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
                     this.id);
             return this;
         }
@@ -222,7 +223,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
                 initRecipeMachineModelProperties(type);
                 typeList.add(type);
             } else {
-                GTCEu.LOGGER.error("Tried to set null recipe type on machine {} (index {}). Did you create the recipe type before this machine?",
+                GTCEu.LOGGER.error(
+                        "Tried to set null recipe type on machine {} (index {}). Did you create the recipe type before this machine?",
                         this.id, i);
             }
         }
