@@ -51,9 +51,9 @@ public class MachineLang {
                 "§7Mines block on front face and collects its drops");
         provider.add("gtceu.machine.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
 
-        provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating up§r%s");
-        provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling down§r%s");
-        provider.add("gtceu.machine.boiler.info.producing.steam", " §a(boiling water)");
+        provider.add("gtceu.machine.boiler.info.heating.up", "§cHeating§r");
+        provider.add("gtceu.machine.boiler.info.cooling.down", "§9Cooling§r");
+        provider.add("gtceu.machine.boiler.info.production.data", "§aProducing %s§a mB/t");
 
         ///////////////////////////////////////////////////
         // Standard Machines //
