@@ -14,9 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -48,19 +48,22 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
+    public void generateDataJsons(DataJsonGenerator generator) {
+        tieredBuilder.generateDataJsons(generator);
+    }
+
+    @Override
     public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
-        super.generateAssetJsons(generator);
         tieredBuilder.generateAssetJsons(generator);
     }
 
     @Override
-    public void generateLang(@NotNull LangEventJS lang) {
-        super.generateLang(lang);
+    public void generateLang(LangEventJS lang) {
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public @NotNull MultiblockMachineDefinition register() {
+    public MultiblockMachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {

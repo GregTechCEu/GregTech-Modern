@@ -43,11 +43,15 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     public volatile Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public volatile boolean addDefaultTooltips = true;
+    @Setter
+    public volatile boolean addDefaultModel = true;
 
     public volatile BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(id);
+        this.addDefaultTooltips = false;
+        this.addDefaultModel = false;
     }
 
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
@@ -80,7 +84,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @Override
-    public MachineDefinition @NotNull [] register() {
+    public @Nullable MachineDefinition @NotNull [] register() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
@@ -95,9 +99,12 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                     holder -> machine.create(holder, tier, tankScalingFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
-                    .workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
+            if (this.addDefaultModel) {
+                builder.workableTieredHullModel(id.withPrefix("block/machines/"));
+            }
             this.definition.apply(tier, builder);
+
             if (builder.recipeTypes() != null && builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
                 if (this.editableUI != null && builder.editableUI() == null) {
@@ -109,6 +116,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                                     tankScalingFunction.applyAsInt(tier), true));
                 }
             }
+
             this.builders[tier] = builder;
             definitions[tier] = builder.register();
         }

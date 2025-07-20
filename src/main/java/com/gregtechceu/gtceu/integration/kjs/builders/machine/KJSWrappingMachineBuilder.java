@@ -11,11 +11,11 @@ import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
+@SuppressWarnings("unused")
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @HideFromJS
@@ -52,8 +52,13 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
         return this;
     }
 
+    public KJSWrappingMachineBuilder addDefaultModel(boolean addDefaultModel) {
+        tieredBuilder.addDefaultModel(addDefaultModel);
+        return this;
+    }
+
     @Override
-    public void generateDataJsons(@NotNull DataJsonGenerator generator) {
+    public void generateDataJsons(DataJsonGenerator generator) {
         tieredBuilder.generateDataJsons(generator);
     }
 
@@ -63,13 +68,12 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public void generateLang(@NotNull LangEventJS lang) {
-        super.generateLang(lang);
+    public void generateLang(LangEventJS lang) {
         tieredBuilder.generateLang(lang);
     }
 
     @Override
-    public @NotNull MachineDefinition register() {
+    public MachineDefinition register() {
         tieredBuilder.register();
         for (var def : tieredBuilder.get()) {
             if (def != null) {
