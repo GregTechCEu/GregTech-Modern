@@ -134,7 +134,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
-    private @Nullable GTRecipeType @Nullable [] recipeTypes = null;
+    private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
     @Getter
     @Setter // getter for KJS
     private int tier;
@@ -203,6 +203,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     }
 
     public MachineBuilder<DEFINITION> recipeType(GTRecipeType type) {
+        // noinspection ConstantValue
+        if (type == null) {
+            GTCEu.LOGGER.error(
+                    "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
+                    this.id);
+            return this;
+        }
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
         initRecipeMachineModelProperties(type);
         return this;
@@ -210,16 +217,29 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
 
     @Tolerate
     public MachineBuilder<DEFINITION> recipeTypes(GTRecipeType... types) {
-        for (GTRecipeType type : types) {
-            this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
+        List<GTRecipeType> typeList = new ArrayList<>();
+        Collections.addAll(typeList, this.recipeTypes);
+
+        for (int i = 0; i < types.length; i++) {
+            GTRecipeType type = types[i];
+            if (type != null) {
+                initRecipeMachineModelProperties(type);
+                typeList.add(type);
+            } else {
+                GTCEu.LOGGER.error(
+                        "Tried to set null recipe type on machine {} (index {}). Did you create the recipe type before this machine?",
+                        this.id, i);
+            }
         }
-        initRecipeMachineModelProperties(types);
+        this.recipeTypes = typeList.toArray(GTRecipeType[]::new);
         return this;
     }
 
-    protected void initRecipeMachineModelProperties(GTRecipeType... types) {
-        if (types.length > 0 &&
-                Arrays.stream(types).noneMatch(type -> type == GTRecipeTypes.DUMMY_RECIPES)) {
+    protected void initRecipeMachineModelProperties(GTRecipeType type) {
+        if (type == GTRecipeTypes.DUMMY_RECIPES) {
+            return;
+        }
+        if (!modelProperties.containsKey(RecipeLogic.STATUS_PROPERTY)) {
             modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
         }
     }
@@ -547,11 +567,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setRegressWhenWaiting(this.regressWhenWaiting);
         definition.setAllowCoverOnFront(this.allowCoverOnFront);
 
-        if (recipeTypes != null) {
-            for (GTRecipeType type : recipeTypes) {
-                if (type != null && type.getIconSupplier() == null) {
-                    type.setIconSupplier(definition::asStack);
-                }
+        for (GTRecipeType type : recipeTypes) {
+            if (type.getIconSupplier() == null) {
+                type.setIconSupplier(definition::asStack);
             }
         }
         if (appearance == null) {
