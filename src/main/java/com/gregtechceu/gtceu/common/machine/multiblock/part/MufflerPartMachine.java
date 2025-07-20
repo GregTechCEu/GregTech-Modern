@@ -114,8 +114,13 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
 
     private void tryBreakSnow() {
         if (getOffsetTimer() % 10 == 0) {
-            BlockPos mufflerPos = getPos().relative(getFrontFacing());
-            GTUtil.tryBreakSnow(getLevel(), mufflerPos, getLevel().getBlockState(mufflerPos), true);
+            for (IMultiController controller : getControllers()) {
+                if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
+                        recipeLogicMachine.getRecipeLogic().isWorking()) {
+                    BlockPos mufflerPos = getPos().relative(getFrontFacing());
+                    GTUtil.tryBreakSnow(getLevel(), mufflerPos, getLevel().getBlockState(mufflerPos), true);
+                }
+            }
         }
     }
 
