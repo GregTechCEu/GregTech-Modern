@@ -44,9 +44,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
 
     public static void registerWorkStations(EmiRegistry registry) {
         for (MachineDefinition machine : GTRegistries.MACHINES) {
-            if (machine.getRecipeTypes() == null) continue;
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                if (type == null) continue;
                 for (GTRecipeCategory category : type.getCategories()) {
                     if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
                     registry.addWorkstation(machineCategory(category), EmiStack.of(machine.asStack()));
