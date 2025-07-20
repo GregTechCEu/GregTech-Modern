@@ -98,7 +98,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                     .workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
-            if (builder.recipeTypes() != null && builder.recipeTypes().length > 0) {
+            if (builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
                 if (this.editableUI != null && builder.editableUI() == null) {
                     builder.editableUI(this.editableUI.apply(this.id, recipeType));
