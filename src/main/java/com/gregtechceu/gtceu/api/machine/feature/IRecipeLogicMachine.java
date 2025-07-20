@@ -131,7 +131,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     //////////////////////////////////////
     @Override
     default boolean isWorkingEnabled() {
-        return getRecipeLogic().isWorkingEnabled() && !getRecipeLogic().isSuspendAfterFinish();
+        return getRecipeLogic().isWorkingEnabled();
     }
 
     @Override
