@@ -18,7 +18,6 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
-import org.jetbrains.annotations.Nullable;
 
 public class MachineModeProvider implements IProbeInfoProvider {
 
@@ -31,16 +30,17 @@ public class MachineModeProvider implements IProbeInfoProvider {
     public void addProbeInfo(ProbeMode probeMode, IProbeInfo iProbeInfo, Player player, Level level,
                              BlockState blockState, IProbeHitData iProbeHitData) {
         if (level.getBlockEntity(iProbeHitData.getPos()) instanceof MetaMachineBlockEntity blockEntity) {
-            @Nullable
             GTRecipeType[] recipeTypes = blockEntity.getMetaMachine().getDefinition().getRecipeTypes();
-            if (recipeTypes != null && recipeTypes.length > 1) {
+            if (recipeTypes.length > 1) {
                 if (blockEntity.getMetaMachine() instanceof IRecipeLogicMachine recipeLogicMachine) {
                     GTRecipeType currentRecipeType = recipeLogicMachine.getRecipeType();
                     if (player.isShiftKeyDown()) {
                         iProbeInfo.text(Component.translatable("gtceu.top.machine_mode"));
+
                         for (GTRecipeType recipeType : recipeTypes) {
                             IProbeInfo horizontalPane = iProbeInfo.horizontal(
                                     iProbeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+
                             if (recipeType == currentRecipeType) {
                                 horizontalPane.text(ChatFormatting.BLUE + " > ");
                                 horizontalPane.text(CompoundText.create().important("%s.%s".formatted(
@@ -52,11 +52,8 @@ public class MachineModeProvider implements IProbeInfoProvider {
                             }
                         }
                     } else {
-                        iProbeInfo.text(
-                                Component.translatable("gtceu.top.machine_mode")
-                                        .append(Component.translatable("%s.%s".formatted(
-                                                currentRecipeType.registryName.getNamespace(),
-                                                currentRecipeType.registryName.getPath()))));
+                        iProbeInfo.text(Component.translatable("gtceu.top.machine_mode")
+                                .append(Component.translatable(currentRecipeType.registryName.toLanguageKey())));
                     }
                 }
             }
