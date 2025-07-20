@@ -339,14 +339,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, IMultiController controller,
-                                                List<BakedQuad> originalQuads, IMultiPart part, Direction frontFacing,
+                                                List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var overrides = controllerModel.textureOverrides;
 
+        List<BakedQuad> renderQuads = new LinkedList<>();
         for (var render : controllerModel.getDynamicRenders()) {
             if (render instanceof IControllerModelRenderer controllerRenderer) {
-                controllerRenderer.renderPartModel(originalQuads, controller, part, frontFacing, side,
+                controllerRenderer.renderPartModel(renderQuads, controller, part, frontFacing, side,
                         rand, modelData, renderType);
                 // assume the renderer drew the base model, and replace the override textures with empty ones
                 overrides = new HashMap<>();
@@ -357,7 +358,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             }
         }
         if (overrides.isEmpty()) {
-            return originalQuads;
+            quads.addAll(renderQuads);
+            return quads;
         }
 
         // parse out valid overrides
@@ -378,7 +380,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                         (o1, o2) -> o1));
 
         // actually process the sprite replacement
-        return TextureOverrideModel.retextureQuads(originalQuads, overrides);
+        quads = TextureOverrideModel.retextureQuads(quads, overrides);
+        quads.addAll(renderQuads);
+        return quads;
     }
 
     @Override
