@@ -491,7 +491,7 @@ public class GTUtil {
         }
 
         if (success && playSound) {
-            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.LAVA_EXTINGUISH,
+            level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH,
                     SoundSource.BLOCKS, 1.0f, 1.0f);
         }
 
