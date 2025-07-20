@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -130,6 +131,13 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         super.onLoad();
         if (!isRemote()) {
             updateMaintenanceSubscription();
+
+            // fix the model being invalid after the tape property rename
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(MAINTENANCE_TAPED_PROPERTY) &&
+                    this.isTaped != renderState.getValue(MAINTENANCE_TAPED_PROPERTY)) {
+                setRenderState(renderState.setValue(MAINTENANCE_TAPED_PROPERTY, this.isTaped));
+            }
         }
     }
 
