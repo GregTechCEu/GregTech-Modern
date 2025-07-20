@@ -193,7 +193,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
-                int fillAmount = (int) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) / 2);
+                int fillAmount = (int) getTotalSteamOutput();
                 boolean hasDrainedWater = !waterTank.drainInternal(1, FluidAction.EXECUTE).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
@@ -249,6 +249,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     protected abstract long getBaseSteamOutput();
+
+    /** Returns the current total steam output every 10 ticks. */
+    public long getTotalSteamOutput() {
+        if (currentTemperature < 100) return 0;
+        return (long) (getBaseSteamOutput() * ((float) currentTemperature / getMaxTemperature()) / 2);
+    }
 
     /**
      * Recipe Modifier for <b>Steam Boiler Machines</b> - can be used as a valid {@link RecipeModifier}

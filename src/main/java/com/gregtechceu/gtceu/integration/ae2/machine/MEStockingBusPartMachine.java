@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -14,6 +17,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -55,6 +59,17 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Persisted
     @Getter
     private boolean autoPull;
+
+    @Getter
+    @Setter
+    @Persisted
+    @DropSaved
+    private int minStackSize = 1;
+    @Getter
+    @Setter
+    @Persisted
+    @DropSaved
+    private int ticksPerCycle = 40;
 
     @Setter
     private Predicate<GenericStack> autoPullTest;
@@ -98,8 +113,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @Override
     public void autoIO() {
         super.autoIO();
-        if (autoPull && getOffsetTimer() % 100 == 0) {
-            refreshList();
+        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
+                                                                                                  // Avoid Crash loops.
+        if (getOffsetTimer() % ticksPerCycle == 0) {
+            if (autoPull) {
+                refreshList();
+            }
             syncME();
         }
     }
@@ -115,13 +134,18 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted > 0) {
+                if (extracted >= minStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
             }
             slot.setStock(null);
         }
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -200,7 +224,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
             long amount = entry.getLongValue();
-            if (!topItems.isEmpty() && amount < topItems.peek().getLongValue()) continue;
             AEKey what = entry.getKey();
 
             if (amount <= 0) continue;
@@ -211,12 +234,13 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
-
-            if (topItems.size() < CONFIG_SIZE) {
-                topItems.offer(entry);
-            } else if (amount > topItems.peek().getLongValue()) {
-                topItems.poll();
-                topItems.offer(entry);
+            if (amount >= minStackSize) {
+                if (topItems.size() < CONFIG_SIZE) {
+                    topItems.offer(entry);
+                } else if (amount > topItems.peek().getLongValue()) {
+                    topItems.poll();
+                    topItems.offer(entry);
+                }
             }
         }
 
@@ -251,6 +275,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     @Override
