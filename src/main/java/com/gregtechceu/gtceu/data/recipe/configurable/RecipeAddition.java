@@ -85,7 +85,8 @@ public class RecipeAddition {
                     'H', GTBlocks.STEEL_HULL.asStack(),
                     'C', Tags.Items.CHESTS_WOODEN);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven",
+            // Doubled-up recipes to allow for either Low or High Pressure singleblock
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven_from_lp",
                     GTMultiMachines.STEAM_OVEN.asStack(),
                     "CGC", "FMF", "CGC",
                     'F', GTBlocks.FIREBOX_BRONZE.asStack(),
@@ -93,11 +94,26 @@ public class RecipeAddition {
                     'M', GTMachines.STEAM_FURNACE.left().asStack(),
                     'G', new MaterialEntry(TagPrefix.gear, GTMaterials.Invar));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder",
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_oven_from_hp",
+                    GTMultiMachines.STEAM_OVEN.asStack(),
+                    "CGC", "FMF", "CGC",
+                    'F', GTBlocks.FIREBOX_BRONZE.asStack(),
+                    'C', GTBlocks.CASING_BRONZE_BRICKS.asStack(),
+                    'M', GTMachines.STEAM_FURNACE.right().asStack(),
+                    'G', new MaterialEntry(TagPrefix.gear, GTMaterials.Invar));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder_from_lp",
                     GTMultiMachines.STEAM_GRINDER.asStack(),
                     "CGC", "CFC", "CGC",
                     'G', new MaterialEntry(TagPrefix.gear, GTMaterials.Potin),
                     'F', GTMachines.STEAM_MACERATOR.left().asStack(),
+                    'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
+
+            VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_grinder_from_hp",
+                    GTMultiMachines.STEAM_GRINDER.asStack(),
+                    "CGC", "CFC", "CGC",
+                    'G', new MaterialEntry(TagPrefix.gear, GTMaterials.Potin),
+                    'F', GTMachines.STEAM_MACERATOR.right().asStack(),
                     'C', GTBlocks.CASING_BRONZE_BRICKS.asStack());
 
             VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_hatch",
