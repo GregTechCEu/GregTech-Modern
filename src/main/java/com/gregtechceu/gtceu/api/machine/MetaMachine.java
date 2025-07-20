@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFilteredInvWrapper;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
@@ -192,8 +193,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         this.onPaintingColorChanged(color);
 
         MachineRenderState renderState = getRenderState();
-        if (renderState.hasProperty(IS_PAINTED_PROPERTY)) {
-            setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, this.isPainted()));
+        if (renderState.hasProperty(GTMachineModelProperties.IS_PAINTED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
     }
 
@@ -225,11 +226,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         coverContainer.onLoad();
 
         // update the painted model property if the machine is painted
-        if (this.isPainted()) {
-            MachineRenderState renderState = getRenderState();
-            if (renderState.hasProperty(IS_PAINTED_PROPERTY) && !renderState.getValue(IS_PAINTED_PROPERTY)) {
-                setRenderState(renderState.setValue(IS_PAINTED_PROPERTY, true));
-            }
+        MachineRenderState renderState = getRenderState();
+        if (renderState.hasProperty(GTMachineModelProperties.IS_PAINTED) &&
+                this.isPainted() != renderState.getValue(GTMachineModelProperties.IS_PAINTED)) {
+            setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
         }
     }
 

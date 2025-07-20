@@ -141,7 +141,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
         cycleAmpMode();
         if (getLevel().isClientSide) {
             setRenderState(getRenderState()
-                    .setValue(AMP_MODE_PROPERTY, AmpMode.getByValue(this.amps)));
+                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
 
             scheduleRenderUpdate();
             playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));

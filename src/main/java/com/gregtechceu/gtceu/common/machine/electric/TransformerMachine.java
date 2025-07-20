@@ -121,7 +121,7 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
         if (this.isTransformUp != isTransformUp && !isRemote()) {
             this.isTransformUp = isTransformUp;
             updateEnergyContainer(isTransformUp);
-            setRenderState(getRenderState().setValue(TRANSFORM_UP_PROPERTY, isTransformUp));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TRANSFORM_UP, isTransformUp));
         }
     }
 

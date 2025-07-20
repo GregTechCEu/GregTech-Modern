@@ -49,8 +49,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.capability.recipe.IO.IN;
-import static com.gregtechceu.gtceu.api.capability.recipe.IO.OUT;
+import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
@@ -1016,10 +1016,10 @@ public class GTMachines {
                     .langValue("%s Rotor Holder".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.ROTOR_HOLDER)
-                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                    .modelProperty(RotorHolderPartMachine.HAS_ROTOR_PROPERTY, false)
-                    .modelProperty(RotorHolderPartMachine.ROTOR_SPINNING_PROPERTY, false)
-                    .modelProperty(RotorHolderPartMachine.EMISSIVE_ROTOR_PROPERTY, false)
+                    .modelProperty(IS_FORMED, false)
+                    .modelProperty(HAS_ROTOR, false)
+                    .modelProperty(IS_ROTOR_SPINNING, false)
+                    .modelProperty(IS_EMISSIVE_ROTOR, false)
                     .model(createRotorHolderModel())
                     .tooltips(LangHandler.getMultiLang("gtceu.machine.rotor_holder.tooltip"))
                     .tooltips(Component.translatable("gtceu.part_sharing.disabled"))

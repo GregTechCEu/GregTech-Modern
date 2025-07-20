@@ -107,7 +107,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
                     stack.shrink(1);
                 }
                 isTaped = true;
-                setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
+                setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
@@ -126,7 +126,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
             tag.remove("taped");
             this.isTaped = false;
-            setRenderState(getRenderState().setValue(TAPED_PROPERTY, isTaped));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
         }
         stack.setTag(null);
     }

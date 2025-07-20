@@ -361,7 +361,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             machine.notifyStatusChanged(this.status, status);
             this.status = status;
-            setRenderState(getRenderState().setValue(STATUS_PROPERTY, status));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
             updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;

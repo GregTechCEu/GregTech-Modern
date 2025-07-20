@@ -216,7 +216,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     protected void initRecipeMachineModelProperties(GTRecipeType... types) {
         if (types.length > 0 &&
                 Arrays.stream(types).noneMatch(type -> type == GTRecipeTypes.DUMMY_RECIPES)) {
-            modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE);
+            modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         }
     }
 

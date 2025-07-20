@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -134,9 +135,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
             // fix the model being invalid after the tape property rename
             MachineRenderState renderState = getRenderState();
-            if (renderState.hasProperty(MAINTENANCE_TAPED_PROPERTY) &&
-                    this.isTaped != renderState.getValue(MAINTENANCE_TAPED_PROPERTY)) {
-                setRenderState(renderState.setValue(MAINTENANCE_TAPED_PROPERTY, this.isTaped));
+            if (renderState.hasProperty(GTMachineModelProperties.IS_TAPED) &&
+                    this.isTaped != renderState.getValue(GTMachineModelProperties.IS_TAPED)) {
+                setRenderState(renderState.setValue(GTMachineModelProperties.IS_TAPED, this.isTaped));
             }
         }
     }
@@ -309,7 +310,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public void setTaped(boolean isTaped) {
         if (this.isTaped != isTaped) {
             this.isTaped = isTaped;
-            setRenderState(getRenderState().setValue(MAINTENANCE_TAPED_PROPERTY, isTaped));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
         }
     }
 

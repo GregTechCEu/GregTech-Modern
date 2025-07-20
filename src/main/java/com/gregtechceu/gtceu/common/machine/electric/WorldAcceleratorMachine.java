@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -108,12 +107,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (isWorkingEnabled && drainEnergy(true)) {
             tickSubs = subscribeServerTick(tickSubs, this::update);
             active = true;
-            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, true));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, true));
         } else if (tickSubs != null) {
             tickSubs.unsubscribe();
             tickSubs = null;
             active = false;
-            setRenderState(getRenderState().setValue(IWorkable.ACTIVE_PROPERTY, false));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, false));
         }
     }
 
@@ -218,7 +217,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
 
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
-        setRenderState(getRenderState().setValue(WORKING_ENABLED_PROPERTY, isWorkingEnabled));
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, isWorkingEnabled));
         updateSubscription();
     }
 
@@ -250,7 +249,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                                                             BlockHitResult hitResult) {
         if (!isRemote()) {
             isRandomTickMode = !isRandomTickMode;
-            setRenderState(getRenderState().setValue(RANDOM_TICK_PROPERTY, isRandomTickMode));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_RANDOM_TICK_MODE, isRandomTickMode));
             playerIn.sendSystemMessage(Component.translatable(isRandomTickMode ?
                     "gtceu.machine.world_accelerator.mode_entity" : "gtceu.machine.world_accelerator.mode_tile"));
             scheduleRenderUpdate();

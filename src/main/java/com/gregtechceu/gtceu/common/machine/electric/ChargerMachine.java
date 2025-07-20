@@ -189,7 +189,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
-            setRenderState(getRenderState().setValue(STATE_PROPERTY, newState));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.CHARGER_STATE, newState));
         }
     }
 
