@@ -349,12 +349,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             if (render instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(renderQuads, controller, part, frontFacing, side,
                         rand, modelData, renderType);
-                // assume the renderer drew the base model, and replace the override textures with empty ones
-                overrides = new HashMap<>();
-                for (String key : this.replaceableTextures) {
-                    overrides.put(key, blankSprite);
+                if (!renderQuads.isEmpty()) {
+                    // assume the renderer drew the base model, and replace the override textures with empty ones
+                    overrides = new HashMap<>();
+                    for (String key : this.replaceableTextures) {
+                        overrides.put(key, blankSprite);
+                    }
+                    break;
                 }
-                break;
+
             }
         }
         if (overrides.isEmpty()) {
