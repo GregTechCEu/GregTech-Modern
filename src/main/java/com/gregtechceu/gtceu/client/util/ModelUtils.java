@@ -9,6 +9,7 @@ import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.*;
@@ -46,6 +47,10 @@ public class ModelUtils {
     public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
                                                      BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
+    }
+
+    public static BakedModel getModelForState(BlockState state) {
+        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
     }
 
     public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {

@@ -56,7 +56,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public void generateLang(@NotNull LangEventJS lang) {
+    public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : tiers) {
             MultiblockMachineBuilder builder = this.builders[tier];
@@ -67,7 +67,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public MultiblockMachineDefinition @NotNull [] register() {
+    public @Nullable MultiblockMachineDefinition @NotNull [] register() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +

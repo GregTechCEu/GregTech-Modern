@@ -801,6 +801,21 @@ public class MachineLang {
         provider.add("gtceu.machine.me.fluid_import.data_stick.name",
                 "§oME Input Hatch Configuration Data");
 
+        provider.add("gtceu.gui.title.adv_stocking_config.min_item_count",
+                "Min. Item Count");
+        provider.add("gtceu.gui.title.adv_stocking_config.min_fluid_count",
+                "Min. Fluid Count");
+        provider.add("gtceu.gui.adv_stocking_config.min_item_count",
+                "Minimum Item Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.adv_stocking_config.min_fluid_count",
+                "Minimum Fluid Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.title.adv_stocking_config.ticks_per_cycle",
+                "Ticks Per Cycle");
+        provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",
+                "Delay between item list updates");
+        provider.add("gtceu.gui.adv_stocking_config.title",
+                "Configure Automatic Stocking");
+
         multiLang(provider, "gtceu.machine.rotor_holder.tooltip", "Rotor Holder for Multiblocks",
                 "Holds Rotor in place so it will not fly away");
 

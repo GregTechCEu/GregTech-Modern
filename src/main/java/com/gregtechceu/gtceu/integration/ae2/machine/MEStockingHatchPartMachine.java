@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
@@ -15,6 +18,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -59,6 +63,18 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Getter
     private boolean autoPull;
 
+    @Getter
+    @Setter
+    @Persisted
+    @DropSaved
+    private int minStackSize = 1;
+
+    @Getter
+    @Setter
+    @Persisted
+    @DropSaved
+    private int ticksPerCycle = 40;
+
     @Setter
     private Predicate<GenericStack> autoPullTest;
 
@@ -101,8 +117,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     @Override
     public void autoIO() {
         super.autoIO();
-        if (autoPull && getOffsetTimer() % 100 == 0) {
-            refreshList();
+        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
+                                                                                                  // Avoid Crash loops.
+        if (getOffsetTimer() % ticksPerCycle == 0) {
+            if (autoPull) {
+                refreshList();
+            }
             syncME();
         }
     }
@@ -116,13 +136,18 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 // Try to fill the slot
                 var key = config.what();
                 long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted > 0) {
+                if (extracted >= minStackSize) {
                     slot.setStock(new GenericStack(key, extracted));
                     continue;
                 }
             }
             slot.setStock(null);
         }
+    }
+
+    @Override
+    public void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
     }
 
     @Override
@@ -183,8 +208,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
         for (Object2LongMap.Entry<AEKey> entry : counter) {
             long amount = entry.getLongValue();
-            if (!topFluids.isEmpty() && amount < topFluids.peek().getLongValue()) continue;
-
             AEKey what = entry.getKey();
 
             if (amount <= 0) continue;
@@ -195,12 +218,13 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
             // Ensure that it is valid to configure with this stack
             if (autoPullTest != null && !autoPullTest.test(new GenericStack(fluidKey, amount))) continue;
-
-            if (topFluids.size() < CONFIG_SIZE) {
-                topFluids.offer(entry);
-            } else if (amount > topFluids.peek().getLongValue()) {
-                topFluids.poll();
-                topFluids.offer(entry);
+            if (amount >= minStackSize) {
+                if (topFluids.size() < CONFIG_SIZE) {
+                    topFluids.offer(entry);
+                } else if (amount > topFluids.peek().getLongValue()) {
+                    topFluids.poll();
+                    topFluids.offer(entry);
+                }
             }
         }
 
@@ -234,6 +258,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IMEStockingPart.super.attachConfigurators(configuratorPanel);
         super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     ////////////////////////////////

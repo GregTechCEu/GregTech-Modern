@@ -163,7 +163,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
-                                SimpleTieredMachine.EDITABLE_UI_CREATOR)),
+                                SimpleTieredMachine.EDITABLE_UI_CREATOR, false)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
@@ -173,7 +173,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
-                                SimpleGeneratorMachine.EDITABLE_UI_CREATOR)),
+                                SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)),
                 false);
         GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilder.class,
                 KJSWrappingMultiblockBuilder::createKJSMulti, false);

@@ -200,7 +200,7 @@ public class ConfigHolder {
             @Configurable
             @Configurable.Comment({ "The interval between ME Hatch/Bus interact ME network.",
                     "It may cause lag if the interval is too small.", "Default: 2 sec" })
-            @Configurable.Range(min = 1, max = 80)
+            @Configurable.Range(min = 1) // Do Not Set a Maximum, if someone wants >80 ticks let them.
             public int updateIntervals = 40;
 
             @Configurable
