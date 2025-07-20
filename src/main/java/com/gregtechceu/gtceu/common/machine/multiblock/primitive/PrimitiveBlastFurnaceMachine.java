@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -91,7 +93,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     public void onStructureFormed() {
         super.onStructureFormed();
         IFluidRenderMulti.super.onStructureFormed();
-        this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntities);
+        this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
     }
 
     @Override
@@ -198,8 +200,13 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    private void hurtEntities() {
+    private void hurtEntitiesAndBreakSnow() {
         BlockPos middlePos = self().getPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
+
+        if (getOffsetTimer() % 10 == 0) {
+            BlockState state = getLevel().getBlockState(middlePos);
+            GTUtil.tryBreakSnow(getLevel(), middlePos, state, true);
+        }
     }
 }
