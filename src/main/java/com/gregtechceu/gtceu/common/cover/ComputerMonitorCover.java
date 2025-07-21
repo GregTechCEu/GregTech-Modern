@@ -7,12 +7,15 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -20,23 +23,26 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
-    private static final Map<String, Function<ComputerMonitorCover, String>> PLACEHOLDERS = Map.of(
-            "energy", (cover) -> {
+    private static final Map<String, BiFunction<ComputerMonitorCover, List<String>, String>> PLACEHOLDERS = Map.of(
+            "energy", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
                 return energy != null ? String.valueOf(energy.getEnergyStored()) : "0";
             },
-            "energyCapacity", (cover) -> {
+            "energyCapacity", (cover, args) -> {
                 IEnergyContainer energy = cover.getEnergyContainer();
                 return energy != null ? String.valueOf(energy.getEnergyCapacity()) : "0";
-            }
+            },
+            "calc", (cover, args) -> GTStringUtils.calc(args)
     );
+
+    private TickableSubscription subscription;
     private final CoverTextRenderer renderer;
     @Persisted
     @DescSynced
@@ -44,10 +50,26 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     @Persisted
     @DescSynced
     private final List<String> formatStringLines = new ArrayList<>(8);
+    @Persisted
+    @DescSynced
+    @Getter
+    private String text = "";
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        renderer = new CoverTextRenderer(this::getRenderedText);
+        renderer = new CoverTextRenderer(this::getText);
+    }
+
+    public boolean placeholderExists(String placeholder) {
+        String[] tmp = placeholder.split("\\s+");
+        if (tmp.length < 1) return false;
+        return PLACEHOLDERS.containsKey(tmp[0]);
+    }
+
+    public @Nullable String processPlaceholder(String placeholder) {
+        String[] tmp = placeholder.split("\\s+");
+        if (tmp.length < 1 || !placeholderExists(placeholder)) return null;
+        return PLACEHOLDERS.get(tmp[0]).apply(this, Arrays.asList(tmp).subList(1, tmp.length));
     }
 
     public String getRenderedText() {
@@ -56,15 +78,27 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         int formatStringArgsIndex = 0;
         StringBuilder formatString = new StringBuilder();
         formatStringLines.forEach((line) -> formatString.append(line).append("\n"));
+        boolean escaped = false;
         for (char c : formatString.toString().toCharArray()) {
-            if (c == '{') incompletePlaceholders.push(new StringBuilder());
+            if (c == '\\') {
+                if (escaped) {
+                    if (incompletePlaceholders.isEmpty()) out.append(c);
+                    else incompletePlaceholders.peek().append(c);
+                    escaped = false;
+                } else escaped = true;
+            } else if (escaped) {
+                if (c == 'n') c = '\n';
+                if (incompletePlaceholders.isEmpty()) out.append(c);
+                else incompletePlaceholders.peek().append(c);
+                escaped = false;
+            } else if (c == '{') incompletePlaceholders.push(new StringBuilder());
             else if (c == '}') {
                 if (incompletePlaceholders.isEmpty()) return "Unexpected closing bracket!";
                 if (incompletePlaceholders.peek().isEmpty()) {
                     if (formatStringArgsIndex < formatStringArgs.size()) {
-                        if (PLACEHOLDERS.containsKey(formatStringArgs.get(formatStringArgsIndex))) {
+                        if (placeholderExists(formatStringArgs.get(formatStringArgsIndex))) {
                             incompletePlaceholders.pop();
-                            String placeholderString = PLACEHOLDERS.get(formatStringArgs.get(formatStringArgsIndex)).apply(this);
+                            String placeholderString = processPlaceholder(formatStringArgs.get(formatStringArgsIndex));
                             formatStringArgsIndex++;
                             if (incompletePlaceholders.isEmpty()) out.append(placeholderString);
                             else incompletePlaceholders.peek().append(placeholderString);
@@ -72,8 +106,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                     } else {
                         return "There's more empty placeholders than arguments!";
                     }
-                } else if (PLACEHOLDERS.containsKey(incompletePlaceholders.peek().toString())) {
-                    String placeholderString = PLACEHOLDERS.get(incompletePlaceholders.pop().toString()).apply(this);
+                } else if (placeholderExists(incompletePlaceholders.peek().toString())) {
+                    String placeholderString = processPlaceholder(incompletePlaceholders.pop().toString());
                     if (incompletePlaceholders.isEmpty()) out.append(placeholderString);
                     else incompletePlaceholders.peek().append(placeholderString);
                 } else {
@@ -106,15 +140,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final WidgetGroup group = new WidgetGroup(0, 0, 200, 200);
+        int textFieldWidth = 120, horizontalPadding = 10, verticalPadding = 5;
+        final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 200);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringInput = new TextFieldWidget();
-            formatStringInput.setSize(60, 15);
-            formatStringInput.setSelfPosition(40, 10 + i*20);
+            formatStringInput.setSize(textFieldWidth, 15);
+            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth/2, verticalPadding + i*(15 + verticalPadding));
             formatStringInput.setHoverTooltips(
                     "Input string to display here.",
                     "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
-                    "Placeholders can also be inside other placeholders, though I have no idea what for you would use this."
+                    "Placeholders can also be inside other placeholders."
             );
             int finalI = i;
             if (i >= formatStringLines.size()) formatStringLines.add("");
@@ -122,10 +157,11 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
             group.addWidget(formatStringInput);
         }
+        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 200);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringArgsInput = new TextFieldWidget();
-            formatStringArgsInput.setSize(60, 15);
-            formatStringArgsInput.setSelfPosition(120, 10 + i*20);
+            formatStringArgsInput.setSize(textFieldWidth, 15);
+            formatStringArgsInput.setSelfPosition(textFieldWidth/2 + horizontalPadding, verticalPadding + i*(15 + verticalPadding));
             formatStringArgsInput.setHoverTooltips(
                     "Input placeholders to be used in place of '{}' here.",
                     "For example, you can have a string 'Energy: {}/{} EU' and 'energy (newline) energyCapacity' in this text box."
@@ -134,9 +170,37 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             if (i >= formatStringArgs.size()) formatStringArgs.add("");
             formatStringArgsInput.setCurrentString(formatStringArgs.get(i));
             formatStringArgsInput.setTextResponder((s) -> formatStringArgs.set(finalI, s));
-            group.addWidget(formatStringArgsInput);
+            formatStringArgsPage.addWidget(formatStringArgsInput);
         }
+        ButtonWidget switchToFormatStringArgsPageButton = new ButtonWidget(
+                horizontalPadding + 10,
+                8*(15 + verticalPadding) + verticalPadding,
+                20, 20,
+                clickData -> {
+                    group.clearAllWidgets();
+                    group.addWidget(formatStringArgsPage);
+                }
+        );
+        group.addWidget(switchToFormatStringArgsPageButton);
         return group;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        subscription = coverHolder.subscribeServerTick(subscription, this::update);
+    }
+
+    private void update() {
+        text = getRenderedText();
+    }
+
+    @Override
+    public void onRemoved() {
+        super.onRemoved();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     private @Nullable IEnergyContainer getEnergyContainer() {

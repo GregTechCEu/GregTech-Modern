@@ -29,6 +29,7 @@ public class CoverTextRenderer implements IDynamicCoverRenderer {
         for (String s : text.get().split("\\n")) {
             if (s.isEmpty()) y += Minecraft.getInstance().font.lineHeight;
             for (FormattedCharSequence line : Minecraft.getInstance().font.split(FormattedText.of(s), 90)) {
+                if (y >= 90) return;
                 Minecraft.getInstance().font.drawInBatch(
                         line,
                         0, y,
