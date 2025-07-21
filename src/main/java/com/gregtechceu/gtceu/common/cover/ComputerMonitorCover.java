@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 
 import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -19,6 +20,10 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +33,7 @@ import java.util.function.BiFunction;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ComputerMonitorCover extends CoverBehavior implements IUICover {
+public class ComputerMonitorCover extends CoverBehavior implements IUICover, Container {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
 
     private static final Map<String, BiFunction<ComputerMonitorCover, List<String>, String>> PLACEHOLDERS = Map.of(
@@ -40,7 +45,24 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                 IEnergyContainer energy = cover.getEnergyContainer();
                 return energy != null ? String.valueOf(energy.getEnergyCapacity()) : "0";
             },
-            "calc", (cover, args) -> GTStringUtils.calc(args)
+            "calc", (cover, args) -> GTStringUtils.calc(args),
+            "itemCount", (cover, args) -> {
+                IItemHandler itemHandler = cover.coverHolder.getItemHandlerCap(cover.attachedSide, false);
+                if (args.isEmpty()) return String.valueOf(countItems((ItemFilter) null, itemHandler));
+                if (args.size() == 1) return String.valueOf(countItems(args.get(0), itemHandler));
+                if (Objects.equals(args.get(0), "filter")) {
+                    try {
+                        int slot = Integer.parseInt(args.get(1));
+                        if (slot > 8 || slot < 1) return "Expected slot index between 1 and 8";
+                        return String.valueOf(countItems(ItemFilter.loadFilter(cover.slots.get(slot - 1)), itemHandler));
+                    } catch (NumberFormatException e) {
+                        return "Invalid slot!";
+                    } catch (NullPointerException e) {
+                        return "Invalid filter!";
+                    }
+                }
+                return "Invalid args!";
+            }
     );
 
     private TickableSubscription subscription;
@@ -55,10 +77,15 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
     @DescSynced
     @Getter
     private String text = "";
+    @Persisted
+    private final List<ItemStack> slots = new ArrayList<>();
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         renderer = new CoverTextRenderer(this::getText);
+        for (int i = 0; i < 8; i++) {
+            slots.add(ItemStack.EMPTY);
+        }
     }
 
     public boolean placeholderExists(String placeholder) {
@@ -159,6 +186,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             formatStringInput.setCurrentString(formatStringLines.get(i));
             formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
             mainPage.addWidget(formatStringInput);
+            SlotWidget slot = new SlotWidget(
+                    this,
+                    i,
+                    horizontalPadding + 10,
+                    20*i,
+                    true, true
+            );
+            slot.setItem(slots.get(i));
+            slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
+            mainPage.addWidget(slot);
         }
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringArgsInput = new TextFieldWidget();
@@ -176,7 +213,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         }
         ButtonWidget switchToFormatStringArgsPageButton = new ButtonWidget(
                 horizontalPadding + 10,
-                8*(15 + verticalPadding) + verticalPadding,
+                10*(15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
                 clickData -> {
@@ -186,7 +223,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         );
         ButtonWidget switchBack = new ButtonWidget(
                 horizontalPadding + 10,
-                8*(15 + verticalPadding) + verticalPadding,
+                10*(15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
                 clickData -> {
@@ -224,5 +261,70 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         return GTCapabilityHelper.getEnergyContainer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 
-    // No implementation here, this cover is just for decorative purposes
+    private static int countItems(String id, @Nullable IItemHandler itemHandler) {
+        if (itemHandler == null) return 0;
+        int cnt = 0;
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            ItemStack itemStack = itemHandler.getStackInSlot(i);
+            String itemId = "%s:%s".formatted(itemStack.getItem().getCreatorModId(itemStack), itemStack.getItem().toString());
+            if (itemId.equals(id)) cnt += itemStack.getCount();
+        }
+        return cnt;
+    }
+
+    private static int countItems(@Nullable ItemFilter filter, @Nullable IItemHandler itemHandler) {
+        if (itemHandler == null)
+            return -1;
+        int cnt = 0;
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            if (filter == null || filter.test(itemHandler.getStackInSlot(i)))
+                cnt += itemHandler.getStackInSlot(i).getCount();
+        }
+        return cnt;
+    }
+
+    // ============= Container stuff ============= //
+
+    @Override
+    public int getContainerSize() {
+        return 8;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public ItemStack getItem(int i) {
+        return slots.get(i);
+    }
+
+    @Override
+    public ItemStack removeItem(int i, int i1) {
+        return slots.set(i, ItemStack.EMPTY);
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int i) {
+        return slots.set(i, ItemStack.EMPTY);
+    }
+
+    @Override
+    public void setItem(int i, ItemStack itemStack) {
+        slots.set(i, itemStack);
+    }
+
+    @Override
+    public void setChanged() {}
+
+    @Override
+    public boolean stillValid(Player player) {
+        return true;
+    }
+
+    @Override
+    public void clearContent() {
+        slots.replaceAll((itemStack -> ItemStack.EMPTY));
+    }
 }
