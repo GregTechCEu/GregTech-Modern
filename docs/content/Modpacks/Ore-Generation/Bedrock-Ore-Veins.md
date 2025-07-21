@@ -27,7 +27,7 @@ GTCEuServerEvents.bedrockOreVeins(event => {
             .size(3) // (1)
             .yield(10, 20)
             .material(GTMaterials.Goethite, 5) // (2)
-            .material(GTMaterials.YellowLimonite, 2)
+            .material(GTMaterials.Limonite, 2)
             .material(GTMaterials.Hematite, 2)
             .material(GTMaterials.Malachite, 1)
             .dimensions('minecraft:overworld')

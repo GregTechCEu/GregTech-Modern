@@ -68,7 +68,7 @@ Please note that these are the default settings and may be different in certain 
 ### Iron Vein
 
 - Goethite
-- Yellow Limonite
+- Limonite
 - Hematite
 - Malachite
 
@@ -216,7 +216,7 @@ Please note that these are the default settings and may be different in certain 
 ### Banded Iron Vein
 
 - Goethite
-- Yellow Limonite
+- Limonite
 - Hematite
 - Gold
 
