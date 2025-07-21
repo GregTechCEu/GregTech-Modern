@@ -120,8 +120,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ***** Initialization ******//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
@@ -147,8 +146,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ***** Initialization ******//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
     @Override
     public void onLoad() {
         super.onLoad();
@@ -185,8 +183,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ******* Auto Output *******//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
 
     @Override
     public boolean hasAutoOutputFluid() {
@@ -303,8 +300,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ********** MISC ***********//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
     @Override
     public void onMachineRemoved() {
         super.onMachineRemoved();
@@ -316,8 +312,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // *********** GUI ***********//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
 
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
@@ -449,8 +444,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ******* Rendering ********//
-
-    /// ///////////////////////////////////
+    //////////////////////////////////////
     @Override
     public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
                                               Direction side) {
