@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ToggleConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -57,9 +57,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -341,7 +339,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON,
                 this::isAutoOutputFluids,
-                (cd) -> this.setAutoOutputFluids(!this.isAutoOutputFluids())
+                (cd, nextState) -> this.setAutoOutputFluids(nextState)
         );
     }
 
@@ -349,19 +347,19 @@ public class SimpleTieredMachine extends WorkableTieredMachine
         return createAutoOutputConfigurator(
                 GuiTextures.IO_CONFIG_ITEM_MODES_BUTTON,
                 this::isAutoOutputItems,
-                (cd) -> this.setAutoOutputItems(!this.isAutoOutputItems())
+                (cd, nextState) -> this.setAutoOutputItems(nextState)
         );
     }
 
-    private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture, Supplier<Boolean> stateSupplier, Consumer<ClickData> onToggle) {
-        return new ToggleConfigurator(
-                new GuiTextureGroup(
-                        GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-                        modesButtonTexture.getSubTexture(0, 2 / 3f, 1, 1 / 3f)
-                ),
+    private IFancyConfigurator createAutoOutputConfigurator(ResourceTexture modesButtonTexture, BooleanSupplier stateSupplier, BiConsumer<ClickData, Boolean> onToggle) {
+        return new IFancyConfiguratorButton.Toggle(
                 new GuiTextureGroup(
                         GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
                         modesButtonTexture.getSubTexture(0, 1 / 3f, 1, 1 / 3f)
+                ),
+                new GuiTextureGroup(
+                        GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
+                        modesButtonTexture.getSubTexture(0, 2 / 3f, 1, 1 / 3f)
                 ),
                 stateSupplier,
                 onToggle
