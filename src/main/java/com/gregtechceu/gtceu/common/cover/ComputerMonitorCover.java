@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -140,12 +141,24 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        int textFieldWidth = 120, horizontalPadding = 10, verticalPadding = 5;
-        final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 200);
+        int textFieldWidth = 120, horizontalPadding = 10, verticalPadding = 2;
+        final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
+        final WidgetGroup mainPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
+        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
+        LabelWidget mainPageTitle = new LabelWidget(group.getRect().getWidthCenter(), verticalPadding, "Edit displayed text");
+        LabelWidget formatStringArgsPageTitle = new LabelWidget(group.getRect().getWidthCenter(), verticalPadding, "Edit blank placeholders");
+        mainPageTitle.setColor(0xFF444444);
+        formatStringArgsPageTitle.setColor(0xFF444444);
+        //noinspection deprecation I didn't find a method that does the same thing and isn't deprecated
+        mainPageTitle.setDropShadow(false);
+        //noinspection deprecation
+        formatStringArgsPageTitle.setDropShadow(false);
+        mainPage.addWidget(mainPageTitle);
+        formatStringArgsPage.addWidget(formatStringArgsPageTitle);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringInput = new TextFieldWidget();
             formatStringInput.setSize(textFieldWidth, 15);
-            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth/2, verticalPadding + i*(15 + verticalPadding));
+            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth/2, 10 + verticalPadding + i*(15 + verticalPadding));
             formatStringInput.setHoverTooltips(
                     "Input string to display here.",
                     "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
@@ -155,13 +168,12 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             if (i >= formatStringLines.size()) formatStringLines.add("");
             formatStringInput.setCurrentString(formatStringLines.get(i));
             formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
-            group.addWidget(formatStringInput);
+            mainPage.addWidget(formatStringInput);
         }
-        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 200);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringArgsInput = new TextFieldWidget();
             formatStringArgsInput.setSize(textFieldWidth, 15);
-            formatStringArgsInput.setSelfPosition(textFieldWidth/2 + horizontalPadding, verticalPadding + i*(15 + verticalPadding));
+            formatStringArgsInput.setSelfPosition(textFieldWidth/2 + horizontalPadding, 10 + verticalPadding + i*(15 + verticalPadding));
             formatStringArgsInput.setHoverTooltips(
                     "Input placeholders to be used in place of '{}' here.",
                     "For example, you can have a string 'Energy: {}/{} EU' and 'energy (newline) energyCapacity' in this text box."
@@ -176,12 +188,27 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
                 horizontalPadding + 10,
                 8*(15 + verticalPadding) + verticalPadding,
                 20, 20,
+                new ResourceBorderTexture(),
                 clickData -> {
                     group.clearAllWidgets();
                     group.addWidget(formatStringArgsPage);
                 }
         );
-        group.addWidget(switchToFormatStringArgsPageButton);
+        ButtonWidget switchBack = new ButtonWidget(
+                horizontalPadding + 10,
+                8*(15 + verticalPadding) + verticalPadding,
+                20, 20,
+                new ResourceBorderTexture(),
+                clickData -> {
+                    group.clearAllWidgets();
+                    group.addWidget(mainPage);
+                }
+        );
+        switchToFormatStringArgsPageButton.setHoverTooltips("Edit blank placeholders");
+        switchBack.setHoverTooltips("Edit displayed text");
+        mainPage.addWidget(switchToFormatStringArgsPageButton);
+        formatStringArgsPage.addWidget(switchBack);
+        group.addWidget(mainPage);
         return group;
     }
 
