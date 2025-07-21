@@ -145,22 +145,12 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
         final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
         final WidgetGroup mainPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
         final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
-        LabelWidget mainPageTitle = new LabelWidget(group.getRect().getWidthCenter(), verticalPadding, "Edit displayed text");
-        LabelWidget formatStringArgsPageTitle = new LabelWidget(group.getRect().getWidthCenter(), verticalPadding, "Edit blank placeholders");
-        mainPageTitle.setColor(0xFF444444);
-        formatStringArgsPageTitle.setColor(0xFF444444);
-        //noinspection deprecation I didn't find a method that does the same thing and isn't deprecated
-        mainPageTitle.setDropShadow(false);
-        //noinspection deprecation
-        formatStringArgsPageTitle.setDropShadow(false);
-        mainPage.addWidget(mainPageTitle);
-        formatStringArgsPage.addWidget(formatStringArgsPageTitle);
         for (int i = 0; i < 8; i++) {
             TextFieldWidget formatStringInput = new TextFieldWidget();
             formatStringInput.setSize(textFieldWidth, 15);
             formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth/2, 10 + verticalPadding + i*(15 + verticalPadding));
             formatStringInput.setHoverTooltips(
-                    "Input string to display here.",
+                    "Input string to display on line %d here.".formatted(i + 1),
                     "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
                     "Placeholders can also be inside other placeholders."
             );
@@ -175,8 +165,8 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover {
             formatStringArgsInput.setSize(textFieldWidth, 15);
             formatStringArgsInput.setSelfPosition(textFieldWidth/2 + horizontalPadding, 10 + verticalPadding + i*(15 + verticalPadding));
             formatStringArgsInput.setHoverTooltips(
-                    "Input placeholders to be used in place of '{}' here.",
-                    "For example, you can have a string 'Energy: {}/{} EU' and 'energy (newline) energyCapacity' in this text box."
+                    "Input placeholder to be used in place of %s '{}' here.".formatted(GTStringUtils.getIntOrderingSuffix(i + 1)),
+                    "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes."
             );
             int finalI = i;
             if (i >= formatStringArgs.size()) formatStringArgs.add("");

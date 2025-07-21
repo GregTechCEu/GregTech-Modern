@@ -31,6 +31,24 @@ public class GTStringUtils {
     }
 
     /**
+     * This function does this:
+     * <ul>
+     *     <li>{@code 1} -> {@code "1st"}</li>
+     *     <li>{@code 2} -> {@code "2nd"}</li>
+     *     <li>{@code 3} -> {@code "3rd"}</li>
+     *     <li>{@code 4} -> {@code "4th"}</li>
+     *     <li>...</li>
+     * </ul>
+     */
+    @NotNull
+    public static String getIntOrderingSuffix(int x) {
+        if (x == 1) return "1st";
+        if (x == 2) return "2nd";
+        if (x == 3) return "3rd";
+        return x + "th";
+    }
+
+    /**
      * Returns a string with the result of the provided expression.
      * This function is intended for use with user input.
      * For example:
