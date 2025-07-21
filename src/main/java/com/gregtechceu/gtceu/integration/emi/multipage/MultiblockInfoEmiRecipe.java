@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import dev.emi.emi.api.widget.SlotWidget;
+import dev.emi.emi.api.widget.Widget;
+import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -17,14 +20,26 @@ import java.util.List;
 
 public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
-    public final MultiblockMachineDefinition definition;
+    private final MultiblockMachineDefinition definition;
+    private SlotWidget slotWidget;
 
     public MultiblockInfoEmiRecipe(MultiblockMachineDefinition definition) {
         super(() -> PatternPreviewWidget.getPatternWidget(definition));
         this.definition = definition;
+
     }
 
+
     @Override
+    public void addWidgets(WidgetHolder widgets) {
+        super.addWidgets(widgets);
+        slotWidget = new SlotWidget(EmiStack.of(definition.getItem().asItem()), 0, 0)
+                .recipeContext(this)
+                .drawBack(false);
+
+        widgets.add(slotWidget);
+    }
+        @Override
     public EmiRecipeCategory getCategory() {
         return MultiblockInfoEmiCategory.CATEGORY;
     }
@@ -36,6 +51,8 @@ public class MultiblockInfoEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return List.of(EmiStack.of(new ItemStack(definition.getItem())));
+        return List.of(EmiStack.of(definition.getItem()));
     }
+
 }
+
