@@ -13,11 +13,13 @@ import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -30,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -62,7 +65,32 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     }
                 }
                 return "Invalid args!";
+            },
+            "if", (cover, args) -> {
+                if (args.size() < 2) return "Expected at least 2 args!";
+                if (!args.get(0).isEmpty() && !args.get(0).equals("0") && !args.get(0).equals("0.0")) {
+                    return args.get(1);
+                } else if (args.size() > 2) return args.get(2);
+                else return "";
             }
+    );
+
+    private static final Map<String, String> PLACEHOLDER_INFO = Map.of(
+            "energy", "Returns the amount of energy stored.\nUsage:\n  {energy} -> the amount of energy stored",
+            "energyCapacity", "Returns the max amount of energy that can be stored\nUsage:\n  {energyCapacity} -> the energy capacity",
+            "itemCount", "Returns the amount of items (can be filtered).\nUsage:\n  %s\n  %s\n  %s".formatted(
+                    "{itemCount} -> total item amount",
+                    "{itemCount <item_id>} -> amount of items with ids equal to item_id",
+                    "{itemCount filter <slot_id>} -> amount of items matching filter in specified slot of this cover"
+            ),
+            "calc", "Returns the result of a math function or operation.\nUsage:\n  %s\n  %s\n  %s".formatted(
+                    "{calc <any_string>} -> any_string",
+                    "{calc <round|floor|ceil|sqrt|~> <arg>} -> the result of the specified operation",
+                    "{calc <first_arg> <+|-|*|/|//|>>|<<|%> <second_arg>} -> the result of the specified operation"
+            ),
+            "if", "Returns one of the arguments depending on the condition. The condition is considered true if it is not an empty string and is not equal to 0.\nUsage:\n  %s".formatted(
+                    "{if <condition> <returned_if_true> [returned_if_false]}"
+            )
     );
 
     private TickableSubscription subscription;
@@ -79,6 +107,9 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
     private String text = "";
     @Persisted
     private final List<ItemStack> slots = new ArrayList<>();
+    @Setter
+    @DescSynced
+    private String placeholderSearch = "";
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -168,7 +199,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
 
     @Override
     public Widget createUIWidget() {
-        int textFieldWidth = 120, horizontalPadding = 10, verticalPadding = 2;
+        int textFieldWidth = 160, horizontalPadding = 10, verticalPadding = 2;
         final WidgetGroup group = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
         final WidgetGroup mainPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
         final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2*textFieldWidth + 3*horizontalPadding, 150);
@@ -189,12 +220,16 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             SlotWidget slot = new SlotWidget(
                     this,
                     i,
-                    horizontalPadding + 10,
+                    horizontalPadding + 50,
                     20*i,
                     true, true
             );
             slot.setItem(slots.get(i));
             slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
+            slot.setHoverTooltips(
+                    "A slot for items that some placeholders can reference",
+                    "Slot number: %d".formatted(i + 1)
+            );
             mainPage.addWidget(slot);
         }
         for (int i = 0; i < 8; i++) {
@@ -212,7 +247,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
             formatStringArgsPage.addWidget(formatStringArgsInput);
         }
         ButtonWidget switchToFormatStringArgsPageButton = new ButtonWidget(
-                horizontalPadding + 10,
+                horizontalPadding + 50,
                 10*(15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
@@ -222,7 +257,7 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                 }
         );
         ButtonWidget switchBack = new ButtonWidget(
-                horizontalPadding + 10,
+                horizontalPadding + 50,
                 10*(15 + verticalPadding) + verticalPadding,
                 20, 20,
                 new ResourceBorderTexture(),
@@ -231,9 +266,37 @@ public class ComputerMonitorCover extends CoverBehavior implements IUICover, Con
                     group.addWidget(mainPage);
                 }
         );
+        WidgetGroup placeholderReference = new WidgetGroup(280, 0, 100, 0);
+        Consumer<String> onSearch = (newSearch) -> {
+            setPlaceholderSearch(newSearch);
+            placeholderReference.clearAllWidgets();
+            int y = 15 + verticalPadding;
+            ArrayList<String> placeholders = new ArrayList<>(PLACEHOLDERS.keySet().stream().toList());
+            placeholders.removeIf(s -> s == null || !s.contains(placeholderSearch));
+            placeholders.sort(String::compareTo);
+            for (String placeholder : placeholders) {
+                TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
+                placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
+                placeholderName.setHoverTooltips(PLACEHOLDER_INFO.getOrDefault(placeholder, "No info."));
+                placeholderReference.addWidget(placeholderName);
+                y += 15;
+            }
+        };
+        TextTextureWidget placeholderReferenceLabel = new TextTextureWidget(
+                280, 0,
+                160, 15,
+                "All placeholders:\n(hover for more info)"
+        );
+        placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
+        mainPage.addWidget(placeholderReferenceLabel);
+        //TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
+        //searchBox.setHoverTooltips("Search");
+        //mainPage.addWidget(searchBox);
+        onSearch.accept("");
         switchToFormatStringArgsPageButton.setHoverTooltips("Edit blank placeholders");
         switchBack.setHoverTooltips("Edit displayed text");
         mainPage.addWidget(switchToFormatStringArgsPageButton);
+        mainPage.addWidget(placeholderReference);
         formatStringArgsPage.addWidget(switchBack);
         group.addWidget(mainPage);
         return group;
