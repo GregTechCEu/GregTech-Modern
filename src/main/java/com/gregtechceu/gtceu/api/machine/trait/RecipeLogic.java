@@ -416,9 +416,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if (!isWorkingAllowed) {
-            setSuspendAfterFinish(true);
-        } else {
+        setSuspendAfterFinish(!isWorkingAllowed);
+        if (isWorkingAllowed) {
             if (lastRecipe != null && duration > 0) {
                 setStatus(Status.WORKING);
             } else {
