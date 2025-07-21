@@ -862,7 +862,8 @@ public class GTRecipeBuilder {
      * @deprecated overclock chance boosting will be removed in a future update
      */
     @Deprecated(since = "7.0.0")
-    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
+                                         int tierChanceBoost) {
         return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction, tierChanceBoost);
     }
 
@@ -896,7 +897,7 @@ public class GTRecipeBuilder {
 
     /**
      * @deprecated overclock chance boosting will be removed in a future update
-      */
+     */
     @Deprecated(since = "7.0.0")
     public GTRecipeBuilder chancedOutput(Item item, String fraction, int tierChanceBoost) {
         return chancedOutput(item, 1, fraction, tierChanceBoost);
