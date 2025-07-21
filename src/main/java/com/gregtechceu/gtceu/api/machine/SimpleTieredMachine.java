@@ -324,15 +324,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IFancyUIMachine.super.attachConfigurators(configuratorPanel);
-        if (isCircuitSlotEnabled()) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-        }
 
         if (hasAutoOutputFluid()) {
             configuratorPanel.attachConfigurators(createAutoOutputFluidConfigurator());
         }
         if (hasAutoOutputItem()) {
             configuratorPanel.attachConfigurators(createAutoOutputItemConfigurator());
+        }
+
+        if (isCircuitSlotEnabled()) {
+            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }
 
